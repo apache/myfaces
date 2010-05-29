@@ -804,7 +804,15 @@ public class UIData extends UIComponentBase
     @Override
     public void encodeEnd(FacesContext context) throws IOException
     {
-        setRowIndex(-1);
+        try
+        {
+            setCachedFacesContext(context);
+            setRowIndex(-1);
+        }
+        finally
+        {
+            setCachedFacesContext(null);
+        }
         super.encodeEnd(context);
     }
 

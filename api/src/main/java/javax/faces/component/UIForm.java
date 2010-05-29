@@ -56,47 +56,80 @@ public class UIForm
 
     public void processDecodes(javax.faces.context.FacesContext context)
     {
-        if (context == null) throw new NullPointerException("context");
-        decode(context);
-        if (!isSubmitted()) return;
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+        if (context == null)
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processDecodes(context);
+            throw new NullPointerException("context");
+        }
+        try
+        {
+            setCachedFacesContext(context);
+            decode(context);
+            if (!isSubmitted()) return;
+            for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+            {
+                UIComponent childOrFacet = (UIComponent)it.next();
+                childOrFacet.processDecodes(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
     public void processValidators(javax.faces.context.FacesContext context)
     {
-        if (context == null) throw new NullPointerException("context");
-        // SF issue #1050022: a form used within a datatable will loose it's submitted state
-        // as UIForm is no EditableValueHolder and therefore it's state is not saved/restored by UIData
-        // to restore the submitted state we call decode here again
-        if (!isSubmitted()) {
-            decode(context);
-        }
-        if (!isSubmitted()) return;
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+        if (context == null)
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processValidators(context);
+            throw new NullPointerException("context");
+        }
+        try
+        {
+            setCachedFacesContext(context);
+            // SF issue #1050022: a form used within a datatable will loose it's submitted state
+            // as UIForm is no EditableValueHolder and therefore it's state is not saved/restored by UIData
+            // to restore the submitted state we call decode here again
+            if (!isSubmitted()) {
+                decode(context);
+            }
+            if (!isSubmitted()) return;
+            for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+            {
+                UIComponent childOrFacet = (UIComponent)it.next();
+                childOrFacet.processValidators(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
     public void processUpdates(javax.faces.context.FacesContext context)
     {
-        if (context == null) throw new NullPointerException("context");
-        // SF issue #1050022: a form used within a datatable will loose it's submitted state
-        // as UIForm is no EditableValueHolder and therefore it's state is not saved/restored by UIData
-        // to restore the submitted state we call decode here again
-        if (!isSubmitted()) {
-            decode(context);
-        }
-        if (!isSubmitted()) return;
-        for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+        if (context == null)
         {
-            UIComponent childOrFacet = (UIComponent)it.next();
-            childOrFacet.processUpdates(context);
+            throw new NullPointerException("context");
+        }
+        try
+        {
+            setCachedFacesContext(context);
+            // SF issue #1050022: a form used within a datatable will loose it's submitted state
+            // as UIForm is no EditableValueHolder and therefore it's state is not saved/restored by UIData
+            // to restore the submitted state we call decode here again
+            if (!isSubmitted()) {
+                decode(context);
+            }
+            if (!isSubmitted()) return;
+            for (Iterator it = getFacetsAndChildren(); it.hasNext(); )
+            {
+                UIComponent childOrFacet = (UIComponent)it.next();
+                childOrFacet.processUpdates(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
