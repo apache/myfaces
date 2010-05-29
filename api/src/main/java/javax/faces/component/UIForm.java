@@ -79,13 +79,33 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     public void processDecodes(FacesContext context)
     {
         if (context == null)
-            throw new NullPointerException("context");
-        decode(context);
-        if (!isSubmitted())
-            return;
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
         {
-            it.next().processDecodes(context);
+            throw new NullPointerException("context");
+        }
+        try
+        {
+            setCachedFacesContext(context);
+            try
+            {
+                pushComponentToEL(context, this);
+                
+                decode(context);
+                
+                if (!isSubmitted())
+                    return;
+                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                {
+                    it.next().processDecodes(context);
+                }
+            }
+            finally
+            {
+                popComponentFromEL(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -93,19 +113,38 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     public void processValidators(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
-        // SF issue #1050022: a form used within a datatable will loose it's submitted state
-        // as UIForm is no EditableValueHolder and therefore it's state is not saved/restored by UIData
-        // to restore the submitted state we call decode here again
-        if (!isSubmitted())
-        {
-            decode(context);
         }
-        if (!isSubmitted())
-            return;
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+        
+        try
         {
-            it.next().processValidators(context);
+            setCachedFacesContext(context);
+            try
+            {
+                pushComponentToEL(context, this);
+                // SF issue #1050022: a form used within a datatable will loose it's submitted state
+                // as UIForm is no EditableValueHolder and therefore it's state is not saved/restored by UIData
+                // to restore the submitted state we call decode here again
+                if (!isSubmitted())
+                {
+                    decode(context);
+                }
+                if (!isSubmitted())
+                    return;
+                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                {
+                    it.next().processValidators(context);
+                }
+            }
+            finally
+            {
+                popComponentFromEL(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -113,19 +152,38 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     public void processUpdates(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
-        // SF issue #1050022: a form used within a datatable will loose it's submitted state
-        // as UIForm is no EditableValueHolder and therefore it's state is not saved/restored by UIData
-        // to restore the submitted state we call decode here again
-        if (!isSubmitted())
-        {
-            decode(context);
         }
-        if (!isSubmitted())
-            return;
-        for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+        
+        try
         {
-            it.next().processUpdates(context);
+            setCachedFacesContext(context);
+            try
+            {
+                pushComponentToEL(context, this);
+                // SF issue #1050022: a form used within a datatable will loose it's submitted state
+                // as UIForm is no EditableValueHolder and therefore it's state is not saved/restored by UIData
+                // to restore the submitted state we call decode here again
+                if (!isSubmitted())
+                {
+                    decode(context);
+                }
+                if (!isSubmitted())
+                    return;
+                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                {
+                    it.next().processUpdates(context);
+                }
+            }
+            finally
+            {
+                popComponentFromEL(context);
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 

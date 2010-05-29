@@ -817,7 +817,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void encodeEnd(FacesContext context) throws IOException
     {
-        setRowIndex(-1);
+        try
+        {
+            setCachedFacesContext(context);
+            setRowIndex(-1);
+        }
+        finally
+        {
+            setCachedFacesContext(null);
+        }
         super.encodeEnd(context);
     }
 

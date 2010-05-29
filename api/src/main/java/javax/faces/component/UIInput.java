@@ -159,33 +159,49 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             throw new NullPointerException("context");
         }
-        if (!isRendered())
+        try
         {
-            return;
+            setCachedFacesContext(context);
+            if (!isRendered())
+            {
+                return;
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
         super.processDecodes(context);
-        if (isImmediate())
+        try
         {
-            try
+            setCachedFacesContext(context);
+            if (isImmediate())
             {
-                //Pre validation event dispatch for component
-                context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
-
-                validate(context);
+                try
+                {
+                    //Pre validation event dispatch for component
+                    context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
+    
+                    validate(context);
+                }
+                catch (RuntimeException e)
+                {
+                    context.renderResponse();
+                    throw e;
+                }
+                finally
+                {
+                    context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
+                }
+                if (!isValid())
+                {
+                    context.renderResponse();
+                }
             }
-            catch (RuntimeException e)
-            {
-                context.renderResponse();
-                throw e;
-            }
-            finally
-            {
-                context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
-            }
-            if (!isValid())
-            {
-                context.renderResponse();
-            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -196,36 +212,52 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             throw new NullPointerException("context");
         }
-        if (!isRendered())
+        try
         {
-            return;
+            setCachedFacesContext(context);
+            if (!isRendered())
+            {
+                return;
+            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
 
         super.processValidators(context);
 
-        if (!isImmediate())
+        try
         {
-            try
+            setCachedFacesContext(context);
+            if (!isImmediate())
             {
-                //Pre validation event dispatch for component
-                context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
-
-                validate(context);
+                try
+                {
+                    //Pre validation event dispatch for component
+                    context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
+    
+                    validate(context);
+                }
+                catch (RuntimeException e)
+                {
+                    context.renderResponse();
+                    throw e;
+                }
+                finally
+                {
+                    context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
+                }
+                if (!isValid())
+                {
+                    context.validationFailed();
+                    context.renderResponse();
+                }
             }
-            catch (RuntimeException e)
-            {
-                context.renderResponse();
-                throw e;
-            }
-            finally
-            {
-                context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
-            }
-            if (!isValid())
-            {
-                context.validationFailed();
-                context.renderResponse();
-            }
+        }
+        finally
+        {
+            setCachedFacesContext(null);
         }
     }
 
@@ -236,25 +268,40 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             throw new NullPointerException("context");
         }
-        if (!isRendered())
+        try
         {
-            return;
+            setCachedFacesContext(context);
+            if (!isRendered())
+            {
+                return;
+            }
         }
-
+        finally
+        {
+            setCachedFacesContext(null);
+        }
         super.processUpdates(context);
 
         try
         {
-            updateModel(context);
+            setCachedFacesContext(context);
+            try
+            {
+                updateModel(context);
+            }
+            catch (RuntimeException e)
+            {
+                context.renderResponse();
+                throw e;
+            }
+            if (!isValid())
+            {
+                context.renderResponse();
+            }
         }
-        catch (RuntimeException e)
+        finally
         {
-            context.renderResponse();
-            throw e;
-        }
-        if (!isValid())
-        {
-            context.renderResponse();
+            setCachedFacesContext(null);
         }
     }
 
