@@ -207,7 +207,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             {
                 if (handler instanceof javax.faces.view.facelets.FacetHandler)
                 {
-                    if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((javax.faces.view.facelets.FacetHandler)nextHandler).getFacetName(ctx)))
+                    if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx)))
                     {
                         handler.apply(ctx, c);
                     }
@@ -221,7 +221,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 }
                 else if (handler instanceof InsertFacetHandler)
                 {
-                    if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((InsertFacetHandler)nextHandler).getFacetName(ctx)))
+                    if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((InsertFacetHandler)handler).getFacetName(ctx)))
                     {
                         handler.apply(ctx, c);
                     }
