@@ -46,6 +46,7 @@ public class NavigationCase
     private Map<String,List<String>> _parameters;
 
     private ValueExpression _conditionExpression;
+    private ValueExpression _toViewIdExpression;
 
     public NavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId,
             Map<String,List<String>> parameters, boolean redirect, boolean includeViewParams)
@@ -162,7 +163,15 @@ public class NavigationCase
 
     public String getToViewId(FacesContext context)
     {
-        return _toViewId;
+        if (_toViewId == null)
+        {
+            return null;
+        }
+
+        ValueExpression expression = _getToViewIdExpression(context);
+        
+        return (String)( (expression.isLiteralText()) ? 
+                expression.getExpressionString() : expression.getValue(context.getELContext()) );
     }
 
     public boolean hasCondition()
@@ -250,6 +259,19 @@ public class NavigationCase
         }
 
         return _conditionExpression;
+    }
+
+    private ValueExpression _getToViewIdExpression(FacesContext context)
+    {
+        assert _toViewId != null;
+
+        if (_toViewIdExpression == null)
+        {
+            ExpressionFactory factory = context.getApplication().getExpressionFactory();
+            _toViewIdExpression = factory.createValueExpression(context.getELContext(), _toViewId, String.class);
+        }
+
+        return _toViewIdExpression;
     }
 
     private boolean equals(Object o1, Object o2)
