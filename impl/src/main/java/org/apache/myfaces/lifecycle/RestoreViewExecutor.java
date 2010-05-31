@@ -40,18 +40,27 @@ import org.apache.myfaces.renderkit.ErrorPageWriter;
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
  * 
- * @author Nikolay Petrov
+ * @author Nikolay Petrov (latest modification by $Author$)
  * @author Bruno Aranda (JSF 1.2)
  * @version $Revision$ $Date$
- * 
  */
-class RestoreViewExecutor implements PhaseExecutor
+class RestoreViewExecutor extends PhaseExecutor
 {
 
     //private static final Log log = LogFactory.getLog(RestoreViewExecutor.class);
     private static final Logger log = Logger.getLogger(RestoreViewExecutor.class.getName());
     
     private RestoreViewSupport _restoreViewSupport;
+    
+    @Override
+    public void doPrePhaseActions(FacesContext facesContext)
+    {
+        // Call initView() on the ViewHandler. 
+        // This will set the character encoding properly for this request.
+        // Note that we are doing this here, because we need the character encoding
+        // to be set as early as possible (before any PhaseListener is executed).
+        facesContext.getApplication().getViewHandler().initView(facesContext);
+    }
 
     public boolean execute(FacesContext facesContext)
     {
@@ -60,15 +69,10 @@ class RestoreViewExecutor implements PhaseExecutor
             throw new FacesException("FacesContext is null");
         }
 
-        // init the View
+        // get some required Objects
         Application application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
-        
-        // Call initView() on the ViewHandler. This will set the character encoding properly for this request.
-        viewHandler.initView(facesContext);
-
         UIViewRoot viewRoot = facesContext.getViewRoot();
-
         RestoreViewSupport restoreViewSupport = getRestoreViewSupport();
 
         // Examine the FacesContext instance for the current request. If it already contains a UIViewRoot

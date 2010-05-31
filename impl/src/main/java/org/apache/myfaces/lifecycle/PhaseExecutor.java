@@ -24,10 +24,10 @@ import javax.faces.event.PhaseId;
 /**
  * Implements the PhaseExecutor for a lifecycle
  * 
- * @author Nikolay Petrov
- * 
+ * @author Nikolay Petrov (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
-interface PhaseExecutor
+abstract class PhaseExecutor
 {
 
     /**
@@ -38,12 +38,26 @@ interface PhaseExecutor
      *            The <code>FacesContext</code> for the current request we are processing
      * @return <code>true</code> if execution should be stopped
      */
-    boolean execute(FacesContext facesContext);
+    public abstract boolean execute(FacesContext facesContext);
 
     /**
      * Returns the <code>PhaseId</code> for which the implemented executor is invoked
      * 
      * @return
      */
-    PhaseId getPhase();
+    public abstract PhaseId getPhase();
+    
+    /**
+     * This method will be called by LifecycleImpl before the phase associated with this
+     * PhaseExecutor actually starts (before the before-PhaseListeners are called). 
+     * Thus the PhaseExecutor implementation will be able to do some pre-phase initialisation work.
+     * 
+     * @param facesContext
+     * @since 2.0.1
+     */
+    public void doPrePhaseActions(FacesContext facesContext)
+    {
+        // default: nothing
+    }
+    
 }

@@ -130,6 +130,9 @@ public class LifecycleImpl extends Lifecycle
             context.setCurrentPhaseId(currentPhaseId);
             
             flash.doPrePhaseActions(context);
+            
+            // let the PhaseExecutor do some pre-phase actions
+            executor.doPrePhaseActions(context);
 
             phaseListenerMgr.informPhaseListenersBefore(currentPhaseId);
 
@@ -200,6 +203,10 @@ public class LifecycleImpl extends Lifecycle
                 facesContext.setCurrentPhaseId(renderExecutor.getPhase());
                 
                 flash.doPrePhaseActions(facesContext);
+                
+                // let the PhaseExecutor do some pre-phase actions
+                renderExecutor.doPrePhaseActions(facesContext);
+                
                 boolean renderResponse = phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
                 // also possible that one of the listeners completed the response
                 if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))

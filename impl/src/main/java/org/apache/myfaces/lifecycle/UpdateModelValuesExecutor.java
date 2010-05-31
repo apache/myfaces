@@ -22,13 +22,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 
 /**
- * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
+ * Implements the update model values phase (JSF Spec 2.2.4)
  * 
- * @author Nikolay Petrov
- * 
- *         Update model values phase (JSF Spec 2.2.4)
+ * @author Nikolay Petrov (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
-class UpdateModelValuesExecutor implements PhaseExecutor
+class UpdateModelValuesExecutor extends PhaseExecutor
 {
     public boolean execute(FacesContext facesContext)
     {

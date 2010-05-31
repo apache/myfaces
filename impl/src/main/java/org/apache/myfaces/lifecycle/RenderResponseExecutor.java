@@ -33,13 +33,12 @@ import javax.faces.event.PreRenderViewEvent;
 import javax.faces.view.ViewDeclarationLanguage;
 
 /**
- * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
+ * Implements the render response phase (JSF Spec 2.2.6)
  * 
- * @author Nikolay Petrov
- * 
- *         render response phase (JSF Spec 2.2.6)
+ * @author Nikolay Petrov (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
-class RenderResponseExecutor implements PhaseExecutor
+class RenderResponseExecutor extends PhaseExecutor
 {
     
     private static final Logger log = Logger.getLogger(RenderResponseExecutor.class.getName());

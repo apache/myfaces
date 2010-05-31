@@ -22,13 +22,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 
 /**
- * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2
+ * Implements the invoke application phase (JSF Spec 2.2.5)
  * 
- * @author Nikolay Petrov
- * 
- *         Invoke application phase (JSF Spec 2.2.5)
+ * @author Nikolay Petrov (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
-class InvokeApplicationExecutor implements PhaseExecutor
+class InvokeApplicationExecutor extends PhaseExecutor
 {
     public boolean execute(FacesContext facesContext)
     {

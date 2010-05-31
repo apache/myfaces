@@ -74,6 +74,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
         _restoreViewSupport.processComponentBinding(same(_facesContext), same(viewRoot));
 
         _mocksControl.replay();
+        _testimpl.doPrePhaseActions(_facesContext);
         _testimpl.execute(_facesContext);
         _mocksControl.verify();
     }
@@ -105,6 +106,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
         _facesContext.setViewRoot(same(viewRoot));
 
         _mocksControl.replay();
+        _testimpl.doPrePhaseActions(_facesContext);
         _testimpl.execute(_facesContext);
         _mocksControl.verify();
     }
@@ -127,6 +129,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
         _facesContext.setProcessingEvents(eq(false));
 
         _mocksControl.replay();
+        _testimpl.doPrePhaseActions(_facesContext);
         _testimpl.execute(_facesContext);
         _mocksControl.verify();
     }
@@ -150,6 +153,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
         {
             public void run() throws Throwable
             {
+                _testimpl.doPrePhaseActions(_facesContext);
                 _testimpl.execute(_facesContext);
             };
         });
