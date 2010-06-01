@@ -51,11 +51,12 @@ import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.TagException;
+import javax.faces.view.facelets.TextHandler;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
+import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule;
@@ -108,7 +109,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         _resource = resource;
         _facetHandlers = TagHandlerUtils.findNextByType(nextHandler, javax.faces.view.facelets.FacetHandler.class, InsertFacetHandler.class);
         _componentHandlers = TagHandlerUtils.findNextByType(nextHandler, javax.faces.view.facelets.ComponentHandler.class, 
-                InsertChildrenHandler.class, InsertHandler.class, DecorateHandler.class, IncludeHandler.class);
+                InsertChildrenHandler.class, InsertHandler.class, DecorateHandler.class, IncludeHandler.class, TextHandler.class);
     }
 
     public UIComponent createComponent(FaceletContext ctx)
