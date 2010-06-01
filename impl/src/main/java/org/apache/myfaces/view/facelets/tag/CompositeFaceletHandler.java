@@ -31,6 +31,7 @@ import javax.faces.view.facelets.FaceletHandler;
  * A FaceletHandler that is derived of 1 or more, inner FaceletHandlers. This class would be found if the next
  * FaceletHandler is structually, a body with multiple child elements as defined in XML.
  * 
+ * @deprecated use javax.faces.view.facelets.CompositeFaceletHandler
  * @author Jacob Hookom
  * @version $Id: CompositeFaceletHandler.java,v 1.5 2008/07/13 19:01:36 rlubke Exp $
  */

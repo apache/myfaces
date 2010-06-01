@@ -88,7 +88,7 @@ class CompilationUnit
         {
             fh[i] = ((CompilationUnit) this.children.get(i)).createFaceletHandler();
         }
-        return new CompositeFaceletHandler(fh);
+        return new javax.faces.view.facelets.CompositeFaceletHandler(fh);
     }
 
 }
