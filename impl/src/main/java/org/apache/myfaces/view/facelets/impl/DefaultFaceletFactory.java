@@ -60,6 +60,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private Map<String, DefaultFacelet> _facelets;
     
     private Map<String, DefaultFacelet> _viewMetadataFacelets;
+    
+    private Map<String, DefaultFacelet> _compositeComponentMetadataFacelets;
 
     private long _refreshPeriod;
 
@@ -82,6 +84,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         _facelets = new HashMap<String, DefaultFacelet>();
         
         _viewMetadataFacelets = new HashMap<String, DefaultFacelet>();
+        
+        _compositeComponentMetadataFacelets = new HashMap<String, DefaultFacelet>();
 
         _relativeLocations = new HashMap<String, URL>();
 
@@ -314,6 +318,37 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
 
     }
+    
+    /**
+     * @since 2.0.1
+     * @param url
+     * @return
+     * @throws IOException
+     * @throws FaceletException
+     * @throws FacesException
+     * @throws ELException
+     */
+    private DefaultFacelet _createCompositeComponentMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
+    {
+        if (log.isLoggable(Level.FINE))
+        {
+            log.fine("Creating Facelet used to create Composite Component Metadata for: " + url);
+        }
+
+        // The alias is used later for informative purposes, so we append 
+        // some prefix to identify later where the errors comes from.
+        String alias = "/compositeComponentMetadata/" + url.getFile().replaceFirst(_baseUrl.getFile(), "");
+        try
+        {
+            FaceletHandler h = _compiler.compileCompositeComponentMetadata(url, alias);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h, true);
+            return f;
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
+        }
+    }
 
     /**
      * Works in the same way as getFacelet(String uri), but redirect
@@ -367,4 +402,58 @@ public final class DefaultFaceletFactory extends FaceletFactory
         
         return f;
     }
+    
+    /**
+     * Works in the same way as getFacelet(String uri), but redirect
+     * to getViewMetadataFacelet(URL url)
+     * @since 2.0.1
+     */
+    @Override
+    public Facelet getCompositeComponentMetadataFacelet(String uri) throws IOException
+    {
+        URL url = (URL) _relativeLocations.get(uri);
+        if (url == null)
+        {
+            url = resolveURL(_baseUrl, uri);
+            if (url != null)
+            {
+                Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
+                newLoc.put(uri, url);
+                _relativeLocations = newLoc;
+            }
+            else
+            {
+                throw new IOException("'" + uri + "' not found.");
+            }
+        }
+        return this.getCompositeComponentMetadataFacelet(url);
+    }
+
+    /**
+     * @since 2.0.1
+     */
+    @Override
+    public Facelet getCompositeComponentMetadataFacelet(URL url) throws IOException,
+            FaceletException, FacesException, ELException
+    {
+        ParameterCheck.notNull("url", url);
+        
+        String key = url.toString();
+        
+        DefaultFacelet f = _compositeComponentMetadataFacelets.get(key);
+        
+        if (f == null || this.needsToBeRefreshed(f))
+        {
+            f = this._createCompositeComponentMetadataFacelet(url);
+            if (_refreshPeriod != NO_CACHE_DELAY)
+            {
+                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_compositeComponentMetadataFacelets);
+                newLoc.put(key, f);
+                _compositeComponentMetadataFacelets = newLoc;
+            }
+        }
+        
+        return f;
+    }
+
 }

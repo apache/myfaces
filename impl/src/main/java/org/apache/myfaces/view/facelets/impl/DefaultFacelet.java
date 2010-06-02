@@ -81,6 +81,8 @@ final class DefaultFacelet extends AbstractFacelet
 
     private final URL _src;
 
+    private final boolean _isBuildingCompositeComponentMetadata; 
+
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
                           FaceletHandler root)
     {
@@ -92,7 +94,22 @@ final class DefaultFacelet extends AbstractFacelet
         _createTime = System.currentTimeMillis();
         _refreshPeriod = _factory.getRefreshPeriod();
         _relativePaths = new WeakHashMap<String, URL>();
+        _isBuildingCompositeComponentMetadata = false;
     }
+    
+    public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
+            FaceletHandler root, boolean isBuildingCompositeComponentMetadata)
+    {
+        _factory = factory;
+        _elFactory = el;
+        _src = src;
+        _root = root;
+        _alias = alias;
+        _createTime = System.currentTimeMillis();
+        _refreshPeriod = _factory.getRefreshPeriod();
+        _relativePaths = new WeakHashMap<String, URL>();
+        _isBuildingCompositeComponentMetadata = isBuildingCompositeComponentMetadata;
+    }    
 
     /**
      * @see org.apache.myfaces.view.facelets.Facelet#apply(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
@@ -417,5 +434,11 @@ final class DefaultFacelet extends AbstractFacelet
     public String toString()
     {
         return _alias;
+    }
+
+    @Override
+    public boolean isBuildingCompositeComponentMetadata()
+    {
+        return _isBuildingCompositeComponentMetadata;
     }
 }

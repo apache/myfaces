@@ -18,6 +18,13 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import java.beans.BeanDescriptor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
@@ -27,6 +34,7 @@ import javax.faces.view.facelets.TagException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 
 /**
  * Render the facet defined on the composite component body to the current location
@@ -37,6 +45,10 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 @JSFFaceletTag(name="composite:renderFacet")
 public class RenderFacetHandler extends ComponentHandler
 {
+    private static final Logger log = Logger.getLogger(RenderFacetHandler.class.getName());
+    
+    public static String RENDER_FACET_USED = "org.apache.myfaces.RENDER_FACET_USED";
+    
     /**
      * The name that identify the current facet.
      */
@@ -62,20 +74,62 @@ public class RenderFacetHandler extends ComponentHandler
         _required = getAttribute("required");
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent)
+            throws IOException
+    {
+        if (((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
+        {
+            String facetName = _name.getValue(ctx);
+            CompositeComponentBeanInfo beanInfo = 
+                (CompositeComponentBeanInfo) parent.getAttributes()
+                .get(UIComponent.BEANINFO_KEY);
+            
+            if (beanInfo == null)
+            {
+                if (log.isLoggable(Level.SEVERE))
+                {
+                    log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                }
+                return;
+            }
+            
+            BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor(); 
+
+            List<String> facetList = (List<String>) beanDescriptor.getValue(RENDER_FACET_USED);
+            
+            if (facetList == null)
+            {
+                //2. If not found create it and set
+                facetList = new ArrayList<String>();
+                beanDescriptor.setValue(
+                        RENDER_FACET_USED,
+                        facetList);
+            }
+            
+            facetList.add(facetName);
+        }
+        super.apply(ctx, parent);
+    }
+
     @Override
     public void onComponentPopulated(FaceletContext ctx, UIComponent c,
             UIComponent parent)
     {
-        UIComponent parentCompositeComponent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
-        
-        String facetName = _name.getValue(ctx);
-
-        if (_required != null && _required.getBoolean(ctx) && parentCompositeComponent.getFacet(facetName) == null)
+        if (!((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
-            throw new TagException(this.tag, "Cannot found facet with name "+facetName+" in composite component "
-                    +parentCompositeComponent.getClientId(ctx.getFacesContext()));
+            UIComponent parentCompositeComponent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
+            
+            String facetName = _name.getValue(ctx);
+    
+            if (_required != null && _required.getBoolean(ctx) && parentCompositeComponent.getFacet(facetName) == null)
+            {
+                throw new TagException(this.tag, "Cannot found facet with name "+facetName+" in composite component "
+                        +parentCompositeComponent.getClientId(ctx.getFacesContext()));
+            }
+            
+            c.getAttributes().put(UIComponent.FACETS_KEY, facetName);
         }
-        
-        c.getAttributes().put(UIComponent.FACETS_KEY, facetName);
     }
 }

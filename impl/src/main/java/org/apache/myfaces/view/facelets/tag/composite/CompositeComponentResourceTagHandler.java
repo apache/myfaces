@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
@@ -162,10 +163,10 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     {
         //super.applyNextHandler(ctx, c);
         
+        applyNextHandlerIfNotApplied(ctx, c);
+        
         applyCompositeComponentFacelet(ctx,c);
         
-        applyNextHandlerIfNotApplied(ctx, c);
-
         if (ComponentHandler.isNew(c))
         {
             FacesContext facesContext = ctx.getFacesContext();
@@ -198,31 +199,47 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         }
     }
     
+    @SuppressWarnings("unchecked")
     protected void applyNextHandlerIfNotApplied(FaceletContext ctx, UIComponent c)
         throws IOException
     {
         //Apply all facelets not applied yet.
+        
+        CompositeComponentBeanInfo beanInfo = 
+            (CompositeComponentBeanInfo) c.getAttributes().get(UIComponent.BEANINFO_KEY);
+        
+        BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
+
+        boolean insertChildrenUsed = (beanDescriptor.getValue(InsertChildrenHandler.INSERT_CHILDREN_USED) != null);
+        
+        List<String> insertFacetList = (List<String>) beanDescriptor.getValue(InsertFacetHandler.INSERT_FACET_USED);
+        
         if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
             for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
             {
                 if (handler instanceof javax.faces.view.facelets.FacetHandler)
                 {
-                    if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx)))
-                    {
-                        handler.apply(ctx, c);
-                    }
-                }
-                else if (handler instanceof javax.faces.view.facelets.ComponentHandler)
-                {
-                    if (!c.getAttributes().containsKey(InsertChildrenHandler.INSERT_CHILDREN_USED))
+                    if (insertFacetList == null || !insertFacetList.contains( ((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx)))
                     {
                         handler.apply(ctx, c);
                     }
                 }
                 else if (handler instanceof InsertFacetHandler)
                 {
-                    if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((InsertFacetHandler)handler).getFacetName(ctx)))
+                    if (insertFacetList == null || !insertFacetList.contains( ((InsertFacetHandler)handler).getFacetName(ctx)))
+                    {
+                        handler.apply(ctx, c);
+                    }
+                }
+                else if (insertChildrenUsed)
+                {
+                    if (!(handler instanceof javax.faces.view.facelets.ComponentHandler ||
+                            handler instanceof InsertChildrenHandler ||
+                            handler instanceof InsertHandler ||
+                            handler instanceof DecorateHandler ||
+                            handler instanceof IncludeHandler ||
+                            handler instanceof TextHandler))
                     {
                         handler.apply(ctx, c);
                     }
@@ -237,21 +254,26 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         {
             if (nextHandler instanceof javax.faces.view.facelets.FacetHandler)
             {
-                if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((javax.faces.view.facelets.FacetHandler)nextHandler).getFacetName(ctx)))
-                {
-                    nextHandler.apply(ctx, c);
-                }
-            }
-            else if (nextHandler instanceof javax.faces.view.facelets.ComponentHandler)
-            {
-                if (!c.getAttributes().containsKey(InsertChildrenHandler.INSERT_CHILDREN_USED))
+                if (insertFacetList == null || !insertFacetList.contains( ((javax.faces.view.facelets.FacetHandler)nextHandler).getFacetName(ctx)) )
                 {
                     nextHandler.apply(ctx, c);
                 }
             }
             else if (nextHandler instanceof InsertFacetHandler)
             {
-                if (!c.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_USED+((InsertFacetHandler)nextHandler).getFacetName(ctx)))
+                if (insertFacetList == null || !insertFacetList.contains( ((InsertFacetHandler)nextHandler).getFacetName(ctx)) )
+                {
+                    nextHandler.apply(ctx, c);
+                }
+            }
+            else if (insertChildrenUsed)
+            {
+                if (!(nextHandler instanceof javax.faces.view.facelets.ComponentHandler ||
+                        nextHandler instanceof InsertChildrenHandler ||
+                        nextHandler instanceof InsertHandler ||
+                        nextHandler instanceof DecorateHandler ||
+                        nextHandler instanceof IncludeHandler ||
+                        nextHandler instanceof TextHandler))
                 {
                     nextHandler.apply(ctx, c);
                 }
@@ -260,7 +282,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             {
                 nextHandler.apply(ctx, c);
             }
-        }        
+        }
     }
     
     protected void applyCompositeComponentFacelet(FaceletContext faceletContext, UIComponent compositeComponentBase) 

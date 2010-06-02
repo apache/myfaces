@@ -19,15 +19,10 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
@@ -35,7 +30,6 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -49,6 +43,8 @@ public class InsertChildrenHandler extends TagHandler
     //public static String INSERT_CHILDREN_ORDERING = "org.apache.myfaces.INSERT_CHILDREN_ORDERING";
     
     public static String INSERT_CHILDREN_USED = "org.apache.myfaces.INSERT_CHILDREN_USED";
+    
+    private static final Logger log = Logger.getLogger(InsertChildrenHandler.class.getName());
 
     public InsertChildrenHandler(TagConfig config)
     {
@@ -58,13 +54,33 @@ public class InsertChildrenHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
-        
-        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-        
-        actx.includeCompositeComponentDefinition(parent, null);
-        
-        parentCompositeComponent.getAttributes().put(INSERT_CHILDREN_USED, Boolean.TRUE);
+        if (((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
+        {
+            CompositeComponentBeanInfo beanInfo = 
+                (CompositeComponentBeanInfo) parent.getAttributes()
+                .get(UIComponent.BEANINFO_KEY);
+            
+            if (beanInfo == null)
+            {
+                if (log.isLoggable(Level.SEVERE))
+                {
+                    log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                }
+                return;
+            }
+            
+            beanInfo.getBeanDescriptor().setValue(INSERT_CHILDREN_USED, Boolean.TRUE);
+        }
+        else
+        {
+            UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            
+            actx.includeCompositeComponentDefinition(parent, null);
+            
+            parentCompositeComponent.getAttributes().put(INSERT_CHILDREN_USED, Boolean.TRUE);
+        }
     }
 
     /*

@@ -36,6 +36,34 @@ import javax.faces.view.facelets.FaceletHandler;
  */
 public final class TagHandlerUtils
 {
+ 
+    /**
+     * Find the first occurence of a tag handler that is instanceof T
+     * 
+     * @since 2.0.1
+     * @param <T>
+     * @param nextHandler
+     * @param type
+     * @return
+     */
+    public static <T> T findFirstNextByType(FaceletHandler nextHandler, Class<T> type)
+    {
+        if (type.isAssignableFrom(nextHandler.getClass()))
+        {
+            return (T)nextHandler;
+        }
+        else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
+        {
+            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            {
+                if (type.isAssignableFrom(handler.getClass()))
+                {
+                    return (T)handler;
+                }
+            }
+        }
+        return null;
+    }    
 
     /**
      * From TagHandler: 

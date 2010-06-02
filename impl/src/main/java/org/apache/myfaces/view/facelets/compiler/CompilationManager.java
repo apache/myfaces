@@ -243,7 +243,11 @@ final class CompilationManager
             //   there is some code that found the right component in the temporal tree to add the
             //   generated BeanInfo, which it is retrieved later.
             //
+            // After use Template Client API for composite components, it was found the need to
+            // gather metadata information from 
             log.fine("Composite Component Interface Found, saving unit");
+            CompositeComponentUnit compositeRootCompilationUnit = new CompositeComponentUnit();
+            this.startUnit(compositeRootCompilationUnit);
             interfaceCompilationUnit = new TagUnit(this.tagLibrary, qname[0], qname[1], t, this.nextTagId());
             this.startUnit(interfaceCompilationUnit);
         }        
@@ -253,6 +257,8 @@ final class CompilationManager
             this.units.clear();
             NamespaceUnit nsUnit = this.namespaceManager.toNamespaceUnit(this.tagLibrary);
             this.units.push(nsUnit);
+            CompositeComponentUnit compositeRootCompilationUnit = new CompositeComponentUnit();
+            this.startUnit(compositeRootCompilationUnit);
             if (interfaceCompilationUnit != null)
             {
                 this.currentUnit().addChild(interfaceCompilationUnit);
@@ -319,6 +325,11 @@ final class CompilationManager
                 this.finished = true;
                 return;
             }
+        }
+        else if (unit instanceof CompositeComponentUnit)
+        {
+            this.finished = true;
+            return;
         }
 
         this.finishUnit();

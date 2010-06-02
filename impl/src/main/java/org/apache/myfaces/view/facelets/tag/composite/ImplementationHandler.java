@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
@@ -35,7 +36,6 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
@@ -59,8 +59,7 @@ public class ImplementationHandler extends TagHandler
             throws IOException
     {
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx); 
-        if (!FaceletViewDeclarationLanguage.
-                isBuildingCompositeComponentMetadata(ctx.getFacesContext()))
+        if (!((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
             // If this tag is found in a facelet, the compiler has trimmed all
             // tags outside this one excluding composite:interface, so "parent"
@@ -116,6 +115,15 @@ public class ImplementationHandler extends TagHandler
                     throw new TagException(tag,e);
                 }
             }
+            
+            // Pass to nextHandler, to give the chance to cc:insertChildren, cc:insertFacet and cc:renderFacet
+            // to save metadata information.
+            nextHandler.apply(ctx, parent);
         }
+    }
+    
+    public Location getLocation()
+    {
+        return this.tag.getLocation();
     }
 }

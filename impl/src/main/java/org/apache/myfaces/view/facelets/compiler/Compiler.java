@@ -125,11 +125,22 @@ public abstract class Compiler
             this.initialize();
         return this.doCompileViewMetadata(src, alias);
     }
+    
+    public final FaceletHandler compileCompositeComponentMetadata(URL src, String alias) throws IOException, FaceletException, ELException,
+            FacesException
+    {
+        if (!this.initialized)
+            this.initialize();
+        return this.doCompileCompositeComponentMetadata(src, alias);
+    }
 
     protected abstract FaceletHandler doCompile(URL src, String alias) throws IOException, FaceletException,
             ELException, FacesException;
 
     protected abstract FaceletHandler doCompileViewMetadata(URL src, String alias) throws IOException, FaceletException,
+            ELException, FacesException;
+    
+    protected abstract FaceletHandler doCompileCompositeComponentMetadata(URL src, String alias) throws IOException, FaceletException,
             ELException, FacesException;
     
     public final TagDecorator createTagDecorator()

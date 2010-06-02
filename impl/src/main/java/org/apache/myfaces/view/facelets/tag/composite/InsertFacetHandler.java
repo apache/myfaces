@@ -18,30 +18,23 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import java.beans.BeanDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * Insert or move the facet from the composite component body to the expected location.
@@ -56,7 +49,9 @@ public class InsertFacetHandler extends TagHandler
     //public static String INSERT_FACET_TARGET_ID = "org.apache.myfaces.INSERT_FACET_TARGET_ID.";
     //public static String INSERT_FACET_ORDERING = "org.apache.myfaces.INSERT_FACET_ORDERING.";
     
-    public static String INSERT_FACET_USED = "org.apache.myfaces.INSERT_FACET_USED.";
+    public static String INSERT_FACET_USED = "org.apache.myfaces.INSERT_FACET_USED";
+    
+    private static final Logger log = Logger.getLogger(InsertFacetHandler.class.getName());
     
     /**
      * The name that identify the current facet.
@@ -88,18 +83,53 @@ public class InsertFacetHandler extends TagHandler
         return _name.getValue(ctx);
     }
 
+    @SuppressWarnings("unchecked")
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        String facetName = _name.getValue(ctx);
-        
-        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-        
-        UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
-        
-        actx.includeCompositeComponentDefinition(parent, facetName);
-        
-        parentCompositeComponent.getAttributes().put(INSERT_FACET_USED+facetName, Boolean.TRUE);
+        if (((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
+        {
+            String facetName = _name.getValue(ctx);
+            CompositeComponentBeanInfo beanInfo = 
+                (CompositeComponentBeanInfo) parent.getAttributes()
+                .get(UIComponent.BEANINFO_KEY);
+            
+            if (beanInfo == null)
+            {
+                if (log.isLoggable(Level.SEVERE))
+                {
+                    log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                }
+                return;
+            }
+            
+            BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor(); 
+
+            List<String> facetList = (List<String>) beanDescriptor.getValue(INSERT_FACET_USED);
+            
+            if (facetList == null)
+            {
+                //2. If not found create it and set
+                facetList = new ArrayList<String>();
+                beanDescriptor.setValue(
+                        INSERT_FACET_USED,
+                        facetList);
+            }
+            
+            facetList.add(facetName);
+        }
+        else
+        {
+            String facetName = _name.getValue(ctx);
+            
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            
+            UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            
+            actx.includeCompositeComponentDefinition(parent, facetName);
+            
+            parentCompositeComponent.getAttributes().put(INSERT_FACET_USED+facetName, Boolean.TRUE);
+        }
         
     }
     

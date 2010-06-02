@@ -40,6 +40,9 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.ImplementationHandler;
+import org.apache.myfaces.view.facelets.tag.composite.InterfaceHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -427,6 +430,229 @@ public final class SAXCompiler extends Compiler
         }        
     }
     
+    /**
+     * Like CompilationHandler but does not take into account everything outside cc:interface or cc:implementation tag.
+     *  
+     * Note inside cc:implementation it only takes into account cc:insertChildren, cc:insertFacet and cc:renderFacet,
+     * all other tags, comments or text are just skipped.
+     * 
+     * @since 2.0.1
+     */
+    private static class CompositeComponentMetadataHandler extends DefaultHandler implements LexicalHandler
+    {
+
+        private final String alias;
+
+        private boolean inDocument = false;
+
+        private Locator locator;
+
+        private final CompilationManager unit;
+        
+        private boolean inCompositeInterface = false;
+        
+        private boolean inCompositeImplementation = false;
+
+        public CompositeComponentMetadataHandler(CompilationManager unit, String alias)
+        {
+            this.unit = unit;
+            this.alias = alias;
+        }
+
+        public void characters(char[] ch, int start, int length) throws SAXException
+        {
+            if (this.inDocument && inCompositeInterface)
+            {
+                this.unit.writeText(new String(ch, start, length));
+            }
+        }
+
+        public void comment(char[] ch, int start, int length) throws SAXException
+        {
+            if (this.inDocument && inCompositeInterface)
+            {
+                this.unit.writeComment(new String(ch, start, length));
+            }
+        }
+
+        protected TagAttributes createAttributes(Attributes attrs)
+        {
+            int len = attrs.getLength();
+            TagAttribute[] ta = new TagAttribute[len];
+            for (int i = 0; i < len; i++)
+            {
+                ta[i] = new TagAttributeImpl(this.createLocation(), attrs.getURI(i), attrs.getLocalName(i), attrs
+                        .getQName(i), attrs.getValue(i));
+            }
+            return new TagAttributesImpl(ta);
+        }
+
+        protected Location createLocation()
+        {
+            return new Location(this.alias, this.locator.getLineNumber(), this.locator.getColumnNumber());
+        }
+
+        public void endCDATA() throws SAXException
+        {
+            if (this.inDocument && inCompositeInterface)
+            {
+                this.unit.writeInstruction("]]>");
+            }
+        }
+
+        public void endDocument() throws SAXException
+        {
+            super.endDocument();
+        }
+
+        public void endDTD() throws SAXException
+        {
+            this.inDocument = true;
+        }
+
+        public void endElement(String uri, String localName, String qName) throws SAXException
+        {
+            if (inCompositeInterface)
+            {
+                this.unit.popTag();
+            }
+            else if (inCompositeImplementation && CompositeLibrary.NAMESPACE.equals(uri))
+            {
+                if ( "insertFacet".equals(localName) ||
+                     "renderFacet".equals(localName) ||
+                     "insertChildren".equals(localName) || 
+                     ImplementationHandler.NAME.equals(localName))
+                {
+                    this.unit.popTag();
+                }
+            }
+            
+            if (CompositeLibrary.NAMESPACE.equals(uri))
+            {
+                if (InterfaceHandler.NAME.equals(localName))
+                {
+                    this.inCompositeInterface=false;
+                }
+                else if (ImplementationHandler.NAME.equals(localName))
+                {
+                    this.inCompositeImplementation=false;
+                }
+            }
+        }
+
+        public void endEntity(String name) throws SAXException
+        {
+        }
+
+        public void endPrefixMapping(String prefix) throws SAXException
+        {
+            this.unit.popNamespace(prefix);
+        }
+
+        public void fatalError(SAXParseException e) throws SAXException
+        {
+            if (this.locator != null)
+            {
+                throw new SAXException("Error Traced[line: " + this.locator.getLineNumber() + "] " + e.getMessage());
+            }
+            else
+            {
+                throw e;
+            }
+        }
+
+        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
+        {
+            if (this.inDocument && inCompositeInterface)
+            {
+                this.unit.writeWhitespace(new String(ch, start, length));
+            }
+        }
+
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException
+        {
+            String dtd = "org/apache/myfaces/resource/default.dtd";
+            /*
+             * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else
+             * if (systemId != null && systemId.startsWith("file:/")) { return new InputSource(systemId); }
+             */
+            URL url = ClassUtils.getContextClassLoader().getResource(dtd);
+            return new InputSource(url.toString());
+        }
+
+        public void setDocumentLocator(Locator locator)
+        {
+            this.locator = locator;
+        }
+
+        public void startCDATA() throws SAXException
+        {
+            if (this.inDocument && inCompositeInterface)
+            {
+                this.unit.writeInstruction("<![CDATA[");
+            }
+        }
+
+        public void startDocument() throws SAXException
+        {
+            this.inDocument = true;
+        }
+
+        public void startDTD(String name, String publicId, String systemId) throws SAXException
+        {
+            // metadata does not require output doctype
+            this.inDocument = false;
+        }
+
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+        {
+            if (CompositeLibrary.NAMESPACE.equals(uri))
+            {
+                if (InterfaceHandler.NAME.equals(localName))
+                {
+                    this.inCompositeInterface=true;
+                }
+                else if (ImplementationHandler.NAME.equals(localName))
+                {
+                    this.inCompositeImplementation=true;
+                }
+            }
+            
+            if (inCompositeInterface)
+            {
+                this.unit.pushTag(new Tag(this.createLocation(), uri, localName, qName, this.createAttributes(attributes)));
+            }
+            else if (inCompositeImplementation && CompositeLibrary.NAMESPACE.equals(uri))
+            {
+                if ("insertFacet".equals(localName)    ||
+                    "renderFacet".equals(localName)    ||
+                    "insertChildren".equals(localName) ||
+                    ImplementationHandler.NAME.equals(localName)   )
+                {
+                    this.unit.pushTag(new Tag(this.createLocation(), uri, localName, qName, this.createAttributes(attributes)));
+                }
+            }
+        }
+
+        public void startEntity(String name) throws SAXException
+        {
+        }
+
+        public void startPrefixMapping(String prefix, String uri) throws SAXException
+        {
+            this.unit.pushNamespace(prefix, uri);
+        }
+
+        public void processingInstruction(String target, String data) throws SAXException
+        {
+            if (this.inDocument && inCompositeInterface)
+            {
+                StringBuffer sb = new StringBuffer(64);
+                sb.append("<?").append(target).append(' ').append(data).append("?>\n");
+                this.unit.writeInstruction(sb.toString());
+            }
+        }        
+    }
 
     public SAXCompiler()
     {
@@ -501,7 +727,44 @@ public final class SAXCompiler extends Compiler
             }
         }
         return new EncodingHandler(mngr.createFaceletHandler(), encoding);
-    }    
+    }
+
+    /**
+     * @since 2.0.1
+     */
+    @Override
+    protected FaceletHandler doCompileCompositeComponentMetadata(URL src, String alias)
+            throws IOException, FaceletException, ELException, FacesException
+    {
+        CompilationManager mngr = null;
+        InputStream is = null;
+        String encoding = null;
+        try
+        {
+            is = new BufferedInputStream(src.openStream(), 1024);
+            mngr = new CompilationManager(alias, this);
+            encoding = getXmlDecl(is, mngr);
+            CompositeComponentMetadataHandler handler = new CompositeComponentMetadataHandler(mngr, alias);
+            SAXParser parser = this.createSAXParser(handler);
+            parser.parse(is, handler);
+        }
+        catch (SAXException e)
+        {
+            throw new FaceletException("Error Parsing " + alias + ": " + e.getMessage(), e.getCause());
+        }
+        catch (ParserConfigurationException e)
+        {
+            throw new FaceletException("Error Configuring Parser " + alias + ": " + e.getMessage(), e.getCause());
+        }
+        finally
+        {
+            if (is != null)
+            {
+                is.close();
+            }
+        }
+        return new EncodingHandler(mngr.createFaceletHandler(), encoding);
+    }
 
     protected static final String writeXmlDecl(InputStream is, CompilationManager mngr) throws IOException
     {

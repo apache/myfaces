@@ -46,7 +46,6 @@ import javax.faces.view.facelets.FaceletException;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.TemplateManager;
@@ -83,8 +82,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
 
     //private final LinkedList<TemplateManager> _clients;
-
-    private final boolean _isBuildingCompositeComponentMetadata;
     
     private final FaceletCompositionContext _mctx;
     
@@ -109,7 +106,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _faceletHierarchy.addAll(ctx._faceletHierarchy);
         _faceletHierarchy.add(facelet);
         _facelet = facelet;
-        _isBuildingCompositeComponentMetadata = ctx._isBuildingCompositeComponentMetadata;
         _mctx = ctx._mctx;
         
         if (ccWrap)
@@ -155,8 +151,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _faceletHierarchy = new ArrayList<AbstractFacelet>(1);
         _faceletHierarchy.add(facelet);
         _facelet = facelet;
-        _isBuildingCompositeComponentMetadata = FaceletViewDeclarationLanguage.
-            isBuildingCompositeComponentMetadata(faces);
         _mctx = mctx;
         
         _isolatedTemplateContext = new ArrayList<TemplateContext>(1);
@@ -719,7 +713,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     @Override
     public boolean isBuildingCompositeComponentMetadata()
     {
-        return _isBuildingCompositeComponentMetadata;
+        return _facelet.isBuildingCompositeComponentMetadata();
     }
     
     public FaceletCompositionContext getFaceletCompositionContext()

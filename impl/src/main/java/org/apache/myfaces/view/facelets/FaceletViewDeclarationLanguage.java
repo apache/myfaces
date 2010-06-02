@@ -57,13 +57,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.event.ValueChangeListener;
 import javax.faces.render.RenderKit;
 import javax.faces.validator.MethodExpressionValidator;
 import javax.faces.view.ActionSource2AttachedObjectHandler;
@@ -100,8 +98,6 @@ import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpression;
-import org.apache.myfaces.view.facelets.el.TagMethodExpression;
-import org.apache.myfaces.view.facelets.el.TagValueExpression;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
@@ -198,7 +194,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public final static String FILLED_VIEW = "org.apache.myfaces.FILLED_VIEW";
     
     //BEGIN CONSTANTS SET ON BUILD VIEW
-    public final static String BUILDING_COMPOSITE_COMPONENT_METADATA = "org.apache.myfaces.BUILDING_COMPOSITE_COMPONENT_METADATA";
+    //public final static String BUILDING_COMPOSITE_COMPONENT_METADATA = "org.apache.myfaces.BUILDING_COMPOSITE_COMPONENT_METADATA";
     
     public final static String BUILDING_VIEW_METADATA = "org.apache.myfaces.BUILDING_VIEW_METADATA";
     
@@ -494,13 +490,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             FaceletFactory.setInstance(_faceletFactory);
             try
             {
-                compositeComponentFacelet = _faceletFactory.getFacelet(componentResource.getURL());
+                compositeComponentFacelet = _faceletFactory.getCompositeComponentMetadataFacelet(componentResource.getURL());
             }
             finally
             {
                 FaceletFactory.setInstance(null);
             }
-            context.getAttributes().put(BUILDING_COMPOSITE_COMPONENT_METADATA, Boolean.TRUE);
+            //context.getAttributes().put(BUILDING_COMPOSITE_COMPONENT_METADATA, Boolean.TRUE);
             
             // Create a temporal tree where all components will be put, but we are only
             // interested in metadata.
@@ -535,10 +531,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             throw new FacesException(e);
         }
-        finally
-        {
-            context.getAttributes().remove(BUILDING_COMPOSITE_COMPONENT_METADATA);
-        }
+        //finally
+        //{
+            //context.getAttributes().remove(BUILDING_COMPOSITE_COMPONENT_METADATA);
+        //}
         
         return beanInfo;
     }
@@ -549,10 +545,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @param context
      * @return
      */
-    public static boolean isBuildingCompositeComponentMetadata(FacesContext context)
-    {
-        return context.getAttributes().containsKey(BUILDING_COMPOSITE_COMPONENT_METADATA);
-    }
+    //public static boolean isBuildingCompositeComponentMetadata(FacesContext context)
+    //{
+    //    return context.getAttributes().containsKey(BUILDING_COMPOSITE_COMPONENT_METADATA);
+    //}
     
     /**
      * Check if the current facelet applied is used to build view metadata.

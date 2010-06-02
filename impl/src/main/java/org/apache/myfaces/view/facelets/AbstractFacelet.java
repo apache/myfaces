@@ -93,4 +93,6 @@ public abstract class AbstractFacelet extends Facelet
     
     public abstract void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource) throws IOException, FacesException,
             FaceletException, ELException;
+    
+    public abstract boolean isBuildingCompositeComponentMetadata();
 }
