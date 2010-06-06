@@ -212,6 +212,15 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         Object[] savedState = (Object[])StateUtils.reconstruct((String)encodedState, facesContext.getExternalContext());
 
+
+        if (savedState == null)
+        {
+            if (log.isLoggable(Level.FINEST)) {
+                log.finest("No saved state");
+            }
+            return null;
+        }
+        
         String restoredViewId = (String)savedState[VIEWID_PARAM];
 
         if (restoredViewId == null)

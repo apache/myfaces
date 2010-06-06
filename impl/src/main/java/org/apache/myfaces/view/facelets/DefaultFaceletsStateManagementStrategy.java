@@ -139,10 +139,16 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             Integer serverStateId = helper.getServerStateId((Object[]) manager.getState(context, viewId));
 
-            state = (Object[]) helper.getSerializedViewFromServletSession(context, viewId, serverStateId);
+            state = (Object[]) ((serverStateId == null) ? null : helper.getSerializedViewFromServletSession(context, viewId, serverStateId));
         }
         
-        if (state != null && state[1] instanceof Object[])
+        if (state == null)
+        {
+            //No state could be restored, return null causing ViewExpiredException
+            return null;
+        }
+        
+        if (state[1] instanceof Object[])
         {
             Object[] fullState = (Object[]) state[1]; 
             view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent)fullState[0]);
