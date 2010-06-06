@@ -23,12 +23,12 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletHandler;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
@@ -45,7 +45,8 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * <ul>
  * <li>Cache the BeanInfo instance for a composite component</li>
  * <li>Set a Location object to resolve #{cc} correctly</li>
- * <ul>
+ * <li>Push the current composite component on FaceletCompositionContext stack</li>
+ * </ul>
  * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
  * @version $Revision: 945454 $ $Date: 2010-05-17 20:40:21 -0500 (Lun, 17 May 2010) $
  */
@@ -101,85 +102,93 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
+        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
+        AbstractFaceletContext actx = (AbstractFaceletContext)ctx;
+        UIComponent compositeBaseParent = actx.isBuildingCompositeComponentMetadata() ? parent : parent.getParent();
+        
         // Store the current Location on the parent (the location is needed
         // to resolve the related composite component via #{cc} properly).
         if (_interfaceHandler != null)
         {
-            UIComponent compositeBaseParent = _getCompositeBaseParent(parent);
-            
             compositeBaseParent.getAttributes()
                 .put(CompositeComponentELUtils.LOCATION_KEY, this._interfaceHandler.getLocation());
         }
         else if (_implementationHandler != null)
         {
-            UIComponent compositeBaseParent = _getCompositeBaseParent(parent);
-            
             compositeBaseParent.getAttributes()
                 .put(CompositeComponentELUtils.LOCATION_KEY, this._implementationHandler.getLocation());
         }
         
         // Only apply if we are building composite component metadata,
         // in other words we are calling ViewDeclarationLanguage.getComponentMetadata
-        if ( ((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata() )
+        if ( actx.isBuildingCompositeComponentMetadata() )
         {
             CompositeComponentBeanInfo tempBeanInfo = 
-                (CompositeComponentBeanInfo) parent.getAttributes()
+                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
                 .get(UIComponent.BEANINFO_KEY);
             
             if (tempBeanInfo == null)
             {
-                UIComponent compositeBaseParent = _getCompositeBaseParent(parent);
-
                 if (_cacheable)
                 {
                     if (_cachedBeanInfo == null)
                     {
                         _cachedBeanInfo = _createCompositeComponentMetadata(ctx, compositeBaseParent);
-                        parent.getAttributes().put(
+                        compositeBaseParent.getAttributes().put(
                                 UIComponent.BEANINFO_KEY, _cachedBeanInfo);
-                        _nextHandler.apply(ctx, compositeBaseParent);
+                        
+                        try
+                        {
+                            mctx.pushCompositeComponentToStack(compositeBaseParent);
+
+                            _nextHandler.apply(ctx, parent);
+                        }
+                        finally
+                        {
+                            mctx.popCompositeComponentToStack();
+                        }
                     }
                     else
                     {
                         // Put the cached instance, but in that case it is not necessary to call
                         // nextHandler
-                        parent.getAttributes().put(
+                        compositeBaseParent.getAttributes().put(
                                 UIComponent.BEANINFO_KEY, _cachedBeanInfo);
                     }
                 }
                 else
                 {
                     tempBeanInfo = _createCompositeComponentMetadata(ctx, compositeBaseParent);
-                    parent.getAttributes().put(
+                    compositeBaseParent.getAttributes().put(
                             UIComponent.BEANINFO_KEY, tempBeanInfo);
-                    _nextHandler.apply(ctx, compositeBaseParent);
+                    
+                    try
+                    {
+                        mctx.pushCompositeComponentToStack(compositeBaseParent);
+                    
+                        _nextHandler.apply(ctx, parent);
+                        
+                    }
+                    finally
+                    {
+                        mctx.popCompositeComponentToStack();
+                    }
                 }
             }
         }
         else
         {
-            _nextHandler.apply(ctx, parent);
-        }
-    }
-    
-    /**
-     * Get the base component used temporally to hold metadata
-     * information generated by this handler. 
-     * 
-     * @param component
-     * @return
-     */
-    private UIComponent _getCompositeBaseParent(UIComponent component)
-    {
-        if (!component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY))
-        {
-            UIComponent parent = component.getParent();
-            if (parent != null)
+            try
             {
-                return _getCompositeBaseParent(parent);
+                mctx.pushCompositeComponentToStack(compositeBaseParent);
+            
+                _nextHandler.apply(ctx, parent);
+            }
+            finally
+            {
+                mctx.popCompositeComponentToStack();
             }
         }
-        return component;
     }
     
     private CompositeComponentBeanInfo _createCompositeComponentMetadata(

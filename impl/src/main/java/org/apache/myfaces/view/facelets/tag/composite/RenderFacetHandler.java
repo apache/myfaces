@@ -35,6 +35,7 @@ import javax.faces.view.facelets.TagException;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
  * Render the facet defined on the composite component body to the current location
@@ -82,8 +83,11 @@ public class RenderFacetHandler extends ComponentHandler
         if (((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
             String facetName = _name.getValue(ctx);
+            
+            UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) parent.getAttributes()
+                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
                 .get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)
@@ -119,7 +123,7 @@ public class RenderFacetHandler extends ComponentHandler
     {
         if (!((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
-            UIComponent parentCompositeComponent = UIComponent.getCurrentCompositeComponent(ctx.getFacesContext());
+            UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             
             String facetName = _name.getValue(ctx);
     

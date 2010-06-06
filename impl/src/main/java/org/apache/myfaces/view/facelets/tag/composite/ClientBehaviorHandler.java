@@ -34,6 +34,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
@@ -125,8 +126,10 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
+        UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+
         CompositeComponentBeanInfo beanInfo = 
-            (CompositeComponentBeanInfo) parent.getAttributes()
+            (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
             .get(UIComponent.BEANINFO_KEY);
         
         if (beanInfo == null)

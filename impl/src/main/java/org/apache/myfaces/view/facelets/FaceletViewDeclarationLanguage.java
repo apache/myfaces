@@ -500,14 +500,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             
             // Create a temporal tree where all components will be put, but we are only
             // interested in metadata.
-            UINamingContainer parent = (UINamingContainer) context.getApplication().createComponent(UINamingContainer.COMPONENT_TYPE);
+            UINamingContainer compositeComponentBase = (UINamingContainer) context.getApplication().createComponent(UINamingContainer.COMPONENT_TYPE);
             
             // Fill the component resource key, because this information should be available
             // on metadata to recognize which is the component used as composite component base.
             // Since this method is called from Application.createComponent(FacesContext,Resource),
             // and in that specific method this key is updated, this is the best option we
             // have for recognize it (also this key is used by UIComponent.isCompositeComponent)
-            parent.getAttributes().put(Resource.COMPONENT_RESOURCE_KEY, componentResource);
+            compositeComponentBase.getAttributes().put(Resource.COMPONENT_RESOURCE_KEY, componentResource);
             
             // According to UserTagHandler, in this point we need to wrap the facelet
             // VariableMapper, so local changes are applied on "page context", but
@@ -518,14 +518,19 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             try
             {
                 faceletContext.setVariableMapper(new VariableMapperWrapper(orig));
-                compositeComponentFacelet.apply(context, parent);
+                
+                compositeComponentBase.pushComponentToEL(context, compositeComponentBase);
+                
+                compositeComponentFacelet.apply(context, compositeComponentBase);
+                
+                compositeComponentBase.popComponentFromEL(context);
             }
             finally
             {
                 faceletContext.setVariableMapper(orig);
             }
             
-            beanInfo = (BeanInfo) parent.getAttributes().get(UIComponent.BEANINFO_KEY);
+            beanInfo = (BeanInfo) compositeComponentBase.getAttributes().get(UIComponent.BEANINFO_KEY);
         }
         catch(IOException e)
         {

@@ -90,8 +90,11 @@ public class InsertFacetHandler extends TagHandler
         if (((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
             String facetName = _name.getValue(ctx);
+            
+            UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) parent.getAttributes()
+                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
                 .get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)

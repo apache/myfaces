@@ -58,25 +58,20 @@ public class ImplementationHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx); 
         if (!((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
             // If this tag is found in a facelet, the compiler has trimmed all
             // tags outside this one excluding composite:interface, so "parent"
             // is a component used as value for the facet key
             // UIComponent.COMPOSITE_FACET_NAME in a composite component. 
-            
-            mctx.pushCompositeComponentToStack(parent.getParent());
-            
             nextHandler.apply(ctx, parent);
-            
-            mctx.popCompositeComponentToStack();
         }
         else
         {
+            UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             // Register the facet UIComponent.COMPOSITE_FACET_NAME
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) parent.getAttributes()
+                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
                 .get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)

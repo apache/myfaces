@@ -54,10 +54,14 @@ public class InsertChildrenHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        if (((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
+        UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+        
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+
+        if (actx.isBuildingCompositeComponentMetadata())
         {
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) parent.getAttributes()
+                (CompositeComponentBeanInfo) parentCompositeComponent.getAttributes()
                 .get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)
@@ -73,10 +77,6 @@ public class InsertChildrenHandler extends TagHandler
         }
         else
         {
-            UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
-            
-            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            
             actx.includeCompositeComponentDefinition(parent, null);
             
             parentCompositeComponent.getAttributes().put(INSERT_CHILDREN_USED, Boolean.TRUE);

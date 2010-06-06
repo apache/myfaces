@@ -34,6 +34,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -168,8 +169,10 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
+        UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+
         CompositeComponentBeanInfo beanInfo = 
-            (CompositeComponentBeanInfo) parent.getAttributes()
+            (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
             .get(UIComponent.BEANINFO_KEY);
         
         if (beanInfo == null)
@@ -187,13 +190,13 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         {
             if (_propertyDescriptor == null)
             {
-                _propertyDescriptor = _createPropertyDescriptor(ctx, parent);
+                _propertyDescriptor = _createPropertyDescriptor(ctx, compositeBaseParent);
             }
             attributeList.add(_propertyDescriptor);
         }
         else
         {
-            PropertyDescriptor attribute = _createPropertyDescriptor(ctx, parent);
+            PropertyDescriptor attribute = _createPropertyDescriptor(ctx, compositeBaseParent);
             attributeList.add(attribute);
         }
         
