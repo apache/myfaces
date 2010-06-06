@@ -236,7 +236,7 @@ public class JspStateManagerImpl
         {
             Integer serverStateId = getServerStateId((Object[]) responseStateManager.getState(facesContext, uiViewRoot.getViewId()));
 
-            Object[] stateObj = (Object[]) getSerializedViewFromServletSession(facesContext, uiViewRoot.getViewId(), serverStateId);
+            Object[] stateObj = (Object[])( (serverStateId == null)? null : getSerializedViewFromServletSession(facesContext, uiViewRoot.getViewId(), serverStateId) );
             if (stateObj == null)
             {
                  log.error("No serialized view found in server session!");
@@ -310,7 +310,7 @@ public class JspStateManagerImpl
             //reconstruct tree structure from ServletSession
             Integer serverStateId = getServerStateId((Object[]) responseStateManager.getState(facesContext, viewId));
 
-            Object[] stateObj = (Object[]) getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
+            Object[] stateObj = (Object[])( (serverStateId == null)? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId) );
             if (stateObj == null)
             {
                 if (log.isDebugEnabled()) log.debug("Exiting restoreTreeStructure - No serialized view found in server session!");
@@ -354,7 +354,7 @@ public class JspStateManagerImpl
 
             Integer serverStateId = getServerStateId((Object[]) responseStateManager.getState(facesContext, viewId));
 
-            state = getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
+            state = (serverStateId == null) ? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
         }
 
         UIViewRoot uiViewRoot = null;
