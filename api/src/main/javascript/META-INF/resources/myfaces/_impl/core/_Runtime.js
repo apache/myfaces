@@ -506,7 +506,7 @@ if (!myfaces._impl.core._Runtime) {
                 extendCls = extendCls._mfProto;
             }
 
-            if (extendCls) {
+            if ('undefined' != typeof extendCls && null != extendCls) {
                 newCls.prototype = new extendCls;
                 newCls.prototype.constructor = newCls;
                 newCls.prototype._parentCls = extendCls.prototype;
@@ -564,8 +564,8 @@ if (!myfaces._impl.core._Runtime) {
             var clazz = ooFunc(newCls + "._mfProto", delegateObj, protoFuncs, nmsFuncs);
             if (clazz != null) {
                 _this.applyToGlobalNamespace(newCls, new clazz());
+                _this.fetchNamespace(newCls)["_mfProto"] = clazz;
             }
-            _this.fetchNamespace(newCls)["_mfProto"] = clazz;
         };
 
         //internal class namespace reservation depending on the type (string or function)
