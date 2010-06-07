@@ -209,11 +209,18 @@ if (!myfaces._impl.core._Runtime) {
                 return false;
             }
 
+
             //initial condition root set element not set or null
             //equals to element exists
             if (!subNms) {
                 return true;
             }
+
+            //special condition subnamespace exists as full blown key with . instead of function map
+            if('undefined' != typeof root[subNms]) {
+                return true;
+            }
+
             //crossported from the dojo toolkit
             // summary: determine if an object supports a given method
             // description: useful for longer api chains where you have to test each object in the chain
