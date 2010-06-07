@@ -112,9 +112,11 @@ public class StartupServletContextListener
         }
         log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
         
-        if(servletContext.getInitParameter(StateUtils.INIT_SECRET) != null
-                || servletContext.getInitParameter(StateUtils.INIT_SECRET.toLowerCase()) != null)
+        String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
+        if (!"false".equals(useEncryption)){ // the default value is true
             StateUtils.initSecret(servletContext);
+        }
+
     }
 
 
