@@ -59,7 +59,11 @@ if (!myfaces._impl.core._Runtime) {
             if (_this.browser.isIE && window.execScript) {
                 //execScript definitely only for IE otherwise we might have a custom
                 //window extension with undefined behavior on our necks
-                return window.execScript(code);
+                //wndow.execScript does not return anything
+                var ret = window.execScript(code);
+                if (ret == "null" /*htmlunit bug*/) {
+                    return null;
+                }
 
             } else if (window.eval) {
 
@@ -209,7 +213,6 @@ if (!myfaces._impl.core._Runtime) {
                 return false;
             }
 
-
             //initial condition root set element not set or null
             //equals to element exists
             if (!subNms) {
@@ -217,7 +220,7 @@ if (!myfaces._impl.core._Runtime) {
             }
 
             //special condition subnamespace exists as full blown key with . instead of function map
-            if('undefined' != typeof root[subNms]) {
+            if ('undefined' != typeof root[subNms]) {
                 return true;
             }
 
@@ -295,7 +298,6 @@ if (!myfaces._impl.core._Runtime) {
             }
             return new ActiveXObject('Microsoft.XMLHTTP');
         };
-
 
         /**
          * loads a script and executes it under a global scope
@@ -385,7 +387,6 @@ if (!myfaces._impl.core._Runtime) {
 
         //Base Patterns, Inheritance, Delegation and Singleton
 
-
         /**
          * delegation pattern
          * usage:
@@ -397,7 +398,7 @@ if (!myfaces._impl.core._Runtime) {
          *  myFunc: function(yyy) {
          *      DoSomething;
          *      this._callDelegate("someOtherFunc", yyyy);
-         *  }
+         *  }, null
          * });
          *
          * or
@@ -527,8 +528,6 @@ if (!myfaces._impl.core._Runtime) {
             return newCls;
         };
 
-
-
         /**
          * Extends a class and puts a singleton instance at the reserved namespace instead
          * of its original class
@@ -564,8 +563,8 @@ if (!myfaces._impl.core._Runtime) {
             var clazz = ooFunc(newCls + "._mfProto", delegateObj, protoFuncs, nmsFuncs);
             if (clazz != null) {
                 _this.applyToGlobalNamespace(newCls, new clazz());
-                _this.fetchNamespace(newCls)["_mfProto"] = clazz;
             }
+            _this.fetchNamespace(newCls)["_mfProto"] = clazz;
         };
 
         //internal class namespace reservation depending on the type (string or function)
@@ -589,6 +588,10 @@ if (!myfaces._impl.core._Runtime) {
         {
             if (funcs) {
                 for (var key in funcs) {
+                    //constructor already passed, callSuper already assigned
+                    if ('undefined' == typeof key || null == key || key == "_callSuper") {
+                        continue;
+                    }
                     if (!proto)
                         newCls[key] = funcs[key];
                     else
@@ -596,7 +599,7 @@ if (!myfaces._impl.core._Runtime) {
                 }
             }
         };
-
+        
         /**
          * determines if the embedded scripts have to be evaled manually
          * @return true if a browser combination is given which has to
