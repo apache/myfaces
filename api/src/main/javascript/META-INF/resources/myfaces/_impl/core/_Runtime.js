@@ -61,10 +61,10 @@ if (!myfaces._impl.core._Runtime) {
                 //window extension with undefined behavior on our necks
                 //wndow.execScript does not return anything
                 var ret = window.execScript(code);
-                if (ret == "null" /*htmlunit bug*/) {
+                if ('undefined' != typeof ret && ret == "null" /*htmlunit bug*/) {
                     return null;
                 }
-
+                return ret;
             } else if (window.eval) {
 
                 //fix for a Mozilla bug, Mozilla prevents, that the window is properly applied
