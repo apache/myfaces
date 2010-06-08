@@ -122,7 +122,7 @@ if (!myfaces._impl.core._Runtime) {
 
             } catch (e) {/*wanted*/
             }
-            //ie fallback path because it cannot eval namespaces
+            //ie fallback for some ie versions path because it cannot eval namespaces
             //ie in any version does not like that particularily
             //we do it the hard way now
             if ('undefined' != typeof ret && null != ret) {
