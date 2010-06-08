@@ -59,12 +59,9 @@ if (!myfaces._impl.core._Runtime) {
             if (_this.browser.isIE && window.execScript) {
                 //execScript definitely only for IE otherwise we might have a custom
                 //window extension with undefined behavior on our necks
-                //wndow.execScript does not return anything
-                var ret = window.execScript(code);
-                if ('undefined' != typeof ret && ret == "null" /*htmlunit bug*/) {
-                    return null;
-                }
-                return ret;
+                //window.execScript does not return anything
+                //on htmlunit it return "null object"
+                return window.execScript(code);
             } else if (window.eval) {
 
                 //fix for a Mozilla bug, Mozilla prevents, that the window is properly applied
@@ -124,7 +121,7 @@ if (!myfaces._impl.core._Runtime) {
             //ie fallback path because it cannot eval namespaces
             //ie in any version does not like that particularily
             //we do it the hard way now
-            if ('undefined' != typeof ret || null != ret) {
+            if ('undefined' != typeof ret && null != ret) {
                 return ret;
             }
             nms = nms.split(/\./);
