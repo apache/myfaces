@@ -146,21 +146,5 @@ abstract class _UISelectItems extends UIComponentBase
   public boolean isItemLabelEscaped() {
       return true;
   }
-  
-  /**
-   * Is either an EL expression pointing to the element in the value collection
-   * whose value should be marked as a "no selection" item, or a literal string
-   * that exactly matches the value of the item in the collection that must be 
-   * marked as the "no selection" item. If the user selects such an item and 
-   * the field is marked as required, then it will not pass validation.
-   * 
-   * @since 2.0
-   * @return
-   */
-  @JSFExclude
-  @JSFProperty
-  public Object getNoSelectionValue() {
-      return null;
-  }
 
 }
