@@ -173,12 +173,26 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
                 //now to the non w3c compliant browsers
                 //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
+                //we have to cope with deficiencies between ie and its simulations in this case
+                var probe = document.createElement("div");
+                probe.innerHTML = "<table><div></div></table>";
+                var depth = 0;
+                while(probe) {
+                    probe = probe.childNodes[0];
+                    depth++;
+                }
+                depth--;
+
                 var dummyPlaceHolder = document.createElement("div");
 
                 //fortunately a table element also works which is less critical than form elements regarding
                 //the inner content
                 dummyPlaceHolder.innerHTML = "<table>" + markup + "</table>";
-                evalNode = dummyPlaceHolder.childNodes[0].childNodes[0].childNodes[0];
+                evalNode = dummyPlaceHolder;
+                for(var cnt = 0; cnt < depth; cnt++) {
+                    evalNode = evalNode.childNodes[0];
+                }
+
                 parentNode = item.parentNode;
                 item.parentNode.replaceChild(evalNode, item);
 
