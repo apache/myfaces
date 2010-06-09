@@ -352,7 +352,14 @@ if (!myfaces._impl.core._Runtime) {
             //if a head is already present then it is safer to simply
             //use the body, some browsers prevent head alterations
             //after the first initial rendering
-            var position = document.getElementsByTagName("body").length ? "body" : "head";
+
+            //ok this is nasty we have to do a head modification for ie pre 8
+            //the rest can be finely served with body
+            var d = this.browser;
+            var position = "head"
+            if(!d.isIE || d.isIE >= 8) {
+                position = document.getElementsByTagName("body").length ? "body" : "head";
+            }
 
             try {
                 var holder = document.getElementsByTagName(position)[0];
