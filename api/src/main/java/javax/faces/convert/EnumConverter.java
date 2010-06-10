@@ -24,6 +24,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -38,6 +39,12 @@ public class EnumConverter implements Converter, PartialStateHolder
     public static final String ENUM_ID = "javax.faces.converter.EnumConverter.ENUM";
     public static final String ENUM_NO_CLASS_ID = "javax.faces.converter.EnumConverter.ENUM_NO_CLASS";
 
+    /**
+     * If value is a String instance and this param is true, pass it directly without try any change.
+     */
+    @JSFWebConfigParam(name="org.apache.myfaces.ENUM_CONVERTER_ALLOW_STRING_PASSTROUGH", since="2.0.1", expectedValues="true,false",defaultValue="false")
+    private static final String ALLOW_STRING_PASSTROUGH = "org.apache.myfaces.ENUM_CONVERTER_ALLOW_STRING_PASSTROUGH";
+    
     // TODO: Find a valid generic usage -= Simon Lessard =-
     private Class targetClass;
 
@@ -67,6 +74,13 @@ public class EnumConverter implements Converter, PartialStateHolder
 
         if (value == null)
             return null;
+        
+        if (value instanceof String
+                && _isPassThroughStringValues(facesContext))
+        {
+            // pass through the String value
+            return (String) value;
+        }
 
         // check if the value is an instance of the enum class
         if (targetClass.isInstance(value))
@@ -171,6 +185,17 @@ public class EnumConverter implements Converter, PartialStateHolder
     public void markInitialState()
     {
         _initialStateMarked = true;
+    }
+    
+    private boolean _isPassThroughStringValues(FacesContext facesContext)
+    {
+        String param = facesContext.getExternalContext().getInitParameter(ALLOW_STRING_PASSTROUGH);
+        if (param != null)
+        {
+            return param.trim().equalsIgnoreCase("true");
+        }
+        // default: false
+        return false;
     }
 
 }
