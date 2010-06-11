@@ -943,7 +943,7 @@
     <dependency>
       <groupId>org.apache.myfaces.test</groupId>
       <artifactId>myfaces-test20</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-beta-4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -1058,7 +1058,7 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>4.0.2-SNAPSHOT</myfaces-shared.version>
+    <myfaces-shared.version>4.0.2</myfaces-shared.version>
     <myfaces-builder-plugin.version>1.0.6</myfaces-builder-plugin.version>
   </properties>
 </project>
