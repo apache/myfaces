@@ -327,12 +327,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         // side effect. Enable it allows programatically add components when binding is set with 
         // pss enabled. That feature works without pss, so we should preserve backward behavior.
         // Tomahawk t:aliasBean example creating components on binding requires this to work.
-        context.setProcessingEvents(true);
-        try {
-            view.visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
-        } finally {
-            context.setProcessingEvents(oldContextEventState);
-        }
+        //context.setProcessingEvents(true);
+        //try {
+        //    view.visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
+        //} finally {
+        //    context.setProcessingEvents(oldContextEventState);
+        //}
         return view;
     }
     
@@ -751,6 +751,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
     }
     
+    /*
     private static class RestoreStateCallback implements VisitCallback
     {
         private PostRestoreStateEvent event;
@@ -773,7 +774,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             return VisitResult.ACCEPT;
         }
-    }
+    }*/
     
     /*
     private class RestoreStateVisitor implements VisitCallback {

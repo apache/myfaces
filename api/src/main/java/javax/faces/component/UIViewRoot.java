@@ -652,7 +652,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // first have to restore the view to get its attributes.
             //notifyListeners(context, PhaseId.RESTORE_VIEW, getAfterPhaseListener(), false);
             
-            visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
+            //visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
         }
     }
 
@@ -1314,6 +1314,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
+/*
     private static class RestoreStateCallback implements VisitCallback
     {
         private PostRestoreStateEvent event;
@@ -1337,6 +1338,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             return VisitResult.ACCEPT;
         }
     }
+*/
 
     // we cannot make this class a inner class, because the 
     // enclosing class (UIViewRoot) would also have to be serialized.

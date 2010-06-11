@@ -119,11 +119,6 @@ class RestoreViewExecutor extends PhaseExecutor
                         viewId);
                 }
                 
-                // Restore binding
-                // This code was already called on UIViewRoot.processRestoreState, or if a StateManagementStrategy
-                // is used, it is called from there.
-                //restoreViewSupport.processComponentBinding(facesContext, viewRoot);
-                
                 // Store the restored UIViewRoot in the FacesContext.
                 facesContext.setViewRoot(viewRoot);
             }
@@ -131,6 +126,10 @@ class RestoreViewExecutor extends PhaseExecutor
             {
                 facesContext.setProcessingEvents(true);
             }
+            
+            // Restore binding
+            // See https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=806
+            restoreViewSupport.processComponentBinding(facesContext, viewRoot);
         }
         else
         { // If the request is a non-postback

@@ -124,7 +124,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
         _facesContext.setProcessingEvents(eq(true));
         UIViewRoot viewRoot = _mocksControl.createMock(UIViewRoot.class);
         expect(_viewHandler.restoreView(same(_facesContext), eq("calculatedViewId"))).andReturn(viewRoot);
-        //_restoreViewSupport.processComponentBinding(same(_facesContext), same(viewRoot));
+        _restoreViewSupport.processComponentBinding(same(_facesContext), same(viewRoot));
         _facesContext.setViewRoot(same(viewRoot));
         _facesContext.setProcessingEvents(eq(false));
 
