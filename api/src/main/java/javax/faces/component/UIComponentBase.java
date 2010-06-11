@@ -173,7 +173,9 @@ public abstract class UIComponentBase extends UIComponent
                 // doing this => recursive
                 _publishPreRemoveFromViewEvent(getFacesContext(), this);
             }
+            _parent = parent;
         } else {
+            _parent = parent;
             if (parent.isInView())
             {
                 // trigger the ADD_EVENT and call setInView(true)
@@ -184,7 +186,6 @@ public abstract class UIComponentBase extends UIComponent
                 _publishPostAddToViewEvent(getFacesContext(), this);
             }
         }
-        _parent = parent;
     }
 
     
