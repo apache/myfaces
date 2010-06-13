@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.faces.component.behavior.AjaxBehavior;
@@ -26,11 +27,11 @@ import javax.faces.component.html.HtmlOutputLabel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
-import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
+import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 
 public class HtmlLabelRendererTest extends AbstractJsfTestCase
 {
@@ -105,6 +106,40 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
     }
     
     /**
+     * Gets the page contents.
+     * @return the page contents
+     */
+    protected String getPageContents()
+    {
+        return ((StringWriter) writer.getWriter()).toString();
+    }
+    
+    public void testEscapeUntouched() throws IOException
+    {
+        label.setId("labelId");
+        label.setValue("<span class=\"required\">field label</span>");
+
+        // render label
+        label.encodeAll(facesContext);
+
+        String page = getPageContents();
+        assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
+    }
+
+    public void testEscapeSetToFalse() throws IOException
+    {
+        label.setId("labelId");
+        label.setValue("<span class=\"required\">field label</span>");
+        label.setEscape(false);
+
+        // render label
+        label.encodeAll(facesContext);
+
+        String page = getPageContents();
+        assertEquals("<label id=\"labelId\"><span class=\"required\">field label</span></label>", page);
+    }
+    
+    /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
     public void testClientBehaviorHolderRendersIdAndName() 
@@ -123,4 +158,5 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
         }
         
     }
+    
 }
