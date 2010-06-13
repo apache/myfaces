@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.faces.component.html.HtmlOutputLabel;
@@ -41,11 +42,13 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
         super(name);
     }
     
-    public static Test suite() {
+    public static Test suite() 
+    {
         return new TestSuite(HtmlLabelRendererTest.class);
     }
     
-    public void setUp() throws Exception {
+    public void setUp() throws Exception 
+    {
         super.setUp();
         label = new HtmlOutputLabel();
         writer = new MockResponseWriter(new StringWriter(), null, null);
@@ -58,7 +61,8 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
                 new HtmlLabelRenderer());
     }
     
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception 
+    {
         super.tearDown();
         writer = null;
         label = null;
@@ -66,7 +70,8 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
 
     public void testHtmlPropertyPassTru() throws Exception
     {
-        HtmlRenderedAttr[] attrs = {
+        HtmlRenderedAttr[] attrs = 
+        {
             //_AccesskeyProperty
             new HtmlRenderedAttr("accesskey"),
             //_UniversalProperties
@@ -97,8 +102,44 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 label, facesContext, writer, attrs);
-        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) 
+        {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
+    
+    /**
+     * Gets the page contents.
+     * @return the page contents
+     */
+    protected String getPageContents()
+    {
+        return ((StringWriter) writer.getWriter()).toString();
+    }
+    
+    public void testEscapeUntouched() throws IOException
+    {
+        label.setId("labelId");
+        label.setValue("<span class=\"required\">field label</span>");
+
+        // render label
+        label.encodeAll(facesContext);
+
+        String page = getPageContents();
+        assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
+    }
+
+    public void testEscapeSetToFalse() throws IOException
+    {
+        label.setId("labelId");
+        label.setValue("<span class=\"required\">field label</span>");
+        label.setEscape(false);
+
+        // render label
+        label.encodeAll(facesContext);
+
+        String page = getPageContents();
+        assertEquals("<label id=\"labelId\"><span class=\"required\">field label</span></label>", page);
+    }
+    
 }
