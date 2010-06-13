@@ -1056,7 +1056,6 @@
   </repositories>
 
   <properties>
-    <myfaces-shared.version>4.0.2-SNAPSHOT</myfaces-shared.version>
     <myfaces-builder-plugin.version>1.0.6</myfaces-builder-plugin.version>
   </properties>
 </project>

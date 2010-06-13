@@ -58,8 +58,4 @@
     </dependency>
   </dependencies>
   
-  <properties>
-    <myfaces-shared.version>4.0.2-SNAPSHOT</myfaces-shared.version>
-  </properties>
-  
 </project>

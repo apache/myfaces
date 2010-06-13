@@ -219,4 +219,8 @@
         <url>scpexe://people.apache.org/www/myfaces.apache.org/core20/</url>
       </site>
     </distributionManagement>
+
+    <properties>
+      <myfaces-shared.version>4.0.3-SNAPSHOT</myfaces-shared.version>
+    </properties>
 </project>
