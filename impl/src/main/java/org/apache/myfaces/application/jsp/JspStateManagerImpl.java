@@ -179,7 +179,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
     private static final int JSF_SEQUENCE_INDEX = 0;
 
-    private static final String JSP_IS_WRITING_STATE_ATTR = "org.apache.myfaces.JSP_IS_WRITING_STATE";
+    public static final String JSP_IS_WRITING_STATE_ATTR = "org.apache.myfaces.JSP_IS_WRITING_STATE";
     
     private RenderKitFactory _renderKitFactory = null;
     
@@ -594,8 +594,6 @@ public class JspStateManagerImpl extends MyfacesStateManager
         RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());
         ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
         
-        setWritingState(facesContext);
-        
         if (isLegacyResponseStateManager(responseStateManager))
         {
             responseStateManager.writeState(facesContext, serializedView);
@@ -972,10 +970,6 @@ public class JspStateManagerImpl extends MyfacesStateManager
         }
 
         return true;
-    }
-
-    private void setWritingState(FacesContext context){
-        context.getAttributes().put(JSP_IS_WRITING_STATE_ATTR, true);
     }
     
     private boolean isWritingState(FacesContext context){

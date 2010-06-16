@@ -553,6 +553,8 @@ public class JspViewHandlerImpl extends ViewHandler
     public void writeState(FacesContext facesContext) throws IOException
     {
         StateManager stateManager = facesContext.getApplication().getStateManager();
+        setWritingState(facesContext);
+
         if (stateManager.isSavingStateInClient(facesContext))
         {
         // Only write state marker if javascript view state is disabled
@@ -565,6 +567,10 @@ public class JspViewHandlerImpl extends ViewHandler
         {
             stateManager.writeState(facesContext, new Object[2]);
         }
+    }
+    
+    private void setWritingState(FacesContext context){
+        context.getAttributes().put(JspStateManagerImpl.JSP_IS_WRITING_STATE_ATTR, true);
     }
 
     /**

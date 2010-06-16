@@ -44,6 +44,7 @@ import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.myfaces.application.jsp.JspStateManagerImpl;
 import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared_impl.application.InvalidViewIdException;
 import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
@@ -248,17 +249,7 @@ public class ViewHandlerImpl extends ViewHandler
         if(context.getPartialViewContext().isAjaxRequest())
             return;
 
-        // Facelets specific hack:
-        // Tell the StateWriter that we're about to write state
-        StateWriter stateWriter = StateWriter.getCurrentInstance();
-        if (stateWriter != null)
-        {
-            // Write the STATE_KEY out. Unfortunately, this will
-            // be wasteful for pure server-side state managers where nothing
-            // is actually written into the output, but this cannot
-            // programatically be discovered
-            stateWriter.writingState();
-        }
+        setWritingState(context);
 
         StateManager stateManager = context.getApplication().getStateManager();
         if (stateManager.isSavingStateInClient(context))
@@ -273,6 +264,24 @@ public class ViewHandlerImpl extends ViewHandler
         {
             stateManager.writeState(context, new Object[2]);
         }
+    }
+    
+    private void setWritingState(FacesContext context){
+        // Facelets specific hack:
+        // Tell the StateWriter that we're about to write state
+        StateWriter stateWriter = StateWriter.getCurrentInstance();
+        if (stateWriter != null)
+        {
+            // Write the STATE_KEY out. Unfortunately, this will
+            // be wasteful for pure server-side state managers where nothing
+            // is actually written into the output, but this cannot
+            // programatically be discovered
+            stateWriter.writingState();
+        }else
+        {
+            //we're in a JSP, let the JSPStatemanager know that we need to actually write the state
+            context.getAttributes().put(JspStateManagerImpl.JSP_IS_WRITING_STATE_ATTR, true);
+        }        
     }
     
     private Map<String, List<String>> getViewParameterList(FacesContext context,
