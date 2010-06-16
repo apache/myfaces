@@ -89,7 +89,7 @@ class _SharedRendererUtils
                                                 String[] submittedValue) throws ConverterException
     {
         // Attention!
-        // This code is duplicated in jsfapi component package.
+        // This code is duplicated in shared renderkit package (except for considerValueType).
         // If you change something here please do the same in the other class!
 
         if (submittedValue == null)
@@ -99,8 +99,12 @@ class _SharedRendererUtils
 
         ValueExpression expression = component.getValueExpression("value");
         Object targetForConvertedValues = null;
+        
         // if the component has an attached converter, use it
         Converter converter = component.getConverter();
+        
+        // at this point the valueType attribute is handled in shared.
+        
         if (expression != null)
         {
             Class<?> modelType = expression
@@ -162,38 +166,8 @@ class _SharedRendererUtils
                             COLLECTION_TYPE_KEY);
                     if (collectionTypeAttr != null)
                     {
-                        Class<?> collectionType = null;
-                        // if there is a value, it must be a ...
-                        // ... a ValueExpression that evaluates to a String or a Class
-                        if (collectionTypeAttr instanceof ValueExpression)
-                        {
-                            // get the value of the ValueExpression
-                            collectionTypeAttr = ((ValueExpression) collectionTypeAttr)
-                                    .getValue(facesContext.getELContext());
-                        }
-                        // ... String that is a fully qualified Java class name
-                        if (collectionTypeAttr instanceof String)
-                        {
-                            try
-                            {
-                                collectionType = Class
-                                        .forName((String) collectionTypeAttr);
-                            }
-                            catch (ClassNotFoundException cnfe)
-                            {
-                                throw new FacesException(
-                                        "Unable to find class "
-                                                + collectionTypeAttr
-                                                + " on the classpath.", cnfe);
-                            }
-    
-                        }
-                        // ... a Class object
-                        else if (collectionTypeAttr instanceof Class)
-                        {
-                            collectionType = (Class<?>) collectionTypeAttr;
-                        }
-                        else
+                        Class<?> collectionType = getClassFromAttribute(facesContext, collectionTypeAttr);
+                        if (collectionType == null)
                         {
                             throw new FacesException(
                                     "The attribute "
@@ -340,6 +314,59 @@ class _SharedRendererUtils
         }
 
         return targetForConvertedValues;
+    }
+    
+    /**
+     * Gets a Class object from a given component attribute. The attribute can
+     * be a ValueExpression (that evaluates to a String or a Class) or a 
+     * String (that is a fully qualified Java class name) or a Class object.
+     * 
+     * @param facesContext
+     * @param attribute
+     * @return
+     * @throws FacesException if the value is a String and the represented
+     *                        class cannot be found
+     */
+    static Class<?> getClassFromAttribute(FacesContext facesContext,
+            Object attribute) throws FacesException
+    {
+        // Attention!
+        // This code is duplicated in shared renderkit package.
+        // If you change something here please do the same in the other class!
+        
+        Class<?> type = null;
+        
+        // if there is a value, it must be a ...
+        // ... a ValueExpression that evaluates to a String or a Class
+        if (attribute instanceof ValueExpression)
+        {
+            // get the value of the ValueExpression
+            attribute = ((ValueExpression) attribute)
+                    .getValue(facesContext.getELContext());
+        }
+        // ... String that is a fully qualified Java class name
+        if (attribute instanceof String)
+        {
+            try
+            {
+                type = Class.forName((String) attribute);
+            }
+            catch (ClassNotFoundException cnfe)
+            {
+                throw new FacesException(
+                        "Unable to find class "
+                                + attribute
+                                + " on the classpath.", cnfe);
+            }
+
+        }
+        // ... a Class object
+        else if (attribute instanceof Class)
+        {
+            type = (Class<?>) attribute;
+        }
+        
+        return type;
     }
     
     /**
