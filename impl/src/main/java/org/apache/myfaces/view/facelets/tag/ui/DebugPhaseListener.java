@@ -20,6 +20,7 @@ package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
@@ -303,8 +305,12 @@ public class DebugPhaseListener implements PhaseListener
         UIViewRoot viewroot = event.getFacesContext().getViewRoot();
         if (viewroot != null)
         {
+            // skip all unrendered components to really only show
+            // the rendered components and to circumvent data access problems
             viewroot.visitTree(VisitContext.createVisitContext(
-                    event.getFacesContext()), _visitCallback);
+                    event.getFacesContext(), null, 
+                    EnumSet.of(VisitHint.SKIP_UNRENDERED)),
+                    _visitCallback);
         }
     }
 
