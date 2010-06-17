@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -97,20 +96,14 @@ public class FacesContextImpl extends FacesContext
         init(new ServletExternalContextImpl(servletContext, servletRequest, servletResponse));
     }
     
-    public FacesContextImpl(final ExternalContext externalContext,
-            final ReleaseableExternalContext defaultExternalContext , 
+    public FacesContextImpl(final ExternalContext externalContext, 
             final ReleaseableFacesContextFactory facesContextFactory)
     {
         _facesContextFactory = facesContextFactory;
-        init(externalContext, defaultExternalContext);
+        init(externalContext);
     }
 
-    private void init(final ReleaseableExternalContext externalContext)
-    {
-        init((ExternalContext) externalContext, externalContext);
-    }
-
-    private void init(final ExternalContext externalContext, final ReleaseableExternalContext defaultExternalContext)
+    private void init(final ExternalContext externalContext)
     {       
         _externalContext = externalContext;
         FacesContext.setCurrentInstance(this);  //protected method, therefore must be called from here
@@ -495,17 +488,6 @@ public class FacesContextImpl extends FacesContext
     {
         _exceptionHandler = exceptionHandler;
     }
-
-    // Portlet need to do this to change from ActionRequest/Response to
-    // RenderRequest/Response
-    /* This code comes from jsf 1.1 and is not valid anymore
-    public final void setExternalContext(ReleaseableExternalContext extContext)
-    {
-        assertNotReleased();
-
-        _externalContext = extContext;
-        FacesContext.setCurrentInstance(this); // TODO: figure out if I really need to do this
-    }*/
 
     @Override
     public final ELContext getELContext()
