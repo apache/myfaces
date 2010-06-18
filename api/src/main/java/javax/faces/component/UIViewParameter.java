@@ -47,7 +47,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * @since 2.0
  */
 @JSFComponent(name = "f:viewParam", bodyContent = "JSP", 
-        tagClass = "org.apache.myfaces.taglib.core.ParamTag")
+        tagClass = "org.apache.myfaces.taglib.core.ViewParamTag")
 @JSFJspProperty(name = "maxlength", returnType = "int", longDesc = "The max number or characters allowed for this param")
 public class UIViewParameter extends UIInput
 {
