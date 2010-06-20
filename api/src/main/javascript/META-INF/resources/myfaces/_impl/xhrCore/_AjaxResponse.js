@@ -49,8 +49,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
      * @param {function} onWarning
      */
     constructor_: function(onException, onWarning) {
-
-        this.changeTrace = [];
+        //List of non form elements to be updated (which can have forms embedded)
+        this._updateElems = [];
+        // List of forms to be updated if any inner block is updated
+        this._updateForms = [];
         this._onException = onException;
         this._onWarning = onWarning;
 
@@ -155,16 +157,30 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         /*namespace remapping*/
         var _Dom = myfaces._impl._util._Dom;
 
+        // Now update the forms that were not replaced but forced to be updated, because contains child ajax tags
+        // we should only update forms with view state hidden field. If by some reason, the form was set to be
+        // updated but the form was replaced, it does not have hidden view state, so later in changeTrace processing the
+        // view state is updated.
+        for (var cnt = 0; cnt < this._updateForms.length; cnt ++) {
+            var formToUpdate = this._updateForms[cnt];
+            var viewStateField = _Dom.findFormElement(formToUpdate, this.P_VIEWSTATE);
+            if (null != viewStateField) {
+                _Dom.setAttribute(viewStateField, "value", this.appliedViewState);
+            }
+        }
+
         //note the spec here says clearly it is done, but mojarra not and there is a corner case
         //regarding cross form submits, hence we should check all processed items for embedded forms
-        for (var cnt = 0; cnt < this.changeTrace.length; cnt ++) {
-            var replacementElem = this.changeTrace[cnt];
+        for (var cnt = 0; cnt < this._updateElems.length; cnt ++) {
+            var replacementElem = this._updateElems[cnt];
             var replacedForms = myfaces._impl._util._Dom.findByTagName(replacementElem, "form", false);
             for (var formCnt = 0; formCnt < replacedForms.length; formCnt++) {
                 //we first have to fetch the real form element because the fragment
                 //might be detached in some browser implementations
                 var appliedReplacedFrom = document.getElementById(replacedForms[formCnt].id);
                 var viewStateField = myfaces._impl._util._Dom.findFormElement(appliedReplacedFrom, this.P_VIEWSTATE);
+                //we have to add the viewstate field in case it is not rendered
+                //otherwise those forms cannot issue another submit
                 if (null == viewStateField) {
                     var element = document.createElement("input");
                     _Dom.setAttribute(element, "type", "hidden");
@@ -262,14 +278,37 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
     processUpdate : function(request, context, node) {
         /*local namespace remapping*/
         var _Dom = myfaces._impl._util._Dom;
-
+        var _Lang = myfaces._impl._util._Lang;
 
         if (node.getAttribute('id') == this.P_VIEWSTATE) {
             //update the submitting forms viewstate to the new value
             // The source form has to be pulled out of the CURRENT document first because the context object
             // may refer to an invalid document if an update of the entire body has occurred before this point.
             var viewStateValue = node.firstChild.nodeValue;
-            var sourceForm = myfaces._impl._util._Dom.fuzzyFormDetection(context.source);
+            var sourceForm = _Dom.fuzzyFormDetection(context.source);
+            
+            // TODO: After some tests, it was found sourceForm could point to a detached instance, but
+            // there is no harm if we update it. Below there is a code that check if the node has been
+            // detached or not to prevent manipulation. I'm not sure if that code works in all browser
+            // so to prevent introduce bugs, I let it commented with the hope somebody check if let this
+            // code is safe or if it is worth. If it is not detached, without this code we could update
+            // the same input hidden view state twice.
+            //if (null != sourceForm) {
+                // Check if sourceForm is inside the document, or in other words, it was not detached.
+                // We have to walk to the parent node
+                //var _Lang = myfaces._impl._util._Lang;
+                //var searchClosure = function(parentItem) {
+                //    return parentItem && (parentItem == document);
+                //};
+                //var sourceFormAncestor = _Dom.getFilteredParent(sourceForm, searchClosure);
+                //Is not on the document?
+                //if (null == sourceFormAncestor)
+                //{
+                    // Let fixViewStates do the job, because after the blocks are processed, we register
+                    // the target forms to be updated if any.
+                    //sourceForm = null;
+                //}
+            //}
 
             //the source form could be determined absolutely by either the form, the identifier of the node, or the name
             //if only one element is given
@@ -306,8 +345,18 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
 
             switch (node.getAttribute('id')) {
                 case this.P_VIEWROOT:
-                    this._replaceBody(request, context, cDataBlock);
-
+                    var resultNode = this._replaceBody(request, context, cDataBlock);
+                    if (resultNode) {
+                        var parentForm = _Dom.getParent(resultNode,"form");
+                        if (null != parentForm)
+                        {
+                            this._updateForms.push(parentForm);
+                        }
+                        else
+                        {
+                            this._updateElems.push(resultNode);
+                        }
+                    }
                     break;
                 case this.P_VIEWHEAD:
                     //we cannot replace the head, almost no browser allows this, some of them throw errors
@@ -317,13 +366,32 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     break;
                 case this.P_VIEWBODY:
                     //we assume the cdata block is our body including the tag
-                    this._replaceBody(request, context, cDataBlock);
+                    var resultNode = this._replaceBody(request, context, cDataBlock);
+                    if (resultNode) {
+                        var parentForm = _Dom.getParent(resultNode,"form");
+                        if (null != parentForm)
+                        {
+                            this._updateForms.push(parentForm);
+                        }
+                        else
+                        {
+                            this._updateElems.push(resultNode);
+                        }
+                    }
                     break;
 
                 default:
                     var resultNode = this._replaceElement(request, context, node.getAttribute('id'), cDataBlock);
-                    if ('undefined' != typeof resultNode && null != resultNode) {
-                        this.changeTrace.push(resultNode);
+                    if (resultNode) {
+                        var parentForm = _Dom.getParent(resultNode,"form");
+                        if (null != parentForm)
+                        {
+                            this._updateForms.push(parentForm);
+                        }
+                        else
+                        {
+                            this._updateElems.push(resultNode);
+                        }
                     }
                     break;
             }
@@ -362,12 +430,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         //and if it fails revert to our internal parser
         var bodyData = parser.parse(newData, "body");
         bodyParent.replaceChild(newBody, oldBody);
-        this._replaceElement(request, context, placeHolder, bodyData);
+        var returnedElement = this._replaceElement(request, context, placeHolder, bodyData);
 
         for (var key in parser.tagAttributes) {
             var value = parser.tagAttributes[key];
             _Dom.setAttribute(newBody, key, value);
         }
+        return returnedElement;
     }
     ,
 
@@ -471,7 +540,15 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     nodeHolder, cDataBlock, null);
 
             if (replacementFragment) {
-                this.changeTrace.push(replacementFragment);
+                var parentForm = _Dom.getParent(replacementFragment,"form");
+                if (parentForm)
+                {
+                    this._updateForms.push(parentForm);
+                }
+                else
+                {
+                    this._updateElems.push(replacementFragment);
+                }
             }
 
         } else {
@@ -490,7 +567,15 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     nodeHolder, cDataBlock, null);
 
             if (replacementFragment) {
-                this.changeTrace.push(replacementFragment);
+                var parentForm = _Dom.getParent(replacementFragment,"form");
+                if (null != parentForm)
+                {
+                    this._updateForms.push(parentForm);
+                }
+                else
+                {
+                    this._updateElems.push(replacementFragment);
+                }
             }
 
         }
@@ -508,8 +593,18 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     _Impl.MALFORMEDXML, "Error in delete, id not in xml markup");
             return false;
         }
-
-        _Dom.deleteItem(deleteId);
+        
+        var item = _Dom.byId(deleteId);
+        if (!item) {
+            throw Error("_AjaxResponse.processDelete  Unknown Html-Component-ID: " + deleteId);
+        }
+        
+        var parentForm = _Dom.getParent(item,"form");
+        if (null != parentForm)
+        {
+            this._updateForms.push(parentForm);
+        }
+        _Dom.deleteItem(item);
 
         return true;
     }

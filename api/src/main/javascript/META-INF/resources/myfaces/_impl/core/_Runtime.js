@@ -381,7 +381,10 @@ if (!myfaces._impl.core._Runtime) {
                 }
                 holder.appendChild(script);
             } catch (e) {
-
+                //webkit based browsers and probably
+                //other standard conforming browsers forbid head manipulation
+                //after the head tag being closed
+                //we fall back to global eval for those cases
                 return false;
             }
 

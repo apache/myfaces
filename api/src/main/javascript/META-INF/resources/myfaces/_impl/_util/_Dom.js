@@ -193,6 +193,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     evalNode = evalNode.childNodes[0];
                 }
 
+                if('undefined' == typeof evalNode) {
+                    //fallback for htmlunit which should be good enough
+                    //to run the tests, maybe we have to wrap it as well
+                     dummyPlaceHolder.innerHTML = "<div>" + markup + "</div>";
+                     //note this is triggered only in htmlunit no other browser
+                     //so we are save here
+                     evalNode = dummyPlaceHolder.childNodes[0];
+                }
+
                 parentNode = item.parentNode;
                 item.parentNode.replaceChild(evalNode, item);
 
@@ -732,7 +741,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     fuzzyFormDetection : function(elem) {
         if (!document.forms || !document.forms.length) {
             return null;
-        } else if (1 == document.forms.length) {
+        }
+
+        // This will not work well on portlet case, because we cannot be sure
+        // the returned form is right one.
+        //we can cover that case by simply adding one of our config params
+        //the default is the weaker, but more correct portlet code
+        //you can override it with myfaces_config.no_portlet_env = true globally
+        else if (1 == document.forms.length && myfaces._impl.core._Runtime.getGlobalConfig("no_portlet_env", false)) {
             return document.forms[0];
         }
         if (!elem) {
