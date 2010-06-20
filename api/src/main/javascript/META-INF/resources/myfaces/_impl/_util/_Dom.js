@@ -142,7 +142,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (!markup) {
             throw Error("myfaces._impl._util._Dom.outerHTML: markup must be passed down");
         }
-        markup = myfaces._impl._util._Lang.trim(markup);
+        var _Lang = myfaces._impl._util._Lang;
+        markup = _Lang.trim(markup);
         if (markup !== "") {
             var evalNode = null;
 
@@ -166,7 +167,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
                     parentNode = item.parentNode;
 
-                    evalNode = fragment.childNodes[0];
+                    //evalNode = fragment.childNodes[0];
+                    evalNode = Lang.objToArray(fragment.childNodes);
                     parentNode.replaceChild(fragment, item);
                 }
             } else {
@@ -175,7 +177,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
                 //we have to cope with deficiencies between ie and its simulations in this case
                 var probe = document.createElement("div");
-                probe.innerHTML = "<table><div></div></table>";
+                probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
                 var depth = 0;
                 while(probe) {
                     probe = probe.childNodes[0];
@@ -187,23 +189,47 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
                 //fortunately a table element also works which is less critical than form elements regarding
                 //the inner content
-                dummyPlaceHolder.innerHTML = "<table>" + markup + "</table>";
+                dummyPlaceHolder.innerHTML = "<table><tbody><tr><td>" + markup + "</td></tr></tbody></table>";
                 evalNode = dummyPlaceHolder;
                 for(var cnt = 0; cnt < depth; cnt++) {
                     evalNode = evalNode.childNodes[0];
                 }
+                evalNode = (evalNode.parentNode) ? evalNode.parentNode.childNodes : null;
 
-                if('undefined' == typeof evalNode) {
+                if('undefined'==typeof evalNode||null==evalNode) {
                     //fallback for htmlunit which should be good enough
                     //to run the tests, maybe we have to wrap it as well
                      dummyPlaceHolder.innerHTML = "<div>" + markup + "</div>";
                      //note this is triggered only in htmlunit no other browser
                      //so we are save here
-                     evalNode = dummyPlaceHolder.childNodes[0];
+                     evalNode = dummyPlaceHolder.childNodes[0].childNodes;
                 }
 
                 parentNode = item.parentNode;
-                item.parentNode.replaceChild(evalNode, item);
+
+
+                if('undefined' != typeof evalNode.length) {
+                    var oldNode = item;
+                    var resultArr = _Lang.objToArray(evalNode);
+                    
+                    for(var cnt = 0; cnt < resultArr.length; cnt++) {
+                        if(cnt == 0) {
+                            oldNode = parentNode.replaceChild(resultArr[cnt], oldNode);
+                        } else {
+                            if(oldNode.nextSibling) {
+                                oldNode = parentNode.insertBefore(resultArr[cnt], oldNode.nextSibling);
+                            } else {
+                                oldNode = parentNode.appendChild(resultArr[cnt]);
+
+                            }
+                        }
+                        evalNode = resultArr;
+                    }
+
+                } else {
+                   evalNode = parentNode.replaceChild(evalNode, item);
+                }
+
 
                 //if this as well will fail in the future, we can let ie parse a proper xml
                 //extract the script elements and then create the script elements manually
@@ -215,7 +241,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             // and remove the old item
             //first we have to save the node newly insert for easier access in our eval part
             if (myfaces._impl.core._Runtime.isManualScriptEval()) {
-                this.runScripts(evalNode);
+                if(evalNode.length) {
+                    for(var cnt = 0; cnt < evalNode.length; cnt++) {
+                         this.runScripts(evalNode[cnt]);
+                    }
+                } else {
+                    this.runScripts(evalNode);
+                }    
             }
             return evalNode;
         }

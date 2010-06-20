@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /** @namespace myfaces._impl.xhrCore._AjaxResponse */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", Object, {
@@ -151,6 +151,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
     },
 
     fixViewStates : function() {
+
         if (null == this.appliedViewState) {
             return;
         }
@@ -286,7 +287,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             // may refer to an invalid document if an update of the entire body has occurred before this point.
             var viewStateValue = node.firstChild.nodeValue;
             var sourceForm = _Dom.fuzzyFormDetection(context.source);
-            
+
             // TODO: After some tests, it was found sourceForm could point to a detached instance, but
             // there is no harm if we update it. Below there is a code that check if the node has been
             // detached or not to prevent manipulation. I'm not sure if that code works in all browser
@@ -294,20 +295,20 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             // code is safe or if it is worth. If it is not detached, without this code we could update
             // the same input hidden view state twice.
             //if (null != sourceForm) {
-                // Check if sourceForm is inside the document, or in other words, it was not detached.
-                // We have to walk to the parent node
-                //var _Lang = myfaces._impl._util._Lang;
-                //var searchClosure = function(parentItem) {
-                //    return parentItem && (parentItem == document);
-                //};
-                //var sourceFormAncestor = _Dom.getFilteredParent(sourceForm, searchClosure);
-                //Is not on the document?
-                //if (null == sourceFormAncestor)
-                //{
-                    // Let fixViewStates do the job, because after the blocks are processed, we register
-                    // the target forms to be updated if any.
-                    //sourceForm = null;
-                //}
+            // Check if sourceForm is inside the document, or in other words, it was not detached.
+            // We have to walk to the parent node
+            //var _Lang = myfaces._impl._util._Lang;
+            //var searchClosure = function(parentItem) {
+            //    return parentItem && (parentItem == document);
+            //};
+            //var sourceFormAncestor = _Dom.getFilteredParent(sourceForm, searchClosure);
+            //Is not on the document?
+            //if (null == sourceFormAncestor)
+            //{
+            // Let fixViewStates do the job, because after the blocks are processed, we register
+            // the target forms to be updated if any.
+            //sourceForm = null;
+            //}
             //}
 
             //the source form could be determined absolutely by either the form, the identifier of the node, or the name
@@ -347,15 +348,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                 case this.P_VIEWROOT:
                     var resultNode = this._replaceBody(request, context, cDataBlock);
                     if (resultNode) {
-                        var parentForm = _Dom.getParent(resultNode,"form");
-                        if (null != parentForm)
-                        {
-                            this._updateForms.push(parentForm);
-                        }
-                        else
-                        {
-                            this._updateElems.push(resultNode);
-                        }
+                        this._pushOperationResult(resultNode);
                     }
                     break;
                 case this.P_VIEWHEAD:
@@ -368,35 +361,43 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     //we assume the cdata block is our body including the tag
                     var resultNode = this._replaceBody(request, context, cDataBlock);
                     if (resultNode) {
-                        var parentForm = _Dom.getParent(resultNode,"form");
-                        if (null != parentForm)
-                        {
-                            this._updateForms.push(parentForm);
-                        }
-                        else
-                        {
-                            this._updateElems.push(resultNode);
-                        }
+                        this._pushOperationResult(resultNode);
                     }
                     break;
 
                 default:
                     var resultNode = this._replaceElement(request, context, node.getAttribute('id'), cDataBlock);
                     if (resultNode) {
-                        var parentForm = _Dom.getParent(resultNode,"form");
-                        if (null != parentForm)
-                        {
-                            this._updateForms.push(parentForm);
-                        }
-                        else
-                        {
-                            this._updateElems.push(resultNode);
-                        }
+                        this._pushOperationResult(resultNode);
                     }
                     break;
             }
         }
         return true;
+    },
+
+    _pushOperationResult: function(resultNode) {
+        var _Dom = myfaces._impl._util._Dom;
+        var _Lang = myfaces._impl._util._Lang;
+        var pushSubnode = _Lang.hitch(this,  function(currNode) {
+            var parentForm = _Dom.getParent(currNode, "form");
+            if (null != parentForm)
+            {
+                this._updateForms.push(parentForm);
+            }
+            else
+            {
+                this._updateElems.push(currNode);
+            }
+        });
+        if (resultNode.length) {
+            for (var cnt = 0; cnt < resultNode.length; cnt++) {
+                pushSubnode(resultNode[cnt]);
+            }
+        } else {
+            pushSubnode(resultNode);
+        }
+
     },
 
     /**
@@ -540,15 +541,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     nodeHolder, cDataBlock, null);
 
             if (replacementFragment) {
-                var parentForm = _Dom.getParent(replacementFragment,"form");
-                if (parentForm)
-                {
-                    this._updateForms.push(parentForm);
-                }
-                else
-                {
-                    this._updateElems.push(replacementFragment);
-                }
+               this._pushOperationResult(replacementFragment);
             }
 
         } else {
@@ -567,15 +560,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     nodeHolder, cDataBlock, null);
 
             if (replacementFragment) {
-                var parentForm = _Dom.getParent(replacementFragment,"form");
-                if (null != parentForm)
-                {
-                    this._updateForms.push(parentForm);
-                }
-                else
-                {
-                    this._updateElems.push(replacementFragment);
-                }
+                this._pushOperationResult(replacementFragment);
             }
 
         }
@@ -593,13 +578,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                     _Impl.MALFORMEDXML, "Error in delete, id not in xml markup");
             return false;
         }
-        
+
         var item = _Dom.byId(deleteId);
         if (!item) {
             throw Error("_AjaxResponse.processDelete  Unknown Html-Component-ID: " + deleteId);
         }
-        
-        var parentForm = _Dom.getParent(item,"form");
+
+        var parentForm = _Dom.getParent(item, "form");
         if (null != parentForm)
         {
             this._updateForms.push(parentForm);
