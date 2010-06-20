@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 
 /**
@@ -145,115 +145,126 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var _Lang = myfaces._impl._util._Lang;
         markup = _Lang.trim(markup);
         if (markup !== "") {
-            var evalNode = null;
+            var evalNodes = null;
 
             //w3c compliant browsers with proper contextual fragments
             var parentNode;
             if (window.Range
                     && typeof Range.prototype.createContextualFragment == 'function') {
-                var range = document.createRange();
-                range.setStartBefore(item);
-                var fragment = range.createContextualFragment(markup);
-                //special case update body, we have to replace the placeholder
-                //with the first element (the place holder is the the only child)
-                //and then append additional elements as additional childs
-                //the body itself then is the root for the eval part!
-                if (item.id == 'myfaces_bodyplaceholder') {
-                    parentNode = item.parentNode;
-                    parentNode.appendChild(fragment);
-                    evalNode = parentNode;
-                } else {
-                    //normal dom node case we replace only the client id fragment!
-
-                    parentNode = item.parentNode;
-
-                    //evalNode = fragment.childNodes[0];
-                    evalNode = Lang.objToArray(fragment.childNodes);
-                    parentNode.replaceChild(fragment, item);
-                }
+                evalNodes = this._outerHTMLCompliant(item, markup);
             } else {
-
-                //now to the non w3c compliant browsers
-                //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
-                //we have to cope with deficiencies between ie and its simulations in this case
-                var probe = document.createElement("div");
-                probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
-                var depth = 0;
-                while(probe) {
-                    probe = probe.childNodes[0];
-                    depth++;
-                }
-                depth--;
-
-                var dummyPlaceHolder = document.createElement("div");
-
-                //fortunately a table element also works which is less critical than form elements regarding
-                //the inner content
-                dummyPlaceHolder.innerHTML = "<table><tbody><tr><td>" + markup + "</td></tr></tbody></table>";
-                evalNode = dummyPlaceHolder;
-                for(var cnt = 0; cnt < depth; cnt++) {
-                    evalNode = evalNode.childNodes[0];
-                }
-                evalNode = (evalNode.parentNode) ? evalNode.parentNode.childNodes : null;
-
-                if('undefined'==typeof evalNode||null==evalNode) {
-                    //fallback for htmlunit which should be good enough
-                    //to run the tests, maybe we have to wrap it as well
-                     dummyPlaceHolder.innerHTML = "<div>" + markup + "</div>";
-                     //note this is triggered only in htmlunit no other browser
-                     //so we are save here
-                     evalNode = dummyPlaceHolder.childNodes[0].childNodes;
-                }
-
-                parentNode = item.parentNode;
-
-
-                if('undefined' != typeof evalNode.length) {
-                    var oldNode = item;
-                    var resultArr = _Lang.objToArray(evalNode);
-                    
-                    for(var cnt = 0; cnt < resultArr.length; cnt++) {
-                        if(cnt == 0) {
-                            oldNode = parentNode.replaceChild(resultArr[cnt], oldNode);
-                        } else {
-                            if(oldNode.nextSibling) {
-                                oldNode = parentNode.insertBefore(resultArr[cnt], oldNode.nextSibling);
-                            } else {
-                                oldNode = parentNode.appendChild(resultArr[cnt]);
-
-                            }
-                        }
-                        evalNode = resultArr;
-                    }
-
-                } else {
-                   evalNode = parentNode.replaceChild(evalNode, item);
-                }
-
-
-                //if this as well will fail in the future, we can let ie parse a proper xml
-                //extract the script elements and then create the script elements manually
-                //but for now we will not need it, and this solution is faster
-                //the downside of that solution would be that the fragment itself
-                //must resolve to a valid xml
+                evalNodes = this._outerHTMLNonCompliant(item, markup);
             }
 
             // and remove the old item
             //first we have to save the node newly insert for easier access in our eval part
             if (myfaces._impl.core._Runtime.isManualScriptEval()) {
-                if(evalNode.length) {
-                    for(var cnt = 0; cnt < evalNode.length; cnt++) {
-                         this.runScripts(evalNode[cnt]);
+                if (evalNodes.length) {
+                    for (var cnt = 0; cnt < evalNodes.length; cnt++) {
+                        this.runScripts(evalNodes[cnt]);
                     }
                 } else {
-                    this.runScripts(evalNode);
-                }    
+                    this.runScripts(evalNodes);
+                }
             }
-            return evalNode;
+            return evalNodes;
         }
         // and remove the old item, in case of an empty newtag and do nothing else
         item.parentNode.removeChild(item);
         return null;
+    },
+
+    _outerHTMLCompliant: function(item, markup) {
+        var _Lang = myfaces._impl._util._Lang;
+        var evalNodes = null;
+        var range = document.createRange();
+        range.setStartBefore(item);
+        var fragment = range.createContextualFragment(markup);
+        //special case update body, we have to replace the placeholder
+        //with the first element (the place holder is the the only child)
+        //and then append additional elements as additional childs
+        //the body itself then is the root for the eval part!
+        if (item.id == 'myfaces_bodyplaceholder') {
+            parentNode = item.parentNode;
+            parentNode.appendChild(fragment);
+            evalNodes = parentNode;
+        } else {
+            //normal dom node case we replace only the client id fragment!
+
+            parentNode = item.parentNode;
+
+            //evalNode = fragment.childNodes[0];
+            evalNodes = (fragment.childNodes) ? _Lang.objToArray(fragment.childNodes): fragment;
+            parentNode.replaceChild(fragment, item);
+        }
+        return evalNodes;
+    },
+
+    _outerHTMLNonCompliant: function(item, markup) {
+        var _Lang = myfaces._impl._util._Lang;
+        var evalNodes = null;
+        //now to the non w3c compliant browsers
+        //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
+        //we have to cope with deficiencies between ie and its simulations in this case
+        var probe = document.createElement("div");
+        probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
+        var depth = 0;
+        while (probe) {
+            probe = probe.childNodes[0];
+            depth++;
+        }
+        depth--;
+
+        var dummyPlaceHolder = document.createElement("div");
+
+        //fortunately a table element also works which is less critical than form elements regarding
+        //the inner content
+        dummyPlaceHolder.innerHTML = "<table><tbody><tr><td>" + markup + "</td></tr></tbody></table>";
+        evalNodes = dummyPlaceHolder;
+        for (var cnt = 0; cnt < depth; cnt++) {
+            evalNodes = evalNodes.childNodes[0];
+        }
+        evalNodes = (evalNodes.parentNode) ? evalNodes.parentNode.childNodes : null;
+
+        if ('undefined' == typeof evalNodes || null == evalNodes) {
+            //fallback for htmlunit which should be good enough
+            //to run the tests, maybe we have to wrap it as well
+            dummyPlaceHolder.innerHTML = "<div>" + markup + "</div>";
+            //note this is triggered only in htmlunit no other browser
+            //so we are save here
+            evalNodes = dummyPlaceHolder.childNodes[0].childNodes;
+        }
+
+        parentNode = item.parentNode;
+
+        if ('undefined' != typeof evalNodes.length) {
+            var oldNode = item;
+            var resultArr = _Lang.objToArray(evalNodes);
+
+            for (var cnt = 0; cnt < resultArr.length; cnt++) {
+                if (cnt == 0) {
+                    oldNode = parentNode.replaceChild(resultArr[cnt], oldNode);
+                } else {
+                    if (oldNode.nextSibling) {
+                        oldNode = parentNode.insertBefore(resultArr[cnt], oldNode.nextSibling);
+                    } else {
+                        oldNode = parentNode.appendChild(resultArr[cnt]);
+
+                    }
+                }
+                evalNodes = resultArr;
+            }
+
+        } else {
+            evalNodes = parentNode.replaceChild(evalNodes, item);
+        }
+
+        //if this as well will fail in the future, we can let ie parse a proper xml
+        //extract the script elements and then create the script elements manually
+        //but for now we will not need it, and this solution is faster
+        //the downside of that solution would be that the fragment itself
+        //must resolve to a valid xml
+        return evalNodes;
     },
 
     /**
@@ -592,7 +603,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
 
         var eLen = form.elements.length;
-
 
         for (var e = 0; e < eLen; e++) {
             var elem = form.elements[e];
