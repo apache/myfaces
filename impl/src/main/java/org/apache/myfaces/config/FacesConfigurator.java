@@ -2384,10 +2384,8 @@ public class FacesConfigurator
         }
         
         // if ProjectStage is Development, install the DebugPhaseListener
-        // Note that FacesContext.getCurrentInstance() will be null for the very first
-        // initialisation here. In that case the PhaseListener is installed in AbstractFacesInitializer.
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null && facesContext.isProjectStage(ProjectStage.Development))
+        if (facesContext.isProjectStage(ProjectStage.Development))
         {
             lifecycle.addPhaseListener(new DebugPhaseListener());
         }

@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FactoryFinder;
+import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextAttributeListener;
@@ -37,6 +38,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.util.ContainerUtils;
 
@@ -151,8 +153,12 @@ public class StartupServletContextListener implements ServletContextListener,
             throw new IllegalStateException("context is already initialized");
         }
         _servletContext = event.getServletContext();
+        
+        // provide a FacesContext for application startup.
+        // Note that setCurrentInstance() is called in the constructor.
+        FacesContext facesContext = new StartupFacesContextImpl(true, _servletContext);
+        
         Boolean b = (Boolean) _servletContext.getAttribute(FACES_INIT_DONE);
-
         if (b == null || b.booleanValue() == false)
         {
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
@@ -167,6 +173,9 @@ public class StartupServletContextListener implements ServletContextListener,
         
         // call contextInitialized on ManagedBeanDestroyerListener
         _detroyerListener.contextInitialized(event);
+        
+        // release the FacesContext for application startup
+        facesContext.release();
     }
 
     protected void initFaces(ServletContext context)
@@ -206,6 +215,10 @@ public class StartupServletContextListener implements ServletContextListener,
 
     public void contextDestroyed(ServletContextEvent event)
     {
+        // provide a FacesContext for application shutdown.
+        // Note that setCurrentInstance() is called in the constructor.
+        FacesContext facesContext = new StartupFacesContextImpl(false, event.getServletContext());
+        
         dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
         // call contextDestroyed on ManagedBeanDestroyerListener to destroy the attributes
         _detroyerListener.contextDestroyed(event);
@@ -217,6 +230,9 @@ public class StartupServletContextListener implements ServletContextListener,
         FactoryFinder.releaseFactories();
         dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
 
+        // release the FacesContext for application shutdown
+        facesContext.release();
+        
         _servletContext = null;
     }
     
