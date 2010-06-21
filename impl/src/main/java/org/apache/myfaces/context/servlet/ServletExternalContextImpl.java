@@ -19,9 +19,12 @@
 package org.apache.myfaces.context.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -30,9 +33,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.context.PartialResponseWriter;
@@ -47,6 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.shared_impl.context.flash.FlashImpl;
 import org.apache.myfaces.util.EnumerationIterator;
 
@@ -57,18 +63,21 @@ import org.apache.myfaces.util.EnumerationIterator;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public final class ServletExternalContextImpl extends ServletExternalContextImplBase
+public final class ServletExternalContextImpl extends ExternalContext implements ReleaseableExternalContext
 {
     //private static final Log log = LogFactory.getLog(ServletExternalContextImpl.class);
     private static final Logger log = Logger.getLogger(ServletExternalContextImpl.class.getName());
 
+    private static final String INIT_PARAMETER_MAP_ATTRIBUTE = InitParameterMap.class.getName();
     private static final String URL_PARAM_SEPERATOR="&";
     private static final String URL_QUERY_SEPERATOR="?";
     private static final String URL_FRAGMENT_SEPERATOR="#";
     private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
 
+    private ServletContext _servletContext;
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
+    private Map<String, Object> _applicationMap;
     private Map<String, Object> _sessionMap;
     private Map<String, Object> _requestMap;
     private Map<String, String> _requestParameterMap;
@@ -76,19 +85,19 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     private Map<String, String> _requestHeaderMap;
     private Map<String, String[]> _requestHeaderValuesMap;
     private Map<String, Object> _requestCookieMap;
+    private Map<String, String> _initParameterMap;
     private HttpServletRequest _httpServletRequest;
     private HttpServletResponse _httpServletResponse;
     private String _requestServletPath;
     private String _requestPathInfo;
 
-    public ServletExternalContextImpl(final ServletContext servletContext, 
-            final ServletRequest servletRequest,
+    public ServletExternalContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
             final ServletResponse servletResponse)
     {
-        super(servletContext); // initialize ServletExternalContextImplBase
-        
+        _servletContext = servletContext;
         _servletRequest = servletRequest;
         _servletResponse = servletResponse;
+        _applicationMap = null;
         _sessionMap = null;
         _requestMap = null;
         _requestParameterMap = null;
@@ -96,6 +105,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         _requestHeaderMap = null;
         _requestHeaderValuesMap = null;
         _requestCookieMap = null;
+        _initParameterMap = null;
         _httpServletRequest = isHttpServletRequest(servletRequest) ? (HttpServletRequest) servletRequest : null;
         _httpServletResponse = isHttpServletResponse(servletResponse) ? (HttpServletResponse) servletResponse : null;
 
@@ -111,10 +121,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
     public void release()
     {
-        super.release(); // releases fields on ServletExternalContextImplBase
-        
+        _servletContext = null;
         _servletRequest = null;
         _servletResponse = null;
+        _applicationMap = null;
         _sessionMap = null;
         _requestMap = null;
         _requestParameterMap = null;
@@ -122,6 +132,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         _requestHeaderMap = null;
         _requestHeaderValuesMap = null;
         _requestCookieMap = null;
+        _initParameterMap = null;
         _httpServletRequest = null;
         _httpServletResponse = null;
     }
@@ -131,6 +142,12 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         checkHttpServletRequest();
         return ((HttpServletRequest) _servletRequest).getSession(create);
+    }
+
+    @Override
+    public Object getContext()
+    {
+        return _servletContext;
     }
 
     @Override
@@ -182,6 +199,16 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public Writer getResponseOutputWriter() throws IOException
     {
         return _servletResponse.getWriter();
+    }
+
+    @Override
+    public Map<String, Object> getApplicationMap()
+    {
+        if (_applicationMap == null)
+        {
+            _applicationMap = new ApplicationMap(_servletContext);
+        }
+        return _applicationMap;
     }
 
     @Override
@@ -303,9 +330,53 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     @Override
+    public String getInitParameter(final String s)
+    {
+        return _servletContext.getInitParameter(s);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map<String, String> getInitParameterMap()
+    {
+        if (_initParameterMap == null)
+        {
+            // We cache it as an attribute in ServletContext itself (is this circular reference a problem?)
+            if ((_initParameterMap = (Map<String, String>) _servletContext.getAttribute(INIT_PARAMETER_MAP_ATTRIBUTE)) == null)
+            {
+                _initParameterMap = new InitParameterMap(_servletContext);
+                _servletContext.setAttribute(INIT_PARAMETER_MAP_ATTRIBUTE, _initParameterMap);
+            }
+        }
+        return _initParameterMap;
+    }
+
+    @Override
+    public String getMimeType(String file)
+    {
+        checkNull(file, "file");
+        return _servletContext.getMimeType(file);
+    }
+
+    @Override
     public String getRequestScheme()
     {
         return _servletRequest.getScheme();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Set<String> getResourcePaths(final String path)
+    {
+        checkNull(path, "path");
+        return _servletContext.getResourcePaths(path);
+    }
+
+    @Override
+    public InputStream getResourceAsStream(final String path)
+    {
+        checkNull(path, "path");
+        return _servletContext.getResourceAsStream(path);
     }
 
     @Override
@@ -402,6 +473,13 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     @Override
+    public String getRealPath(String path)
+    {
+        checkNull(path, "path");
+        return _servletContext.getRealPath(path);
+    }
+
+    @Override
     public String getRemoteUser()
     {
         checkHttpServletRequest();
@@ -441,6 +519,21 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public boolean isResponseCommitted()
     {
         return _httpServletResponse.isCommitted();
+    }
+
+    @Override
+    public void log(final String message)
+    {
+        checkNull(message, "message");
+        _servletContext.log(message);
+    }
+
+    @Override
+    public void log(final String message, final Throwable exception)
+    {
+        checkNull(message, "message");
+        checkNull(exception, "exception");
+        _servletContext.log(message, exception);
     }
 
     @Override
@@ -513,6 +606,13 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         checkHttpServletRequest();
         return new EnumerationIterator(_httpServletRequest.getLocales());
+    }
+
+    @Override
+    public URL getResource(final String path) throws MalformedURLException
+    {
+        checkNull(path, "path");
+        return _servletContext.getResource(path);
     }
 
     /**
@@ -631,6 +731,14 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         _httpServletResponse.setStatus(statusCode);
     }
 
+    private void checkNull(final Object o, final String param)
+    {
+        if (o == null)
+        {
+            throw new NullPointerException(param + " can not be null.");
+        }
+    }
+
     private void checkHttpServletRequest()
     {
         if (_httpServletRequest == null)
@@ -706,6 +814,11 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public void addResponseHeader(String name, String value)
     {
         _httpServletResponse.addHeader(name, value);
+    }
+
+    @Override
+    public String getContextName() {
+        return _servletContext.getServletContextName();
     }
 
     private String encodeURL(String baseUrl, Map<String, List<String>> parameters)
