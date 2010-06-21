@@ -194,7 +194,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             parentNode = item.parentNode;
 
             //evalNode = fragment.childNodes[0];
-            evalNodes = (fragment.childNodes) ? _Lang.objToArray(fragment.childNodes): fragment;
+            evalNodes = (fragment.childNodes) ? _Lang.objToArray(fragment.childNodes) : fragment;
             parentNode.replaceChild(fragment, item);
         }
         return evalNodes;
@@ -274,6 +274,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param itemId the identifier of the item
      */
     findById : function(fragment, itemId) {
+        //we have to escape here
 
         if (fragment === document) {
             return this.byId(itemId);
@@ -282,6 +283,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (fragment.nodeType == 1 && fragment.querySelector) {
             //we can use the query selector here
             if (fragment.id && fragment.id === itemId) return fragment;
+            if (myfaces._impl._util._Lang.isString(itemId)) {
+                itemId = itemId.replace(/\./g, "\\.");
+            }
+
             return fragment.querySelector("#" + itemId);
         }
 
@@ -393,6 +398,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
             //html 5 selector
             if (deepScan && fragment.querySelectorAll) {
+                if (_Lang.isString(tagName)) {
+                    tagName = tagName.replace(/\./g, "\\.");
+                }
                 var result = fragment.querySelectorAll(tagName);
                 if (fragment.nodeType == 1 && filter(fragment)) {
                     result = (result == null) ? [] : _Lang.objToArray(result);
@@ -420,6 +428,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             deepScan = !!deepScan;
 
             if (deepScan && fragment.querySelectorAll) {
+                if (_Lang.isString(name)) {
+                    name = name.replace(/\./g, "\\.");
+                }
                 var result = fragment.querySelectorAll("[name=" + name + "]");
                 if (fragment.nodeType == 1 && filter(fragment)) {
                     result = (result == null) ? [] : _Lang.objToArray(result);
