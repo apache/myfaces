@@ -113,6 +113,7 @@ public class FacesContextImpl extends FacesContext
     private void init(final ExternalContext externalContext, final ReleaseableExternalContext defaultExternalContext)
     {       
         _externalContext = externalContext;
+        _defaultExternalContext = defaultExternalContext;
         FacesContext.setCurrentInstance(this);  //protected method, therefore must be called from here
         _application = ((ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY))
                 .getApplication();

@@ -151,7 +151,19 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         
         if (context instanceof ServletContext)
         {
-            FacesContext facesContext = new FacesContextImpl(externalContext, null, this);
+            FacesContext facesContext;
+            if (externalContext instanceof ReleaseableExternalContext)
+            {
+                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) externalContext, this);
+            }
+            else if (defaultExternalContext != null && defaultExternalContext instanceof ReleaseableExternalContext)
+            {
+                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) defaultExternalContext, this);
+            }
+            else
+            {
+                facesContext = new FacesContextImpl(externalContext, null, this);
+            }
             
             facesContext.setExceptionHandler(_exceptionHandlerFactory.getExceptionHandler());
             
