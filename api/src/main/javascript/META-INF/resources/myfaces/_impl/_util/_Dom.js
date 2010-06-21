@@ -284,7 +284,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //we can use the query selector here
             if (fragment.id && fragment.id === itemId) return fragment;
             if (myfaces._impl._util._Lang.isString(itemId)) {
-                itemId = itemId.replace(/\./g, "\\.");
+                itemId = itemId.replace(/\./g, "\\.").replace(/:/g, "\\:");
             }
 
             return fragment.querySelector("#" + itemId);
@@ -429,7 +429,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
             if (deepScan && fragment.querySelectorAll) {
                 if (_Lang.isString(name)) {
-                    name = name.replace(/\./g, "\\.");
+                    name = name.replace(/\./g, "\\.").replace(/:/g, "\\:");;
                 }
                 var result = fragment.querySelectorAll("[name=" + name + "]");
                 if (fragment.nodeType == 1 && filter(fragment)) {
