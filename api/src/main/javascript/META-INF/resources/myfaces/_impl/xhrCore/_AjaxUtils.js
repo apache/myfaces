@@ -95,7 +95,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             //((elementTagName == "input" || elementTagName == "textarea" || elementTagName == "select") &&
             //    (elementName != null && elementName != "")) && !element.disabled
             //
-            if (child.nodeType != 1) return false;
+            
+            if (curNode.nodeType != 1) return false;
             if (submitAll && node != curNode) return true;
 
             var id = curNode.id;
