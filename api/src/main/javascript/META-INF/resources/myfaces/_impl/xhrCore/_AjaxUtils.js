@@ -62,6 +62,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
                 strBuf.push(encodeURIComponent(item.value));
                 strBuf.push("&");
             }
+            //we we might have a trailing ambersant 
+            //https://issues.apache.org/jira/browse/MYFACES-2767
+            if(strBuf && strBuf.length) {
+                if(strBuf[strBuf.length - 1] == "&") {
+                    strBuf = strBuf.slice(0, strBuf.length - 1);
+                }
+            }
 
             return strBuf.join("");
         } catch (e) {
