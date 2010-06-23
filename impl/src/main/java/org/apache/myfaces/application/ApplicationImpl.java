@@ -260,7 +260,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void addELResolver(final ELResolver resolver)
     {
-        if (FacesContext.getCurrentInstance() != null)
+        if (isFirstRequestProcessed())
         {
             throw new IllegalStateException("It is illegal to add a resolver after the first request is processed");
         }
@@ -829,7 +829,7 @@ public class ApplicationImpl extends Application
     {
         checkNull(variableResolver, "variableResolver");
 
-        if (getFaceContext() != null)
+        if (isFirstRequestProcessed())
         {
             throw new IllegalStateException("variableResolver must be defined before request processing");
         }
