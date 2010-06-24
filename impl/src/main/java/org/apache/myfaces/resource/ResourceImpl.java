@@ -291,7 +291,18 @@ public class ResourceImpl extends Resource
             if (lastModified >= 0)
             {
                 headers.put("Last-Modified", ResourceUtils.formatDateHeader(lastModified));
-                headers.put("Expires", ResourceUtils.formatDateHeader(System.currentTimeMillis()+_resourceHandlerSupport.getMaxTimeExpires()));
+                
+                long expires;
+                if (facesContext.isProjectStage(ProjectStage.Development))
+                {
+                    // Force to expire now to prevent caching on development time.
+                    expires = System.currentTimeMillis();
+                }
+                else
+                {
+                    expires = System.currentTimeMillis() + _resourceHandlerSupport.getMaxTimeExpires();
+                }
+                headers.put("Expires", ResourceUtils.formatDateHeader(expires));
             }
             
             return headers;
