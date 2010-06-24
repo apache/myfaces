@@ -13,7 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 /**
  * debugging replacement for lang which adds logging functionality
  * which is not yet present in the core
@@ -30,11 +30,38 @@
 /** @namespace myfaces._impl._util._ExtLang */
 myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang", myfaces._impl._util._Lang, {
 
+    /**
+     * we use a map switch instread of a log level
+     * slightly slower but more flexible
+     */
+    _ERR: "error",
+    _INF: "info",
+    _DEB: "debug",
+    _LOG: "log",
+    _WRN: "warn",
+
 
     constructor_: function() {
         //we replace the original one, and since we delegated
         //we have everything in place
         myfaces._impl._util._Lang = this;
+        //due to the delegation pattern we do not have access to the browser
+        this._browser = myfaces._impl.core._Runtime.browser;
+
+        this.logLevels = {};
+        this.logLevels[this._ERR] = true;
+        this.logLevels[this._INF] = true;
+        this.logLevels[this._DEB] = true;
+        this.logLevels[this._LOG] = true;
+        this.logLevels[this._WRN] = true;
+
+        //printing of a stack trace if possible
+        this.stackTraceLevels = {};
+        this.stackTraceLevels[this._ERR] = true;
+        this.stackTraceLevels[this._INF] = false;
+        this.stackTraceLevels[this._DEB] = false;
+        this.stackTraceLevels[this._LOG] = false;
+        this.stackTraceLevels[this._WRN] = false;
     },
 
     /**
@@ -44,57 +71,59 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang",
      * note: ;; means the code will be stripped
      * from the production code by the build system
      */
-    _log: function(styleClass /*+arguments*/, args) {
+    _log: function(logType /*+arguments*/, args) {
+
+        var argsString = this.objToArray(arguments[1]).join(" ");
+        var c = window.console || console;
+        if (c && c[logType]) {
+            c[logType](argsString);
+            if(this.stackTraceLevels[logType] && c.trace) {
+                c.trace();
+            }
+        }
         var logHolder = document.getElementById("myfaces.logging");
         if (logHolder) {
             var elem = document.createElement("div");
-            //element.className = styleClass;
-            elem.innerHTML = this.objToArray(arguments, 1).join(" ");
+            var b = this._browser;
+            if (!b.isIE || b.isIE > 7) {
+                //w3 compliant class setting
+                elem.setAttribute("class", "consoleLog " + logType);
+            } else {
+                //ie quirks compliant class setting
+                elem.setAttribute("className", "consoleLog " + logType);
+            }
+            elem.innerHTML = logType.toUpperCase() + ": " + argsString;
             logHolder.appendChild(elem);
         }
-    },
-
-    logLog: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-
-        var c = window.console;
-        if (c && c.log) {
-            c.log(argStr);
-        }
-        this._log("logLog", "Log:" + argStr);
-    },
-    logDebug: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-        var c = window.console;
-        if (c && c.debug) {
-            c.debug(argStr);
-        }
-        this._log("logDebug", "Debug:" + argStr);
-    },
-    logError: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-        var c = window.console;
-        if (c && c.error) {
-            c.error(argStr);
-        }
-        this._log("logError", "Error:" + argStr);
-
-    },
-    logInfo: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-        var c = window.console;
-        if (c && c.info) {
-            c.info(argStr);
-        }
-        this._log("logInfo", "Info:" + argStr);
-    },
-    logWarn: function(/*varargs*/) {
-        var argStr = this.objToArray(arguments).join(" ");
-        var c = window.console;
-        if (c && c.warn) {
-            c.warn(argStr);
-        }
-        this._log("logWarn", "Warn:" + argStr);
     }
+    ,
+
+    logError: function(/*varargs*/) {
+        if (!this.logLevels[this._ERR]) return;
+        this._log(this._ERR, arguments);
+    }
+    ,
+    logWarn: function(/*varargs*/) {
+        if (!this.logLevels[this._WRN]) return;
+        this._log(this._WRN, arguments);
+    }
+    ,
+    logInfo: function(/*varargs*/) {
+        //Level 2 == info
+        if (!this.logLevels[this._INF]) return;
+        this._log(this._INF, arguments);
+    }
+    ,
+    logDebug: function(/*varargs*/) {
+        //Level 1 == debug
+        if (!this.logLevels[this._DEB]) return;
+        this._log(this._DEB, arguments);
+    }
+    ,
+    logTrace: function(/*varargs*/) {
+        if (!this.logLevels[this._LOG]) return;
+        this._log("log", arguments);
+    }
+
 });
 
