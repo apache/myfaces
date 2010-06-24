@@ -74,7 +74,9 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang",
     _log: function(logType /*+arguments*/, args) {
 
         var argsString = this.objToArray(arguments[1]).join(" ");
-        var c = window.console || console;
+        var c = window.console;
+        
+
         if (c && c[logType]) {
             c[logType](argsString);
             if(this.stackTraceLevels[logType] && c.trace) {
