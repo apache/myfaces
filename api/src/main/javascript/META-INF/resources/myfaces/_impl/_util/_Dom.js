@@ -281,13 +281,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
 
         if (fragment.nodeType == 1 && fragment.querySelector) {
-            //we can use the query selector here
-            if (fragment.id && fragment.id === itemId) return fragment;
-            if (myfaces._impl._util._Lang.isString(itemId)) {
-                itemId = itemId.replace(/\./g, "\\.").replace(/:/g, "\\:");
-            }
+            try {
+                //we can use the query selector here
+                var newItemId = itemId;
+                if (fragment.id && fragment.id === itemId) return fragment;
+                if (myfaces._impl._util._Lang.isString(newItemId)) {
+                    newItemId = newItemId.replace(/\./g, "\\.").replace(/:/g, "\\:");
+                }
 
-            return fragment.querySelector("#" + itemId);
+                return fragment.querySelector("#" + newItemId);
+            } catch(e) {
+                //in case the selector bombs we retry manually
+            }
         }
 
         var filter = function(node) {
@@ -396,21 +401,28 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         };
         try {
 
-            //html 5 selector
-            if (deepScan && fragment.querySelectorAll) {
-                if (_Lang.isString(tagName)) {
-                    tagName = tagName.replace(/\./g, "\\.");
+            try {
+                //html 5 selector
+                if (deepScan && fragment.querySelectorAll) {
+                    var newTagName = tagName;
+                    if (_Lang.isString(newTagName)) {
+                        var newTagName = newTagName.replace(/\./g, "\\.");
+                    }
+                    var result = fragment.querySelectorAll(newTagName);
+                    if (fragment.nodeType == 1 && filter(fragment)) {
+                        result = (result == null) ? [] : _Lang.objToArray(result);
+                        result.push(fragment);
+                    }
+                    return result;
                 }
-                var result = fragment.querySelectorAll(tagName);
-                if (fragment.nodeType == 1 && filter(fragment)) {
-                    result = (result == null) ? [] : _Lang.objToArray(result);
-                    result.push(fragment);
-                }
-                return result;
+            } catch (e) {
+                //in case the selector fails we have to do another fallback instead
+                //of throwing an error
             }
             //if we are not in a html 5 environment which supports node selectors
             //we use the usual recursive fallback.
             return this.findAll(fragment, filter, deepScan);
+
         } finally {
             //the usual IE6 is broken, fix code
             filter = null;
@@ -428,15 +440,21 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             deepScan = !!deepScan;
 
             if (deepScan && fragment.querySelectorAll) {
-                if (_Lang.isString(name)) {
-                    name = name.replace(/\./g, "\\.").replace(/:/g, "\\:");;
+                try {
+                    var newName = name;
+                    if (_Lang.isString(newName)) {
+                        newName = newName.replace(/\./g, "\\.").replace(/:/g, "\\:");
+                        ;
+                    }
+                    var result = fragment.querySelectorAll("[name=" + newName + "]");
+                    if (fragment.nodeType == 1 && filter(fragment)) {
+                        result = (result == null) ? [] : _Lang.objToArray(result);
+                        result.push(fragment);
+                    }
+                    return result;
+                } catch(e) {
+                    //in case the selector bombs we retry manually
                 }
-                var result = fragment.querySelectorAll("[name=" + name + "]");
-                if (fragment.nodeType == 1 && filter(fragment)) {
-                    result = (result == null) ? [] : _Lang.objToArray(result);
-                    result.push(fragment);
-                }
-                return result;
             }
 
             return this.findAll(fragment, filter, deepScan);
@@ -479,15 +497,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //have the getElementsByClassName implemented
             //but only for deep scan and normal parent nodes
             else if (fragment.querySelectorAll && deepScan) {
-                var selector = "." + styleClass;
-                var result = fragment.querySelectorAll(selector);
+                try {
+                    var result = fragment.querySelectorAll("."+styleClass.replace(/\./g, "\\."));
 
-                if (fragment.nodeType == 1 && filter(fragment)) {
-                    result = (result == null) ? [] : result;
-                    result = _Lang.objToArray(result);
-                    result.push(fragment);
+                    if (fragment.nodeType == 1 && filter(fragment)) {
+                        result = (result == null) ? [] : result;
+                        result = _Lang.objToArray(result);
+                        result.push(fragment);
+                    }
+                    return result;
+                } catch(e) {
+                    //in case the selector bombs we have to retry with a different method
                 }
-                return result;
             } else {
                 //fallback to the classical filter methods if we cannot use the
                 //html 5 selectors for whatever reason
