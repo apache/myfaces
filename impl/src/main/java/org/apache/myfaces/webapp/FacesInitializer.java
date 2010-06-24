@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.webapp;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 /**
@@ -29,4 +30,28 @@ public interface FacesInitializer
     void initFaces(ServletContext servletContext);
     
     void destroyFaces(ServletContext servletContext);
+
+    /**
+     * @since 2.0.1
+     * @param facesContext
+     */
+    FacesContext initStartupFacesContext(ServletContext servletContext);
+    
+    /**
+     * @since 2.0.1
+     * @param facesContext
+     */
+    void destroyStartupFacesContext(FacesContext facesContext);
+        
+    /**
+     * @since 2.0.1
+     * @param facesContext
+     */
+    FacesContext initShutdownFacesContext(ServletContext servletContext);    
+
+    /**
+     * @since 2.0.1
+     * @param facesContext
+     */
+    void destroyShutdownFacesContext(FacesContext facesContext);
 }

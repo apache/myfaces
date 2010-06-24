@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import static org.apache.myfaces.context.servlet.StartupFacesContextImpl.EXCEPTION_TEXT;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -29,9 +27,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.context.Flash;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.myfaces.util.EnumerationIterator;
 
 /**
  * An ExternalContext implementation for Servlet environments, which is used
@@ -44,13 +50,14 @@ import javax.servlet.ServletContext;
  */
 public class StartupServletExternalContextImpl extends ServletExternalContextImplBase
 {
+    public static final String EXCEPTION_TEXT = "This method is not supported during ";
     
     private boolean _startup;
     
-    public StartupServletExternalContextImpl(boolean startup, ServletContext servletContext)
+    public StartupServletExternalContextImpl(final ServletContext servletContext,
+            boolean startup)
     {
         super(servletContext);
-        
         _startup = startup;
     }
     
@@ -60,349 +67,358 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     // shutdown are implemented in ServletExternalContextImplBase, because they 
     // are exactly the same as in the real ExternalContext implementation.
     
+    // ~ Methods which are not valid to be called during startup and shutdown, but we implement anyway ------
+    
     // ~ Methods which are unsupported during startup and shutdown-------------
-
-    @Override
-    public void dispatch(String path) throws IOException
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
 
     @Override
     public String encodeActionURL(String url)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String encodeNamespace(String name)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String encodeResourceURL(String url)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getAuthType()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getRemoteUser()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Object getRequest()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getRequestContextPath()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Map<String, Object> getRequestCookieMap()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Map<String, String> getRequestHeaderMap()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Map<String, String[]> getRequestHeaderValuesMap()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Locale getRequestLocale()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Iterator<Locale> getRequestLocales()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Map<String, Object> getRequestMap()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Map<String, String> getRequestParameterMap()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Iterator<String> getRequestParameterNames()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Map<String, String[]> getRequestParameterValuesMap()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getRequestPathInfo()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getRequestServletPath()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Object getResponse()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Object getSession(boolean create)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Map<String, Object> getSessionMap()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Principal getUserPrincipal()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public boolean isUserInRole(String role)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public void redirect(String url) throws IOException
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public void addResponseCookie(String name, String value,
-            Map<String, Object> properties)
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public void addResponseHeader(String name, String value)
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String encodeBookmarkableURL(String baseUrl,
             Map<String, List<String>> parameters)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String encodePartialActionURL(String url)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String encodeRedirectURL(String baseUrl,
             Map<String, List<String>> parameters)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public Flash getFlash()
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getRequestCharacterEncoding()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public int getRequestContentLength()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getRequestContentType()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getRequestScheme()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getRequestServerName()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public int getRequestServerPort()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public int getResponseBufferSize()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getResponseCharacterEncoding()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public String getResponseContentType()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public OutputStream getResponseOutputStream() throws IOException
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public Writer getResponseOutputWriter() throws IOException
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void invalidateSession()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public boolean isResponseCommitted()
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public void responseFlushBuffer() throws IOException
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public void responseReset()
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
-    }
-
-    @Override
-    public void responseSendError(int statusCode, String message)
-            throws IOException
-    {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void setRequest(Object request)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void setRequestCharacterEncoding(String encoding)
             throws UnsupportedEncodingException
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void setResponse(Object response)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void setResponseBufferSize(int size)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void setResponseCharacterEncoding(String encoding)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void setResponseContentLength(int length)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void setResponseContentType(String contentType)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public void setResponseHeader(String name, String value)
     {
-        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
-
+    
     @Override
     public void setResponseStatus(int statusCode)
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+    
+    /**
+     * Cannot dispatch because this is not a page request
+     */
+    @Override
+    public void dispatch(String path) throws IOException
     {
         throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
     }
     
+    /**
+     * Cannot redirect because this is not a page request
+     */
+    @Override
+    public void redirect(String url) throws IOException
+    {
+        throw new IllegalStateException(EXCEPTION_TEXT + _getTime());
+    }
+    
+
+    @Override
+    public void responseFlushBuffer() throws IOException
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
+    @Override
+    public void responseReset()
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
+    @Override
+    public void responseSendError(int statusCode, String message)
+            throws IOException
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+    
+    @Override
+    public void addResponseCookie(String name, String value,
+            Map<String, Object> properties)
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
+    @Override
+    public void addResponseHeader(String name, String value)
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
+    @Override
+    public Flash getFlash()
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
+    @Override
+    public OutputStream getResponseOutputStream() throws IOException
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
+    @Override
+    public Writer getResponseOutputWriter() throws IOException
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
     // ~ private Methods ------------------------------------------------------
     
     /**

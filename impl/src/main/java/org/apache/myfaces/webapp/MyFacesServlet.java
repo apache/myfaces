@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -92,14 +93,47 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
         //Check, if ServletContextListener already called
         ServletContext servletContext = servletConfig.getServletContext();
         Boolean b = (Boolean)servletContext.getAttribute(StartupServletContextListener.FACES_INIT_DONE);
+        
+        //Create startup FacesContext before initialize
+        FacesContext facesContext = initStartupFacesContext(servletContext);
+                
         if (b == null || b.booleanValue() == false)
         {
             if(log.isLoggable(Level.WARNING))
                 log.warning("ServletContextListener not yet called");
             initFaces(servletConfig.getServletContext());
         }
+        
+        //Destroy startup FacesContext
+        destroyStartupFacesContext(facesContext);
+        
         delegate.init(servletConfig);
         log.info("MyFacesServlet for context '" + servletConfig.getServletContext().getRealPath("/") + "' initialized.");
+    }
+    
+    protected FacesContext initStartupFacesContext(ServletContext context)
+    {
+        if (_facesInitializer == null)
+        {
+            if (ContainerUtils.isJsp21(context)) 
+            {
+                _facesInitializer = new Jsp21FacesInitializer();
+            } 
+            else 
+            {
+                _facesInitializer = new Jsp20FacesInitializer();
+            }
+        }
+
+        return _facesInitializer.initStartupFacesContext(context);
+    }
+    
+    protected void destroyStartupFacesContext(FacesContext facesContext)
+    {
+        if (_facesInitializer != null)
+        {
+            _facesInitializer.destroyStartupFacesContext(facesContext);
+        }
     }
 
     public void service(ServletRequest request, ServletResponse response)
