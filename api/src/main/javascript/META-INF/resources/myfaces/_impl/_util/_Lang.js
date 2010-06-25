@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 
 /*
@@ -38,14 +38,14 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         if (!namespace || !this.isString(namespace)) {
             throw Error("_Lang.fetchNamespace namespace must be of type String");
         }
-        return this._callDelegate("fetchNamespace",namespace);
+        return this._callDelegate("fetchNamespace", namespace);
     },
 
     reserveNamespace : function(namespace) {
         if (!this.isString(namespace)) {
             throw Error("_Lang.reserveNamespace namespace must be of type String");
         }
-        return this._callDelegate("reserveNamespace",namespace);
+        return this._callDelegate("reserveNamespace", namespace);
         //return this._RT.reserveNamespace(namespace);
     },
 
@@ -53,7 +53,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         if (!this.isString(code)) {
             throw Error("_Lang.globalEval code must be of type String");
         }
-        return this._callDelegate("globalEval",code);
+        return this._callDelegate("globalEval", code);
 
         //return this._RT.globalEval(code);
     },
@@ -73,21 +73,6 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         }
         return t;
     },
-
-    /**
-     * check if an element exists in the root
-     */
-    /*exists : function(root, subNamespace) {
-        return this._RT.exists(root, subNamespace);
-    },*/
-
-    /**
-     @see this._RT.extendClass
-     */
-    /*singletonExtendClass : function(newClass, extendsClass, functionMap, inherited) {
-        return this._RT.singletonExtendClass(newClass, extendsClass, functionMap, inherited);
-    },*/
-
 
     /**
      * equalsIgnoreCase, case insensitive comparison of two strings
@@ -112,8 +97,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      @see this._RT.extendClass
      */
     /*extendClass : function(newClass, extendsClass, functionMap, inherited) {
-        return this._RT.extendClass(newClass, extendsClass, functionMap, inherited);
-    },*/
+     return this._RT.extendClass(newClass, extendsClass, functionMap, inherited);
+     },*/
 
     //core namespacing and inheritance done, now to the language extensions
 
@@ -396,19 +381,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         return this.isString(theType) ? probe == typeof theType : probe instanceof theType;
     },
 
-    /**
-     * onload wrapper for chaining the onload cleanly
-     * @param func the function which should be added to the load
-     * chain (note we cannot rely on return values here, hence jsf.util.chain will fail)
-     */
-    addOnLoad: function(func) {
-        var oldonload = window.onload;
-        window.onload = (!this.assertType(window.onload, "function")) ? func : function() {
-            oldonload();
-            func();
-        };
-    },
-
+  
 
     objToArray: function(obj, offset, pack) {
         //since offset is numeric we cannot use the shortcut due to 0 being false
@@ -431,63 +404,108 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
     },
 
-    //not yet used
     /**
-     * attaches a standard iterator if
-     * the collection does not have one already
-     *
-     * @param inColl
+     * foreach implementation utilizing the
+     * ECMAScript wherever possible
+     * with added functionality
+     * 
+     * @param arr the array to filter
+     * @param func the closure to apply the function to, with the syntax defined by the ecmascript functionality
+     * function (element<,key, array>)
+     * @param startPos (optional) the starting position
+     * @param scope (optional) the scope to apply the closure to
      */
-   /* collection : function (inColl) {
-        var _coll = inColl;
+    arrForEach: function(arr, func /*startPos, scope*/) {
+        var startPos = Number(arguments[2]) ||  0;
+        var thisObj = arguments[3];
 
-        if (_coll instanceof Array) {
-            if (!_coll.each) {
-                _coll.each = function(closure) {
-                    for (var cnt = 0; cnt < _coll.length; cnt++) {
-                        //if(caller.this) {
-                        //    closure.apply(caller.this, [cnt, _coll[cnt]]);
-                        //} else {
-                            closure(cnt, _coll[cnt]);
-                        //}
-                    }
-                }
-            }
-            if (!_coll.filter) {
-                _coll.filter = function(closure) {
-
-                    var retVal = [];
-                    for (var cnt = 0; cnt < _coll.length; cnt++) {
-                        var elem = closure(_coll[cnt]);
-                        if (closure(cnt, elem)) {
-                            retVal.push(elem)
-                        }
-                    }
-                }
-            }
-
+        //check for an existing foreach mapping on array prototypes
+        if (Array.prototype.forEach) {
+            (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
         } else {
-            if (!_coll.each) {
-                _coll.each = function(closure) {
-                    for (var key in _coll.length) {
-                        closure(key, _coll[key]);
-                    }
+             startPos = (startPos < 0)? Math.ceil(startPos): Math.floor(startPos);
+            if (typeof func != "function") {
+                throw new TypeError();
+            }
+            for (var cnt = 0; cnt < arr.length; cnt++) {
+                if (thisObj) {
+                    func.call(thisObj, arr[cnt], cnt, arr);
+                } else {
+                    func(arr[cnt], cnt, arr);
                 }
             }
-            if (!_coll.filter) {
-                _coll.filter = function(closure) {
-                    var retVal = [];
-                    for (var key in _coll.length) {
-                        var elem = closure(_coll[key]);
-                        if (closure(key, elem)) {
-                            retVal.push(elem)
-                        }
-                    }
-                }
-            }
-
         }
-    },*/
+    },
+
+
+    /**
+     * foreach implementation utilizing the
+     * ECMAScript wherever possible
+     * with added functionality
+     *
+     * @param arr the array to filter
+     * @param func the closure to apply the function to, with the syntax defined by the ecmascript functionality
+     * function (element<,key, array>)
+     * @param startPos (optional) the starting position
+     * @param scope (optional) the scope to apply the closure to
+     *
+     */
+    arrFilter: function(arr, func /*startPos, scope*/) {
+        var startPos = Number(arguments[2]) || 0;
+        var thisObj = arguments[3];
+
+        //check for an existing foreach mapping on array prototypes
+        if (Array.prototype.filter) {
+            return ((startPos) ? arr.slice(startPos).filter(func, thisObj) : arr.filter(func, thisObj));
+        } else {
+            if (typeof func != "function") {
+                throw new TypeError();
+            }
+            var ret = [];
+            startPos = (startPos < 0)? Math.ceil(startPos): Math.floor(startPos);
+
+            for (var cnt = startPos; cnt < arr.length; cnt++) {
+                if (thisObj) {
+                    var elem = arr[cnt];
+                    if (func.call(thisObj, elem, cnt, arr)) ret.push(elem);
+                } else {
+                    var elem = arr[cnt];
+                    if (func(arr[cnt], cnt, arr)) ret.push(elem);
+                }
+            }
+        }
+    },
+
+    /**
+     * adds a EcmaScript optimized indexOf to our mix,
+     * checks for the presence of an indexOf functionality
+     * and applies it, otherwise uses a fallback to the hold
+     * loop method to determine the index
+     *
+     * @param arr the array
+     * @param element the index to search for
+     */
+    arrIndexOf: function(arr, element /*fromIndex*/) {
+        if(!arr) return -1;
+        var pos = Number(arguments[2]) || 0;
+
+        if(Array.prototype.indexOf) {
+            return arr.indexOf(element, pos);
+        }
+        //var cnt = this._space;
+        var len = arr.length;
+        pos = (pos < 0)? Math.ceil(pos): Math.floor(pos);
+
+        //if negative then it is taken from as offset from the length of the array
+        if(pos < 0) {
+            pos += len;
+        }
+        while (pos < len && arr[pos] !== element) {
+            pos++;
+        }
+        return (pos < len) ? pos : -1;
+    },
+
 
     /**
      * helper to automatically apply a delivered arguments map or array
@@ -558,5 +576,5 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         ret.push(delimiter);
         return ret.join("");
     }
-   
+
 });

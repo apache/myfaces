@@ -64,10 +64,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             }
             //we we might have a trailing ambersant 
             //https://issues.apache.org/jira/browse/MYFACES-2767
-            if(strBuf && strBuf.length) {
-                if(strBuf[strBuf.length - 1] == "&") {
-                    strBuf = strBuf.slice(0, strBuf.length - 1);
-                }
+            if(strBuf && strBuf.length && strBuf[strBuf.length - 1] == "&") {
+                strBuf = strBuf.slice(0, strBuf.length - 1);
             }
 
             return strBuf.join("");
@@ -107,7 +105,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
         };
 
         var nodes = _Dom.findAll(node, nodeFilter, true);
-
+        //TODO drag the encodeElement in the nodeFilter so that
+        //we have the entire processing in one loop
         if (nodes) {
             for (var cnt = 0; cnt < nodes.length; cnt++) {
                 this.encodeElement(nodes[cnt], strBuf);

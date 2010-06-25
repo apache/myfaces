@@ -65,17 +65,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param {|Node|} item
      */
     runScripts: function(item) {
-
         var execScrpt = myfaces._impl._util._Lang.hitch(this, function(item) {
             if (item.tagName && item.tagName.toLowerCase() == 'script') {
-
-                if (typeof item.getAttribute('src') != 'undefined'
-                        && item.getAttribute('src') != null
-                        && item.getAttribute('src').length > 0) {
-                    // external script auto eval
-                    //TODO fix the encoding here, we have to assume the src is the same encoding as the document
-                    //or enforce auto
-                    myfaces._impl.core._Runtime.loadScriptEval(item.getAttribute('src'), item.getAttribute('type'), false, "UTF-8");
+                var src = item.getAttribute('src');
+                if (    'undefined' !=  typeof src 
+                        && null !=  src
+                        && src.length > 0
+                ) {
+                    //we have to move this into an inner if because chrome otherwise chokes
+                    //due to changing the and order instead of relying on left to right
+                    if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
+                        && src.indexOf("/jsf-uncompressed.js") == -1))
+                    myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
                     var test = item.text;
@@ -704,7 +705,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     //special ie quirks handling for opacity
 
                     var opacityVal = Math.max(100, Math.round(parseFloat(keyVal[1]) * 10));
-                    node.style.setAttribute("filter", "alpha(opacity=" + opacityVal + ")");
+                    node.style.setAttribute("arrFilter", "alpha(opacity=" + opacityVal + ")");
                     //if you need more hacks I would recommend
                     //to use the class attribute and conditional ie includes!
                 } else if (keyVal[0] != "") {

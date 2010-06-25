@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 
 /**
@@ -277,6 +277,7 @@ if (!myfaces._impl.core._Runtime) {
 
             return (!_this.exists(localOptions, "myfaces." + configName)) ? _this.getGlobalConfig(configName, defaultValue) : localOptions.myfaces[configName];
         };
+        
 
         /**
          * encapsulated xhr object which tracks down various implementations
@@ -358,9 +359,9 @@ if (!myfaces._impl.core._Runtime) {
             //the rest can be finely served with body
             var d = this.browser;
             var position = "head"
-            if(!d.isIE || d.isIE >= 8) {
-                position = document.getElementsByTagName("body").length ? "body" : "head";
-            }
+            //if(!d.isIE || d.isIE >= 8) {
+            //    position = document.getElementsByTagName("body").length ? "body" : "head";
+            //}
 
             try {
                 var holder = document.getElementsByTagName(position)[0];
@@ -379,12 +380,17 @@ if (!myfaces._impl.core._Runtime) {
                 if (defer) {
                     script.defer = defer;
                 }
-                holder.appendChild(script);
+
+                //fix for the white page issue
+               // if(this.browser.isIE && this.browser.isIE < 7) {
+                //   holder.insertBefore( script, holder.firstChild );
+                //   holder.removeChild( script );
+               // } else {
+                   holder.appendChild(script);
+               // }
+
             } catch (e) {
-                //webkit based browsers and probably
-                //other standard conforming browsers forbid head manipulation
-                //after the head tag being closed
-                //we fall back to global eval for those cases
+                //in case of a loading error we retry via eval    
                 return false;
             }
 
@@ -392,8 +398,15 @@ if (!myfaces._impl.core._Runtime) {
         };
 
         this.loadScript = function(src, type, defer, charSet) {
-            if (!_this.loadScriptByBrowser(src, type, defer, charSet)) {
+            //the chrome engine has a nasty javascript bug which prevents
+            //a correct order of scripts being loaded
+            //if you use script source on the head, we  have to revert
+            //to xhr+ globalEval for those
+            if(!_this.browser.isFF) {
                 _this.loadScriptEval(src, type, defer, charSet);
+            } else {
+                //only firefox keeps the order, sorry ie...
+                _this.loadScriptByBrowser(src, type, defer, charSet)
             }
         };
 
@@ -611,7 +624,20 @@ if (!myfaces._impl.core._Runtime) {
                 }
             }
         };
-        
+
+        /**
+         * onload wrapper for chaining the onload cleanly
+         * @param func the function which should be added to the load
+         * chain (note we cannot rely on return values here, hence jsf.util.chain will fail)
+         */
+        this.addOnLoad = function(func) {
+            var oldonload = window.onload;
+            window.onload = (!this.assertType(window.onload, "function")) ? func : function() {
+                oldonload();
+                func();
+            };
+        };
+
         /**
          * determines if the embedded scripts have to be evaled manually
          * @return true if a browser combination is given which has to
