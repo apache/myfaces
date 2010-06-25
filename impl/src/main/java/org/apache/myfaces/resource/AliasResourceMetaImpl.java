@@ -27,13 +27,16 @@ package org.apache.myfaces.resource;
 public class AliasResourceMetaImpl extends ResourceMetaImpl
 {
     private String _realResourceName;
+    
+    private boolean _couldContainValueExpressions;
 
     public AliasResourceMetaImpl(String prefix, String libraryName, String libraryVersion,
-            String resourceName, String resourceVersion, String realResourceName)
+            String resourceName, String resourceVersion, String realResourceName, boolean couldContainValueExpressions)
     {
         super(prefix, libraryName, libraryVersion,
             resourceName, resourceVersion);
         _realResourceName = realResourceName;
+        _couldContainValueExpressions = couldContainValueExpressions;
     }
     
     public String getRealResourceName()
@@ -88,6 +91,6 @@ public class AliasResourceMetaImpl extends ResourceMetaImpl
     @Override
     public boolean couldResourceContainValueExpressions()
     {
-        return true;
+        return _couldContainValueExpressions;
     }
 }

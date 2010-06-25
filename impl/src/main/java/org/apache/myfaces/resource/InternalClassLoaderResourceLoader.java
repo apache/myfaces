@@ -101,11 +101,11 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             if (_useMultipleJsFilesForJsfUncompressedJs)
             {
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
-                    resourceName, resourceVersion, org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME);
+                    resourceName, resourceVersion, org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME, true);
             }
             else
             {
-                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion, "jsf-uncompressed-full.js");
+                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion, "jsf-uncompressed-full.js", false);
             }
         }
         else if (libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
