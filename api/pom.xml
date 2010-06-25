@@ -80,10 +80,11 @@
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
                                 <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_ExtLang.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
-                     <execution>
+                    <execution>
                         <id>compile-uncompressed</id>
                         <goals>
                             <goal>compile</goal>
@@ -93,10 +94,25 @@
                             <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
                             <excludes>
-                                <exclude>**/myfaces/_impl/core/jsf_impl.js</exclude>
+                                <exclude>**/myfaces/_impl/core/Impl.js</exclude>
                                 <exclude>**/myfaces/_impl/_util/*</exclude>
                                 <exclude>**/myfaces/_impl/xhrCore/*</exclude>
                                 <exclude>**/myfaces/api/*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-uncompressed-full</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-full-compiler.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -109,7 +125,10 @@
 
                         <configuration>
                             <scripts>target/classes/META-INF/resources/javax.faces/</scripts>
-                            <excludes><exclude>jsf-uncompressed.js</exclude></excludes>
+                            <excludes>
+                                <exclude>jsf-uncompressed.js</exclude>
+                                <exclude>jsf-uncompressed-full.js</exclude>
+                            </excludes>
                             <compressor>yahooUI</compressor>
                         </configuration>
                     </execution>
