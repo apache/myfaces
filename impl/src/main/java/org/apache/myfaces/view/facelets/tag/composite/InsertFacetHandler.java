@@ -131,7 +131,7 @@ public class InsertFacetHandler extends TagHandler
             
             actx.includeCompositeComponentDefinition(parent, facetName);
             
-            parentCompositeComponent.getAttributes().put(INSERT_FACET_USED+facetName, Boolean.TRUE);
+            //parentCompositeComponent.getAttributes().put(INSERT_FACET_USED+facetName, Boolean.TRUE);
         }
         
     }

@@ -79,7 +79,7 @@ public class InsertChildrenHandler extends TagHandler
         {
             actx.includeCompositeComponentDefinition(parent, null);
             
-            parentCompositeComponent.getAttributes().put(INSERT_CHILDREN_USED, Boolean.TRUE);
+            //parentCompositeComponent.getAttributes().put(INSERT_CHILDREN_USED, Boolean.TRUE);
         }
     }
 
