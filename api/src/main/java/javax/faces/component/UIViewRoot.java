@@ -156,6 +156,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // If the component ID of componentResource matches the ID of a resource that has already been added, remove the old resource.
         String componentId = componentResource.getId();
         
+        if (componentId == null)
+        {
+            // componentResource can have no id - calling createUniqueId makes us sure that component will have one
+            // https://issues.apache.org/jira/browse/MYFACES-2775
+            componentId = createUniqueId(context, null);
+            componentResource.setId(componentId);
+        }
+        
         // This var helps to handle the case when we try to add a component that already is
         // on the resource list, because PostAddToViewEvent also is sent to components 
         // backing resources. The problem start when a component is already inside
