@@ -91,7 +91,9 @@ public class UIDataTest extends AbstractJsfTestCase
         renderKit.addRenderer(UIData.COMPONENT_FAMILY, UIData.COMPONENT_TYPE, renderer);
         assertEquals("xxx", _testImpl.getClientId(facesContext));
         _testImpl.setRowIndex(99);
-        assertEquals("xxx:99", _testImpl.getClientId(facesContext));
+        //MYFACES-2744 UIData.getClientId() should not append rowIndex, instead use UIData.getContainerClientId()
+        assertEquals("xxx", _testImpl.getClientId(facesContext));
+        assertEquals("xxx:99", _testImpl.getContainerClientId(facesContext));
     }
 
     /**

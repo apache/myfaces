@@ -255,10 +255,22 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         _value = value;
     }
 
+    /*
     @Override
     public String getClientId(FacesContext faces)
     {
         String id = super.getClientId(faces);
+        if (_index >= 0)
+        {
+            id = _getBuffer().append(id).append(UINamingContainer.getSeparatorChar(faces)).append(_index).toString();
+        }
+        return id;
+    }*/
+    
+    @Override
+    public String getContainerClientId(FacesContext faces)
+    {
+        String id = super.getContainerClientId(faces);
         if (_index >= 0)
         {
             id = _getBuffer().append(id).append(UINamingContainer.getSeparatorChar(faces)).append(_index).toString();

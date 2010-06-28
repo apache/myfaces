@@ -685,6 +685,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         super.setValueExpression(name, binding);
     }
 
+    /*
     @Override
     public String getClientId(FacesContext context)
     {
@@ -697,6 +698,22 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         StringBuilder bld = __getSharedStringBuilder();
         return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
+    }*/
+
+    @Override
+    public String getContainerClientId(FacesContext context)
+    {
+        //MYFACES-2744 UIData.getClientId() should not append rowIndex, instead use UIData.getContainerClientId()
+        String clientId = super.getContainerClientId(context);
+        
+        int rowIndex = getRowIndex();
+        if (rowIndex == -1)
+        {
+            return clientId;
+        }
+
+        StringBuilder bld = __getSharedStringBuilder();
+        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();        
     }
 
     /**
