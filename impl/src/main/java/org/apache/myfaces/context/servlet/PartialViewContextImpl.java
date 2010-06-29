@@ -239,7 +239,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                 
                 if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals (renderMode))
                 {
-                    _renderClientIds.add ("javax.faces.ViewRoot");
+                    _renderClientIds.add (PartialResponseWriter.RENDER_ALL_MARKER);
                 }
             }
         }
@@ -325,7 +325,7 @@ public class PartialViewContextImpl extends PartialViewContext {
     {
         //TODO process partial rendering
         //https://issues.apache.org/jira/browse/MYFACES-2118
-        Collection<String> renderIds = getRenderIds();
+        //Collection<String> renderIds = getRenderIds();
         
         // We need to always update the view state marker when processing partial
         // rendering, because there is no way to check when the state has been changed
@@ -356,33 +356,30 @@ public class PartialViewContextImpl extends PartialViewContext {
             inDocument = true;
             _facesContext.setResponseWriter(writer);
 
-            //Only apply partial visit if we have ids to traverse
-            if (renderIds != null && !renderIds.isEmpty())
+            if (isRenderAll())
             {
-                Set<VisitHint> hints = new HashSet<VisitHint>();
-                // unrendered have to be skipped, transient definitely must be added to our list!
-                hints.add(VisitHint.SKIP_UNRENDERED);
-                
-                // render=@all, so output the body.
-                if (renderIds.contains ("javax.faces.ViewRoot"))
+                processRenderAll(viewRoot, writer);
+            }
+            else
+            {
+                Collection<String> renderIds = getRenderIds();
+                //Only apply partial visit if we have ids to traverse
+                if (renderIds != null && !renderIds.isEmpty())
                 {
-                    java.util.Iterator<UIComponent> iter = viewRoot.getFacetsAndChildren();
-                    writer.startUpdate ("javax.faces.ViewRoot");
-                    while (iter.hasNext()) 
-                    { 
-                        UIComponent comp = iter.next();
-                        
-                        if (comp instanceof javax.faces.component.html.HtmlBody)
-                        {
-                            comp.encodeAll (_facesContext);
-                        }
+                    Set<VisitHint> hints = new HashSet<VisitHint>();
+                    // unrendered have to be skipped, transient definitely must be added to our list!
+                    hints.add(VisitHint.SKIP_UNRENDERED);
+                    
+                    // render=@all, so output the body.
+                    if (renderIds.contains (PartialResponseWriter.RENDER_ALL_MARKER))
+                    {
+                        processRenderAll(viewRoot, writer);
                     }
-                    writer.endUpdate();
-                }
-                else
-                {
-                    VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
-                    viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+                    else
+                    {
+                        VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
+                        viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+                    }
                 }
             }
             
@@ -429,6 +426,24 @@ public class PartialViewContextImpl extends PartialViewContext {
             _facesContext.setResponseWriter(oldWriter);
         }
 
+    }
+    
+    private void processRenderAll(UIViewRoot viewRoot, PartialResponseWriter writer) throws IOException
+    {
+        java.util.Iterator<UIComponent> iter = viewRoot.getFacetsAndChildren();
+        writer.startUpdate (PartialResponseWriter.RENDER_ALL_MARKER);
+        while (iter.hasNext()) 
+        { 
+            UIComponent comp = iter.next();
+            
+            //TODO: Do not check for a specific instance, 
+            //just render all children.
+            if (comp instanceof javax.faces.component.html.HtmlBody)
+            {
+                comp.encodeAll (_facesContext);
+            }
+        }
+        writer.endUpdate();
     }
 
     /**
