@@ -438,10 +438,10 @@ public class PartialViewContextImpl extends PartialViewContext {
             
             //TODO: Do not check for a specific instance, 
             //just render all children.
-            if (comp instanceof javax.faces.component.html.HtmlBody)
-            {
+            //if (comp instanceof javax.faces.component.html.HtmlBody)
+            //{
                 comp.encodeAll (_facesContext);
-            }
+            //}
         }
         writer.endUpdate();
     }
