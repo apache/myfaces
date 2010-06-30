@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
@@ -69,6 +70,7 @@ public class FaceletViewHandler extends ViewHandler
     protected final static Logger log = Logger.getLogger(FaceletViewHandler.class.getName());
 
     public final static long DEFAULT_REFRESH_PERIOD = 2;
+    public final static long DEFAULT_REFRESH_PERIOD_PRODUCTION = -1;
 
     public final static String PARAM_REFRESH_PERIOD = "facelets.REFRESH_PERIOD";
 
@@ -235,8 +237,14 @@ public class FaceletViewHandler extends ViewHandler
     {
 
         // refresh period
-        long refreshPeriod = DEFAULT_REFRESH_PERIOD;
         FacesContext ctx = FacesContext.getCurrentInstance();
+        long refreshPeriod;
+        
+        if(ctx.getApplication().getProjectStage().equals(ProjectStage.Production))
+            refreshPeriod = DEFAULT_REFRESH_PERIOD_PRODUCTION;
+        else
+            refreshPeriod = DEFAULT_REFRESH_PERIOD;
+        
         String userPeriod = ctx.getExternalContext().getInitParameter(PARAM_REFRESH_PERIOD);
         if (userPeriod != null && userPeriod.length() > 0)
         {

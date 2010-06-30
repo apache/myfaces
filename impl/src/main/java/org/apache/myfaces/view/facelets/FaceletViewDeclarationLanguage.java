@@ -141,6 +141,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
 
     public final static long DEFAULT_REFRESH_PERIOD = 2;
+    public final static long DEFAULT_REFRESH_PERIOD_PRODUCTION = -1;
 
     public final static String DEFAULT_CHARACTER_ENCODING = "UTF-8";
     
@@ -1352,8 +1353,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         ExternalContext eContext = context.getExternalContext();
 
         // refresh period
-        long refreshPeriod = _getLongParameter(eContext, PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED, DEFAULT_REFRESH_PERIOD);
-
+        long refreshPeriod;
+        if(context.getApplication().getProjectStage().equals(ProjectStage.Production))
+            refreshPeriod = _getLongParameter(eContext, PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED, DEFAULT_REFRESH_PERIOD_PRODUCTION);
+        else
+            refreshPeriod = _getLongParameter(eContext, PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED, DEFAULT_REFRESH_PERIOD);
+        
         // resource resolver
         ResourceResolver resolver = new DefaultResourceResolver();
         String faceletsResourceResolverClassName = _getStringParameter(eContext, PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED);

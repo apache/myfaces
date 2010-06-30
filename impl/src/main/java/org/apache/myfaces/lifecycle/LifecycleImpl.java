@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.event.ExceptionQueuedEvent;
@@ -81,15 +82,15 @@ public class LifecycleImpl extends Lifecycle
     {
         try
         {
-            // refresh all configuration information if according web-xml parameter is set.
-            // TODO: Performance wise, shouldn't the lifecycle be configured with a local boolean attribute
-            // specifying if the system should look for file modification because this code seems like
-            // a developement facility, but at the cost of scalability. I think a context param like
-            // Trinidad is a better idea -= Simon Lessard =-
-            WebXml.update(facesContext.getExternalContext());
-    
-            new FacesConfigurator(facesContext.getExternalContext()).update();
-
+            // check for updates of web.xml and faces-config descriptors 
+            // only on a first request or if project state is not production
+            if(!_firstRequestProcessed || !facesContext.getApplication().getProjectStage().equals(ProjectStage.Production) )
+            {
+                WebXml.update(facesContext.getExternalContext());
+                new FacesConfigurator(facesContext.getExternalContext()).update();
+            }
+            
+            
             PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
             for (PhaseExecutor executor : lifecycleExecutors)
             {

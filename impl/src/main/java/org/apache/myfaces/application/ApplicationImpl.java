@@ -22,8 +22,10 @@ import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -159,15 +161,15 @@ public class ApplicationImpl extends Application
 
     // components, converters, and validators can be added at runtime--must
     // synchronize, uses ConcurrentHashMap to allow concurrent read of map
-    private final Map<String, Class<? extends Converter>> _converterIdToClassMap = new ConcurrentHashMap<String, Class<? extends Converter>>();
+    private final Map<String, Object> _converterIdToClassMap = new ConcurrentHashMap<String, Object>();
 
     private final Map<Class<?>, String> _converterClassNameToClassMap = new ConcurrentHashMap<Class<?>, String>();
 
     private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
 
-    private final Map<String, Class<? extends UIComponent>> _componentClassMap = new ConcurrentHashMap<String, Class<? extends UIComponent>>();
+    private final Map<String, Object> _componentClassMap = new ConcurrentHashMap<String, Object>();
 
-    private final Map<String, Class<? extends Validator>> _validatorClassMap = new ConcurrentHashMap<String, Class<? extends Validator>>();
+    private final Map<String, Object> _validatorClassMap = new ConcurrentHashMap<String, Object>();
 
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
@@ -175,7 +177,7 @@ public class ApplicationImpl extends Application
     
     private Map<String, String> _cachedDefaultValidatorsIds = null;
     
-    private final Map<String, Class<? extends Behavior>> _behaviorClassMap = new ConcurrentHashMap<String, Class<? extends Behavior>>();
+    private final Map<String, Object> _behaviorClassMap = new ConcurrentHashMap<String, Object>();
 
     private final RuntimeConfig _runtimeConfig;
 
@@ -186,6 +188,9 @@ public class ApplicationImpl extends Application
     private ProjectStage _projectStage;
 
     private boolean _firstRequestProcessed = false;
+    
+    private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap = new HashMap<Class<?>, List<ListenerFor>>() ;
+    private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap = new HashMap<Class<?>, List<ResourceDependency>>() ;
     
     // ~ Constructors
     // --------------------------------------------------------------------------
@@ -275,7 +280,15 @@ public class ApplicationImpl extends Application
     {
         if (_validatorClassMap.containsKey(validatorId))
         {
-            _defaultValidatorsIds.put(validatorId, _validatorClassMap.get(validatorId).getName());
+            Object validatorClass = getObjectFromClassMap(validatorId, _validatorClassMap);
+            String className;
+            if(validatorClass instanceof String)
+                className = (String)validatorClass;
+            
+            //otherwise validatorClass is an object of type Class<?>
+            className = ((Class<?>)validatorClass).getName();
+                
+            _defaultValidatorsIds.put(validatorId, className);
             _cachedDefaultValidatorsIds = null;
         }
     }
@@ -928,7 +941,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _behaviorClassMap.put(behaviorId, ClassUtils.simpleClassForName(behaviorClass));
+            _behaviorClassMap.put(behaviorId, behaviorClass);
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Behavior class = " + behaviorClass + " for id = " + behaviorId);
         }
@@ -950,7 +963,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _componentClassMap.put(componentType, ClassUtils.simpleClassForName(componentClassName));
+            _componentClassMap.put(componentType, componentClassName);
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Component class = " + componentClassName + " for type = " + componentType);
         }
@@ -971,7 +984,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _converterIdToClassMap.put(converterId, ClassUtils.simpleClassForName(converterClass));
+            _converterIdToClassMap.put(converterId, converterClass);
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Converter id = " + converterId + " converterClass = " + converterClass);
         }
@@ -1022,7 +1035,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _validatorClassMap.put(validatorId, ClassUtils.simpleClassForName(validatorClass));
+            _validatorClassMap.put(validatorId, validatorClass);
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Validator id = " + validatorId + " class = " + validatorClass);
         }
@@ -1038,15 +1051,16 @@ public class ApplicationImpl extends Application
         checkNull(behaviorId, "behaviorId");
         checkEmpty(behaviorId, "behaviorId");
 
-        final Class<? extends Behavior> behaviorClass = this._behaviorClassMap.get(behaviorId);
+        final Class<?> behaviorClass = getObjectFromClassMap(behaviorId, _behaviorClassMap);
+        
         if (behaviorClass == null)
         {
             throw new FacesException("Could not find any registered behavior-class for behaviorId : " + behaviorId);
         }
-
+        
         try
         {
-            Behavior behavior = behaviorClass.newInstance();
+            Behavior behavior = (Behavior)behaviorClass.newInstance();
 
             _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), behavior);
 
@@ -1240,7 +1254,7 @@ public class ApplicationImpl extends Application
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
 
-        final Class<? extends UIComponent> componentClass = _componentClassMap.get(componentType);
+        final Class<?> componentClass = getObjectFromClassMap(componentType, _componentClassMap);
         if (componentClass == null)
         {
             log.log(Level.SEVERE, "Undefined component type " + componentType);
@@ -1249,7 +1263,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            UIComponent component = componentClass.newInstance();            
+            UIComponent component = (UIComponent)componentClass.newInstance();            
             _handleAnnotations(FacesContext.getCurrentInstance(), component, component);
             return component;
         }
@@ -1309,7 +1323,7 @@ public class ApplicationImpl extends Application
         checkNull(converterId, "converterId");
         checkEmpty(converterId, "converterId");
 
-        final Class<? extends Converter> converterClass = _converterIdToClassMap.get(converterId);
+        final Class<?> converterClass = getObjectFromClassMap(converterId, _converterIdToClassMap);
         if (converterClass == null)
         {
             throw new FacesException("Could not find any registered converter-class by converterId : " + converterId);
@@ -1317,7 +1331,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            final Converter converter = converterClass.newInstance();
+            final Converter converter = (Converter)converterClass.newInstance();
 
             setConverterProperties(converterClass, converter);
             
@@ -1614,7 +1628,7 @@ public class ApplicationImpl extends Application
         checkNull(validatorId, "validatorId");
         checkEmpty(validatorId, "validatorId");
 
-        Class<?> validatorClass = _validatorClassMap.get(validatorId);
+        Class<?> validatorClass = getObjectFromClassMap(validatorId, _validatorClassMap);
         if (validatorClass == null)
         {
             String message = "Unknown validator id '" + validatorId + "'.";
@@ -1748,27 +1762,55 @@ public class ApplicationImpl extends Application
     }
 
     private void _handleAnnotations(FacesContext context, Object inspected, UIComponent component)
-    {
-        _handleListenerFor(context, inspected, component, inspected.getClass().getAnnotation(ListenerFor.class));
+    {        
+        boolean isProduction = getProjectStage().equals(ProjectStage.Production);
+        Class<?> inspectedClass = inspected.getClass();
+        _handleListenerForAnnotations(context, inspected, inspectedClass, component, isProduction);
 
-        ListenersFor listeners = inspected.getClass().getAnnotation(ListenersFor.class);
-        if (listeners != null)
+        _handleResourceDependencyAnnotations(context, inspectedClass, component, isProduction);
+    }
+    
+    private void _handleListenerForAnnotations(FacesContext context, Object inspected, Class<?> inspectedClass, UIComponent component, boolean isProduction)
+    {
+        List<ListenerFor> listenerForList = null;
+        boolean isCachedList = false;
+        
+        if(isProduction && _classToListenerForMap.containsKey(inspectedClass))
         {
-            for (ListenerFor listenerFor : listeners.value())
+            listenerForList = _classToListenerForMap.get(inspectedClass);
+            if(listenerForList == null)
+                return; //class has been inspected and did not contain any listener annotations
+            
+            isCachedList = true;    // else annotations were found in the cache
+        }
+
+        if(listenerForList == null) //not in production or the class hasn't been inspected yet
+        {
+            ListenerFor listener = inspectedClass.getAnnotation(ListenerFor.class);
+            ListenersFor listeners = inspectedClass.getAnnotation(ListenersFor.class);
+            if(listener != null || listeners != null)
+            {
+                //listeners were found using one or both annotations, create and build a new list
+                listenerForList = new ArrayList<ListenerFor>();
+                
+                if(listener != null)
+                    listenerForList.add(listener);
+                
+                if(listeners != null)
+                    listenerForList.addAll(Arrays.asList(listeners.value()));
+            }
+        }        
+ 
+        if (listenerForList != null) //listeners were found through inspection or from cache, handle them
+        {
+            for (ListenerFor listenerFor : listenerForList)
             {
                 _handleListenerFor(context, inspected, component, listenerFor);
             }
         }
-
-        _handleResourceDependency(context, component, inspected.getClass().getAnnotation(ResourceDependency.class));
-        ResourceDependencies dependencies = inspected.getClass().getAnnotation(ResourceDependencies.class);
-        if (dependencies != null)
-        {
-            for (ResourceDependency dependency : dependencies.value())
-            {
-                _handleResourceDependency(context, component, dependency);
-            }
-        }
+        
+        if(isProduction && !isCachedList) //if we're in production and the list is not yet cached, store it
+            _classToListenerForMap.put(inspectedClass, listenerForList); //null value stored for listenerForList means no annotations were found
     }
 
     private void _handleListenerFor(FacesContext context, Object inspected, UIComponent component,
@@ -1832,6 +1874,49 @@ public class ApplicationImpl extends Application
         }
     }
 
+    private void _handleResourceDependencyAnnotations(FacesContext context, Class<?> inspectedClass, UIComponent component, boolean isProduction)
+    {
+        List<ResourceDependency> dependencyList = null;
+        boolean isCachedList = false;
+        
+        if(isProduction && _classToResourceDependencyMap.containsKey(inspectedClass))
+        {
+            dependencyList = _classToResourceDependencyMap.get(inspectedClass);
+            if(dependencyList == null)
+                return; //class has been inspected and did not contain any resource dependency annotations
+            
+            isCachedList = true;    // else annotations were found in the cache
+        }
+        
+        if(dependencyList == null)  //not in production or the class hasn't been inspected yet
+        {   
+            ResourceDependency dependency = inspectedClass.getAnnotation(ResourceDependency.class);
+            ResourceDependencies dependencies = inspectedClass.getAnnotation(ResourceDependencies.class);
+            if(dependency != null || dependencies != null)
+            {
+                //resource dependencies were found using one or both annotations, create and build a new list
+                dependencyList = new ArrayList<ResourceDependency>();
+                
+                if(dependency != null)
+                    dependencyList.add(dependency);
+                
+                if(dependencies != null)
+                    dependencyList.addAll(Arrays.asList(dependencies.value()));
+            }
+        }        
+ 
+        if (dependencyList != null) //resource dependencies were found through inspection or from cache, handle them
+        {
+            for (ResourceDependency dependency : dependencyList)
+            {
+                _handleResourceDependency(context, component, dependency);
+            }
+        }
+        
+        if(isProduction && !isCachedList)   //if we're in production and the list is not yet cached, store it
+            _classToResourceDependencyMap.put(inspectedClass, dependencyList);  //null value stored for dependencyList means no annotations were found
+    }
+    
     private void _handleResourceDependency(FacesContext context, UIComponent component, ResourceDependency annotation)
     {
         // If this annotation is not present on the class in question, no action must be taken.
@@ -2096,5 +2181,34 @@ public class ApplicationImpl extends Application
 
             return list;
         }
+    }
+    
+    /*
+     * private method to look for config objects on a classmap.  The objects can be either a type string
+     * or a Class<?> object.  This is done to facilitate lazy loading of config objects.   
+     * @param id 
+     * @param classMap 
+     * @return
+     */
+    private Class<?> getObjectFromClassMap(String id, Map<String, Object> classMap)
+    {
+        Object obj = classMap.get(id);
+        
+        if(obj == null){
+            return null;    //object for this id wasn't found on the map
+        }
+        
+        if(obj instanceof Class<?>)
+        {
+            return (Class<?>)obj;
+        }else if (obj instanceof String ){
+            Class<?> clazz = ClassUtils.simpleClassForName((String)obj);
+            classMap.put(id, clazz);
+            return clazz;
+        }
+        
+        //object stored in the map for this id is an invalid type.  remove it and return null
+        classMap.remove(id);
+        return null;        
     }
 }
