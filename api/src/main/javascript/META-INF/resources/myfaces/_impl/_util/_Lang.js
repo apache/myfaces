@@ -381,7 +381,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         return this.isString(theType) ? probe == typeof theType : probe instanceof theType;
     },
 
-  
+
 
     objToArray: function(obj, offset, pack) {
         //since offset is numeric we cannot use the shortcut due to 0 being false
@@ -408,7 +408,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * foreach implementation utilizing the
      * ECMAScript wherever possible
      * with added functionality
-     * 
+     *
      * @param arr the array to filter
      * @param func the closure to apply the function to, with the syntax defined by the ecmascript functionality
      * function (element<,key, array>)
@@ -416,14 +416,14 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * @param scope (optional) the scope to apply the closure to
      */
     arrForEach: function(arr, func /*startPos, scope*/) {
-        var startPos = Number(arguments[2]) ||  0;
+        var startPos = Number(arguments[2]) || 0;
         var thisObj = arguments[3];
 
         //check for an existing foreach mapping on array prototypes
         if (Array.prototype.forEach) {
             (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
         } else {
-             startPos = (startPos < 0)? Math.ceil(startPos): Math.floor(startPos);
+            startPos = (startPos < 0) ? Math.ceil(startPos) : Math.floor(startPos);
             if (typeof func != "function") {
                 throw new TypeError();
             }
@@ -462,7 +462,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
                 throw new TypeError();
             }
             var ret = [];
-            startPos = (startPos < 0)? Math.ceil(startPos): Math.floor(startPos);
+            startPos = (startPos < 0) ? Math.ceil(startPos) : Math.floor(startPos);
 
             for (var cnt = startPos; cnt < arr.length; cnt++) {
                 if (thisObj) {
@@ -486,18 +486,18 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * @param element the index to search for
      */
     arrIndexOf: function(arr, element /*fromIndex*/) {
-        if(!arr) return -1;
+        if (!arr) return -1;
         var pos = Number(arguments[2]) || 0;
 
-        if(Array.prototype.indexOf) {
+        if (Array.prototype.indexOf) {
             return arr.indexOf(element, pos);
         }
         //var cnt = this._space;
         var len = arr.length;
-        pos = (pos < 0)? Math.ceil(pos): Math.floor(pos);
+        pos = (pos < 0) ? Math.ceil(pos) : Math.floor(pos);
 
         //if negative then it is taken from as offset from the length of the array
-        if(pos < 0) {
+        if (pos < 0) {
             pos += len;
         }
         while (pos < len && arr[pos] !== element) {
@@ -575,6 +575,105 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         }
         ret.push(delimiter);
         return ret.join("");
+    },
+
+
+    parseXML: function(txt) {
+        var parser = null, xmlDoc = null;
+        if (window.DOMParser)
+        {
+            parser = new DOMParser();
+            xmlDoc = parser.parseFromString(txt, "text/xml");
+        }
+        else // Internet Explorer
+        {
+            xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = "false";
+            xmlDoc.loadXML(txt);
+        }
+        return xmlDoc;
+    },
+
+    serializeXML: function(xmlNode) {
+        if (xmlNode.xml) return xmlNode.xml; //IE
+        //rest of the world
+        return (new XMLSerializer()).serializeToString(xmlNode);
+    },
+
+    serializeChilds: function(xmlNode) {
+        var buffer = [];
+        if (!xmlNode.childNodes) return "";
+        for (var cnt = 0; cnt < xmlNode.childNodes.length; cnt++) {
+            buffer.push(this.serializeXML(xmlNode.childNodes[cnt]));
+        }
+        return buffer.join("");
+    },
+    isXMLParseError: function(xmlContent) {
+        var findParseError = function(node) {
+            if (!node || !node.childNodes) return false;
+            for (var cnt = 0; cnt < node.childNodes.length; cnt++) {
+                var childNode = node.childNodes[cnt];
+                if (childNode.tagName && childNode.tagName == "parsererror") return true;
+            }
+            return false;
+        };
+        return !xmlContent ||
+                (this.exists(xmlContent, "parseError.errorCode") && xmlContent.parseError.errorCode != 0) ||
+                findParseError(xmlContent)
+
     }
 
-});
+    /* not used for now
+     parseHTML: function(txt) {
+     var frame = document.getElementById("parsing-frame");
+     if (frame) {
+     var frame = document.getElementById("parsing-frame");
+     frame.parentNode.removeChild(frame);
+     }
+
+     try {
+     // create frame
+     var frame = document.createElement("iframe"); // iframe (or browser on older Firefox)
+     frame.setAttribute("id", "parsing-frame");
+     frame.setAttribute("name", "parsing-frame");
+     frame.setAttribute("type", "content");
+     frame.setAttribute("collapsed", "true");
+     frame.setAttribute("display", "none");
+     document.body.appendChild(frame);
+     // or
+     // document.documentElement.appendChild(frame);
+
+     // set restrictions as needed
+     if (frame.webNavigation) {
+     frame.webNavigation.allowAuth = false;
+     frame.webNavigation.allowImages = false;
+     frame.webNavigation.allowJavascript = false;
+     frame.webNavigation.allowMetaRedirects = true;
+     frame.webNavigation.allowPlugins = false;
+     frame.webNavigation.allowSubframes = false;
+     }
+
+     var doc = frame.document;
+     if (frame.contentDocument)
+     doc = frame.contentDocument; // For NS6
+     else if (frame.contentWindow)
+     doc = frame.contentWindow.document; // For IE5.5 and IE6
+
+     // Put the content in the iframe
+     doc.open();
+     doc.writeln(txt);
+     doc.close();
+
+     return doc;
+     } finally {
+     if (frame) {
+     var frame = document.getElementById("parsing-frame");
+     frame.parentNode.removeChild(frame);
+     }
+     }
+     // listen for load
+     }
+     */
+
+})
+        ;

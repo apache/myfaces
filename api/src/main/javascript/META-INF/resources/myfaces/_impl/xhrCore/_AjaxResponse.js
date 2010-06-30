@@ -88,14 +88,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                 _Impl.sendError(request, context, myfaces._impl.core.Impl.EMPTY_RESPONSE);
                 return;
             }
+            //check for a parseError under certain browsers
+
 
             var xmlContent = request.responseXML;
             //ie6+ keeps the parsing response under xmlContent.parserError
             //while the rest of the world keeps it as element under the first node
 
-            if ((this._Lang.exists(xmlContent, "parseError.errorCode") && xmlContent.parseError.errorCode != 0) || this._Lang.equalsIgnoreCase(xmlContent.firstChild.tagName, "parsererror")) {
-                //TODO improve error name and message sending here
 
+
+
+            if ( this._Lang.isXMLParseError(xmlContent)) {
                 _Impl.sendError(request, context, myfaces._impl.core.Impl.MALFORMEDXML);
                 return;
             }
@@ -170,7 +173,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
     _setVSTOuterForm: function(elem) {
         var viewStateField = this._Dom.findFormElement(elem, this.P_VIEWSTATE);
         if (null != viewStateField) {
-            this._Dom.setAttribute(viewStateField, "value", this.appliedViewState);
+            this._Dom.setAttribute(viewStateField,"value", this.appliedViewState);
         }
     },
 
@@ -352,6 +355,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
 
             switch (node.getAttribute('id')) {
                 case this.P_VIEWROOT:
+                    cDataBlock = cDataBlock.substring(cDataBlock.indexOf("<html"));
+                    this._replaceHead(request, context, cDataBlock);    
                     var resultNode = this._replaceBody(request, context, cDataBlock);
                     if (resultNode) {
                         this._pushOperationResult(resultNode);
@@ -360,7 +365,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
                 case this.P_VIEWHEAD:
                     //we cannot replace the head, almost no browser allows this, some of them throw errors
                     //others simply ignore it or replace it and destroy the dom that way!
-                    throw new Error("Head cannot be replaced, due to browser deficiencies!");
+                    this._replaceHead(request, context, cDataBlock); 
 
                     break;
                 case this.P_VIEWBODY:
@@ -404,6 +409,32 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
 
     },
 
+    _replaceHead: function(request, context, newData) {
+        var doc = this._Lang.parseXML(newData);
+        var newHead = null;
+        if(this._Lang.isXMLParseError(doc)) {
+            //the standard xml parser failed we retry with the stripper
+            var parser = new (myfaces._impl.core._Runtime.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
+            var headData = parser.parse(newData, "head");
+            newHead =  this._Lang.parseXML("<root>"+headData+"</root>");
+            if(this._Lang.isXMLParseError(newHead)) {
+                //we give up no further fallbacks
+                this._Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
+                return;
+            }
+        } else {
+            //parser worked we go on
+            newHead = doc.getElementsByTagName("head")[0];
+        }
+
+        //since we are xml enabled here we probably can walk over it via xml <head> ... </head> normally is valid xml
+        //the ie tricks with form etc... do not work out, so we have to rely on internal xml parsing
+        //prestripping the body should reduce the failure rate of this method
+        ///var xmlData = this._Lang.parseXML("<root>"+headData+"</root>");
+        this._Dom.runScripts(newHead, true);
+    },
+
+
     /**
      * special method to handle the body dom manipulation,
      * replacing the entire body does not work fully by simply adding a second body
@@ -428,16 +459,32 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         //the contextualFragment trick does not work on the body tag instead we have to generate a manual body
         //element and then add a child which then is the replacement holder for our fragment!
 
-        //TODO we probably should try to offload this to the browser first via the integrated xml parsing
-        //and if it fails revert to our internal parser
-        var bodyData = parser.parse(newData, "body");
+        //Note, we also could offload this to the browser,
+        //but for now our parser seems to be faster than the browser offloading method
+        //and also does not interfere on security level
+        //the browser offloading methods would be first to use the xml parsing
+        //and if that fails revert to a hidden iframe
+        //var bodyData = parser.parse(newData, "body");
+        var bodyData = null;
+        var doc = this._Lang.parseXML(newData);
+        if(this._Lang.isXMLParseError(doc)) {
+             //the standard xml parser failed we retry with the stripper
+             var parser = new (myfaces._impl.core._Runtime.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
+             bodyData = parser.parse(newData, "body");
+        } else {
+             //parser worked we go on
+            var newBodyData = doc.getElementsByTagName("body")[0];
+            bodyData = this._Lang.serializeChilds(newBodyData);
+            for (var cnt = 0; cnt < newBodyData.attributes.length; cnt++) {
+                var value = newBodyData.attributes[cnt].value;
+                if(value)
+                    this._Dom.setAttribute(newBody, newBodyData.attributes[cnt].name, value);
+            }
+        }
+
         bodyParent.replaceChild(newBody, oldBody);
         var returnedElement = this._replaceElement(request, context, placeHolder, bodyData);
 
-        for (var key in parser.tagAttributes) {
-            var value = parser.tagAttributes[key];
-            this._Dom.setAttribute(newBody, key, value);
-        }
         return returnedElement;
     }
     ,

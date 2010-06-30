@@ -16,38 +16,8 @@
 
 /**
  * <p>
- * A simple html parser class
- * that handles the stripping of the body
- * and head area properly
- * </p>
- * <p>
- * we assume that the ajax response encapsules
- * the html elements
- * so we only have to strip those really needed by the response
- * </p>
- * Due to this fact we can make several shortcuts...
- * First we only have to parse either for html or body for now
- * hence we can skip code and pre parsing to skip embedded tags as well
- *
- * <p>
- * secondly once we have found our section we can parse bottom up
- * which adds an additional speedup to our parsing process!
- * </p>
- * <p>
- * Note we do not solve the head and body stripping via regular expressions
- * because there are usecases where this does not work out
- * for instance comments with embedded head and body sections
- * or javascripts with head and body in strings..
- *
- * Also we do not rely on the response being xhtml due to
- * the fact that we might still have to cover jsp over html 4.0.1
- *
- * We tried to solve that that way in the first place but due to
- * the nature of things a minimal semantic understanding in the parsing
- * process is needed to strip everything out correctly which is not entirely
- * given via normal pattern matching, so we went the hard route
- * of implementing everything with a minimal parser
- * which tries to cover the semantics needed to strip out the correct content!
+ *  Fallback routine if the browser embedded xml parser fails on the document
+ *  This fallback is not failsafe but should give enough cover to handle all cases
  * </p>
  */
 
@@ -56,18 +26,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
     BEGIN_TAG: "html",
     END_TAG: "lmth",
 
-
-    /**
-     * parses the token array
-     * and handles the incoming tokens via an ll
-     * parsing and backtracking of one char
-     * the handling of the parsing is done via
-     * recursive descension
-     *
-     * note in the subroutines the tokenPos must be at the last char of the operation
-     * so that the
-     */
-    parse : function(theString, tagNameStart, tagNameEnd) {
+    parse : function(theString, tagNameStart) {
         this.tokens = theString.split("");
         this.tagAttributes = {};
 
@@ -81,545 +40,74 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Obj
         this._tokenForward = 1;
 
         this.tagNameStart = (!tagNameStart) ? this.BEGIN_TAG : tagNameStart;
-        this.tagNameEnd = (!tagNameEnd) ? this.tagNameStart.split("").reverse().join("") : tagNameEnd.split("").reverse().join("");
 
-        this.handleInstructionBlock();
+        //no need for ll parsing a handful of indexofs instead of slower regepx suffices
 
-        if (this._contentStart >= 0 && this._contentEnd == -1) {
-            this._tokenPos = this.tokens.length - 1;
-            this._tokenForward = -1;
-            //we now can skip the parsing for the rest of the block and have to roll out the parsing
-            //from bottom up, this speeds up the entire process tremendously!
-            this.handleEndBlock();
-        }
+        var proposedTagStartPos = theString.indexOf("<"+tagNameStart);
 
-        if (this._contentStart >= 0 && this._contentEnd == -1) {
-            this._contentEnd = this.tokens.length - 1;
-        } else if (this._contentStart == -1) {
-            return "";
-        }
-        return this.tokens.slice(this._contentStart, this._contentEnd + 1).join("");
-
-    },
-
-    /**
-     * fetches the content block which has been parsed
-     */
-    getContentBlock : function() {
-        return this.tokens.slice(this._contentStart, this._contentEnd + 1).join("");
-    },
-
-    /**
-     * fetches the content tag block including the tag code
-     */
-    getContentTagBlock : function() {
-        return this.tokens.slice(this._tagStart, this._tagEnd + 1).join("");
-    },
-
-    /**
-     * fetches the block before the tag begin
-     */
-    getPreTagBlock : function() {
-        return this.tokens.slice(0, this._tagStart).join("");
-    },
-
-    /**
-     * fetches the block after the tag end
-     */
-    getPostTagBlock : function() {
-        return this.tokens.slice(this._tagEnd, this.tokens.length).join("");
-    },
-
-    /**
-     * normal characters are skipped
-     * a < clearly is an indicator for
-     * a ... normal chars should not occur here, but
-     * in the long run for deeper parsing they might happen!
-     */
-    handleInstructionBlock : function() {
-        var len = this.tokens.length;
-        for (; this._contentStart < 0 && this._tokenPos < len && this._tokenPos >= 0; this._tokenPos += this._tokenForward) {
-            this._skipBlank();
-            var token = this._getCurrentToken();
-            if (token == "<") {
-                this.handleDocument();
+        while(this._contentStart == -1 && proposedTagStartPos != -1) {
+            if(this.checkBackForComment(theString, proposedTagStartPos))  {
+                this._tagStart = proposedTagStartPos;
+                this._contentStart = proposedTagStartPos+theString.substring(proposedTagStartPos).indexOf(">")+1;
             }
-        }
-    },
-
-    /**
-     * it is either a datablock or a content tag from which we can start parsing
-     */
-    handleDocument : function() {
-
-        this._tagStart = this.tokenPos;
-        this._skipBlank(1);
-
-        if (this._tokenPos >= this.tokens.length) {
-            throw new Error("Document end reached prematurely");
-        }
-        var token = this._getCurrentToken();
-        switch (token) {
-            case "!":
-                this.handleDataBlock();
-                break;
-
-            default: this.handleContentTag();
-        }
-    },
-
-    /**
-     * we can skip definitions or comments!
-     *
-     * a definition or comment section is like following:
-     * <! ... > with no </ at the end
-     *
-     * with comments followed by --
-     * and definitions followed by nothing else
-     *
-     */
-    handleDataBlock : function() {
-        this._skipBlank(1);
-
-        if (this._tokenPos >= this.tokens.length || this._tokenPos < 0) {
-            return;
-        }
-        var token = this.tokens[this._tokenPos];
-        switch (token) {
-            case "-":
-                this.handleComment();
-                break;
-
-            default:
-                this._getCurrentToken();
-                this.handleDocDefinition();
-                break;
+            proposedTagStartPos = theString.substring(proposedTagStartPos+tagNameStart.length+2).indexOf("<"+tagNameStart);
         }
 
-    },
-
-    /**
-     * doc definition ==
-     * <! [^>] >
-     */
-    handleDocDefinition : function() {
-        this._skipBlank();
-
-        if (this._tokenPos >= this.tokens.length || this._tokenPos < 0) {
-            throw new Error("Document end reached prematurely");
-        }
-        var len = this.tokens.length;
-        while (this._tokenPos < len && this._tokenPos >= 0) {
-            //var token = this._getCurrentToken();
-            //inlining for speed reasons  we also could use getCurrentToken
-            var token = this.tokens[this._tokenPos];
-
-            //inlining end
-            if (token == ">") {
-                return;
+        var proposedEndTagPos = theString.lastIndexOf("</"+tagNameStart);
+        while(this._contentEnd == -1 && proposedEndTagPos > 0) {
+            if(this.checkForwardForComment(theString, proposedEndTagPos))  {
+                this._tagEnd = proposedEndTagPos;
+                this._contentEnd = proposedEndTagPos;
             }
-            this._tokenPos += this._tokenForward;
+            proposedTagStartPos = theString.substring(proposedTagStartPos-tagNameStart.length-2).lastIndexOf("</"+tagNameStart);
+        }
+        if(this._contentStart != -1 && this._contentEnd != -1) {
+            return theString.substring(this._contentStart, this._contentEnd);
+        }
+        return null;
+    },
+    
+    checkForwardForComment: function(theStr, tagPos) {
+        var toCheck = theStr.substring(tagPos);
+        var firstBeginComment = toCheck.indexOf("<!--");
+        var firstEndComment = toCheck.indexOf("-->");
+
+        var firstBeginCDATA = toCheck.indexOf("<[CDATA[");
+        var firstEndCDATA = toCheck.indexOf("]]>");
+        
+        if(this.isValidPositionCombination(firstBeginComment, firstEndComment, firstBeginCDATA, firstEndCDATA)) {
+            return true;
+        }
+
+        return firstBeginComment <= firstEndComment && firstBeginCDATA <= firstEndCDATA;
+    },
+
+    checkBackForComment: function(theStr, tagPos) {
+        var toCheck = theStr.substring(tagPos);
+        var lastBeginComment = toCheck.lastIndexOf("<!--");
+        var lastEndComment = toCheck.lastIndexOf("-->");
+
+        var lastBeginCDATA = toCheck.lastIndexOf("<[CDATA[");
+        var lastEndCDATA = toCheck.lastIndexOf("]]>");
+
+
+        if(this.isValidPositionCombination(lastBeginComment, lastEndComment, lastBeginCDATA, lastEndCDATA)) {
+            //TODO we have to handle the embedded cases, for now we leave them out
+            return true;
         }
 
     },
 
-    /**
-     * General tag andling section
-     * we define identified and unidentified content
-     * and script which is a subpart of idenitifed
-     *
-     * for now we do not handle the special conditions within pre and code
-     * segments since we have a specialized usage of this stripper
-     * on head and body sections and within head (which is skipped)
-     * we neither can have code or pre segments!
-     */
-    handleContentTag : function() {
-        //lookahead head, body, html which means a lookahead of 4;
-        this._currentSection = null;
-        this._skipBlank();
-        var tagName = this._fetchTagname();
-
-        /*we try to avoid lookaheads here hence the shifting of tokens!*/
-        if (tagName == this.tagNameStart) {
-            /*either embedded into html */
-            this.handleIdentifiedContent();
-            //after the html tag is processed we can break from the first parsing stage
-            this.tokenPos = this.tokens.length;
-        } else if (tagName == "scri" || tagName == "styl") {
-            //script must be handled separately since we can have embedded tags which must be ignored
-            this.handleScriptStyle();
-        } else {
-            //unidentified content we deal with it by skipping to the tag end
-            //and then be done with it!
-            this.skipToTagEnd();
-        }
+    isValidPositionCombination: function(pos1, pos2, pos3, pos4) {
+        return pos1 <= pos2 && pos3 <= pos4;
     },
 
-    /**
-     * script skipping routine...
-     * we skip automatically over embedded scripts
-     * and tags within strings and comments
-     * so that we do not trigger against embedded tags in script sections
-     * of the head!
-     *
-     *
-     */
-    handleScriptStyle : function() {
-        this.skipToTagEnd();
-        //singleToken??
-        if (this.tokens[this._tokenPos - 1] == "/" && this.tokens[this._tokenPos] == ">") {
-            return;
-        }
-        //lets skip until we hit < by ignoring embedded strings and comments
-        do {
-            this._skipBlank(1);
-            var token = this._getCurrentToken();
-            switch (token) {
-                case "\'" || "'":
-                    this.handleString(token);
-                    break;
-                case "/" :
-                    this.handleJSComment();
-                    break;
-            }
-
-        } while (this.tokens[this._tokenPos] != "<");
-        //now we should be at the end of the script tag at any circumstances!
-        this.skipToTagEnd();
+    isFullyEmbedded: function(pos1, pos2, embedPos1, embedPos2) {
+        return embedPos1 < pos1 < pos2 < embedPos2;
     },
 
-    /**
-     * javascript comment handler
-     * we have to check for escape sequences so that we do not trigger
-     * accidentally the comment parsing within embedded regular expressions
-     * which means we have to prefetch and backtrack one token!
-     * \/* should not start a comment neither should \//
-     * if someone places this in the middle of the code
-     * then oh well, syntax error on the javascript side
-     * we cannot do anything about it
-     */
-    handleJSComment : function() {
-        var token = this._getCurrentToken();
-        var prefetchToken = this.tokens[this._tokenPos + 1];
-        var backtrackToken = this.tokens[this._tokenPos - 1];
-        var backtrackToken2 = this.tokens[this._tokenPos - 2];
-
-        //comment condition == either /* or // with no \ in backtrack or \\ in backtrack!
-        var backTrackIsComment = backtrackToken != '\\' || (backtrackToken == '\\' && backtrackToken2 == '\\');
-        if (!backTrackIsComment) {
-            return;
-        }
-
-        var singleLineComment = prefetchToken == '/';
-        var multiLineComment = prefetchToken == "*";
-
-        if (singleLineComment) {
-            while (this._tokenPos < this.tokens.length && this._getCurrentToken() != "\n") {
-                this._tokenPos++;
-            }
-
-        } else if (multiLineComment) {
-            this._skipBlank(1);
-            while (this._tokenPos < this.tokens.length) {
-                this._skipBlank(1);
-                token = this._getCurrentToken();
-                prefetchToken = this.tokens[this._tokenPos + 1];
-                if (token == "*" && prefetchToken == "/") {
-                    return;
-                }
-            }
-        }
-    },
-
-    /*----------------- reverse parsing --------*/
-
-    /**
-     * the end block tos a bottom up resolution of the parsing process
-     * via an inverted tag name to look for
-     */
-    handleEndBlock : function() {
-        for (; this._tokenPos >= 0; this._tokenPos += this._tokenForward) {
-            this._skipBlank(0);
-            var token = this._getCurrentToken();
-            if (token == ">") {
-                this.handleEndTagPart();
-            }
-        }
-    },
-
-    handleEndTagPart : function() {
-        this._tagEnd = this._tokenPos;
-        this._skipBlank(1);
-
-        if (this._tokenPos < 0) {
-            throw new Error("Document end reached prematurely");
-        }
-        var token = this._getCurrentToken();
-
-        //we can assume we are outside of the html or body sections
-        //se we only have to check for comments for the reverse parsing!
-        switch (token) {
-            case "-":
-
-                this.handleComment(true);
-                break;
-
-            default: this.handleContentEnd();
-        }
-
-    },
-
-    handleContentEnd : function() {
-        var tagFound = false;
-        var first = true;
-        for (; this._tokenPos >= 0; this._skipBlank(1)) {
-            if (first && !tagFound) {
-                var tagName = this._fetchTagname();
-                if (tagName == this.tagNameEnd) {
-                    tagFound = true;
-                }
-                first = false;
-            } else if (tagFound && this.tokens[this._tokenPos] == "<") {
-                this._contentEnd = this._tokenPos - 1;
-                this._tokenPos = -1;
-                return;
-            } else if (this.tokens[this._tokenPos] == "<") {
-                this._tokenPos += 1;
-                return;
-            }
-
-        }
-    },
-
-    /*----------------- helpers ----------------*/
-    /**
-     * skips the current tag definition until the end is reached
-     *
-     * @param analyzeAttributes if set to true we will end up with
-     * a map of determined key value pairs which we then can further process
-     * otherwise the key value pair determination is ignored!
-     */
-    skipToTagEnd : function(analyzeAttributes) {
-
-        var token = this._getCurrentToken();
-        //faster shortcut for tags which have to be nont analyzed
-        if (!analyzeAttributes) {
-            while (token != ">") {
-                if (this._isStringStart()) {
-                    this._tokenPos += this._tokenForward;
-                    return this.handleString(token)
-                }
-                this._skipBlank(1);
-                token = this._getCurrentToken();
-            }
-
-            return null;
-        }
-
-        //analyze part
-
-        var keyValuePairs = {};
-        var currentWord = [];
-        while (this.tokens[this._tokenPos] != ">") {
-            currentWord = this._fetchWord();
-            token = this._getCurrentToken();
-
-            if (token == "=") {
-                this._tokenPos += this._tokenForward;
-                keyValuePairs[currentWord] = this._fetchWord();
-            } else {
-                keyValuePairs[currentWord] = null;
-            }
-            this._tokenPos += this._tokenForward;
-        }
-        return keyValuePairs;
-    },
-
-    /**
-     * fetches a word which either can be a string or
-     * a sequence of non string characters until either = or > or blank is reached!
-     */
-    _fetchWord : function() {
-        this._skipBlank(0);
-        var result = [];
-
-        var token = this._getCurrentToken();
-        while ((!this._isBlank()) && token != "=" && token != ">") {
-            if (this._isStringStart()) {
-                this._tokenPos += this._tokenForward;
-                return this.handleString(token)
-            }
-
-            result.push(token);
-            this._tokenPos += this._tokenForward;
-            token = this._getCurrentToken();
-        }
-        return result.join("");
-    },
-
-    _isBlank : function() {
-        var token = this._getCurrentToken();
-        return token == " " && token == "\t" && token == "\n";
-    },
-
-    /**
-     * we can make speedup shorcut assumptions here
-     * becase we only try to either identfy head
-     * html or body!
-     */
-    handleIdentifiedContent : function() {
-
-        this.tagAttributes = this.skipToTagEnd(true);
-        //TODO trace down the attributes and store them
-        //they must be key value pairs
-
-        if (this.tokens[this._tokenPos - 1] == "/" && this.tokens[this._tokenPos] == ">") {
-            this._contentStart = -1;
-            this._contentEnd = -1;
-            /*we move to the end*/
-        } else {
-            this._contentStart = this._tokenPos + 1;
-        }
-    },
-
-    /**
-     * returns true if the current token is a string start!
-     */
-    _isStringStart : function() {
-        var backTrack = (this._tokenPos > 0) ? this.tokens[this._tokenPos - 1] : null;
-        var token = this.tokens[this._tokenPos];
-        return (token == "'" || token == '"') && backTrack != "\\";
-    },
-
-    /**
-     * skips a string section cintentwise no matter how many other strings
-     * are embedded (uses backtracking to check for escapes)
-     *
-     * @param  {String} stringToken the string token to skip!
-     * @return the string value without the enclosing hypenations to be processed later on
-     */
-    handleString : function(stringToken) {
-        var backTrack = null;
-        var resultString = [];
-        while (this.tokens[this._tokenPos] != stringToken || backTrack == "\\") {
-            backTrack = this._getCurrentToken();
-            resultString.push(backTrack);
-            this._tokenPos += this._tokenForward;
-            if (this._tokenPos >= this.tokens.length) {
-                throw Error("Invalid html string opened but not closed");
-            }
-        }
-        this._getCurrentToken();
-        return resultString.join("");
-    },
-
-    _assertValues : function(assertValues) {
-
-        for (var loop = 0; loop < assertValues.length; loop++) {
-            this._assertValue(assertValues[loop]);
-            this._skipBlank(1);
-        }
-    },
-
-    _assertValue : function(expectedToken) {
-        var token = this._getCurrentToken();
-        this._assertLength();
-        if (token != expectedToken) {
-            throw Error("Invalid Token  " + expectedToken + " was expected instead of " + token);
-        }
-
-        return token;
-    },
-
-    _assertLength : function() {
-        if (this._tokenPos >= this.tokens.length) {
-            throw Error("Invalid html comment opened but not closed");
-        }
-    },
-
-    /**
-     * nested comments are not allowed hence we
-     * skip them!
-     * comment == "&lt;!--" [--&gt;] "--&gt;"
-     */
-    handleComment : function(reverse) {
-        this._assertValues(["-","-"]);
-        reverse = !!reverse;
-
-        while (this._tokenPos < this.tokens.length - 3) {
-            //lookahead3, to save some code
-            var token = this._getCurrentToken();
-            var backTrackBuf = [];
-
-            if (token == "-") {
-                backTrackBuf.push(token);
-                this._skipBlank(1);
-                token = this._getCurrentToken();
-                backTrackBuf.push(token);
-                this._skipBlank(1);
-                token = this._getCurrentToken();
-                backTrackBuf.push(token);
-
-                if (reverse) {
-                    this._skipBlank(1);
-                    token = this._getCurrentToken();
-                    backTrackBuf.push(token);
-                }
-                var sBackTrackBuf = backTrackBuf.join("");
-
-                if (reverse && sBackTrackBuf == "<!--") {
-                    return;
-                } else if (!reverse && sBackTrackBuf == "-->") {
-                    return;
-                }
-            } else {
-                this._skipBlank(1);
-            }
-        }
-    },
-
-    /**
-     * fetches and stores the current token
-     */
-    _getCurrentToken : function() {
-        return this.tokens[this._tokenPos];
-    },
-
-    /**
-     * skip blank until the next token is found
-     * @param skipVal  the minimum skip forward to happen
-     * 1 means it skips 1 no matter if the current token is a blank or not!
-     *
-     */
-    _skipBlank : function(skipVal) {
-        var len = this.tokens.length;
-        if (!skipVal) {
-            skipVal = 0;
-        }
-
-        for (this._tokenPos += (skipVal * this._tokenForward); this._tokenPos < len && this._tokenPos >= 0; this._tokenPos += this._tokenForward) {
-            var token = this.tokens[this._tokenPos];
-            if (token != " " && token != "\t" && token != "\n") {
-                return;
-            }
-        }
-    },
-
-    _fetchTagname : function() {
-        var tagName = [];
-
-        //TODO make the tagname prefetch more generic
-
-        tagName.push(this.tokens[this._tokenPos]);
-        this._tokenPos += this._tokenForward;
-        tagName.push(this._getCurrentToken());
-        this._tokenPos += this._tokenForward;
-        tagName.push(this._getCurrentToken());
-        this._tokenPos += this._tokenForward;
-        tagName.push(this._getCurrentToken());
-        this._tokenPos += this._tokenForward;
-
-        return tagName.join("").toLowerCase();
+    isPartiallyEmbedded: function(pos1, pos2, embedPos1, embedPos2) {
+        return embedPos1 < pos1 <  embedPos2 < pos2 || pos1 < embedPos1 < pos2 <  embedPos2  ;    
     }
 
 });

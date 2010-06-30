@@ -64,22 +64,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * (IE doesn't do this by itself)
      * @param {|Node|} item
      */
-    runScripts: function(item) {
+    runScripts: function(item, xmlData) {
         var execScrpt = myfaces._impl._util._Lang.hitch(this, function(item) {
             if (item.tagName && item.tagName.toLowerCase() == 'script') {
                 var src = item.getAttribute('src');
-                if (    'undefined' !=  typeof src 
-                        && null !=  src
+                if ('undefined' != typeof src
+                        && null != src
                         && src.length > 0
-                ) {
+                        ) {
                     //we have to move this into an inner if because chrome otherwise chokes
                     //due to changing the and order instead of relying on left to right
                     if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
-                        && src.indexOf("/jsf-uncompressed.js") == -1))
-                    myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
+                            && src.indexOf("/jsf-uncompressed.js") == -1))
+                        myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
-                    var test = item.text;
+                    var test = (!xmlData) ? item.text :myfaces._impl._util._Lang.serializeChilds(item);
                     var go = true;
                     while (go) {
                         go = false;
@@ -236,7 +236,26 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             evalNodes = dummyPlaceHolder.childNodes[0].childNodes;
         }
 
-        parentNode = item.parentNode;
+        evalNodes = this.replaceElement(item, evalNodes);
+
+        //if this as well will fail in the future, we can let ie parse a proper xml
+        //extract the script elements and then create the script elements manually
+        //but for now we will not need it, and this solution is faster
+        //the downside of that solution would be that the fragment itself
+        //must resolve to a valid xml
+        return evalNodes;
+    },
+
+    /**
+     * replaces an element with another element or a set of elements
+     *
+     * @param item the item to be replaced
+     *
+     * @param evalNodes the elements
+     */
+    replaceElement: function (item, evalNodes) {
+        var _Lang = myfaces._impl._util._Lang;
+        var parentNode = item.parentNode;
 
         if ('undefined' != typeof evalNodes.length) {
             var oldNode = item;
@@ -259,12 +278,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         } else {
             evalNodes = parentNode.replaceChild(evalNodes, item);
         }
-
-        //if this as well will fail in the future, we can let ie parse a proper xml
-        //extract the script elements and then create the script elements manually
-        //but for now we will not need it, and this solution is faster
-        //the downside of that solution would be that the fragment itself
-        //must resolve to a valid xml
         return evalNodes;
     },
 
@@ -499,7 +512,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //but only for deep scan and normal parent nodes
             else if (fragment.querySelectorAll && deepScan) {
                 try {
-                    var result = fragment.querySelectorAll("."+styleClass.replace(/\./g, "\\."));
+                    var result = fragment.querySelectorAll("." + styleClass.replace(/\./g, "\\."));
 
                     if (fragment.nodeType == 1 && filter(fragment)) {
                         result = (result == null) ? [] : result;

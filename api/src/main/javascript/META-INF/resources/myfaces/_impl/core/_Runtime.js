@@ -463,7 +463,7 @@ if (!myfaces._impl.core._Runtime) {
                 if (key && typeof delFn == "function") {
                     proto[key] = function(/*arguments*/) {
                         var ret = delFn.apply(delegateObj, arguments);
-                        if ('undefined' != ret) return ret;
+                        if ('undefined' != typeof ret) return ret;
                     };
                 }
             })(key, delegateObj[key]);

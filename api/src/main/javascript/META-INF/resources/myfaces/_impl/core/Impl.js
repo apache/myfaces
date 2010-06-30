@@ -382,6 +382,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
     getProjectStage : function() {
         /* run through all script tags and try to find the one that includes jsf.js */
         var scriptTags = document.getElementsByTagName("script");
+        var getConfig = myfaces._impl.core._Runtime.getGlobalConfig;
         for (var i = 0; i < scriptTags.length; i++)
         {
             if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1)
@@ -401,13 +402,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
                 }
                 else
                 {
-                    //we found the script, but there was no stage parameter --> Production
-                    return "Production";
+                    //we found the script, but there was no stage parameter -- Production
+                    //(we also add an override here for testing purposes, the default, however is Production)
+                    return getConfig("projectStage", "Production");
+                    //return "Production";
                 }
             }
         }
         /* we could not find anything valid --> return the default value */
-        return "Production";
+        return getConfig("projectStage", "Production");
     },
 
     /**
