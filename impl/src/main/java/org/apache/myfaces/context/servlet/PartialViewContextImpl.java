@@ -430,18 +430,22 @@ public class PartialViewContextImpl extends PartialViewContext {
     
     private void processRenderAll(UIViewRoot viewRoot, PartialResponseWriter writer) throws IOException
     {
-        java.util.Iterator<UIComponent> iter = viewRoot.getFacetsAndChildren();
+        //java.util.Iterator<UIComponent> iter = viewRoot.getFacetsAndChildren();
         writer.startUpdate (PartialResponseWriter.RENDER_ALL_MARKER);
-        while (iter.hasNext()) 
-        { 
-            UIComponent comp = iter.next();
+        //while (iter.hasNext()) 
+        //{ 
+            //UIComponent comp = iter.next();
             
             //TODO: Do not check for a specific instance, 
             //just render all children.
             //if (comp instanceof javax.faces.component.html.HtmlBody)
             //{
-                comp.encodeAll (_facesContext);
+                //comp.encodeAll (_facesContext);
             //}
+        //}
+        for (UIComponent comp : viewRoot.getChildren())
+        {
+            comp.encodeAll (_facesContext);
         }
         writer.endUpdate();
     }
