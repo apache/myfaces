@@ -410,8 +410,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
     },
 
     _replaceHead: function(request, context, newData) {
+        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         var doc = this._Lang.parseXML(newData);
         var newHead = null;
+        if(this._Lang.isXMLParseError(doc)) {
+            doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g,"<!--").replace(/\/\/-->[\s\n]\/\/-->/g,"//-->"));
+        }
+
         if(this._Lang.isXMLParseError(doc)) {
             //the standard xml parser failed we retry with the stripper
             var parser = new (myfaces._impl.core._Runtime.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
@@ -419,7 +424,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             newHead =  this._Lang.parseXML("<root>"+headData+"</root>");
             if(this._Lang.isXMLParseError(newHead)) {
                 //we give up no further fallbacks
-                this._Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
+                _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
                 return;
             }
         } else {
@@ -467,6 +472,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         //var bodyData = parser.parse(newData, "body");
         var bodyData = null;
         var doc = this._Lang.parseXML(newData);
+        if(this._Lang.isXMLParseError(doc)) {
+            doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g,"<!--").replace(/\/\/-->[\s\n]\/\/-->/g,"//-->"));
+        }
+
         if(this._Lang.isXMLParseError(doc)) {
              //the standard xml parser failed we retry with the stripper
              var parser = new (myfaces._impl.core._Runtime.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();

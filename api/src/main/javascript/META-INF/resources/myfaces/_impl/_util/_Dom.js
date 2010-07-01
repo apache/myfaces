@@ -79,7 +79,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                         myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
-                    var test = (!xmlData) ? item.text :myfaces._impl._util._Lang.serializeChilds(item);
+                    var test = (!xmlData) ? item.text : myfaces._impl._util._Lang.serializeChilds(item);
                     var go = true;
                     while (go) {
                         go = false;
@@ -290,8 +290,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     findById : function(fragment, itemId) {
         //we have to escape here
 
-        if (fragment === document) {
-            return this.byId(itemId);
+        if (fragment.getElementById) {
+            return fragment.getElementById(itemId);
         }
 
         if (fragment.nodeType == 1 && fragment.querySelector) {
@@ -410,33 +410,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         deepScan = !!deepScan;
 
+        //elements by tagname is the fastest
+        if (deepScan && fragment.getElementsByTagName) {
+            var ret = _Lang.objToArray(fragment.getElementsByTagName(tagName));
+            if(fragment.tagName && fragment.tagName.toLowerCase() == tagName.toLocaleLowerCase()) ret.unshift(fragment);
+            return ret;
+        }
+        //since getElementsByTagName is a standardized dom node function and ie also supports
+        //it since 5.5
+        //we need no fallback to the query api and the recursive filter
+        //also is only needed in case of no deep scan or non dom elements
+
         var filter = function(node) {
             return node.tagName && _Lang.equalsIgnoreCase(node.tagName, tagName);
         };
         try {
-
-            try {
-                //html 5 selector
-                if (deepScan && fragment.querySelectorAll) {
-                    var newTagName = tagName;
-                    if (_Lang.isString(newTagName)) {
-                        var newTagName = newTagName.replace(/\./g, "\\.");
-                    }
-                    var result = fragment.querySelectorAll(newTagName);
-                    if (fragment.nodeType == 1 && filter(fragment)) {
-                        result = (result == null) ? [] : _Lang.objToArray(result);
-                        result.push(fragment);
-                    }
-                    return result;
-                }
-            } catch (e) {
-                //in case the selector fails we have to do another fallback instead
-                //of throwing an error
-            }
-            //if we are not in a html 5 environment which supports node selectors
-            //we use the usual recursive fallback.
             return this.findAll(fragment, filter, deepScan);
-
         } finally {
             //the usual IE6 is broken, fix code
             filter = null;
@@ -452,6 +441,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         };
         try {
             deepScan = !!deepScan;
+
+            //elements byName is the fastest
+            if (deepScan && fragment.getElementsByName) {
+                var ret = _Lang.objToArray(fragment.getElementsByName(name));
+                if(fragment.name == name) ret.unshift(fragment);
+                return ret;
+
+            }
+
 
             if (deepScan && fragment.querySelectorAll) {
                 try {
@@ -504,13 +502,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             deepScan = !!deepScan;
 
             //html5 getElementsByClassname
-            if (fragment.getElementsByClassName && deepScan) {
+
+            //TODO implement this
+            /*if (fragment.getElementsByClassName && deepScan) {
                 return fragment.getElementsByClassName(styleClass);
             }
+
             //html5 speed optimization for browsers which do not ,
             //have the getElementsByClassName implemented
             //but only for deep scan and normal parent nodes
-            else if (fragment.querySelectorAll && deepScan) {
+            else */if (fragment.querySelectorAll && deepScan) {
                 try {
                     var result = fragment.querySelectorAll("." + styleClass.replace(/\./g, "\\."));
 

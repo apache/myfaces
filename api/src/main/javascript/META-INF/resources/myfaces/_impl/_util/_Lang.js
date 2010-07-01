@@ -371,19 +371,14 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         return arr.join(delimiter);
     },
 
-    /**
-     * general type assertion routine
-     *
-     * @param probe the probe to be checked for the correct type
-     * @param theType the type to be checked for
-     */
-    assertType : function(probe, theType) {
-        return this.isString(theType) ? probe == typeof theType : probe instanceof theType;
-    },
+   
 
 
 
     objToArray: function(obj, offset, pack) {
+        if(!obj) {
+            return null;
+        }
         //since offset is numeric we cannot use the shortcut due to 0 being false
         var finalOffset = ('undefined' != typeof offset || null != offset) ? offset : 0;
         var finalPack = pack || [];

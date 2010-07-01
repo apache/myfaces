@@ -277,7 +277,6 @@ if (!myfaces._impl.core._Runtime) {
 
             return (!_this.exists(localOptions, "myfaces." + configName)) ? _this.getGlobalConfig(configName, defaultValue) : localOptions.myfaces[configName];
         };
-        
 
         /**
          * encapsulated xhr object which tracks down various implementations
@@ -382,12 +381,12 @@ if (!myfaces._impl.core._Runtime) {
                 }
 
                 //fix for the white page issue
-               // if(this.browser.isIE && this.browser.isIE < 7) {
+                // if(this.browser.isIE && this.browser.isIE < 7) {
                 //   holder.insertBefore( script, holder.firstChild );
                 //   holder.removeChild( script );
-               // } else {
-                   holder.appendChild(script);
-               // }
+                // } else {
+                holder.appendChild(script);
+                // }
 
             } catch (e) {
                 //in case of a loading error we retry via eval    
@@ -402,7 +401,7 @@ if (!myfaces._impl.core._Runtime) {
             //a correct order of scripts being loaded
             //if you use script source on the head, we  have to revert
             //to xhr+ globalEval for those
-            if(!_this.browser.isFF) {
+            if (!_this.browser.isFF) {
                 _this.loadScriptEval(src, type, defer, charSet);
             } else {
                 //only firefox keeps the order, sorry ie...
@@ -623,6 +622,16 @@ if (!myfaces._impl.core._Runtime) {
                         newCls.prototype[key] = funcs[key];
                 }
             }
+        };
+
+        /**
+         * general type assertion routine
+         *
+         * @param probe the probe to be checked for the correct type
+         * @param theType the type to be checked for
+         */
+        this.assertType = function(probe, theType) {
+            return this.isString(theType) ? probe == typeof theType : probe instanceof theType;
         };
 
         /**
