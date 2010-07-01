@@ -53,7 +53,7 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
     {
         super.setUp();
 
-        application.setViewHandler(new MockTestViewHandler());
+        //application.setViewHandler(new MockTestViewHandler());
         form = new HtmlForm();
 
         writer = new MockResponseWriter(new StringWriter(), null, null);

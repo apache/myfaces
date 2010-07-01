@@ -19,78 +19,78 @@
 
 package javax.faces;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-public class FacesExceptionTest extends TestCase
+public class FacesExceptionTest
 {
 
-    public static void main(String[] args)
+    public FacesExceptionTest()
     {
-        junit.textui.TestRunner.run(FacesExceptionTest.class);
     }
 
-    public FacesExceptionTest(String name)
+    @Before
+    public void setUp() throws Exception
     {
-        super(name);
     }
 
-    @Override
-    protected void setUp() throws Exception
+    @After
+    public void tearDown() throws Exception
     {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception
-    {
-        super.tearDown();
     }
 
     /*
      * Test method for 'javax.faces.FacesException.FacesException()'
      */
+    @Test
     public void testFacesException()
     {
         FacesException e = new FacesException();
-        assertNull(e.getCause());
-        assertNull(e.getMessage());
+        Assert.assertNull(e.getCause());
+        Assert.assertNull(e.getMessage());
     }
 
     /*
      * Test method for 'javax.faces.FacesException.FacesException(Throwable)'
      */
+    @Test
     public void testFacesExceptionThrowable()
     {
         Throwable t = new Throwable();
         FacesException fe = new FacesException(t);
-        assertEquals(t, fe.getCause());
+        Assert.assertEquals(t, fe.getCause());
     }
 
     /*
      * Test method for 'javax.faces.FacesException.FacesException(String)'
      */
+    @Test
     public void testFacesExceptionString()
     {
         String m = "Message";
         FacesException e = new FacesException(m);
-        assertEquals(e.getMessage(), m);
+        Assert.assertEquals(e.getMessage(), m);
     }
 
     /*
      * Test method for 'javax.faces.FacesException.FacesException(String, Throwable)'
      */
+    @Test
     public void testFacesExceptionStringThrowable()
     {
         String m = "Message";
         Throwable t = new Throwable();
         FacesException fe = new FacesException(m, t);
-        assertEquals(t, fe.getCause());
-        assertEquals(fe.getMessage(), m);
+        Assert.assertEquals(t, fe.getCause());
+        Assert.assertEquals(fe.getMessage(), m);
     }
 
     /*
      * Test method for 'javax.faces.FacesException.getCause()'
      */
+    @Test
     public void testGetCause()
     {
 

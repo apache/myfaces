@@ -18,163 +18,82 @@
  */
 package org.apache.myfaces.application;
 
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ResourceDependency;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.event.ListenerFor;
 import javax.faces.event.PostAddToViewEvent;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
 
-import junit.framework.TestCase;
-
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.mock.MockFacesContextFactory;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
-import org.apache.myfaces.test.mock.MockExternalContext;
-import org.apache.myfaces.test.mock.MockFacesContext;
-import org.apache.myfaces.test.mock.MockHttpServletRequest;
-import org.apache.myfaces.test.mock.MockHttpServletResponse;
-import org.apache.myfaces.test.mock.MockHttpSession;
 import org.apache.myfaces.test.mock.MockPropertyResolver;
-import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
-import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockVariableResolver;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class ApplicationImplAnnotationTest extends TestCase
+public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTestCase
 {
     //TODO: need mock objects for VDL/VDLFactory
     //remove from excludes list in pom.xml after complete
     
-    // Mock object instances for our tests
-    protected ApplicationImpl application = null;
-    protected MockServletConfig       config = null;
-    protected MockExternalContext     externalContext = null;
-    protected MockFacesContext        facesContext = null;
-    protected MockFacesContextFactory facesContextFactory = null;
-    protected MockLifecycle           lifecycle = null;
-    protected MockLifecycleFactory    lifecycleFactory = null;
-    protected MockRenderKit           renderKit = null;
-    protected MockHttpServletRequest  request = null;
-    protected MockHttpServletResponse response = null;
-    protected MockServletContext      servletContext = null;
-    protected MockHttpSession         session = null;
-
-    // Thread context class loader saved and restored after each test
-    private ClassLoader threadContextClassLoader = null;
-
-    public ApplicationImplAnnotationTest(String name)
+    public ApplicationImplAnnotationTest()
     {
-        super(name);
     }
 
-    protected void setUp() throws Exception
+    @Override
+    protected void setFactories() throws Exception
     {
-        // Set up a new thread context class loader
-        threadContextClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(new URLClassLoader(new URL[0],
-                this.getClass().getClassLoader()));
-
-        // Set up Servlet API Objects
-        servletContext = new MockServletContext();
-        config = new MockServletConfig(servletContext);
-        session = new MockHttpSession();
-        session.setServletContext(servletContext);
-        request = new MockHttpServletRequest(session);
-        request.setServletContext(servletContext);
-        response = new MockHttpServletResponse();
-        externalContext =
-            new MockExternalContext(servletContext, request, response);
-
-        // Set up JSF API Objects
-        FactoryFinder.releaseFactories();
-        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(new MockPropertyResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(new MockVariableResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(new MockExpressionFactory());
-        //To make work ValueExpressions
-        
-        
+        super.setFactories();
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
                 ApplicationFactoryImpl.class.getName());
-        FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY,
-        "org.apache.myfaces.test.mock.MockFacesContextFactory");
-        FactoryFinder.setFactory(FactoryFinder.LIFECYCLE_FACTORY,
-        "org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory");
-        FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY,
-        "org.apache.myfaces.test.mock.MockRenderKitFactory");
-        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+        FactoryFinder.setFactory(
+                FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
                 "org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl");
-
-        lifecycleFactory = (MockLifecycleFactory)
-        FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        lifecycle = (MockLifecycle)
-        lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
-        facesContextFactory = (MockFacesContextFactory)
-        FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (MockFacesContext)
-        facesContextFactory.getFacesContext(servletContext,
-                request,
-                response,
-                lifecycle);
-        externalContext = (MockExternalContext) facesContext.getExternalContext();
-        UIViewRoot root = new UIViewRoot();
-        root.setViewId("/viewId");
-        root.setRenderKitId(RenderKitFactory.HTML_BASIC_RENDER_KIT);
-        facesContext.setViewRoot(root);
-        ApplicationFactory applicationFactory = (ApplicationFactory)
-          FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        application = (ApplicationImpl) applicationFactory.getApplication();
-        facesContext.setApplication(application);
-        RenderKitFactory renderKitFactory = (RenderKitFactory)
-        FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        renderKit = new MockRenderKit();
-        renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
-        
-        //We need this two components added
-        application.addComponent(UIOutput.COMPONENT_TYPE, UIOutput.class.getName());
-        application.addComponent(UIPanel.COMPONENT_TYPE, UIPanel.class.getName());
-        
     }
 
+    @Override
+    protected void setUpExternalContext() throws Exception
+    {
+        super.setUpExternalContext();
+        //Set RuntimeConfig object properly to make work ValueExpressions 
+        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
+                new MockPropertyResolver());
+        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
+                new MockVariableResolver());
+        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
+                new MockExpressionFactory());
+    }
+
+    @Override
+    protected void setUpApplication() throws Exception
+    {
+        super.setUpApplication();
+        //We need this two components added
+        application.addComponent(UIOutput.COMPONENT_TYPE, UIOutput.class
+                .getName());
+        application.addComponent(UIPanel.COMPONENT_TYPE, UIPanel.class
+                .getName());
+    }
+
+    @Override
     public void tearDown() throws Exception
     {
         RuntimeConfig.getCurrentInstance(externalContext).purge();
-        application = null;
-        config = null;
-        externalContext = null;
-        facesContext.release();
-        facesContext = null;
-        lifecycle = null;
-        lifecycleFactory = null;
-        renderKit = null;
-        request = null;
-        response = null;
-        servletContext = null;
-        session = null;
-        FactoryFinder.releaseFactories();
-
-        Thread.currentThread().setContextClassLoader(threadContextClassLoader);
-        threadContextClassLoader = null;
-
+        super.tearDown();
     }
 
     /**
@@ -207,6 +126,7 @@ public class ApplicationImplAnnotationTest extends TestCase
 
     }
 
+    @Test
     public void testCreateComponentRenderer() throws Exception
     {
         facesContext.getViewRoot().setRenderKitId(
@@ -223,10 +143,10 @@ public class ApplicationImplAnnotationTest extends TestCase
                 UITestComponentA.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        assertEquals(1,componentResources.size());
+        Assert.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        assertEquals("testResource.js",attrMap.get("name"));
-        assertEquals("testLib",attrMap.get("library"));
+        Assert.assertEquals("testResource.js",attrMap.get("name"));
+        Assert.assertEquals("testLib",attrMap.get("library"));
     }
 
     @ResourceDependency(name = "testResource.js")
@@ -248,6 +168,7 @@ public class ApplicationImplAnnotationTest extends TestCase
         }
     }
 
+    @Test
     public void testCreateComponentAnnotation() throws Exception
     {
         application.addComponent(UITestComponentB.COMPONENT_TYPE,
@@ -256,11 +177,12 @@ public class ApplicationImplAnnotationTest extends TestCase
         UITestComponentB comp = (UITestComponentB) application.createComponent(UITestComponentB.COMPONENT_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        assertEquals(1,componentResources.size());
+        Assert.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        assertEquals("testResource.js",attrMap.get("name"));
+        Assert.assertEquals("testResource.js",attrMap.get("name"));
     }
     
+    @Test
     public void testCreateComponentRendererAnnotation() throws Exception
     {
         facesContext.getViewRoot().setRenderKitId(
@@ -277,7 +199,7 @@ public class ApplicationImplAnnotationTest extends TestCase
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        assertEquals(2,componentResources.size());
+        Assert.assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -286,11 +208,12 @@ public class ApplicationImplAnnotationTest extends TestCase
             }
             else
             {
-                fail("Not expected resource found"+component.getAttributes().get("name"));
+                Assert.fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
     
+    @Test
     public void testCreateComponentValueExpression1() throws Exception
     {
         
@@ -305,11 +228,12 @@ public class ApplicationImplAnnotationTest extends TestCase
         
         List<UIComponent> componentResources = 
             facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        assertEquals(1,componentResources.size());
+        Assert.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        assertEquals("testResource.js",attrMap.get("name"));
+        Assert.assertEquals("testResource.js",attrMap.get("name"));
     }
     
+    @Test
     public void testCreateComponentValueExpression2() throws Exception
     {
         
@@ -325,11 +249,12 @@ public class ApplicationImplAnnotationTest extends TestCase
         
         List<UIComponent> componentResources = 
             facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        assertEquals(1,componentResources.size());
+        Assert.assertEquals(1,componentResources.size());
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
-        assertEquals("testResource.js",attrMap.get("name"));
+        Assert.assertEquals("testResource.js",attrMap.get("name"));
     }
 
+    @Test
     public void testCreateComponentValueExpression3() throws Exception
     {
         
@@ -350,7 +275,7 @@ public class ApplicationImplAnnotationTest extends TestCase
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        assertEquals(2,componentResources.size());
+        Assert.assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -359,11 +284,12 @@ public class ApplicationImplAnnotationTest extends TestCase
             }
             else
             {
-                fail("Not expected resource found"+component.getAttributes().get("name"));
+                Assert.fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
     
+    @Test
     public void testCreateComponentValueExpression4() throws Exception
     {
         
@@ -386,7 +312,7 @@ public class ApplicationImplAnnotationTest extends TestCase
                 UITestComponentB.DEFAULT_RENDERER_TYPE);
         
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        assertEquals(2,componentResources.size());
+        Assert.assertEquals(2,componentResources.size());
         for (UIComponent component : componentResources)
         {
             if ("testResource.js".equals(component.getAttributes().get("name")))
@@ -395,18 +321,19 @@ public class ApplicationImplAnnotationTest extends TestCase
             }
             else
             {
-                fail("Not expected resource found"+component.getAttributes().get("name"));
+                Assert.fail("Not expected resource found"+component.getAttributes().get("name"));
             }
         }
     }
     
+    @Test
     public void testDatetimeconverterDefaultTimezoneIsSystemTimezoneInitParameter()
     {
-        servletContext.addInitParameter(
+        ((MockServletContext)servletContext).addInitParameter(
                 "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE", "true");
         application.addConverter(java.util.Date.class, "javax.faces.convert.DateTimeConverter");
         Converter converter = application.createConverter(java.util.Date.class);
-        assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());
+        Assert.assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());
     }
 
 }

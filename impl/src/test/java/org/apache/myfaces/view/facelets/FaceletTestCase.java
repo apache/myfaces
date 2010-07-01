@@ -53,7 +53,6 @@ import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
-import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
@@ -62,18 +61,22 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.apache.myfaces.test.mock.MockFacesContextFactory;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockPropertyResolver;
 import org.apache.myfaces.test.mock.MockRenderKit;
+import org.apache.myfaces.test.mock.MockResponseStateManager;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
 import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
-import org.apache.myfaces.view.facelets.mock.MockHttpServletRequest;
-import org.apache.myfaces.view.facelets.mock.MockHttpServletResponse;
 import org.apache.myfaces.view.facelets.mock.MockResourceHandlerSupport;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
+
+//import org.apache.myfaces.view.facelets.mock.MockHttpServletRequest;
+//import org.apache.myfaces.view.facelets.mock.MockHttpServletResponse;
 
 public abstract class FaceletTestCase extends TestCase
 {
@@ -139,8 +142,10 @@ public abstract class FaceletTestCase extends TestCase
         URI context = this.getContext();
 
         this.servletContext = new MockServletContext();
-        this.servletRequest = new MockHttpServletRequest(this.servletContext,
-                context);
+        //this.servletRequest = new MockHttpServletRequest(this.servletContext,
+        //        context);
+        this.servletRequest = new MockHttpServletRequest(context.getPath(), null, context.getPath(), context.getQuery());
+        servletRequest.setServletContext(this.servletContext);
         this.servletResponse = new MockHttpServletResponse();
 
         externalContext = new MockExternalContext(servletContext,
@@ -188,7 +193,7 @@ public abstract class FaceletTestCase extends TestCase
                 .getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         renderKit = new MockRenderKit()
         {
-            ResponseStateManager rsm = new HtmlResponseStateManager();
+            ResponseStateManager rsm = new MockResponseStateManager();
 
             @Override
             public ResponseStateManager getResponseStateManager()

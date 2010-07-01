@@ -28,7 +28,10 @@ import org.apache.myfaces.test.mock.MockViewHandler;
  * UnsupportedOperationException inside writeState().
  * This is not needed anymore once the fix for
  * SHALE-468 is released.
+ * 
+ * @deprecated fixed on myfaces-test
  */
+@Deprecated
 public class MockTestViewHandler extends MockViewHandler
 {
     public void writeState(FacesContext context)

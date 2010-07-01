@@ -23,38 +23,32 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
 import org.apache.myfaces.mock.api.Mock2ApplicationFactory;
 import org.apache.myfaces.mock.api.MockApplicationFactory;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-public class FactoryFinderTest extends TestCase
+public class FactoryFinderTest
 {
 
-    public static void main(String[] args)
+    public FactoryFinderTest()
     {
-        junit.textui.TestRunner.run(FactoryFinderTest.class);
-
     }
 
-    public FactoryFinderTest(String name)
+    @Before
+    public void setUp() throws Exception
     {
-        super(name);
-    }
-
-    @Override
-    protected void setUp() throws Exception
-    {
-        super.setUp();
         // this needs to be called *before* the first Test test is run,
         // as there may be left over FactoryFinder configurations from
         // that previous tests that may interfere with the first test here.
         FactoryFinder.releaseFactories();
     }
 
-    @Override
-    protected void tearDown() throws Exception
+    @After
+    public void tearDown() throws Exception
     {
-        super.tearDown();
         // call this again so there is no possibility of messing up tests that will
         // run after this one
         FactoryFinder.releaseFactories();
@@ -109,6 +103,7 @@ public class FactoryFinderTest extends TestCase
     /*
      * Test method for 'javax.faces.FactoryFinder.getFactory(String)'
      */
+    @Test
     public void testGetFactory() throws Exception
     {
         // no catch because if this fails the test fails, i.e. not trying to test
@@ -117,18 +112,19 @@ public class FactoryFinderTest extends TestCase
         try
         {
             Object factory = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            assertNotNull(factory);
-            assertTrue(factory.getClass().equals(MockApplicationFactory.class));
+            Assert.assertNotNull(factory);
+            Assert.assertTrue(factory.getClass().equals(MockApplicationFactory.class));
         }
         catch (IllegalStateException e)
         {
-            fail("Should not throw an illegal state exception");
+            Assert.fail("Should not throw an illegal state exception");
         }
     }
 
     /*
      * Test method for 'javax.faces.FactoryFinder.getFactory(String)'
      */
+    @Test
     public void testGetFactoryTwice() throws Exception
     {
         // this test just makes sure that things work when the get has been called
@@ -137,22 +133,23 @@ public class FactoryFinderTest extends TestCase
         try
         {
             Object factory1 = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            assertNotNull(factory1);
-            assertTrue(factory1.getClass().equals(MockApplicationFactory.class));
+            Assert.assertNotNull(factory1);
+            Assert.assertTrue(factory1.getClass().equals(MockApplicationFactory.class));
             Object factory2 = FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            assertNotNull(factory2);
-            assertTrue(factory2.getClass().equals(MockApplicationFactory.class));
-            assertEquals(factory1, factory2);
+            Assert.assertNotNull(factory2);
+            Assert.assertTrue(factory2.getClass().equals(MockApplicationFactory.class));
+            Assert.assertEquals(factory1, factory2);
         }
         catch (IllegalStateException e)
         {
-            fail("Should not throw an illegal state exception");
+            Assert.fail("Should not throw an illegal state exception");
         }
     }
 
     /*
      * Test method for 'javax.faces.FactoryFinder.getFactory(String)'
      */
+    @Test
     public void testGetFactoryNoFactory() throws Exception
     {
         // no catch because if this fails the test fails, i.e. not trying to test
@@ -161,11 +158,11 @@ public class FactoryFinderTest extends TestCase
         try
         {
             FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-            fail("Should have thrown an illegal state exception");
+            Assert.fail("Should have thrown an illegal state exception");
         }
         catch (IllegalArgumentException e)
         {
-            assertNotNull(e.getMessage());
+            Assert.assertNotNull(e.getMessage());
         }
     }
 
@@ -173,50 +170,53 @@ public class FactoryFinderTest extends TestCase
      * No configuration test, this should throw and deliver a useful message Test method for
      * 'javax.faces.FactoryFinder.getFactory(String)'
      */
+    @Test
     public void testGetFactoryNoConfiguration() throws Exception
     {
         try
         {
             FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            fail("Should have thrown an illegal state exception");
+            Assert.fail("Should have thrown an illegal state exception");
         }
         catch (IllegalStateException e)
         {
-            assertNotNull(e.getMessage());
-            assertTrue(e.getMessage().startsWith("No Factories configured for this Application"));
+            Assert.assertNotNull(e.getMessage());
+            Assert.assertTrue(e.getMessage().startsWith("No Factories configured for this Application"));
         }
     }
 
     /*
      * Bogus factory name test Test method for 'javax.faces.FactoryFinder.setFactory(String, String)'
      */
+    @Test
     public void testSetFactoryBogusName()
     {
         try
         {
             FactoryFinder.setFactory("BogusFactoryName", MockApplicationFactory.class.getName());
-            fail("Should have thrown an illegal argument exception");
+            Assert.fail("Should have thrown an illegal argument exception");
         }
         catch (IllegalArgumentException e)
         {
-            assertNotNull(e.getMessage());
+            Assert.assertNotNull(e.getMessage());
         }
     }
 
     /*
      * Test method for 'javax.faces.FactoryFinder.setFactory(String, String)'
      */
+    @Test
     public void testSetFactory() throws Exception
     {
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {
-            fail("Should not throw an illegal argument exception");
+            Assert.fail("Should not throw an illegal argument exception");
         }
     }
 
@@ -224,28 +224,29 @@ public class FactoryFinderTest extends TestCase
      * If a factory has ever been handed out then setFactory is not supposed to change the factory layout. This test
      * checks to see if that is true. Test method for 'javax.faces.FactoryFinder.setFactory(String, String)'
      */
+    @Test
     public void testSetFactoryNoEffect() throws Exception
     {
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
-            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 Mock2ApplicationFactory.class.getName()));
             // getFactory should cause setFactory to stop changing the
             // registered classes
             FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
             // this should essentially be a no-op
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, Mock2ApplicationFactory.class.getName());
-            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 Mock2ApplicationFactory.class.getName()));
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {
-            fail("Should not throw an illegal argument exception");
+            Assert.fail("Should not throw an illegal argument exception");
         }
     }
 
@@ -253,33 +254,34 @@ public class FactoryFinderTest extends TestCase
      * Adding factories should add the class name to the list of avalable class names Test method for
      * 'javax.faces.FactoryFinder.setFactory(String, String)'
      */
+    @Test
     public void testSetFactoryAdditiveClassNames() throws Exception
     {
         try
         {
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
-            assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertFalse(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 Mock2ApplicationFactory.class.getName()));
             FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, Mock2ApplicationFactory.class.getName());
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 Mock2ApplicationFactory.class.getName()));
-            assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
+            Assert.assertTrue(registeredFactoryNames(FactoryFinder.APPLICATION_FACTORY).contains(
                 MockApplicationFactory.class.getName()));
         }
         catch (IllegalArgumentException e)
         {
-            fail("Should not throw an illegal argument exception");
+            Assert.fail("Should not throw an illegal argument exception");
         }
     }
 
     /*
      * Test method for 'javax.faces.FactoryFinder.releaseFactories()'
      */
+    @Test
     public void testReleaseFactories()
     {
 
     }
-
 }

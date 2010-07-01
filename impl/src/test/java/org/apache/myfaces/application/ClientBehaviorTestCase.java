@@ -18,145 +18,76 @@
  */
 package org.apache.myfaces.application;
 
-import junit.framework.TestCase;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.el.MockExpressionFactory;
-import org.apache.myfaces.test.mock.*;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
-
-import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.*;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorBase;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKitFactory;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
 
-public class ClientBehaviorTestCase extends TestCase
+import javax.faces.FactoryFinder;
+import javax.faces.application.ResourceDependencies;
+import javax.faces.application.ResourceDependency;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIComponentBase;
+import javax.faces.component.UIOutput;
+import javax.faces.component.UIPanel;
+import javax.faces.component.behavior.ClientBehavior;
+import javax.faces.component.behavior.ClientBehaviorBase;
+import javax.faces.component.behavior.FacesBehavior;
+
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.el.MockExpressionFactory;
+import org.apache.myfaces.test.mock.MockPropertyResolver;
+import org.apache.myfaces.test.mock.MockVariableResolver;
+import org.junit.Assert;
+import org.junit.Test;
+
+public class ClientBehaviorTestCase extends AbstractJsfConfigurableMockTestCase
 {
 
-    // Mock object instances for our tests
-    protected ApplicationImpl application = null;
-    protected MockServletConfig       config = null;
-    protected MockExternalContext     externalContext = null;
-    protected MockFacesContext        facesContext = null;
-    protected MockFacesContextFactory facesContextFactory = null;
-    protected MockLifecycle           lifecycle = null;
-    protected MockLifecycleFactory    lifecycleFactory = null;
-    protected MockRenderKit           renderKit = null;
-    protected MockHttpServletRequest  request = null;
-    protected MockHttpServletResponse response = null;
-    protected MockServletContext      servletContext = null;
-    protected MockHttpSession         session = null;
-
-    // Thread context class loader saved and restored after each test
-    private ClassLoader threadContextClassLoader = null;    
-
-
-   public ClientBehaviorTestCase(String name)
+    public ClientBehaviorTestCase()
     {
-        super(name);
     }
 
     @Override
-    protected void setUp() throws Exception
+    protected void setFactories() throws Exception
     {
-        super.setUp();
-        // Set up a new thread context class loader
-        threadContextClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(new URLClassLoader(new URL[0],
-                this.getClass().getClassLoader()));
-
-        // Set up Servlet API Objects
-        servletContext = new MockServletContext();
-        config = new MockServletConfig(servletContext);
-        session = new MockHttpSession();
-        session.setServletContext(servletContext);
-        request = new MockHttpServletRequest(session);
-        request.setServletContext(servletContext);
-        response = new MockHttpServletResponse();
-        externalContext =
-            new MockExternalContext(servletContext, request, response);
-
-        // Set up JSF API Objects
-        FactoryFinder.releaseFactories();
-        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(new MockPropertyResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(new MockVariableResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(new MockExpressionFactory());
-        //To make work ValueExpressions
-
-
+        super.setFactories();
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
                 ApplicationFactoryImpl.class.getName());
-        FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY,
-        "org.apache.myfaces.test.mock.MockFacesContextFactory");
-        FactoryFinder.setFactory(FactoryFinder.LIFECYCLE_FACTORY,
-        "org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory");
-        FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY,
-        "org.apache.myfaces.test.mock.MockRenderKitFactory");
-        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+        FactoryFinder.setFactory(
+                FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
                 "org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl");
-
-        lifecycleFactory = (MockLifecycleFactory)
-        FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        lifecycle = (MockLifecycle)
-        lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
-        facesContextFactory = (MockFacesContextFactory)
-        FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (MockFacesContext)
-        facesContextFactory.getFacesContext(servletContext,
-                request,
-                response,
-                lifecycle);
-        externalContext = (MockExternalContext) facesContext.getExternalContext();
-        UIViewRoot root = new UIViewRoot();
-        root.setViewId("/viewId");
-        root.setRenderKitId(RenderKitFactory.HTML_BASIC_RENDER_KIT);
-        facesContext.setViewRoot(root);
-        ApplicationFactory applicationFactory = (ApplicationFactory)
-          FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        application = (ApplicationImpl) applicationFactory.getApplication();
-        facesContext.setApplication(application);
-        RenderKitFactory renderKitFactory = (RenderKitFactory)
-        FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        renderKit = new MockRenderKit();
-        renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
-
-        //We need this two components added
-        application.addComponent(UIOutput.COMPONENT_TYPE, UIOutput.class.getName());
-        application.addComponent(UIPanel.COMPONENT_TYPE, UIPanel.class.getName());
     }
 
-   @Override
-   public void tearDown() throws Exception
-   {
+    @Override
+    protected void setUpExternalContext() throws Exception
+    {
+        super.setUpExternalContext();
+        //Set RuntimeConfig object properly to make work ValueExpressions 
+        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
+                new MockPropertyResolver());
+        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
+                new MockVariableResolver());
+        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
+                new MockExpressionFactory());
+    }
+
+    @Override
+    protected void setUpApplication() throws Exception
+    {
+        super.setUpApplication();
+        //We need this two components added
+        application.addComponent(UIOutput.COMPONENT_TYPE, UIOutput.class
+                .getName());
+        application.addComponent(UIPanel.COMPONENT_TYPE, UIPanel.class
+                .getName());
+    }
+
+    @Override
+    public void tearDown() throws Exception
+    {
         RuntimeConfig.getCurrentInstance(externalContext).purge();
-        application = null;
-        config = null;
-        externalContext = null;
-        facesContext.release();
-        facesContext = null;
-        lifecycle = null;
-        lifecycleFactory = null;
-        renderKit = null;
-        request = null;
-        response = null;
-        servletContext = null;
-        session = null;
-        FactoryFinder.releaseFactories();
-
-        Thread.currentThread().setContextClassLoader(threadContextClassLoader);
-        threadContextClassLoader = null;
-
-   }
+        super.tearDown();
+    }
 
     @FacesBehavior("org.apache.myfaces.component.MockClientBehavior")
     @ResourceDependencies({
@@ -195,6 +126,7 @@ public class ClientBehaviorTestCase extends TestCase
         }
     }
 
+    @Test
     public void testAddBehaviorWithResourceDependencies() throws Exception
     {
 
@@ -212,12 +144,12 @@ public class ClientBehaviorTestCase extends TestCase
         comp.addClientBehavior("click", behavior);
 
         // verify that method still works
-        assertTrue(comp.getClientBehaviors().get("click").contains(behavior));
+        Assert.assertTrue(comp.getClientBehaviors().get("click").contains(behavior));
 
         // get behavior resource
         List<UIComponent> resources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
-        assertEquals(1, resources.size());
+        Assert.assertEquals(1, resources.size());
         Map<String,Object> attrMap = resources.get(0).getAttributes();
-        assertEquals("test.js", attrMap.get("name"));
+        Assert.assertEquals("test.js", attrMap.get("name"));
     }
 }

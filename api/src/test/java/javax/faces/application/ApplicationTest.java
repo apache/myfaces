@@ -18,15 +18,14 @@
  */
 package javax.faces.application;
 
-import static org.apache.myfaces.Assert.assertException;
+import javax.el.ValueExpression;
+
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 
-import org.apache.myfaces.TestRunner;
-
-import javax.el.ValueExpression;
-
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for {@link Application}
@@ -34,151 +33,102 @@ import junit.framework.TestCase;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationTest extends TestCase
+public class ApplicationTest
 {
     private Application app;
 
-    @Override
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         app = (Application) Enhancer.create(Application.class, NoOp.INSTANCE);
+    }
+    
+    @After
+    public void tearDown() throws Exception
+    {
     }
 
     /**
      * Test method for {@link javax.faces.application.Application#addELResolver(javax.el.ELResolver)}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testAddELResolver()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.addELResolver(null);
-            }
-        });
-    }*/
+        app.addELResolver(null);
+    }
 
     /**
      * Test method for {@link javax.faces.application.Application#getELResolver()}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testGetELResolver()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.getELResolver();
-            }
-        });
-    }*/
+        app.getELResolver();
+    }
 
     /**
      * Test method for
      * {@link javax.faces.application.Application#getResourceBundle(javax.faces.context.FacesContext, java.lang.String)}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testGetResourceBundle()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.getResourceBundle(null, null);
-            }
-        });
-    }*/
+        app.getResourceBundle(null, null);
+    }
 
     /**
      * Test method for
      * {@link javax.faces.application.Application#createComponent(javax.el.ValueExpression, javax.faces.context.FacesContext, java.lang.String)}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testCreateComponentValueExpressionFacesContextString()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.createComponent((ValueExpression) null, null, null);
-            }
-        });
-    }*/
+        app.createComponent((ValueExpression) null, null, null);
+    }
 
     /**
      * Test method for {@link javax.faces.application.Application#getExpressionFactory()}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testGetExpressionFactory()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.getExpressionFactory();
-            }
-        });
-    }*/
+        app.getExpressionFactory();
+    }
 
     /**
      * Test method for {@link javax.faces.application.Application#addELContextListener(javax.el.ELContextListener)}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testAddELContextListener()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.addELContextListener(null);
-            }
-        });
-    }*/
+        app.addELContextListener(null);
+    }
 
     /**
      * Test method for {@link javax.faces.application.Application#removeELContextListener(javax.el.ELContextListener)}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testRemoveELContextListener()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.removeELContextListener(null);
-            }
-        });
-    }*/
+        app.removeELContextListener(null);
+    }
 
     /**
      * Test method for {@link javax.faces.application.Application#getELContextListeners()}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testGetELContextListeners()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.getELContextListeners();
-            }
-        });
-    }*/
+        app.getELContextListeners();
+    }
 
     /**
      * Test method for
      * {@link javax.faces.application.Application#evaluateExpressionGet(javax.faces.context.FacesContext, java.lang.String, java.lang.Class)}.
      */
-    /*
+    @Test(expected=UnsupportedOperationException.class)
     public void testEvaluateExpressionGet()
     {
-        assertException(UnsupportedOperationException.class, new TestRunner()
-        {
-            public void run()
-            {
-                app.evaluateExpressionGet(null, null, null);
-            }
-        });
-    }*/
+        app.evaluateExpressionGet(null, null, null);
+    }
 }

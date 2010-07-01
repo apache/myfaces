@@ -29,14 +29,14 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
 import javax.faces.application.NavigationCase;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
-import org.apache.myfaces.test.mock.MockApplication;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class NavigationHandlerImplTest extends AbstractJsfTestCase
@@ -44,34 +44,32 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
     private DigesterFacesConfigUnmarshallerImpl _digesterFacesConfigUnmarshaller;
 
-    public NavigationHandlerImplTest(String name)
+    public NavigationHandlerImplTest()
     {
-        super(name);
+        super();
     }
-
+    
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
-        //Set myfaces application instance instead mock
-        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
-                "org.apache.myfaces.application.ApplicationFactoryImpl");
-        ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder
-                .getFactory(FactoryFinder.APPLICATION_FACTORY);
-        application = (MockApplication) applicationFactory.getApplication();
-        facesContext.setApplication(application);
-        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
-                "org.apache.myfaces.context.PartialViewContextFactoryImpl");
-        FactoryFinder.setFactory(FactoryFinder.EXCEPTION_HANDLER_FACTORY,
-                "org.apache.myfaces.context.ExceptionHandlerFactoryImpl");
-
         _digesterFacesConfigUnmarshaller = new DigesterFacesConfigUnmarshallerImpl(
                 externalContext);
     }
+    
+    @Override
+    protected void setFactories() throws Exception
+    {
+        super.setFactories();
+        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
+            "org.apache.myfaces.context.PartialViewContextFactoryImpl");
+    }
+
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
+        _digesterFacesConfigUnmarshaller = null;
         super.tearDown();
     }
 
@@ -90,6 +88,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         }
     }
 
+    @Test
     public void testGetSimpleExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-rules-config.xml");
@@ -99,9 +98,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
 
+    @Test
     public void testHandleSimpleExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-rules-config.xml");
@@ -111,9 +111,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         nh.handleNavigation(facesContext, null, "go");
 
-        assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
+        Assert.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
     }
 
+    @Test
     public void testGetSimpleGlobalExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-global-rules-config.xml");
@@ -123,9 +124,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
 
+    @Test
     public void testHandleSimpleGlobalExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-global-rules-config.xml");
@@ -135,9 +137,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         nh.handleNavigation(facesContext, null, "go");
 
-        assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
+        Assert.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
     }
     
+    @Test
     public void testGetSimpleMixExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-mix-rules-config.xml");
@@ -147,15 +150,16 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/c.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/c.jsp", nc.getToViewId(facesContext));
         
         facesContext.getViewRoot().setViewId("/z.jsp");
 
         nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
 
+    @Test
     public void testHandleSimpleMixExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-mix-rules-config.xml");
@@ -165,15 +169,16 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         nh.handleNavigation(facesContext, null, "go");
 
-        assertEquals("/c.jsp", facesContext.getViewRoot().getViewId());
+        Assert.assertEquals("/c.jsp", facesContext.getViewRoot().getViewId());
         
         facesContext.getViewRoot().setViewId("/z.jsp");
         
         nh.handleNavigation(facesContext, null, "go");
         
-        assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
+        Assert.assertEquals("/b.jsp", facesContext.getViewRoot().getViewId());
     }
     
+    @Test
     public void testGetSimplePartialExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-partial-rules-config.xml");
@@ -183,15 +188,16 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/cars/b.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/cars/b.jsp", nc.getToViewId(facesContext));
         
         facesContext.getViewRoot().setViewId("/cars/z.jsp");
 
         nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/cars/c.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/cars/c.jsp", nc.getToViewId(facesContext));
     }
 
+    @Test
     public void testHandleSimplePartialExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-partial-rules-config.xml");
@@ -201,15 +207,16 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         nh.handleNavigation(facesContext, null, "go");
 
-        assertEquals("/cars/b.jsp", facesContext.getViewRoot().getViewId());
+        Assert.assertEquals("/cars/b.jsp", facesContext.getViewRoot().getViewId());
         
         facesContext.getViewRoot().setViewId("/cars/z.jsp");
         
         nh.handleNavigation(facesContext, null, "go");
         
-        assertEquals("/cars/c.jsp", facesContext.getViewRoot().getViewId());
+        Assert.assertEquals("/cars/c.jsp", facesContext.getViewRoot().getViewId());
     }
     
+    @Test
     public void testGetSimpleELExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-el-rules-config.xml");
@@ -220,9 +227,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
 
-        assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
     
+    @Test
     public void testGetSimpleELExactMatchRuleFailNullOutcome() throws Exception
     {
         loadTextFacesConfig("simple-el-rules-config.xml");
@@ -233,7 +241,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", null);
 
-        assertNull(nc);
+        Assert.assertNull(nc);
     }
     
     public static class TestBean
@@ -249,6 +257,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testGetSimpleIfExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-if-rules-config.xml");
@@ -261,9 +270,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
     
+    @Test
     public void testGetSimpleNotIfExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-if-rules-config.xml");
@@ -276,9 +286,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/d.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/d.jsp", nc.getToViewId(facesContext));
     }
     
+    @Test
     public void testGetSimplePreemptiveIfExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-if-rules-config.xml");
@@ -291,9 +302,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/go.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/go.jsp", nc.getToViewId(facesContext));
     }    
     
+    @Test
     public void testGetSimpleGlobalPreemptiveMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-global-preemptive-rules-config.xml");
@@ -306,9 +318,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
 
-        assertEquals("/a.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/a.jsp", nc.getToViewId(facesContext));
     }
     
+    @Test
     public void testGetSimpleELNoCondMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-el-nocond-rules-config.xml");
@@ -319,9 +332,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
 
-        assertEquals("/b.jsp", nc.getToViewId(facesContext));
+        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
     }
     
+    @Test
     public void testGetSimpleELNoCondNullOutcomeMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-el-nocond-rules-config.xml");
@@ -332,9 +346,10 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
 
         NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", null);
 
-        assertNull(nc);
+        Assert.assertNull(nc);
     }
     
+    @Test
     public void testActionOutcomePrecendeceMachRule() throws Exception
     {
         loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
@@ -369,10 +384,11 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     
             NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
     
-            assertEquals("/b.jsp", nc.getToViewId(facesContext));
+            Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
         }
     }
     
+    @Test
     public void testActionOutcomePrecendeceAlternateOutcomeMachRule() throws Exception
     {
         loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
@@ -407,10 +423,11 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     
             NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "nogo");
     
-            assertEquals("/c.jsp", nc.getToViewId(facesContext));
+            Assert.assertEquals("/c.jsp", nc.getToViewId(facesContext));
         }
     }
 
+    @Test
     public void testActionOutcomePrecendeceNoOutcomeMachRule() throws Exception
     {
         loadTextFacesConfig("simple-action-outcome-precedence-config.xml");
@@ -446,11 +463,11 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
             NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", null);
     
             //If the <if> element is absent, only match a non-null outcome
-            assertNull(nc);
+            Assert.assertNull(nc);
         }
     }
-
     
+    @Test
     public void testActionOutcomePrecendece2MachRule() throws Exception
     {
         loadTextFacesConfig("simple-action-outcome-precedence-2-config.xml");
@@ -485,7 +502,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     
             NavigationCase nc = nh.getNavigationCase(facesContext, "#{rules.go}", "go");
     
-            assertEquals("/b.jsp", nc.getToViewId(facesContext));
+            Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
         }
     }
     
@@ -493,6 +510,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
      * Tests if the URL parameters of an outcome are correctly
      * added to the NavigationCase.
      */
+    @Test
     public void testFacesRedirectAddsUrlParameters()
     {
         NavigationHandlerImpl nh = new NavigationHandlerImpl();
@@ -510,6 +528,6 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // note that faces-redirect and includeViewParams
         // should not be added as a parameter
         
-        assertEquals(expected, navigationCase.getParameters());
+        Assert.assertEquals(expected, navigationCase.getParameters());
     }
 }

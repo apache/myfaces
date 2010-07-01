@@ -84,7 +84,7 @@ public class SelectTestCase extends FaceletTestCase
     public void testSelectOne() throws Exception
     {
         this.servletRequest.getSession().setAttribute("test", new TestBean());
-        this.servletRequest.setParameter("testForm:alignment", "10");
+        this.servletRequest.addParameter("testForm:alignment", "10");
 
         UIViewRoot root = new UIViewRoot();
         vdl.buildView(facesContext, root,"selectOne.xml");
