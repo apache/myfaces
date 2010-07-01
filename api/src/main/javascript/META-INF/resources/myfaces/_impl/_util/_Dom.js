@@ -411,7 +411,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         deepScan = !!deepScan;
 
         //elements by tagname is the fastest
-        if (deepScan && fragment.getElementsByTagName) {
+        if (deepScan && _Lang.exists(fragment, "getElementsByTagName")) {
             var ret = _Lang.objToArray(fragment.getElementsByTagName(tagName));
             if(fragment.tagName && fragment.tagName.toLowerCase() == tagName.toLocaleLowerCase()) ret.unshift(fragment);
             return ret;
@@ -443,7 +443,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             deepScan = !!deepScan;
 
             //elements byName is the fastest
-            if (deepScan && fragment.getElementsByName) {
+            if (deepScan && _Lang.exists(fragment, "getElementsByName")) {
                 var ret = _Lang.objToArray(fragment.getElementsByName(name));
                 if(fragment.name == name) ret.unshift(fragment);
                 return ret;
@@ -451,12 +451,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             }
 
 
-            if (deepScan && fragment.querySelectorAll) {
+            if (deepScan && _Lang.exists(fragment, "querySelectorAll")) {
                 try {
                     var newName = name;
                     if (_Lang.isString(newName)) {
                         newName = newName.replace(/\./g, "\\.").replace(/:/g, "\\:");
-                        ;
                     }
                     var result = fragment.querySelectorAll("[name=" + newName + "]");
                     if (fragment.nodeType == 1 && filter(fragment)) {
@@ -511,7 +510,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //html5 speed optimization for browsers which do not ,
             //have the getElementsByClassName implemented
             //but only for deep scan and normal parent nodes
-            else */if (fragment.querySelectorAll && deepScan) {
+            else */
+            if (_Lang.exists(fragment, "querySelectorAll") && deepScan) {
                 try {
                     var result = fragment.querySelectorAll("." + styleClass.replace(/\./g, "\\."));
 

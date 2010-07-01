@@ -356,8 +356,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             switch (node.getAttribute('id')) {
                 case this.P_VIEWROOT:
                     cDataBlock = cDataBlock.substring(cDataBlock.indexOf("<html"));
-                    this._replaceHead(request, context, cDataBlock);    
-                    var resultNode = this._replaceBody(request, context, cDataBlock);
+                    var parsedData = this._replaceHead(request, context, cDataBlock);
+                    var resultNode = (parsedData)? this._replaceBody(request, context, cDataBlock, parsedData): this._replaceBody(request, context, cDataBlock);
                     if (resultNode) {
                         this._pushOperationResult(resultNode);
                     }
@@ -409,6 +409,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
 
     },
 
+    /**
+     * replaces a current head theoretically,
+     * pratically only the scripts are evaled anew since nothing else
+     * can be changed.
+     *
+     * @param request the current request
+     * @param context the ajax context
+     * @param newData the data to be processed
+     *
+     * @return an xml representation of the page for further processing if possible
+     */
     _replaceHead: function(request, context, newData) {
         var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         var doc = this._Lang.parseXML(newData);
@@ -425,7 +436,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             if(this._Lang.isXMLParseError(newHead)) {
                 //we give up no further fallbacks
                 _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
-                return;
+                return null;
             }
         } else {
             //parser worked we go on
@@ -437,6 +448,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         //prestripping the body should reduce the failure rate of this method
         ///var xmlData = this._Lang.parseXML("<root>"+headData+"</root>");
         this._Dom.runScripts(newHead, true);
+
+        return doc;
     },
 
 
@@ -449,8 +462,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
      * @param {Object} request our request object
      * @param {Object} context (Map) the response context
      * @param {String} newData the markup which replaces the old dom node!
+     * @param {Node} parsedData (optional) preparsed XML representation data of the current document
      */
-    _replaceBody : function(request, context, newData) {
+    _replaceBody : function(request, context, newData /*varargs*/) {
         var parser = new (myfaces._impl.core._Runtime.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
 
         var oldBody = document.getElementsByTagName("body")[0];
@@ -471,7 +485,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         //and if that fails revert to a hidden iframe
         //var bodyData = parser.parse(newData, "body");
         var bodyData = null;
-        var doc = this._Lang.parseXML(newData);
+        var doc = (arguments.length > 3)? arguments[4]: this._Lang.parseXML(newData);
         if(this._Lang.isXMLParseError(doc)) {
             doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g,"<!--").replace(/\/\/-->[\s\n]\/\/-->/g,"//-->"));
         }
