@@ -71,15 +71,15 @@ import java.util.List;
 public class PartialResponseWriterImpl extends PartialResponseWriter {
 
     class StackEntry {
-        HtmlResponseWriterImpl writer;
+        ResponseWriter writer;
         StringWriter _doubleBuffer;
 
-        StackEntry(HtmlResponseWriterImpl writer, StringWriter doubleBuffer) {
+        StackEntry(ResponseWriter writer, StringWriter doubleBuffer) {
             this.writer = writer;
             _doubleBuffer = doubleBuffer;
         }
 
-        public HtmlResponseWriterImpl getWriter() {
+        public ResponseWriter getWriter() {
             return writer;
         }
 
@@ -96,7 +96,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
         }
     }
 
-    HtmlResponseWriterImpl _cdataDoubleBufferWriter = null;
+    ResponseWriter _cdataDoubleBufferWriter = null;
     StringWriter _doubleBuffer = null;
     List<StackEntry> _nestingStack = new LinkedList<StackEntry>();
 
@@ -116,7 +116,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
 
     private void openDoubleBuffer() {
         _doubleBuffer = new StringWriter();
-        _cdataDoubleBufferWriter = new HtmlResponseWriterImpl(_doubleBuffer, super.getContentType(), super.getCharacterEncoding());
+        //_cdataDoubleBufferWriter = new HtmlResponseWriterImpl(_doubleBuffer, super.getContentType(), super.getCharacterEncoding());
+        _cdataDoubleBufferWriter = getWrapped().cloneWithWriter(_doubleBuffer);
 
         StackEntry entry = new StackEntry(_cdataDoubleBufferWriter, _doubleBuffer);
 
