@@ -323,7 +323,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         if (isDoubleBufferEnabled()) {
-            _cdataDoubleBufferWriter.writeText(cbuf, off, len);
+            _cdataDoubleBufferWriter.write(cbuf, off, len);
         } else {
             super.write(cbuf, off, len);
         }
