@@ -19,16 +19,15 @@
 
 package org.apache.myfaces.context;
 
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
-
-import javax.faces.component.UIComponent;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.ResponseWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.PartialResponseWriter;
+import javax.faces.context.ResponseWriter;
 
 /**
  * <p/>
@@ -83,7 +82,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
             return writer;
         }
 
-        public void setWriter(HtmlResponseWriterImpl writer) {
+        public void setWriter(ResponseWriter writer) {
             this.writer = writer;
         }
 
