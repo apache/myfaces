@@ -34,27 +34,22 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyApplicationEvent;
-import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.application.ApplicationImpl;
-import org.apache.myfaces.application._SystemEventServletRequest;
-import org.apache.myfaces.application._SystemEventServletResponse;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.annotation.DefaultLifecycleProviderFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
-import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
-import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 
 /**
  * Performs common initialization tasks.
@@ -169,15 +164,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 message.append("*** See Application#getProjectStage() for more information.     ***\n");
                 message.append("*******************************************************************\n");
                 log.log(Level.WARNING, message.toString());
-                
-                // if ProjectStage is Development, install the DebugPhaseListener
-                if (facesContext.isProjectStage(ProjectStage.Development))
-                {
-                    LifecycleFactory lifeFac = (LifecycleFactory) FactoryFinder
-                            .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-                    Lifecycle lifecycle = lifeFac.getLifecycle(getLifecycleId(servletContext));
-                    lifecycle.addPhaseListener(new DebugPhaseListener());
-                }
             }
 
         } catch (Exception ex) {
