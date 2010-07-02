@@ -18,15 +18,11 @@
  */
 package org.apache.myfaces.webapp;
 
-import junit.framework.TestCase;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.DefaultPropertyResolver;
-import org.apache.myfaces.el.VariableResolverImpl;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
-import static org.easymock.EasyMock.*;
-import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
 
 import javax.el.ExpressionFactory;
 import javax.faces.webapp.FacesServlet;
@@ -34,12 +30,26 @@ import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.el.DefaultPropertyResolver;
+import org.apache.myfaces.el.VariableResolverImpl;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
+import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+
 /**
  * @author Mathias Broekelmann (latest modification by $Author: baranda $)
  * @version $Revision: 532019 $ $Date: 2007-04-24 19:34:36 +0200 (Di, 24 Apr 2007) $
  */
-public class Jsp21FacesInitializerTest extends TestCase
+public class Jsp21FacesInitializerTest extends AbstractJsfTestCase
 {
+
+    public Jsp21FacesInitializerTest(String name)
+    {
+        super(name);
+    }
 
     /**
      * Test method for {@link org.apache.myfaces.webapp.DefaultFacesInitializer#initFaces(javax.servlet.ServletContext)}.
@@ -47,6 +57,8 @@ public class Jsp21FacesInitializerTest extends TestCase
      */
     public void testInitFaces() throws Exception
     {
+        // TODO adapt this test case for MyFaces 2.0, because currently it checks nothing!
+        
         Jsp21FacesInitializer initializer = new Jsp21FacesInitializer();
         IMocksControl control = EasyMock.createControl();
         
