@@ -402,19 +402,23 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * this should work out with elements with different nesting depths but not being
      * parent and child to each other
      *
-     * TODO rename to getElementsByTagName
-     * TODO add iterator handlers here for browsers which allow dom filters and iterators
+     * @return the child elements as array or null if nothing is found
+     *
      */
     findByTagName : function(fragment, tagName, deepScan) {
         var _Lang = myfaces._impl._util._Lang;
 
         deepScan = !!deepScan;
 
-        //elements by tagname is the fastest
+        //elements by tagname is the fastest, ie throws an error on fragment.getElementsByTagName, the exists type
+        //via namespace array checking is safe
         if (deepScan && _Lang.exists(fragment, "getElementsByTagName")) {
             var ret = _Lang.objToArray(fragment.getElementsByTagName(tagName));
             if(fragment.tagName && fragment.tagName.toLowerCase() == tagName.toLocaleLowerCase()) ret.unshift(fragment);
             return ret;
+        } else if(deepScan) {
+            //no node type with child tags we can handle that without node type checking
+            return null;
         }
         //since getElementsByTagName is a standardized dom node function and ie also supports
         //it since 5.5
