@@ -36,7 +36,6 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
-import org.apache.myfaces.application.ResourceHandlerImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
@@ -55,7 +54,6 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockPropertyResolver;
 import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
-import org.apache.myfaces.view.facelets.mock.MockResourceHandlerSupport;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 
@@ -219,8 +217,8 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         
         // Redirect resource request to the directory where the test class is,
         // to make easier test composite components.
-        ((ResourceHandlerImpl)application.getResourceHandler()).
-            setResourceHandlerSupport(new MockResourceHandlerSupport(this.getClass()));
+        //((ResourceHandlerImpl)application.getResourceHandler()).
+        //    setResourceHandlerSupport(new MockResourceHandlerSupport(this.getClass()));
     }
     
     @Override
