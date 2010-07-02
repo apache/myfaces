@@ -28,19 +28,14 @@ import java.net.URL;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.StateManager;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
-
-import junit.framework.TestCase;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
-import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application.ResourceHandlerImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
 import org.apache.myfaces.config.FacesConfigDispenser;
@@ -55,46 +50,45 @@ import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.shared_impl.util.StateUtils;
-import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
-import org.apache.myfaces.test.mock.MockExternalContext;
-import org.apache.myfaces.test.mock.MockFacesContext;
-import org.apache.myfaces.test.mock.MockFacesContextFactory;
-import org.apache.myfaces.test.mock.MockHttpServletRequest;
-import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockPropertyResolver;
-import org.apache.myfaces.test.mock.MockRenderKit;
-import org.apache.myfaces.test.mock.MockResponseStateManager;
-import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockVariableResolver;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.mock.MockResourceHandlerSupport;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 
-//import org.apache.myfaces.view.facelets.mock.MockHttpServletRequest;
-//import org.apache.myfaces.view.facelets.mock.MockHttpServletResponse;
-
-public abstract class FaceletTestCase extends TestCase
+public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCase
 {
-    private final String filePath = this.getDirectory();    
-    protected MockServletContext servletContext;
-    protected MockHttpServletRequest servletRequest;
-    protected MockHttpServletResponse servletResponse;
-    protected MockExternalContext externalContext;
-    protected MockFacesContext facesContext;
-    protected MockFacesContextFactory facesContextFactory;
-    protected MockLifecycle lifecycle;
-    protected MockLifecycleFactory lifecycleFactory;
-    protected ApplicationImpl application;
-    protected MockRenderKit renderKit;
-    protected MockFaceletViewDeclarationLanguage vdl;
-    
+    private final String filePath = this.getDirectory();
     protected FacesConfigDispenser<FacesConfig> dispenser = null;
+    protected MockFaceletViewDeclarationLanguage vdl;
 
+
+    @Override
+    protected void setUpServletObjects() throws Exception
+    {
+        URI context = this.getContext();
+        super.setUpServletObjects();
+        request.setPathElements(context.getPath(), null, context.getPath(), context.getQuery());
+        servletContext.setDocumentRoot(new File(context));
+        
+        //This params are optional
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME,
+                StateManager.STATE_SAVING_METHOD_CLIENT);
+        servletContext.addInitParameter("org.apache.myfaces.PRETTY_HTML","true");
+        servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT","true");
+        servletContext.addInitParameter("org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON","false");
+        servletContext.addInitParameter("org.apache.myfaces.SAVE_FORM_SUBMIT_LINK_IE","false");
+        servletContext.addInitParameter("org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS","true");
+        servletContext.addInitParameter("org.apache.myfaces.RENDER_VIEWSTATE_ID","true");
+        servletContext.addInitParameter("org.apache.myfaces.STRICT_XHTML_LINKS","true");
+        servletContext.addInitParameter("org.apache.myfaces.CONFIG_REFRESH_PERIOD","0");
+        servletContext.addInitParameter("org.apache.myfaces.VIEWSTATE_JAVASCRIPT","false");
+        servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "UnitTest");
+    }
+    
     protected URI getContext()
     {
         try
@@ -136,145 +130,10 @@ public abstract class FaceletTestCase extends TestCase
                 + "/";
     }
 
-    protected void setUp() throws Exception
+    @Override
+    protected void setFactories() throws Exception
     {
-        super.setUp();
-        URI context = this.getContext();
-
-        this.servletContext = new MockServletContext();
-        //this.servletRequest = new MockHttpServletRequest(this.servletContext,
-        //        context);
-        this.servletRequest = new MockHttpServletRequest(context.getPath(), null, context.getPath(), context.getQuery());
-        servletRequest.setServletContext(this.servletContext);
-        this.servletResponse = new MockHttpServletResponse();
-
-        externalContext = new MockExternalContext(servletContext,
-                servletRequest, servletResponse);
-
-        this.servletContext.setDocumentRoot(new File(context));
-
-        // Set up JSF API Objects
-        FactoryFinder.releaseFactories();
-        
-        setupRuntimeConfigAndFactories();
-
-        lifecycleFactory = (MockLifecycleFactory) FactoryFinder
-                .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        lifecycle = (MockLifecycle) lifecycleFactory
-                .getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
-        facesContextFactory = (MockFacesContextFactory) FactoryFinder
-                .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (MockFacesContext) facesContextFactory.getFacesContext(
-                servletContext, servletRequest, servletResponse, lifecycle);
-        externalContext = (MockExternalContext) facesContext
-                .getExternalContext();
-        ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder
-                .getFactory(FactoryFinder.APPLICATION_FACTORY);
-        application = (ApplicationImpl) applicationFactory.getApplication();
-        facesContext.setApplication(application);
-        StateUtils.initSecret(servletContext);
-        externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY,
-                new DefaultSerialFactory());
-
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME,
-                StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("org.apache.myfaces.PRETTY_HTML","true");
-        servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT","true");
-        servletContext.addInitParameter("org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON","false");
-        servletContext.addInitParameter("org.apache.myfaces.SAVE_FORM_SUBMIT_LINK_IE","false");
-        servletContext.addInitParameter("org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS","true");
-        servletContext.addInitParameter("org.apache.myfaces.RENDER_VIEWSTATE_ID","true");
-        servletContext.addInitParameter("org.apache.myfaces.STRICT_XHTML_LINKS","true");
-        servletContext.addInitParameter("org.apache.myfaces.CONFIG_REFRESH_PERIOD","0");
-        servletContext.addInitParameter("org.apache.myfaces.VIEWSTATE_JAVASCRIPT","false");
-        servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "UnitTest");
-
-        RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder
-                .getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        renderKit = new MockRenderKit()
-        {
-            ResponseStateManager rsm = new MockResponseStateManager();
-
-            @Override
-            public ResponseStateManager getResponseStateManager()
-            {
-                return rsm;
-            }
-        };
-        renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT,
-                renderKit);
-
-        setupComponents();
-        setupConvertersAndValidators();
-        setupBehaviors();
-        setupRenderers();
-        
-        // Redirect resource request to the directory where the test class is,
-        // to make easier test composite components.
-        ((ResourceHandlerImpl)application.getResourceHandler()).
-            setResourceHandlerSupport(new MockResourceHandlerSupport(this.getClass()));
-
-        //Compiler c = new SAXCompiler();
-        //c.setTrimmingWhitespace(true);
-        //FaceletFactory factory = new DefaultFaceletFactory(c, this);
-        //FaceletFactory.setInstance(factory);
-        ViewHandlerImpl viewHandler = (ViewHandlerImpl) facesContext.getApplication().getViewHandler();
-        viewHandler.setViewHandlerSupport(new ViewHandlerSupport(){
-
-            public String calculateActionURL(FacesContext facesContext,
-                    String viewId)
-            {
-                return viewId;
-            }
-
-            public String calculateViewId(FacesContext context, String viewId)
-            {
-                return viewId;
-            }
-            
-            public String calculateAndCheckViewId(FacesContext context, String viewId)
-            {
-                return viewId;
-            }
-            
-        });
-        
-        facesContext.setViewRoot(facesContext.getApplication().getViewHandler()
-                .createView(facesContext, "/test"));
-        
-        vdl = (MockFaceletViewDeclarationLanguage) application.getViewHandler().
-            getViewDeclarationLanguage(facesContext,"/test");
-
-        ResponseWriter rw = facesContext.getRenderKit().createResponseWriter(
-                new StringWriter(), null, null);
-        facesContext.setResponseWriter(rw);
-    }
-
-    protected void tearDown() throws Exception
-    {
-        super.tearDown();
-        this.servletContext = null;
-        servletRequest = null;
-        servletResponse = null;
-        externalContext = null;
-        facesContext = null;
-        facesContextFactory = null;
-        lifecycle = null;
-        lifecycleFactory = null;
-        application = null;
-        renderKit = null;
-        vdl = null;
-    }
-    
-    protected void setupRuntimeConfigAndFactories()
-    {
-        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
-                new MockPropertyResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
-                new MockVariableResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
-                new MockExpressionFactory());
-        //To make work ValueExpressions
+        super.setFactories();
 
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
                 ApplicationFactoryImpl.class.getName());
@@ -295,6 +154,87 @@ public abstract class FaceletTestCase extends TestCase
                 MockVisitContextFactory.class.getName());
     }
     
+    @Override
+    protected void setUpExternalContext() throws Exception
+    {
+        super.setUpExternalContext();
+        
+        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
+                new MockPropertyResolver());
+        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
+                new MockVariableResolver());
+        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
+                new MockExpressionFactory());
+    }
+    
+    @Override
+    protected void setUpRenderKit() throws Exception
+    {
+        super.setUpRenderKit();
+        setupComponents();
+        setupConvertersAndValidators();
+        setupBehaviors();
+        setupRenderers();
+
+        //Finally set the ResponseWriter
+        ResponseWriter rw = facesContext.getRenderKit().createResponseWriter(
+                new StringWriter(), null, null);
+        facesContext.setResponseWriter(rw);
+    }
+
+    @Override
+    protected void setUpView() throws Exception
+    {
+        UIViewRoot root = new UIViewRoot();
+        root.setViewId("/test");
+        root.setRenderKitId(RenderKitFactory.HTML_BASIC_RENDER_KIT);
+        facesContext.setViewRoot(root);
+    }
+
+    @Override
+    protected void setUpApplication() throws Exception
+    {
+        super.setUpApplication();
+        
+        ViewHandlerImpl viewHandler = (ViewHandlerImpl) facesContext.getApplication().getViewHandler();
+        viewHandler.setViewHandlerSupport(new ViewHandlerSupport(){
+
+            public String calculateActionURL(FacesContext facesContext,
+                    String viewId)
+            {
+                return viewId;
+            }
+
+            public String calculateViewId(FacesContext context, String viewId)
+            {
+                return viewId;
+            }
+            
+            public String calculateAndCheckViewId(FacesContext context, String viewId)
+            {
+                return viewId;
+            }
+            
+        }); 
+        
+        // Redirect resource request to the directory where the test class is,
+        // to make easier test composite components.
+        ((ResourceHandlerImpl)application.getResourceHandler()).
+            setResourceHandlerSupport(new MockResourceHandlerSupport(this.getClass()));
+    }
+    
+    @Override
+    public void setUp() throws Exception
+    {
+        super.setUp();
+        //facesContext.setViewRoot(facesContext.getApplication().getViewHandler()
+        //        .createView(facesContext, "/test"));
+        
+        vdl = (MockFaceletViewDeclarationLanguage) application.getViewHandler().
+            getViewDeclarationLanguage(facesContext,"/test");
+
+    }
+
     protected void loadStandardFacesConfig() throws Exception
     {
         if (dispenser == null)

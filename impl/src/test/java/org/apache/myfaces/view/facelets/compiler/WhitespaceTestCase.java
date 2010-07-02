@@ -30,18 +30,16 @@ import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
-import org.apache.myfaces.renderkit.html.HtmlRadioRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class WhitespaceTestCase extends FaceletTestCase {
 
@@ -83,14 +81,15 @@ public class WhitespaceTestCase extends FaceletTestCase {
         
     }    
 
+    @Test
     public void testSelectOneMenu() throws Exception {
-        this.servletRequest.setAttribute("test", this);
+        request.setAttribute("test", this);
 
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "selectOne.xml");
         
-        assertNotNull("target binding", target);
-        assertEquals("children", 2, this.target.getChildCount());
+        Assert.assertNotNull("target binding", target);
+        Assert.assertEquals("children", 2, this.target.getChildCount());
 
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -100,14 +99,15 @@ public class WhitespaceTestCase extends FaceletTestCase {
         //System.out.println(fw);
     }
     
+    @Test
     public void testPanelGrid() throws Exception {
-        this.servletRequest.setAttribute("test", this);
+        request.setAttribute("test", this);
 
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "panelGrid.xml");
         
-        assertNotNull("target binding", target);
-        assertEquals("children", 3, this.target.getChildCount());
+        Assert.assertNotNull("target binding", target);
+        Assert.assertEquals("children", 3, this.target.getChildCount());
 
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
@@ -117,7 +117,7 @@ public class WhitespaceTestCase extends FaceletTestCase {
         //System.out.println(fw);
     }
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         this.target = null;
     }

@@ -21,24 +21,25 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 import java.io.StringWriter;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 
-import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class HtmlOutputScriptTestCase extends FaceletTestCase
 {
+    @Test
     public void testSimpleOutputScript() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testSimpleOutputScript.xhtml");
         
         UIComponent head = root.findComponent("head");
-        assertNotNull(head);
+        Assert.assertNotNull(head);
         UIComponent body = root.findComponent("body");
-        assertNotNull(body);
+        Assert.assertNotNull(body);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -49,15 +50,16 @@ public class HtmlOutputScriptTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testSimpleTargetHeadOutputScript() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testSimpleTargetHeadOutputScript.xhtml");
         
         UIComponent head = root.findComponent("head");
-        assertNotNull(head);
+        Assert.assertNotNull(head);
         UIComponent body = root.findComponent("body");
-        assertNotNull(body);
+        Assert.assertNotNull(body);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -68,15 +70,16 @@ public class HtmlOutputScriptTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testMultipleTargetHeadOutputScript() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testMultipleTargetHeadOutputScript.xhtml");
         
         UIComponent head = root.findComponent("head");
-        assertNotNull(head);
+        Assert.assertNotNull(head);
         UIComponent body = root.findComponent("body");
-        assertNotNull(body);
+        Assert.assertNotNull(body);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);

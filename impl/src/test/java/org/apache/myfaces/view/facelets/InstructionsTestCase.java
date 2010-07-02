@@ -24,6 +24,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Test;
 
 public class InstructionsTestCase extends FaceletTestCase
 {
@@ -45,6 +46,7 @@ public class InstructionsTestCase extends FaceletTestCase
     {
     }
 
+    @Test
     public void testInstructions() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();

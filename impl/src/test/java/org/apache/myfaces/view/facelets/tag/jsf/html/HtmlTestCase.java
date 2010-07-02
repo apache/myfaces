@@ -30,15 +30,14 @@ import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class HtmlTestCase extends FaceletTestCase {
     
@@ -77,36 +76,39 @@ public class HtmlTestCase extends FaceletTestCase {
                 "javax.faces.Grid", new HtmlGridRenderer());
     }    
     
+    @Test
     public void testCommandComponent() throws Exception {
-        this.servletRequest.getSession().setAttribute("test", new TestBean());
+        request.getSession().setAttribute("test", new TestBean());
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "componentOwner.xml");
         
         UIComponent c = root.findComponent("cmd");
-        assertNotNull("cmd", c);
+        Assert.assertNotNull("cmd", c);
         
         Object v = c.getAttributes().get("id");
-        assertEquals("id", "cmd", v);
+        Assert.assertEquals("id", "cmd", v);
         
         ActionSource2 as2 = (ActionSource2) c;
         MethodExpression me = as2.getActionExpression();
-        assertNotNull("method", me);
+        Assert.assertNotNull("method", me);
         
         String result = (String) me.invoke(facesContext.getELContext(), null);
         //System.out.println(result);
     }
     
+    @Test
     public void testCommandButton() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "commandButton.xml");
         
         UIComponent c = root.findComponent("form:button");
-        assertNotNull("button", c);
+        Assert.assertNotNull("button", c);
         
         Object v = c.getAttributes().get("id");
-        assertEquals("id", "button", v);
+        Assert.assertEquals("id", "button", v);
     }
 
+    @Test
     public void testPanelGrid() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "panelGrid.xml");

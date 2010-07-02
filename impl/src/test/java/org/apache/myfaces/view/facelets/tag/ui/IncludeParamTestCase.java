@@ -31,6 +31,7 @@ import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Test;
 
 public class IncludeParamTestCase extends FaceletTestCase
 {
@@ -56,11 +57,12 @@ public class IncludeParamTestCase extends FaceletTestCase
                 new HtmlTextRenderer());
     }
 
+    @Test
     public void testCaching() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
 
-        this.servletRequest.setAttribute("test", "test2.xml");
+        request.setAttribute("test", "test2.xml");
         vdl.buildView(facesContext, root, "test1.xml");
 
         FastWriter fw = new FastWriter();
@@ -72,7 +74,7 @@ public class IncludeParamTestCase extends FaceletTestCase
 
         ComponentSupport.removeTransient(root);
 
-        this.servletRequest.setAttribute("test", "test3.xml");
+        request.setAttribute("test", "test3.xml");
 
         facesContext.setViewRoot(facesContext.getApplication().getViewHandler()
                 .createView(facesContext, "/test"));

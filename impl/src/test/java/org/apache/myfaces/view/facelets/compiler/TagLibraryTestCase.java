@@ -19,13 +19,13 @@
 package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
-import org.xml.sax.SAXException;
+import org.junit.Assert;
+import org.junit.Test;
 
 
 public class TagLibraryTestCase extends FaceletTestCase
@@ -49,20 +49,22 @@ public class TagLibraryTestCase extends FaceletTestCase
         servletContext.setDocumentRoot(documentRoot);
     }
 
+    @Test
     public void testLoadValidLibraryWithValidation() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_VALIDATE_XML, "true");
 
         TagLibrary lib = TagLibraryConfig.create(_validLibUrl);
-        assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
+        Assert.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
     }
 
+    @Test
     public void testLoadValidLibraryWithoutValidation() throws Exception
     {
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_VALIDATE_XML, "false");
 
         TagLibrary lib = TagLibraryConfig.create(_validLibUrl);
-        assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
+        Assert.assertTrue(lib.containsNamespace("http://myfaces.apache.org/testlib"));
     }
     /*
     public void testLoadInvalidLibraryWithValidation() throws Exception

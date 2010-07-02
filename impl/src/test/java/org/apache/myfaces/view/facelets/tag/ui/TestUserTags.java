@@ -29,6 +29,7 @@ import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Test;
 
 public class TestUserTags extends FaceletTestCase {
 
@@ -53,8 +54,9 @@ public class TestUserTags extends FaceletTestCase {
                 "javax.faces.Text", new HtmlTextRenderer());
     }
     
+    @Test
     public void testClientClient() throws Exception {
-        this.servletRequest.setAttribute("test", "foo");
+        request.setAttribute("test", "foo");
         
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "test-tags.xml");

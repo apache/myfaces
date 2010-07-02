@@ -38,6 +38,8 @@ import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.DummyBean;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class CompositeComponentAttributeTestCase extends FaceletTestCase
 {
@@ -55,6 +57,7 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testSimpleCompositeAttribute() throws Exception
     {
         TestAttributeBean bean = new TestAttributeBean();
@@ -66,30 +69,30 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleAttributeVE.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         CompositeTestComponent compositeComponent1 = (CompositeTestComponent) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         HtmlOutputText text1 = (HtmlOutputText) facet1.findComponent("text");
-        assertNotNull(text1);
+        Assert.assertNotNull(text1);
         HtmlCommandButton button1 = (HtmlCommandButton) facet1.findComponent("button");
-        assertNotNull(button1);
+        Assert.assertNotNull(button1);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
         text1.pushComponentToEL(facesContext, text1);
         //set on tag
-        assertEquals(bean.getStyleClass(), text1.getStyleClass());
+        Assert.assertEquals(bean.getStyleClass(), text1.getStyleClass());
         //set as default
-        assertEquals(bean.getStyle(), text1.getStyle());
+        Assert.assertEquals(bean.getStyle(), text1.getStyle());
         
-        assertEquals(bean.getJavaProperty(), text1.getValue());
+        Assert.assertEquals(bean.getJavaProperty(), text1.getValue());
         
         text1.popComponentFromEL(facesContext);
         button1.pushComponentToEL(facesContext,  button1);
         MethodExpression method = button1.getActionExpression();
-        assertEquals(bean.doSomethingFunny("xysj"), method.invoke(facesContext.getELContext(), new Object[]{"xysj"}));
+        Assert.assertEquals(bean.doSomethingFunny("xysj"), method.invoke(facesContext.getELContext(), new Object[]{"xysj"}));
         button1.popComponentFromEL(facesContext);
         facet1.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
@@ -113,6 +116,7 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testSimpleCompositeAttributeInsertChildren() throws Exception
     {
         TestAttributeBean bean = new TestAttributeBean();
@@ -124,34 +128,34 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleAttributeVEInsertChildren.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         CompositeTestComponent compositeComponent1 = (CompositeTestComponent) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         UIComponent compositeComponent2 = facet1.getChildren().get(0);
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet2);
+        Assert.assertNotNull(facet2);
         HtmlOutputText text1 = (HtmlOutputText) facet2.findComponent("text");
-        assertNotNull(text1);
+        Assert.assertNotNull(text1);
         HtmlCommandButton button1 = (HtmlCommandButton) facet2.findComponent("button");
-        assertNotNull(button1);
+        Assert.assertNotNull(button1);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
         text1.pushComponentToEL(facesContext, text1);
         //set on tag
-        assertEquals(bean.getStyleClass(), text1.getStyleClass());
+        Assert.assertEquals(bean.getStyleClass(), text1.getStyleClass());
         //set as default
-        assertEquals(bean.getStyle(), text1.getStyle());
+        Assert.assertEquals(bean.getStyle(), text1.getStyle());
         
-        assertEquals(bean.getJavaProperty(), text1.getValue());
+        Assert.assertEquals(bean.getJavaProperty(), text1.getValue());
         
         text1.popComponentFromEL(facesContext);
         button1.pushComponentToEL(facesContext,  button1);
         MethodExpression method = button1.getActionExpression();
-        assertEquals(bean.doSomethingFunny("xysj"), method.invoke(facesContext.getELContext(), new Object[]{"xysj"}));
+        Assert.assertEquals(bean.doSomethingFunny("xysj"), method.invoke(facesContext.getELContext(), new Object[]{"xysj"}));
         button1.popComponentFromEL(facesContext);
         facet1.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
@@ -171,6 +175,7 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
     }
     
     
+    @Test
     public void testSimpleMethodInvocation() throws Exception
     {
         DummyBean dummyBean = new DummyBean(); 
@@ -182,27 +187,27 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleMethodInvocation.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         UINamingContainer compositeComponent2 = (UINamingContainer) facet1.getChildren().get(0);
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet2);
+        Assert.assertNotNull(facet2);
         UIForm form = (UIForm) facet2.findComponent("mainForm");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UICommand button1 = (UICommand) form.findComponent("button1");
-        assertNotNull(button1);
+        Assert.assertNotNull(button1);
         UICommand button2 = (UICommand) form.findComponent("button2");
-        assertNotNull(button2);
+        Assert.assertNotNull(button2);
         UICommand button3 = (UICommand) form.findComponent("button3");
-        assertNotNull(button3);
+        Assert.assertNotNull(button3);
         UIInput text1 = (UIInput) form.findComponent("text1");
-        assertNotNull(text1);
+        Assert.assertNotNull(text1);
         UIInput text2 = (UIInput) form.findComponent("text2");
-        assertNotNull(text2);
+        Assert.assertNotNull(text2);
 
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);

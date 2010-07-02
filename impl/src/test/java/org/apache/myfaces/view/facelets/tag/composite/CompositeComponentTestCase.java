@@ -36,6 +36,8 @@ import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class CompositeComponentTestCase extends FaceletTestCase
 {
@@ -46,17 +48,18 @@ public class CompositeComponentTestCase extends FaceletTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testSimpleCompositeComponent() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testSimpleComposite.xhtml");
 
         UIComponent panelGroup = root.findComponent("testGroup");
-        assertNotNull(panelGroup);
+        Assert.assertNotNull(panelGroup);
         UINamingContainer compositeComponent = (UINamingContainer) panelGroup.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UIOutput text = (UIOutput) compositeComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME).findComponent("text");
-        assertNotNull(text);
+        Assert.assertNotNull(text);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -77,48 +80,49 @@ public class CompositeComponentTestCase extends FaceletTestCase
      * 
      * @throws Exception
      */
+    @Test
     public void testSimpleCompositeAttribute() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testSimpleAttribute.xhtml");
 
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         HtmlOutputText text1 = (HtmlOutputText) facet1.findComponent("text");
-        assertNotNull(text1);
+        Assert.assertNotNull(text1);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
         text1.pushComponentToEL(facesContext, text1);
         //set on tag
-        assertEquals("class1", text1.getStyleClass());
+        Assert.assertEquals("class1", text1.getStyleClass());
         //set as default
-        assertEquals("background:red", text1.getStyle());
+        Assert.assertEquals("background:red", text1.getStyle());
         text1.popComponentFromEL(facesContext);
         facet1.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);
         
         UIComponent panelGroup2 = root.findComponent("testGroup2");
-        assertNotNull(panelGroup2);
+        Assert.assertNotNull(panelGroup2);
         UINamingContainer compositeComponent2 = (UINamingContainer) panelGroup2.getChildren().get(0);
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet2);        
+        Assert.assertNotNull(facet2);        
         HtmlOutputText text2 = (HtmlOutputText) facet2.findComponent("text");
-        assertNotNull(text2);
+        Assert.assertNotNull(text2);
         
         compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
         facet2.pushComponentToEL(facesContext, facet2);
         text2.pushComponentToEL(facesContext, text2);
         //set on tag
-        assertEquals("background:green", text2.getStyle());
+        Assert.assertEquals("background:green", text2.getStyle());
         // not set, should return null, but since there is a ValueExpression indirection,
         // coercing rules apply here, so null is converted as ""
-        assertEquals("", text2.getStyleClass());
+        Assert.assertEquals("", text2.getStyleClass());
         text2.popComponentFromEL(facesContext);
         facet2.popComponentFromEL(facesContext);
         compositeComponent2.popComponentFromEL(facesContext);
@@ -137,6 +141,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
     }
     
+    @Test
     public void testSimpleCompositeAttributeMethodExpression() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -148,22 +153,22 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleAttributeMethodExpression.xhtml");
 
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("button");
-        assertNotNull(button);
-        assertEquals("#{helloWorldBean.send}", button.getActionExpression().getExpressionString());
-        assertEquals("#{helloWorldBean.send}", ((MethodExpression)compositeComponent.getAttributes().get("metodo")).getExpressionString());
-        assertNull(button.getAttributes().get("metodo"));
+        Assert.assertNotNull(button);
+        Assert.assertEquals("#{helloWorldBean.send}", button.getActionExpression().getExpressionString());
+        Assert.assertEquals("#{helloWorldBean.send}", ((MethodExpression)compositeComponent.getAttributes().get("metodo")).getExpressionString());
+        Assert.assertNull(button.getAttributes().get("metodo"));
         
         UICommand link = (UICommand) compositeComponent.findComponent("link");
-        assertNotNull(link);
-        assertEquals(1, link.getActionListeners().length);
+        Assert.assertNotNull(link);
+        Assert.assertEquals(1, link.getActionListeners().length);
         UIInput input = (UIInput) compositeComponent.findComponent("input");
-        assertNotNull(input);
-        assertEquals(1, input.getValidators().length);
-        assertEquals(1, input.getValueChangeListeners().length);
+        Assert.assertNotNull(input);
+        Assert.assertEquals(1, input.getValidators().length);
+        Assert.assertEquals(1, input.getValueChangeListeners().length);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -175,6 +180,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testSimpleActionSource() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -186,12 +192,12 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleActionSource.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("button");
-        assertNotNull(button);
-        assertEquals(3, button.getActionListeners().length);
+        Assert.assertNotNull(button);
+        Assert.assertEquals(3, button.getActionListeners().length);
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -202,6 +208,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testSimpleValueHolder() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -213,13 +220,13 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleValueHolder.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UIOutput text = (UIOutput) compositeComponent.findComponent("text");
-        assertNotNull(text);
-        assertNotNull(text.getConverter());
-        //assertEquals(2, button.getActionListeners().length);
+        Assert.assertNotNull(text);
+        Assert.assertNotNull(text.getConverter());
+        //Assert.assertEquals(2, button.getActionListeners().length);
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -230,6 +237,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testCompositeActionSource() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -241,16 +249,16 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeActionSource.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("button3");
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UICommand button = (UICommand) compositeComponent2.findComponent("button");
-        assertNotNull(button);
+        Assert.assertNotNull(button);
         //One added in testCompositeActionSource, the other one
         //inside compositeActionSource.xhtml
-        assertEquals(2, button.getActionListeners().length);
+        Assert.assertEquals(2, button.getActionListeners().length);
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -261,6 +269,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testSimpleInsertChildren() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -273,13 +282,13 @@ public class CompositeComponentTestCase extends FaceletTestCase
         
         /*
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("button3");
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UICommand button = (UICommand) compositeComponent2.findComponent("button");
-        assertNotNull(button);
+        Assert.assertNotNull(button);
         */
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -290,14 +299,15 @@ public class CompositeComponentTestCase extends FaceletTestCase
 
         String resp = sw.toString();
         
-        assertTrue(resp.contains("Hello"));
-        assertTrue(resp.contains("Leonardo"));
-        assertTrue(resp.contains("Alfredo"));
-        assertTrue(resp.contains("Uribe"));
-        assertTrue(resp.contains("Sayonara"));
+        Assert.assertTrue(resp.contains("Hello"));
+        Assert.assertTrue(resp.contains("Leonardo"));
+        Assert.assertTrue(resp.contains("Alfredo"));
+        Assert.assertTrue(resp.contains("Uribe"));
+        Assert.assertTrue(resp.contains("Sayonara"));
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testSimpleInsertChildrenAjax() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -309,15 +319,15 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleInsertChildrenAjax.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         HtmlCommandLink link = (HtmlCommandLink) facet1.findComponent("link");
-        assertNotNull(link);
-        assertEquals(1, link.getClientBehaviors().size());
-        assertEquals(1, link.getClientBehaviors().get(link.getDefaultEventName()).size());
+        Assert.assertNotNull(link);
+        Assert.assertEquals(1, link.getClientBehaviors().size());
+        Assert.assertEquals(1, link.getClientBehaviors().get(link.getDefaultEventName()).size());
         /*
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -331,6 +341,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
 
+    @Test
     public void testSimpleInsertChildrenAjax2() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -342,15 +353,15 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleInsertChildrenAjax2.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         HtmlCommandLink link = (HtmlCommandLink) compositeComponent1.findComponent("link");
-        assertNotNull(link);
-        assertEquals(1, link.getClientBehaviors().size());
-        assertEquals(1, link.getClientBehaviors().get(link.getDefaultEventName()).size());
+        Assert.assertNotNull(link);
+        Assert.assertEquals(1, link.getClientBehaviors().size());
+        Assert.assertEquals(1, link.getClientBehaviors().get(link.getDefaultEventName()).size());
         /*
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -364,6 +375,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testSimpleInsertChildrenNoAjax() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -375,14 +387,14 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleInsertChildrenNoAjax.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         HtmlCommandLink link = (HtmlCommandLink) facet1.findComponent("link");
-        assertNotNull(link);
-        assertEquals(0, link.getClientBehaviors().size());
+        Assert.assertNotNull(link);
+        Assert.assertEquals(0, link.getClientBehaviors().size());
         /*
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -396,6 +408,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testCompositeInsertChildren() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -407,11 +420,11 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeInsertChildren.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -423,12 +436,13 @@ public class CompositeComponentTestCase extends FaceletTestCase
         
         String resp = sw.toString();
 
-        assertTrue(resp.contains("ALFA"));
-        assertTrue(resp.contains("BETA"));
-        assertTrue(resp.contains("GAMMA"));
-        assertTrue(resp.contains("OMEGA"));
+        Assert.assertTrue(resp.contains("ALFA"));
+        Assert.assertTrue(resp.contains("BETA"));
+        Assert.assertTrue(resp.contains("GAMMA"));
+        Assert.assertTrue(resp.contains("OMEGA"));
     }
     
+    @Test
     public void testCompositeInsertChildrenPreserveTemplateSlot() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -440,11 +454,11 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeInsertChildren2.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -456,12 +470,13 @@ public class CompositeComponentTestCase extends FaceletTestCase
         
         String resp = sw.toString();
 
-        assertTrue(resp.contains("ALFA"));
-        assertTrue(resp.contains("BETA"));
-        assertTrue(resp.contains("GAMMA"));
-        assertTrue(resp.contains("OMEGA"));
+        Assert.assertTrue(resp.contains("ALFA"));
+        Assert.assertTrue(resp.contains("BETA"));
+        Assert.assertTrue(resp.contains("GAMMA"));
+        Assert.assertTrue(resp.contains("OMEGA"));
     }
     
+    @Test
     public void testCompositeInsertChildren3() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -473,11 +488,11 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeInsertChildren3.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -489,12 +504,13 @@ public class CompositeComponentTestCase extends FaceletTestCase
         
         String resp = sw.toString();
 
-        assertTrue(resp.contains("ALFA"));
-        assertTrue(resp.contains("BETA"));
-        assertTrue(resp.contains("GAMMA"));
-        assertTrue(resp.contains("OMEGA"));
+        Assert.assertTrue(resp.contains("ALFA"));
+        Assert.assertTrue(resp.contains("BETA"));
+        Assert.assertTrue(resp.contains("GAMMA"));
+        Assert.assertTrue(resp.contains("OMEGA"));
     }
     
+    @Test
     public void testCompositeInsertChildren4() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -506,11 +522,11 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeInsertChildren4.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         //UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        //assertNotNull(compositeComponent1);
+        //Assert.assertNotNull(compositeComponent1);
         //UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        //assertNotNull(facet1);
+        //Assert.assertNotNull(facet1);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -522,12 +538,13 @@ public class CompositeComponentTestCase extends FaceletTestCase
         
         String resp = sw.toString();
 
-        assertTrue(resp.contains("ALFA"));
-        assertTrue(resp.contains("BETA"));
-        assertTrue(resp.contains("GAMMA"));
-        assertTrue(resp.contains("OMEGA"));
+        Assert.assertTrue(resp.contains("ALFA"));
+        Assert.assertTrue(resp.contains("BETA"));
+        Assert.assertTrue(resp.contains("GAMMA"));
+        Assert.assertTrue(resp.contains("OMEGA"));
     }
     
+    @Test
     public void testCompositeInsertFacet() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -539,22 +556,23 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeInsertFacet.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) facet1.getChildren().get(0);
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet2);
-        assertEquals(1,facet2.getChildCount());
+        Assert.assertNotNull(facet2);
+        Assert.assertEquals(1,facet2.getChildCount());
         UIOutput targetComp = (UIOutput) facet2.getChildren().get(0);
         UIComponent insertedFacet = targetComp.getFacet("header");
-        assertNotNull(insertedFacet);
+        Assert.assertNotNull(insertedFacet);
     }
     
+    @Test
     public void testCompositeInsertFacetChildren() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -566,21 +584,22 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeInsertFacetChildren.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet1);
+        Assert.assertNotNull(facet1);
         
         UINamingContainer compositeComponent2 = (UINamingContainer) facet1.getChildren().get(0);
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-        assertNotNull(facet2);
-        assertEquals(3,facet2.getChildCount());
+        Assert.assertNotNull(facet2);
+        Assert.assertEquals(3,facet2.getChildCount());
         UIComponent insertedFacet = facet2.getChildren().get(1).getFacet("header");
-        assertNotNull(insertedFacet);
+        Assert.assertNotNull(insertedFacet);
     }
 
+    @Test
     public void testSimpleRenderFacet() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -592,9 +611,9 @@ public class CompositeComponentTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleRenderFacet.xhtml");
         
         UIComponent panelGroup1 = root.findComponent("testGroup1");
-        assertNotNull(panelGroup1);
+        Assert.assertNotNull(panelGroup1);
         UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
-        assertNotNull(compositeComponent1);
+        Assert.assertNotNull(compositeComponent1);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -606,8 +625,8 @@ public class CompositeComponentTestCase extends FaceletTestCase
         
         String resp = sw.toString();
 
-        assertTrue(resp.contains("HELLO"));
-        assertTrue(resp.contains("WORLD"));
+        Assert.assertTrue(resp.contains("HELLO"));
+        Assert.assertTrue(resp.contains("WORLD"));
         
     }
 }

@@ -20,13 +20,11 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Test;
 
 public class TemplateTestCase extends FaceletTestCase {
 
@@ -46,7 +44,8 @@ public class TemplateTestCase extends FaceletTestCase {
     protected void setupRenderers() throws Exception
     {
     }
-    
+
+    @Test
     public void testOutput() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "s_page.xhtml");

@@ -33,12 +33,12 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
 import org.apache.myfaces.view.facelets.util.FastWriter;
-import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
+import org.junit.Test;
 
 public final class JstlCoreTestCase extends FaceletTestCase {
 
@@ -67,6 +67,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
                 "javax.faces.Button", new HtmlButtonRenderer());
     }
     
+    @Test
     public void testIf() throws Exception {
         Map session = facesContext.getExternalContext().getSessionMap();
         Employee e = new Employee();
@@ -78,7 +79,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         e.setManagement(true);
         vdl.buildView(facesContext, root,"if.xml");
         UIComponent c = root.findComponent("form");
-        assertNotNull("form is null", c);
+        Assert.assertNotNull("form is null", c);
         
         // now make sure it isn't
         e.setManagement(false);
@@ -88,9 +89,10 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"if.xml");
         c = root.findComponent("form");
-        assertNull("form is not null", c);
+        Assert.assertNull("form is not null", c);
     }
     
+    @Test
     public void testForEach() throws Exception {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map session = facesContext.getExternalContext().getSessionMap();

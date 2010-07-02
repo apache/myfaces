@@ -22,6 +22,7 @@ import javax.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Test;
 
 public class TemplateClientTestCase extends FaceletTestCase {
 
@@ -42,8 +43,9 @@ public class TemplateClientTestCase extends FaceletTestCase {
     {
     }
     
+    @Test
     public void testClientClient() throws Exception {
-        this.servletRequest.setAttribute("name", "Mr. Hookom");
+        request.setAttribute("name", "Mr. Hookom");
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"template-client-client.xhtml");
         FastWriter fw = new FastWriter();
@@ -53,25 +55,19 @@ public class TemplateClientTestCase extends FaceletTestCase {
         //System.out.println(fw);
     }
     
-    /*
-    public void testLayoutClient() throws Exception {
-        FaceletFactory ff = FaceletFactory.getInstance();
-        FacesContext faces = FacesContext.getCurrentInstance();
+    @Test
+    public void testLayoutClient() throws Exception
+    {
+        request.setAttribute("name", "Mr. Hookom");
         
-        Facelet f = ff.getFacelet("layout-client.xhtml");
-        
-        this.servletRequest.setAttribute("name", "Mr. Hookom");
-        
-        UIViewRoot root = faces.getViewRoot();
-        f.apply(faces, root);
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root,"layout-client.xhtml");
         
         FastWriter fw = new FastWriter();
         MockResponseWriter mrw = new MockResponseWriter(fw);
-        faces.setResponseWriter(mrw);
-        root.encodeAll(faces);
-        System.out.println(fw);
+        facesContext.setResponseWriter(mrw);
+        root.encodeAll(facesContext);
+        //System.out.println(fw);
     }
-    */
-   
 
 }

@@ -34,6 +34,7 @@ import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Example;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Test;
 
 public class DataTableTestCase extends FaceletTestCase
 {
@@ -69,6 +70,7 @@ public class DataTableTestCase extends FaceletTestCase
                 "javax.faces.Table", new HtmlTableRenderer());
     }
 
+    @Test
     public void testDataTable() throws Exception
     {
         facesContext.getExternalContext().getRequestMap().put("company",

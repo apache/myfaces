@@ -21,9 +21,12 @@ package javax.faces.convert;
 
 import java.util.Locale;
 
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class NumberConverterTest extends AbstractJsfTestCase
 {
@@ -46,7 +49,8 @@ public class NumberConverterTest extends AbstractJsfTestCase
 
         mock = new NumberConverter();
         mock.setLocale(Locale.FRANCE);
-        FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.GERMANY);
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(
+                Locale.GERMANY);
 
     }
 
@@ -57,15 +61,30 @@ public class NumberConverterTest extends AbstractJsfTestCase
 
         mock = null;
     }
+
     /*
-     * temporarily comment out tests that fail, until Matthias Wessendorf has time to investigate public void
-     * testFranceLocaleWithNonBreakingSpace() {
-     * 
-     * UIInput input = new UIInput(); mock.setType("currency"); Number number = (Number)
-     * mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 \u20ac"); assertNotNull(number); } public
-     * void testFranceLocaleWithoutNonBreakingSpace() {
-     * 
-     * UIInput input = new UIInput(); mock.setType("currency"); Number number = (Number)
-     * mock.getAsObject(FacesContext.getCurrentInstance(), input, "12 345,68 \u20ac"); assertNotNull(number); }
+     * temporarily comment out tests that fail, until Matthias Wessendorf has time to investigate
      */
+    @Ignore
+    public void testFranceLocaleWithNonBreakingSpace()
+    {
+
+        UIInput input = new UIInput();
+        mock.setType("currency");
+        Number number = (Number) mock.getAsObject(FacesContext
+                .getCurrentInstance(), input, "12\u00a0345,68 \u20ac");
+        assertNotNull(number);
+    }
+
+    @Ignore
+    public void testFranceLocaleWithoutNonBreakingSpace()
+    {
+
+        UIInput input = new UIInput();
+        mock.setType("currency");
+        Number number = (Number) mock.getAsObject(FacesContext
+                .getCurrentInstance(), input, "12 345,68 \u20ac");
+        assertNotNull(number);
+    }
+
 }

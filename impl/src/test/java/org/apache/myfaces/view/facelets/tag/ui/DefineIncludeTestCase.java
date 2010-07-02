@@ -22,12 +22,10 @@ package org.apache.myfaces.view.facelets.tag.ui;
 import java.io.StringWriter;
 
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.junit.Test;
 
 public class DefineIncludeTestCase extends FaceletTestCase {
 
@@ -47,7 +45,8 @@ public class DefineIncludeTestCase extends FaceletTestCase {
     protected void setupRenderers() throws Exception
     {
     }
-    
+
+    @Test
     public void testDefineInclude() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "defineInclude.xml");

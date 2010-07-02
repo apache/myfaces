@@ -33,9 +33,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.view.ViewMetadata;
 
+import org.apache.myfaces.application.ViewHandlerImpl;
+import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ViewMetadataTestCase extends FaceletTestCase
 {
@@ -88,7 +92,7 @@ public class ViewMetadataTestCase extends FaceletTestCase
     }
     
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();        
         navigationHandler = new MockViewNavigationHandlerNavigationHandler();
@@ -96,12 +100,13 @@ public class ViewMetadataTestCase extends FaceletTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
         navigationHandler = null;
     }
-
+    
+    @Test
     public void testSimpleViewMetadata() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -121,7 +126,7 @@ public class ViewMetadataTestCase extends FaceletTestCase
         
         Collection<UIViewParameter> viewParameters = metadata.getViewParameters(root);
         
-        assertEquals(1, viewParameters.size());
+        Assert.assertEquals(1, viewParameters.size());
         
         //root.setViewId("viewMetadata.xhtml");
         vdl.buildView(facesContext, root, "viewMetadata.xhtml");

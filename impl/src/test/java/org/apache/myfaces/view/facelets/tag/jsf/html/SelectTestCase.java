@@ -27,7 +27,6 @@ import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlMessages;
 import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.context.FacesContext;
 import javax.faces.convert.IntegerConverter;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
@@ -35,9 +34,8 @@ import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMessagesRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.junit.Test;
 
 public class SelectTestCase extends FaceletTestCase
 {
@@ -80,11 +78,12 @@ public class SelectTestCase extends FaceletTestCase
         renderKit.addRenderer(HtmlMessages.COMPONENT_FAMILY,
                 "javax.faces.Messages", new HtmlMessagesRenderer());
     }
-    
+
+    @Test
     public void testSelectOne() throws Exception
     {
-        this.servletRequest.getSession().setAttribute("test", new TestBean());
-        this.servletRequest.addParameter("testForm:alignment", "10");
+        request.getSession().setAttribute("test", new TestBean());
+        request.addParameter("testForm:alignment", "10");
 
         UIViewRoot root = new UIViewRoot();
         vdl.buildView(facesContext, root,"selectOne.xml");

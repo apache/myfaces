@@ -27,6 +27,7 @@ import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Test;
 
 public class TestNbsp extends FaceletTestCase
 {
@@ -48,6 +49,7 @@ public class TestNbsp extends FaceletTestCase
     {
     }
     
+    @Test
     public void testNbsp() throws Exception
     {
         UIViewRoot root = new UIViewRoot();

@@ -25,9 +25,12 @@ import javax.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
 {
+    @Test
     public void testSimpleClientBehavior() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -39,13 +42,13 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleClientBehavior.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("button");
-        assertNotNull(button);
-        assertNotNull(button.getClientBehaviors().get("action"));
-        assertEquals(1, button.getClientBehaviors().get("action").size());
+        Assert.assertNotNull(button);
+        Assert.assertNotNull(button.getClientBehaviors().get("action"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -56,6 +59,7 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testSimpleClientBehaviorDefault() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -67,13 +71,13 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleClientBehaviorDefault.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("button");
-        assertNotNull(button);
-        assertNotNull(button.getClientBehaviors().get("dblclick"));
-        assertEquals(1, button.getClientBehaviors().get("dblclick").size());
+        Assert.assertNotNull(button);
+        Assert.assertNotNull(button.getClientBehaviors().get("dblclick"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("dblclick").size());
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -84,6 +88,7 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
 
+    @Test
     public void testSimpleClientBehaviorDefaultNoEvent() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -95,13 +100,13 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleClientBehaviorDefaultNoEvent.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("button");
-        assertNotNull(button);
-        assertNotNull(button.getClientBehaviors().get("action"));
-        assertEquals(1, button.getClientBehaviors().get("action").size());
+        Assert.assertNotNull(button);
+        Assert.assertNotNull(button.getClientBehaviors().get("action"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -112,6 +117,7 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
 
+    @Test
     public void testSimpleClientBehaviorAjaxWrap() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -123,13 +129,13 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleClientBehaviorAjaxWrap.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("button");
-        assertNotNull(button);
-        assertNotNull(button.getClientBehaviors().get("action"));
-        assertEquals(1, button.getClientBehaviors().get("action").size());
+        Assert.assertNotNull(button);
+        Assert.assertNotNull(button.getClientBehaviors().get("action"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -140,6 +146,7 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
 
+    @Test
     public void testSimpleClientBehaviorDefaultAjaxWrap() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -151,13 +158,13 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleClientBehaviorDefaultAjaxWrap.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("button");
-        assertNotNull(button);
-        assertNotNull(button.getClientBehaviors().get("dblclick"));
-        assertEquals(1, button.getClientBehaviors().get("dblclick").size());
+        Assert.assertNotNull(button);
+        Assert.assertNotNull(button.getClientBehaviors().get("dblclick"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("dblclick").size());
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -168,6 +175,7 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
 
+    @Test
     public void testSimpleClientBehaviorDefaultNoEventAjaxWrap() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -179,13 +187,13 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testSimpleClientBehaviorDefaultNoEventAjaxWrap.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UICommand button = (UICommand) compositeComponent.findComponent("button");
-        assertNotNull(button);
-        assertNotNull(button.getClientBehaviors().get("action"));
-        assertEquals(1, button.getClientBehaviors().get("action").size());
+        Assert.assertNotNull(button);
+        Assert.assertNotNull(button.getClientBehaviors().get("action"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -196,6 +204,7 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
     
+    @Test
     public void testCompositeClientBehavior() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -207,17 +216,17 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeClientBehavior.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("button3");
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UICommand button = (UICommand) compositeComponent2.findComponent("button");
-        assertNotNull(button);
+        Assert.assertNotNull(button);
         //One added in testCompositeActionSource, the other one
         //inside compositeActionSource.xhtml
-        assertNotNull(button.getClientBehaviors().get("action"));
-        assertEquals(1, button.getClientBehaviors().get("action").size());
+        Assert.assertNotNull(button.getClientBehaviors().get("action"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -228,6 +237,7 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         //System.out.print(sw.toString());
     }
 
+    @Test
     public void testCompositeDoubleClientBehavior() throws Exception
     {
         HelloWorld helloWorld = new HelloWorld(); 
@@ -239,19 +249,19 @@ public class CompositeComponentClientBehaviorTestCase extends FaceletTestCase
         vdl.buildView(facesContext, root, "testCompositeDoubleClientBehavior.xhtml");
         
         UIComponent form = root.findComponent("testForm1");
-        assertNotNull(form);
+        Assert.assertNotNull(form);
         UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
-        assertNotNull(compositeComponent);
+        Assert.assertNotNull(compositeComponent);
         UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("compositeClientBehavior");
-        assertNotNull(compositeComponent2);
+        Assert.assertNotNull(compositeComponent2);
         UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent2.findComponent("button3");
-        assertNotNull(compositeComponent3);
+        Assert.assertNotNull(compositeComponent3);
         UICommand button = (UICommand) compositeComponent3.findComponent("button");
-        assertNotNull(button);
+        Assert.assertNotNull(button);
         //One added in testCompositeActionSource, the other one
         //inside compositeActionSource.xhtml
-        assertNotNull(button.getClientBehaviors().get("action"));
-        assertEquals(1, button.getClientBehaviors().get("action").size());
+        Assert.assertNotNull(button.getClientBehaviors().get("action"));
+        Assert.assertEquals(1, button.getClientBehaviors().get("action").size());
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);

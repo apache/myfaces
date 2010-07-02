@@ -31,6 +31,7 @@ import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Test;
 
 public class ELParserTestCase extends FaceletTestCase {
 
@@ -57,8 +58,9 @@ public class ELParserTestCase extends FaceletTestCase {
                 "javax.faces.Text", new HtmlTextRenderer());
     }    
     
+    @Test
     public void testSelectOneMenu() throws Exception {
-        this.servletRequest.setAttribute("test", this);
+        request.setAttribute("test", this);
 
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "elparser.xml");
@@ -71,7 +73,7 @@ public class ELParserTestCase extends FaceletTestCase {
         //System.out.println(fw);
     }
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         this.target = null;
     }

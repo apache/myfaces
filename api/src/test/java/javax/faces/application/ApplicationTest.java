@@ -23,6 +23,7 @@ import javax.el.ValueExpression;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,19 +34,24 @@ import org.junit.Test;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationTest
+public class ApplicationTest extends AbstractJsfTestCase
 {
+    public ApplicationTest()
+    {
+    }
+
     private Application app;
 
-    @Before
     public void setUp() throws Exception
     {
+        super.setUp();
         app = (Application) Enhancer.create(Application.class, NoOp.INSTANCE);
     }
     
-    @After
     public void tearDown() throws Exception
     {
+        app = null;
+        super.tearDown();
     }
 
     /**

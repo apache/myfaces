@@ -27,6 +27,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Test;
 
 public class TagTestCase extends FaceletTestCase {
 
@@ -52,8 +53,9 @@ public class TagTestCase extends FaceletTestCase {
                 "javax.faces.Text", new HtmlTextRenderer());
     }
     
+    @Test
     public void testTagBody() throws Exception {
-        this.servletRequest.setAttribute("name", "Mr. Hookom");
+        request.setAttribute("name", "Mr. Hookom");
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"userTag.xhtml");
         FastWriter fw = new FastWriter();
@@ -63,6 +65,7 @@ public class TagTestCase extends FaceletTestCase {
         //System.out.println(fw);
     }
 
+    @Test
     public void testConditionalInsert() throws Exception {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"userTagConditional.xhtml");

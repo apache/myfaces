@@ -20,8 +20,11 @@ package org.apache.myfaces.view.facelets;
 
 import javax.faces.component.UIViewRoot;
 
+import org.junit.Test;
+
 public class BrokenTestCase extends FaceletTestCase {
 
+    @Test
     public void testBroken() throws Exception {
         
     }

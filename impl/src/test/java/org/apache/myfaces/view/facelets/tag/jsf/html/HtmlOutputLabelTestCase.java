@@ -21,36 +21,30 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 
 import java.io.StringWriter;
 
-import javax.el.MethodExpression;
-import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
-import javax.faces.component.UISelectItem;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
 
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
-import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class HtmlOutputLabelTestCase extends FaceletTestCase
 {
 
+    @Test
     public void testOutputLabelEscape() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testOutputLabelEscape.xhtml");
 
         UIComponent panelGroup = root.findComponent("testGroup1");
-        assertNotNull(panelGroup);
+        Assert.assertNotNull(panelGroup);
         UIOutput label = (UIOutput) panelGroup.findComponent("testLabel");
-        assertNotNull(label);
+        Assert.assertNotNull(label);
         UIOutput text = (UIOutput) panelGroup.findComponent("testOut");
-        assertNotNull(text);
+        Assert.assertNotNull(text);
         
         StringWriter sw = new StringWriter();
         MockResponseWriter mrw = new MockResponseWriter(sw);

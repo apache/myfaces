@@ -27,6 +27,8 @@ import javax.faces.el.CompositeComponentExpressionHolder;
 
 import org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests for using BeanValidation in conjunction with Composite Components.
@@ -47,6 +49,7 @@ public class CompositeComponentBeanValidationTest extends FaceletTestCase
      * 
      * @throws IOException
      */
+    @Test
     public void testCompositeComponentExpressionHolder() throws IOException
     {
         UIViewRoot root = facesContext.getViewRoot();
@@ -60,14 +63,14 @@ public class CompositeComponentBeanValidationTest extends FaceletTestCase
         Object attrs = resolver.getValue(facesContext.getELContext(), compositeComponent, "attrs");
         
         // the resolved value has to be a CompositeComponentExpressionHolder
-        assertTrue(attrs instanceof CompositeComponentExpressionHolder);
+        Assert.assertTrue(attrs instanceof CompositeComponentExpressionHolder);
         
         // get the actual ValueExpression which is needed by the BeanValidator
         ValueExpression valueExpression 
                 = ((CompositeComponentExpressionHolder) attrs).getExpression("input");
         
         // the expression String from the VE has to be #{myBean.input}
-        assertTrue("#{myBean.input}".equals(valueExpression.getExpressionString()));
+        Assert.assertTrue("#{myBean.input}".equals(valueExpression.getExpressionString()));
     }
     
 }

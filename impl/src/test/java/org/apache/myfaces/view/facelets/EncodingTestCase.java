@@ -26,6 +26,7 @@ import javax.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Test;
 
 public class EncodingTestCase extends FaceletTestCase
 {
@@ -47,6 +48,7 @@ public class EncodingTestCase extends FaceletTestCase
     {
     }
 
+    @Test
     public void testPattern() throws Exception
     {
         Pattern p = Pattern
@@ -68,9 +70,10 @@ public class EncodingTestCase extends FaceletTestCase
         }
     }
 
+    @Test
     public void testEncoding() throws Exception
     {
-        this.servletRequest.setAttribute("name", "Mr. Hookom");
+        request.setAttribute("name", "Mr. Hookom");
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "encoding.xml");
         FastWriter fw = new FastWriter();

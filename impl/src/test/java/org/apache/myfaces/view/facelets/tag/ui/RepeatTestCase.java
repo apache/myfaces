@@ -39,6 +39,8 @@ import org.apache.myfaces.view.facelets.bean.Company;
 import org.apache.myfaces.view.facelets.bean.Example;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests for UIRepeat.
@@ -49,6 +51,7 @@ import org.apache.myfaces.view.facelets.util.FastWriter;
 public class RepeatTestCase extends FaceletTestCase 
 {
 
+    @Test
     public void testRepeat() throws Exception 
     {
         Company c = Example.createCompany();
@@ -69,6 +72,7 @@ public class RepeatTestCase extends FaceletTestCase
      * Tests UIRepeat.invokeOnComponent() including var and varStatus properties.
      * @throws IOException
      */
+    @Test
     @SuppressWarnings("unchecked")
     public void testInvokeOnComponent() throws IOException
     {
@@ -98,49 +102,49 @@ public class RepeatTestCase extends FaceletTestCase
         
         // invokeOnComponent on UIRepeat itself
         String invokeId = "form:repeat";
-        assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
-        assertEquals(repeat, callback._lastTarget);
-        assertEquals(varValue, callback._rowValue); // previous set varValue
-        assertEquals(statusValue, callback._repeatStatus); // previous set statusValue
+        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assert.assertEquals(repeat, callback._lastTarget);
+        Assert.assertEquals(varValue, callback._rowValue); // previous set varValue
+        Assert.assertEquals(statusValue, callback._repeatStatus); // previous set statusValue
         
         // invokeOnComponent on a child of UIRepeat in the first row
         invokeId = "form:repeat:0:outputText";
-        assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
-        assertEquals(outputText, callback._lastTarget);
-        assertEquals(repeatValues[0], callback._rowValue);
-        assertEquals(0, callback._index);
-        assertEquals(true, callback._first);
-        assertEquals(false, callback._last);
-        assertEquals(true, callback._even);
+        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assert.assertEquals(outputText, callback._lastTarget);
+        Assert.assertEquals(repeatValues[0], callback._rowValue);
+        Assert.assertEquals(0, callback._index);
+        Assert.assertEquals(true, callback._first);
+        Assert.assertEquals(false, callback._last);
+        Assert.assertEquals(true, callback._even);
         
         // invokeOnComponent on a child of UIRepeat in the second row
         invokeId = "form:repeat:1:outputText";
-        assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
-        assertEquals(outputText, callback._lastTarget);
-        assertEquals(repeatValues[1], callback._rowValue);
-        assertEquals(1, callback._index);
-        assertEquals(false, callback._first);
-        assertEquals(false, callback._last);
-        assertEquals(false, callback._even);
+        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assert.assertEquals(outputText, callback._lastTarget);
+        Assert.assertEquals(repeatValues[1], callback._rowValue);
+        Assert.assertEquals(1, callback._index);
+        Assert.assertEquals(false, callback._first);
+        Assert.assertEquals(false, callback._last);
+        Assert.assertEquals(false, callback._even);
         
         // invokeOnComponent on a child of UIRepeat in the third row
         invokeId = "form:repeat:2:outputText";
-        assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
-        assertEquals(outputText, callback._lastTarget);
-        assertEquals(repeatValues[2], callback._rowValue);
-        assertEquals(2, callback._index);
-        assertEquals(false, callback._first);
-        assertEquals(true, callback._last);
-        assertEquals(true, callback._even);
+        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assert.assertEquals(outputText, callback._lastTarget);
+        Assert.assertEquals(repeatValues[2], callback._rowValue);
+        Assert.assertEquals(2, callback._index);
+        Assert.assertEquals(false, callback._first);
+        Assert.assertEquals(true, callback._last);
+        Assert.assertEquals(true, callback._even);
         
         // invokeOnComponent on a child of UIRepeat with invalid row (-1)
         invokeId = "form:repeat:outputText";
-        assertFalse(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assert.assertFalse(root.invokeOnComponent(facesContext, invokeId, callback));
         
         // after all these calls to invokeOnComponent, row and status still
         // have to be the same like before
-        assertEquals(varValue, externalContext.getRequestMap().get(var));
-        assertEquals(statusValue, externalContext.getRequestMap().get(varStatus));
+        Assert.assertEquals(varValue, externalContext.getRequestMap().get(var));
+        Assert.assertEquals(statusValue, externalContext.getRequestMap().get(varStatus));
         
         // remove the values from the request map
         externalContext.getRequestMap().remove("repeatValues");
@@ -211,6 +215,7 @@ public class RepeatTestCase extends FaceletTestCase
      * Tests UIRepeat.visitTree().
      * @throws IOException
      */
+    @Test
     @SuppressWarnings("unchecked")
     public void testVisitTree() throws IOException
     {
@@ -248,12 +253,12 @@ public class RepeatTestCase extends FaceletTestCase
         expectedClientIds.add("form:repeat:2:outputText");
         
         // see if we got the expected result
-        assertEquals(expectedClientIds, testVisitCallback._visitedClientIds);
+        Assert.assertEquals(expectedClientIds, testVisitCallback._visitedClientIds);
         
         // after the tree visit, row and status still
         // have to be the same like before
-        assertEquals(varValue, externalContext.getRequestMap().get(var));
-        assertEquals(statusValue, externalContext.getRequestMap().get(varStatus));
+        Assert.assertEquals(varValue, externalContext.getRequestMap().get(var));
+        Assert.assertEquals(statusValue, externalContext.getRequestMap().get(varStatus));
         
         // remove the values from the request map
         externalContext.getRequestMap().remove("repeatValues");
@@ -288,7 +293,7 @@ public class RepeatTestCase extends FaceletTestCase
             final String clientId = target.getClientId(context.getFacesContext());
             if (_visitedClientIds.contains(clientId))
             {
-                fail("Component with clientId " + clientId + " visited twice!");
+                Assert.fail("Component with clientId " + clientId + " visited twice!");
             }
             else
             {
@@ -301,15 +306,15 @@ public class RepeatTestCase extends FaceletTestCase
                     
                     Object indexObject = _indexValueExpression.getValue(elCtx);
                     // indexObject has to be an Integer
-                    assertTrue(indexObject instanceof Integer);
+                    Assert.assertTrue(indexObject instanceof Integer);
                     Integer index = (Integer) indexObject;
                     
                     // the index has to be part of the clientId
-                    assertTrue(clientId.contains("" + index));
+                    Assert.assertTrue(clientId.contains("" + index));
                     
                     Object rowValue = _rowValueExpression.getValue(elCtx);
                     // #{row} has to be the repeatValue for the current index
-                    assertEquals(_repeatValues[index], rowValue);
+                    Assert.assertEquals(_repeatValues[index], rowValue);
                 }
             }
             
