@@ -1456,27 +1456,31 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // get the encoding
         String encoding = (String) extContext.getRequestMap().get("facelets.Encoding");
 
-        ResponseWriter writer;
+        // -= Leonardo Uribe =- Add */* to the contentType is a fix done from FaceletViewHandler
+        // to make old RI versions work, but since this is for JSF 2.0 it is not necessary that code.
+        ResponseWriter writer = writer = renderKit.createResponseWriter(NullWriter.Instance, contentType, encoding);
+        
+        //ResponseWriter writer;
         // append */* to the contentType so createResponseWriter will succeed no matter
         // the requested contentType.
-        if (contentType != null && !contentType.equals("*/*"))
-        {
-            contentType += ",*/*";
-        }
+        //if (contentType != null && !contentType.equals("*/*"))
+        //{
+        //    contentType += ",*/*";
+        //}
         // Create a dummy ResponseWriter with a bogus writer,
         // so we can figure out what content type the ReponseWriter
         // is really going to ask for
-        try
-        {
-            writer = renderKit.createResponseWriter(NullWriter.Instance, contentType, encoding);
-        }
-        catch (IllegalArgumentException e)
-        {
+        //try
+        //{
+        //    writer = renderKit.createResponseWriter(NullWriter.Instance, contentType, encoding);
+        //}
+        // catch (IllegalArgumentException e)
+        //{
             // Added because of an RI bug prior to 1.2_05-b3. Might as well leave it in case other
             // impls have the same problem. https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=613
-            log.finest("The impl didn't correctly handled '*/*' in the content type list.  Trying '*/*' directly.");
-            writer = renderKit.createResponseWriter(NullWriter.Instance, "*/*", encoding);
-        }
+            //log.finest("The impl didn't correctly handled '*/*' in the content type list.  Trying '*/*' directly.");
+            //writer = renderKit.createResponseWriter(NullWriter.Instance, "*/*", encoding);
+        //}
 
         // Override the JSF provided content type if necessary
         contentType = getResponseContentType(context, writer.getContentType());
