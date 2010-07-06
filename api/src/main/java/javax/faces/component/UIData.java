@@ -507,7 +507,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             // move off it, so save the (partial) state of the components
             // representing the current row. Later if this row is revisited
             // then we can restore this state.
-            _rowStates.put(getClientId(facesContext), saveDescendantComponentStates(getChildren().iterator(), false));
+            _rowStates.put(getContainerClientId(facesContext), saveDescendantComponentStates(getChildren().iterator(), false));
         }
 
         _rowIndex = rowIndex;
@@ -546,7 +546,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         else
         {
-            Object rowState = _rowStates.get(getClientId(facesContext));
+            Object rowState = _rowStates.get(getContainerClientId(facesContext));
             if (rowState == null)
             {
                 // We haven't been positioned on this row before, so just
