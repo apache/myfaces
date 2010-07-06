@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /** @namespace myfaces._impl.core.Impl*/
 /** @namespace myfaces._impl._util._ListenerQueue */
@@ -65,6 +65,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
     MALFORMEDXML : "malformedXML",
     SERVER_ERROR : "serverError",
     CLIENT_ERROR : "clientError",
+    TIMEOUT_EVENT: "timeout",
 
 
 
@@ -124,7 +125,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          * the entire mapping between the functions is stateless
          */
         //null definitely means no event passed down so we skip the ie specific checks
-        if('undefined' == typeof event) {
+        if ('undefined' == typeof event) {
             event = window.event || null;
         }
 
@@ -331,6 +332,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * sends an event
      */
     sendEvent : function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
+        var _Lang = myfaces._impl._util._Lang;
         var eventData = {};
         eventData.type = this.EVENT;
 
@@ -340,9 +342,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         if (name !== this.BEGIN) {
 
             try {
-                eventData.responseCode = request.status;
-                eventData.responseText = request.responseText;
-                eventData.responseXML = request.responseXML;
+                //we bypass a problem with ie here, ie throws an exception if no status is given on the xhr object instead of just passing a value
+                var getValue = function(value, key) {
+                    try {
+                        return value[key]
+                    } catch (e) {
+                        return "unkown";
+                    }
+                };
+
+                eventData.responseCode = getValue (request, "status");
+                eventData.responseText = getValue (request, "responseText");
+                eventData.responseXML = getValue (request, "responseXML");
 
             } catch (e) {
                 var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);

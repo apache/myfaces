@@ -220,29 +220,34 @@ if (!myfaces._impl.core._Runtime) {
             if (!subNms) {
                 return true;
             }
+            try {
+                //special condition subnamespace exists as full blown key with . instead of function map
+                if ('undefined' != typeof root[subNms]) {
+                    return true;
+                }
 
-            //special condition subnamespace exists as full blown key with . instead of function map
-            if ('undefined' != typeof root[subNms]) {
-                return true;
+                //crossported from the dojo toolkit
+                // summary: determine if an object supports a given method
+                // description: useful for longer api chains where you have to test each object in the chain
+                var p = subNms.split(".");
+                var len = p.length;
+                for (var i = 0; i < len; i++) {
+                    //the original dojo code here was false because
+                    //they were testing against ! which bombs out on exists
+                    //which has a value set to false
+                    // (TODO send in a bugreport to the Dojo people)
+
+                    if ('undefined' == typeof root[p[i]]) {
+                        return false;
+                    } // Boolean
+                    root = root[p[i]];
+                }
+                return true; // Boolean
+
+            } catch (e) {
+                //ie (again) has a special handling for some object attributes here which automatically throw an unspecified error if not existent
+                return false;
             }
-
-            //crossported from the dojo toolkit
-            // summary: determine if an object supports a given method
-            // description: useful for longer api chains where you have to test each object in the chain
-            var p = subNms.split(".");
-            var len = p.length;
-            for (var i = 0; i < len; i++) {
-                //the original dojo code here was false because
-                //they were testing against ! which bombs out on exists
-                //which has a value set to false
-                // (TODO send in a bugreport to the Dojo people)
-
-                if ('undefined' == typeof root[p[i]]) {
-                    return false;
-                } // Boolean
-                root = root[p[i]];
-            }
-            return true; // Boolean
         };
 
         /**

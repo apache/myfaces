@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 /**
  * The xhr core adapter
  * which provides the transport mechanisms to the calling
@@ -113,6 +113,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
 
             //standard timeout callback
             "onTimeout": this._Lang.hitch(this, this._stdOnTimeout),
+
+            //now to the internal error handlers which perform operations
+            //on the queue
             //standard exception handling callback
             "onException": this._Lang.hitch(this, this._stdErrorHandler),
             //standard warning handling callback
@@ -121,14 +124,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
 
         //we now mix in the config settings which might either be set globally
         //or pushed in under the context myfaces.<contextValue> into the current request 
-        this._applyConfig(ret, "alarmThreshold", this._PAR_ERRORLEVEL);
-        this._applyConfig(ret, "queueSize", this._PAR_QUEUESIZE);
-        this._applyConfig(ret, "timeout", this._PAR_TIMEOUT);
-        this._applyConfig(ret, "delay", this._PAR_DELAY);
+        this._applyConfig(ret, context, "alarmThreshold", this._PAR_ERRORLEVEL);
+        this._applyConfig(ret, context, "queueSize", this._PAR_QUEUESIZE);
+        this._applyConfig(ret, context, "timeout", this._PAR_TIMEOUT);
+        this._applyConfig(ret, context, "delay", this._PAR_DELAY);
 
         //now partial page submit needs a different treatment
         //since pps == execute strings
-        if (_getConfig(context, this._PAR_PPS, null) != null
+        if (_getConfig(context, this._PAR_PPS, false)
                 && _Lang.exists(passThrgh, myfaces._impl.core.Impl.P_EXECUTE)
                 && passThrgh[myfaces._impl.core.Impl.P_EXECUTE].length > 0) {
             ret['partialIdsArray'] = passThrgh[myfaces._impl.core.Impl.P_EXECUTE].split(" ");
@@ -140,14 +143,15 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * helper method to apply a config setting to our varargs param list
      *
      * @param destination the destination map to receive the setting
+     * @param context the current context
      * @param destParm the destination param of the destination map
      * @param srcParm the source param which is the key to our config setting
      */
-    _applyConfig: function(destination, destParm, srcParm) {
+    _applyConfig: function(destination, context, destParm, srcParm) {
         var _RT = myfaces._impl.core._Runtime;
         var _getConfig = _RT.getLocalOrGlobalConfig;
-        if (_getConfig(this._context, srcParm, null) != null) {
-            destination[destParm] = _getConfig(this._context, srcParm, null);
+        if (_getConfig(context, srcParm, null) != null) {
+            destination[destParm] = _getConfig(context, srcParm, null);
         }
     },
 
@@ -173,11 +177,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
     _stdOnSuccess: function(request, context) {
         //_onSuccess
         this._loadImpl();
-
-        this._Impl.response(request, context);
-        this._Impl.sendEvent(request, context, this._Impl.SUCCESS);
-        this._q.processQueue();
-
+        try {
+            this._Impl.response(request, context);
+          
+            this._Impl.sendEvent(request, context, this._Impl.SUCCESS);
+        } finally {
+            this._q.processQueue();
+        }
     },
 
     /**
@@ -212,15 +218,28 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
 
     /**
      * standard timeout handler
+     * the details on how to handle the timeout are
+     * handled by the calling request object
      */
-    _stdOnTimeout: function() {
-        this._q._curReq.abort();
+    _stdOnTimeout: function(request, context) {
+        this._loadImpl();
+        try {
+            //we issue an event not an error here before killing the xhr process
+            this._Impl.sendEvent(request, context, this._Impl.TIMEOUT_EVENT,
+                    this._Impl.TIMEOUT_EVENT);
+            //timeout done we process the next in the queue
+        } finally {
+            //We trigger the next one in the queue
+            this._q.processQueue();
+        }
+        //ready state done should be called automatically
     },
 
     /**
      * Client error handlers which also in the long run route into our error queue
      * but also are able to deliver more meaningful messages
-     *
+     * note, in case of an error all subsequent xhr requests are dropped
+     * to get a clean state on things
      *
      * @param request the xhr request object
      * @param context the context holding all values for further processing
@@ -230,39 +249,23 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      */
     _stdErrorHandler: function(request, context, sourceClass, func, exception) {
         this._loadImpl();
-        
-        if (this._threshold == "ERROR" && !exception._processed) {
-            this._Impl.sendError(request, context, this._Impl.CLIENT_ERROR, exception.name,
-                    "MyFaces ERROR:" + this._Lang.createErrorMsg(sourceClass, func, exception));
+        try {
+            if (this._threshold == "ERROR" && !exception._processed) {
+                this._Impl.sendError(request, context, this._Impl.CLIENT_ERROR, exception.name,
+                        "MyFaces ERROR:" + this._Lang.createErrorMsg(sourceClass, func, exception));
+            }
+        } finally {
+            this._q.cleanup();
+            //we forward the exception, just in case so that the client
+            //will receive it in any way
+            exception._processed = true;
+            throw exception;
         }
-        this._q.cleanup();
-        //we forward the exception, just in case so that the client
-        //will receive it in any way
-        exception._processed = true;
-        throw exception;
     },
-
-    /**
-     * Standard non blocking warnings handler
-     *
-     * @param request the xhr request object
-     * @param context the context holding all values for further processing
-     * @param sourceClass (String) the issuing class for a more meaningful message
-     * @param func the issuing function
-     * @param exception the embedded exception
-     */
-    _stdWarningsHandler: function(request, context, sourceClass, func, exception) {
-        this._loadImpl();
-
-        if (this._threshold == "WARNING" || this._threshold == "ERROR") {
-            this._Impl.sendError(request, context, this._Impl.CLIENT_ERROR, exception.name,
-                    "MyFaces WARNING:" + this._Lang.createErrorMsg(sourceClass, func, exception));
-        }
-        this.destroy();
-    },
+   
 
     _loadImpl: function() {
-        if(!this._Impl) {
+        if (!this._Impl) {
             this._Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         }
         return this._Impl;

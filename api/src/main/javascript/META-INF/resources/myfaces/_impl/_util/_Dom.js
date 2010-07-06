@@ -391,6 +391,52 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         return null;
     },
 
+
+    /**
+     * optimized search for an array of tag names
+     *
+     * @param fragment the fragment which should be searched for
+     * @param tagNames an map indx of tag names which have to be found
+     * @param deepScan if set to true a deep scan is performed otherwise a shallow scan
+     */
+    findByTagNames: function(fragment, tagNames, deepScan) {
+        var _Lang = myfaces._impl._util._Lang;
+
+        //shortcut for single components
+        if(!deepScan && tagNames[fragment.tagName.toLowerCase()]) {
+            return fragment;
+        }
+
+        //shortcut elementsByTagName
+        if (deepScan && _Lang.exists(fragment, "getElementsByTagName")) {
+            var retArr = [];
+            for (var key in tagNames) {
+                var foundElems = this.findByTagName(fragment, key, deepScan);
+                if (foundElems) {
+                    retArr = retArr.concat(foundElems);
+                }
+            }
+            return retArr;
+        } else if (deepScan) {
+            //no node type with child tags we can handle that without node type checking
+            return null;
+        }
+
+
+        //now the filter function checks case insensitively for the tag names needed
+        var filter = function(node) {
+            return node.tagName && tagNames[node.tagName.toLowerCase()];
+        };
+
+        //now we run an optimized find all on it
+        try {
+            return this.findAll(fragment, filter, deepScan);
+        } finally {
+            //the usual IE6 is broken, fix code
+            filter = null;
+        }
+    },
+
     /**
      * determines the number of nodes according to their tagType
      *
@@ -414,9 +460,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //via namespace array checking is safe
         if (deepScan && _Lang.exists(fragment, "getElementsByTagName")) {
             var ret = _Lang.objToArray(fragment.getElementsByTagName(tagName));
-            if(fragment.tagName && fragment.tagName.toLowerCase() == tagName.toLocaleLowerCase()) ret.unshift(fragment);
+            if (fragment.tagName && fragment.tagName.toLowerCase() == tagName.toLowerCase()) ret.unshift(fragment);
             return ret;
-        } else if(deepScan) {
+        } else if (deepScan) {
             //no node type with child tags we can handle that without node type checking
             return null;
         }
@@ -449,11 +495,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //elements byName is the fastest
             if (deepScan && _Lang.exists(fragment, "getElementsByName")) {
                 var ret = _Lang.objToArray(fragment.getElementsByName(name));
-                if(fragment.name == name) ret.unshift(fragment);
+                if (fragment.name == name) ret.unshift(fragment);
                 return ret;
 
             }
-
 
             if (deepScan && _Lang.exists(fragment, "querySelectorAll")) {
                 try {
@@ -508,13 +553,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
             //TODO implement this
             /*if (fragment.getElementsByClassName && deepScan) {
-                return fragment.getElementsByClassName(styleClass);
-            }
+             return fragment.getElementsByClassName(styleClass);
+             }
 
-            //html5 speed optimization for browsers which do not ,
-            //have the getElementsByClassName implemented
-            //but only for deep scan and normal parent nodes
-            else */
+             //html5 speed optimization for browsers which do not ,
+             //have the getElementsByClassName implemented
+             //but only for deep scan and normal parent nodes
+             else */
             if (_Lang.exists(fragment, "querySelectorAll") && deepScan) {
                 try {
                     var result = fragment.querySelectorAll("." + styleClass.replace(/\./g, "\\."));

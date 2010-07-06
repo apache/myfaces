@@ -54,11 +54,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
         this._q.push(element);
         //qeuesize is bigger than the limit we drop one element so that we are
         //back in line
+
         this._readjust();
     },
 
     _readjust: function() {
-        while (this._size > -1 && this.length() > this._size) {
+        while (null != this._size && 'undefined' != typeof this._size &&
+                this._size > -1 && this.length() > this._size) {
             this.dequeue();
         }
     },

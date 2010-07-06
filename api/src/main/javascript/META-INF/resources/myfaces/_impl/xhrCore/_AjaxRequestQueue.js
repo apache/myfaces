@@ -40,6 +40,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
             this._delayTimeoutId = window.setTimeout(
                     _Lang.hitch(this, function() {
                         this.clearDelayTimeout();
+                        //lets clear the delay time to enqueue correctly 
+                        delete request._delay;
                         this.enqueue(request);
                     }), request._delay);
         } else {
@@ -48,8 +50,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
                 this._curReq.send();
             } else {
                 this._callSuper("enqueue", request);
-                if (request._size != this._size) {
-                    this.setQueueSize(request._size);
+                if (request._queueSize != this._size) {
+                    this.setQueueSize(request._queueSize);
                 }
             }
         }
