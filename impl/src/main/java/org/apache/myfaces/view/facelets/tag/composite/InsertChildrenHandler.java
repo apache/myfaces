@@ -68,7 +68,7 @@ public class InsertChildrenHandler extends TagHandler
             {
                 if (log.isLoggable(Level.SEVERE))
                 {
-                    log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                    log.severe("Cannot find composite bean descriptor UIComponent.BEANINFO_KEY ");
                 }
                 return;
             }

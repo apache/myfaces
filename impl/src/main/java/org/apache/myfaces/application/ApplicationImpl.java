@@ -1108,6 +1108,12 @@ public class ApplicationImpl extends Application
          * This version of JSF specification uses JavaBeans as the API to the component metadata.
          */
         BeanInfo metadata = vdl.getComponentMetadata(context, componentResource);
+        if (metadata == null)
+        {
+            throw new FacesException("Could not get component metadata for " 
+                    + componentResource.getResourceName()
+                    + ". Did you forget to specify <composite:interface>?");
+        }
 
         /*
          * Determine if the component author declared a component-type for this component instance by obtaining the

@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletContext;
@@ -168,7 +167,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
             {
                 if (log.isLoggable(Level.SEVERE))
                 {
-                    log.severe("Cannot found composite bean descriptor UIComponent.BEANINFO_KEY ");
+                    log.severe("Cannot find composite bean descriptor UIComponent.BEANINFO_KEY ");
                 }
                 return;
             }            
