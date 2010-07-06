@@ -1458,7 +1458,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         // -= Leonardo Uribe =- Add */* to the contentType is a fix done from FaceletViewHandler
         // to make old RI versions work, but since this is for JSF 2.0 it is not necessary that code.
-        ResponseWriter writer = writer = renderKit.createResponseWriter(NullWriter.Instance, contentType, encoding);
+        ResponseWriter writer = renderKit.createResponseWriter(NullWriter.Instance, contentType, encoding);
         
         //ResponseWriter writer;
         // append */* to the contentType so createResponseWriter will succeed no matter

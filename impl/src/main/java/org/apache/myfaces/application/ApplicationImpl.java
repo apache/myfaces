@@ -930,7 +930,6 @@ public class ApplicationImpl extends Application
         return _viewHandler;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void addBehavior(String behaviorId, String behaviorClass)
     {
@@ -952,7 +951,6 @@ public class ApplicationImpl extends Application
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public final void addComponent(final String componentType, final String componentClassName)
     {
@@ -973,7 +971,6 @@ public class ApplicationImpl extends Application
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public final void addConverter(final String converterId, final String converterClass)
     {
@@ -1024,7 +1021,6 @@ public class ApplicationImpl extends Application
         _converterClassNameToConfigurationMap.put(converterClassName, configuration);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public final void addValidator(final String validatorId, final String validatorClass)
     {
@@ -1762,8 +1758,11 @@ public class ApplicationImpl extends Application
     }
 
     private void _handleAnnotations(FacesContext context, Object inspected, UIComponent component)
-    {        
-        boolean isProduction = getProjectStage().equals(ProjectStage.Production);
+    {   
+        // determine the ProjectStage setting via the given FacesContext
+        // note that a local getProjectStage() could cause problems in wrapped environments
+        boolean isProduction = context.isProjectStage(ProjectStage.Production);
+        
         Class<?> inspectedClass = inspected.getClass();
         _handleListenerForAnnotations(context, inspected, inspectedClass, component, isProduction);
 
@@ -1841,6 +1840,11 @@ public class ApplicationImpl extends Application
             // ComponentSystemEventListener, "target" is the Application instance.
             else if (component instanceof SystemEventListener)
             {
+                // use the Application object from the FacesContext (note that a
+                // direct use of subscribeToEvent() could cause problems if the
+                // Application is wrapped)
+                Application application = context.getApplication();
+                
                 // If "target" is the Application instance, inspect the value of the sourceClass() annotation attribute
                 // value.
                 if (Void.class.equals(annotation.sourceClass()))
@@ -1851,7 +1855,7 @@ public class ApplicationImpl extends Application
                      * which this annotation is attached (which must implement SystemEventListener) as the second
                      * argument.
                      */
-                    subscribeToEvent(annotation.systemEventClass(), (SystemEventListener) inspected);
+                    application.subscribeToEvent(annotation.systemEventClass(), (SystemEventListener) inspected);
                 }
                 else
                 {
@@ -1861,7 +1865,7 @@ public class ApplicationImpl extends Application
                      * argument, and the instance of the class to which this annotation is attached (which must
                      * implement SystemEventListener) as the third argument.
                      */
-                    subscribeToEvent(annotation.systemEventClass(), annotation.sourceClass(),
+                    application.subscribeToEvent(annotation.systemEventClass(), annotation.sourceClass(),
                                      (SystemEventListener) inspected);
                 }
             }
@@ -1936,7 +1940,8 @@ public class ApplicationImpl extends Application
 
             // Obtain the renderer-type for the resource name by passing name to
             // ResourceHandler.getRendererTypeForResourceName(java.lang.String).
-            String rendererType = getResourceHandler().getRendererTypeForResourceName(name);
+            // (note that we can not use this.getResourceHandler(), because the Application might be wrapped)
+            String rendererType = context.getApplication().getResourceHandler().getRendererTypeForResourceName(name);
 
             // Call setRendererType on the UIOutput instance, passing the renderer-type.
             output.setRendererType(rendererType);

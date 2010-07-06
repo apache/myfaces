@@ -64,6 +64,19 @@ public class ViewHandlerImpl extends ViewHandler
     public static final String FORM_STATE_MARKER = "<!--@@JSF_FORM_STATE_MARKER@@-->";
     private ViewHandlerSupport _viewHandlerSupport;
     private ViewDeclarationLanguageFactory _vdlFactory;
+    
+    /**
+     * Gets the current ViewHandler via FacesContext.getApplication().getViewHandler().
+     * We have to use this method to invoke any other specified ViewHandler-method
+     * in the code, because direct access (this.method()) will cause problems if
+     * the ViewHandler is wrapped.
+     * @param facesContext
+     * @return
+     */
+    public static ViewHandler getViewHandler(FacesContext facesContext)
+    {
+        return facesContext.getApplication().getViewHandler();
+    }
 
     public ViewHandlerImpl()
     {
@@ -94,7 +107,6 @@ public class ViewHandlerImpl extends ViewHandler
             Map<String, List<String>> parameters, boolean includeViewParams)
     {
         Map<String, List<String>> viewParameters;
-        ExternalContext externalContext = context.getExternalContext();
         if (includeViewParams)
         {
             viewParameters = getViewParameterList(context, viewId, parameters);
@@ -104,7 +116,11 @@ public class ViewHandlerImpl extends ViewHandler
             viewParameters = parameters;
         }
         
-        String actionEncodedViewId = getActionURL(context, viewId);
+        // note that we cannot use this.getActionURL(), because this will
+        // cause problems if the ViewHandler is wrapped
+        String actionEncodedViewId = getViewHandler(context).getActionURL(context, viewId);
+        
+        ExternalContext externalContext = context.getExternalContext();
         String bookmarkEncodedURL = externalContext.encodeBookmarkableURL(actionEncodedViewId, viewParameters);
         return externalContext.encodeActionURL(bookmarkEncodedURL);
     }
@@ -114,7 +130,6 @@ public class ViewHandlerImpl extends ViewHandler
             Map<String, List<String>> parameters, boolean includeViewParams)
     {
         Map<String, List<String>> viewParameters;
-        ExternalContext externalContext = context.getExternalContext();
         if (includeViewParams)
         {
             viewParameters = getViewParameterList(context, viewId, parameters);
@@ -124,7 +139,11 @@ public class ViewHandlerImpl extends ViewHandler
             viewParameters = parameters;
         }
         
-        String actionEncodedViewId = getActionURL(context, viewId);
+        // note that we cannot use this.getActionURL(), because this will
+        // cause problems if the ViewHandler is wrapped
+        String actionEncodedViewId = getViewHandler(context).getActionURL(context, viewId);
+        
+        ExternalContext externalContext = context.getExternalContext();
         String redirectEncodedURL = externalContext.encodeRedirectURL(actionEncodedViewId, viewParameters);
         return externalContext.encodeActionURL(redirectEncodedURL);
     }
@@ -200,7 +219,11 @@ public class ViewHandlerImpl extends ViewHandler
     {
        checkNull(context, "facesContext");
        String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
-       return getViewDeclarationLanguage(context,calculatedViewId).createView(context,calculatedViewId);
+       
+       // we cannot use this.getVDL() directly (see getViewHandler())
+       return getViewHandler(context)
+               .getViewDeclarationLanguage(context, calculatedViewId)
+                   .createView(context, calculatedViewId);
     }
 
     @Override
@@ -229,7 +252,10 @@ public class ViewHandlerImpl extends ViewHandler
         checkNull(context, "context");
         checkNull(viewToRender, "viewToRender");
 
-        getViewDeclarationLanguage(context,viewToRender.getViewId()).renderView(context, viewToRender);
+        // we cannot use this.getVDL() directly (see getViewHandler())
+        String viewId = viewToRender.getViewId();
+        getViewHandler(context).getViewDeclarationLanguage(context, viewId)
+                .renderView(context, viewToRender);
     }
 
     @Override
@@ -238,7 +264,11 @@ public class ViewHandlerImpl extends ViewHandler
         checkNull(context, "context");
     
         String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
-        return getViewDeclarationLanguage(context,calculatedViewId).restoreView(context, calculatedViewId); 
+        
+        // we cannot use this.getVDL() directly (see getViewHandler())
+        return getViewHandler(context)
+                .getViewDeclarationLanguage(context,calculatedViewId)
+                    .restoreView(context, calculatedViewId); 
     }
     
     @Override
@@ -287,8 +317,6 @@ public class ViewHandlerImpl extends ViewHandler
     private Map<String, List<String>> getViewParameterList(FacesContext context,
             String viewId, Map<String, List<String>> parametersFromArg)
     {
-
-        Map<String, List<String>> viewParameters;
         UIViewRoot viewRoot = context.getViewRoot();
         String currentViewId = viewRoot.getViewId();
         Collection<UIViewParameter> toViewParams = null;
@@ -300,8 +328,10 @@ public class ViewHandlerImpl extends ViewHandler
         }
         else
         {
-            String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);            
-            ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
+            String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);  
+            // we cannot use this.getVDL() directly (see getViewHandler())
+            ViewDeclarationLanguage vdl = getViewHandler(context).
+                    getViewDeclarationLanguage(context, calculatedViewId);
             ViewMetadata viewMetadata = vdl.getViewMetadata(context, viewId);
             // getViewMetadata() returns null on JSP
             if (viewMetadata != null)

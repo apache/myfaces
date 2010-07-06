@@ -335,7 +335,10 @@ public class PartialViewContextImpl extends PartialViewContext {
         //    return;
         //}
 
-        PartialResponseWriter writer = getPartialResponseWriter();
+        // note that we cannot use this.getPartialResponseWriter(), because
+        // this could cause problems if PartialResponseWriter is wrapped
+        PartialResponseWriter writer = _facesContext.getPartialViewContext().getPartialResponseWriter();
+        
         ResponseWriter oldWriter = _facesContext.getResponseWriter();
         boolean inDocument = false;
 
