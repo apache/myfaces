@@ -301,9 +301,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             throw new NullPointerException();
         }
+        
+        final String baseClientId = getClientId(context);
 
         // searching for this component?
-        boolean returnValue = this.getClientId(context).equals(clientId);
+        boolean returnValue = baseClientId.equals(clientId);
 
         boolean isCachedFacesContext = isCachedFacesContext();
         if (!isCachedFacesContext)
@@ -318,12 +320,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 try
                 {
                     callback.invokeContextCallback(context, this);
+                    return true;
                 }
                 catch (Exception e)
                 {
                     throw new FacesException(e);
                 }
-                return returnValue;
             }
     
             // Now Look throught facets on this UIComponent
@@ -332,13 +334,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 returnValue = it.next().invokeOnComponent(context, clientId, callback);
             }
     
-            if (returnValue == true)
+            if (returnValue)
             {
                 return returnValue;
             }
-            
-            // Now we have to check if it is searching an inner component
-            String baseClientId = super.getClientId(context);
             
             // is the component an inner component?
             if (clientId.startsWith(baseClientId))
@@ -1055,7 +1054,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * This is complicated by the fact that this table may be nested within another table. In this case a different
      * datamodel should be fetched for each row. When nested within a parent table, the parent reference won't change
-     * but parent.getClientId() will, as the suffix changes depending upon the current row index. A map object on this
+     * but parent.getContainerClientId() will, as the suffix changes depending upon the current row index. A map object on this
      * component is therefore used to cache the datamodel for each row of the table. In the normal case where this table
      * is not nested inside a component that changes its id (like a table does) then this map only ever has one entry.
      */
@@ -1067,7 +1066,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         UIComponent parent = getParent();
         if (parent != null)
         {
-            clientID = parent.getClientId(getFacesContext());
+            clientID = parent.getContainerClientId(getFacesContext());
         }
         dataModel = _dataModelMap.get(clientID);
         if (dataModel == null)
