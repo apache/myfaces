@@ -67,6 +67,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param {|Node|} item
      */
     runScripts: function(item, xmlData) {
+        var finalScripts = [];
         var execScrpt = this._Lang.hitch(this, function(item) {
             if (item.tagName && this._Lang.equalsIgnoreCase(item.tagName, "script")) {
                 var src = item.getAttribute('src');
@@ -78,6 +79,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     //due to changing the and order instead of relying on left to right
                     if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
                             && src.indexOf("/jsf-uncompressed.js") == -1))
+                        if(finalScripts.length) {
+                            //script source means we have to eval the existing
+                            //scripts before running the include
+                            myfaces._impl.core._Runtime.globalEval(finalScripts.join("\n"));
+                            finalScripts = [];
+                        }
                         myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
@@ -99,7 +106,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                         }
                     }
                     // we have to run the script under a global context
-                    myfaces._impl.core._Runtime.globalEval(test); // run the script
+                    //we store the script for less calls to eval
+                    finalScripts.push(test);
+
                 }
             }
         });
@@ -108,6 +117,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (scriptElements == null) return;
             for (var cnt = 0; cnt < scriptElements.length; cnt++) {
                 execScrpt(scriptElements[cnt]);
+            }
+            if(finalScripts.length) {
+                myfaces._impl.core._Runtime.globalEval(finalScripts.join("\n"));    
             }
         } finally {
             //the usual ie6 fix code
@@ -180,26 +192,43 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     _outerHTMLCompliant: function(item, markup) {
 
         var evalNodes = null;
-        var range = document.createRange();
-        range.setStartBefore(item);
-        var fragment = range.createContextualFragment(markup);
-        //special case update body, we have to replace the placeholder
-        //with the first element (the place holder is the the only child)
-        //and then append additional elements as additional childs
-        //the body itself then is the root for the eval part!
-        if (item.id == 'myfaces_bodyplaceholder') {
-            parentNode = item.parentNode;
-            parentNode.appendChild(fragment);
-            evalNodes = parentNode;
+        var dummyPlaceHolder = document.createElement("div");
+        dummyPlaceHolder.innerHTML = markup;
+        evalNodes = dummyPlaceHolder.childNodes;
+        if('undefined' == typeof evalNodes.length) {
+            item.parentNode.replaceChild( evalNodes, item);
+            return evalNodes;
+            //return this.replaceElement(item, evalNodes);
+        } else if(evalNodes.length == 1) {
+            var ret = evalNodes[0];
+            item.parentNode.replaceChild(evalNodes[0], item);
+            return ret;
+            //return this.replaceElement(item, evalNodes[0]);
         } else {
-            //normal dom node case we replace only the client id fragment!
-
-            parentNode = item.parentNode;
-
-            //evalNode = fragment.childNodes[0];
-            evalNodes = (fragment.childNodes) ? this._Lang.objToArray(fragment.childNodes) : fragment;
-            parentNode.replaceChild(fragment, item);
+            return this.replaceElements(item, evalNodes)
         }
+
+        /*var evalNodes = null;
+         var range = document.createRange();
+         range.setStartBefore(item);
+         var fragment = range.createContextualFragment(markup);
+         //special case update body, we have to replace the placeholder
+         //with the first element (the place holder is the the only child)
+         //and then append additional elements as additional childs
+         //the body itself then is the root for the eval part!
+         if (item.id == 'myfaces_bodyplaceholder') {
+         parentNode = item.parentNode;
+         parentNode.appendChild(fragment);
+         evalNodes = parentNode;
+         } else {
+         //normal dom node case we replace only the client id fragment!
+
+         parentNode = item.parentNode;
+
+         //evalNode = fragment.childNodes[0];
+         evalNodes = (fragment.childNodes) ? this._Lang.objToArray(fragment.childNodes) : fragment;
+         parentNode.replaceChild(fragment, item);
+         } */
         return evalNodes;
     },
 
@@ -238,15 +267,33 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             evalNodes = dummyPlaceHolder.childNodes[0].childNodes;
         }
 
-        evalNodes = this.replaceElement(item, evalNodes);
-
-        //if this as well will fail in the future, we can let ie parse a proper xml
-        //extract the script elements and then create the script elements manually
-        //but for now we will not need it, and this solution is faster
-        //the downside of that solution would be that the fragment itself
-        //must resolve to a valid xml
-        return evalNodes;
+        //ie throws also an error on length requests
+        evalNodes = this._Lang.objToArray(evalNodes);
+        if(evalNodes.length == 1) {
+            item.parentNode.replaceChild(evalNodes[0], item);
+            delete item;
+            return evalNodes[0];
+            //return this.replaceElement(item, evalNodes[0]);
+        } else {
+            return this.replaceElements(item, evalNodes)
+        }
     },
+
+
+    /**
+     * for performance reasons we work with replaceElement and replaceElements here
+     * after measuring performance it has shown that passing down an array instead
+     * of a single node makes replaceElement twice as slow, however
+     * a single node case is the 95% case
+     *
+     * @param item
+     * @param evalNodes
+     */
+    replaceElement: function(item, evalNode) {
+        evalNode = item.parentNode.replaceChild(evalNode, item);
+        return evalNode;
+    },
+
 
     /**
      * replaces an element with another element or a set of elements
@@ -255,31 +302,29 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      *
      * @param evalNodes the elements
      */
-    replaceElement: function (item, evalNodes) {
-
+    replaceElements: function (item, evalNodes) {
         var parentNode = item.parentNode;
-
-        if ('undefined' != typeof evalNodes.length) {
-            var oldNode = item;
-            var resultArr = this._Lang.objToArray(evalNodes);
-
-            for (var cnt = 0; cnt < resultArr.length; cnt++) {
-                if (cnt == 0) {
-                    oldNode = parentNode.replaceChild(resultArr[cnt], oldNode);
-                } else {
-                    if (oldNode.nextSibling) {
-                        oldNode = parentNode.insertBefore(resultArr[cnt], oldNode.nextSibling);
-                    } else {
-                        oldNode = parentNode.appendChild(resultArr[cnt]);
-
-                    }
-                }
-                evalNodes = resultArr;
-            }
-
-        } else {
-            evalNodes = parentNode.replaceChild(evalNodes, item);
+        var evalNodesDefined =  'undefined' != typeof evalNodes.length;
+        if(!evalNodesDefined) {
+            throw new Error("replaceElements called while evalNodes is not an array");
         }
+        var oldNode = item;
+        var resultArr = this._Lang.objToArray(evalNodes);
+
+        for (var cnt = 0; cnt < resultArr.length; cnt++) {
+            if (cnt == 0) {
+                oldNode = parentNode.replaceChild(resultArr[cnt], oldNode);
+            } else {
+                if (oldNode.nextSibling) {
+                    oldNode = parentNode.insertBefore(resultArr[cnt], oldNode.nextSibling);
+                } else {
+                    oldNode = parentNode.appendChild(resultArr[cnt]);
+
+                }
+            }
+            evalNodes = resultArr;
+        }
+
         return evalNodes;
     },
 
@@ -1154,21 +1199,21 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             this._Lang.reserveNamespace("myfaces.config._autoeval");
             //null not swallowed
             myfaces.config._autoeval = false;
-            
+
             var markup = "<script type='text/javascript'> myfaces.config._autoeval = true; </script>";
             //now we rely on the same replacement mechanisms as outerhtml because
             //some browsers have different behavior of embedded scripts in the contextualfragment
             //or innerhtml case (opera for instance), this way we make sure the
             //eval detection is covered correctly
-            this.setAttribute(evalDiv, "style","display:none");
+            this.setAttribute(evalDiv, "style", "display:none");
 
             //it is less critical in some browsers (old ie versions)
             //to append as first element than as last
             //it should not make any difference layoutwise since we are on display none anyway.
-            if(document.body.childNodes.length > 0) {
-                document.body.insertBefore( evalDiv, document.body.firstChild);
+            if (document.body.childNodes.length > 0) {
+                document.body.insertBefore(evalDiv, document.body.firstChild);
             } else {
-                document.body.appendChild( evalDiv );
+                document.body.appendChild(evalDiv);
             }
 
             //we remap it into a real boolean value

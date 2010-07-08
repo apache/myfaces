@@ -48,6 +48,9 @@ if (!myfaces._impl.core._Runtime) {
         //the rest of the namespaces can be handled by our namespace feature
         //helper to avoid unneeded hitches
         var _this = this;
+
+        //namespace idx to speed things up by hitting eval way less
+        _this._reservedNMS = {};
         /**
          * global eval on scripts
          *
@@ -119,7 +122,7 @@ if (!myfaces._impl.core._Runtime) {
          * @return the object the namespace points to or null if nothing is found
          */
         this.fetchNamespace = function(nms) {
-            if ('undefined' == typeof nms || null == nms) {
+            if ('undefined' == typeof nms || null == nms || !_this._reservedNMS[nms]) {
                 return null;
             }
 
@@ -194,13 +197,16 @@ if (!myfaces._impl.core._Runtime) {
             if (!_this.isString(nms)) {
                 throw Error("Namespace must be a string with . as delimiter");
             }
-            if (null != _this.fetchNamespace(nms)) {
+            if (_this._reservedNMS[nms] || null != _this.fetchNamespace(nms)) {
                 return false;
             }
+
             var entries = nms.split(/\./);
             var currNms = window;
+            var tmpNmsName = [];
             for (var cnt = 0; cnt < entries.length; cnt++) {
                 var subNamespace = entries[cnt];
+                tmpNmsName.push(subNamespace)
                 if ('undefined' == typeof currNms[subNamespace]) {
                     currNms[subNamespace] = {};
                 }
@@ -209,6 +215,8 @@ if (!myfaces._impl.core._Runtime) {
                 } else {
                     currNms = currNms[subNamespace];
                 }
+                _this._reservedNMS[tmpNmsName.join(".")] = true;
+
             }
             
 
@@ -226,6 +234,10 @@ if (!myfaces._impl.core._Runtime) {
         this.exists = function(root, subNms) {
             if (!root) {
                 return false;
+            }
+            //special case locally reserved namespace
+            if(root == window &&  _this._reservedNMS[subNms]) {
+                return true;
             }
 
             //initial condition root set element not set or null
@@ -480,8 +492,7 @@ if (!myfaces._impl.core._Runtime) {
                 //up internally
                 if (key && typeof delFn == "function") {
                     proto[key] = function(/*arguments*/) {
-                        var ret = delFn.apply(delegateObj, arguments);
-                        if ('undefined' != typeof ret) return ret;
+                        return delFn.apply(delegateObj, arguments);
                     };
                 }
             })(key, delegateObj[key]);
@@ -541,6 +552,9 @@ if (!myfaces._impl.core._Runtime) {
             if (!_this.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
             }
+            if(_this._reservedNMS[newCls]) {
+                return;
+            }
 
             if ('function' != typeof newCls) {
                 newCls = _reserveClsNms(newCls, protoFuncs);
@@ -592,6 +606,9 @@ if (!myfaces._impl.core._Runtime) {
          * @param nmsFuncs the functions which are attached on the classes namespace level
          */
         this.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+            if(_this._reservedNMS[newCls]) {
+                return;
+            }
             return _makeSingleton(this.delegateObj, newCls, delegateObj, protoFuncs, nmsFuncs);
         };
 
@@ -600,9 +617,10 @@ if (!myfaces._impl.core._Runtime) {
         //functions here, the other parts of the
         //system have to emulate them via _ prefixes
         var _makeSingleton = function(ooFunc, newCls, delegateObj, protoFuncs, nmsFuncs) {
-            if (_this.fetchNamespace(newCls)) {
-                return null;
+            if(_this._reservedNMS[newCls]) {
+                return;
             }
+            
             var clazz = ooFunc(newCls + "._mfProto", delegateObj, protoFuncs, nmsFuncs);
             if (clazz != null) {
                 _this.applyToGlobalNamespace(newCls, new clazz());
