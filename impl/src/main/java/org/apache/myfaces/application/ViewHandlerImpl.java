@@ -21,6 +21,7 @@ package org.apache.myfaces.application;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -345,10 +346,19 @@ public class ViewHandlerImpl extends ViewHandler
         {
             return parametersFromArg;
         }
+        
+        // we need to use a custom Map to add the view parameters,
+        // otherwise the current value of the view parameter will be added to
+        // the navigation case as a static (!!!) parameter, thus the value
+        // won't be updated on any following request
+        // (Note that parametersFromArg is the Map from the NavigationCase)
+        // Also note that we don't have to copy the Lists, because they won't be changed
+        Map<String, List<String>> parameters = new HashMap<String, List<String>>();
+        parameters.putAll(parametersFromArg);
 
         for (UIViewParameter viewParameter : toViewParams)
         {
-            if (!parametersFromArg.containsKey(viewParameter.getName()))
+            if (!parameters.containsKey(viewParameter.getName()))
             {
                 String parameterValue = viewParameter.getStringValueFromModel(context);
                 if (parameterValue == null)
@@ -359,32 +369,31 @@ public class ViewHandlerImpl extends ViewHandler
                     }
                     else
                     {
-                        boolean found = false;
-                        for (UIViewParameter curParam : currentViewParams) {
-                            if (curParam.getName() != null && viewParameter.getName() != null &&
-                                    curParam.getName().equals(viewParameter.getName())) 
+                        if (viewParameter.getName() != null)
+                        {
+                            for (UIViewParameter curParam : currentViewParams)
                             {
-                                parameterValue = curParam.getStringValue(context);
-                                found = true;
+                                if (viewParameter.getName().equals(curParam.getName())) 
+                                {
+                                    parameterValue = curParam.getStringValue(context);
+                                    break;
+                                }
                             }
-                            if (found)
-                                break;
                         }
                     }
                 }
                 if (parameterValue != null)
                 {
-                    List<String> parameterValueList = parametersFromArg.get(viewParameter.getName());
-                    if (parameterValueList == null)
-                    {
-                        parameterValueList = new ArrayList<String>();
-                    }
+                    // since we have checked !parameters.containsKey(viewParameter.getName())
+                    // here already, the parameters Map will never contain a List under the
+                    // key viewParameter.getName(), thus we do not have to check it here (again).
+                    List<String> parameterValueList = new ArrayList<String>();
                     parameterValueList.add(parameterValue);
-                    parametersFromArg.put(viewParameter.getName(),parameterValueList);
+                    parameters.put(viewParameter.getName(), parameterValueList);
                 }
             }
         }        
-        return parametersFromArg;
+        return parameters;
     }
     
     private void checkNull(final Object o, final String param)
