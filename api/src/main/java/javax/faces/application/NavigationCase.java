@@ -240,7 +240,30 @@ public class NavigationCase
             builder.append("  ");
             builder.append("<redirect include-view-params=\"");
             builder.append(_includeViewParams);
-            builder.append("\"/>");
+            if (_parameters != null && _parameters.size() != 0)
+            {
+                builder.append("\">\n");
+                for (Map.Entry<String, List<String>> entry : _parameters.entrySet())
+                {
+                    final String name = entry.getKey();
+                    for (String value : entry.getValue())
+                    {
+                        builder.append("    <view-param>\n");
+                        builder.append("      <name>");
+                        builder.append(name);
+                        builder.append("</name>\n");
+                        builder.append("      <value>");
+                        builder.append(value);
+                        builder.append("</value>\n");
+                        builder.append("    </view-param>\n");
+                    }
+                }
+                builder.append("  </redirect>\n");
+            }
+            else
+            {
+                builder.append("\"/>\n");
+            }
         }
         
         builder.append("</navigation-case>");
