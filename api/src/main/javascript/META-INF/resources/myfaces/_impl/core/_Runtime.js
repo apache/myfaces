@@ -25,6 +25,7 @@
  * d) utils methods to fetch the implementation
  * e) ajaxed script loading
  * f) global eval (because it is used internally)
+ * g) Structural base patterns as singleton, delegate and inheritance
  *
  * Note this class is self contained and must!!! be loaded
  * as absolute first class before going into anything else
@@ -52,6 +53,13 @@ if (!myfaces._impl.core._Runtime) {
          *
          * usage return this.globalEval('myvar.myvar2;');
          *
+         *
+         * Note some libraries like jquery use html head attachments
+         * to run the global eval, at least for loaded scripts
+         * this methid was flaky and failed on chrome under certain conditions,
+         * since our method works reliably in modern browsers currently in use
+         * we do it via eval, we still can switch to the head method
+         * if there are arguments why that one works better than ours
          */
         this.globalEval = function(code) {
             //chrome as a diferent global eval, thanks for pointing this out
@@ -117,7 +125,10 @@ if (!myfaces._impl.core._Runtime) {
 
             var ret = null;
             try {
-                ret = _this.globalEval("window." + nms);
+                if(!this.browser.isIE) {
+                    //in ie 6 and 7 we get an error entry despite the suppression
+                    ret = _this.globalEval("window." + nms);
+                }
                 //namespace could point to numeric or boolean hence full
                 //save check
 
@@ -193,11 +204,13 @@ if (!myfaces._impl.core._Runtime) {
                 if ('undefined' == typeof currNms[subNamespace]) {
                     currNms[subNamespace] = {};
                 }
-                if (cnt == entries.length - 1 && obj) {
+                if (cnt == entries.length - 1 && 'undefined' != typeof obj) {
                     currNms[subNamespace] = obj;
+                } else {
+                    currNms = currNms[subNamespace];
                 }
-                currNms = currNms[subNamespace];
             }
+            
 
             return true;
         };
@@ -259,11 +272,10 @@ if (!myfaces._impl.core._Runtime) {
          */
         this.getGlobalConfig = function(configName, defaultValue) {
             /*use(myfaces._impl._util)*/
-
-            if (_this.exists(myfaces, "config") && _this.exists(myfaces.config, configName)) {
-                return myfaces.config[configName];
-            }
-            return defaultValue;
+            return (_this.exists(myfaces, "config") && _this.exists(myfaces.config, configName)) ?
+                    myfaces.config[configName]
+                    :
+                    defaultValue;
         };
 
         /**
@@ -333,6 +345,8 @@ if (!myfaces._impl.core._Runtime) {
                     if (!defer) {
                         _this.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//@ sourceURL=" + src);
                     } else {
+                        //TODO not ideal we maybe ought to move to something else here
+                        //but since it is not in use yet, it is ok
                         setTimeout(function() {
                             _this.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
                         }, 1);
@@ -650,35 +664,6 @@ if (!myfaces._impl.core._Runtime) {
                 oldonload();
                 func();
             };
-        };
-
-        /**
-         * determines if the embedded scripts have to be evaled manually
-         * @return true if a browser combination is given which has to
-         * do a manual eval
-         * which is currently ie > 5.5, chrome, khtml, webkit safari
-         *
-         */
-        this.isManualScriptEval = function() {
-
-            var d = _this.browser;
-
-            return (_this.exists(d, "isIE") &&
-                    ( d.isIE > 5.5)) ||
-                    (_this.exists(d, "isKhtml") &&
-                            (d.isKhtml > 0)) ||
-                    (_this.exists(d, "isWebKit") &&
-                            (d.isWebKit > 0)) ||
-                    (_this.exists(d, "isSafari") &&
-                            (d.isSafari > 0));
-
-            //another way to determine this without direct user agent parsing probably could
-            //be to add an embedded script tag programmatically and check for the script variable
-            //set by the script if existing, the add went through an eval if not then we
-            //have to deal with it ourselves, this might be dangerous in case of the ie however
-            //so in case of ie we have to parse for all other browsers we can make a dynamic
-            //check if the browser does auto eval
-
         };
 
         //initial browser detection, we encapsule it in a closure

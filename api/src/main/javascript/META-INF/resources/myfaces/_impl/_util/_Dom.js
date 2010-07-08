@@ -59,14 +59,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         "onmouseup": true
     },
 
+    _Lang:myfaces._impl._util._Lang,
+
     /**
      * Run through the given Html item and execute the inline scripts
      * (IE doesn't do this by itself)
      * @param {|Node|} item
      */
     runScripts: function(item, xmlData) {
-        var execScrpt = myfaces._impl._util._Lang.hitch(this, function(item) {
-            if (item.tagName && item.tagName.toLowerCase() == 'script') {
+        var execScrpt = this._Lang.hitch(this, function(item) {
+            if (item.tagName && this._Lang.equalsIgnoreCase(item.tagName, "script")) {
                 var src = item.getAttribute('src');
                 if ('undefined' != typeof src
                         && null != src
@@ -79,7 +81,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                         myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
-                    var test = (!xmlData) ? item.text : myfaces._impl._util._Lang.serializeChilds(item);
+                    var test = (!xmlData) ? item.text : this._Lang.serializeChilds(item);
                     var go = true;
                     while (go) {
                         go = false;
@@ -143,8 +145,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (!markup) {
             throw Error("myfaces._impl._util._Dom.outerHTML: markup must be passed down");
         }
-        var _Lang = myfaces._impl._util._Lang;
-        markup = _Lang.trim(markup);
+
+        markup = this._Lang.trim(markup);
         if (markup !== "") {
             var evalNodes = null;
 
@@ -159,7 +161,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
             // and remove the old item
             //first we have to save the node newly insert for easier access in our eval part
-            if (myfaces._impl.core._Runtime.isManualScriptEval()) {
+            if (this.isManualScriptEval()) {
                 if (evalNodes.length) {
                     for (var cnt = 0; cnt < evalNodes.length; cnt++) {
                         this.runScripts(evalNodes[cnt]);
@@ -176,7 +178,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     },
 
     _outerHTMLCompliant: function(item, markup) {
-        var _Lang = myfaces._impl._util._Lang;
+
         var evalNodes = null;
         var range = document.createRange();
         range.setStartBefore(item);
@@ -195,14 +197,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             parentNode = item.parentNode;
 
             //evalNode = fragment.childNodes[0];
-            evalNodes = (fragment.childNodes) ? _Lang.objToArray(fragment.childNodes) : fragment;
+            evalNodes = (fragment.childNodes) ? this._Lang.objToArray(fragment.childNodes) : fragment;
             parentNode.replaceChild(fragment, item);
         }
         return evalNodes;
     },
 
     _outerHTMLNonCompliant: function(item, markup) {
-        var _Lang = myfaces._impl._util._Lang;
+
         var evalNodes = null;
         //now to the non w3c compliant browsers
         //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
@@ -254,12 +256,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param evalNodes the elements
      */
     replaceElement: function (item, evalNodes) {
-        var _Lang = myfaces._impl._util._Lang;
+
         var parentNode = item.parentNode;
 
         if ('undefined' != typeof evalNodes.length) {
             var oldNode = item;
-            var resultArr = _Lang.objToArray(evalNodes);
+            var resultArr = this._Lang.objToArray(evalNodes);
 
             for (var cnt = 0; cnt < resultArr.length; cnt++) {
                 if (cnt == 0) {
@@ -299,7 +301,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 //we can use the query selector here
                 var newItemId = itemId;
                 if (fragment.id && fragment.id === itemId) return fragment;
-                if (myfaces._impl._util._Lang.isString(newItemId)) {
+                if (this._Lang.isString(newItemId)) {
                     newItemId = newItemId.replace(/\./g, "\\.").replace(/:/g, "\\:");
                 }
 
@@ -328,7 +330,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param filter a filter closure which either returns true or false depending on triggering or not
      */
     findFirst : function(fragment, filter) {
-        myfaces._impl._util._Lang.assertType(filter, "function");
+        this._Lang.assertType(filter, "function");
 
         if (document.createTreeWalker && NodeFilter) {
             return this._iteratorFindFirst(fragment, filter);
@@ -400,15 +402,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param deepScan if set to true a deep scan is performed otherwise a shallow scan
      */
     findByTagNames: function(fragment, tagNames, deepScan) {
-        var _Lang = myfaces._impl._util._Lang;
+
 
         //shortcut for single components
-        if(!deepScan && tagNames[fragment.tagName.toLowerCase()]) {
+        if (!deepScan && tagNames[fragment.tagName.toLowerCase()]) {
             return fragment;
         }
 
         //shortcut elementsByTagName
-        if (deepScan && _Lang.exists(fragment, "getElementsByTagName")) {
+        if (deepScan && this._Lang.exists(fragment, "getElementsByTagName")) {
             var retArr = [];
             for (var key in tagNames) {
                 var foundElems = this.findByTagName(fragment, key, deepScan);
@@ -421,7 +423,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //no node type with child tags we can handle that without node type checking
             return null;
         }
-
 
         //now the filter function checks case insensitively for the tag names needed
         var filter = function(node) {
@@ -452,7 +453,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      *
      */
     findByTagName : function(fragment, tagName, deepScan) {
-        var _Lang = myfaces._impl._util._Lang;
+
+        //remapping to save a few bytes
+        var _Lang = this._Lang;
 
         deepScan = !!deepScan;
 
@@ -460,7 +463,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //via namespace array checking is safe
         if (deepScan && _Lang.exists(fragment, "getElementsByTagName")) {
             var ret = _Lang.objToArray(fragment.getElementsByTagName(tagName));
-            if (fragment.tagName && fragment.tagName.toLowerCase() == tagName.toLowerCase()) ret.unshift(fragment);
+            if (fragment.tagName && _Lang.equalsIgnoreCase(fragment.tagName, tagName)) ret.unshift(fragment);
             return ret;
         } else if (deepScan) {
             //no node type with child tags we can handle that without node type checking
@@ -485,7 +488,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     },
 
     findByName : function(fragment, name, deepScan) {
-        var _Lang = myfaces._impl._util._Lang;
+        var _Lang = this._Lang;
         var filter = function(node) {
             return  node.name && _Lang.equalsIgnoreCase(node.name, name);
         };
@@ -534,8 +537,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param deepScan if set to true a deep scan can be performed
      */
     findByStyleClass : function(fragment, styleClass, deepScan) {
-        var _Lang = myfaces._impl._util._Lang;
-        var filter = _Lang.hitch(this, function(node) {
+        var filter = this._Lang.hitch(this, function(node) {
             var classes = this.getClasses(node);
             var len = classes.length;
             if (len == 0) return false;
@@ -560,13 +562,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
              //have the getElementsByClassName implemented
              //but only for deep scan and normal parent nodes
              else */
-            if (_Lang.exists(fragment, "querySelectorAll") && deepScan) {
+            if (this._Lang.exists(fragment, "querySelectorAll") && deepScan) {
                 try {
                     var result = fragment.querySelectorAll("." + styleClass.replace(/\./g, "\\."));
 
                     if (fragment.nodeType == 1 && filter(fragment)) {
                         result = (result == null) ? [] : result;
-                        result = _Lang.objToArray(result);
+                        result = this._Lang.objToArray(result);
                         result.push(fragment);
                     }
                     return result;
@@ -582,7 +584,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         } finally {
             //the usual IE6 is broken, fix code
             filter = null;
-            _Lang = null;
+
         }
     }
     ,
@@ -596,8 +598,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param deepScan if set to true or not set at all a deep scan is performed (for form scans it does not make much sense to deeply scan)
      */
     findAll : function(rootNode, filter, deepScan) {
-        var _Lang = myfaces._impl._util._Lang;
-        _Lang.assertType(filter, "function");
+        this._Lang.assertType(filter, "function");
         deepScan = !!deepScan;
 
         if (document.createTreeWalker && NodeFilter) {
@@ -728,7 +729,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             node.setAttribute(attr, val);
             return;
         }
-        var _Lang = myfaces._impl._util._Lang;
+
         /*
          Now to the broken browsers IE6+.... ie7 and ie8 quirks mode
 
@@ -780,11 +781,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //to quirks mode of ie anyway we can live with the standard html4/xhtml
             //ie supported events
             if (this.IE_QUIRKS_EVENTS[attr]) {
-                if (_Lang.isString(attr)) {
+                if (this._Lang.isString(attr)) {
                     //event resolves to window.event in ie
                     node.setAttribute(attr, function() {
                         //event implicitly used
-                        return _Lang.globalEval(val);
+                        return this._Lang.globalEval(val);
                     });
                 }
             } else {
@@ -808,8 +809,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      *
      */
     getElementFromForm : function(nameId, form, nameSearch, localOnly) {
-        var _Lang = myfaces._impl._util._Lang;
-
         if (!nameId) {
             throw Error("_Dom.getElementFromForm an item id or name must be given");
         }
@@ -822,7 +821,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var isLocalSearchOnly = !!localOnly;
 
         //we first check for a name entry!
-        if (isNameSearch && _Lang.exists(form, "elements." + nameId)) {
+        if (isNameSearch && this._Lang.exists(form, "elements." + nameId)) {
             return form.elements[nameId];
         }
 
@@ -881,6 +880,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             return null;
         }
 
+
         // This will not work well on portlet case, because we cannot be sure
         // the returned form is right one.
         //we can cover that case by simply adding one of our config params
@@ -892,10 +892,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (!elem) {
             return null;
         }
-        var _Lang = myfaces._impl._util._Lang;
 
         //before going into the more complicated stuff we try the simple approach
-        if (!_Lang.isString(elem)) {
+        if (!this._Lang.isString(elem)) {
+            //element of type form then we are already
+            //at form level for the issuing element
+            //https://issues.apache.org/jira/browse/MYFACES-2793
+            if (this._Lang.equalsIgnoreCase(elem.tagName, "form")) {
+                return elem;
+            }
             return this.getParent(elem, "form");
         }
 
@@ -950,7 +955,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             throw Error("myfaces._impl._util._Dom.getParent: item must be set");
         }
 
-        var _Lang = myfaces._impl._util._Lang;
+        var _Lang = this._Lang;
         var searchClosure = function(parentItem) {
             return parentItem && parentItem.tagName
                     && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
@@ -1022,10 +1027,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @Deprecated
      */
     getChild: function(item, childName, itemName) {
+        var _Lang = this._Lang;
 
         function filter(node) {
             return node.tagName
-                    && node.tagName.toLowerCase() == childName
+                    && _Lang.equalsIgnoreCase(node.tagName, childName)
                     && (!itemName || (itemName && itemName == node.getAttribute("name")));
 
         }
@@ -1137,11 +1143,73 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             cDataBlock.push(node.childNodes[i].data);
         }
         return cDataBlock.join('');
-    }
-    ,
+    },
+
+    isManualScriptEval: function() {
+
+        if (!this._Lang.exists(myfaces, "config._autoeval")) {
+            var _Browser = myfaces._impl.core._Runtime.browser;
+            //now we rely on the document being processed if called for the first time
+            var evalDiv = document.createElement("div");
+            this._Lang.reserveNamespace("myfaces.config._autoeval");
+            //null not swallowed
+            myfaces.config._autoeval = false;
+            
+            var markup = "<script type='text/javascript'> myfaces.config._autoeval = true; </script>";
+            //now we rely on the same replacement mechanisms as outerhtml because
+            //some browsers have different behavior of embedded scripts in the contextualfragment
+            //or innerhtml case (opera for instance), this way we make sure the
+            //eval detection is covered correctly
+            this.setAttribute(evalDiv, "style","display:none");
+
+            //it is less critical in some browsers (old ie versions)
+            //to append as first element than as last
+            //it should not make any difference layoutwise since we are on display none anyway.
+            if(document.body.childNodes.length > 0) {
+                document.body.insertBefore( evalDiv, document.body.firstChild);
+            } else {
+                document.body.appendChild( evalDiv );
+            }
+
+            //we remap it into a real boolean value
+            if (window.Range
+                    && typeof Range.prototype.createContextualFragment == 'function') {
+                this._outerHTMLCompliant(evalDiv, markup);
+            } else {
+                this._outerHTMLNonCompliant(evalDiv, markup);
+            }
+
+        }
+
+        return  !myfaces.config._autoeval;
+        /* var d = _this.browser;
+
+
+         return (_this.exists(d, "isIE") &&
+         ( d.isIE > 5.5)) ||
+         //firefox at version 4 beginning has dropped
+         //auto eval to be compliant with the rest
+         (_this.exists(d, "isFF") &&
+         (d.isFF > 3.9)) ||
+         (_this.exists(d, "isKhtml") &&
+         (d.isKhtml > 0)) ||
+         (_this.exists(d, "isWebKit") &&
+         (d.isWebKit > 0)) ||
+         (_this.exists(d, "isSafari") &&
+         (d.isSafari > 0));
+         */
+        //another way to determine this without direct user agent parsing probably could
+        //be to add an embedded script tag programmatically and check for the script variable
+        //set by the script if existing, the add went through an eval if not then we
+        //have to deal with it ourselves, this might be dangerous in case of the ie however
+        //so in case of ie we have to parse for all other browsers we can make a dynamic
+        //check if the browser does auto eval
+
+    },
+
 
     byId: function(id) {
-        return myfaces._impl._util._Lang.byId(id);
+        return this._Lang.byId(id);
     }
 })
         ;
