@@ -173,9 +173,9 @@ public class ApplicationImpl extends Application
 
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
-    private Map<String, String> _defaultValidatorsIds = new ConcurrentHashMap<String, String>();
+    private final Map<String, String> _defaultValidatorsIds = new HashMap<String, String>();
     
-    private Map<String, String> _cachedDefaultValidatorsIds = null;
+    private volatile Map<String, String> _cachedDefaultValidatorsIds = null;
     
     private final Map<String, Object> _behaviorClassMap = new ConcurrentHashMap<String, Object>();
 
@@ -287,9 +287,13 @@ public class ApplicationImpl extends Application
             
             //otherwise validatorClass is an object of type Class<?>
             className = ((Class<?>)validatorClass).getName();
-                
-            _defaultValidatorsIds.put(validatorId, className);
-            _cachedDefaultValidatorsIds = null;
+            
+            // Ensure atomicity between _defaultValidatorsIds and _cachedDefaultValidatorsIds
+            synchronized(_defaultValidatorsIds)
+            {
+                _defaultValidatorsIds.put(validatorId, className);
+                _cachedDefaultValidatorsIds = null;
+            }
         }
     }
 
@@ -298,7 +302,13 @@ public class ApplicationImpl extends Application
     {
         if (_cachedDefaultValidatorsIds == null)
         {
-            _cachedDefaultValidatorsIds = Collections.unmodifiableMap(_defaultValidatorsIds); 
+            synchronized(_defaultValidatorsIds)
+            {
+                if (_cachedDefaultValidatorsIds == null)
+                {
+                    _cachedDefaultValidatorsIds = Collections.unmodifiableMap(_defaultValidatorsIds);
+                }
+            }
         }
         return _cachedDefaultValidatorsIds;
     }
