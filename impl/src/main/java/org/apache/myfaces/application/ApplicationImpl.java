@@ -187,7 +187,7 @@ public class ApplicationImpl extends Application
 
     private ProjectStage _projectStage;
 
-    private boolean _firstRequestProcessed = false;
+    private volatile boolean _firstRequestProcessed = false;
     
     private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap = new HashMap<Class<?>, List<ListenerFor>>() ;
     private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap = new HashMap<Class<?>, List<ResourceDependency>>() ;

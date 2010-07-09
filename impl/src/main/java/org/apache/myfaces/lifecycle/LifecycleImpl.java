@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,16 +57,38 @@ public class LifecycleImpl extends Lifecycle
      */
     public static final String FIRST_REQUEST_PROCESSED_PARAM = "org.apache.myfaces.lifecycle.first.request.processed";
     
-    private PhaseExecutor[] lifecycleExecutors;
-    private PhaseExecutor renderExecutor;
+    private final PhaseExecutor[] lifecycleExecutors;
+    private final PhaseExecutor renderExecutor;
 
-    private final List<PhaseListener> _phaseListenerList = new ArrayList<PhaseListener>();
+    /**
+     * Initially, for ensure thread safety we used synchronization blocks and a cached 
+     * _phaseListenerArray and that works. The intention is ensure atomicity between
+     * _phaseListenerList and _phaseListenerArray, but thinking more about it use
+     * CopyOnWriteArrayList and do not use _phaseListenerArray is a lot better. 
+     * 
+     * Most times, we have few instances of PhaseListener registered, so the advantage of 
+     * use _phaseListenerArray is overcome by do not have a synchronization block on getPhaseListeners().
+     * Additionally, it is more often to perform traversals than insertions/removals and 
+     * we can expect only 2 calls for getPhaseListeners() per request (so only two copy 
+     * operations of a very small list).
+     */
+    private final List<PhaseListener> _phaseListenerList = new CopyOnWriteArrayList<PhaseListener>(); // new ArrayList();
 
-    private boolean _firstRequestProcessed = false;
+    /**
+     * This variable should be marked as volatile to ensure all threads can see it
+     * after the first request is processed. Note that LifecycleImpl instance could be
+     * shared by multiple requests at the same time, so this is relevant to prevent
+     * multiple updates to FIRST_REQUEST_PROCESSED_PARAM. Really since the value
+     * only changes from false to true, have a racy single check here does not harm, but
+     * note in this case the semantic of the variable must be preserved.
+     */
+    private volatile boolean _firstRequestProcessed = false;
     /**
      * Lazy cache for returning _phaseListenerList as an Array.
+     * 
+     * Replaced by _phaseListenerList CopyOnWriteArrayList
      */
-    private PhaseListener[] _phaseListenerArray = null;
+    //private PhaseListener[] _phaseListenerArray = null;
 
     public LifecycleImpl()
     {
@@ -292,11 +314,11 @@ public class LifecycleImpl extends Lifecycle
         {
             throw new NullPointerException("PhaseListener must not be null.");
         }
-        synchronized (_phaseListenerList)
-        {
+        //synchronized (_phaseListenerList)
+        //{
             _phaseListenerList.add(phaseListener);
-            _phaseListenerArray = null; // reset lazy cache array
-        }
+            //_phaseListenerArray = null; // reset lazy cache array
+        //}
     }
 
     @Override
@@ -306,25 +328,26 @@ public class LifecycleImpl extends Lifecycle
         {
             throw new NullPointerException("PhaseListener must not be null.");
         }
-        synchronized (_phaseListenerList)
-        {
+        //synchronized (_phaseListenerList)
+        //{
             _phaseListenerList.remove(phaseListener);
-            _phaseListenerArray = null; // reset lazy cache array
-        }
+            //_phaseListenerArray = null; // reset lazy cache array
+        //}
     }
 
     @Override
     public PhaseListener[] getPhaseListeners()
     {
-        synchronized (_phaseListenerList)
-        {
+        //synchronized (_phaseListenerList)
+        //{
             // (re)build lazy cache array if necessary
-            if (_phaseListenerArray == null)
-            {
-                _phaseListenerArray = _phaseListenerList.toArray(new PhaseListener[_phaseListenerList.size()]);
-            }
-            return _phaseListenerArray;
-        }
+            //if (_phaseListenerArray == null)
+            //{
+            //    _phaseListenerArray = _phaseListenerList.toArray(new PhaseListener[_phaseListenerList.size()]);
+            //}
+            //return _phaseListenerArray;
+        //}
+        return _phaseListenerList.toArray(new PhaseListener[_phaseListenerList.size()]);
     }
     
     private void publishException (Throwable e, PhaseId phaseId, FacesContext facesContext)
@@ -345,11 +368,15 @@ public class LifecycleImpl extends Lifecycle
     {
         if(!_firstRequestProcessed)
         {
-            _firstRequestProcessed = true;
-
+            // The order here is important. First it is necessary to put
+            // the value on application map before change the value here.
+            // If multiple threads reach this point concurrently, the
+            // variable will be written on the application map at the same
+            // time but always with the same value.
             facesContext.getExternalContext().getApplicationMap()
-                    .put(FIRST_REQUEST_PROCESSED_PARAM, Boolean.TRUE);
+                .put(FIRST_REQUEST_PROCESSED_PARAM, Boolean.TRUE);
+            
+            _firstRequestProcessed = true;
         }        
     }
-
 }
