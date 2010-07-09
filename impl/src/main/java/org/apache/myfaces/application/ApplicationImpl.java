@@ -300,7 +300,12 @@ public class ApplicationImpl extends Application
     @Override
     public Map<String, String> getDefaultValidatorInfo()
     {
-        if (_cachedDefaultValidatorsIds == null)
+        // cachedMap ensures we will not return null if after the check for null
+        // _cachedDefaultValidatorsIds is set to null. In theory the unmodifiable map
+        // always has a reference to _defaultValidatorsIds, so any instance set
+        // in _cachedDefaultValidatorsIds is always the same.
+        Map<String, String> cachedMap = _cachedDefaultValidatorsIds;
+        if (cachedMap == null)
         {
             synchronized(_defaultValidatorsIds)
             {
@@ -308,9 +313,10 @@ public class ApplicationImpl extends Application
                 {
                     _cachedDefaultValidatorsIds = Collections.unmodifiableMap(_defaultValidatorsIds);
                 }
+                cachedMap = _cachedDefaultValidatorsIds;
             }
         }
-        return _cachedDefaultValidatorsIds;
+        return cachedMap;
     }
 
     @Override
