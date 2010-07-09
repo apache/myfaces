@@ -751,7 +751,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             {
                 if (pair.getKey() != null && pair.getKey().trim().length() != 0)
                 {
-                    paramMap.put(pair.getKey(), pair.getValue());
+                    paramMap.put(pair.getKey(), _evaluateValueExpressions(pair.getValue()));
                 }
             }
         }
@@ -799,6 +799,37 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         }
 
         return newUrl.toString();
+    }
+    
+    /**
+     * Checks the Strings in the List for EL expressions and evaluates them.
+     * Note that the returned List will be a copy of the given List, because
+     * otherwise it will have unwanted side-effects.
+     * @param values
+     * @return
+     */
+    private List<String> _evaluateValueExpressions(List<String> values)
+    {
+        // note that we have to create a new List here, because if we
+        // change any value on the given List, it will be changed in the
+        // NavigationCase too and the EL expression won't be evaluated again
+        List<String> target = new ArrayList<String>(values.size());
+        FacesContext context = FacesContext.getCurrentInstance();
+        for (String value : values)
+        {
+            if (_isExpression(value))
+            {
+                // evaluate the ValueExpression
+                value = context.getApplication().evaluateExpressionGet(context, value, String.class);
+            }
+            target.add(value);
+        }
+        return target;
+    }
+    
+    private boolean _isExpression(String text)
+    {
+        return text.indexOf("#{") != -1;
     }
     
     /**
