@@ -240,7 +240,7 @@ public class FaceletViewHandler extends ViewHandler
         FacesContext ctx = FacesContext.getCurrentInstance();
         long refreshPeriod;
         
-        if(ctx.getApplication().getProjectStage().equals(ProjectStage.Production))
+        if(ctx.isProjectStage(ProjectStage.Production))
             refreshPeriod = DEFAULT_REFRESH_PERIOD_PRODUCTION;
         else
             refreshPeriod = DEFAULT_REFRESH_PERIOD;

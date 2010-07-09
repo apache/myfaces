@@ -1354,7 +1354,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         // refresh period
         long refreshPeriod;
-        if(context.getApplication().getProjectStage().equals(ProjectStage.Production))
+        if(context.isProjectStage(ProjectStage.Production))
             refreshPeriod = _getLongParameter(eContext, PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED, DEFAULT_REFRESH_PERIOD_PRODUCTION);
         else
             refreshPeriod = _getLongParameter(eContext, PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED, DEFAULT_REFRESH_PERIOD);

@@ -83,13 +83,12 @@ public class LifecycleImpl extends Lifecycle
         try
         {
             // check for updates of web.xml and faces-config descriptors 
-            // only on a first request or if project state is not production
-            if(!_firstRequestProcessed || !facesContext.getApplication().getProjectStage().equals(ProjectStage.Production) )
+            // only if project state is not production
+            if(!facesContext.isProjectStage(ProjectStage.Production))
             {
                 WebXml.update(facesContext.getExternalContext());
                 new FacesConfigurator(facesContext.getExternalContext()).update();
             }
-            
             
             PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
             for (PhaseExecutor executor : lifecycleExecutors)
