@@ -613,7 +613,13 @@ public class NavigationHandlerImpl
         {   
             if(configCase.getRedirect() != null)
             {
-                apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),configCase.getRedirect().getViewParams(),true,configCase.getRedirect().isIncludeViewParams()));
+                String includeViewParamsAttribute = configCase.getRedirect().getIncludeViewParams();
+                boolean includeViewParams = false; // default value is false
+                if (includeViewParamsAttribute != null)
+                {
+                    includeViewParams = new Boolean(includeViewParamsAttribute);
+                }
+                apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),configCase.getRedirect().getViewParams(),true,includeViewParams));
             }
             else
             {

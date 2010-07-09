@@ -25,5 +25,5 @@ import java.util.Map;
 public interface Redirect
 {
     public Map<String, List<String>> getViewParams();
-    public boolean isIncludeViewParams();
+    public String getIncludeViewParams();
 }

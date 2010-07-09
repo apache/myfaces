@@ -29,8 +29,7 @@ import org.apache.myfaces.config.impl.digester.elements.ViewParam;
 public class Redirect implements org.apache.myfaces.config.element.Redirect
 {
     private Map<String,List<String>> viewParams = new HashMap<String,List<String>>();
-    private boolean includeViewParams = true;
-    
+    private String includeViewParams;     
     
     public void addViewParam(ViewParam viewParam)
     {
@@ -49,14 +48,14 @@ public class Redirect implements org.apache.myfaces.config.element.Redirect
         return viewParams;
     }
 
-    public void setIncludeViewParams(String includeViewParams)
-    {
-        this.includeViewParams = new Boolean (includeViewParams);
-    }
-    
-    public boolean isIncludeViewParams()
+    public String getIncludeViewParams()
     {
         return includeViewParams;
     }
 
+    public void setIncludeViewParams(String includeViewParams)
+    {
+        this.includeViewParams = includeViewParams;
+    }
+    
 }
