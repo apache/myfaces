@@ -50,7 +50,7 @@ public final class MetaRulesetImpl extends MetaRuleset
     //private final static Logger log = Logger.getLogger("facelets.tag.meta");
     private final static Logger log = Logger.getLogger(MetaRulesetImpl.class.getName());
 
-    private final static WeakHashMap<String, MetadataTarget> _metadata = new WeakHashMap<String, MetadataTarget>();
+    private final static WeakHashMap<Class<?>, MetadataTarget> _metadata = new WeakHashMap<Class<?>, MetadataTarget>();
 
     private final Map<String, TagAttribute> _attributes;
 
@@ -181,9 +181,7 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     private final MetadataTarget _getMetadataTarget()
     {
-        String key = _type.getName();
-
-        MetadataTarget meta = _metadata.get(key);
+        MetadataTarget meta = _metadata.get(_type);
         if (meta == null)
         {
             try
@@ -195,7 +193,7 @@ public final class MetaRulesetImpl extends MetaRuleset
                 throw new TagException(_tag, "Error Creating TargetMetadata", e);
             }
 
-            _metadata.put(key, meta);
+            _metadata.put(_type, meta);
         }
 
         return meta;
