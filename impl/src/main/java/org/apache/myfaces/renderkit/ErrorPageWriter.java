@@ -71,6 +71,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 
@@ -279,7 +280,7 @@ public final class ErrorPageWriter
             {
                 if (view != null)
                 {
-                    _writeComponent(writer, view, _getErrorId(e));
+                    _writeComponent(faces, writer, view, _getErrorId(e));
                 }
             }
             else if ("vars".equals(ERROR_PARTS[i]))
@@ -320,7 +321,7 @@ public final class ErrorPageWriter
             }
             else if ("tree".equals(DEBUG_PARTS[i]))
             {
-                _writeComponent(writer, faces.getViewRoot(), null);
+                _writeComponent(faces, writer, faces.getViewRoot(), null);
             }
             else if ("extendedtree".equals(DEBUG_PARTS[i]))
             {
@@ -611,7 +612,7 @@ public final class ErrorPageWriter
         writer.write("</tbody></table>");
     }
 
-    private static void _writeComponent(Writer writer, UIComponent c, List<String> highlightId) throws IOException
+    private static void _writeComponent(FacesContext faces, Writer writer, UIComponent c, List<String> highlightId) throws IOException
     {
         writer.write("<dl><dt");
         if (_isText(c))
@@ -633,7 +634,16 @@ public final class ErrorPageWriter
 
         boolean hasChildren = c.getChildCount() > 0 || c.getFacets().size() > 0;
 
+        int stateSize = 0;
+
+        Object state = c.saveState(faces);
+        if (state != null)
+        {
+            byte[] stateBytes = StateUtils.getAsByteArray(state, faces.getExternalContext());
+            stateSize = stateBytes.length;
+        }
         _writeStart(writer, c, hasChildren, true);
+        writer.write(" - State size:" + stateSize + " bytes");
         writer.write("</dt>");
         if (hasChildren)
         {
@@ -645,7 +655,7 @@ public final class ErrorPageWriter
                     writer.write("<span>");
                     writer.write(entry.getKey());
                     writer.write("</span>");
-                    _writeComponent(writer, entry.getValue(), highlightId);
+                    _writeComponent(faces, writer, entry.getValue(), highlightId);
                     writer.write("</dd>");
                 }
             }
@@ -654,7 +664,7 @@ public final class ErrorPageWriter
                 for (UIComponent child : c.getChildren())
                 {
                     writer.write("<dd>");
-                    _writeComponent(writer, child, highlightId);
+                    _writeComponent(faces, writer, child, highlightId);
                     writer.write("</dd>");
                 }
             }
