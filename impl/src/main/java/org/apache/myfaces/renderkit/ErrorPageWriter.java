@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -219,8 +220,10 @@ public final class ErrorPageWriter
      * creating the extended component tree is saved under this key in the component's
      * attribute map.
      */
-    private static final String VISITED_FACET_COUNT_KEY = "org.apache.myfaces.debug.VISITED_FACET_COUNT";
-    
+    //private static final String VISITED_FACET_COUNT_KEY = "org.apache.myfaces.debug.VISITED_FACET_COUNT";
+
+    private static final Map<UIComponent, Integer> visitedFacetCount = new HashMap<UIComponent, Integer>();
+
     /**
      * Indicate if myfaces is responsible to handle errors. 
      * See http://wiki.apache.org/myfaces/Handling_Server_Errors for details. 
@@ -972,7 +975,7 @@ public final class ErrorPageWriter
     
     private static int _getVisitedFacetCount(UIComponent component)
     {
-        Integer count = (Integer) component.getAttributes().get(VISITED_FACET_COUNT_KEY);
+        Integer count = visitedFacetCount.get(component);
         if (count != null)
         {
             return count;
@@ -982,13 +985,12 @@ public final class ErrorPageWriter
     
     private static void _incrementVisitedFacetCount(UIComponent component)
     {
-        component.getAttributes().put(VISITED_FACET_COUNT_KEY, 
-                _getVisitedFacetCount(component) + 1);
+        visitedFacetCount.put(component, _getVisitedFacetCount(component) + 1);
     }
     
     private static void _removeVisitedFacetCount(UIComponent component)
     {
-        component.getAttributes().remove(VISITED_FACET_COUNT_KEY);
+        visitedFacetCount.remove(component);
     }
 
     private static void _writeEnd(Writer writer, UIComponent c) throws IOException
