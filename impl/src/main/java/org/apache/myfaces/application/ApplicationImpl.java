@@ -142,6 +142,11 @@ public class ApplicationImpl extends Application
             since="2.0")
     private static final String PROJECT_STAGE_PARAM_NAME = "javax.faces.PROJECT_STAGE";
 
+    @JSFWebConfigParam(defaultValue="true",since="2.0")
+    private static final String LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME = "org.apache.myfaces.LAZY_LOAD_CONFIG_OBJECTS";
+    private static final boolean LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE = true;
+    private Boolean _lazyLoadConfigObjects = null;
+    
     // ~ Instance fields
     // --------------------------------------------------------------------------
     // --
@@ -956,7 +961,11 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _behaviorClassMap.put(behaviorId, behaviorClass);
+            if(isLazyLoadConfigObjects())
+                _behaviorClassMap.put(behaviorId, behaviorClass);
+            else
+                _behaviorClassMap.put(behaviorId, ClassUtils.simpleClassForName(behaviorClass));
+            
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Behavior class = " + behaviorClass + " for id = " + behaviorId);
         }
@@ -977,7 +986,11 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _componentClassMap.put(componentType, componentClassName);
+            if(isLazyLoadConfigObjects())
+                _componentClassMap.put(componentType, componentClassName);
+            else
+                _componentClassMap.put(componentType, ClassUtils.simpleClassForName(componentClassName));
+            
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Component class = " + componentClassName + " for type = " + componentType);
         }
@@ -997,7 +1010,10 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _converterIdToClassMap.put(converterId, converterClass);
+            if(isLazyLoadConfigObjects())
+                _converterIdToClassMap.put(converterId, converterClass);
+            else
+                _converterIdToClassMap.put(converterId, ClassUtils.simpleClassForName(converterClass));
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Converter id = " + converterId + " converterClass = " + converterClass);
         }
@@ -1047,7 +1063,11 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _validatorClassMap.put(validatorId, validatorClass);
+            if(isLazyLoadConfigObjects())
+                _validatorClassMap.put(validatorId, validatorClass);
+            else
+                _validatorClassMap.put(validatorId, ClassUtils.simpleClassForName(validatorClass));
+            
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Validator id = " + validatorId + " class = " + validatorClass);
         }
@@ -2237,5 +2257,14 @@ public class ApplicationImpl extends Application
         //object stored in the map for this id is an invalid type.  remove it and return null
         classMap.remove(id);
         return null;        
+    }
+    
+    private boolean isLazyLoadConfigObjects(){
+        if (_lazyLoadConfigObjects == null)
+        {
+            String configParam = getFaceContext().getExternalContext().getInitParameter(LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME);
+            _lazyLoadConfigObjects =  configParam == null ? LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE : Boolean.parseBoolean(configParam);
+        }
+        return _lazyLoadConfigObjects;
     }
 }
