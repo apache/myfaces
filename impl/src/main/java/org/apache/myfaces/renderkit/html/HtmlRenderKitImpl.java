@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.ClientBehaviorRenderer;
@@ -38,6 +39,7 @@ import javax.faces.render.Renderer;
 import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderKit;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 
@@ -225,7 +227,9 @@ public class HtmlRenderKitImpl extends RenderKit
             characterEncoding = HtmlRendererUtils.DEFAULT_CHAR_ENCODING;
         }
 
-        return new HtmlResponseWriterImpl(writer, selectedContentType, characterEncoding);
+        return new HtmlResponseWriterImpl(writer, selectedContentType, characterEncoding, 
+                MyfacesConfig.getCurrentInstance(
+                        FacesContext.getCurrentInstance().getExternalContext()).isWrapScriptContentWithXmlCommentTag());
     }
 
     @Override
