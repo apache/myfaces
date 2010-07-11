@@ -29,6 +29,7 @@ import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.view.facelets.el.ELText;
 
 /**
@@ -228,7 +229,14 @@ final class TextUnit extends CompilationUnit
     {
         Tag tag = (Tag) this.tags.pop();
 
-        this.addInstruction(new EndElementInstruction(tag.getQName()));
+        if (HTML.BODY_ELEM.equalsIgnoreCase(tag.getQName()))
+        {
+            this.addInstruction(new BodyEndElementInstruction(tag.getQName()));
+        }
+        else
+        {
+            this.addInstruction(new EndElementInstruction(tag.getQName()));            
+        }
 
         if (this.startTagOpen)
         {

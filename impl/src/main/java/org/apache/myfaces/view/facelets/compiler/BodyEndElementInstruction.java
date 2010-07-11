@@ -22,19 +22,28 @@ import java.io.IOException;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 
-final class EndElementInstruction implements Instruction
+import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
+
+final class BodyEndElementInstruction implements Instruction
 {
     private final String element;
 
-    public EndElementInstruction(String element)
+    public BodyEndElementInstruction(String element)
     {
         this.element = element;
     }
 
     public void write(FacesContext context) throws IOException
     {
+        // render all unhandled FacesMessages when ProjectStage is Development
+        if (context.isProjectStage(ProjectStage.Development))
+        {
+            HtmlRendererUtils.renderUnhandledFacesMessages(context);
+        }
+        
         context.getResponseWriter().endElement(this.element);
     }
 
