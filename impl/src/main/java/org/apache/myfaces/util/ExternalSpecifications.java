@@ -76,7 +76,7 @@ public final class ExternalSpecifications
                     }
                     catch (Throwable t)
                     {
-                        log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
+                        //log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
                         beanValidationAvailable = false;
                     }
                 }
@@ -116,7 +116,7 @@ public final class ExternalSpecifications
             }
             catch (Throwable t)
             {
-                log.log(Level.FINE, "Error loading class (could be normal)", t);
+                //log.log(Level.FINE, "Error loading class (could be normal)", t);
                 unifiedELAvailable = false;
             }
 
