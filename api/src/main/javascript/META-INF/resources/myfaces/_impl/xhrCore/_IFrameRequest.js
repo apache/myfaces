@@ -89,6 +89,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
 
         var request = {};
         try {
+            //Derived from the YUI library, looking this up saved me some time
             request.responseText = this._frame.contentWindow.document.body ? this._frame.contentWindow.document.body.innerHTML : this._frame.contentWindow.document.documentElement.textContent;
             request.responseXML = this._frame.contentWindow.document.XMLDocument ? this._frame.contentWindow.document.XMLDocument : this._frame.contentWindow.document;
 
