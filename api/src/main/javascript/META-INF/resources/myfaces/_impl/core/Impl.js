@@ -250,8 +250,23 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             delete passThrgh.myfaces;
         }
 
-        this._transport.xhrQueuedPost(elem, form, context, passThrgh);
-
+        /**
+         * multiple transports upcoming jsf 2.1 feature currently allowed
+         * default (no value) xhrQueuedPost
+         *
+         * xhrQueuedPost
+         * xhrPost
+         * xhrGet
+         * xhrQueuedGet
+         * iframePost
+         * iframeQueuedPost
+         *
+         */
+        var transportType = myfaces._impl.core._Runtime.getLocalOrGlobalConfig(context, "transportType", "xhrQueuedPost");
+        if (!this._transport[transportType]) {
+            throw new Error("Transport type " + transportType + " does not exist");
+        }
+        this._transport[transportType](elem, form, context, passThrgh);
     },
 
     addOnError : function(/*function*/errorListener) {
@@ -351,9 +366,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
                     }
                 };
 
-                eventData.responseCode = getValue (request, "status");
-                eventData.responseText = getValue (request, "responseText");
-                eventData.responseXML = getValue (request, "responseXML");
+                eventData.responseCode = getValue(request, "status");
+                eventData.responseText = getValue(request, "responseText");
+                eventData.responseXML = getValue(request, "responseXML");
 
             } catch (e) {
                 var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);

@@ -188,6 +188,12 @@ if (!myfaces._impl.core._Runtime) {
          *
          * reserves a namespace and if not already registered directly applies the function the namespace
          *
+         * note for now the reserved namespaces reside as global maps justl like jsf.js but
+         * we also use a speedup index which is kept internally to reduce the number of evals or loops to walk through those
+         * namespaces (eval is a heavy operation and loops even only for namespace resolution introduce (O)2 runtime
+         * complexity while a simple map lookup is (O)log n with additional speedup from the engine.
+         *
+         *
          * @param {|String|} nms
          * @returns true if it was not provided
          * false otherwise for further action
@@ -676,9 +682,9 @@ if (!myfaces._impl.core._Runtime) {
          * @param func the function which should be added to the load
          * chain (note we cannot rely on return values here, hence jsf.util.chain will fail)
          */
-        this.addOnLoad = function(func) {
-            var oldonload = window.onload;
-            window.onload = (!this.assertType(window.onload, "function")) ? func : function() {
+        this.addOnLoad = function(target, func) {
+            var oldonload = target.onload;
+            target.onload = (!this.assertType(window.onload, "function")) ? func : function() {
                 oldonload();
                 func();
             };

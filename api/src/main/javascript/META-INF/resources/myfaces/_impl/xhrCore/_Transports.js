@@ -28,6 +28,12 @@
  * transport.xhrQueuedPost
  *
  * or transport.xhrPost,transport.xhrGet  etc... in the future
+ *
+ * Note we have taken a pattern lesson or two from the dojo toolkit and its excellent handling
+ * of transports by our patterns here (which is mainly a centralized transport singleton which routes
+ * to different transport implementations and the auto passing of parameters into their
+ * corresponding protected attributes on class level in the transports themselves)
+ *
  */
 /** @namespace myfaces._impl.xhrCore._Transports */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
@@ -60,6 +66,22 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
 
 
     /**
+     * a simple not enqueued xhr post
+     *
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param {Node} source the source of this call
+     * @param {Node} sourceForm the html form which is the source of this call
+     * @param {Object} context (Map) the internal pass through context
+     * @param {Object} passThrgh (Map) values to be passed through
+     **/
+    xhrPost : function(source, sourceForm, context, passThrgh) {
+        (new myfaces._impl.xhrCore._AjaxRequest(this._getArguments(source, sourceForm, context, passThrgh))).send();
+    },
+
+    /**
+     * xhr post with enqueuing as defined by the jsf 2.0 specification
+     *
      * mapped options already have the exec and view properly in place
      * myfaces specifics can be found under mappedOptions.myFaces
      * @param {Node} source the source of this call
@@ -71,6 +93,124 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         this._q.enqueue(
                 new myfaces._impl.xhrCore._AjaxRequest(this._getArguments(source, sourceForm, context, passThrgh)));
     },
+
+    /**
+     * xhr get without enqueuing
+     *
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param {Node} source the source of this call
+     * @param {Node} sourceForm the html form which is the source of this call
+     * @param {Object} context (Map) the internal pass through context
+     * @param {Object} passThrgh (Map) values to be passed through
+     **/
+    xhrGet : function(source, sourceForm, context, passThrgh) {
+        var args = this._getArguments(source, sourceForm, context, passThrgh);
+        // note in get the timeout is not working delay however is and queue size as well
+        // since there are no cross browser ways to resolve a timeout on xhr level
+        // we have to live with it
+        args.ajaxType = "GET";
+        (new myfaces._impl.xhrCore._AjaxRequest(args)).send();
+    },
+
+    /**
+     * xhr get which takes the existing queue into consideration to by synchronized
+     * to previous queued post requests
+     *
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param {Node} source the source of this call
+     * @param {Node} sourceForm the html form which is the source of this call
+     * @param {Object} context (Map) the internal pass through context
+     * @param {Object} passThrgh (Map) values to be passed through
+     **/
+    xhrQueuedGet : function(source, sourceForm, context, passThrgh) {
+        var args = this._getArguments(source, sourceForm, context, passThrgh);
+        // note in get the timeout is not working delay however is and queue size as well
+        // since there are no cross browser ways to resolve a timeout on xhr level
+        // we have to live with it
+        args.ajaxType = "GET";
+        this._q.enqueue(
+                new myfaces._impl.xhrCore._AjaxRequest(args));
+    },
+
+
+    /**
+     * iframe post without queueing
+     *
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param {Node} source the source of this call
+     * @param {Node} sourceForm the html form which is the source of this call
+     * @param {Object} context (Map) the internal pass through context
+     * @param {Object} passThrgh (Map) values to be passed through
+     **/
+    iframePost : function(source, sourceForm, context, passThrgh) {
+        var args = this._getArguments(source, sourceForm, context, passThrgh);
+        // note in get the timeout is not working delay however is and queue size as well
+        // since there are no cross browser ways to resolve a timeout on xhr level
+        // we have to live with it
+
+        (new myfaces._impl.xhrCore._IFrameRequest(args)).send();
+    },
+
+    /**
+     * iframe queued post
+     *
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param {Node} source the source of this call
+     * @param {Node} sourceForm the html form which is the source of this call
+     * @param {Object} context (Map) the internal pass through context
+     * @param {Object} passThrgh (Map) values to be passed through
+     **/
+    iframeQueuedPost : function(source, sourceForm, context, passThrgh) {
+        var args = this._getArguments(source, sourceForm, context, passThrgh);
+        // note in get the timeout is not working delay however is and queue size as well
+        // since there are no cross browser ways to resolve a timeout on xhr level
+        this._q.enqueue(
+                new myfaces._impl.xhrCore._IFrameRequest(args));
+    },
+
+
+     /**
+     * iframe get without queueing
+     *
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param {Node} source the source of this call
+     * @param {Node} sourceForm the html form which is the source of this call
+     * @param {Object} context (Map) the internal pass through context
+     * @param {Object} passThrgh (Map) values to be passed through
+     **/
+    iframeGet : function(source, sourceForm, context, passThrgh) {
+        var args = this._getArguments(source, sourceForm, context, passThrgh);
+        // note in get the timeout is not working delay however is and queue size as well
+        // since there are no cross browser ways to resolve a timeout on xhr level
+        // we have to live with it
+        args.ajaxType = "GET";
+        (new myfaces._impl.xhrCore._IFrameRequest(args)).send();
+    },
+
+    /**
+     * iframe queued http get
+     *
+     * mapped options already have the exec and view properly in place
+     * myfaces specifics can be found under mappedOptions.myFaces
+     * @param {Node} source the source of this call
+     * @param {Node} sourceForm the html form which is the source of this call
+     * @param {Object} context (Map) the internal pass through context
+     * @param {Object} passThrgh (Map) values to be passed through
+     **/
+    iframeQueuedGet : function(source, sourceForm, context, passThrgh) {
+        var args = this._getArguments(source, sourceForm, context, passThrgh);
+        // note in get the timeout is not working delay however is and queue size as well
+        // since there are no cross browser ways to resolve a timeout on xhr level
+        args.ajaxType = "GET";
+        this._q.enqueue(
+                new myfaces._impl.xhrCore._IFrameRequest(args));
+    },
+
 
     /**
      * Spec. 13.3.3
@@ -179,7 +319,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         this._loadImpl();
         try {
             this._Impl.response(request, context);
-          
+
             this._Impl.sendEvent(request, context, this._Impl.SUCCESS);
         } finally {
             this._q.processQueue();
@@ -206,15 +346,20 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
                     errorText += " and reason " + this._xhr.statusText;
                 }
             }
+
         } catch (e) {
             errorText = "Request failed with unknown status";
+        } finally {
+            try {
+                this._Impl.sendError(request, context, this._Impl.HTTPERROR,
+                        this._Impl.HTTPERROR, errorText);
+            } finally {
+                this._q.processQueue();
+            }
         }
         //_onError
-        this._Impl.sendError(request, context, this._Impl.HTTPERROR,
-                this._Impl.HTTPERROR, errorText);
+
     },
-
-
 
     /**
      * standard timeout handler
@@ -262,7 +407,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
             throw exception;
         }
     },
-   
+
 
     _loadImpl: function() {
         if (!this._Impl) {

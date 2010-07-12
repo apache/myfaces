@@ -23,7 +23,9 @@ if (!window.jsf) {
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_HtmlStripper.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxUtils.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequestQueue.js']}", null, null, "UTF-8");
+    myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_BaseRequest.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequest.js']}", null, null, "UTF-8");
+    myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_IFrameRequest.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxResponse.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_Transports.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.core:Impl.js']}", null, null, "UTF-8");
