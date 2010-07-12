@@ -193,8 +193,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
                     var uLen = element.options.length;
                     for (var u = 0; u < uLen; u++) {
                         // find all selected options
+                        var subBuf = [];
                         if (element.options[u].selected) {
-                            var subBuf = [];
                             var elementOption = element.options[u];
                             subBuf.push(encodeURIComponent(name));
                             subBuf.push("=");
@@ -204,7 +204,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
                                 subBuf.push(encodeURIComponent(elementOption.text));
                             }
 
-                        }  strBuf.push(subBuf.join(""));
+                        }
+                        strBuf.push(subBuf.join(""));
                     }
                 }
             }
