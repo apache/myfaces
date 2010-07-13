@@ -42,6 +42,7 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.el.MockVariableMapper;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.resource.MockResource;
+import org.apache.myfaces.test.mock.resource.MockSimpleResource;
 import org.apache.myfaces.view.facelets.MockFaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.easymock.classextension.EasyMock;
@@ -176,7 +177,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         // ---- first component test - without any special settings ----------------------------
         
         // configure the Resource needed for this test
-        MockResource resource = new MockResource(null, "testlib", null, "composite.xhtml", 
+        MockSimpleResource resource = new MockSimpleResource(null, "testlib", null, "composite.xhtml", 
                 null, new File("src/test/resources/org/apache/myfaces/application"));
         
         // get the BeanInfo metadata
@@ -191,7 +192,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         
         // ---- second component test - from a script ------------------------------------------
         
-        MockResource scriptResource = new MockResource(null, "testlib", null, 
+        MockSimpleResource scriptResource = new MockSimpleResource(null, "testlib", null, 
                 "org.apache.myfaces.application.TestResourceComponent.groovy", 
                 null, new File("src/test/resources/org/apache/myfaces/application"));
         
@@ -210,7 +211,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         
         // ---- third component test - from libaryName.resourceName.class -----------------------
         
-        MockResource componentResource = new MockResource(null, "org.apache.myfaces.application",
+        MockSimpleResource componentResource = new MockSimpleResource(null, "org.apache.myfaces.application",
                 null, "TestResourceComponent.xhtml", null,
                 new File("src/test/resources/org/apache/myfaces/application"))
         {
@@ -252,7 +253,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         // ---- fourth component test - with a custom componentType ------------------------------
         
         // change the resource
-        resource = new MockResource(null, "testlib", null, "compositeWithComponentType.xhtml", 
+        resource = new MockSimpleResource(null, "testlib", null, "compositeWithComponentType.xhtml", 
                 null, new File("src/test/resources/org/apache/myfaces/application"));
         // FIXME resource.setResourceName(resourceName) did not work
         // this can be changed in the next release of MyFaces test (1.0.0-beta.NEXT)
