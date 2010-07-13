@@ -29,6 +29,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
+import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
@@ -195,6 +197,28 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
         {
             fail(e.getMessage());
         }
+    }
+    
+    /**
+     * Tests if the h:button is rendered accordingly if disabled is true.
+     */
+    public void testDisabledAttribute() 
+    {
+        outcomeTargetButton.getAttributes().put(JSFAttr.DISABLED_ATTR, "true");
+        try 
+        {
+            outcomeTargetButton.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            
+            // Assertions
+            assertFalse(output.contains(HTML.ONCLICK_ATTR)); // the output must not contain onclick 
+            assertTrue(output.contains(HTML.DISABLED_ATTR)); // the ouput must contain disabled
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
     }
     
 }
