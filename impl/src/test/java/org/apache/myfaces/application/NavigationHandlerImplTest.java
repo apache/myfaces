@@ -529,5 +529,40 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // should not be added as a parameter
         
         Assert.assertEquals(expected, navigationCase.getParameters());
+        Assert.assertTrue("includeViewParams=true in the query String must "
+                + "set includeViewParams to true.", navigationCase.isIncludeViewParams());
+        Assert.assertTrue("redirect=true in the query String must "
+                + "set redirect to true.", navigationCase.isRedirect());
+    }
+    
+    /**
+     * Tests if the URL parameters of an outcome are correctly
+     * added to the NavigationCase.
+     * Identically to testFacesRedirectAddsUrlParameters(), except that
+     * it uses faces-include-view-params=true instead of includeViewParams=true.
+     */
+    @Test
+    public void testFacesRedirectAddsUrlParametersFacesIncludeViewParams()
+    {
+        NavigationHandlerImpl nh = new NavigationHandlerImpl();
+        
+        // get the NavigationCase
+        // note that the URL parameters can be separated via & or &amp;
+        NavigationCase navigationCase = nh.getNavigationCase(facesContext, null, 
+                "test.xhtml?faces-redirect=true&a=b&amp;faces-include-view-params=true&amp;c=d&e=f");
+        
+        // created the expected parameter map
+        Map<String, List<String>> expected = new HashMap<String, List<String>>();
+        expected.put("a", Arrays.asList("b"));
+        expected.put("c", Arrays.asList("d"));
+        expected.put("e", Arrays.asList("f"));
+        // note that faces-redirect and faces-include-view-params
+        // should not be added as a parameter
+        
+        Assert.assertEquals(expected, navigationCase.getParameters());
+        Assert.assertTrue("faces-include-view-params=true in the query String must "
+                + "set includeViewParams to true.", navigationCase.isIncludeViewParams());
+        Assert.assertTrue("redirect=true in the query String must "
+                + "set redirect to true.", navigationCase.isRedirect());
     }
 }

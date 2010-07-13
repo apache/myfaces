@@ -225,9 +225,7 @@ public class NavigationHandlerImpl
         String viewIdToTest = outcome;
         
         // If viewIdToTest contains a query string, remove it and set queryString with that value.
-        
         index = viewIdToTest.indexOf ("?");
-        
         if (index != -1)
         {
             queryString = viewIdToTest.substring (index + 1);
@@ -239,24 +237,20 @@ public class NavigationHandlerImpl
                 isRedirect = true;
             }
             
-            // If queryString contains "includeViewParams=true", set includeViewParams to true.
-            if (queryString.indexOf ("includeViewParams=true") != -1)
+            // If queryString contains "includeViewParams=true" or 
+            // "faces-include-view-params=true", set includeViewParams to true.
+            if (queryString.indexOf("includeViewParams=true") != -1 
+                    || queryString.indexOf("faces-include-view-params=true") != -1)
             {
                 includeViewParams = true;
             }
         }
         
-        // FIXME: the spec states that redirection (i.e., isRedirect=true) is implied when preemptive navigation is performed,
-        // though I'm not sure how we're supposed to determine that.
-        
         // If viewIdToTest does not have a "file extension", use the one from the current viewId.
-        // TODO: I don't know exactly what the spec means by "file extension".  I'm assuming everything after "."
-        
         index = viewIdToTest.indexOf (".");
-        
         if (index == -1)
         {
-            index = viewId.indexOf (".");
+            index = viewId.lastIndexOf(".");
             
             if (index != -1)
             {
@@ -299,7 +293,7 @@ public class NavigationHandlerImpl
         if (implicitViewId != null)
         {
             // Append all params from the queryString
-            // (excluding faces-redirect and includeViewParams)
+            // (excluding faces-redirect, includeViewParams and faces-include-view-params)
             Map<String, List<String>> params = null;
             if (queryString != null && !"".equals(queryString))
             {
@@ -312,9 +306,10 @@ public class NavigationHandlerImpl
                     {
                         // valid parameter - add it to params
                         if ("includeViewParams".equals(splitParam[0])
+                                || "faces-include-view-params".equals(splitParam[0])
                                 || "faces-redirect".equals(splitParam[0]))
                         {
-                            // ignore includeViewParams and faces-redirect
+                            // ignore includeViewParams, faces-include-view-params and faces-redirect
                             continue;
                         }
                         List<String> paramValues = params.get(splitParam[0]);
