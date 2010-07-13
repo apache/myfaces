@@ -22,7 +22,9 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.el.MethodExpression;
 import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewExpiredException;
@@ -30,10 +32,14 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
+import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 
@@ -86,6 +92,10 @@ class RestoreViewExecutor extends PhaseExecutor
             viewRoot.setLocale(facesContext.getExternalContext().getRequestLocale());
             
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
+            
+            // invoke the afterPhase MethodExpression of UIViewRoot
+            _invokeViewRootAfterPhaseListener(facesContext);
+            
             return false;
         }
         
@@ -152,7 +162,7 @@ class RestoreViewExecutor extends PhaseExecutor
                     
                     if (viewRoot != null)
                     {
-                        viewParameters = metadata.getViewParameters(viewRoot);
+                        viewParameters = ViewMetadata.getViewParameters(viewRoot);
                     }
                     else if(facesContext.getResponseComplete())
                     {
@@ -207,7 +217,55 @@ class RestoreViewExecutor extends PhaseExecutor
                     .put(ErrorPageWriter.ERROR_PAGE_BEAN_KEY, new ErrorPageWriter.ErrorPageBean());
         }
         
+        // invoke the afterPhase MethodExpression of UIViewRoot
+        _invokeViewRootAfterPhaseListener(facesContext);
+        
         return false;
+    }
+    
+    /**
+     * Invoke afterPhase MethodExpression of UIViewRoot.
+     * Note: In this phase it is not possible to invoke the beforePhase method, because we
+     * first have to restore the view to get its attributes. Also it is not really possible
+     * to call the afterPhase method inside of UIViewRoot for this phase, thus it was decided
+     * in the JSF 2.0 spec rev A to put this here.
+     * @param facesContext
+     */
+    private void _invokeViewRootAfterPhaseListener(FacesContext facesContext)
+    {
+        // get the UIViewRoot (note that it must not be null at this point)
+        UIViewRoot root = facesContext.getViewRoot();
+        MethodExpression afterPhaseExpression = root.getAfterPhaseListener();
+        if (afterPhaseExpression != null)
+        {
+            PhaseEvent event = new PhaseEvent(facesContext, getPhase(), _getLifecycle(facesContext));
+            try
+            {
+                afterPhaseExpression.invoke(facesContext.getELContext(), new Object[] { event });
+            }
+            catch (Throwable t) 
+            {
+                log.log(Level.SEVERE, "An Exception occured while processing " +
+                        afterPhaseExpression.getExpressionString() + 
+                        " in Phase " + getPhase(), t);
+            }
+        }
+    }
+    
+    /**
+     * Gets the current Lifecycle instance from the LifecycleFactory
+     * @param facesContext
+     * @return
+     */
+    private Lifecycle _getLifecycle(FacesContext facesContext)
+    {
+        LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        String id = facesContext.getExternalContext().getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+        if (id == null)
+        {
+            id = LifecycleFactory.DEFAULT_LIFECYCLE;
+        }
+        return factory.getLifecycle(id);  
     }
     
     protected RestoreViewSupport getRestoreViewSupport()

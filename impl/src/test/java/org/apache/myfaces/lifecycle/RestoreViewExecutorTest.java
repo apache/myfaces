@@ -66,11 +66,12 @@ public class RestoreViewExecutorTest extends FacesTestCase
         expect(_application.getViewHandler()).andReturn(_viewHandler).anyTimes();
         _viewHandler.initView(eq(_facesContext));
         UIViewRoot viewRoot = _mocksControl.createMock(UIViewRoot.class);
-        expect(_facesContext.getViewRoot()).andReturn(viewRoot);
+        expect(_facesContext.getViewRoot()).andReturn(viewRoot).times(2);
         Locale expectedLocale = new Locale("xxx");
         expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
         expect(_externalContext.getRequestLocale()).andReturn(expectedLocale);
         viewRoot.setLocale(eq(expectedLocale));
+        expect(viewRoot.getAfterPhaseListener()).andReturn(null);
         _restoreViewSupport.processComponentBinding(same(_facesContext), same(viewRoot));
 
         _mocksControl.replay();
@@ -104,6 +105,8 @@ public class RestoreViewExecutorTest extends FacesTestCase
 
         _application.publishEvent(same(_facesContext), same(PostAddToViewEvent.class), same(viewRoot));
         _facesContext.setViewRoot(same(viewRoot));
+        expect(_facesContext.getViewRoot()).andReturn(viewRoot);
+        expect(viewRoot.getAfterPhaseListener()).andReturn(null);
 
         _mocksControl.replay();
         _testimpl.doPrePhaseActions(_facesContext);
@@ -127,6 +130,8 @@ public class RestoreViewExecutorTest extends FacesTestCase
         _restoreViewSupport.processComponentBinding(same(_facesContext), same(viewRoot));
         _facesContext.setViewRoot(same(viewRoot));
         _facesContext.setProcessingEvents(eq(false));
+        expect(_facesContext.getViewRoot()).andReturn(viewRoot);
+        expect(viewRoot.getAfterPhaseListener()).andReturn(null);
 
         _mocksControl.replay();
         _testimpl.doPrePhaseActions(_facesContext);
