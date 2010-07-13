@@ -110,6 +110,15 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
     private final TagAttribute _type;
     
     /**
+     * The "hidden" flag is used to identify features that are intended only 
+     * for tool use, and which should not be exposed to humans.
+     */
+    @JSFFaceletAttribute(name="hidden",
+            className="javax.el.ValueExpression",
+            deferredValueType="boolean")
+    protected final TagAttribute _hidden;
+    
+    /**
      * Check if the PropertyDescriptor instance created by this handler
      * can be cacheable or not. 
      */
@@ -137,6 +146,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         _shortDescription = getAttribute("shortDescription");
         _methodSignature = getAttribute("method-signature");
         _type = getAttribute("type");
+        _hidden = getAttribute("hidden");
         
         // We can reuse the same PropertyDescriptor only if the properties
         // that requires to be evaluated when apply (build view time)
@@ -145,7 +155,8 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
              (_displayName == null      || _displayName.isLiteral()      ) &&
              (_preferred == null        || _preferred.isLiteral()        ) &&
              (_expert == null           || _expert.isLiteral()           ) &&
-             (_shortDescription == null || _shortDescription.isLiteral() ) )
+             (_shortDescription == null || _shortDescription.isLiteral() ) &&
+             (_hidden == null           || _hidden.isLiteral()           ) )
         {
             // Unfortunately its not possible to create the required 
             // PropertyDescriptor instance here, because there is no way 
@@ -234,7 +245,11 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             if (_shortDescription != null)
             {
                 attributeDescriptor.setShortDescription(_shortDescription.getValue());
-            }            
+            }
+            if (_hidden != null)
+            {
+                attributeDescriptor.setHidden(Boolean.valueOf(_hidden.getValue()));
+            }
             return attributeDescriptor;
         }
         catch (IntrospectionException e)
@@ -292,6 +307,10 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             if (_type != null)
             {
                 attributeDescriptor.setValue("type", _type.getValueExpression(ctx, String.class));
+            }
+            if (_hidden != null)
+            {
+                attributeDescriptor.setHidden(_hidden.getBoolean(ctx));
             }
             return attributeDescriptor;
         }
