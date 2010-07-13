@@ -33,7 +33,7 @@ public interface FacesInitializer
 
     /**
      * @since 2.0.1
-     * @param facesContext
+     * @param servletContext
      */
     FacesContext initStartupFacesContext(ServletContext servletContext);
     
@@ -45,7 +45,7 @@ public interface FacesInitializer
         
     /**
      * @since 2.0.1
-     * @param facesContext
+     * @param servletContext
      */
     FacesContext initShutdownFacesContext(ServletContext servletContext);    
 

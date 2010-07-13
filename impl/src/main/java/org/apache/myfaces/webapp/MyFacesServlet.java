@@ -32,7 +32,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
-import org.apache.myfaces.util.ContainerUtils;
 
 /**
  * Derived FacesServlet that can be used for debugging purpose
@@ -50,24 +49,8 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
     
     private FacesInitializer _facesInitializer;
     
-    protected void initFaces(ServletContext context)
-    {
-        if (_facesInitializer == null)
-        {
-            if (ContainerUtils.isJsp21(context)) 
-            {
-                _facesInitializer = new Jsp21FacesInitializer();
-            } 
-            else 
-            {
-                _facesInitializer = new Jsp20FacesInitializer();
-            }
-        }
-        
-        _facesInitializer.initFaces(context);
-    }
     
-    public void setFacesInitializer(FacesInitializer facesInitializer)
+    public void setFacesInitializer(FacesInitializer facesInitializer) // TODO who uses this method?
     {
         _facesInitializer = facesInitializer;
     }
@@ -90,55 +73,36 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
     public void init(ServletConfig servletConfig)
         throws ServletException
     {
-        //Check, if ServletContextListener already called
         ServletContext servletContext = servletConfig.getServletContext();
-        Boolean b = (Boolean)servletContext.getAttribute(StartupServletContextListener.FACES_INIT_DONE);
         
-        //Create startup FacesContext before initialize
-        FacesContext facesContext = initStartupFacesContext(servletContext);
-                
+        if (_facesInitializer == null)
+        {
+            _facesInitializer = FacesInitializerFactory.getFacesInitializer(servletContext);
+        }
+        
+        // Create startup FacesContext before initializing
+        FacesContext facesContext = _facesInitializer.initStartupFacesContext(servletContext);
+              
+        // Check, if ServletContextListener was already called
+        Boolean b = (Boolean)servletContext.getAttribute(StartupServletContextListener.FACES_INIT_DONE);
         if (b == null || b.booleanValue() == false)
         {
             if(log.isLoggable(Level.WARNING))
+            {
                 log.warning("ServletContextListener not yet called");
-            initFaces(servletConfig.getServletContext());
+            }
+            _facesInitializer.initFaces(servletConfig.getServletContext());
         }
         
-        //Destroy startup FacesContext
-        destroyStartupFacesContext(facesContext);
+        // Destroy startup FacesContext
+        _facesInitializer.destroyStartupFacesContext(facesContext);
         
         delegate.init(servletConfig);
         log.info("MyFacesServlet for context '" + servletConfig.getServletContext().getRealPath("/") + "' initialized.");
     }
     
-    protected FacesContext initStartupFacesContext(ServletContext context)
-    {
-        if (_facesInitializer == null)
-        {
-            if (ContainerUtils.isJsp21(context)) 
-            {
-                _facesInitializer = new Jsp21FacesInitializer();
-            } 
-            else 
-            {
-                _facesInitializer = new Jsp20FacesInitializer();
-            }
-        }
-
-        return _facesInitializer.initStartupFacesContext(context);
-    }
-    
-    protected void destroyStartupFacesContext(FacesContext facesContext)
-    {
-        if (_facesInitializer != null)
-        {
-            _facesInitializer.destroyStartupFacesContext(facesContext);
-        }
-    }
-
     public void service(ServletRequest request, ServletResponse response)
-            throws IOException,
-                   ServletException
+            throws IOException, ServletException
     {
         if (log.isLoggable(Level.FINEST)) log.finest("MyFacesServlet service start");
         delegate.service(request, response);

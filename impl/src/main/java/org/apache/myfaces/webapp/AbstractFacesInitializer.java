@@ -24,9 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ExpressionFactory;
-import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ProjectStage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExceptionHandler;
@@ -34,8 +32,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyApplicationEvent;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.webapp.FacesServlet;
+import javax.faces.event.SystemEvent;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.application.ApplicationImpl;
@@ -127,7 +124,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
             }
 
-            dispatchInitDestroyEvent(servletContext, PostConstructApplicationEvent.class);
+            _dispatchApplicationEvent(servletContext, PostConstructApplicationEvent.class);
             
             //initialize LifecycleProvider. 
             //if not set here, first call of getLifecycleProvider is invoked with null external context
@@ -172,7 +169,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         }
     }
 
-
     /**
      * Eventually we can use our plugin infrastructure for this as well
      * it would be a cleaner interception point than the base class
@@ -188,54 +184,21 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * @param eventClass     the class to be passed down into the dispatching
      *                       code
      */
-    private void dispatchInitDestroyEvent(ServletContext servletContext, Class eventClass) {
-        ApplicationFactory appFac = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        
+    private void _dispatchApplicationEvent(ServletContext servletContext, Class<? extends SystemEvent> eventClass) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        appFac.getApplication().publishEvent(facesContext, eventClass, Application.class, appFac.getApplication());
+        Application application = facesContext.getApplication();
+        application.publishEvent(facesContext, eventClass, Application.class, application);
     }
     
-    /**
-     * Gets the LifecycleId from the ServletContext init param.
-     * If this is null, it returns LifecycleFactory.DEFAULT_LIFECYCLE.
-     * @param servletContext
-     * @return
-     */
-    private String getLifecycleId(ServletContext servletContext)
-    {
-        String id = servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
-
-        if (id != null)
-        {
-            return id;
-        }
-        return LifecycleFactory.DEFAULT_LIFECYCLE;
-    }
-
     /**
      * Cleans up all remaining resources (well, theoretically).
      */
     public void destroyFaces(ServletContext servletContext) {
-        dispatchInitDestroyEvent(servletContext, PreDestroyApplicationEvent.class);
+        _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
 
         // TODO is it possible to make a real cleanup?
     }
     
-    /**
-     * ensures faces context with dummy request/response objects is released so it doesn't get reused
-     */
-    
-    private void releaseFacesContext()
-    {        
-        //make sure that the facesContext gets released.  This is important in an OSGi environment 
-        FacesContext fc = null;
-        fc = FacesContext.getCurrentInstance();        
-        if(fc != null)
-        {
-            fc.release();
-        }        
-    }
-
     /**
      * Configures this JSF application. It's required that every
      * FacesInitializer (i.e. every subclass) calls this method during
@@ -319,40 +282,50 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
     
     public FacesContext initStartupFacesContext(ServletContext servletContext)
     {
-        // We cannot use FacesContextFactory, because it is necessary to initialize before Application and RenderKit factories.
-        // so we should use different object. 
-        ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, true);
-        ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
-        FacesContext facesContext = new StartupFacesContextImpl(externalContext, (ReleaseableExternalContext) externalContext, exceptionHandler, true);
-        // in order to allow FacesContext.getViewRoot calls during startup/shutdown listeners, 
-        // we need to initialize a new ViewRoot with locale set to Locale.getDefault().
-        UIViewRoot root = new UIViewRoot();
-        root.setLocale(Locale.getDefault());
-        facesContext.setViewRoot(root);
-        return facesContext;
+        // We cannot use FacesContextFactory, because it is necessary to initialize 
+        // before Application and RenderKit factories, so we should use different object. 
+        return _createFacesContext(servletContext, true);
     }
         
     public void destroyStartupFacesContext(FacesContext facesContext)
     {
-        releaseFacesContext();
+        _releaseFacesContext(facesContext);
     }
     
     public FacesContext initShutdownFacesContext(ServletContext servletContext)
     {
-        ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
-        ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
-        FacesContext facesContext = new StartupFacesContextImpl(externalContext, (ReleaseableExternalContext) externalContext, exceptionHandler, true);
-        // in order to allow FacesContext.getViewRoot calls during startup/shutdown listeners, 
-        // we need to initialize a new ViewRoot with locale set to Locale.getDefault().
-        UIViewRoot root = new UIViewRoot();
-        root.setLocale(Locale.getDefault());
-        facesContext.setViewRoot(root);
-        return facesContext;
+        return _createFacesContext(servletContext, false);
     }
         
     public void destroyShutdownFacesContext(FacesContext facesContext)
     {
-        releaseFacesContext();
+        _releaseFacesContext(facesContext);
+    }
+    
+    private FacesContext _createFacesContext(ServletContext servletContext, boolean startup)
+    {
+        ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, startup);
+        ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
+        FacesContext facesContext = new StartupFacesContextImpl(externalContext, 
+                (ReleaseableExternalContext) externalContext, exceptionHandler, startup);
+        
+        // If getViewRoot() is called during application startup or shutdown, 
+        // it should return a new UIViewRoot with its locale set to Locale.getDefault().
+        UIViewRoot startupViewRoot = new UIViewRoot();
+        startupViewRoot.setLocale(Locale.getDefault());
+        facesContext.setViewRoot(startupViewRoot);
+        
+        return facesContext;
+    }
+    
+    private void _releaseFacesContext(FacesContext facesContext)
+    {        
+        // make sure that the facesContext gets released.
+        // This is important in an OSGi environment 
+        if (facesContext != null)
+        {
+            facesContext.release();
+        }        
     }
     
     /**

@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,17 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ELContext;
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
 import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.context.PartialViewContextFactory;
 import javax.faces.context.ResponseStream;
@@ -50,7 +41,6 @@ import javax.servlet.ServletResponse;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.ReleaseableFacesContextFactory;
-import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.shared_impl.util.NullIterator;
 
 /**
@@ -58,90 +48,134 @@ import org.apache.myfaces.shared_impl.util.NullIterator;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class FacesContextImpl extends FacesContext
+public class FacesContextImpl extends FacesContextImplBase
 {
 
     private static final String METHOD_RESPONSEWRITER = "responseWriter";
     static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
+    
     // ~ Instance fields ----------------------------------------------------------------------------
-
+    
     private Map<String, List<FacesMessage>> _messages = null;
     private List<FacesMessage> _orderedMessages = null;
-    private Application _application;
     private PhaseId _currentPhaseId;
-    private ExternalContext _externalContext;
-    private ReleaseableExternalContext _defaultExternalContext;
     private ResponseStream _responseStream = null;
     private ResponseWriter _responseWriter = null;
     private FacesMessage.Severity _maximumSeverity = null;
-    private UIViewRoot _viewRoot;
     private boolean _renderResponse = false;
     private boolean _responseComplete = false;
-    private RenderKitFactory _renderKitFactory;
-    private boolean _released = false;
-    private ELContext _elContext;
-    private Map<Object, Object> _attributes = null;
     private boolean _validationFailed = false;
-    private boolean _processingEvents = true;
-    private ExceptionHandler _exceptionHandler = null;
     private PartialViewContext _partialViewContext = null;
     private ReleaseableFacesContextFactory _facesContextFactory = null;
-    // Variables used to cache values
-    private RenderKit _cachedRenderKit = null;
-    private String _cachedRenderKitId = null;
 
     // ~ Constructors -------------------------------------------------------------------------------
+    
+    /**
+     * Creates a FacesContextImpl with a ServletExternalContextImpl.
+     */
     public FacesContextImpl(final ServletContext servletContext, final ServletRequest servletRequest,
                             final ServletResponse servletResponse)
     {
-        init(new ServletExternalContextImpl(servletContext, servletRequest, servletResponse));
+        this(new ServletExternalContextImpl(servletContext, servletRequest, servletResponse));
     }
     
+    /**
+     * Private constructor used in internal construtor chain.
+     * @param externalContext
+     */
+    private FacesContextImpl(ServletExternalContextImpl externalContext)
+    {
+        this(externalContext, externalContext, null);
+    }
+    
+    /**
+     * Creates a FacesContextImpl with the given ExternalContext,
+     * ReleaseableExternalContext and ReleaseableFacesContextFactory.
+     * @param externalContext
+     * @param defaultExternalContext
+     * @param facesContextFactory
+     */
     public FacesContextImpl(final ExternalContext externalContext,
             final ReleaseableExternalContext defaultExternalContext , 
             final ReleaseableFacesContextFactory facesContextFactory)
     {
+        // setCurrentInstance is called in constructor of super class
+        super(externalContext, defaultExternalContext);
+        
         _facesContextFactory = facesContextFactory;
-        init(externalContext, defaultExternalContext);
-    }
-
-    private void init(final ReleaseableExternalContext externalContext)
-    {
-        init((ExternalContext) externalContext, externalContext);
-    }
-
-    private void init(final ExternalContext externalContext, final ReleaseableExternalContext defaultExternalContext)
-    {       
-        _externalContext = externalContext;
-        _defaultExternalContext = defaultExternalContext;
-        FacesContext.setCurrentInstance(this);  //protected method, therefore must be called from here
-        _application = ((ApplicationFactory)FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY))
-                .getApplication();
-        _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
     
     @Override
-    public ExceptionHandler getExceptionHandler()
-    {
-        return _exceptionHandler;
-    }
-    
-    @Override
-    public final ExternalContext getExternalContext()
+    public final void release()
     {
         assertNotReleased();
 
-        return (ExternalContext) _externalContext;
-    }
+        _messages = null;
+        _orderedMessages = null;
+        _currentPhaseId = null;
+        _responseStream = null;
+        _responseWriter = null;
+        _maximumSeverity = null;
+        _partialViewContext = null;
+        
+        if (_facesContextFactory != null)
+        {
+            _facesContextFactory.release();
+            _facesContextFactory = null;
+        }
 
+        // release FacesContextImplBase (sets current instance to null)
+        super.release();
+    }
+    
     @Override
     public final FacesMessage.Severity getMaximumSeverity()
     {
         assertNotReleased();
 
         return _maximumSeverity;
+    }
+    
+    @Override
+    public final void addMessage(final String clientId, final FacesMessage message)
+    {
+        assertNotReleased();
+
+        if (message == null)
+        {
+            throw new NullPointerException("message");
+        }
+
+        if (_messages == null)
+        {
+            _messages = new HashMap<String, List<FacesMessage>>();
+            _orderedMessages = new ArrayList<FacesMessage>();
+        }
+        
+        List<FacesMessage> lst = _messages.get(clientId); 
+        if (lst == null)
+        {
+            lst = new ArrayList<FacesMessage>();
+            _messages.put(clientId, lst);
+        }
+        
+        lst.add(message);
+        _orderedMessages.add (message);
+        
+        FacesMessage.Severity serSeverity = message.getSeverity();
+        if (serSeverity != null)
+        {
+            if (_maximumSeverity == null)
+            {
+                _maximumSeverity = serSeverity;
+            }
+            else if (serSeverity.compareTo(_maximumSeverity) > 0)
+            {
+                _maximumSeverity = serSeverity;
+            }
+        }
     }
 
     @Override
@@ -184,13 +218,19 @@ public class FacesContextImpl extends FacesContext
     }
 
     @Override
-    public final Application getApplication()
+    public final Iterator<FacesMessage> getMessages(final String clientId)
     {
+
         assertNotReleased();
 
-        return _application;
+        if (_messages == null || !_messages.containsKey(clientId))
+        {
+            return NullIterator.instance();
+        }
+        
+        return _messages.get(clientId).iterator();        
     }
-
+    
     @Override
     public final Iterator<String> getClientIdsWithMessages()
     {
@@ -203,7 +243,7 @@ public class FacesContextImpl extends FacesContext
         
         return _messages.keySet().iterator();
     }
-
+    
     @Override
     public PhaseId getCurrentPhaseId()
     {
@@ -211,19 +251,13 @@ public class FacesContextImpl extends FacesContext
 
         return _currentPhaseId;
     }
-
+    
     @Override
-    public final Iterator<FacesMessage> getMessages(final String clientId)
+    public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
-
         assertNotReleased();
 
-        if (_messages == null || !_messages.containsKey(clientId))
-        {
-            return NullIterator.instance();
-        }
-        
-        return _messages.get(clientId).iterator();        
+        _currentPhaseId = currentPhaseId;
     }
     
     @Override
@@ -242,37 +276,19 @@ public class FacesContextImpl extends FacesContext
     }
 
     @Override
-    public final RenderKit getRenderKit()
-    {
-        assertNotReleased();
-
-        if (getViewRoot() == null)
-        {
-            return null;
-        }
-
-        String renderKitId = getViewRoot().getRenderKitId();
-
-        if (renderKitId == null)
-        {
-            return null;
-        }
-        
-        if (_cachedRenderKitId == null || !renderKitId.equals(_cachedRenderKitId))
-        {
-            _cachedRenderKitId = renderKitId;
-            _cachedRenderKit = _renderKitFactory.getRenderKit(this, renderKitId);
-        }
-        
-        return _cachedRenderKit;
-    }
-
-    @Override
     public final boolean getRenderResponse()
     {
         assertNotReleased();
 
         return _renderResponse;
+    }
+    
+    @Override
+    public final void renderResponse()
+    {
+        assertNotReleased();
+
+        _renderResponse = true;
     }
 
     @Override
@@ -281,6 +297,14 @@ public class FacesContextImpl extends FacesContext
         assertNotReleased();
 
         return _responseComplete;
+    }
+    
+    @Override
+    public final void responseComplete()
+    {
+        assertNotReleased();
+
+        _responseComplete = true;
     }
 
     @Override
@@ -324,118 +348,6 @@ public class FacesContextImpl extends FacesContext
     }
 
     @Override
-    public final void setViewRoot(final UIViewRoot viewRoot)
-    {
-        assertNotReleased();
-
-        if (viewRoot == null)
-        {
-            throw new NullPointerException("viewRoot");
-        }
-        // If the current UIViewRoot is non-null, and calling equals() on the argument root, passing the current UIViewRoot returns false
-        // the clear method must be called on the Map returned from UIViewRoot.getViewMap().
-        if (_viewRoot != null && !_viewRoot.equals(viewRoot))
-        {
-            //call getViewMap(false) to prevent unnecessary map creation
-            Map<String, Object> viewMap = _viewRoot.getViewMap(false);
-            if (viewMap != null)
-            {
-                viewMap.clear();
-            }
-        }
-        _viewRoot = viewRoot;
-    }
-
-    @Override
-    public final UIViewRoot getViewRoot()
-    {
-        assertNotReleased();
-
-        return _viewRoot;
-    }
-
-    @Override
-    public final void addMessage(final String clientId, final FacesMessage message)
-    {
-        assertNotReleased();
-
-        if (message == null)
-        {
-            throw new NullPointerException("message");
-        }
-
-        if (_messages == null)
-        {
-            _messages = new HashMap<String, List<FacesMessage>>();
-            _orderedMessages = new ArrayList<FacesMessage>();
-        }
-        
-        List<FacesMessage> lst = _messages.get(clientId); 
-        if (lst == null)
-        {
-            lst = new ArrayList<FacesMessage>();
-            _messages.put(clientId, lst);
-        }
-        
-        lst.add(message);
-        _orderedMessages.add (message);
-        
-        FacesMessage.Severity serSeverity = message.getSeverity();
-        if (serSeverity != null)
-        {
-            if (_maximumSeverity == null)
-            {
-                _maximumSeverity = serSeverity;
-            }
-            else if (serSeverity.compareTo(_maximumSeverity) > 0)
-            {
-                _maximumSeverity = serSeverity;
-            }
-        }
-    }
-
-    @Override
-    public final void release()
-    {
-        assertNotReleased();
-
-        if (_facesContextFactory != null)
-        {
-            _facesContextFactory.release();
-            _facesContextFactory = null;
-        }
-        if (_defaultExternalContext != null)
-        {
-            _defaultExternalContext.release();
-            _defaultExternalContext = null;
-        }
-        _externalContext = null;
-
-        /*
-         * Spec JSF 2 section getAttributes when release is called the attributes map must!!! be cleared!
-         * 
-         * (probably to trigger some clearance methods on possible added entries before nullifying everything)
-         */
-        if (_attributes != null)
-        {
-            _attributes.clear();
-            _attributes = null;
-        }
-
-        _messages = null;
-        _application = null;
-        _responseStream = null;
-        _responseWriter = null;
-        _viewRoot = null;
-        _partialViewContext = null;
-        _cachedRenderKit = null;
-        _cachedRenderKitId = null;
-
-        _released = true;
-        FacesContext.setCurrentInstance(null);
-    }
-
-    @Override
     public boolean isPostback()
     {
         assertNotReleased();
@@ -468,97 +380,6 @@ public class FacesContextImpl extends FacesContext
     }
 
     @Override
-    public final void renderResponse()
-    {
-        assertNotReleased();
-
-        _renderResponse = true;
-    }
-
-    @Override
-    public final void responseComplete()
-    {
-        assertNotReleased();
-
-        _responseComplete = true;
-    }
-
-    @Override
-    public void setCurrentPhaseId(PhaseId currentPhaseId)
-    {
-        assertNotReleased();
-
-        _currentPhaseId = currentPhaseId;
-    }
-
-    @Override
-    public void setExceptionHandler(ExceptionHandler exceptionHandler)
-    {
-        _exceptionHandler = exceptionHandler;
-    }
-
-    // Portlet need to do this to change from ActionRequest/Response to
-    // RenderRequest/Response
-    /* This code comes from jsf 1.1 and is not valid anymore
-    public final void setExternalContext(ReleaseableExternalContext extContext)
-    {
-        assertNotReleased();
-
-        _externalContext = extContext;
-        FacesContext.setCurrentInstance(this); // TODO: figure out if I really need to do this
-    }*/
-
-    @Override
-    public final ELContext getELContext()
-    {
-        assertNotReleased();
-
-        if (_elContext != null)
-        {
-            return _elContext;
-        }
-
-        _elContext = new FacesELContext(getApplication().getELResolver(), this);
-
-        ELContextEvent event = new ELContextEvent(_elContext);
-        for (ELContextListener listener : getApplication().getELContextListeners())
-        {
-            listener.contextCreated(event);
-        }
-
-        return _elContext;
-    }
-
-    /**
-     * Returns a mutable map of attributes associated with this faces context when
-     * {@link javax.faces.context.FacesContext.release} is called the map must be cleared!
-     * 
-     * Note this map is not associated with the request map the request map still is accessible via the
-     * {@link javax.faces.context.FacesContext.getExternalContext.getRequestMap} method!
-     * 
-     * Also the scope is different to the request map, this map has the scope of the context, and is cleared once the
-     * release method on the context is called!
-     * 
-     * Also the map does not cause any events according to the spec!
-     * 
-     * @since JSF 2.0
-     * 
-     * @throws IllegalStateException
-     *             if the current context already is released!
-     */
-    @Override
-    public Map<Object, Object> getAttributes()
-    {
-        assertNotReleased();
-
-        if (_attributes == null)
-        {
-            _attributes = new HashMap<Object, Object>();
-        }
-        return _attributes;
-    }
-    
-    @Override
     public void validationFailed()
     {
         assertNotReleased();
@@ -574,30 +395,4 @@ public class FacesContextImpl extends FacesContext
         return _validationFailed;
     }
     
-    @Override
-    public boolean isProcessingEvents()
-    {
-        assertNotReleased();
-        
-        return _processingEvents;
-    }
-    
-    @Override
-    public void setProcessingEvents(boolean processingEvents)
-    {
-        assertNotReleased();
-        
-        _processingEvents = processingEvents;
-    }
-    
-    /**
-     * has to be thrown in many of the methods if the method is called after the instance has been released!
-     */
-    private final void assertNotReleased()
-    {
-        if (_released)
-        {
-            throw new IllegalStateException("Error the FacesContext is already released!");
-        }
-    }
 }
