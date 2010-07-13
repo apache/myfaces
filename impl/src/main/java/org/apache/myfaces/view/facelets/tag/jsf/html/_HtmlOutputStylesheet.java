@@ -48,7 +48,7 @@ abstract class _HtmlOutputStylesheet extends UIOutput
      * 
      * @return
      */
-    @JSFProperty
+    @JSFProperty(required = true)
     public abstract String getName();
 
 }

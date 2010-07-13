@@ -50,7 +50,7 @@ abstract class _HtmlOutputScript extends UIOutput
      * 
      * @return
      */
-    @JSFProperty
+    @JSFProperty(required = true)
     public abstract String getName();
 
     /**
