@@ -302,7 +302,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             throw new NullPointerException();
         }
         
-        final String baseClientId = getClientId(context);
+        final String baseClientId = super.getClientId(context);
 
         // searching for this component?
         boolean returnValue = baseClientId.equals(clientId);
@@ -684,7 +684,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         super.setValueExpression(name, binding);
     }
 
-    /*
     @Override
     public String getClientId(FacesContext context)
     {
@@ -697,8 +696,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         StringBuilder bld = __getSharedStringBuilder();
         return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
-    }*/
+    }
 
+    /* -= Leonardo Uribe =- Temporally commented, because it is not confirmed
+     * if this will be included in jsf 2.0 rev A. Note super.getContainerClientId(context)
+     * call getClientId()
     @Override
     public String getContainerClientId(FacesContext context)
     {
@@ -713,7 +715,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
         StringBuilder bld = __getSharedStringBuilder();
         return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();        
-    }
+    }*/
 
     /**
      * Modify events queued for any child components so that the UIData state will be correctly configured before the
