@@ -61,6 +61,17 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     _Lang:myfaces._impl._util._Lang,
 
+    constructor_: function() {
+        //we have to trigger it upfront because mozilla runs the eval
+        //after the dom updates and hence causes a race conditon if used on demand
+        //under normal circumstances this works, if there are no normal ones
+        //then this also will work at the second time, but the onload handler
+        //should cover 99% of all use cases to avoid a loading race condition
+        myfaces._impl.core._Runtime.addOnLoad(document.body || window, function() {
+            myfaces._impl._util._Dom.isManualScriptEval();
+        });
+    },
+
     /**
      * Run through the given Html item and execute the inline scripts
      * (IE doesn't do this by itself)
@@ -79,13 +90,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     //due to changing the and order instead of relying on left to right
                     if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
                             && src.indexOf("/jsf-uncompressed.js") == -1))
-                        if(finalScripts.length) {
+                        if (finalScripts.length) {
                             //script source means we have to eval the existing
                             //scripts before running the include
                             myfaces._impl.core._Runtime.globalEval(finalScripts.join("\n"));
                             finalScripts = [];
                         }
-                        myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
+                    myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
                     var test = (!xmlData) ? item.text : this._Lang.serializeChilds(item);
@@ -118,8 +129,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             for (var cnt = 0; cnt < scriptElements.length; cnt++) {
                 execScrpt(scriptElements[cnt]);
             }
-            if(finalScripts.length) {
-                myfaces._impl.core._Runtime.globalEval(finalScripts.join("\n"));    
+            if (finalScripts.length) {
+                myfaces._impl.core._Runtime.globalEval(finalScripts.join("\n"));
             }
         } finally {
             //the usual ie6 fix code
@@ -174,11 +185,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             // and remove the old item
             //first we have to save the node newly insert for easier access in our eval part
             if (this.isManualScriptEval()) {
-                if (evalNodes.length) {
+                var isArr = evalNodes instanceof Array;
+                if (isArr && evalNodes.length) {
                     for (var cnt = 0; cnt < evalNodes.length; cnt++) {
                         this.runScripts(evalNodes[cnt]);
                     }
-                } else {
+                } else if (!isArr) {
                     this.runScripts(evalNodes);
                 }
             }
@@ -191,45 +203,52 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     _outerHTMLCompliant: function(item, markup) {
 
-        var evalNodes = null;
-        var dummyPlaceHolder = document.createElement("div");
-        dummyPlaceHolder.innerHTML = markup;
-        evalNodes = dummyPlaceHolder.childNodes;
-        if('undefined' == typeof evalNodes.length) {
-            item.parentNode.replaceChild( evalNodes, item);
+        var b =  myfaces._impl.core._Runtime.browser;
+        //most browsers can handle the faster approach
+       // if (!b.isWebKit && !b.isChrome && b.isSafari) {
+            var evalNodes = null;
+            var dummyPlaceHolder = document.createElement("div");
+            dummyPlaceHolder.innerHTML = markup;
+            evalNodes = dummyPlaceHolder.childNodes;
+            if ('undefined' == typeof evalNodes.length) {
+                item.parentNode.replaceChild(evalNodes, item);
+                return evalNodes;
+                //return this.replaceElement(item, evalNodes);
+            } else if (evalNodes.length == 1) {
+                var ret = evalNodes[0];
+                item.parentNode.replaceChild(evalNodes[0], item);
+                return ret;
+                //return this.replaceElement(item, evalNodes[0]);
+            } else {
+                return this.replaceElements(item, evalNodes)
+            }
+        /*} else {
+            //webkit only works properly on contextual ranges
+            //without running into race conditions
+            var evalNodes = null;
+            var range = document.createRange();
+            range.setStartBefore(item);
+            var fragment = range.createContextualFragment(markup);
+            //special case update body, we have to replace the placeholder
+            //with the first element (the place holder is the the only child)
+            //and then append additional elements as additional childs
+            //the body itself then is the root for the eval part!
+            if (item.id == 'myfaces_bodyplaceholder') {
+                parentNode = item.parentNode;
+                parentNode.appendChild(fragment);
+                evalNodes = parentNode;
+            } else {
+                //normal dom node case we replace only the client id fragment!
+
+                parentNode = item.parentNode;
+
+                //evalNode = fragment.childNodes[0];
+                evalNodes = (fragment.childNodes) ? this._Lang.objToArray(fragment.childNodes) : [fragment];
+                parentNode.replaceChild(fragment, item);
+            }
+
             return evalNodes;
-            //return this.replaceElement(item, evalNodes);
-        } else if(evalNodes.length == 1) {
-            var ret = evalNodes[0];
-            item.parentNode.replaceChild(evalNodes[0], item);
-            return ret;
-            //return this.replaceElement(item, evalNodes[0]);
-        } else {
-            return this.replaceElements(item, evalNodes)
-        }
-
-        /*var evalNodes = null;
-         var range = document.createRange();
-         range.setStartBefore(item);
-         var fragment = range.createContextualFragment(markup);
-         //special case update body, we have to replace the placeholder
-         //with the first element (the place holder is the the only child)
-         //and then append additional elements as additional childs
-         //the body itself then is the root for the eval part!
-         if (item.id == 'myfaces_bodyplaceholder') {
-         parentNode = item.parentNode;
-         parentNode.appendChild(fragment);
-         evalNodes = parentNode;
-         } else {
-         //normal dom node case we replace only the client id fragment!
-
-         parentNode = item.parentNode;
-
-         //evalNode = fragment.childNodes[0];
-         evalNodes = (fragment.childNodes) ? this._Lang.objToArray(fragment.childNodes) : fragment;
-         parentNode.replaceChild(fragment, item);
-         } */
-        return evalNodes;
+        } */
     },
 
     _outerHTMLNonCompliant: function(item, markup) {
@@ -269,7 +288,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         //ie throws also an error on length requests
         evalNodes = this._Lang.objToArray(evalNodes);
-        if(evalNodes.length == 1) {
+        if (evalNodes.length == 1) {
             item.parentNode.replaceChild(evalNodes[0], item);
             delete item;
             return evalNodes[0];
@@ -304,8 +323,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     replaceElements: function (item, evalNodes) {
         var parentNode = item.parentNode;
-        var evalNodesDefined =  'undefined' != typeof evalNodes.length;
-        if(!evalNodesDefined) {
+        var evalNodesDefined = 'undefined' != typeof evalNodes.length;
+        if (!evalNodesDefined) {
             throw new Error("replaceElements called while evalNodes is not an array");
         }
         var oldNode = item;
@@ -743,15 +762,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (!nameId) {
             throw Error("_Dom.findFormElement an element or identifier must be given");
         }
-
-        var eLen = form.elements.length;
-
-        for (var e = 0; e < eLen; e++) {
-            var elem = form.elements[e];
-            if (elem.name && elem.name === nameId) return elem;
-            if (elem.id && elem.id === nameId) return elem;
-        } // end of for (formElements)
-        return null;
+        if (!form.elements) return null;
+        return form.elements[nameId] || this.findById(form, nameId);
     }
     ,
 
@@ -771,6 +783,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //a good citizen
         var _Browser = myfaces._impl.core._Runtime.browser;
         if (!_Browser.isIE || _Browser.isIE > 7) {
+            if (!node.setAttribute) {
+                return;
+            }
             node.setAttribute(attr, val);
             return;
         }
@@ -946,6 +961,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (this._Lang.equalsIgnoreCase(elem.tagName, "form")) {
                 return elem;
             }
+           
             return this.getParent(elem, "form");
         }
 
@@ -1258,4 +1274,5 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     }
 })
         ;
-    
+
+

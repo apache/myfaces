@@ -27,10 +27,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
 
 
     /*
-    note there is a load of common properties
-    inherited by the base class which define the corner
-    parameters and the general internal behavior
-    like _onError etc...
+     note there is a load of common properties
+     inherited by the base class which define the corner
+     parameters and the general internal behavior
+     like _onError etc...
      */
 
 
@@ -56,13 +56,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
             }
             this._ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(this._onException, this._onWarning);
 
-            this._requestParameters = this.getViewState();
-
-            for (var key in this._passThrough) {
-                this._requestParameters = this._requestParameters +
-                        "&" + encodeURIComponent(key) +
-                        "=" + encodeURIComponent(this._passThrough[key]);
-            }
         } catch (e) {
             //_onError
             this._onException(null, this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
@@ -74,6 +67,16 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
      */
     send : function() {
         try {
+            //we have to encode at send time, otherwise
+            //we pick up old viewstates
+            this._requestParameters = this.getViewState();
+
+            for (var key in this._passThrough) {
+                this._requestParameters = this._requestParameters +
+                        "&" + encodeURIComponent(key) +
+                        "=" + encodeURIComponent(this._passThrough[key]);
+            }
+
             this._startXHR();
             this._startTimeout();
         } catch (e) {
@@ -112,7 +115,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
         if (this._timeout && this._onTimeout) {
             var _req = this._xhr;
             var _context = this._context;
-            if(this._timeoutId) {
+            if (this._timeoutId) {
                 window.clearTimeout(this._timeoutId);
                 this._timeoutId = null;
             }
@@ -124,21 +127,22 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                                 //the hitch has to be done due to the setTimeout refocusing the scope of this
                                 //to window
                                 try {
-                                        _req.onreadystatechange = function() {};
+                                    _req.onreadystatechange = function() {
+                                    };
 
-                                       //to avoid malformed whatever, we have
-                                       //the timeout covered already on the _onTimeout function
-                                       _req.abort();
-                                        this._onTimeout(_req, _context);
+                                    //to avoid malformed whatever, we have
+                                    //the timeout covered already on the _onTimeout function
+                                    _req.abort();
+                                    this._onTimeout(_req, _context);
                                 } catch (e) {
-                                        alert(e);
+                                    alert(e);
                                 } finally {
                                 }
                             })
                     , this._timeout);
         }
     },
-   
+
     /**
      * Callback method to process the Ajax response
      * triggered by RequestQueue
@@ -149,14 +153,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
             var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
 
             if (this._xhr.readyState == this._READY_STATE_DONE) {
-                if(this._timeoutId) {
+                if (this._timeoutId) {
                     //normally the timeout should not cause anything anymore
                     //but just to make sure
                     window.clearTimeout(this._timeoutId);
                     this._timeoutId = null;
                 }
                 this._onDone(this._xhr, this._context);
-                if (this._xhr.status >= this._STATUS_OK_MINOR && this._xhr.status <  this._STATUS_OK_MAJOR) {
+                if (this._xhr.status >= this._STATUS_OK_MINOR && this._xhr.status < this._STATUS_OK_MAJOR) {
                     this._onSuccess(this._xhr, this._context);
                 } else {
                     this._onError(this._xhr, this._context);
