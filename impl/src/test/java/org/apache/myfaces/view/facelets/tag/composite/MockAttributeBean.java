@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-public class TestAttributeBean
+public class MockAttributeBean
 {
 
     public String getStyle()

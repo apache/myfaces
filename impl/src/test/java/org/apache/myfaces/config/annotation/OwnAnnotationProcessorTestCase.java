@@ -24,7 +24,7 @@ public class OwnAnnotationProcessorTestCase extends AbstractJsfTestCase
 {
     protected LifecycleProvider lifecycleProvider;
     protected AnnotatedManagedBean managedBean;
-    private static final String TEST_LIFECYCLE_PROVIDER = "org.apache.myfaces.config.annotation.TestLifecycleProvider";
+    private static final String TEST_LIFECYCLE_PROVIDER = "org.apache.myfaces.config.annotation.MockLifecycleProvider";
 
 
     public OwnAnnotationProcessorTestCase(String string)

@@ -20,8 +20,6 @@ package org.apache.myfaces.el;
 
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
 
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
@@ -35,8 +33,9 @@ import javax.el.ELResolver;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -48,7 +47,7 @@ public class CompositeELResolverTest
     private ELContext _elContext;
     private CompositeELResolver _testImpl;
 
-    @BeforeMethod
+    @Before
     public void setup()
     {
         _mocksControl = EasyMock.createControl();
@@ -88,16 +87,16 @@ public class CompositeELResolverTest
 
         Iterator<FeatureDescriptor> descriptors = _testImpl.getFeatureDescriptors(_elContext, base);
 
-        assertNotNull(descriptors);
-        assertEquals(true, descriptors.hasNext());
-        assertEquals(fds.get(0), descriptors.next());
-        assertEquals(true, descriptors.hasNext());
-        assertEquals(fds.get(2), descriptors.next());
-        assertEquals(true, descriptors.hasNext());
-        assertEquals(fds.get(0), descriptors.next());
-        assertEquals(true, descriptors.hasNext());
-        assertEquals(fds.get(2), descriptors.next());
-        assertEquals(false, descriptors.hasNext());
+        Assert.assertNotNull(descriptors);
+        Assert.assertEquals(true, descriptors.hasNext());
+        Assert.assertEquals(fds.get(0), descriptors.next());
+        Assert.assertEquals(true, descriptors.hasNext());
+        Assert.assertEquals(fds.get(2), descriptors.next());
+        Assert.assertEquals(true, descriptors.hasNext());
+        Assert.assertEquals(fds.get(0), descriptors.next());
+        Assert.assertEquals(true, descriptors.hasNext());
+        Assert.assertEquals(fds.get(2), descriptors.next());
+        Assert.assertEquals(false, descriptors.hasNext());
 
     }
 }

@@ -36,6 +36,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
+import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
@@ -192,6 +193,8 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
     @Override
     protected void setUpApplication() throws Exception
     {
+        ApplicationImpl.setInitializingRuntimeConfig(RuntimeConfig.getCurrentInstance(externalContext));
+        
         super.setUpApplication();
         
         ViewHandlerImpl viewHandler = (ViewHandlerImpl) facesContext.getApplication().getViewHandler();
@@ -231,6 +234,13 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         vdl = (MockFaceletViewDeclarationLanguage) application.getViewHandler().
             getViewDeclarationLanguage(facesContext,"/test");
 
+    }
+    
+    @Override
+    public void tearDown() throws Exception
+    {
+        ApplicationImpl.setInitializingRuntimeConfig(null);
+        super.tearDown();
     }
 
     protected void loadStandardFacesConfig() throws Exception

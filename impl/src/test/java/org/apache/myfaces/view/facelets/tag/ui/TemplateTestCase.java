@@ -24,6 +24,7 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TemplateTestCase extends FaceletTestCase {
@@ -56,6 +57,11 @@ public class TemplateTestCase extends FaceletTestCase {
         facesContext.setResponseWriter(rw);
         root.encodeAll(facesContext);
         //System.out.println(fw);
+        
+        String response = fw.toString();
+
+        Assert.assertTrue(response.contains("<span id=\"popupSpan\"><p>[POPUPCONTENT]</p></span>"));
+        Assert.assertTrue(response.contains("<span id=\"body\">BODY</span>"));
     }
 
 }

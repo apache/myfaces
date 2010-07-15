@@ -22,9 +22,8 @@ import javax.faces.component.html.HtmlForm;
 
 import org.apache.myfaces.el.LiteralValueExpression;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -41,7 +40,6 @@ public class HtmlFormTagTest extends AbstractJsfTestCase
     }
 
     @Override
-    @BeforeMethod
     protected void setUp() throws Exception
     {
         super.setUp();

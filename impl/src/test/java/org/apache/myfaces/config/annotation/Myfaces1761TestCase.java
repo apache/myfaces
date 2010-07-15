@@ -34,7 +34,7 @@ public class Myfaces1761TestCase extends AbstractJsfTestCase
     protected LifecycleProvider2 lifecycleProvider;
     protected ManagedBean beanConfiguration;
     
-    private static final String TEST_LIFECYCLE_PROVIDER = TestLifecycleProvider2.class.getName();
+    private static final String TEST_LIFECYCLE_PROVIDER = MockLifecycleProvider2.class.getName();
     
     protected static final String INJECTED_VALUE = "tatiana";
     

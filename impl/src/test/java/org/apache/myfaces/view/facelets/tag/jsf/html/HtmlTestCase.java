@@ -78,7 +78,7 @@ public class HtmlTestCase extends FaceletTestCase {
     
     @Test
     public void testCommandComponent() throws Exception {
-        request.getSession().setAttribute("test", new TestBean());
+        request.getSession().setAttribute("test", new MockBean());
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "componentOwner.xml");
         

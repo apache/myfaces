@@ -22,20 +22,24 @@ import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 
 
-public class TestLifecycleProvider implements LifecycleProvider
+
+public class MockDiscoverableLifecycleProvider implements DiscoverableLifecycleProvider
 {
     private LifecycleProvider processor = new NoInjectionAnnotationLifecycleProvider();
 
+    public boolean isAvailable()
+    {
+        return true;
+    }
 
-    public Object newInstance(String className) throws InstantiationException, NamingException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+    public Object newInstance(String className) throws InstantiationException, IllegalAccessException, NamingException, InvocationTargetException, ClassNotFoundException
     {
         return processor.newInstance(className);
     }
 
 
-    public void destroyInstance(Object instance) throws IllegalAccessException, InvocationTargetException
+    public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException
     {
-        processor.destroyInstance(instance);
+       processor.destroyInstance(o);
     }
-
 }

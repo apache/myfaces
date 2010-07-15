@@ -22,15 +22,17 @@ package org.apache.myfaces.view.facelets.tag.ui;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.el.PropertyResolverImpl;
+import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
+import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class IncludeParamTestCase extends FaceletTestCase
@@ -57,12 +59,56 @@ public class IncludeParamTestCase extends FaceletTestCase
                 new HtmlTextRenderer());
     }
 
+    @Override
+    protected void setUpExternalContext() throws Exception
+    {
+        externalContext =
+            new MockExternalContext(servletContext, request, response);
+        
+        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
+                new PropertyResolverImpl());
+        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
+                new VariableResolverImpl());
+        // For this test we need the a real one, because the Mock does not
+        // handle VariableMapper stuff properly and ui:param logic will not work
+        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
+                new org.apache.el.ExpressionFactoryImpl());
+    }
+    
     @Test
     public void testCaching() throws Exception
     {
         UIViewRoot root = facesContext.getViewRoot();
 
         request.setAttribute("test", "test2.xml");
+        
+        //https://facelets.dev.java.net/issues/show_bug.cgi?id=117
+        
+        // test1.xml
+        // <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        //      xmlns:ui="http://java.sun.com/jsf/facelets">
+        //   <ui:include src="#{test}"/>
+        //</ui:composition>
+        
+        // test2.xml
+        //<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        //    xmlns:ui="http://java.sun.com/jsf/facelets"
+        //    xmlns:h="http://java.sun.com/jsf/html"
+        //    template="test0.xml">
+        //  <ui:param name="testParam" value="page test2" />
+        //</ui:composition>
+        
+        // test0.xml
+        //<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        //    xmlns:ui="http://java.sun.com/jsf/facelets"
+        //    xmlns:h="http://java.sun.com/jsf/html">
+        //  <p>Component value: <h:outputText value="#{testParam}" /></p>
+        //  <p>Inline EL value: #{testParam}</p> 
+        //</ui:composition>
+        
+        System.out.println("ApplicationImpl:" + facesContext.getApplication().getClass().getName());
+        System.out.println("ExpressionFactory:" + facesContext.getApplication().getExpressionFactory().getClass().getName());
+        
         vdl.buildView(facesContext, root, "test1.xml");
 
         FastWriter fw = new FastWriter();
@@ -70,6 +116,12 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw = rw.cloneWithWriter(fw);
         facesContext.setResponseWriter(rw);
         root.encodeAll(facesContext);
+        
+        String result = fw.toString();
+        
+        Assert.assertTrue("Output:" + result, result.contains("<p>Component value:page test2</p>"));
+        Assert.assertTrue("Output:" + result,result.contains("<p>Inline EL value: page test2</p>"));
+        
         //System.out.println(fw);
 
         ComponentSupport.removeTransient(root);
@@ -87,7 +139,30 @@ public class IncludeParamTestCase extends FaceletTestCase
         rw = rw.cloneWithWriter(fw);
         facesContext.setResponseWriter(rw);
         root.encodeAll(facesContext);
+        rw.flush();
         //System.out.println(fw);
-    }
+        
+        result = fw.toString();
+        
+        Assert.assertTrue("Output:" + result, result.contains("<p>Component value:page test3</p>"));
+        Assert.assertTrue("Output:" + result, result.contains("<p>Inline EL value: page test3</p>"));
 
+    }
+    
+    @Test
+    public void testSimpleCompositionParam() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "simpleCompositionParam.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+        
+        String result = fw.toString();
+        Assert.assertTrue("Output:" + result, result.contains("value1"));
+    }
 }

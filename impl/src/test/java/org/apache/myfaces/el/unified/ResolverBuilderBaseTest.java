@@ -18,8 +18,11 @@
  */
 package org.apache.myfaces.el.unified;
 
-import static org.easymock.EasyMock.*;
-import static org.testng.Assert.assertEquals;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
@@ -32,8 +35,9 @@ import org.apache.myfaces.el.convert.VariableResolverToELResolver;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -47,8 +51,8 @@ public class ResolverBuilderBaseTest
     private ResolverBuilderBase _testImpl;
     private CompositeELResolver _compositeELResolver;
 
-    @BeforeMethod
-    void setUp()
+    @Before
+    public void setUp()
     {
         _mocksControl = EasyMock.createNiceControl();
         _runtimeConfig = _mocksControl.createMock(RuntimeConfig.class);
@@ -140,7 +144,7 @@ public class ResolverBuilderBaseTest
         public Object answer() throws Throwable
         {
             VariableResolverToELResolver vr = (VariableResolverToELResolver) getCurrentArguments()[0];
-            assertEquals(_resolver, vr.getVariableResolver());
+            Assert.assertEquals(_resolver, vr.getVariableResolver());
             return null;
         }
     }
@@ -157,7 +161,7 @@ public class ResolverBuilderBaseTest
         public Object answer() throws Throwable
         {
             PropertyResolverToELResolver vr = (PropertyResolverToELResolver) getCurrentArguments()[0];
-            assertEquals(_resolver, vr.getPropertyResolver());
+            Assert.assertEquals(_resolver, vr.getPropertyResolver());
             return null;
         }
     }

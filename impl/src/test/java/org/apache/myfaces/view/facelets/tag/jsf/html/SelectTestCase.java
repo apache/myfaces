@@ -82,7 +82,7 @@ public class SelectTestCase extends FaceletTestCase
     @Test
     public void testSelectOne() throws Exception
     {
-        request.getSession().setAttribute("test", new TestBean());
+        request.getSession().setAttribute("test", new MockBean());
         request.addParameter("testForm:alignment", "10");
 
         UIViewRoot root = new UIViewRoot();

@@ -16,29 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets.tag.jsf.html;
+package org.apache.myfaces.application;
 
-public class TestBean
+import javax.faces.component.UINamingContainer;
+
+/**
+ * Test component for ApplicationImplJsfTest.testCreateComponentFromResource()
+ * 
+ * @author Jakob Korherr (latest modification by $Author$)
+ * @version $Revisio$ $Date$
+ */
+public class MockResourceComponent extends UINamingContainer
 {
-    private int _integerVal = 10;
 
-    public int getIntegerVal()
-    {
-        return _integerVal;
-    }
-
-    public void setIntegerVal(int value)
-    {
-        this._integerVal = value;
-    }
-
-    public String testAction()
-    {
-        return "runFasta";
-    }
-
-    public String method()
-    {
-        return "Hello World!";
-    }
 }

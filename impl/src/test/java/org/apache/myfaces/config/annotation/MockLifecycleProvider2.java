@@ -22,7 +22,7 @@ import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 
 
-public class TestLifecycleProvider2 implements LifecycleProvider2
+public class MockLifecycleProvider2 implements LifecycleProvider2
 {
     private LifecycleProvider2 processor = new NoInjectionAnnotationLifecycleProvider();
 

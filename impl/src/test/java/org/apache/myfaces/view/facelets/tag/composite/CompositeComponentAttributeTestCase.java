@@ -60,7 +60,7 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
     @Test
     public void testSimpleCompositeAttribute() throws Exception
     {
-        TestAttributeBean bean = new TestAttributeBean();
+        MockAttributeBean bean = new MockAttributeBean();
         
         facesContext.getExternalContext().getRequestMap().put("bean",
                 bean);
@@ -119,7 +119,7 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
     @Test
     public void testSimpleCompositeAttributeInsertChildren() throws Exception
     {
-        TestAttributeBean bean = new TestAttributeBean();
+        MockAttributeBean bean = new MockAttributeBean();
         
         facesContext.getExternalContext().getRequestMap().put("bean",
                 bean);

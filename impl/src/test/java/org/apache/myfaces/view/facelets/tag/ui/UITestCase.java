@@ -62,6 +62,9 @@ public class UITestCase extends FaceletTestCase
         facesContext.setResponseWriter(mrw);
         root.encodeAll(facesContext);
         sw.flush();
+        
+        Assert.assertTrue(sw.toString().equals("Hello World!"));
+        
         //System.out.println("************************");
         //System.out.println(sw.toString());
         //System.out.println("************************");
@@ -72,6 +75,17 @@ public class UITestCase extends FaceletTestCase
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "composition-template.xml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        root.encodeAll(facesContext);
+        sw.flush();
+
+        String response = sw.toString();
+        
+        Assert.assertTrue(response.contains("New Title"));
+        Assert.assertTrue(response.contains("New Body"));
     }
 
     @Test
@@ -79,6 +93,16 @@ public class UITestCase extends FaceletTestCase
     {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "composition-template-simple.xml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        root.encodeAll(facesContext);
+        sw.flush();
+
+        String response = sw.toString();
+        
+        Assert.assertTrue(response.contains("New Body"));
     }
 
     @Test

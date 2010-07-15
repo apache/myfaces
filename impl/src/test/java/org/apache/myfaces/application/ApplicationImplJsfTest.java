@@ -193,7 +193,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         // ---- second component test - from a script ------------------------------------------
         
         MockSimpleResource scriptResource = new MockSimpleResource(null, "testlib", null, 
-                "org.apache.myfaces.application.TestResourceComponent.groovy", 
+                "org.apache.myfaces.application.MockResourceComponent.groovy", 
                 null, new File("src/test/resources/org/apache/myfaces/application"));
         
         // install the script resource to the VDL-mock
@@ -203,7 +203,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         component = _testApplication.createComponent(facesContext, resource);
         
         // asserts for the second component
-        assertTrue("The component has to be a TestResourceComponent", component instanceof TestResourceComponent);
+        assertTrue("The component has to be a MockResourceComponent", component instanceof MockResourceComponent);
         assertRendererTypeResourceBeanInfo(component, resource, metadata);
         
         // remove the script resource again
@@ -212,7 +212,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         // ---- third component test - from libaryName.resourceName.class -----------------------
         
         MockSimpleResource componentResource = new MockSimpleResource(null, "org.apache.myfaces.application",
-                null, "TestResourceComponent.xhtml", null,
+                null, "MockResourceComponent.xhtml", null,
                 new File("src/test/resources/org/apache/myfaces/application"))
         {
 
@@ -247,7 +247,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         component = _testApplication.createComponent(facesContext, componentResource);
         
         // asserts for the third component
-        assertTrue("The component has to be a TestResourceComponent", component instanceof TestResourceComponent);
+        assertTrue("The component has to be a MockResourceComponent", component instanceof MockResourceComponent);
         assertRendererTypeResourceBeanInfo(component, componentResource, metadataComponentResource);
         
         // ---- fourth component test - with a custom componentType ------------------------------
