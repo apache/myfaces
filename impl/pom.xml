@@ -1002,7 +1002,7 @@
     <dependency>
       <groupId>org.apache.myfaces.test</groupId>
       <artifactId>myfaces-test20</artifactId>
-      <version>1.0.0-beta-4</version>
+      <version>1.0.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     
