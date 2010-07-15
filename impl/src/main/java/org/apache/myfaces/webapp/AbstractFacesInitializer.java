@@ -194,6 +194,32 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * Cleans up all remaining resources (well, theoretically).
      */
     public void destroyFaces(ServletContext servletContext) {
+        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        
+        //We need to check if the current application was initialized by myfaces
+        WebXml webXml = WebXml.getWebXml(facesContext.getExternalContext());
+        if (webXml == null) {
+            if (log.isLoggable(Level.WARNING)) {
+                log.warning("Couldn't find the web.xml configuration file. "
+                         + "Abort destroy MyFaces.");
+            }
+
+            return;
+        } else if (webXml.getFacesServletMappings().isEmpty()) {
+            // check if the FacesServlet has been added dynamically
+            // in a Servlet 3.0 environment by MyFacesContainerInitializer
+            Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
+            if (mappingAdded == null || !mappingAdded)
+            {
+                if (log.isLoggable(Level.WARNING))
+                {
+                    log.warning("No mappings of FacesServlet found. Abort destroy MyFaces.");
+                }
+                return;
+            }
+        }
+        
         _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
 
         // TODO is it possible to make a real cleanup?
