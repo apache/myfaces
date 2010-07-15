@@ -36,8 +36,8 @@ import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 
 /**
@@ -72,6 +72,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
         }
         else if (UIComponent.isCompositeComponent(parent))
         {
+            FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
             // It is supposed that for composite components, this tag should
             // add itself as a target, but note that on whole api does not exists
             // some tag that expose client behaviors as targets for composite
@@ -80,7 +81,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
             // understand as an implementation detail, after all there exists a key
             // called AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY that could be
             // used to create a tag outside jsf implementation to attach targets.
-            CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, _delegate);
+            mctx.addAttachedObjectHandler(parent, _delegate);
         }
         else
         {

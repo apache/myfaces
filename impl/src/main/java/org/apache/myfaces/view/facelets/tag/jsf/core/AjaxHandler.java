@@ -51,7 +51,6 @@ import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.ui.DecorateHandler;
@@ -210,6 +209,7 @@ public class AjaxHandler extends TagHandler implements
             }
             else if (UIComponent.isCompositeComponent(parent))
             {
+                FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
                 // It is supposed that for composite components, this tag should
                 // add itself as a target, but note that on whole api does not exists
                 // some tag that expose client behaviors as targets for composite
@@ -218,7 +218,7 @@ public class AjaxHandler extends TagHandler implements
                 // understand as an implementation detail, after all there exists a key
                 // called AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY that could be
                 // used to create a tag outside jsf implementation to attach targets.
-                CompositeComponentResourceTagHandler.addAttachedObjectHandler(
+                mctx.addAttachedObjectHandler(
                         parent, this);
             }
             else

@@ -18,12 +18,17 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
+import javax.faces.view.AttachedObjectHandler;
 
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;
@@ -58,12 +63,14 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private Boolean _usingPSSOnThisView;
     
+    private final Map<UIComponent, List<AttachedObjectHandler>> _attachedObjectHandlers;
     
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
         super();
         _factory = factory;
         _facesContext = facesContext;
+        _attachedObjectHandlers = new HashMap<UIComponent, List<AttachedObjectHandler>>();
     }
 
     public FaceletFactory getFaceletFactory()
@@ -321,5 +328,31 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public boolean isMarkInitialStateAndIsRefreshTransientBuildOnPSS()
     {
         return isMarkInitialState() && isRefreshTransientBuildOnPSS();
+    }
+
+    @Override
+    public void addAttachedObjectHandler(UIComponent compositeComponentParent, AttachedObjectHandler handler)
+    {
+        List<AttachedObjectHandler> list = _attachedObjectHandlers.get(compositeComponentParent);
+
+        if (list == null)
+        {
+            list = new ArrayList<AttachedObjectHandler>();
+            _attachedObjectHandlers.put(compositeComponentParent, list);
+        }
+
+        list.add(handler);
+    }
+
+    @Override
+    public void removeAttachedObjectHandlers(UIComponent compositeComponentParent)
+    {
+        _attachedObjectHandlers.remove(compositeComponentParent);
+    }
+
+    @Override
+    public List<AttachedObjectHandler> getAttachedObjectHandlers(UIComponent compositeComponentParent)
+    {
+        return _attachedObjectHandlers.get(compositeComponentParent);
     }
 }

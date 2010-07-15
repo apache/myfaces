@@ -41,7 +41,6 @@ import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 
 /**
  * Handles setting a Validator instance on a EditableValueHolder. Will wire all attributes set to the Validator instance
@@ -93,6 +92,10 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         {
             return;
         }
+
+        // we need methods from AbstractFaceletContext
+        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
+
         if (_wrapMode)
         {
             // the tag has children --> provide validator information for all children
@@ -110,9 +113,6 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             // attach the validator to the second h:inputText in this scenario (blackbox test).
             // So I use the same way as f:ajax for this problem. -=Jakob Korherr=-
             
-            // we need methods from AbstractFaceletContext
-            FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
-             
             String validatorId = _delegate.getValidatorConfig().getValidatorId();
             
             boolean disabled = _delegate.isDisabled(ctx);
@@ -165,7 +165,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                     throw new TagException(_delegate.getTag(), "is nested inside a composite component"
                             + " but does not have a for attribute.");
                 }
-                CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, _delegate);
+                mctx.addAttachedObjectHandler(parent, _delegate);
             }
             else
             {

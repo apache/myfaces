@@ -34,8 +34,8 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 
 /**
  * Handles setting a Converter instance on a ValueHolder. Will wire all attributes set to the Converter instance
@@ -92,7 +92,8 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
                 throw new TagException(_delegate.getTag(), "is nested inside a composite component"
                         + " but does not have a for attribute.");
             }
-            CompositeComponentResourceTagHandler.addAttachedObjectHandler(parent, _delegate);
+            FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
+            mctx.addAttachedObjectHandler(parent, _delegate);
         }
         else
         {

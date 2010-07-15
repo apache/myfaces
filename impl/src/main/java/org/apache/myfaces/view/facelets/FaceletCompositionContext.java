@@ -19,10 +19,12 @@
 package org.apache.myfaces.view.facelets;
 
 import java.util.Iterator;
+import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
+import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.facelets.FaceletContext;
 
 /**
@@ -230,5 +232,31 @@ abstract public class FaceletCompositionContext
     public abstract boolean isUsingPSSOnThisView();
     
     public abstract boolean isMarkInitialStateAndIsRefreshTransientBuildOnPSS();
+
+    /**
+     * Add to the composite component parent this handler, so it will be processed later when
+     * ViewDeclarationLanguage.retargetAttachedObjects is called.
+     *
+     * Tag Handlers exposing attached objects should call this method to expose them when the
+     * parent to be applied is a composite components.
+     *
+     * @param compositeComponentParent
+     * @param handler
+     */
+    public abstract void addAttachedObjectHandler(UIComponent compositeComponentParent, AttachedObjectHandler handler);
+
+    /**
+     * Remove from the composite component parent the list of attached handlers.
+     * 
+     * @param compositeComponentParent
+     */
+    public abstract void removeAttachedObjectHandlers(UIComponent compositeComponentParent);
+
+    /**
+     * Retrieve the list of object handlers attached to a composite component parent. 
+     *
+     * @param compositeComponentParent
+     */
+    public abstract List<AttachedObjectHandler> getAttachedObjectHandlers(UIComponent compositeComponentParent);
     
 }

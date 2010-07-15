@@ -105,7 +105,6 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
@@ -643,6 +642,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             
             for (AttachedObjectTarget currentTarget : targetList)
             {
+                FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance();
+                
                 if (  ( forValue != null && forValue.equals(currentTarget.getName()) ) &&
                       ((currentTarget  instanceof ActionSource2AttachedObjectTarget &&
                        currentHandler instanceof ActionSource2AttachedObjectHandler) ||
@@ -671,10 +672,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             // The current handler should be added to the list, to be chained.
                             // Note that the inner component should have a target with the same name
                             // as "for" attribute
-                            CompositeComponentResourceTagHandler.addAttachedObjectHandler(component, currentHandler);
+                            mctx.addAttachedObjectHandler(component, currentHandler);
                             
-                            List<AttachedObjectHandler> handlers = (List<AttachedObjectHandler>) 
-                                component.getAttributes().get(CompositeComponentResourceTagHandler.ATTACHED_OBJECT_HANDLERS_KEY);
+                            List<AttachedObjectHandler> handlers = mctx.getAttachedObjectHandlers(component);
                             
                             retargetAttachedObjects(context, component, handlers);
                         }
@@ -703,18 +703,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             {
                                 if (currentTarget instanceof ClientBehaviorAttachedObjectTarget)
                                 {
-                                    CompositeComponentResourceTagHandler.addAttachedObjectHandler(component, 
+                                    mctx.addAttachedObjectHandler(component,
                                             new ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper(
                                                     (BehaviorHolderAttachedObjectHandler) currentHandler,
                                                     ((ClientBehaviorAttachedObjectTarget) currentTarget).getEvent()));
                                 }
                                 else
                                 {
-                                    CompositeComponentResourceTagHandler.addAttachedObjectHandler(component, currentHandler);
+                                    mctx.addAttachedObjectHandler(component, currentHandler);
                                 }
                                 
-                                List<AttachedObjectHandler> handlers = (List<AttachedObjectHandler>) 
-                                    component.getAttributes().get(CompositeComponentResourceTagHandler.ATTACHED_OBJECT_HANDLERS_KEY);
+                                List<AttachedObjectHandler> handlers = mctx.getAttachedObjectHandlers(component);
                                 
                                 retargetAttachedObjects(context, component, handlers);
                             }
