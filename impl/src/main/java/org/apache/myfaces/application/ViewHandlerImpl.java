@@ -223,9 +223,11 @@ public class ViewHandlerImpl extends ViewHandler
        String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
        
        // we cannot use this.getVDL() directly (see getViewHandler())
-       return getViewHandler(context)
-               .getViewDeclarationLanguage(context, calculatedViewId)
-                   .createView(context, calculatedViewId);
+       //return getViewHandler(context)
+       //        .getViewDeclarationLanguage(context, calculatedViewId)
+       //            .createView(context, calculatedViewId);
+       // -= Leonardo Uribe =- Temporally reverted by TCK issues.
+       return getViewDeclarationLanguage(context,calculatedViewId).createView(context,calculatedViewId);
     }
 
     @Override
@@ -255,9 +257,11 @@ public class ViewHandlerImpl extends ViewHandler
         checkNull(viewToRender, "viewToRender");
 
         // we cannot use this.getVDL() directly (see getViewHandler())
-        String viewId = viewToRender.getViewId();
-        getViewHandler(context).getViewDeclarationLanguage(context, viewId)
-                .renderView(context, viewToRender);
+        //String viewId = viewToRender.getViewId();
+        //getViewHandler(context).getViewDeclarationLanguage(context, viewId)
+        //        .renderView(context, viewToRender);
+        // -= Leonardo Uribe =- Temporally reverted by TCK issues.
+        getViewDeclarationLanguage(context,viewToRender.getViewId()).renderView(context, viewToRender);
     }
 
     @Override
@@ -268,9 +272,11 @@ public class ViewHandlerImpl extends ViewHandler
         String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
         
         // we cannot use this.getVDL() directly (see getViewHandler())
-        return getViewHandler(context)
-                .getViewDeclarationLanguage(context,calculatedViewId)
-                    .restoreView(context, calculatedViewId); 
+        //return getViewHandler(context)
+        //        .getViewDeclarationLanguage(context,calculatedViewId)
+        //            .restoreView(context, calculatedViewId);
+        // -= Leonardo Uribe =- Temporally reverted by TCK issues.
+        return getViewDeclarationLanguage(context,calculatedViewId).restoreView(context, calculatedViewId); 
     }
     
     @Override
@@ -332,8 +338,10 @@ public class ViewHandlerImpl extends ViewHandler
         {
             String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);  
             // we cannot use this.getVDL() directly (see getViewHandler())
-            ViewDeclarationLanguage vdl = getViewHandler(context).
-                    getViewDeclarationLanguage(context, calculatedViewId);
+            //ViewDeclarationLanguage vdl = getViewHandler(context).
+            //        getViewDeclarationLanguage(context, calculatedViewId);
+            // -= Leonardo Uribe =- Temporally reverted by TCK issues.
+            ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
             ViewMetadata viewMetadata = vdl.getViewMetadata(context, viewId);
             // getViewMetadata() returns null on JSP
             if (viewMetadata != null)
