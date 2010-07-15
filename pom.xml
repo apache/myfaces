@@ -34,16 +34,16 @@
     This project is the home of the MyFaces implementation of the JavaServer Faces 2.0 specification, and
     consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
   </description>
-  <version>2.0.1-SNAPSHOT</version>
+  <version>2.0.1</version>
   <url>http://myfaces.apache.org/core20</url>
   <issueManagement>
     <system>jira</system>
     <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
   </issueManagement>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/trunk</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2_0_1</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2_0_1</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2_0_1</url>
   </scm>
   <modules>
     <!-- module>build</module -->
@@ -239,6 +239,6 @@
     </distributionManagement>
 
     <properties>
-      <myfaces-shared.version>4.0.2-SNAPSHOT</myfaces-shared.version>
+      <myfaces-shared.version>4.0.2</myfaces-shared.version>
     </properties>
 </project>
