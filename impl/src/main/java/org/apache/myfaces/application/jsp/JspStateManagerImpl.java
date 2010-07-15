@@ -181,6 +181,12 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
     public static final String JSP_IS_WRITING_STATE_ATTR = "org.apache.myfaces.JSP_IS_WRITING_STATE";
     
+    /**
+     * Indicate that the current ViewHandler will advice through org.apache.myfaces.JSP_IS_WRITING_STATE var
+     * that it is necessary to write the state.
+     */
+    public static final String JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR = "org.apache.myfaces.JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR";
+    
     private RenderKitFactory _renderKitFactory = null;
     
     public JspStateManagerImpl()
@@ -467,9 +473,12 @@ public class JspStateManagerImpl extends MyfacesStateManager
     {
         if (log.isLoggable(Level.FINEST)) log.finest("Entering saveSerializedView");
 
-        if(!isWritingState(facesContext)){
-            if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveSerializedView - no state to save");
-            return null;
+        if (isViewHandlerWritingState(facesContext))
+        {
+            if(!isWritingState(facesContext)){
+                if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveSerializedView - no state to save");
+                return null;
+            }
         }
         
         checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<String>());
@@ -972,7 +981,14 @@ public class JspStateManagerImpl extends MyfacesStateManager
         return true;
     }
     
-    private boolean isWritingState(FacesContext context){
+    private boolean isViewHandlerWritingState(FacesContext context)
+    {
+        Boolean viewHandlerWritingState = (Boolean)context.getAttributes().get(JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR);
+        return viewHandlerWritingState == null ? false : viewHandlerWritingState;
+    }
+    
+    private boolean isWritingState(FacesContext context)
+    {
         Boolean writingState = (Boolean)context.getAttributes().get(JSP_IS_WRITING_STATE_ATTR); 
         return writingState == null ? false : writingState;
     }

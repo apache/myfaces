@@ -125,6 +125,13 @@ public class JspViewHandlerImpl extends ViewHandler
         if (log.isLoggable(Level.FINEST))
             log.finest("New ViewHandler instance created");
     }
+    
+    @Override
+    public void initView(FacesContext context) throws FacesException
+    {
+        super.initView(context);
+        context.getAttributes().put(JspStateManagerImpl.JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR, true);
+    }
 
     /**
      * @param viewHandlerSupport

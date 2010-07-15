@@ -163,7 +163,8 @@ public class ViewHandlerImpl extends ViewHandler
         if(context.getExternalContext().getRequestCharacterEncoding() == null)
         {
             super.initView(context);    
-        }        
+        }
+        context.getAttributes().put(JspStateManagerImpl.JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR, true);
     }
 
     /**
