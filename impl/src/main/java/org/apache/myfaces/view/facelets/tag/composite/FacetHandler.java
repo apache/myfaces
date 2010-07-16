@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
@@ -54,6 +56,21 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
 
     //private static final Log log = LogFactory.getLog(FacetHandler.class);
     private static final Logger log = Logger.getLogger(FacetHandler.class.getName());
+    
+    /**
+     * String array defining all standard attributes of this tag.
+     * ATTENTION: this array MUST be sorted alphabetically in order to use binary search!!
+     */
+    private static final String[] STANDARD_ATTRIBUTES_SORTED = new String[]
+    {
+        "displayName",
+        "expert",
+        "hidden",
+        "name",
+        "preferred",
+        "required",
+        "shortDescription"
+    };
 
     /**
      * 
@@ -64,7 +81,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     private final TagAttribute _name;
 
     /**
-     * 
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="displayName",
             className="javax.el.ValueExpression",
@@ -84,7 +101,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     private final TagAttribute _required;
 
     /**
-     * 
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="preferred",
             className="javax.el.ValueExpression",
@@ -92,7 +109,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     private final TagAttribute _preferred;
 
     /**
-     * 
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="expert",
             className="javax.el.ValueExpression",
@@ -100,7 +117,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     private final TagAttribute _expert;
 
     /**
-     * 
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="shortDescription",
             className="javax.el.ValueExpression",
@@ -110,6 +127,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     /**
      * The "hidden" flag is used to identify features that are intended only 
      * for tool use, and which should not be exposed to humans.
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="hidden",
             className="javax.el.ValueExpression",
@@ -145,29 +163,43 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         // We can reuse the same PropertyDescriptor only if the properties
         // that requires to be evaluated when apply (build view time)
         // occur are literal or null. Otherwise we need to create it.
-        if ( (                             _name.isLiteral()             ) &&
-             (_displayName == null      || _displayName.isLiteral()      ) &&
-             (_preferred == null        || _preferred.isLiteral()        ) &&
-             (_expert == null           || _expert.isLiteral()           ) &&
-             (_shortDescription == null || _shortDescription.isLiteral() ) &&
-             (_hidden == null           || _hidden.isLiteral()           ) )
+        // Note that only if ProjectStage is Development, The "displayName",
+        // "shortDescription", "expert", "hidden", and "preferred" attributes are exposed
+        final boolean development = FacesContext.getCurrentInstance()
+                .isProjectStage(ProjectStage.Development);
+        
+        if (_name.isLiteral() 
+                && (!development || _areDevelopmentAttributesLiteral()))
         {
             // Unfortunately its not possible to create the required 
             // PropertyDescriptor instance here, because there is no way 
             // to get a FaceletContext to create ValueExpressions. It is
             // possible to create it if we not have set all this properties:
-            // targets, default, required, methodSignature and type. This prevents
+            // required and possible unspecified attributes. This prevents 
             // the racy single-check.
             _cacheable = true;
-            if ( _required == null)
+            if (_required == null &&
+                    !CompositeTagAttributeUtils.containsUnspecifiedAttributes(tag, 
+                            STANDARD_ATTRIBUTES_SORTED))
             {
-                _propertyDescriptor = _createFacetPropertyDescriptor(_name.getValue());
+                _propertyDescriptor = _createFacetPropertyDescriptor(development);
             }
         }
         else
         {
             _cacheable = false;
         }
+    }
+    
+    /**
+     * True if the "displayName", "shortDescription", "expert", "hidden", and
+     * "preferred" attributes are either null or literal.
+     * @return
+     */
+    private boolean _areDevelopmentAttributesLiteral()
+    {
+        return CompositeTagAttributeUtils.areAttributesLiteral(
+                _displayName, _shortDescription, _expert, _hidden, _preferred);
     }
 
     @SuppressWarnings("unchecked")
@@ -215,9 +247,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         }
                 
         nextHandler.apply(ctx, parent);
-        
     }
-    
     
     /**
      * This method could be called only if it is not necessary to set the following properties:
@@ -225,33 +255,24 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
      * 
      * @return
      */
-    private PropertyDescriptor _createFacetPropertyDescriptor(String facetName)
+    private PropertyDescriptor _createFacetPropertyDescriptor(boolean development)
     {
         try
         {
             CompositeComponentPropertyDescriptor facetPropertyDescriptor = 
-                new CompositeComponentPropertyDescriptor(facetName);
+                new CompositeComponentPropertyDescriptor(_name.getValue());
             
-            if (_displayName != null)
+            // If ProjectStage is Development, The "displayName", "shortDescription",
+            // "expert", "hidden", and "preferred" attributes are exposed
+            if (development)
             {
-                facetPropertyDescriptor.setDisplayName(_displayName.getValue());
+                CompositeTagAttributeUtils.addDevelopmentAttributesLiteral(facetPropertyDescriptor,
+                        _displayName, _shortDescription, _expert, _hidden, _preferred);
             }
-            if (_preferred != null)
-            {
-                facetPropertyDescriptor.setPreferred(Boolean.valueOf(_preferred.getValue()));
-            }
-            if (_expert != null)
-            {
-                facetPropertyDescriptor.setExpert(Boolean.valueOf(_expert.getValue()));
-            }
-            if (_shortDescription != null)
-            {
-                facetPropertyDescriptor.setShortDescription(_shortDescription.getValue());
-            }
-            if (_hidden != null)
-            {
-                facetPropertyDescriptor.setHidden(Boolean.valueOf(_hidden.getValue()));
-            }
+            
+            // note that no unspecified attributes are handled here, because the current
+            // tag does not contain any, otherwise this code would not have been called.
+            
             return facetPropertyDescriptor;
         }
         catch (IntrospectionException e)
@@ -272,30 +293,24 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
             CompositeComponentPropertyDescriptor facetPropertyDescriptor = 
                 new CompositeComponentPropertyDescriptor(facetName);
             
-            if (_displayName != null)
-            {
-                facetPropertyDescriptor.setDisplayName(_displayName.getValue(ctx));
-            }
             if (_required != null)
             {
                 facetPropertyDescriptor.setValue("required", _required.getValueExpression(ctx, Boolean.class));
             }
-            if (_preferred != null)
+            
+            // If ProjectStage is Development, The "displayName", "shortDescription",
+            // "expert", "hidden", and "preferred" attributes are exposed
+            if (ctx.getFacesContext().isProjectStage(ProjectStage.Development))
             {
-                facetPropertyDescriptor.setPreferred(_preferred.getBoolean(ctx));
+                CompositeTagAttributeUtils.addDevelopmentAttributes(facetPropertyDescriptor, ctx, 
+                        _displayName, _shortDescription, _expert, _hidden, _preferred);
             }
-            if (_expert != null)
-            {
-                facetPropertyDescriptor.setExpert(_expert.getBoolean(ctx));
-            }
-            if (_shortDescription != null)
-            {
-                facetPropertyDescriptor.setShortDescription(_shortDescription.getValue(ctx));
-            }
-            if (_hidden != null)
-            {
-                facetPropertyDescriptor.setHidden(_hidden.getBoolean(ctx));
-            }
+            
+            // Any additional attributes are exposed as attributes accessible
+            // from the getValue() and attributeNames() methods on FeatureDescriptor
+            CompositeTagAttributeUtils.addUnspecifiedAttributes(facetPropertyDescriptor, tag, 
+                    STANDARD_ATTRIBUTES_SORTED, ctx);
+            
             return facetPropertyDescriptor;
         }
         catch (IntrospectionException e)

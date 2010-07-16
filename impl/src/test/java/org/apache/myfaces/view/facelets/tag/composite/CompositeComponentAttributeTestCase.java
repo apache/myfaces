@@ -19,9 +19,16 @@
 
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import java.beans.BeanDescriptor;
+import java.beans.FeatureDescriptor;
+import java.beans.PropertyDescriptor;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 import javax.el.MethodExpression;
+import javax.el.ValueExpression;
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
@@ -252,4 +259,173 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         
         String resp = sw.toString();
     }
+    
+    /**
+     * Tests if unspecified attributes on <composite:interface>, <composite:attribute>
+     * and <composite:facet> are handled correctly.
+     * @throws Exception
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnspecifiedAttributes() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testInterfaceDescriptorAttributes.xhtml");
+        
+        // get the composite component and its BeanInfo
+        UIComponent composite = root.findComponent("panel").getChildren().get(0);
+        CompositeComponentBeanInfo beanInfo = 
+            (CompositeComponentBeanInfo) composite.getAttributes()
+            .get(UIComponent.BEANINFO_KEY);
+        Assert.assertNotNull(beanInfo);
+        
+        // get the <composite:interface> descriptor and check the unspecified attribute
+        BeanDescriptor interfaceDescriptor = beanInfo.getBeanDescriptor();
+        _checkUnspecifiedAttribute(interfaceDescriptor, 
+                "unspecifiedInterfaceAttribute", "unspecifiedInterfaceValue");
+        
+        // check <composite:attribute>
+        Assert.assertEquals("Expecting one <composite:attribute>",
+                1, beanInfo.getPropertyDescriptors().length);
+        PropertyDescriptor attributeDescriptor = beanInfo.getPropertyDescriptors()[0];
+        _checkUnspecifiedAttribute(attributeDescriptor, 
+                "unspecifiedAttributeAttribute", "unspecifiedAttributeValue");
+        
+        // check <composite:facet>
+        Map<String, PropertyDescriptor> facetPropertyDescriptorMap = 
+            (Map<String, PropertyDescriptor>) interfaceDescriptor.getValue(UIComponent.FACETS_KEY);
+        Assert.assertNotNull(facetPropertyDescriptorMap);
+        PropertyDescriptor facetDescriptor = facetPropertyDescriptorMap.get("facet");
+        _checkUnspecifiedAttribute(facetDescriptor, 
+                "unspecifiedFacetAttribute", "unspecifiedFacetValue");
+    }
+    
+    /**
+     * Assertions for testUnspecifiedAttributes()
+     * @param descriptor
+     * @param attributeName
+     * @param attributeValue
+     */
+    private void _checkUnspecifiedAttribute(FeatureDescriptor descriptor,
+            final String attributeName, final String attributeValue)
+    {
+        Object value = descriptor.getValue(attributeName);
+        Assert.assertTrue("Unspecified attributes must be stored as a ValueExpression",
+                value instanceof ValueExpression);
+        Assert.assertEquals(attributeValue, 
+                ((ValueExpression) value).getValue(facesContext.getELContext()));
+    }
+    
+    /**
+     * The "displayName", "shortDescription", "expert", "hidden", and "preferred"
+     * attributes are only exposed, if ProjectStage equals Development. This test
+     * case tests exactly this case.
+     * @throws Exception
+     */
+    @Test
+    public void testDevelopmentValuesDevelopmentStage() throws Exception
+    {
+        _testDevelopmentValues(ProjectStage.Development);
+    }
+    
+    /**
+     * The "displayName", "shortDescription", "expert", "hidden", and "preferred"
+     * attributes are only exposed, if ProjectStage equals Development. This test
+     * case tests the case when ProjectStage equals Production, thus the values
+     * must not be exposed.
+     * @throws Exception
+     */
+    @Test
+    public void testDevelopmentValuesProductionStage() throws Exception
+    {
+        _testDevelopmentValues(ProjectStage.Production);
+    }
+    
+    /**
+     * Generic test code for testDevelopmentValuesDevelopmentStage()
+     * and testDevelopmentValuesProductionStage().
+     * @param stage
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    private void _testDevelopmentValues(ProjectStage stage) throws Exception
+    {
+        final boolean development = stage.equals(ProjectStage.Development);
+        
+        // set ProjectStage accordingly
+        setProjectStage(stage);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testInterfaceDescriptorAttributes.xhtml");
+        
+        // get the composite component and its BeanInfo
+        UIComponent composite = root.findComponent("panel").getChildren().get(0);
+        CompositeComponentBeanInfo beanInfo = 
+            (CompositeComponentBeanInfo) composite.getAttributes()
+            .get(UIComponent.BEANINFO_KEY);
+        Assert.assertNotNull(beanInfo);
+        
+        // check <composite:interface>
+        BeanDescriptor interfaceDescriptor = beanInfo.getBeanDescriptor();
+        _checkDevelopmentValues(interfaceDescriptor, "interfaceDisplayName",
+                "interfaceShortDescription", development);
+        
+        // check <composite:attribute>
+        Assert.assertEquals("Expecting one <composite:attribute>",
+                1, beanInfo.getPropertyDescriptors().length);
+        PropertyDescriptor attributeDescriptor = beanInfo.getPropertyDescriptors()[0];
+        _checkDevelopmentValues(attributeDescriptor, "attributeDisplayName",
+                "attributeShortDescription", development);
+        
+        // check <composite:facet>
+        Map<String, PropertyDescriptor> facetPropertyDescriptorMap = 
+            (Map<String, PropertyDescriptor>) interfaceDescriptor.getValue(UIComponent.FACETS_KEY);
+        Assert.assertNotNull(facetPropertyDescriptorMap);
+        PropertyDescriptor facetDescriptor = facetPropertyDescriptorMap.get("facet");
+        _checkDevelopmentValues(facetDescriptor, "facetDisplayName",
+                "facetShortDescription", development);
+    }
+    
+    /**
+     * Assertions for _testDevelopmentValues()
+     * @param descriptor
+     * @param displayName
+     * @param shortDescription
+     * @param development
+     */
+    private void _checkDevelopmentValues(FeatureDescriptor descriptor,
+            String displayName, String shortDescription, 
+            final boolean development)
+    {
+        boolean booleanPropertiesValue;
+        
+        // set values for assertions depending on the ProjectStage
+        if (development)
+        {
+            // if we have ProjectStage == Development, all values
+            // will be set to true in the composite component facelet file
+            booleanPropertiesValue = true;
+            
+            // displayName and shortDescription must equal the given values
+        }
+        else
+        {
+            // standard value of all boolean properties is false
+            booleanPropertiesValue = false;
+            
+            // getDisplayName()'s default value is the return from getName()
+            displayName = descriptor.getName();
+            
+            // getShortDescription()'s default value is the return from getDisplayName()
+            shortDescription = displayName;
+        }
+        
+        // Assertions
+        Assert.assertEquals(displayName, descriptor.getDisplayName());
+        Assert.assertEquals(shortDescription, descriptor.getShortDescription());
+        Assert.assertEquals(booleanPropertiesValue, descriptor.isExpert());
+        Assert.assertEquals(booleanPropertiesValue, descriptor.isHidden());
+        Assert.assertEquals(booleanPropertiesValue, descriptor.isPreferred());
+    }
+
 }

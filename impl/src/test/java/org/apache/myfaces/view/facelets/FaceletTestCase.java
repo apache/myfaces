@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
 
@@ -358,6 +359,25 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         catch (Exception e)
         {
             throw new FacesException(e);
+        }
+    }
+    
+    /**
+     * Sets the ProjectStage for the test case.
+     * @param stage
+     * @throws IllegalStateException
+     */
+    public void setProjectStage(ProjectStage stage) throws IllegalStateException
+    {
+        try
+        {
+            Field projectStageField = application.getClass().getDeclaredField("_projectStage");
+            projectStageField.setAccessible(true);
+            projectStageField.set(application, stage);
+        }
+        catch (Exception e)
+        {
+            throw new IllegalStateException("Could not configure ProjectStage for test case", e);
         }
     }
 

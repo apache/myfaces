@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
@@ -46,6 +48,25 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
     
     //private static final Log log = LogFactory.getLog(AttributeHandler.class);
     private static final Logger log = Logger.getLogger(AttributeHandler.class.getName());
+    
+    /**
+     * String array defining all standard attributes of this tag.
+     * ATTENTION: this array MUST be sorted alphabetically in order to use binary search!!
+     */
+    private static final String[] STANDARD_ATTRIBUTES_SORTED = new String[]
+    {
+        "default",
+        "displayName",
+        "expert",
+        "hidden",
+        "method-signature",
+        "name",
+        "preferred",
+        "required",
+        "shortDescription",
+        "targets",
+        "type"
+    };
 
     @JSFFaceletAttribute(name="name",
             className="javax.el.ValueExpression",
@@ -68,6 +89,9 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             deferredValueType="java.lang.String")
     private final TagAttribute _default;
     
+    /**
+     * Only available if ProjectStage is Development.
+     */
     @JSFFaceletAttribute(name="displayName",
             className="javax.el.ValueExpression",
             deferredValueType="java.lang.String")
@@ -84,16 +108,25 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             deferredValueType="boolean")
     private final TagAttribute _required;
 
+    /**
+     * Only available if ProjectStage is Development.
+     */
     @JSFFaceletAttribute(name="preferred",
             className="javax.el.ValueExpression",
             deferredValueType="boolean")
     private final TagAttribute _preferred;
 
+    /**
+     * Only available if ProjectStage is Development.
+     */
     @JSFFaceletAttribute(name="expert",
             className="javax.el.ValueExpression",
             deferredValueType="boolean")
     private final TagAttribute _expert;
 
+    /**
+     * Only available if ProjectStage is Development.
+     */
     @JSFFaceletAttribute(name="shortDescription",
             className="javax.el.ValueExpression",
             deferredValueType="java.lang.String")
@@ -112,6 +145,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
     /**
      * The "hidden" flag is used to identify features that are intended only 
      * for tool use, and which should not be exposed to humans.
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="hidden",
             className="javax.el.ValueExpression",
@@ -151,24 +185,27 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         // We can reuse the same PropertyDescriptor only if the properties
         // that requires to be evaluated when apply (build view time)
         // occur are literal or null. Otherwise we need to create it.
-        if ( (                             _name.isLiteral()             ) &&
-             (_displayName == null      || _displayName.isLiteral()      ) &&
-             (_preferred == null        || _preferred.isLiteral()        ) &&
-             (_expert == null           || _expert.isLiteral()           ) &&
-             (_shortDescription == null || _shortDescription.isLiteral() ) &&
-             (_hidden == null           || _hidden.isLiteral()           ) )
+        // Note that only if ProjectStage is Development, The "displayName",
+        // "shortDescription", "expert", "hidden", and "preferred" attributes are exposed
+        final boolean development = FacesContext.getCurrentInstance()
+                .isProjectStage(ProjectStage.Development);
+        
+        if (_name.isLiteral() 
+                && (!development || _areDevelopmentAttributesLiteral()))
         {
             // Unfortunately its not possible to create the required 
             // PropertyDescriptor instance here, because there is no way 
             // to get a FaceletContext to create ValueExpressions. It is
             // possible to create it if we not have set all this properties:
-            // targets, default, required, methodSignature and type. This prevents
-            // the racy single-check.
+            // targets, default, required, methodSignature, type and possible
+            // unspecified attributes. This prevents the racy single-check.
             _cacheable = true;
             if ( _targets == null && _default == null && _required == null &&
-                 _methodSignature == null && _type == null)
+                 _methodSignature == null && _type == null &&
+                 !CompositeTagAttributeUtils.containsUnspecifiedAttributes(tag, 
+                         STANDARD_ATTRIBUTES_SORTED))
             {
-                _propertyDescriptor = _createPropertyDescriptor();
+                _propertyDescriptor = _createPropertyDescriptor(development);
             }
         }
         else
@@ -176,7 +213,18 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             _cacheable = false;
         }
     }
-
+    
+    /**
+     * True if the "displayName", "shortDescription", "expert", "hidden", and
+     * "preferred" attributes are either null or literal.
+     * @return
+     */
+    private boolean _areDevelopmentAttributesLiteral()
+    {
+        return CompositeTagAttributeUtils.areAttributesLiteral(
+                _displayName, _shortDescription, _expert, _hidden, _preferred);
+    }
+    
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
@@ -221,35 +269,27 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * This method could be called only if it is not necessary to set the following properties:
      * targets, default, required, methodSignature and type
      * 
+     * @param development true if the current ProjectStage is Development
      * @return
      */
-    private PropertyDescriptor _createPropertyDescriptor()
+    private PropertyDescriptor _createPropertyDescriptor(boolean development)
     {
         try
         {
             CompositeComponentPropertyDescriptor attributeDescriptor = 
                 new CompositeComponentPropertyDescriptor(_name.getValue());
             
-            if (_displayName != null)
+            // If ProjectStage is Development, The "displayName", "shortDescription",
+            // "expert", "hidden", and "preferred" attributes are exposed
+            if (development)
             {
-                attributeDescriptor.setDisplayName(_displayName.getValue());
+                CompositeTagAttributeUtils.addDevelopmentAttributesLiteral(attributeDescriptor,
+                        _displayName, _shortDescription, _expert, _hidden, _preferred);
             }
-            if (_preferred != null)
-            {
-                attributeDescriptor.setPreferred(Boolean.valueOf(_preferred.getValue()));
-            }
-            if (_expert != null)
-            {
-                attributeDescriptor.setExpert(Boolean.valueOf(_expert.getValue()));
-            }
-            if (_shortDescription != null)
-            {
-                attributeDescriptor.setShortDescription(_shortDescription.getValue());
-            }
-            if (_hidden != null)
-            {
-                attributeDescriptor.setHidden(Boolean.valueOf(_hidden.getValue()));
-            }
+            
+            // note that no unspecified attributes are handled here, because the current
+            // tag does not contain any, otherwise this code would not have been called.
+            
             return attributeDescriptor;
         }
         catch (IntrospectionException e)
@@ -280,25 +320,9 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             {
                 attributeDescriptor.setValue("default", _default.getValueExpression(ctx, String.class));
             }
-            if (_displayName != null)
-            {
-                attributeDescriptor.setDisplayName(_displayName.getValue(ctx));
-            }
             if (_required != null)
             {
                 attributeDescriptor.setValue("required", _required.getValueExpression(ctx, Boolean.class));
-            }
-            if (_preferred != null)
-            {
-                attributeDescriptor.setPreferred(_preferred.getBoolean(ctx));
-            }
-            if (_expert != null)
-            {
-                attributeDescriptor.setExpert(_expert.getBoolean(ctx));
-            }
-            if (_shortDescription != null)
-            {
-                attributeDescriptor.setShortDescription(_shortDescription.getValue(ctx));
             }
             if (_methodSignature != null)
             {
@@ -308,10 +332,20 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             {
                 attributeDescriptor.setValue("type", _type.getValueExpression(ctx, String.class));
             }
-            if (_hidden != null)
+            
+            // If ProjectStage is Development, The "displayName", "shortDescription",
+            // "expert", "hidden", and "preferred" attributes are exposed
+            if (ctx.getFacesContext().isProjectStage(ProjectStage.Development))
             {
-                attributeDescriptor.setHidden(_hidden.getBoolean(ctx));
+                CompositeTagAttributeUtils.addDevelopmentAttributes(attributeDescriptor, ctx, 
+                        _displayName, _shortDescription, _expert, _hidden, _preferred);
             }
+            
+            // Any additional attributes are exposed as attributes accessible
+            // from the getValue() and attributeNames() methods on FeatureDescriptor
+            CompositeTagAttributeUtils.addUnspecifiedAttributes(attributeDescriptor, tag, 
+                    STANDARD_ATTRIBUTES_SORTED, ctx);
+            
             return attributeDescriptor;
         }
         catch (IntrospectionException e)

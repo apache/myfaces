@@ -24,7 +24,9 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
@@ -49,6 +51,21 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
     public final static String NAME = "interface";
     
     /**
+     * String array defining all standard attributes of this tag.
+     * ATTENTION: this array MUST be sorted alphabetically in order to use binary search!!
+     */
+    private static final String[] STANDARD_ATTRIBUTES_SORTED = new String[]
+    {
+        "componentType",
+        "displayName",
+        "expert",
+        "hidden",
+        "name",
+        "preferred",
+        "shortDescription"
+    };
+    
+    /**
      * 
      */
     @JSFFaceletAttribute(name="name",
@@ -65,7 +82,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
     private final TagAttribute _componentType;
     
     /**
-     * 
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="displayName",
             className="javax.el.ValueExpression",
@@ -73,7 +90,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
     private final TagAttribute _displayName;
     
     /**
-     * 
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="preferred",
             className="javax.el.ValueExpression",
@@ -81,7 +98,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
     private final TagAttribute _preferred;
     
     /**
-     * 
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="expert",
             className="javax.el.ValueExpression",
@@ -89,7 +106,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
     private final TagAttribute _expert;
     
     /**
-     * 
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="shortDescription",
             className="javax.el.ValueExpression",
@@ -99,6 +116,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
     /**
      * The "hidden" flag is used to identify features that are intended only 
      * for tool use, and which should not be exposed to humans.
+     * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="hidden",
             className="javax.el.ValueExpression",
@@ -125,17 +143,20 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
         _shortDescription = getAttribute("shortDescription");
         _hidden = getAttribute("hidden");
         
-        if (    (_name == null             || _name.isLiteral()             ) &&
-                (_componentType == null    || _componentType.isLiteral()    ) &&   
-                (_displayName == null      || _displayName.isLiteral()      ) &&
-                (_preferred == null        || _preferred.isLiteral()        ) &&
-                (_expert == null           || _expert.isLiteral()           ) &&
-                (_shortDescription == null || _shortDescription.isLiteral() ) &&
-                (_hidden == null           || _hidden.isLiteral()           ) )
+        // Note that only if ProjectStage is Development, The "displayName",
+        // "shortDescription", "expert", "hidden", and "preferred" attributes are exposed
+        final boolean development = FacesContext.getCurrentInstance()
+                .isProjectStage(ProjectStage.Development);
+        
+        // note that we don't have to check the componentType and any unspecified
+        // attributes here, because these ones are stored as a ValueExpression in the
+        // BeanDescriptor and thus they have no effect on caching
+        if ((_name == null || _name.isLiteral()) 
+                && (!development || _areDevelopmentAttributesLiteral()))
         {
             _cacheable = true;
-            // Check if all attributes are cacheable. If that so, we can cache this
-            // instance, otherwise not.
+            // Check if all InterfaceDescriptorCreator children are cacheable.
+            // If so, we can cache this instance, otherwise not.
             attrHandlerList = 
                 TagHandlerUtils.findNextByType( nextHandler, InterfaceDescriptorCreator.class);
             for (InterfaceDescriptorCreator handler : attrHandlerList)
@@ -159,6 +180,17 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
         {
             _cacheable = false;
         }
+    }
+    
+    /**
+     * True if the "displayName", "shortDescription", "expert", "hidden", and
+     * "preferred" attributes are either null or literal.
+     * @return
+     */
+    private boolean _areDevelopmentAttributesLiteral()
+    {
+        return CompositeTagAttributeUtils.areAttributesLiteral(
+                _displayName, _shortDescription, _expert, _hidden, _preferred);
     }
 
     public void apply(FaceletContext ctx, UIComponent parent)
@@ -197,26 +229,19 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
                 descriptor.setValue(UIComponent.COMPOSITE_COMPONENT_TYPE_KEY, 
                         _componentType.getValueExpression(ctx, String.class));
             }
-            if (_displayName != null)
+            
+            // If ProjectStage is Development, The "displayName", "shortDescription",
+            // "expert", "hidden", and "preferred" attributes are exposed
+            if (ctx.getFacesContext().isProjectStage(ProjectStage.Development))
             {
-                descriptor.setDisplayName(_displayName.getValue(ctx));
+                CompositeTagAttributeUtils.addDevelopmentAttributes(descriptor, ctx, 
+                        _displayName, _shortDescription, _expert, _hidden, _preferred);
             }
-            if (_preferred != null)
-            {
-                descriptor.setPreferred(_preferred.getBoolean(ctx));
-            }
-            if (_expert != null)
-            {
-                descriptor.setExpert(_expert.getBoolean(ctx));
-            }
-            if (_shortDescription != null)
-            {
-                descriptor.setShortDescription(_shortDescription.getValue(ctx));
-            }
-            if (_hidden != null)
-            {
-                descriptor.setHidden(_hidden.getBoolean(ctx));
-            }
+            
+            // Any additional attributes are exposed as attributes accessible
+            // from the getValue() and attributeNames() methods on BeanDescriptor
+            CompositeTagAttributeUtils.addUnspecifiedAttributes(descriptor, tag, 
+                    STANDARD_ATTRIBUTES_SORTED, ctx);
             
             nextHandler.apply(ctx, parent);
         }
