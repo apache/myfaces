@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.el;
 
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -54,7 +55,7 @@ public final class CompositeComponentELUtils
     /**
      * A regular expression used to determine if cc is used in an expression String.
      */
-    public static final String CC_EXPRESSION_REGEX = ".*[^\\w\\.]cc[^\\w].*";
+    public static final Pattern CC_EXPRESSION_REGEX = Pattern.compile(".*[^\\w\\.]cc[^\\w].*");
     
     /**
      * A regular expression used to determine if cc.attrs is used as a method expression
@@ -69,7 +70,7 @@ public final class CompositeComponentELUtils
      * - [^\\.]* - There must be no dot after cc.attrs to indicate a method invocation on cc.attrs
      * - (\\(.*)? - If there is a left paranthesis after cc.attrs, a dot is allowed again
      */
-    public static final String CC_ATTRS_METHOD_EXPRESSION_REGEX = "[^\\(]*[^\\w\\.\\(]cc\\.attrs\\.[^\\.]*(\\(.*)?";
+    public static final Pattern CC_ATTRS_METHOD_EXPRESSION_REGEX = Pattern.compile("[^\\(]*[^\\w\\.\\(]cc\\.attrs\\.[^\\.]*(\\(.*)?");
     
     /**
      * private constructor
@@ -166,7 +167,7 @@ public final class CompositeComponentELUtils
      */
     public static boolean isCompositeComponentExpression(String expression)
     {
-        return expression.matches(CC_EXPRESSION_REGEX);
+        return CC_EXPRESSION_REGEX.matcher(expression).matches();
     }
     
     /**
@@ -179,7 +180,7 @@ public final class CompositeComponentELUtils
      */
     public static boolean isCompositeComponentAttrsMethodExpression(String expression)
     {
-        return expression.matches(CC_ATTRS_METHOD_EXPRESSION_REGEX);
+        return CC_ATTRS_METHOD_EXPRESSION_REGEX.matcher(expression).matches();
     }
     
 }
