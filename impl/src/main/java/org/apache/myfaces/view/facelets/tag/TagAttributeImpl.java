@@ -165,7 +165,9 @@ public final class TagAttributeImpl extends TagAttribute
             // From this point we can suppose this attribute contains a ELExpression
             // Now we have to check if the expression points to a composite component attribute map
             // and if so deal with it as an indirection.
-            if (isCompositeComponentAttributeMapExpression())
+            // NOTE that we have to check if the expression refers to cc.attrs for a MethodExpression
+            // (#{cc.attrs.myMethod}) or only for MethodExpression parameters (#{bean.method(cc.attrs.value)}).
+            if (CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(this.getValue()))
             {
                 // The MethodExpression is on parent composite component attribute map.
                 // create a pointer that are referred to the real one that is created in other side
@@ -195,27 +197,6 @@ public final class TagAttributeImpl extends TagAttribute
         {
             throw new TagAttributeException(this, e);
         }
-    }
-    
-    private boolean isCompositeComponentAttributeMapExpression()
-    {
-        // Check if the ELExpression inside this.value has as target the composite component attribute map
-        // and if so, return true, otherwise return false. 
-        int i = this.value.indexOf("cc.");
-        if (i >= 0)
-        {
-            i = this.value.indexOf("attrs.",i+3); 
-            if (i >= 0)
-            {
-                // If the last target is a value inside the composite attribute map
-                // we are in case.
-                if (this.value.indexOf('.',i+6) < 0)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
     
     /**

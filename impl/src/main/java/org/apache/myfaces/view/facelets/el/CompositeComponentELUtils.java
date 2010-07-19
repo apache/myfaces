@@ -57,6 +57,21 @@ public final class CompositeComponentELUtils
     public static final String CC_EXPRESSION_REGEX = ".*[^\\w\\.]cc[^\\w].*";
     
     /**
+     * A regular expression used to determine if cc.attrs is used as a method expression
+     * in an expression String. This means cc.attrs must occur, must stand before a '(',
+     * because otherwise it would be a method parameter (EL 2.2), and there must be no '.' after
+     * cc.attrs unless there is a left parenthesis before it (e.g. #{cc.attrs.method(bean.parameter)}).
+     * 
+     * Explanation of the parts:
+     * - [^\\(]* - There can be any character except a '(' before cc.attrs
+     * - [^\\w\\.\\(] - There must be no word character, dot, or left parenthesis directly before cc.attrs
+     * - cc\\.attrs\\. - "cc.attrs." must occur
+     * - [^\\.]* - There must be no dot after cc.attrs to indicate a method invocation on cc.attrs
+     * - (\\(.*)? - If there is a left paranthesis after cc.attrs, a dot is allowed again
+     */
+    public static final String CC_ATTRS_METHOD_EXPRESSION_REGEX = "[^\\(]*[^\\w\\.\\(]cc\\.attrs\\.[^\\.]*(\\(.*)?";
+    
+    /**
      * private constructor
      */
     private CompositeComponentELUtils()
@@ -152,6 +167,19 @@ public final class CompositeComponentELUtils
     public static boolean isCompositeComponentExpression(String expression)
     {
         return expression.matches(CC_EXPRESSION_REGEX);
+    }
+    
+    /**
+     * Tests if cc.attrs is used as a method expression in an expression String. This means 
+     * cc.attrs must occur, must stand before a '(', because otherwise it would be a method parameter 
+     * (EL 2.2), and there must be no '.' after cc.attrs unless there is a left parenthesis
+     * before it (e.g. #{cc.attrs.method(bean.parameter)}).
+     * @param expression
+     * @return
+     */
+    public static boolean isCompositeComponentAttrsMethodExpression(String expression)
+    {
+        return expression.matches(CC_ATTRS_METHOD_EXPRESSION_REGEX);
     }
     
 }
