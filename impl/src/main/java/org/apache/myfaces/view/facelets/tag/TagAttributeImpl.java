@@ -172,6 +172,17 @@ public final class TagAttributeImpl extends TagAttribute
                 // The MethodExpression is on parent composite component attribute map.
                 // create a pointer that are referred to the real one that is created in other side
                 // (see VDL.retargetMethodExpressions for details)
+                
+                // check for params in the the MethodExpression
+                if (ExternalSpecifications.isUnifiedELAvailable() && this.value.contains("("))
+                {
+                    // if we don't throw this exception here, another ELException will be
+                    // thrown later, because #{cc.attrs.method(param)} will not work as a
+                    // ValueExpression pointing to a MethodExpression
+                    throw new ELException("Cannot add parameters to a MethodExpression "
+                            + "pointing to cc.attrs");
+                }
+                
                 ValueExpression valueExpr = this.getValueExpression(ctx, MethodExpression.class);
                 methodExpression = new ValueExpressionMethodExpression(valueExpr);
             }
