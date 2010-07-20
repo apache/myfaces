@@ -141,8 +141,17 @@ public class BeanValidator implements Validator, PartialStateHolder
         {
             return;
         }
+        
         final Class<?> valueBaseClass = base.getClass();
-        final String valueProperty = (String) reference.getProperty();
+        Object referenceProperty = reference.getProperty();
+        if (!(referenceProperty instanceof String))
+        {
+            // if the property is not a String, the ValueReference does not
+            // point to a bean method, but e.g. to a value in a Map, thus we 
+            // can exit bean validation here
+            return;
+        }
+        final String valueProperty = (String) referenceProperty;
         if (valueBaseClass == null || valueProperty == null)
         {
             return;
