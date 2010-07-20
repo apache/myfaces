@@ -20,6 +20,7 @@ package org.apache.myfaces.webapp;
 
 import java.util.Enumeration;
 
+import org.apache.commons.discovery.tools.DiscoverSingleton;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.ManagedBeanBuilder;
@@ -194,6 +195,7 @@ public class StartupServletContextListener extends AbstractMyFacesListener
             _facesInitializer.destroyFaces(_servletContext);
         }
         FactoryFinder.releaseFactories();
+        DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
         dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
 
         _servletContext = null;
