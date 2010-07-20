@@ -599,7 +599,9 @@ final class _ValueReferenceResolver extends ELResolver
     public final boolean isReadOnly(final ELContext ctx, final Object base, final Object property){return resolver.isReadOnly(ctx, base, property);}
     public final Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base){return resolver.getFeatureDescriptors(ctx, base);}
     public final Class<?> getCommonPropertyType(final ELContext ctx, final Object base){return resolver.getCommonPropertyType(ctx, base);}
-
+    public final Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
+        return resolver.invoke(context, base, method, paramTypes, params);
+    }
 }
 
 /**
