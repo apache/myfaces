@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
@@ -75,7 +76,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 public class BeanValidator implements Validator, PartialStateHolder
 {
 
-//    private static final Logger log = Logger.getLogger(BeanValidator.class.getName());
+    private static final Logger log = Logger.getLogger(BeanValidator.class.getName());
 
     /**
      * Converter ID, as defined by the JSF 2.0 specification.
@@ -129,6 +130,12 @@ public class BeanValidator implements Validator, PartialStateHolder
     {
         if (context == null) throw new NullPointerException("context");
         if (component == null) throw new NullPointerException("component");
+
+        if (component.getValueExpression("value") == null)
+        {
+            log.warning("cannot validate component with empty value" + component.getId());
+            return;
+        }
 
         // Obtain a reference to the to-be-validated object and the property name.
         final _ValueReferenceWrapper reference = getValueReference(component, context);
@@ -220,12 +227,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             
             // we can't access ValueExpression.getValueReference() directly here, because
             // Class loading would fail in applications with el-api versions prior to 2.2
-            _ValueReferenceWrapper valueReference 
-                    = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
-            if (valueReference != null)
-            {
-                return valueReference;
-            }
+            return  _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
         }
         
         // get base object and property name the "old-fashioned" way
@@ -556,11 +558,6 @@ final class _ValueReferenceResolver extends ELResolver
      */
     public static _ValueReferenceWrapper resolve(ValueExpression valueExpression, final ELContext elCtx)
     {
-        if(valueExpression == null)
-        {
-            return null;
-        }
-        
         final _ValueReferenceResolver resolver = new _ValueReferenceResolver(elCtx.getELResolver());
         final ELContext elCtxDecorator = new _ELContextDecorator(elCtx, resolver);
         
@@ -599,9 +596,6 @@ final class _ValueReferenceResolver extends ELResolver
     public final boolean isReadOnly(final ELContext ctx, final Object base, final Object property){return resolver.isReadOnly(ctx, base, property);}
     public final Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base){return resolver.getFeatureDescriptors(ctx, base);}
     public final Class<?> getCommonPropertyType(final ELContext ctx, final Object base){return resolver.getCommonPropertyType(ctx, base);}
-    public final Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
-        return resolver.invoke(context, base, method, paramTypes, params);
-    }
 }
 
 /**

@@ -38,17 +38,12 @@ final class _BeanValidatorUELUtils
     /**
      * Get the ValueReference from the ValueExpression.
      *
-     * @param component The component.
-     * @param context The FacesContext.
+     * @param valueExpression
+     * @param elCtx
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
     public static _ValueReferenceWrapper getUELValueReferenceWrapper(ValueExpression valueExpression, final ELContext elCtx)
     {
-        if(valueExpression == null)
-        {
-            return null;
-        }
-                
         ValueReference valueReference = valueExpression.getValueReference(elCtx);
         
         while (valueReference != null 
@@ -63,11 +58,12 @@ final class _BeanValidatorUELUtils
             valueReference = valueExpression.getValueReference(elCtx);
         }
         
-        if (valueReference == null)
+        if (valueReference != null)
         {
-            return null;
+            return new _ValueReferenceWrapper(valueReference.getBase(), valueReference.getProperty());
         }
-        return new _ValueReferenceWrapper(valueReference.getBase(), valueReference.getProperty());
+        
+        return null;
     }
 
 }
