@@ -131,14 +131,16 @@ public class BeanValidator implements Validator, PartialStateHolder
         if (context == null) throw new NullPointerException("context");
         if (component == null) throw new NullPointerException("component");
 
-        if (component.getValueExpression("value") == null)
+        ValueExpression valueExpression = component.getValueExpression("value");
+        if (valueExpression == null)
         {
-            log.warning("cannot validate component with empty value" + component.getId());
+            log.warning("cannot validate component with empty value: " 
+                    + component.getClientId(context));
             return;
         }
 
         // Obtain a reference to the to-be-validated object and the property name.
-        final _ValueReferenceWrapper reference = getValueReference(component, context);
+        final _ValueReferenceWrapper reference = getValueReference(valueExpression, context);
         if (reference == null)
         {
             return;
@@ -150,6 +152,11 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
         
         final Class<?> valueBaseClass = base.getClass();
+        if (valueBaseClass == null)
+        {
+            return;
+        }
+        
         Object referenceProperty = reference.getProperty();
         if (!(referenceProperty instanceof String))
         {
@@ -159,10 +166,6 @@ public class BeanValidator implements Validator, PartialStateHolder
             return;
         }
         final String valueProperty = (String) referenceProperty;
-        if (valueBaseClass == null || valueProperty == null)
-        {
-            return;
-        }
 
         // Initialize Bean Validation.
         final ValidatorFactory validatorFactory = createValidatorFactory(context);
@@ -212,14 +215,14 @@ public class BeanValidator implements Validator, PartialStateHolder
     /**
      * Get the ValueReference from the ValueExpression.
      *
-     * @param component The component.
+     * @param valueExpression The ValueExpression for value.
      * @param context The FacesContext.
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
 
-    private _ValueReferenceWrapper getValueReference(final UIComponent component, final FacesContext context)
+    private _ValueReferenceWrapper getValueReference(
+            final ValueExpression valueExpression, final FacesContext context)
     {
-        final ValueExpression valueExpression = component.getValueExpression("value");
         final ELContext elCtx = context.getELContext();
         if (_ExternalSpecifications.isUnifiedELAvailable())
         {
