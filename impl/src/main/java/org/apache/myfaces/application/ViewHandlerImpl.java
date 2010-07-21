@@ -164,7 +164,6 @@ public class ViewHandlerImpl extends ViewHandler
         {
             super.initView(context);    
         }
-        context.getAttributes().put(JspStateManagerImpl.JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR, true);
     }
 
     /**
@@ -318,7 +317,6 @@ public class ViewHandlerImpl extends ViewHandler
         }else
         {
             //we're in a JSP, let the JSPStatemanager know that we need to actually write the state
-            context.getAttributes().put(JspStateManagerImpl.JSP_IS_WRITING_STATE_ATTR, true);
         }        
     }
     

@@ -179,16 +179,8 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
     private static final int JSF_SEQUENCE_INDEX = 0;
 
-    public static final String JSP_IS_WRITING_STATE_ATTR = "org.apache.myfaces.JSP_IS_WRITING_STATE";
-    
-    /**
-     * Indicate that the current ViewHandler will advice through org.apache.myfaces.JSP_IS_WRITING_STATE var
-     * that it is necessary to write the state.
-     */
-    public static final String JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR = "org.apache.myfaces.JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR";
-    
     private RenderKitFactory _renderKitFactory = null;
-    
+
     public JspStateManagerImpl()
     {
         if (log.isLoggable(Level.FINEST)) log.finest("New JspStateManagerImpl instance created");
@@ -473,14 +465,6 @@ public class JspStateManagerImpl extends MyfacesStateManager
     {
         if (log.isLoggable(Level.FINEST)) log.finest("Entering saveSerializedView");
 
-        if (isViewHandlerWritingState(facesContext))
-        {
-            if(!isWritingState(facesContext)){
-                if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveSerializedView - no state to save");
-                return null;
-            }
-        }
-        
         checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<String>());
 
         if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - Checked for duplicate Ids");
@@ -602,7 +586,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
         //save state in response (client)
         RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());
         ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
-        
+
         if (isLegacyResponseStateManager(responseStateManager))
         {
             responseStateManager.writeState(facesContext, serializedView);
@@ -620,7 +604,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
             state[1] = serializedView.getState();
             responseStateManager.writeState(facesContext, state);
         }
-        
+
         if (log.isLoggable(Level.FINEST)) log.finest("Exiting writeState");
 
     }
@@ -980,19 +964,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
         return true;
     }
-    
-    private boolean isViewHandlerWritingState(FacesContext context)
-    {
-        Boolean viewHandlerWritingState = (Boolean)context.getAttributes().get(JSP_VIEWHANDLER_IS_WRITING_STATE_ATTR);
-        return viewHandlerWritingState == null ? false : viewHandlerWritingState;
-    }
-    
-    private boolean isWritingState(FacesContext context)
-    {
-        Boolean writingState = (Boolean)context.getAttributes().get(JSP_IS_WRITING_STATE_ATTR); 
-        return writingState == null ? false : writingState;
-    }
-    
+
     protected static class SerializedViewCollection implements Serializable
     {
         private static final long serialVersionUID = -3734849062185115847L;
