@@ -47,12 +47,12 @@ public abstract class ResponseWriter extends Writer
     
     public void startCDATA() throws IOException
     {
-        // no action
+        write ("<![CDATA[");
     }
     
     public void endCDATA() throws IOException
     {
-        // no action
+        write ("]]>");
     }
     
     public abstract void writeAttribute(String name, Object value, String property) throws IOException;
