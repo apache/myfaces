@@ -72,6 +72,17 @@
             </releases>
         </repository>
         -->
+        
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>apache-maven-snapshots</id>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+        </repository>
   </repositories>
   <build>
     <plugins>
