@@ -122,11 +122,16 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             _ajaxHandlerStack = ctx._ajaxHandlerStack;
         }
         
-        _isolatedTemplateContext = new ArrayList<TemplateContext>(ctx._isolatedTemplateContext.size()+1);
-        for (int i = 0; i <= ctx._currentTemplateContext; i++)
-        {
-            _isolatedTemplateContext.add(ctx._isolatedTemplateContext.get(i));
-        }
+        // It is not necessary to create a copy of this array, because we always use
+        // pushTemplateContext(TemplateContext) / popTemplateContext() and
+        // pushCompositeComponentClient(final TemplateClient client) / popCompositeComponentClient()
+        // in pairs.
+        //_isolatedTemplateContext = new ArrayList<TemplateContext>(ctx._isolatedTemplateContext.size()+1);
+        //for (int i = 0; i <= ctx._currentTemplateContext; i++)
+        //{
+        //    _isolatedTemplateContext.add(ctx._isolatedTemplateContext.get(i));
+        //}
+        _isolatedTemplateContext = ctx._isolatedTemplateContext;
         _currentTemplateContext = ctx._currentTemplateContext;
 
         //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
