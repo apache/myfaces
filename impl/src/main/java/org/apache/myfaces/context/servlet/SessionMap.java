@@ -46,7 +46,7 @@ public final class SessionMap extends AbstractAttributeMap<Object>
     @Override
     protected Object getAttribute(final String key)
     {
-        final HttpSession httpSession = getSession();
+        final HttpSession httpSession = _getSession();
         return (httpSession == null) ? null : httpSession.getAttribute(key);
     }
 
@@ -59,7 +59,7 @@ public final class SessionMap extends AbstractAttributeMap<Object>
     @Override
     protected void removeAttribute(final String key)
     {
-        final HttpSession httpSession = getSession();
+        final HttpSession httpSession = _getSession();
         if (httpSession != null)
         {
             httpSession.removeAttribute(key);
@@ -70,13 +70,8 @@ public final class SessionMap extends AbstractAttributeMap<Object>
     @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        final HttpSession httpSession = getSession();
+        final HttpSession httpSession = _getSession();
         return (httpSession == null) ? NullEnumeration.instance() : httpSession.getAttributeNames();
-    }
-
-    private HttpSession getSession()
-    {
-        return _httpRequest.getSession(false);
     }
 
     @Override
@@ -84,24 +79,12 @@ public final class SessionMap extends AbstractAttributeMap<Object>
     {
         throw new UnsupportedOperationException();
     }
-
-    /**
-     * This will clear the session without invalidation. If no session has been created, it will simply return.
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public void clear()
+    
+    // we can use public void clear() from super-class
+    
+    private HttpSession _getSession()
     {
-        final HttpSession session = getSession();
-        if (session == null)
-        {
-            return;
-        }
-        
-        Enumeration<String> attributeNames = session.getAttributeNames();
-        while (attributeNames.hasMoreElements())
-        {
-            session.removeAttribute(attributeNames.nextElement());
-        }
+        return _httpRequest.getSession(false);
     }
+
 }

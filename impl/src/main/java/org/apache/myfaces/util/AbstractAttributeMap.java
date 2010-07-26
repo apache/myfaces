@@ -20,8 +20,8 @@ package org.apache.myfaces.util;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -44,11 +44,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public void clear()
     {
-        final List<String> names = new ArrayList<String>();
-        for (final Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
-        {
-            names.add(e.nextElement());
-        }
+        final List<String> names = Collections.list(getAttributeNames());
 
         for (String name : names)
         {
@@ -203,14 +199,17 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
     private abstract class AbstractAttributeIterator<E> implements Iterator<E>
     {
-        protected final Enumeration<String> _e = getAttributeNames();
+        // We use a copied version of the Enumeration from getAttributeNames()
+        // here, because directly using it might cause a ConcurrentModificationException
+        // when performing remove(). Note that we can do this since the Enumeration
+        // from getAttributeNames() will contain exactly the attribute names from the time
+        // getAttributeNames() was called and it will not be updated if attributes are 
+        // removed or added.
+        protected final Iterator<String> _i = Collections.list(getAttributeNames()).iterator();
         protected String _currentKey;
 
         public void remove()
         {
-            // remove() may cause ConcurrentModificationException.
-            // We could throw an exception here, but not throwing an exception
-            // allows one call to remove() to succeed
             if (_currentKey == null)
             {
                 throw new NoSuchElementException("You must call next() at least once");
@@ -220,12 +219,12 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
         public boolean hasNext()
         {
-            return _e.hasMoreElements();
+            return _i.hasNext();
         }
 
         public E next()
         {
-            return getValue(_currentKey = _e.nextElement());
+            return getValue(_currentKey = _i.next());
         }
 
         protected abstract E getValue(String attributeName);
