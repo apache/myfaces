@@ -45,11 +45,7 @@ public abstract class AbstractAttributeMap
 
     public void clear()
     {
-        List names = new ArrayList();
-        for (Enumeration e = getAttributeNames(); e.hasMoreElements();)
-        {
-            names.add(e.nextElement());
-        }
+        final List names = _list(getAttributeNames());
 
         for (Iterator it = names.iterator(); it.hasNext();)
         {
@@ -141,7 +137,19 @@ public abstract class AbstractAttributeMap
     {
         return (_values != null) ? _values : (_values = new Values());
     }
-
+    
+    /**
+     * Collections.list() from JDK 1.4
+     */
+    private ArrayList _list(Enumeration e) {
+        ArrayList l = new ArrayList();
+        while (e.hasMoreElements())
+        {
+            l.add(e.nextElement());
+        }
+        return l;
+    }
+    
 
     abstract protected Object getAttribute(String key);
 
@@ -188,14 +196,17 @@ public abstract class AbstractAttributeMap
     private class KeyIterator
         implements Iterator
     {
-        protected final Enumeration _e = getAttributeNames();
-        protected Object            _currentKey;
+        // We use a copied version of the Enumeration from getAttributeNames()
+        // here, because directly using it might cause a ConcurrentModificationException
+        // when performing remove(). Note that we can do this since the Enumeration
+        // from getAttributeNames() will contain exactly the attribute names from the time
+        // getAttributeNames() was called and it will not be updated if attributes are 
+        // removed or added.
+        protected final Iterator _i = _list(getAttributeNames()).iterator();
+        protected Object _currentKey;
 
         public void remove()
         {
-            // remove() may cause ConcurrentModificationException.
-            // We could throw an exception here, but not throwing an exception
-            //   allows one call to remove() to succeed
             if (_currentKey == null)
             {
                 throw new NoSuchElementException(
@@ -206,12 +217,12 @@ public abstract class AbstractAttributeMap
 
         public boolean hasNext()
         {
-            return _e.hasMoreElements();
+            return _i.hasNext();
         }
 
         public Object next()
         {
-            return _currentKey = _e.nextElement();
+            return _currentKey = _i.next();
         }
     }
 
