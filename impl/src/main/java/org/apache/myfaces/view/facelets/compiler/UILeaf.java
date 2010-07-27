@@ -26,8 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.el.ValueExpression;
+import javax.faces.FacesException;
+import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
@@ -298,6 +302,22 @@ class UILeaf extends UIComponentBase
     public void setTransient(boolean tranzient)
     {
         // do nothing
+    }
+
+    @Override
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback)
+            throws FacesException
+    {
+        //this component will never be a target for a callback, so always return false.
+        return false;
+    }
+
+    @Override
+    public boolean visitTree(VisitContext context, VisitCallback callback)
+    {
+        // the visiting is complete and it shouldn't affect the visiting of the other
+        // children of the parent component, therefore return false
+        return false;
     }
 
 }
