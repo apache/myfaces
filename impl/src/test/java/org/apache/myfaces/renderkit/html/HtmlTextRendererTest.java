@@ -161,7 +161,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         // 1) user enters an empty string in an input-component: ""
         //Call to setSubmittedValue on HtmlRendererUtils.decodeUIInput(facesContext, component), 
         //that is called from renderer decode()
-        facesContext.getExternalContext().getRequestParameterMap().put(inputText.getClientId(facesContext), "");
+        externalContext.addRequestParameterMap(inputText.getClientId(facesContext), "");
         
         inputText.decode(facesContext);
         
