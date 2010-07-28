@@ -38,7 +38,9 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
+import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
 
 /**
@@ -109,6 +111,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient
         // eval include
         try
         {
+            actx.pushTemplateContext(new TemplateContextImpl());
             actx.pushClient(this);
             ctx.includeFacelet(parent, this._location);
         }
@@ -121,6 +124,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient
 
             // make sure we undo our changes
             actx.popClient(this);
+            actx.popTemplateContext();
             ctx.setVariableMapper(orig);
         }
     }
@@ -137,7 +141,16 @@ final class UserTagHandler extends TagHandler implements TemplateClient
             DefineHandler handler = (DefineHandler) this._handlers.get(name);
             if (handler != null)
             {
-                handler.applyDefinition(ctx, parent);
+                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+                TemplateContext itc = actx.popTemplateContext();
+                try
+                {
+                    handler.applyDefinition(ctx, parent);
+                }
+                finally
+                {
+                    actx.pushTemplateContext(itc);
+                }
                 return true;
             }
             else
@@ -147,7 +160,16 @@ final class UserTagHandler extends TagHandler implements TemplateClient
         }
         else
         {
-            this.nextHandler.apply(ctx, parent);
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            TemplateContext itc = actx.popTemplateContext();
+            try
+            {
+                this.nextHandler.apply(ctx, parent);
+            }
+            finally
+            {
+                actx.pushTemplateContext(itc);
+            }
             return true;
         }
     }

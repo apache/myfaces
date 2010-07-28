@@ -38,6 +38,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -86,6 +87,7 @@ public final class IncludeHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         String path = this.src.getValue(ctx);
         if (path == null || path.length() == 0)
         {
@@ -107,11 +109,28 @@ public final class IncludeHandler extends TagHandler
                     // fallback
                     url = getClass().getClassLoader().getResource(ERROR_FACELET);
                 }
-                ctx.includeFacelet(parent, url);
+
+                try
+                {
+                    actx.pushTemplateContext(new TemplateContextImpl());
+                    ctx.includeFacelet(parent, url);
+                }
+                finally
+                {
+                    actx.popTemplateContext();
+                }
             }
             else
             {
-                ctx.includeFacelet(parent, path);
+                try
+                {
+                    actx.pushTemplateContext(new TemplateContextImpl());
+                    ctx.includeFacelet(parent, path);
+                }
+                finally
+                {
+                    actx.popTemplateContext();
+                }
             }
         }
         finally
