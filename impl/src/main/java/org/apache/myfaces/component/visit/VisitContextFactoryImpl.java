@@ -32,19 +32,8 @@ import javax.faces.context.FacesContext;
  */
 public class VisitContextFactoryImpl extends VisitContextFactory {
 
-    VisitContextFactory _wrapped = null;
-
     public VisitContextFactoryImpl()
     {
-    }
-    
-    public VisitContextFactoryImpl(VisitContextFactory wrapped) {
-        _wrapped = wrapped;
-    }
-
-    @Override
-    public VisitContextFactory getWrapped() {
-        return _wrapped;
     }
 
     @Override
