@@ -1270,7 +1270,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     isMultipartCandidate: function(executes) {
         if(this._Lang.isString(executes)) {
-            executes = this._Lang.strToArray(executes, "\\s+");
+            executes = this._Lang.strToArray(executes, /\s+/);
         }
 
         for(var exec in executes) {

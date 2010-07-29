@@ -64,6 +64,14 @@ public class PartialViewContextImpl extends PartialViewContext {
     // many times and the result does not change during the life time
     // of this object.
     private Boolean _ajaxRequest = null;
+
+    /**
+     * Internal extension for
+     * https://issues.apache.org/jira/browse/MYFACES-2841
+     * will be changed for 2.1 to the official marker
+     */
+    private Boolean _iframeRequest = null;
+
     private Collection<String> _executeClientIds = null;
     private Collection<String> _renderClientIds = null;
     // Values that need to be saved because exists a setXX method 
@@ -78,13 +86,21 @@ public class PartialViewContextImpl extends PartialViewContext {
     @Override
     public boolean isAjaxRequest() {
         assertNotReleased();
-
+        /*
+         * Internal extension for
+         * https://issues.apache.org/jira/browse/MYFACES-2841
+         * will be changed for 2.1 to the official marker
+         */
+        if (_iframeRequest == null) {
+            isIFrameRequest();
+        }
         if (_ajaxRequest == null) {
             String requestType = _facesContext.getExternalContext().
                     getRequestHeaderMap().get(FACES_REQUEST);
             _ajaxRequest = (requestType != null && PARTIAL_AJAX.equals(requestType));
         }
-        return _ajaxRequest;
+        //for now we have to treat the partial iframe request also as ajax request
+        return _ajaxRequest || _iframeRequest;
     }
 
     @Override
@@ -111,7 +127,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                     getRequestHeaderMap().get(FACES_REQUEST);
             _partialRequest = (requestType != null && PARTIAL_PROCESS.equals(requestType));
         }
-        return isAjaxRequest() || isIFrameRequest() || _partialRequest;
+        return isAjaxRequest()  || _partialRequest;
     }
 
     @Override
@@ -143,7 +159,10 @@ public class PartialViewContextImpl extends PartialViewContext {
      * @return true if the current request is an iframe based ajax request
      */
     public boolean isIFrameRequest() {
-        return _facesContext.getExternalContext().getRequestParameterMap().containsKey(PARTIAL_IFRAME);
+        if(_iframeRequest == null) {
+            _iframeRequest = _facesContext.getExternalContext().getRequestParameterMap().containsKey(PARTIAL_IFRAME);
+        }
+        return _iframeRequest;
     }
 
     @Override
