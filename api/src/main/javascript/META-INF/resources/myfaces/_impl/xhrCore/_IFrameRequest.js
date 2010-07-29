@@ -161,6 +161,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         }
         //marker that this is an ajax iframe request
         this._appendHiddenValue("javax.faces.partial.iframe", "true");
+        this._appendHiddenValue("org.apache.myfaces.partial.iframe", "true");
+
     },
 
     _removeAjaxParams: function(oldTarget) {
@@ -170,6 +172,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
             this._removeHiddenValue(key);
         }
         this._removeHiddenValue("javax.faces.partial.iframe");
+        this._removeHiddenValue("org.apache.myfaces.partial.iframe");
     },
 
     _appendHiddenValue: function(key, value) {

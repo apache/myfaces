@@ -51,6 +51,13 @@ public class PartialViewContextImpl extends PartialViewContext {
     private static final String PARTIAL_AJAX = "partial/ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
     private static final String SOURCE_PARAM_NAME = "javax.faces.source";
+    /**
+     * Internal extension for
+     * https://issues.apache.org/jira/browse/MYFACES-2841
+     * will be changed for 2.1 to the official marker
+     */
+    private static final String PARTIAL_IFRAME = "org.apache.myfaces.partial.iframe";
+
     private FacesContext _facesContext = null;
     private boolean _released = false;
     // Cached values, since their parent methods could be called
@@ -104,7 +111,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                     getRequestHeaderMap().get(FACES_REQUEST);
             _partialRequest = (requestType != null && PARTIAL_PROCESS.equals(requestType));
         }
-        return isAjaxRequest() || _partialRequest;
+        return isAjaxRequest() || isIFrameRequest() || _partialRequest;
     }
 
     @Override
@@ -125,6 +132,18 @@ public class PartialViewContextImpl extends PartialViewContext {
             }
         }
         return _renderAll;
+    }
+
+    /**
+     * Extension for
+     * https://issues.apache.org/jira/browse/MYFACES-2841
+     * internal extension which detects that the submit is an iframe request
+     * will be changed for the official version which will come in 2.1
+     *
+     * @return true if the current request is an iframe based ajax request
+     */
+    public boolean isIFrameRequest() {
+        return _facesContext.getExternalContext().getRequestParameterMap().containsKey(PARTIAL_IFRAME);
     }
 
     @Override
