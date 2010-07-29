@@ -119,6 +119,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          *all the time
          **/
         var _Lang = myfaces._impl._util._Lang;
+        var _Dom = myfaces._impl._util._Dom;
+
         var elementId = null;
         /**
          * we cross reference statically hence the mapping here
@@ -136,7 +138,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             //to get a fallback option in case the identifier is not determinable
             // anymore, in case of a framework induced detachment the element.name should
             // be shared if the identifier is not determinable anymore
-            elementId = elem.id || null;
+            elementId = elem.id || elem.name;
             if ((elementId == null || elementId == '') && elem.name) {
                 elementId = elem.name;
             }
@@ -169,21 +171,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          * ajax pass through context with the source
          * onevent and onerror
          */
-        var context = {};
-        context.source = elem;
-        context.onevent = options.onevent;
-        context.onerror = options.onerror;
+        var context = {
+            source: elem,
+            onevent: options.onevent,
+            onerror: options.onerror
+        };
 
         /**
          * fetch the parent form
          */
 
-        var form = myfaces._impl._util._Dom.fuzzyFormDetection(elem);
+        var form = _Dom.fuzzyFormDetection(elem);
 
         var formErr = "Sourceform could not be determined, either because element is not attached to a form or we have multiple forms with named elements of the same identifier or name, stopping the ajax processing";
 
         if (!form && event) {
-            form = myfaces._impl._util._Dom.fuzzyFormDetection(_Lang.getEventTarget(event));
+            form = _Dom.fuzzyFormDetection(_Lang.getEventTarget(event));
             if (!form) {
                 throw Error(formErr);
             }
@@ -201,26 +204,25 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          */
         passThrgh[this.P_AJAX] = true;
 
-        /**
-         * if execute or render exist
-         * we have to pass them down as a blank delimited string representation
-         * of an array of ids!
-         */
-        var exec, none, all, render = null;
+
+        var _this = this;
+        var transformList = function(target, srcList) {
+            var opList = _Lang.arrToString(srcList, ' '),
+                    none = opList.indexOf(_this.IDENT_NONE) != -1,
+                    all = opList.indexOf(_this.IDENT_ALL) != -1;
+            if (!none && !all) {
+                opList = opList.replace(_this.IDENT_FORM, form.id);
+                opList = opList.replace(_this.IDENT_THIS, elementId);
+
+                passThrgh[target] = opList;
+            } else if (all) {
+                passThrgh[target] = _this.IDENT_ALL;
+            }
+        };
+
         if (passThrgh.execute) {
             /*the options must be a blank delimited list of strings*/
-            exec = _Lang.arrToString(passThrgh.execute, ' ');
-            none = exec.indexOf(this.IDENT_NONE) != -1;
-            all = exec.indexOf(this.IDENT_ALL) != -1;
-            if (!none && !all) {
-                exec = exec.replace(this.IDENT_FORM, form.id);
-                exec = exec.replace(this.IDENT_THIS, elementId);
-
-                passThrgh[this.P_EXECUTE] = exec;
-            } else if (all) {
-                passThrgh[this.P_EXECUTE] = this.IDENT_ALL;
-            }
-
+            transformList(this.P_EXECUTE, passThrgh.execute);
             passThrgh.execute = null;
             /*remap just in case we have a valid pointer to an existing object*/
             delete passThrgh.execute;
@@ -229,18 +231,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         if (passThrgh.render) {
-            render = _Lang.arrToString(passThrgh.render, ' ');
-            none = render.indexOf(this.IDENT_NONE) != -1;
-            all = render.indexOf(this.IDENT_ALL) != -1;
-            if (!none && !all) {
-                render = render.replace(this.IDENT_FORM, form.id);
-                render = render.replace(this.IDENT_THIS, elementId);
-                passThrgh[this.P_RENDER] = render;
-                passThrgh.render = null;
-            } else if (all) {
-                passThrgh[this.P_RENDER] = this.IDENT_ALL;
-
-            }
+            transformList(this.P_RENDER, passThrgh.render);
+            passThrgh.render = null;
             delete passThrgh.render;
         }
 
@@ -249,6 +241,20 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             context.myfaces = passThrgh.myfaces;
             delete passThrgh.myfaces;
         }
+
+        var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
+
+        /**
+         * if execute or render exist
+         * we have to pass them down as a blank delimited string representation
+         * of an array of ids!
+         */
+        //for now we turn off the transport auto selection, to enable 2.0 backwards compatibility
+        //on protocol level, the file upload only can be turned on if the auto selection is set to true
+        var transportAutoSelection = getConfig(context, "transportAutoSelection", false);
+        var isMultipart = (transportAutoSelection && _Dom.getAttribute(form,"enctype") == "multipart/form-data") ?
+                _Dom.isMultipartCandidate(passThrgh[this.P_EXECUTE]) :
+                false;
 
         /**
          * multiple transports upcoming jsf 2.1 feature currently allowed
@@ -262,12 +268,19 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          * iframeQueuedPost
          *
          */
-        var transportType = myfaces._impl.core._Runtime.getLocalOrGlobalConfig(context, "transportType", "xhrQueuedPost");
+
+        var transportType = (!isMultipart) ?
+                getConfig(context, "transportType", "xhrQueuedPost") :
+                getConfig(context, "transportType", "iframeQueuedPost");
+
         if (!this._transport[transportType]) {
             throw new Error("Transport type " + transportType + " does not exist");
         }
+
         this._transport[transportType](elem, form, context, passThrgh);
     },
+
+
 
     addOnError : function(/*function*/errorListener) {
         /*error handling already done in the assert of the queue*/
@@ -322,7 +335,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         /**/
-        if (myfaces._impl._util._Lang.exists(context, "onerror")) {
+        if (context["onerror"]) {
             context.onerror(eventData);
         }
 
@@ -409,25 +422,20 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         /* run through all script tags and try to find the one that includes jsf.js */
         var scriptTags = document.getElementsByTagName("script");
         var getConfig = myfaces._impl.core._Runtime.getGlobalConfig;
-        for (var i = 0; i < scriptTags.length; i++)
-        {
-            if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1)
-            {
+        for (var i = 0; i < scriptTags.length; i++) {
+            if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
                 var result = scriptTags[i].src.match(/stage=([^&;]*)/);
-                if (result)
-                {
+                if (result) {
                     // we found stage=XXX
                     // return only valid values of ProjectStage
                     if (result[1] == "Production"
                             || result[1] == "Development"
                             || result[1] == "SystemTest"
-                            || result[1] == "UnitTest")
-                    {
+                            || result[1] == "UnitTest") {
                         return result[1];
                     }
                 }
-                else
-                {
+                else {
                     //we found the script, but there was no stage parameter -- Production
                     //(we also add an override here for testing purposes, the default, however is Production)
                     return getConfig("projectStage", "Production");

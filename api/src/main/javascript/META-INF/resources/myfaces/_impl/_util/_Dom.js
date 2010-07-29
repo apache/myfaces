@@ -1268,6 +1268,21 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     },
 
+    isMultipartCandidate: function(executes) {
+        if(this._Lang.isString(executes)) {
+            executes = this._Lang.strToArray(executes, "\\s+");
+        }
+
+        for(var exec in executes) {
+            var element = this.byId(executes[exec]);
+            var inputs = this.findByTagName(element, "input", true);
+            for(var key in inputs) {
+                if(this.getAttribute(inputs[key],"type") == "file") return true;
+            }
+        }
+        return false;
+    },
+
 
     byId: function(id) {
         return this._Lang.byId(id);

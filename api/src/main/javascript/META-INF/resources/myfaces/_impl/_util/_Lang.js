@@ -179,7 +179,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             throw Error("myfaces._impl._util._Lang.strToArray a splitter param must be provided which is either a tring or a regexp");
         }
         var retArr = it.split(splitter);
-        //var len = retArr.length;
+        var len = retArr.length;
         for (var cnt = 0; cnt < len; cnt++) {
             retArr[cnt] = this.trim(retArr[cnt]);
         }
@@ -304,6 +304,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         var ret = {};
         var keyIdx = {};
         var key = null;
+        var _udef = "undefined";
         for (key in src) {
             /**
              *we always overwrite dest with source
@@ -316,15 +317,15 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
                  *on all values being non boolean, we would need an elvis
                  *operator in javascript to shorten this :-(
                  */
-                ret[key] = this.exists(dest, key) ? dest[key] : src[key];
+                ret[key] = (_udef != typeof dest[key]) ? dest[key] : src[key];
             } else {
-                ret[key] = this.exists(src, key) ? src[key] : dest[key];
+                ret[key] = (_udef != typeof src[key]) ? src[key] : dest[key];
             }
             keyIdx[key] = true;
         }
         for (key in dest) {
             /*if result.key does not exist we push in dest.key*/
-            ret[key] = this.exists(ret, key) ? ret[key] : dest[key];
+            ret[key] = (_udef != typeof ret[key]) ? ret[key] : dest[key];
         }
         return ret;
     }

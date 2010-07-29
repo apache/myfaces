@@ -289,8 +289,12 @@ if (!myfaces._impl.core._Runtime) {
          * @return either the config entry or if none is given the default value
          */
         this.getGlobalConfig = function(configName, defaultValue) {
-            /*use(myfaces._impl._util)*/
-            return (_this.exists(myfaces, "config") && _this.exists(myfaces.config, configName)) ?
+            /**
+             * note we could use exists but this is an heavy operation, since the config name usually
+             * given this function here is called very often
+            * is a single entry without . in between we can do the lighter shortcut
+            */
+            return (myfaces["config"] && 'undefined' !=  typeof myfaces.config[configName] ) ?
                     myfaces.config[configName]
                     :
                     defaultValue;
@@ -309,8 +313,17 @@ if (!myfaces._impl.core._Runtime) {
          */
         this.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
             /*use(myfaces._impl._util)*/
+            var _local =  !!localOptions;
+            var _localResult;
+            if(_local) {
+               //note we also do not use exist here due to performance improvement reasons
+               //not for now we loose the subnamespace capabilities but we do not use them anyway
+               //this code will give us a performance improvement of 2-3%
+               _localResult = (localOptions["myfaces"])?localOptions["myfaces"][configName] : undefined;
+               _local = 'undefined' != typeof _localResult;
+            }
 
-            return (!_this.exists(localOptions, "myfaces." + configName)) ? _this.getGlobalConfig(configName, defaultValue) : localOptions.myfaces[configName];
+            return (!_local) ? _this.getGlobalConfig(configName, defaultValue) : _localResult;
         };
 
         /**
@@ -577,7 +590,28 @@ if (!myfaces._impl.core._Runtime) {
 
                 newCls.prototype._callSuper = function(methodName) {
                     var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
-                    this._parentCls[methodName].apply(this, passThrough);
+
+                    //we store the descension level of each method under a mapped
+                    //name to avoid name clashes
+                    //to avoid name clashes with internal methods of array
+                    var _mappedName = ["_",methodName,"_mf_r"].join("");
+                    this._mfClsDescLvl = this._mfClsDescLvl || new Array();
+                    //we have to detect the descension level
+                    //we now check if we are in a super descension for the current method already
+                    //if not we are on this level
+                    var _oldDescLevel =  this._mfClsDescLvl[_mappedName] || this;
+                    //we now step one level down
+                    var _parentCls = _oldDescLevel._parentCls;
+
+
+                    try {
+                        //we now store the level position as new descension level for callSuper
+                        this._mfClsDescLvl[_mappedName] = _parentCls;
+                        //and call the code on this
+                        _parentCls[methodName].apply(this, passThrough);
+                    } finally {
+                        this._mfClsDescLvl[_mappedName] = _oldDescLevel;
+                    }
                 };
             }
 
