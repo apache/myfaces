@@ -595,6 +595,15 @@ class _DeltaStateHelper implements StateHelper
             return;
 
         Object[] serializedState = (Object[]) state;
+        
+        if (!isInitialStateMarked() && !_fullState.isEmpty())
+        {
+            _fullState.clear();
+            if(_deltas != null)
+            {
+                _deltas.clear();
+            }
+        }
 
         for (int cnt = 0; cnt < serializedState.length; cnt += 2)
         {
