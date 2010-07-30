@@ -164,7 +164,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {} strBuf - a target array buffer receiving the encoded strings
      */
     encodeElement : function(element, strBuf) {
-        var name = element.name || element.id;
+
+        //browser behavior no element name no encoding (normal submit fails in that case)
+        //https://issues.apache.org/jira/browse/MYFACES-2847
+        if(!element.name) {
+            return;
+        }
+
+        var name = element.name;
         var tagName = element.tagName.toLowerCase();
         var elemType = element.type;
         if (elemType != null) {
