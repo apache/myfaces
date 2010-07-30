@@ -796,7 +796,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     public void setValid(boolean valid)
     {
-        getStateHelper().put(PropertyKeys.valid, valid );
+        // default value for valid is true, so if the intention is to save the default
+        // value when nothing else was set before, don't do it. This is done in order to
+        // reduce the size of the saved state of the state helper. Default values won't be
+        // included in the saved state. 
+        if (getStateHelper().get(PropertyKeys.valid) != null || !valid)
+        {
+            getStateHelper().put(PropertyKeys.valid, valid );
+        }
     }
 
     /**
@@ -817,7 +824,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     public void setLocalValueSet(boolean localValueSet)
     {
-        getStateHelper().put(PropertyKeys.localValueSet, localValueSet );
+        // default value for localValueSet is false, so if the intention is to save the default
+        // value when nothing else was set before, don't do it. This is done in order to
+        // reduce the size of the saved state of the state helper. Default values won't be
+        // included in the saved state.
+        if (getStateHelper().get(PropertyKeys.localValueSet) != null || localValueSet)
+        {
+            getStateHelper().put(PropertyKeys.localValueSet, localValueSet );
+        }
     }
 
     /**

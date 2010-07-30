@@ -278,6 +278,10 @@ class _DeltaStateHelper implements StateHelper
                 returnValue = _deltas.put(key, value);
                 _fullState.put(key, value);
             }
+            else if (value == null && !_fullState.containsKey(key))
+            {
+                returnValue = null;
+            }
             else
             {
                 _deltas.put(key, value);

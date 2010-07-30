@@ -185,6 +185,28 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
                 && entry.get(KEY_2_2).equals(VAL3));
     }
 
+    public void testPut_null()
+    {
+        _instance.put(KEY1, null);
+        _instance.put(KEY2, null);
+
+        assertNull("key1 is not null", _instance.get(KEY1));
+        assertNull("key2 is not null", _instance.get(KEY2));
+
+        _setupGetTests();
+        assertTrue("check for key1", _instance.get(KEY1).equals(VAL1));
+
+        Map entry = (Map) _instance.get(KEY2);
+        assertTrue("check for key2", _instance.get(KEY2) instanceof Map);
+
+        assertTrue("check for key2 structure", entry.size() == 2
+                && entry.get(KEY_2_1).equals(VAL2)
+                && entry.get(KEY_2_2).equals(VAL3));
+
+        _instance.put(KEY1, null);
+        assertNull("key1 is not null", _instance.get(KEY1));
+    }
+
     /**
      * Test of put method, of class _DeltaStateHelper.
      */
