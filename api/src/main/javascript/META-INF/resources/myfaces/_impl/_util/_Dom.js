@@ -67,9 +67,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //under normal circumstances this works, if there are no normal ones
         //then this also will work at the second time, but the onload handler
         //should cover 99% of all use cases to avoid a loading race condition
-        myfaces._impl.core._Runtime.addOnLoad(document.body || window, function() {
+        myfaces._impl.core._Runtime.addOnLoad(window, function() {
             myfaces._impl._util._Dom.isManualScriptEval();
         });
+        //safety fallback if the window onload handler is overwritten and not chained
+        if(document.body) {
+            myfaces._impl.core._Runtime.addOnLoad(document.body, function() {
+                myfaces._impl._util._Dom.isManualScriptEval();
+            });
+        }
+        //now of the onload handler also is overwritten we have a problem
     },
 
     /**
