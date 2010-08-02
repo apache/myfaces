@@ -33,9 +33,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
      like _onError etc...
      */
 
-
-
-
     /**
      * Constructor
      * @arguments  an arguments map which an override any of the given protected
@@ -43,6 +40,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
      *
      */
     constructor_: function(arguments) {
+        
+        if('undefined' == typeof arguments) return;
+
         try {
 
             /*namespace remapping for readability*/
@@ -69,14 +69,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
         try {
             //we have to encode at send time, otherwise
             //we pick up old viewstates
-            this._requestParameters = this.getViewState();
-
-            for (var key in this._passThrough) {
-                this._requestParameters = this._requestParameters +
-                        "&" + encodeURIComponent(key) +
-                        "=" + encodeURIComponent(this._passThrough[key]);
-            }
-
+            this._initRequestParams();
             this._startXHR();
             this._startTimeout();
         } catch (e) {
@@ -85,11 +78,24 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
         }
     },
 
+
+    /**
+     * gets the ViewState including all now passed in sideconstraints
+     */
+    _initRequestParams: function() {
+        this._requestParameters = this.getViewState();
+        for (var key in this._passThrough) {
+            this._requestParameters.append(key, this._passThrough[key]);
+        }
+    },
+
     /**
      * starts the asynchronous xhr request
      */
     _startXHR: function() {
+        this._preCreateXHR();
         this._xhr = myfaces._impl.core._Runtime.getXHRObject();
+        this._postCreateXHR();
 
         this._xhr.open(this._ajaxType, this._sourceForm.action, true);
 
@@ -104,8 +110,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
         this._xhr.onreadystatechange = this._Lang.hitch(this, this.callback);
         var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         _Impl.sendEvent(this._xhr, this._context, myfaces._impl.core.Impl.BEGIN);
-        this._xhr.send(this._requestParameters);
+
+        this._preSend();
+
+        try {
+            this._xhr.send(this._requestParameters.makeFinal());
+        } finally {
+            this._postSend();
+        }
     },
+
+
 
     /**
      * starts the timeout
@@ -167,10 +182,32 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 }
             }
         } catch (e) {
-            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
+            if(this._onException)
+                this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
+            else
+                alert(e.toString());
         } finally {
             //final cleanup to terminate everything
         }
+    },
+
+    /*
+     * various lifecycle callbacks which can be used by differing AjaxRequest impls
+     * (namely level 1.5 (Mozilla XHR) and level 2 (html5 xhr) to run special initialisation code
+     **/
+    _preCreateXHR : function() {
+        //called after the xhr object has been created
+    },
+
+    _postCreateXHR : function() {
+        //called after the xhr object has been created
+    },
+    _preSend : function() {
+        //called before the xhr object is sent
+    },
+    _postSend : function() {
+        //called after the xhr object is sent for cleanup purposes
     }
+
 });
 

@@ -128,7 +128,7 @@ if (!myfaces._impl.core._Runtime) {
 
             var ret = null;
             try {
-                if(!this.browser.isIE) {
+                if (!this.browser.isIE) {
                     //in ie 6 and 7 we get an error entry despite the suppression
                     ret = _this.globalEval("window." + nms);
                 }
@@ -224,7 +224,6 @@ if (!myfaces._impl.core._Runtime) {
                 _this._reservedNMS[tmpNmsName.join(".")] = true;
 
             }
-            
 
             return true;
         };
@@ -242,7 +241,7 @@ if (!myfaces._impl.core._Runtime) {
                 return false;
             }
             //special case locally reserved namespace
-            if(root == window &&  _this._reservedNMS[subNms]) {
+            if (root == window && _this._reservedNMS[subNms]) {
                 return true;
             }
 
@@ -292,9 +291,9 @@ if (!myfaces._impl.core._Runtime) {
             /**
              * note we could use exists but this is an heavy operation, since the config name usually
              * given this function here is called very often
-            * is a single entry without . in between we can do the lighter shortcut
-            */
-            return (myfaces["config"] && 'undefined' !=  typeof myfaces.config[configName] ) ?
+             * is a single entry without . in between we can do the lighter shortcut
+             */
+            return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
                     myfaces.config[configName]
                     :
                     defaultValue;
@@ -313,18 +312,31 @@ if (!myfaces._impl.core._Runtime) {
          */
         this.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
             /*use(myfaces._impl._util)*/
-            var _local =  !!localOptions;
+            var _local = !!localOptions;
             var _localResult;
-            if(_local) {
-               //note we also do not use exist here due to performance improvement reasons
-               //not for now we loose the subnamespace capabilities but we do not use them anyway
-               //this code will give us a performance improvement of 2-3%
-               _localResult = (localOptions["myfaces"])?localOptions["myfaces"][configName] : undefined;
-               _local = 'undefined' != typeof _localResult;
+            if (_local) {
+                //note we also do not use exist here due to performance improvement reasons
+                //not for now we loose the subnamespace capabilities but we do not use them anyway
+                //this code will give us a performance improvement of 2-3%
+                _localResult = (localOptions["myfaces"]) ? localOptions["myfaces"][configName] : undefined;
+                _local = 'undefined' != typeof _localResult;
             }
 
             return (!_local) ? _this.getGlobalConfig(configName, defaultValue) : _localResult;
         };
+
+        /**
+         * determines the xhr level which either can be
+         * 1 for classical level1
+         * 1.5 for mozillas send as binary implementation
+         * 2 for xhr level 2
+         */
+        this.getXHRLvl = function() {
+            if (!this.XHR_LEVEL) {
+                this.getXHRObject();
+            }
+            return this.XHR_LEVEL;
+        }
 
         /**
          * encapsulated xhr object which tracks down various implementations
@@ -338,10 +350,19 @@ if (!myfaces._impl.core._Runtime) {
         this.getXHRObject = function() {
             //since this is a global object ie hates it if we do not check for undefined
             if (window.XMLHttpRequest) {
-                return new XMLHttpRequest();
+                var _ret = new XMLHttpRequest();
+                //we now check the xhr level
+                //sendAsBinary = 1.5 which means mozilla only
+                //upload attribute present == level2
+                if(!this.XHR_LEVEL) {
+                    this.XHR_LEVEL = ('undefined' != typeof _ret.sendAsBinary) ? 1.5 : 1;
+                    this.XHR_LEVEL = ('undefined' != typeof _ret.upload && 'undefined' != typeof FormData) ? 2 : this.XHR_LEVEL;
+                }
+                return _ret;
             }
             //IE
             try {
+                this.XHR_LEVEL = 1;
                 return new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
 
@@ -414,8 +435,7 @@ if (!myfaces._impl.core._Runtime) {
 
             try {
                 var holder = document.getElementsByTagName(position)[0];
-                if ('undefined' == typeof holder || null == holder)
-                {
+                if ('undefined' == typeof holder || null == holder) {
                     holder = document.createElement(position);
                     var html = document.getElementsByTagName("html");
                     html.appendChild(holder);
@@ -571,7 +591,7 @@ if (!myfaces._impl.core._Runtime) {
             if (!_this.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
             }
-            if(_this._reservedNMS[newCls]) {
+            if (_this._reservedNMS[newCls]) {
                 return;
             }
 
@@ -599,10 +619,9 @@ if (!myfaces._impl.core._Runtime) {
                     //we have to detect the descension level
                     //we now check if we are in a super descension for the current method already
                     //if not we are on this level
-                    var _oldDescLevel =  this._mfClsDescLvl[_mappedName] || this;
+                    var _oldDescLevel = this._mfClsDescLvl[_mappedName] || this;
                     //we now step one level down
                     var _parentCls = _oldDescLevel._parentCls;
-
 
                     try {
                         //we now store the level position as new descension level for callSuper
@@ -646,7 +665,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param nmsFuncs the functions which are attached on the classes namespace level
          */
         this.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
-            if(_this._reservedNMS[newCls]) {
+            if (_this._reservedNMS[newCls]) {
                 return;
             }
             return _makeSingleton(this.delegateObj, newCls, delegateObj, protoFuncs, nmsFuncs);
@@ -657,10 +676,10 @@ if (!myfaces._impl.core._Runtime) {
         //functions here, the other parts of the
         //system have to emulate them via _ prefixes
         var _makeSingleton = function(ooFunc, newCls, delegateObj, protoFuncs, nmsFuncs) {
-            if(_this._reservedNMS[newCls]) {
+            if (_this._reservedNMS[newCls]) {
                 return;
             }
-            
+
             var clazz = ooFunc(newCls + "._mfProto", delegateObj, protoFuncs, nmsFuncs);
             if (clazz != null) {
                 _this.applyToGlobalNamespace(newCls, new clazz());
@@ -685,8 +704,7 @@ if (!myfaces._impl.core._Runtime) {
             return newCls;
         };
 
-        var _applyFuncs = function (newCls, funcs, proto)
-        {
+        var _applyFuncs = function (newCls, funcs, proto) {
             if (funcs) {
                 for (var key in funcs) {
                     //constructor already passed, callSuper already assigned

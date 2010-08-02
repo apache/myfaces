@@ -27,7 +27,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Ob
 
     _Dom: myfaces._impl._util._Dom,
     _Lang: myfaces._impl._util._Lang,
-    
+
     _contentType: "application/x-www-form-urlencoded",
     _source: null,
     _xhr: null,
@@ -82,6 +82,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Ob
     //since we do not have abstract methods we simulate them
     //by using empty ones
     constructor_: function() {
+        this._Lang = myfaces._impl._util._Lang;
     },
 
     /**
@@ -102,11 +103,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Ob
      * Spec. 13.3.1
      * Collect and encode input elements.
      * Additionally the hidden element javax.faces.ViewState
-     * @return {String} - Concatenated String of the encoded input elements
-     *             and javax.faces.ViewState element
+     *
+     *
+     * @return {FormDataWrapper} - an element of formDataWrapper
+     * which keeps the final Send Representation of the
      */
     getViewState : function() {
-        return this._ajaxUtil.encodeSubmittableFields(this._xhr, this._context, this._source,
+        var ret = this._Lang.createFormDataDecorator(new Array());
+
+        this._ajaxUtil.encodeSubmittableFields(ret, this._xhr, this._context, this._source,
                 this._sourceForm, this._partialIdsArray);
+       
+        return ret;
     }
 });

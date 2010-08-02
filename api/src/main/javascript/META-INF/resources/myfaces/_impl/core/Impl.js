@@ -93,8 +93,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         var ajaxUtils = new myfaces._impl.xhrCore._AjaxUtils(0);
-        return ajaxUtils.encodeSubmittableFields(null, null, null, form, null);
-
+        
+        var ret = myfaces._impl._util._Lang.createFormDataDecorator([]);
+        ajaxUtils.encodeSubmittableFields(ret, null, null, form, null);
+        return ret.makeFinal();
     },
 
     /**
@@ -204,7 +206,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          */
         passThrgh[this.P_AJAX] = true;
 
-
         var _this = this;
         var transformList = function(target, srcList) {
             var opList = _Lang.arrToString(srcList, ' '),
@@ -252,7 +253,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         //for now we turn off the transport auto selection, to enable 2.0 backwards compatibility
         //on protocol level, the file upload only can be turned on if the auto selection is set to true
         var transportAutoSelection = getConfig(context, "transportAutoSelection", false);
-        var isMultipart = (transportAutoSelection && _Dom.getAttribute(form,"enctype") == "multipart/form-data") ?
+        var isMultipart = (transportAutoSelection && _Dom.getAttribute(form, "enctype") == "multipart/form-data") ?
                 _Dom.isMultipartCandidate(passThrgh[this.P_EXECUTE]) :
                 false;
 
@@ -271,7 +272,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
 
         var transportType = (!isMultipart) ?
                 getConfig(context, "transportType", "xhrQueuedPost") :
-                getConfig(context, "transportType", "iframeQueuedPost");
+                getConfig(context, "transportType", "multipartQueuedPost");
 
         if (!this._transport[transportType]) {
             throw new Error("Transport type " + transportType + " does not exist");

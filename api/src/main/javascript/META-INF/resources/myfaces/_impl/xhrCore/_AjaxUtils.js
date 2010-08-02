@@ -34,29 +34,26 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {Node} parentItem - form element item is nested in
      * @param {Array} partialIds - ids fo PPS
      */
-    encodeSubmittableFields : function(request, context, item,
+    encodeSubmittableFields : function(targetBuf, request, context, item,
                                        parentItem, partialIds) {
+
         try {
             if (!parentItem) {
                 this._onWarning(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields " + "Html-Component is not nested in a Form-Tag");
                 return null;
             }
 
-            var strBuf = [];
-
             if (partialIds && partialIds.length > 0) {
-                this.encodePartialSubmit(parentItem, item, false, partialIds, strBuf);
+                this.encodePartialSubmit(parentItem, item, false, partialIds, targetBuf);
             } else {
                 // add all nodes
                 var eLen = parentItem.elements.length;
                 for (var e = 0; e < eLen; e++) {
-                    this.encodeElement(parentItem.elements[e], strBuf);
+                    this.encodeElement(parentItem.elements[e], targetBuf);
                 } // end of for (formElements)
             }
 
-            this.appendIssuingItem(item, strBuf);
-
-            return strBuf.join("&");
+            this.appendIssuingItem(item, targetBuf);
         } catch (e) {
             this._onException(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields", e);
         }
@@ -76,10 +73,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * @param {boolean} submitAll - if set to true, all elements within this node will
      * be added to the partial page submit
      * @param {Array} partialIds - an array of partial ids which should be used for the submit
-     * @param {Array} strBuf a target string buffer which receives the encoded elements
+     * @param {Array} targetBuf a target string buffer which receives the encoded elements
      */
     encodePartialSubmit : function(node, issuingItem, submitAll,
-                                   partialIds, strBuf) {
+                                   partialIds, targetBuf) {
         var _Lang = myfaces._impl._util._Lang;
         var _Impl = myfaces._impl.core.Impl;
         var _Dom = myfaces._impl._util._Dom;
@@ -109,34 +106,36 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
 
                 if (subNodes && subNodes.length) {
                     for (var cnt2 = 0; cnt2 < subNodes.length; cnt2++) {
-                        this.encodeElement(subNodes[cnt2], strBuf);
+                        this.encodeElement(subNodes[cnt2], targetBuf);
                     }
                 } else {
-                    this.encodeElement(nodes[cnt], strBuf);
+                    this.encodeElement(nodes[cnt], targetBuf);
                 }
             }
         }
 
-        this.appendViewState(node, strBuf);
+        this.appendViewState(node, targetBuf);
     },
 
     /**
      * appends the viewstate element if not given already
      *
      * @param parentNode
-     * @param strBuf
+     * @param targetBuf
+     *
+     * TODO dom level2 handling here, for dom level2 we can omit the check and readd the viewstate
      */
-    appendViewState: function(parentNode, strBuf) {
+    appendViewState: function(parentNode, targetBuf) {
         var _Dom = myfaces._impl._util._Dom;
         var _Impl = myfaces._impl.core.Impl;
 
         //viewstate covered, do a preemptive check
-        if (strBuf.join("").indexOf(_Impl.P_VIEWSTATE) != -1) return;
+        if (targetBuf.hasKey(_Impl.P_VIEWSTATE)) return;
 
         var viewStates = _Dom.findByName(parentNode, _Impl.P_VIEWSTATE, true);
         if (viewStates && viewStates.length) {
             for (var cnt2 = 0; cnt2 < viewStates.length; cnt2++) {
-                this.encodeElement(viewStates[cnt2], strBuf);
+                this.encodeElement(viewStates[cnt2], targetBuf);
             }
         }
     },
@@ -144,15 +143,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
     /**
      * appends the issuing item if not given already
      * @param item
-     * @param strBuf
+     * @param targetBuf
      */
-    appendIssuingItem: function (item, strBuf) {
+    appendIssuingItem: function (item, targetBuf) {
         // if triggered by a Button send it along
         if (item && item.type && item.type.toLowerCase() == "submit") {
-            strBuf.push(encodeURIComponent(item.name));
-            strBuf.push("=");
-            strBuf.push(encodeURIComponent(item.value));
-
+            targetBuf.append(item.name, item.value);
         }
     },
 
@@ -161,16 +157,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
      * encodes a single input element for submission
      *
      * @param {Node} element - to be encoded
-     * @param {} strBuf - a target array buffer receiving the encoded strings
+     * @param {} targetBuf - a target array buffer receiving the encoded strings
      */
-    encodeElement : function(element, strBuf) {
+    encodeElement : function(element, targetBuf) {
 
         //browser behavior no element name no encoding (normal submit fails in that case)
         //https://issues.apache.org/jira/browse/MYFACES-2847
-        if(!element.name) {
+        if (!element.name) {
             return;
         }
 
+        var _RT = myfaces._impl.core._Runtime;
         var name = element.name;
         var tagName = element.tagName.toLowerCase();
         var elemType = element.type;
@@ -200,19 +197,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
                     var uLen = element.options.length;
                     for (var u = 0; u < uLen; u++) {
                         // find all selected options
-                        var subBuf = [];
+                        //var subBuf = [];
                         if (element.options[u].selected) {
                             var elementOption = element.options[u];
-                            subBuf.push(encodeURIComponent(name));
-                            subBuf.push("=");
-                            if (elementOption.getAttribute("value") != null) {
-                                subBuf.push(encodeURIComponent(elementOption.value));
-                            } else {
-                                subBuf.push(encodeURIComponent(elementOption.text));
-                            }
-
+                            targetBuf.append(name, (elementOption.getAttribute("value") != null) ?
+                                    elementOption.value : elementOption.text);
                         }
-                        strBuf.push(subBuf.join(""));
                     }
                 }
             }
@@ -224,12 +214,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             if ((tagName != "select" && elemType != "button"
                     && elemType != "reset" && elemType != "submit" && elemType != "image")
                     && ((elemType != "checkbox" && elemType != "radio") || element.checked)) {
-                var subBuf = [];
-                subBuf.push(encodeURIComponent(name));
-                subBuf.push("=");
-                subBuf.push(encodeURIComponent(element.value));
-                strBuf.push(subBuf.join(""));
-
+                if ('undefined' != typeof element.files && element.files != null && _RT.getXHRLvl() >= 2 && element.files.length) {
+                    //xhr level2
+                    targetBuf.append(name, element.files[0]);
+                } else {
+                    targetBuf.append(name, element.value);
+                }
             }
 
         }

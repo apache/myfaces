@@ -45,6 +45,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
     _PAR_TIMEOUT:"timeout",
     _PAR_DELAY:"delay",
 
+
     /**
      * a singleton queue
      * note the structure of our inheritance
@@ -63,6 +64,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
     _threshold: "ERROR",
 
     _Lang :  myfaces._impl._util._Lang,
+    _RT: myfaces._impl.core._Runtime,
 
 
     /**
@@ -76,7 +78,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {Object} passThrgh (Map) values to be passed through
      **/
     xhrPost : function(source, sourceForm, context, passThrgh) {
-        (new myfaces._impl.xhrCore._AjaxRequest(this._getArguments(source, sourceForm, context, passThrgh))).send();
+        (new (this._getAjaxReqClass(context))(this._getArguments(source, sourceForm, context, passThrgh))).send();
     },
 
     /**
@@ -91,7 +93,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      **/
     xhrQueuedPost : function(source, sourceForm, context, passThrgh) {
         this._q.enqueue(
-                new myfaces._impl.xhrCore._AjaxRequest(this._getArguments(source, sourceForm, context, passThrgh)));
+                new (this._getAjaxReqClass(context))(this._getArguments(source, sourceForm, context, passThrgh)));
     },
 
     /**
@@ -110,7 +112,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         // since there are no cross browser ways to resolve a timeout on xhr level
         // we have to live with it
         args.ajaxType = "GET";
-        (new myfaces._impl.xhrCore._AjaxRequest(args)).send();
+        (new (this._getAjaxReqClass(context))(args)).send();
     },
 
     /**
@@ -131,7 +133,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         // we have to live with it
         args.ajaxType = "GET";
         this._q.enqueue(
-                new myfaces._impl.xhrCore._AjaxRequest(args));
+                new (this._getAjaxReqClass(context))(args));
     },
 
 
@@ -145,13 +147,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {Object} context (Map) the internal pass through context
      * @param {Object} passThrgh (Map) values to be passed through
      **/
-    iframePost : function(source, sourceForm, context, passThrgh) {
+    multipartPost : function(source, sourceForm, context, passThrgh) {
         var args = this._getArguments(source, sourceForm, context, passThrgh);
         // note in get the timeout is not working delay however is and queue size as well
         // since there are no cross browser ways to resolve a timeout on xhr level
         // we have to live with it
 
-        (new myfaces._impl.xhrCore._IFrameRequest(args)).send();
+        (new (this._getMultipartReqClass(context))(args)).send();
     },
 
     /**
@@ -164,16 +166,16 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {Object} context (Map) the internal pass through context
      * @param {Object} passThrgh (Map) values to be passed through
      **/
-    iframeQueuedPost : function(source, sourceForm, context, passThrgh) {
+    multipartQueuedPost : function(source, sourceForm, context, passThrgh) {
         var args = this._getArguments(source, sourceForm, context, passThrgh);
         // note in get the timeout is not working delay however is and queue size as well
         // since there are no cross browser ways to resolve a timeout on xhr level
         this._q.enqueue(
-                new myfaces._impl.xhrCore._IFrameRequest(args));
+                new (this._getMultipartReqClass(context))(args));
     },
 
 
-     /**
+    /**
      * iframe get without queueing
      *
      * mapped options already have the exec and view properly in place
@@ -183,13 +185,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {Object} context (Map) the internal pass through context
      * @param {Object} passThrgh (Map) values to be passed through
      **/
-    iframeGet : function(source, sourceForm, context, passThrgh) {
+    multipartGet : function(source, sourceForm, context, passThrgh) {
         var args = this._getArguments(source, sourceForm, context, passThrgh);
         // note in get the timeout is not working delay however is and queue size as well
         // since there are no cross browser ways to resolve a timeout on xhr level
         // we have to live with it
         args.ajaxType = "GET";
-        (new myfaces._impl.xhrCore._IFrameRequest(args)).send();
+        (new (this._getMultipartReqClass(context))(args)).send();
     },
 
     /**
@@ -202,13 +204,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {Object} context (Map) the internal pass through context
      * @param {Object} passThrgh (Map) values to be passed through
      **/
-    iframeQueuedGet : function(source, sourceForm, context, passThrgh) {
+    multipartQueuedGet : function(source, sourceForm, context, passThrgh) {
         var args = this._getArguments(source, sourceForm, context, passThrgh);
         // note in get the timeout is not working delay however is and queue size as well
         // since there are no cross browser ways to resolve a timeout on xhr level
         args.ajaxType = "GET";
         this._q.enqueue(
-                new myfaces._impl.xhrCore._IFrameRequest(args));
+                new (this._getMultipartReqClass(context))(args));
     },
 
 
@@ -414,6 +416,25 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
             this._Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         }
         return this._Impl;
+    },
+
+    /**
+     * centralized transport switching helper
+     * for the multipart submit case
+     *
+     * @param context the context which is passed down
+     */
+    _getMultipartReqClass: function(context) {
+        //if (this._RT.getLocalOrGlobalConfig(context, "transportAutoSelection", false) && this._RT.getXHRLvl() >= 2) {
+        //    return myfaces._impl.xhrCore._AjaxRequestLevel2;
+        //} else {
+            return myfaces._impl.xhrCore._IFrameRequest;
+        //}
+    },
+
+
+    _getAjaxReqClass: function(context) {
+        return myfaces._impl.xhrCore._AjaxRequest;
     }
 
 });

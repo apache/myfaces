@@ -372,12 +372,12 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         return arr.join(delimiter);
     },
 
-   
+
 
 
 
     objToArray: function(obj, offset, pack) {
-        if(!obj) {
+        if (!obj) {
             return null;
         }
         //since offset is numeric we cannot use the shortcut due to 0 being false
@@ -576,8 +576,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
     parseXML: function(txt) {
         var parser = null, xmlDoc = null;
-        if (window.DOMParser)
-        {
+        if (window.DOMParser) {
             parser = new DOMParser();
             xmlDoc = parser.parseFromString(txt, "text/xml");
         }
@@ -617,59 +616,64 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
                 (this.exists(xmlContent, "parseError.errorCode") && xmlContent.parseError.errorCode != 0) ||
                 findParseError(xmlContent)
 
+    },
+    /**
+     * creates a neutral form data wrapper over an existing form Data element
+     * the wrapper delegates following methods, append
+     * and adds makeFinal as finalizing method which returns the final
+     * send representation of the element
+     *
+     * @param formData an array
+     */
+    createFormDataDecorator: function(formData) {
+        //we simulate the dom level 2 form element here
+        var _newCls = null;
+        var bufInstance = null;
+
+        if (!this.FormDataDecoratorArray) {
+            this.FormDataDecoratorArray = function (theFormData) {
+                this._valBuf = theFormData;
+                this._idx = {};
+            };
+            _newCls = this.FormDataDecoratorArray;
+            _newCls.prototype.append = function(key, val) {
+                this._valBuf.push([encodeURIComponent(key), encodeURIComponent(val)].join("="));
+                this._idx[key] = true;
+            };
+            _newCls.prototype.hasKey = function(key) {
+                return !!this._idx[key];
+            };
+            _newCls.prototype.makeFinal = function() {
+                return this._valBuf.join("&");
+            };
+
+        }
+        if (!this.FormDataDecoratorOther) {
+            this.FormDataDecoratorOther = function (theFormData) {
+                this._valBuf = theFormData;
+                this._idx = {};
+            };
+            _newCls = this.FormDataDecoratorOther;
+            _newCls.prototype.append = function(key, val) {
+                this._valBuf.append(key, val);
+                this._idx[key] = true;
+            };
+            _newCls.prototype.hasKey = function(key) {
+                return !!this._idx[key];
+            };
+            _newCls.prototype.makeFinal = function() {
+                return this._valBuf;
+            };
+        }
+
+        if (formData instanceof Array) {
+            bufInstance = new this.FormDataDecoratorArray(formData);
+        } else {
+            bufInstance = new this.FormDataDecoratorOther(formData);
+        }
+
+        return bufInstance;
     }
 
-    /* not used for now
-     parseHTML: function(txt) {
-     var frame = document.getElementById("parsing-frame");
-     if (frame) {
-     var frame = document.getElementById("parsing-frame");
-     frame.parentNode.removeChild(frame);
-     }
 
-     try {
-     // create frame
-     var frame = document.createElement("iframe"); // iframe (or browser on older Firefox)
-     frame.setAttribute("id", "parsing-frame");
-     frame.setAttribute("name", "parsing-frame");
-     frame.setAttribute("type", "content");
-     frame.setAttribute("collapsed", "true");
-     frame.setAttribute("display", "none");
-     document.body.appendChild(frame);
-     // or
-     // document.documentElement.appendChild(frame);
-
-     // set restrictions as needed
-     if (frame.webNavigation) {
-     frame.webNavigation.allowAuth = false;
-     frame.webNavigation.allowImages = false;
-     frame.webNavigation.allowJavascript = false;
-     frame.webNavigation.allowMetaRedirects = true;
-     frame.webNavigation.allowPlugins = false;
-     frame.webNavigation.allowSubframes = false;
-     }
-
-     var doc = frame.document;
-     if (frame.contentDocument)
-     doc = frame.contentDocument; // For NS6
-     else if (frame.contentWindow)
-     doc = frame.contentWindow.document; // For IE5.5 and IE6
-
-     // Put the content in the iframe
-     doc.open();
-     doc.writeln(txt);
-     doc.close();
-
-     return doc;
-     } finally {
-     if (frame) {
-     var frame = document.getElementById("parsing-frame");
-     frame.parentNode.removeChild(frame);
-     }
-     }
-     // listen for load
-     }
-     */
-
-})
-        ;
+});

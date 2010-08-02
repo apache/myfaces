@@ -71,7 +71,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             myfaces._impl._util._Dom.isManualScriptEval();
         });
         //safety fallback if the window onload handler is overwritten and not chained
-        if(document.body) {
+        if (document.body) {
             myfaces._impl.core._Runtime.addOnLoad(document.body, function() {
                 myfaces._impl._util._Dom.isManualScriptEval();
             });
@@ -210,52 +210,25 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     _outerHTMLCompliant: function(item, markup) {
 
-        var b =  myfaces._impl.core._Runtime.browser;
-        //most browsers can handle the faster approach
-       // if (!b.isWebKit && !b.isChrome && b.isSafari) {
-            var evalNodes = null;
-            var dummyPlaceHolder = document.createElement("div");
-            dummyPlaceHolder.innerHTML = markup;
-            evalNodes = dummyPlaceHolder.childNodes;
-            if ('undefined' == typeof evalNodes.length) {
-                item.parentNode.replaceChild(evalNodes, item);
-                return evalNodes;
-                //return this.replaceElement(item, evalNodes);
-            } else if (evalNodes.length == 1) {
-                var ret = evalNodes[0];
-                item.parentNode.replaceChild(evalNodes[0], item);
-                return ret;
-                //return this.replaceElement(item, evalNodes[0]);
-            } else {
-                return this.replaceElements(item, evalNodes)
-            }
-        /*} else {
-            //webkit only works properly on contextual ranges
-            //without running into race conditions
-            var evalNodes = null;
-            var range = document.createRange();
-            range.setStartBefore(item);
-            var fragment = range.createContextualFragment(markup);
-            //special case update body, we have to replace the placeholder
-            //with the first element (the place holder is the the only child)
-            //and then append additional elements as additional childs
-            //the body itself then is the root for the eval part!
-            if (item.id == 'myfaces_bodyplaceholder') {
-                parentNode = item.parentNode;
-                parentNode.appendChild(fragment);
-                evalNodes = parentNode;
-            } else {
-                //normal dom node case we replace only the client id fragment!
+        var b = myfaces._impl.core._Runtime.browser;
 
-                parentNode = item.parentNode;
-
-                //evalNode = fragment.childNodes[0];
-                evalNodes = (fragment.childNodes) ? this._Lang.objToArray(fragment.childNodes) : [fragment];
-                parentNode.replaceChild(fragment, item);
-            }
-
+        var evalNodes = null;
+        var dummyPlaceHolder = document.createElement("div");
+        dummyPlaceHolder.innerHTML = markup;
+        evalNodes = dummyPlaceHolder.childNodes;
+        if ('undefined' == typeof evalNodes.length) {
+            item.parentNode.replaceChild(evalNodes, item);
             return evalNodes;
-        } */
+            //return this.replaceElement(item, evalNodes);
+        } else if (evalNodes.length == 1) {
+            var ret = evalNodes[0];
+            item.parentNode.replaceChild(evalNodes[0], item);
+            return ret;
+            //return this.replaceElement(item, evalNodes[0]);
+        } else {
+            return this.replaceElements(item, evalNodes)
+        }
+
     },
 
     _outerHTMLNonCompliant: function(item, markup) {
@@ -968,7 +941,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (this._Lang.equalsIgnoreCase(elem.tagName, "form")) {
                 return elem;
             }
-           
+
             return this.getParent(elem, "form");
         }
 
@@ -1276,15 +1249,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     },
 
     isMultipartCandidate: function(executes) {
-        if(this._Lang.isString(executes)) {
+        if (this._Lang.isString(executes)) {
             executes = this._Lang.strToArray(executes, /\s+/);
         }
 
-        for(var exec in executes) {
+        for (var exec in executes) {
             var element = this.byId(executes[exec]);
             var inputs = this.findByTagName(element, "input", true);
-            for(var key in inputs) {
-                if(this.getAttribute(inputs[key],"type") == "file") return true;
+            for (var key in inputs) {
+                if (this.getAttribute(inputs[key], "type") == "file") return true;
             }
         }
         return false;
