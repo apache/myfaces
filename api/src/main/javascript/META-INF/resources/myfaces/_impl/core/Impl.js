@@ -67,6 +67,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
     CLIENT_ERROR : "clientError",
     TIMEOUT_EVENT: "timeout",
 
+    _Lang: myfaces._impl._util._Lang,
+
 
 
     /**
@@ -83,7 +85,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          *  because it makes it easier to detect bugs
          */
         if (form) {
-            form = myfaces._impl._util._Lang.byId(form);
+            form = this._Lang.byId(form);
         }
 
         if (!form
@@ -94,7 +96,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
 
         var ajaxUtils = new myfaces._impl.xhrCore._AjaxUtils(0);
         
-        var ret = myfaces._impl._util._Lang.createFormDataDecorator([]);
+        var ret = this._Lang.createFormDataDecorator([]);
         ajaxUtils.encodeSubmittableFields(ret, null, null, form, null);
         return ret.makeFinal();
     },
@@ -120,7 +122,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          *a local function variable so that we do not have to write the entire namespace
          *all the time
          **/
-        var _Lang = myfaces._impl._util._Lang;
+        var _Lang = this._Lang;
         var _Dom = myfaces._impl._util._Dom;
 
         var elementId = null;
@@ -361,7 +363,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * sends an event
      */
     sendEvent : function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
-        var _Lang = myfaces._impl._util._Lang;
+        var _Lang = this._Lang;
         var eventData = {};
         eventData.type = this.EVENT;
 
@@ -476,7 +478,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         if (len < 2) {
             throw new Error(" an event object or unknown must be passed as second parameter ");
         } else if (len < 3) {
-            if ('function' == typeof event || myfaces._impl._util._Lang.isString(event)) {
+            if ('function' == typeof event || this._Lang.isString(event)) {
                 throw new Error(" an event must be passed down (either a an event object null or undefined) ");
             }
             //nothing to be done here, move along
@@ -494,14 +496,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         } else if ('function' == typeof source) {
             throw new Error(" source cannot be a function (probably source and event were not defined or set to null");
         }
-        if (myfaces._impl._util._Lang.isString(source)) {
+        if (this._Lang.isString(source)) {
             throw new Error(" source cannot be a string ");
         }
 
         //assertion if event is a function or a string we already are in our function elements
         //since event either is undefined, null or a valid event object
 
-        if ('function' == typeof event || myfaces._impl._util._Lang.isString(event)) {
+        if ('function' == typeof event || this._Lang.isString(event)) {
             throw new Error(" an event must be passed down (either a an event object null or undefined) ");
         }
 

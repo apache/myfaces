@@ -355,8 +355,9 @@ if (!myfaces._impl.core._Runtime) {
                 //sendAsBinary = 1.5 which means mozilla only
                 //upload attribute present == level2
                 if(!this.XHR_LEVEL) {
-                    this.XHR_LEVEL = ('undefined' != typeof _ret.sendAsBinary) ? 1.5 : 1;
-                    this.XHR_LEVEL = ('undefined' != typeof _ret.upload && 'undefined' != typeof FormData) ? 2 : this.XHR_LEVEL;
+                    var _e = this.exists;
+                    this.XHR_LEVEL = (_e(_ret,"sendAsBinary")) ? 1.5 : 1;
+                    this.XHR_LEVEL = (_e(_ret,"upload") && 'undefined' != typeof FormData) ? 2 : this.XHR_LEVEL;
                 }
                 return _ret;
             }

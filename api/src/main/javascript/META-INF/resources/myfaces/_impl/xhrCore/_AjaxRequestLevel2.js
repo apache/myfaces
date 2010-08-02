@@ -40,8 +40,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestLevel
      */
     _preSend: function() {
         this._callSuper("_preSend");
-
-
     },
 
     /**

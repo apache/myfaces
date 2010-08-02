@@ -1267,7 +1267,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     byId: function(id) {
         return this._Lang.byId(id);
     }
-})
-        ;
+});
 
 

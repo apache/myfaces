@@ -148,7 +148,7 @@ if (!jsf.util) {
          */
         this.chain = function(source, event) {
             var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
-            return impl.chain.apply(jsf.ajax._impl, arguments);
+            return impl.chain.apply(impl, arguments);
         };
     }
 }

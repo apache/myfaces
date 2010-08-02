@@ -28,8 +28,12 @@
  */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", myfaces._impl.xhrCore._BaseRequest, {
 
-    _FRAME_ID: "myfaces-communications-frame",
+    _FRAME_ID: "_mf_comm_frm",
     _frame: null,
+    _RT: myfaces._impl.core._Runtime,
+    CLS_NAME: "myfaces._impl.xhrCore._IFrameRequest",
+    JX_PART_IFRAME: "javax.faces.partial.iframe",
+    MF_PART_IFRAME: "org.apache.myfaces.partial.iframe",
 
     /**
      * constructor which shifts the arguments
@@ -40,10 +44,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
     constructor_: function(arguments) {
         try {
             //we fetch in the standard arguments
+            this._callSuper("constructor",arguments);
             this._Lang.applyArgs(this, arguments);
         } catch (e) {
             //_onError
-            this._onException(null, this._context, "myfaces._impl.xhrCore._IFrameRequest", "constructor", e);
+            this._onException(null, this._context, this.CLS_NAME, "constructor", e);
         }
     },
 
@@ -52,7 +57,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
      * request
      */
     send: function() {
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+        var _Impl = this._RT.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
         var _RT = myfaces._impl.core._Runtime;
 
         this._frame = this._createTransportFrame();
@@ -82,15 +87,16 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         var oldTarget = this._sourceForm.target;
         var oldMethod = this._sourceForm.method;
         var _progress = 0;
+        var _srcFrm = this._sourceForm;
         try {
             this._initAjaxParams();
-            this._sourceForm.target = this._frame.name;
-            this._sourceForm.method = this._ajaxType;
-            this._sourceForm.submit();
+            _srcFrm.target = this._frame.name;
+            _srcFrm.method = this._ajaxType;
+            _srcFrm.submit();
         } finally {
             this._removeAjaxParams(oldTarget);
-            this._sourceForm.target = oldTarget;
-            this._sourceForm.method = oldMethod;
+            _srcFrm.target = oldTarget;
+            _srcFrm.method = oldMethod;
         }
     },
 
@@ -119,7 +125,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
             }
         } catch (e) {
             //_onError
-            this._onException(null, this._context, "myfaces._impl.xhrCore._IFrameRequest", "constructor", e);
+            this._onException(null, this._context, this.CLS_NAME, "constructor", e);
         } finally {
             //this closes any hanging or pedning comm channel caused by the iframe
             //this._frame.src = "about:blank";
@@ -132,7 +138,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
      * returns the frame text in a browser independend manner
      */
     _getFrameText: function() {
-        return this._frame.contentWindow.document.body ? this._frame.contentWindow.document.body.innerHTML : this._frame.contentWindow.document.documentElement.textContent;
+        var doc = this._frame.contentWindow.document;
+        return doc.body ? doc.body.innerHTML : doc.documentElement.textContent;
     },
 
     /**
@@ -141,38 +148,45 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
      * @param text to be set
      */
     _setFrameText: function(text) {
-        this._frame.contentWindow.document.body ? (this._frame.contentWindow.document.body.innerHTML = text) : (this._frame.contentWindow.document.documentElement.textContent = text);
+        var doc = this._frame.contentWindow.document;
+        doc.body ? (doc.body.innerHTML = text) : (doc.documentElement.textContent = text);
     },
 
     /**
      * returns the processed xml from the frame
      */
     _getFrameXml: function() {
-        return this._frame.contentWindow.document.XMLDocument ? this._frame.contentWindow.document.XMLDocument : this._frame.contentWindow.document;
+        var doc = this._frame.contentWindow.document;
+        return doc.XMLDocument ? doc.XMLDocument : doc;
     },
 
 
     _initAjaxParams: function() {
         var _Impl = myfaces._impl.core.Impl;
         //this._appendHiddenValue(_Impl.P_AJAX, "");
-
+        var appendHiddenValue = this._Lang.hitch(this, this._appendHiddenValue);
         for (var key in this._passThrough) {
-            this._appendHiddenValue(key, this._passThrough[key]);
+            appendHiddenValue(key, this._passThrough[key]);
         }
         //marker that this is an ajax iframe request
-        this._appendHiddenValue("javax.faces.partial.iframe", "true");
-        this._appendHiddenValue("org.apache.myfaces.partial.iframe", "true");
+        appendHiddenValue(this.JX_PART_IFRAME, "true");
+        appendHiddenValue(this.MF_PART_IFRAME, "true");
 
     },
 
     _removeAjaxParams: function(oldTarget) {
         var _Impl = myfaces._impl.core.Impl;
         this._sourceForm.target = oldTarget;
+        //some browsers optimize this and loose their scope that way,
+        //I am still not sure why, but probably because the function itself
+        //was called under finally and I ran into a bug in the fox 4
+        //scripting engine
+        var removeHiddenValue = this._Lang.hitch(this, this._removeHiddenValue);
         for (var key in this._passThrough) {
-            this._removeHiddenValue(key);
+            removeHiddenValue(key);
         }
-        this._removeHiddenValue("javax.faces.partial.iframe");
-        this._removeHiddenValue("org.apache.myfaces.partial.iframe");
+        removeHiddenValue(this.JX_PART_IFRAME);
+        removeHiddenValue(this.MF_PART_IFRAME);
     },
 
     _appendHiddenValue: function(key, value) {
@@ -180,9 +194,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
             return;
         }
         var input = document.createElement("input");
-        this._Dom.setAttribute(input, "name", key);
-        this._Dom.setAttribute(input, "style", "display:none");
-        this._Dom.setAttribute(input, "value", value);
+        //the dom is a singleton nothing can happen by remapping
+        var setAttr = this._Dom.setAttribute;
+        setAttr(input, "name", key);
+        setAttr(input, "style", "display:none");
+        setAttr(input, "value", value);
         this._sourceForm.appendChild(input);
     },
 
@@ -195,10 +211,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
     },
 
     _createTransportFrame: function() {
-        var _RT = myfaces._impl.core._Runtime;
+        var _RT = this._RT;
         var frame = document.getElementById(this._FRAME_ID);
         //normally this code should not be called
         //but just to be sure
+        var setAttr = this._Dom.setAttribute;
         if (!frame) {
             if (!_RT.browser.isIE) {
                 frame = document.createElement('iframe');
@@ -206,7 +223,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
                 //probably the ie method would work on all browsers
                 //but this code is the safe bet it works on all standards
                 //compliant browsers in a clean manner
-                var setAttr = this._Dom.setAttribute;
+
                 setAttr(frame, "src", "about:blank");
                 setAttr(frame, "id", this._FRAME_ID);
                 setAttr(frame, "name", this._FRAME_ID);
@@ -217,7 +234,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
                 document.body.appendChild(frame);
             } else { //Now to the non compliant browsers
                 var node = document.createElement("div");
-                this._Dom.setAttribute(node, "style", "display:none");
+                setAttr(node, "style", "display:none");
                 //we are dealing with two well known iframe ie bugs here
                 //first the iframe has to be set via innerHTML to be present
                 //secondly the onload handler is immutable on ie, we have to
@@ -225,10 +242,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
                 //from the onload handler
                 node.innerHTML = "<iframe id='" + this._FRAME_ID + "' name='" + this._FRAME_ID + "' style='display:none;' src='about:blank' type='content' onload='this.onload_IE();'  ></iframe>";
                 //avoid the ie open tag problem
-                if (document.body.firstChild) {
-                    document.body.insertBefore(node, document.body.firstChild);
+                var body = document.body;
+                if (body.firstChild) {
+                    body.insertBefore(node, document.body.firstChild);
                 } else {
-                    document.body.appendChild(node);
+                    body.appendChild(node);
                 }
             }
         }

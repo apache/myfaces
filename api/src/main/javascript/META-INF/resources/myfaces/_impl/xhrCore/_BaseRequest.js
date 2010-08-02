@@ -83,6 +83,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Ob
     //by using empty ones
     constructor_: function() {
         this._Lang = myfaces._impl._util._Lang;
+        this._Dom = myfaces._impl._util._Dom;
     },
 
     /**
