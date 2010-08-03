@@ -130,11 +130,12 @@
                                 <exclude>jsf-uncompressed-full.js</exclude>
                             </excludes>
                             <compressor>yahooUI</compressor>
+
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <optimizationLevel>4</optimizationLevel>
+                    <optimizationLevel>0</optimizationLevel>
                     <sourceDirectory>src/main/javascript</sourceDirectory>
                     <webappDirectory>${basedir}</webappDirectory>
                     <outputDirectory>${basedir}/target/classes/META-INF/resources/javax.faces/</outputDirectory>
