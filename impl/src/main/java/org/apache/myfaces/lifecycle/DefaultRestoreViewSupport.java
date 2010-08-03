@@ -335,29 +335,45 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
             if(checkResourceExists(context,candidateViewId))
                 return candidateViewId;
-                       
+        
         }
         
         //jsp suffixes didn't match, try facelets suffix
         String faceletsDefaultSuffix = this.getFaceletsContextSuffix(context);
-        StringBuilder builder = new StringBuilder(requestViewId);
-        
-        if (extensionPos > -1 && extensionPos > slashPos)
+        if (faceletsDefaultSuffix != null)
         {
-            builder.replace(extensionPos, requestViewId.length(), faceletsDefaultSuffix);
+            for (String defaultSuffix : jspDefaultSuffixes)
+            {
+                if (faceletsDefaultSuffix.equals(defaultSuffix))
+                {
+                    faceletsDefaultSuffix = null;
+                    break;
+                }
+            }
         }
-        else
+        if (faceletsDefaultSuffix != null)
         {
-            builder.append(faceletsDefaultSuffix);
+            StringBuilder builder = new StringBuilder(requestViewId);
+            
+            if (extensionPos > -1 && extensionPos > slashPos)
+            {
+                builder.replace(extensionPos, requestViewId.length(), faceletsDefaultSuffix);
+            }
+            else
+            {
+                builder.append(faceletsDefaultSuffix);
+            }
+            
+            String candidateViewId = builder.toString();
+            if(checkResourceExists(context,candidateViewId))
+                return candidateViewId;
         }
-        
-        String candidateViewId = builder.toString();
-        if(checkResourceExists(context,candidateViewId))
-            return candidateViewId;
 
+        // Otherwise, if a physical resource exists with the name requestViewId let that value be viewId.
         if(checkResourceExists(context,requestViewId))
             return requestViewId;
         
+        //Otherwise return null.
         return null;
     }
 
@@ -368,7 +384,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             if (context.getExternalContext().getResource(viewId) != null)
             {
                 return true;
-            }                                 
+            }
         }
         catch(MalformedURLException e)
         {
