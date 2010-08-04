@@ -95,7 +95,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         var ajaxUtils = new myfaces._impl.xhrCore._AjaxUtils(0);
-        
+
         var ret = this._Lang.createFormDataDecorator([]);
         ajaxUtils.encodeSubmittableFields(ret, null, null, form, null);
         return ret.makeFinal();
@@ -209,7 +209,39 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         passThrgh[this.P_AJAX] = true;
 
         var _this = this;
-        var transformList = function(target, srcList) {
+        var transformList = function(target, srcStr, appendIdentifier) {
+
+            //this is probably the fastest transformation method
+            //it uses an array and an index to position all elements correctly
+            //the offset variable is there to prevent 0 which results in a javascript
+            //false
+            var offset = 1;
+            var vals = (srcStr) ? srcStr.split(/\s+/) : [];
+            var idIdx = (vals.length) ? _Lang.arrToMap(vals,offset) : {};
+
+
+            if (!idIdx[_this.IDENT_NONE] && !idIdx[_this.IDENT_ALL]) {
+                if (idIdx[_this.IDENT_FORM]) {
+                    vals[idIdx[form.id]-offset] = form.id;
+                }
+                if (idIdx[_this.IDENT_THIS] && !idIdx[elementId]) {
+                    vals[idIdx[_this.IDENT_THIS]-offset] = elementId;
+                }
+                
+                //this has yet to be cleared up within the open list
+                //
+                //if (appendIdentifier && !idIdx[_this.IDENT_THIS] && !idIdx[elementId]) {
+                //    vals.push(elementId);
+                //}
+
+                passThrgh[target] = vals.join(" ");
+            } else if (all) {
+                passThrgh[target] = _this.IDENT_ALL;
+            }
+        };
+
+
+       /* var transformList = function(target, srcList) {
             var opList = _Lang.arrToString(srcList, ' '),
                     none = opList.indexOf(_this.IDENT_NONE) != -1,
                     all = opList.indexOf(_this.IDENT_ALL) != -1;
@@ -221,11 +253,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             } else if (all) {
                 passThrgh[target] = _this.IDENT_ALL;
             }
-        };
+        };*/
 
         if (passThrgh.execute) {
             /*the options must be a blank delimited list of strings*/
-            transformList(this.P_EXECUTE, passThrgh.execute);
+            transformList(this.P_EXECUTE, passThrgh.execute, true);
             passThrgh.execute = null;
             /*remap just in case we have a valid pointer to an existing object*/
             delete passThrgh.execute;
@@ -234,7 +266,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         if (passThrgh.render) {
-            transformList(this.P_RENDER, passThrgh.render);
+            transformList(this.P_RENDER, passThrgh.render, false);
             passThrgh.render = null;
             delete passThrgh.render;
         }

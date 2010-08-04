@@ -350,6 +350,19 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
     }
     ,
 
+
+    arrToMap: function(arr, offset) {
+        var ret = new Array(arr.length);
+        var len = arr.length;
+        offset = (offset)? offset: 0;
+
+        for (var cnt = 0; cnt < len; cnt++) {
+            ret[arr[cnt]] = cnt+offset;
+        }
+
+        return ret;
+    },
+
     /**
      * Concatenates an array to a string
      * @param {Array} arr the array to be concatenated
@@ -370,10 +383,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
         delimiter = delimiter || "\n";
         return arr.join(delimiter);
-    },
-
-
-
+    }
+    ,
 
 
     objToArray: function(obj, offset, pack) {
@@ -398,7 +409,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             return finalPack;
         }
 
-    },
+    }
+    ,
 
     /**
      * foreach implementation utilizing the
@@ -431,7 +443,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
                 }
             }
         }
-    },
+    }
+    ,
 
 
     /**
@@ -470,7 +483,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
                 }
             }
         }
-    },
+    }
+    ,
 
     /**
      * adds a EcmaScript optimized indexOf to our mix,
@@ -500,7 +514,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             pos++;
         }
         return (pos < len) ? pos : -1;
-    },
+    }
+    ,
 
 
     /**
@@ -532,7 +547,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
                 }
             }
         }
-    },
+    }
+    ,
     /**
      * creates a standardized error message which can be reused by the system
      *
@@ -554,7 +570,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             ret.push(this.keyValToStr("Error line number: ", 'undefined' != typeof error.lineNumber ? error.lineNumber : "undefined"));
         }
         return ret.join("");
-    },
+    }
+    ,
 
     /**
      * transforms a key value pair into a string
@@ -571,7 +588,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         }
         ret.push(delimiter);
         return ret.join("");
-    },
+    }
+    ,
 
 
     parseXML: function(txt) {
@@ -587,13 +605,15 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             xmlDoc.loadXML(txt);
         }
         return xmlDoc;
-    },
+    }
+    ,
 
     serializeXML: function(xmlNode) {
         if (xmlNode.xml) return xmlNode.xml; //IE
         //rest of the world
         return (new XMLSerializer()).serializeToString(xmlNode);
-    },
+    }
+    ,
 
     serializeChilds: function(xmlNode) {
         var buffer = [];
@@ -602,7 +622,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             buffer.push(this.serializeXML(xmlNode.childNodes[cnt]));
         }
         return buffer.join("");
-    },
+    }
+    ,
     isXMLParseError: function(xmlContent) {
         var findParseError = function(node) {
             if (!node || !node.childNodes) return false;
@@ -616,7 +637,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
                 (this.exists(xmlContent, "parseError.errorCode") && xmlContent.parseError.errorCode != 0) ||
                 findParseError(xmlContent)
 
-    },
+    }
+    ,
     /**
      * creates a neutral form data wrapper over an existing form Data element
      * the wrapper delegates following methods, append
@@ -674,6 +696,5 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
         return bufInstance;
     }
-
-
-});
+})
+        ;
