@@ -118,6 +118,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      */
     request : function(elem, event, options) {
 
+
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
          *all the time
@@ -217,17 +218,17 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             //false
             var offset = 1;
             var vals = (srcStr) ? srcStr.split(/\s+/) : [];
-            var idIdx = (vals.length) ? _Lang.arrToMap(vals,offset) : {};
+            var idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {};
 
 
             if (!idIdx[_this.IDENT_NONE] && !idIdx[_this.IDENT_ALL]) {
                 if (idIdx[_this.IDENT_FORM]) {
-                    vals[idIdx[form.id]-offset] = form.id;
+                    vals[idIdx[form.id] - offset] = form.id;
                 }
                 if (idIdx[_this.IDENT_THIS] && !idIdx[elementId]) {
-                    vals[idIdx[_this.IDENT_THIS]-offset] = elementId;
+                    vals[idIdx[_this.IDENT_THIS] - offset] = elementId;
                 }
-                
+
                 //this has yet to be cleared up within the open list
                 //
                 //if (appendIdentifier && !idIdx[_this.IDENT_THIS] && !idIdx[elementId]) {
@@ -235,46 +236,52 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
                 //}
 
                 passThrgh[target] = vals.join(" ");
-            } else if (all) {
+            } else if (idIdx[_this.IDENT_ALL]) {
                 passThrgh[target] = _this.IDENT_ALL;
             }
         };
 
 
-       /* var transformList = function(target, srcList) {
-            var opList = _Lang.arrToString(srcList, ' '),
-                    none = opList.indexOf(_this.IDENT_NONE) != -1,
-                    all = opList.indexOf(_this.IDENT_ALL) != -1;
-            if (!none && !all) {
-                opList = opList.replace(_this.IDENT_FORM, form.id);
-                opList = opList.replace(_this.IDENT_THIS, elementId);
+        /* var transformList = function(target, srcList) {
+         var opList = _Lang.arrToString(srcList, ' '),
+         none = opList.indexOf(_this.IDENT_NONE) != -1,
+         all = opList.indexOf(_this.IDENT_ALL) != -1;
+         if (!none && !all) {
+         opList = opList.replace(_this.IDENT_FORM, form.id);
+         opList = opList.replace(_this.IDENT_THIS, elementId);
 
-                passThrgh[target] = opList;
-            } else if (all) {
-                passThrgh[target] = _this.IDENT_ALL;
+         passThrgh[target] = opList;
+         } else if (all) {
+         passThrgh[target] = _this.IDENT_ALL;
+         }
+         };*/
+        try {
+            if (passThrgh.execute) {
+                /*the options must be a blank delimited list of strings*/
+                transformList(this.P_EXECUTE, passThrgh.execute, true);
+                passThrgh.execute = null;
+                /*remap just in case we have a valid pointer to an existing object*/
+                delete passThrgh.execute;
+            } else {
+                passThrgh[this.P_EXECUTE] = elementId;
             }
-        };*/
 
-        if (passThrgh.execute) {
-            /*the options must be a blank delimited list of strings*/
-            transformList(this.P_EXECUTE, passThrgh.execute, true);
-            passThrgh.execute = null;
-            /*remap just in case we have a valid pointer to an existing object*/
-            delete passThrgh.execute;
-        } else {
-            passThrgh[this.P_EXECUTE] = elementId;
-        }
+            if (passThrgh.render) {
+                transformList(this.P_RENDER, passThrgh.render, false);
+                passThrgh.render = null;
+                delete passThrgh.render;
+            }
 
-        if (passThrgh.render) {
-            transformList(this.P_RENDER, passThrgh.render, false);
-            passThrgh.render = null;
-            delete passThrgh.render;
-        }
+            //implementation specific options are added to the context for further processing
+            if (passThrgh.myfaces) {
+                context.myfaces = passThrgh.myfaces;
+                delete passThrgh.myfaces;
+            }
 
-        //implementation specific options are added to the context for further processing
-        if (passThrgh.myfaces) {
-            context.myfaces = passThrgh.myfaces;
-            delete passThrgh.myfaces;
+        } finally {
+            //ie6 mem leak clearing
+            _this = null;
+            transformList = null;
         }
 
         var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
@@ -313,6 +320,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         this._transport[transportType](elem, form, context, passThrgh);
+
+
     },
 
 
