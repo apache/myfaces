@@ -307,17 +307,17 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (!evalNodesDefined) {
             throw new Error("replaceElements called while evalNodes is not an array");
         }
-        var oldNode = item;
+        var sibling = item.nextSibling;
         var resultArr = this._Lang.objToArray(evalNodes);
 
         for (var cnt = 0; cnt < resultArr.length; cnt++) {
             if (cnt == 0) {
-                oldNode = parentNode.replaceChild(resultArr[cnt], oldNode);
+                parentNode.replaceChild(resultArr[cnt], item);
             } else {
-                if (oldNode.nextSibling) {
-                    oldNode = parentNode.insertBefore(resultArr[cnt], oldNode.nextSibling);
+                if (sibling) {
+                    parentNode.insertBefore(resultArr[cnt], sibling);
                 } else {
-                    oldNode = parentNode.appendChild(resultArr[cnt]);
+                    parentNode.appendChild(resultArr[cnt]);
 
                 }
             }
