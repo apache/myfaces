@@ -32,6 +32,7 @@ import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorBase;
 import javax.faces.component.behavior.FacesBehavior;
 
+import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
@@ -80,6 +81,8 @@ public class ClientBehaviorTestCase extends AbstractJsfConfigurableMockTestCase
                 .getName());
         application.addComponent(UIPanel.COMPONENT_TYPE, UIPanel.class
                 .getName());
+        application.addComponent(ComponentResourceContainer.COMPONENT_TYPE, 
+                ComponentResourceContainer.class.getName());
     }
 
     @Override

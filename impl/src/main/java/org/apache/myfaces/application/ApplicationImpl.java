@@ -91,6 +91,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.Property;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.el.PropertyResolverImpl;
 import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
 import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
@@ -1955,7 +1956,12 @@ public class ApplicationImpl extends Application
         {
             for (ResourceDependency dependency : dependencyList)
             {
-                _handleResourceDependency(context, component, dependency);
+                RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);
+                if (!rvc.isResourceDependencyAlreadyProcessed(dependency))
+                {
+                    _handleResourceDependency(context, component, dependency);
+                    rvc.setResourceDependencyAsProcessed(dependency);
+                }
             }
         }
         

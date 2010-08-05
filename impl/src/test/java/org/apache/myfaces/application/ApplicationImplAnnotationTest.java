@@ -33,12 +33,16 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.event.ListenerFor;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
 
+import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.renderkit.html.HtmlScriptRenderer;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockPropertyResolver;
+import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockVariableResolver;
@@ -87,6 +91,18 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
                 .getName());
         application.addComponent(UIPanel.COMPONENT_TYPE, UIPanel.class
                 .getName());
+        application.addComponent(ComponentResourceContainer.COMPONENT_TYPE, 
+                ComponentResourceContainer.class.getName());
+    }
+
+    @Override
+    protected void setUpRenderKit() throws Exception
+    {
+        RenderKitFactory renderKitFactory = (RenderKitFactory)
+        FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        renderKit = new MockRenderKit();
+        renderKit.addRenderer("javax.faces.Output", "javax.faces.resource.Script", new HtmlScriptRenderer());
+        renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
     }
 
     @Override

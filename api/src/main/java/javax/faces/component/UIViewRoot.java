@@ -110,6 +110,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     // an exception, should not have their afterPhase method called
     private transient Map<PhaseId, boolean[]> listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
     
+    private static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
+    private static final String JAVAX_FACES_LOCATION_HEAD = "javax_faces_location_head";
+    private static final String JAVAX_FACES_LOCATION_BODY = "javax_faces_location_body";
+    private static final String JAVAX_FACES_LOCATION_FORM = "javax_faces_location_form";
+    
     /**
      * Construct an instance of the UIViewRoot.
      */
@@ -169,19 +174,32 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // point to prevent this StackOverflowException is here, because this method is 
         // responsible to traverse the componentResources list and add when necessary.
         boolean alreadyAdded = false;
-        
-        if (componentId != null)
+
+        //The check is only necessary if the component resource is part of the tree.
+        if (componentResource.isInView())
         {
-            for(Iterator<UIComponent> it = componentResources.iterator(); it.hasNext();)
+            if (componentResource.getParent() != null &&
+                componentResource.getParent().getId() != null &&
+                componentResource.getParent().getId().startsWith(JAVAX_FACES_LOCATION_PREFIX))
             {
-                UIComponent component = it.next();
-                if(componentId.equals(component.getId()) && componentResource != component)
+                // We can assume safely that the component is in place, because there is no way to 
+                // put a component resource on a component resource container without call addComponentResource
+                // so relocation here will not happen.
+                alreadyAdded = true;
+            }
+            else if (componentId != null)
+            {
+                for(Iterator<UIComponent> it = componentResources.iterator(); it.hasNext();)
                 {
-                    it.remove();
-                }
-                else if (componentResource == component)
-                {
-                    alreadyAdded = true;
+                    UIComponent component = it.next();
+                    if(componentId.equals(component.getId()) && componentResource != component)
+                    {
+                        it.remove();
+                    }
+                    else if (componentResource == component)
+                    {
+                        alreadyAdded = true;
+                    }
                 }
             }
         }
@@ -479,10 +497,25 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         if (facet == null)
         {
             // create the facet by calling context.getApplication().createComponent()  using javax.faces.Panel as the argument
-            facet = context.getApplication().createComponent("javax.faces.Panel");
+            facet = context.getApplication().createComponent("javax.faces.ComponentResourceContainer");
 
             // Set the id of the facet to be target
-            facet.setId(target);
+            if (target.equals("head"))
+            {
+                facet.setId(JAVAX_FACES_LOCATION_HEAD);
+            }
+            else if (target.equals("body"))
+            {
+                facet.setId(JAVAX_FACES_LOCATION_BODY);
+            }
+            else if (target.equals("form"))
+            {
+                facet.setId(JAVAX_FACES_LOCATION_FORM);
+            }
+            else
+            {
+                facet.setId(JAVAX_FACES_LOCATION_PREFIX + target);
+            }
             
             // From jsr-314-open list it was made clear this facet is transient,
             // because all component resources does not change its inner state between
