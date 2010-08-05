@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.AbstractReadOnlyAttributeMap;
 
 
 /**
@@ -32,7 +32,7 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public final class InitParameterMap extends AbstractAttributeMap<String>
+public final class InitParameterMap extends AbstractReadOnlyAttributeMap<String>
 {
     private final ServletContext _servletContext;
 

@@ -22,7 +22,7 @@ import java.util.Enumeration;
 
 import javax.servlet.ServletRequest;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.AbstractReadOnlyAttributeMap;
 
 /**
  * ServletRequest multi-value parameters as Map.
@@ -30,7 +30,7 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public final class RequestParameterValuesMap extends AbstractAttributeMap<String[]>
+public final class RequestParameterValuesMap extends AbstractReadOnlyAttributeMap<String[]>
 {
     private final ServletRequest _servletRequest;
 
