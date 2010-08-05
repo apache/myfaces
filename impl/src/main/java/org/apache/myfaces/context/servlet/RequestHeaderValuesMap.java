@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.myfaces.util.AbstractReadOnlyAttributeMap;
+import org.apache.myfaces.util.AbstractAttributeMap;
 
 /**
  * HttpServletRequest header values (multi-value headers) as Map of String[].
@@ -34,7 +34,7 @@ import org.apache.myfaces.util.AbstractReadOnlyAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public final class RequestHeaderValuesMap extends AbstractReadOnlyAttributeMap<String[]>
+public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
 {
     private final HttpServletRequest _httpServletRequest;
     private final Map<String, String[]> _valueCache = new HashMap<String, String[]>();

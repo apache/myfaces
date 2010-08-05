@@ -1,27 +1,9 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package org.apache.myfaces.util;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -32,8 +14,8 @@ import java.util.Set;
 /**
  * Helper Map implementation for use with different Attribute Maps.
  * 
- * @author Anton Koinov (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * @author Anton Koinov (latest modification by $Author: slessard $)
+ * @version $Revision: 701829 $ $Date: 2008-10-05 12:06:02 -0500 (Dom, 05 Oct 2008) $
  */
 public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 {
@@ -44,7 +26,11 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public void clear()
     {
-        final List<String> names = Collections.list(getAttributeNames());
+        final List<String> names = new ArrayList<String>();
+        for (final Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
+        {
+            names.add(e.nextElement());
+        }
 
         for (String name : names)
         {
@@ -199,17 +185,14 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
     private abstract class AbstractAttributeIterator<E> implements Iterator<E>
     {
-        // We use a copied version of the Enumeration from getAttributeNames()
-        // here, because directly using it might cause a ConcurrentModificationException
-        // when performing remove(). Note that we can do this since the Enumeration
-        // from getAttributeNames() will contain exactly the attribute names from the time
-        // getAttributeNames() was called and it will not be updated if attributes are 
-        // removed or added.
-        protected final Iterator<String> _i = Collections.list(getAttributeNames()).iterator();
+        protected final Enumeration<String> _e = getAttributeNames();
         protected String _currentKey;
 
         public void remove()
         {
+            // remove() may cause ConcurrentModificationException.
+            // We could throw an exception here, but not throwing an exception
+            // allows one call to remove() to succeed
             if (_currentKey == null)
             {
                 throw new NoSuchElementException("You must call next() at least once");
@@ -219,12 +202,12 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
         public boolean hasNext()
         {
-            return _i.hasNext();
+            return _e.hasMoreElements();
         }
 
         public E next()
         {
-            return getValue(_currentKey = _i.next());
+            return getValue(_currentKey = _e.nextElement());
         }
 
         protected abstract E getValue(String attributeName);

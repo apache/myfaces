@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.myfaces.util.AbstractReadOnlyAttributeMap;
+import org.apache.myfaces.util.AbstractAttributeMap;
 
 /**
  * HttpServletRequest Cookies as Map.
@@ -34,7 +34,7 @@ import org.apache.myfaces.util.AbstractReadOnlyAttributeMap;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public final class CookieMap extends AbstractReadOnlyAttributeMap<Object>
+public final class CookieMap extends AbstractAttributeMap<Object>
 {
     private static final Cookie[] EMPTY_ARRAY = new Cookie[0];
 

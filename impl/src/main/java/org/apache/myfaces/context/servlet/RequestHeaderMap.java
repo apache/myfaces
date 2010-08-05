@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.myfaces.util.AbstractReadOnlyAttributeMap;
+import org.apache.myfaces.util.AbstractAttributeMap;
 
 
 /**
@@ -32,7 +32,7 @@ import org.apache.myfaces.util.AbstractReadOnlyAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public final class RequestHeaderMap extends AbstractReadOnlyAttributeMap<String>
+public final class RequestHeaderMap extends AbstractAttributeMap<String>
 {
     private final HttpServletRequest _httpServletRequest;
 
