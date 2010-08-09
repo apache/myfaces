@@ -92,63 +92,59 @@ public class StartupServletContextListener implements ServletContextListener,
         }
         _servletContext = event.getServletContext();
         
-        if (_facesInitializer == null)
-        {
-            _facesInitializer = FacesInitializerFactory.getFacesInitializer(_servletContext);
-        }
-
-        // Create startup FacesContext before initializing
-        FacesContext facesContext = _facesInitializer.initStartupFacesContext(_servletContext);
-        
         Boolean b = (Boolean) _servletContext.getAttribute(FACES_INIT_DONE);
         if (b == null || b.booleanValue() == false)
         {
+            if (_facesInitializer == null)
+            {
+                _facesInitializer = FacesInitializerFactory.getFacesInitializer(_servletContext);
+            }
+
+            // Create startup FacesContext before initializing
+            FacesContext facesContext = _facesInitializer.initStartupFacesContext(_servletContext);
+            
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
             _facesInitializer.initFaces(_servletContext);
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
             _servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
+            
+            // call contextInitialized on ManagedBeanDestroyerListener
+            _detroyerListener.contextInitialized(event);
+            
+            //Destroy startup FacesContext
+            _facesInitializer.destroyStartupFacesContext(facesContext);
         }
         else
         {
             log.info("MyFaces already initialized");
         }
-        
-        // call contextInitialized on ManagedBeanDestroyerListener
-        _detroyerListener.contextInitialized(event);
-        
-        //Destroy startup FacesContext
-        _facesInitializer.destroyStartupFacesContext(facesContext);
     }
     
     public void contextDestroyed(ServletContextEvent event)
     {
-        // Create startup FacesContext before start undeploy
-        FacesContext facesContext = null;
         if (_facesInitializer != null && _servletContext != null)
         {
-            facesContext = _facesInitializer.initShutdownFacesContext(_servletContext);
-        }
-        
-        dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
-        // call contextDestroyed on ManagedBeanDestroyerListener to destroy the attributes
-        _detroyerListener.contextDestroyed(event);
+            // Create startup FacesContext before start undeploy
+            FacesContext facesContext = _facesInitializer.initShutdownFacesContext(_servletContext);
+            
+            dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
+            // call contextDestroyed on ManagedBeanDestroyerListener to destroy the attributes
+            _detroyerListener.contextDestroyed(event);
 
-        if (_facesInitializer != null && _servletContext != null)
-        {
             _facesInitializer.destroyFaces(_servletContext);
+            
+            // Destroy startup FacesContext, but note we do before publish postdestroy event on
+            // plugins and before release factories.
+            if (facesContext != null)
+            {
+                _facesInitializer.destroyShutdownFacesContext(facesContext);
+            }
+            
+            FactoryFinder.releaseFactories();
+            DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
+            dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
         }
         
-        // Destroy startup FacesContext, but note we do before publish postdestroy event on
-        // plugins and before release factories.
-        if (facesContext != null)
-        {
-            _facesInitializer.destroyShutdownFacesContext(facesContext);
-        }
-        
-        FactoryFinder.releaseFactories();
-        DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
-        dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
-
         _servletContext = null;
     }
     
