@@ -223,7 +223,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
 
             if (!idIdx[_this.IDENT_NONE] && !idIdx[_this.IDENT_ALL]) {
                 if (idIdx[_this.IDENT_FORM]) {
-                    vals[idIdx[form.id] - offset] = form.id;
+                    vals[idIdx[_this.IDENT_FORM] - offset] = form.id;
                 }
                 if (idIdx[_this.IDENT_THIS] && !idIdx[elementId]) {
                     vals[idIdx[_this.IDENT_THIS] - offset] = elementId;
