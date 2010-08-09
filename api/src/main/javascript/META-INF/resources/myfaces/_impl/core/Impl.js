@@ -216,17 +216,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             //it uses an array and an index to position all elements correctly
             //the offset variable is there to prevent 0 which results in a javascript
             //false
-            var offset = 1;
-            var vals = (srcStr) ? srcStr.split(/\s+/) : [];
-            var idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {};
+            var offset = 1,
+                    vals = (srcStr) ? srcStr.split(/\s+/) : [],
+                    idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {},
+                //helpers to improve speed and compression
+                    none = idIdx[_this.IDENT_NONE],
+                    all = idIdx[_this.IDENT_ALL],
+                    theThis = idIdx[_this.IDENT_THIS],
+                    theForm = idIdx[_this.IDENT_FORM];
 
 
-            if (!idIdx[_this.IDENT_NONE] && !idIdx[_this.IDENT_ALL]) {
-                if (idIdx[_this.IDENT_FORM]) {
-                    vals[idIdx[_this.IDENT_FORM] - offset] = form.id;
+            if (!none && !all) {
+                if (theForm) {
+                    vals[theForm - offset] = form.id;
                 }
-                if (idIdx[_this.IDENT_THIS] && !idIdx[elementId]) {
-                    vals[idIdx[_this.IDENT_THIS] - offset] = elementId;
+                if (theThis && !idIdx[elementId]) {
+                    vals[theThis - offset] = elementId;
                 }
 
                 //this has yet to be cleared up within the open list
@@ -236,26 +241,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
                 //}
 
                 passThrgh[target] = vals.join(" ");
-            } else if (idIdx[_this.IDENT_ALL]) {
+            } else if (all) {
                 passThrgh[target] = _this.IDENT_ALL;
             }
         };
 
-
-        /* var transformList = function(target, srcList) {
-         var opList = _Lang.arrToString(srcList, ' '),
-         none = opList.indexOf(_this.IDENT_NONE) != -1,
-         all = opList.indexOf(_this.IDENT_ALL) != -1;
-         if (!none && !all) {
-         opList = opList.replace(_this.IDENT_FORM, form.id);
-         opList = opList.replace(_this.IDENT_THIS, elementId);
-
-         passThrgh[target] = opList;
-         } else if (all) {
-         passThrgh[target] = _this.IDENT_ALL;
-         }
-         };*/
-        try {
+       try {
             if (passThrgh.execute) {
                 /*the options must be a blank delimited list of strings*/
                 transformList(this.P_EXECUTE, passThrgh.execute, true);
