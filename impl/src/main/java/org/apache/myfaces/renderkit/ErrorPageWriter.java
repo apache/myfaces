@@ -646,6 +646,7 @@ public final class ErrorPageWriter
             }
             catch (FacesException e)
             {
+                stateSize = -1;
                 if (log.isLoggable(Level.FINEST))
                 {
                     log.fine("Could not determine state size: " + e.getMessage());
