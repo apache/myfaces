@@ -234,9 +234,6 @@ public class StartupServletContextListenerTest extends AbstractJsfTestCase
             Field field = StartupServletContextListener.class.getDeclaredField("_servletContext");
             field.setAccessible(true);
             field.set(_listener, servletContext);
-            field = StartupServletContextListener.class.getDeclaredField("_listenerInitialized");
-            field.setAccessible(true);
-            field.set(_listener, true);
         }
         catch (Exception e)
         {
