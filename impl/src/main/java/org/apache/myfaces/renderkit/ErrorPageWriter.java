@@ -639,8 +639,18 @@ public final class ErrorPageWriter
         Object state = c.saveState(faces);
         if (state != null)
         {
-            byte[] stateBytes = StateUtils.getAsByteArray(state, faces.getExternalContext());
-            stateSize = stateBytes.length;
+            try
+            {
+                byte[] stateBytes = StateUtils.getAsByteArray(state, faces.getExternalContext());
+                stateSize = stateBytes.length;
+            }
+            catch (FacesException e)
+            {
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.fine("Could not determine state size: " + e.getMessage());
+                }
+            }
         }
         _writeStart(writer, c, hasChildren, true);
         writer.write(" - State size:" + stateSize + " bytes");
