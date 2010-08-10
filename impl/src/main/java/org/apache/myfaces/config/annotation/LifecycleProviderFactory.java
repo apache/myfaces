@@ -21,11 +21,10 @@ package org.apache.myfaces.config.annotation;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
-import org.apache.myfaces.commons.discovery.tools.DiscoverSingleton;
-
-
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
+
+import org.apache.commons.discovery.tools.DiscoverSingleton;
 
 
 public abstract class LifecycleProviderFactory {

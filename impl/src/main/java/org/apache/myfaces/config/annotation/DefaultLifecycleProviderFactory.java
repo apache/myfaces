@@ -22,14 +22,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.commons.discovery.ResourceNameIterator;
-import org.apache.myfaces.commons.discovery.resource.ClassLoaders;
-import org.apache.myfaces.commons.discovery.resource.names.DiscoverServiceNames;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
@@ -37,6 +31,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.discovery.ResourceNameIterator;
+import org.apache.commons.discovery.resource.ClassLoaders;
+import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /*

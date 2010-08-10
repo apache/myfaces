@@ -37,8 +37,8 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.apache.commons.discovery.tools.DiscoverSingleton;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.commons.discovery.tools.DiscoverSingleton;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
