@@ -172,13 +172,15 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         if (null != viewStateField) {
             this._Dom.setAttribute(viewStateField, "value", this.appliedViewState);
         } else {
-            var element = document.createElement("input");
-            this._Dom.setAttribute(element, "type", "hidden");
-            this._Dom.setAttribute(element, "name", this.P_VIEWSTATE);
-            elem.appendChild(element);
-
-            this._Dom.setAttribute(element, "value", this.appliedViewState);
+            this._appendViewStateElem(elem, this.appliedViewState);
         }
+    },
+
+    _appendViewStateElem: function(parent, viewStateVal) {
+        var element = document.createElement("div");
+        element.innerHTML = "<input type='hidden' name='"+this.P_VIEWSTATE+"' value='"+viewStateVal+"' />";
+        //now we go to proper dom handling after having to deal with another ie screwup
+        parent.appendChild(element.childNodes[0]);
     },
 
     _setVSTInnerForms: function(elem) {
@@ -197,12 +199,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         //if the viewstate field is present we can rely on the viewstate being
         //at the current state no further updates have to be done
         if (null == viewStateField) {
-            var element = document.createElement("input");
-            this._Dom.setAttribute(element, "type", "hidden");
-            this._Dom.setAttribute(element, "name", this.P_VIEWSTATE);
-            appliedReplacedFrom.appendChild(element);
-
-            this._Dom.setAttribute(element, "value", this.appliedViewState);
+            this._appendViewStateElem(appliedReplacedFrom, this.appliedViewState);
         }  //else form already has a delivered viewstate field
     },
 
@@ -299,7 +296,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             // The source form has to be pulled out of the CURRENT document first because the context object
             // may refer to an invalid document if an update of the entire body has occurred before this point.
             var viewStateValue = node.firstChild.nodeValue;
-            var sourceForm = this._Dom.fuzzyFormDetection(context.source);
+            var elementId = context.source.id || context.source.name;
+            if ((elementId == null || elementId == '') && context.source.name) {
+                elementId = context.source.name;
+            }
+
+            var sourceForm = this._Dom.fuzzyFormDetection(elementId);
 
 
             //the source form could be determined absolutely by either the form, the identifier of the node, or the name
@@ -313,30 +315,29 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             /*we check for an element and include a namesearch, but only within the bounds of the committing form*/
             //we now should have the form, if not the viewstate fixup code at the end of the list
             //will also be able to recover in almost all instances
+            this.appliedViewState = viewStateValue;
+
             if (null != sourceForm) {
                 var element = null;
                 try {
                     element = this._Dom.findFormElement(sourceForm, this.P_VIEWSTATE);
+                    this._Dom.setAttribute(element, "value", viewStateValue);
                 } catch (e) {
                     //in case of an error here we try an early recovery but throw an error to our error handler
                     this._onException(request, context, "_AjaxResponse", "processUpdate('javax.faces.ViewState')", e);
                 }
 
                 if (!element) {//no element found we have to append a hidden field
-                    element = document.createElement("input");
-                    this._Dom.setAttribute(element, "type", "hidden");
-                    this._Dom.setAttribute(element, "name", this.P_VIEWSTATE);
-                    sourceForm.appendChild(element);
+                    this._appendViewStateElem(sourceForm, viewStateValue);
                 }
                 //viewState cannot have split cdata blocks so we can skip the costlier operation
 
-                this._Dom.setAttribute(element, "value", viewStateValue);
             }
             //note due to a missing spec we have to apply the viewstate as well
             //to any form which might be rerendered within the render cycle
             //hence we store the viewstate element for later refererence
             //to fix up all elements effected by the cycle
-            this.appliedViewState = viewStateValue;
+
         }
         else
         {

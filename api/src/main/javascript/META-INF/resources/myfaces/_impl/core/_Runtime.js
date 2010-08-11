@@ -600,12 +600,21 @@ if (!myfaces._impl.core._Runtime) {
                 newCls = _reserveClsNms(newCls, protoFuncs);
                 if (!newCls) return null;
             }
-            if (extendCls._mfProto) {
-                extendCls = extendCls._mfProto;
+            //if the type information is known we use that one
+            //with this info we can inherit from objects also
+            //instead of only from classes
+            //sort of like   this.extendClass(newCls, extendObj._mfClazz...
+            if (extendCls._mfClazz) {
+                extendCls = extendCls._mfClazz;
             }
 
             if ('undefined' != typeof extendCls && null != extendCls) {
-                newCls.prototype = new extendCls;
+                //first we have to get rid of the constructor calling problem
+                //problem
+                var tmpFunc = function() {};
+                tmpFunc.prototype = extendCls.prototype;
+                newCls.prototype = new tmpFunc();
+                tmpFunc = null;
                 newCls.prototype.constructor = newCls;
                 newCls.prototype._parentCls = extendCls.prototype;
 
@@ -615,8 +624,12 @@ if (!myfaces._impl.core._Runtime) {
                     //we store the descension level of each method under a mapped
                     //name to avoid name clashes
                     //to avoid name clashes with internal methods of array
+                    //if we don't do this we trap the callSuper in an endless
+                    //loop after descending one level
                     var _mappedName = ["_",methodName,"_mf_r"].join("");
                     this._mfClsDescLvl = this._mfClsDescLvl || new Array();
+                    var descLevel = this._mfClsDescLvl;
+
                     //we have to detect the descension level
                     //we now check if we are in a super descension for the current method already
                     //if not we are on this level
@@ -626,13 +639,15 @@ if (!myfaces._impl.core._Runtime) {
 
                     try {
                         //we now store the level position as new descension level for callSuper
-                        this._mfClsDescLvl[_mappedName] = _parentCls;
+                        descLevel[_mappedName] = _parentCls;
                         //and call the code on this
                         _parentCls[methodName].apply(this, passThrough);
                     } finally {
-                        this._mfClsDescLvl[_mappedName] = _oldDescLevel;
+                        descLevel[_mappedName] = _oldDescLevel;
                     }
                 };
+                //reference to its own type
+                newCls.prototype._mfClazz = newCls;
             }
 
             //we now map the function map in
@@ -681,11 +696,11 @@ if (!myfaces._impl.core._Runtime) {
                 return;
             }
 
-            var clazz = ooFunc(newCls + "._mfProto", delegateObj, protoFuncs, nmsFuncs);
+            var clazz = ooFunc(newCls + "._mfClazz", delegateObj, protoFuncs, nmsFuncs);
             if (clazz != null) {
                 _this.applyToGlobalNamespace(newCls, new clazz());
             }
-            _this.fetchNamespace(newCls)["_mfProto"] = clazz;
+            _this.fetchNamespace(newCls)["_mfClazz"] = clazz;
         };
 
         //internal class namespace reservation depending on the type (string or function)

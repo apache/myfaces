@@ -188,6 +188,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 alert(e.toString());
         } finally {
             //final cleanup to terminate everything
+            if(this._xhr.readyState == this._READY_STATE_DONE) {
+                this._callSuper("_finalize");
+            }
         }
     },
 

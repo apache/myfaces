@@ -354,10 +354,10 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
     arrToMap: function(arr, offset) {
         var ret = new Array(arr.length);
         var len = arr.length;
-        offset = (offset)? offset: 0;
+        offset = (offset) ? offset : 0;
 
         for (var cnt = 0; cnt < len; cnt++) {
-            ret[arr[cnt]] = cnt+offset;
+            ret[arr[cnt]] = cnt + offset;
         }
 
         return ret;
@@ -424,24 +424,28 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * @param scope (optional) the scope to apply the closure to
      */
     arrForEach: function(arr, func /*startPos, scope*/) {
-        var startPos = Number(arguments[2]) || 0;
-        var thisObj = arguments[3];
+        try {
+            var startPos = Number(arguments[2]) || 0;
+            var thisObj = arguments[3];
 
-        //check for an existing foreach mapping on array prototypes
-        if (Array.prototype.forEach) {
-            (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
-        } else {
-            startPos = (startPos < 0) ? Math.ceil(startPos) : Math.floor(startPos);
-            if (typeof func != "function") {
-                throw new TypeError();
-            }
-            for (var cnt = 0; cnt < arr.length; cnt++) {
-                if (thisObj) {
-                    func.call(thisObj, arr[cnt], cnt, arr);
-                } else {
-                    func(arr[cnt], cnt, arr);
+            //check for an existing foreach mapping on array prototypes
+            if (Array.prototype.forEach) {
+                (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
+            } else {
+                startPos = (startPos < 0) ? Math.ceil(startPos) : Math.floor(startPos);
+                if (typeof func != "function") {
+                    throw new TypeError();
+                }
+                for (var cnt = 0; cnt < arr.length; cnt++) {
+                    if (thisObj) {
+                        func.call(thisObj, arr[cnt], cnt, arr);
+                    } else {
+                        func(arr[cnt], cnt, arr);
+                    }
                 }
             }
+        } finally {
+            func = null;
         }
     }
     ,
@@ -460,28 +464,32 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      *
      */
     arrFilter: function(arr, func /*startPos, scope*/) {
-        var startPos = Number(arguments[2]) || 0;
-        var thisObj = arguments[3];
+        try {
+            var startPos = Number(arguments[2]) || 0;
+            var thisObj = arguments[3];
 
-        //check for an existing foreach mapping on array prototypes
-        if (Array.prototype.filter) {
-            return ((startPos) ? arr.slice(startPos).filter(func, thisObj) : arr.filter(func, thisObj));
-        } else {
-            if (typeof func != "function") {
-                throw new TypeError();
-            }
-            var ret = [];
-            startPos = (startPos < 0) ? Math.ceil(startPos) : Math.floor(startPos);
+            //check for an existing foreach mapping on array prototypes
+            if (Array.prototype.filter) {
+                return ((startPos) ? arr.slice(startPos).filter(func, thisObj) : arr.filter(func, thisObj));
+            } else {
+                if (typeof func != "function") {
+                    throw new TypeError();
+                }
+                var ret = [];
+                startPos = (startPos < 0) ? Math.ceil(startPos) : Math.floor(startPos);
 
-            for (var cnt = startPos; cnt < arr.length; cnt++) {
-                if (thisObj) {
-                    var elem = arr[cnt];
-                    if (func.call(thisObj, elem, cnt, arr)) ret.push(elem);
-                } else {
-                    var elem = arr[cnt];
-                    if (func(arr[cnt], cnt, arr)) ret.push(elem);
+                for (var cnt = startPos; cnt < arr.length; cnt++) {
+                    if (thisObj) {
+                        var elem = arr[cnt];
+                        if (func.call(thisObj, elem, cnt, arr)) ret.push(elem);
+                    } else {
+                        var elem = arr[cnt];
+                        if (func(arr[cnt], cnt, arr)) ret.push(elem);
+                    }
                 }
             }
+        } finally {
+            func = null;
         }
     }
     ,

@@ -13,7 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 /*
  * a classical listener queue pattern
  */
@@ -77,6 +77,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", my
         var broadCastFunc = function(element) {
             element.apply(null, _args);
         };
-        this.each(broadCastFunc);
+        try {
+            this.each(broadCastFunc);
+        } finally {
+            broadCastFunc = null;
+        }
     }
 });

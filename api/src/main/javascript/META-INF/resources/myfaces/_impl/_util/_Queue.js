@@ -59,8 +59,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
     },
 
     _readjust: function() {
-        while (null != this._size && 'undefined' != typeof this._size &&
-                this._size > -1 && this.length() > this._size) {
+        var size = this._size;
+        while (null != size && 'undefined' != typeof size &&
+                size > -1 && this.length() > size) {
             this.dequeue();
         }
     },
@@ -84,17 +85,20 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
         var element = null;
 
         // check whether the queue is empty
-        if (this._q.length) {
+        var qLen = this._q.length;
+        var queue = this._q;
+        
+        if (qLen) {
 
             // fetch the oldest element in the queue
-            element = this._q[this._space];
+            element = queue[this._space];
 
             // update the amount of space and check whether a shift should occur
             //added here a max limit of 30
-            if (++this._space * 2 >= this._q.length) {
+            if ((++this._space) << 1 >= qLen) {
 
                 // set the queue equal to the non-empty portion of the queue
-                this._q = this._q.slice(this._space);
+                this._q = queue.slice(this._space);
 
                 // reset the amount of space at the front of the queue
                 this._space = 0;

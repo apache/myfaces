@@ -27,6 +27,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Ob
 
     _Dom: myfaces._impl._util._Dom,
     _Lang: myfaces._impl._util._Lang,
+    _RT: myfaces._impl.core._Runtime,
 
     _contentType: "application/x-www-form-urlencoded",
     _source: null,
@@ -77,6 +78,36 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Ob
     _STATUS_OK_MAJOR: 300,
 
     _VAL_AJAX: "partial/ajax",
+
+
+    /**
+     * ie6 cleanup
+     */
+    _finalize: function() {
+        if(!this._RT.browser.isIE) {
+            //no ie, no broken garbage collector
+            return;
+        }
+        var resultArr = [];
+        for(var key in this) {
+            if(key != "_finalize" && key != "callback" && key.indexOf("_") == 0) {
+                resultArr.push(key);
+            }
+        }
+        //ie has a problem with its gc it cannot cleanup
+        //circular references between javascript and com
+        //to the worse every xhr object is a com object
+        //and some but not all inpucd Tcd cdt elements as well
+        //i cannot fix all mem leaks but at least I can
+        //reduce them , I cannot help with event handlers set
+        //on dom elements replaced, but ie7 gcs them at least
+        //during the window unload phase
+        for(var cnt = 0; cnt < resultArr.length; cnt++) {
+            if(this[resultArr[cnt]])
+            delete this[resultArr[cnt]];
+        }
+
+    },
 
     //abstract methods which have to be implemented
     //since we do not have abstract methods we simulate them

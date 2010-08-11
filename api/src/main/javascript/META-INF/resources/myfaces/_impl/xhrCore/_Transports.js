@@ -325,6 +325,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
             this._Impl.sendEvent(request, context, this._Impl.SUCCESS);
         } finally {
             this._q.processQueue();
+            //ie6 helper cleanup
+            delete context.source;
         }
     },
 
@@ -357,6 +359,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
                         this._Impl.HTTPERROR, errorText);
             } finally {
                 this._q.processQueue();
+                //ie6 helper cleanup
+                delete context.source;
+                
             }
         }
         //_onError

@@ -264,6 +264,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //note this is triggered only in htmlunit no other browser
             //so we are save here
             evalNodes = dummyPlaceHolder.childNodes[0].childNodes;
+            delete dummyPlaceHolder;
         }
 
         //ie throws also an error on length requests
@@ -290,6 +291,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     replaceElement: function(item, evalNode) {
         evalNode = item.parentNode.replaceChild(evalNode, item);
+        delete item;
         return evalNode;
     },
 
@@ -313,6 +315,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         for (var cnt = 0; cnt < resultArr.length; cnt++) {
             if (cnt == 0) {
                 parentNode.replaceChild(resultArr[cnt], item);
+                delete item;
             } else {
                 if (sibling) {
                     parentNode.insertBefore(resultArr[cnt], sibling);
@@ -796,8 +799,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         if (attr === "class") {
             node.setAttribute("className", val);
+        } else if (attr === "name") {
+            node[attr] = val;
         } else if (attr === "for") {
-
             node.setAttribute("htmlFor", val);
         } else if (attr === "style") {
             //We have to split the styles here and assign them one by one
