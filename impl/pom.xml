@@ -954,13 +954,11 @@
       <artifactId>commons-logging</artifactId>
       <version>1.1.1</version>
     </dependency -->
-    <!-- 
     <dependency>
       <groupId>commons-discovery</groupId>
       <artifactId>commons-discovery</artifactId>
       <version>0.4</version>
     </dependency>
-     -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
