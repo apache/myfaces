@@ -32,7 +32,23 @@
 /** @namespace window.console */
 myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", myfaces._impl.core._Runtime, {
 
+    _processedExceptions: {},
 
+    isExceptionProcessed: function(e) {
+        return !! this._processedExceptions[e.toString()];
+    },
+
+    setExceptionProcessed: function(e) {
+        this._processedExceptions[e.toString()] = true;
+    },
+
+    clearExceptionProcessed: function() {
+        //ie again
+        for(var key in this._processedExceptions) {
+            this._processedExceptions[key] = null;
+        }
+        this._processedExceptions = {};
+    },
 
     fetchNamespace : function(namespace) {
         if (!namespace || !this.isString(namespace)) {

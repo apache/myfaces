@@ -44,8 +44,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
     constructor_: function(arguments) {
         try {
             //we fetch in the standard arguments
-            this._callSuper("constructor",arguments);
+            this._callSuper("constructor", arguments);
             this._Lang.applyArgs(this, arguments);
+
+            if (!this._response) {
+                this._response = new myfaces._impl.xhrCore._AjaxResponse(this._onException, this._onWarning);
+            }
+            this._ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(this._onException, this._onWarning);
         } catch (e) {
             //_onError
             this._onException(null, this._context, this.CLS_NAME, "constructor", e);
@@ -74,10 +79,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
             //ie has a bug, onload is not settable outside of innerHTML on iframes
             this._frame.onload_IE = this._Lang.hitch(this, this.callback);
         }
-
-        if (!this._response) {
-            this._response = new myfaces._impl.xhrCore._AjaxResponse(this._onException, this._onWarning);
-        }
+       
         //now to the parameter passing:
         _Impl.sendEvent(this._xhr, this._context, _Impl.BEGIN);
 
@@ -195,10 +197,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         }
         var input = document.createElement("input");
         //the dom is a singleton nothing can happen by remapping
-        var setAttr = this._Dom.setAttribute;
-        setAttr(input, "name", key);
-        setAttr(input, "style", "display:none");
-        setAttr(input, "value", value);
+        this._Dom.setAttribute(input, "name", key);
+        this._Dom.setAttribute(input, "style", "display:none");
+        this._Dom.setAttribute(input, "value", value);
         this._sourceForm.appendChild(input);
     },
 
@@ -215,7 +216,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         var frame = document.getElementById(this._FRAME_ID);
         //normally this code should not be called
         //but just to be sure
-        var setAttr = this._Dom.setAttribute;
         if (!frame) {
             if (!_RT.browser.isIE) {
                 frame = document.createElement('iframe');
@@ -224,17 +224,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
                 //but this code is the safe bet it works on all standards
                 //compliant browsers in a clean manner
 
-                setAttr(frame, "src", "about:blank");
-                setAttr(frame, "id", this._FRAME_ID);
-                setAttr(frame, "name", this._FRAME_ID);
-                setAttr(frame, "type", "content");
-                setAttr(frame, "collapsed", "true");
-                setAttr(frame, "style", "display:none");
+                this._Dom.setAttribute(frame, "src", "about:blank");
+                this._Dom.setAttribute(frame, "id", this._FRAME_ID);
+                this._Dom.setAttribute(frame, "name", this._FRAME_ID);
+                this._Dom.setAttribute(frame, "type", "content");
+                this._Dom.setAttribute(frame, "collapsed", "true");
+                this._Dom.setAttribute(frame, "style", "display:none");
 
                 document.body.appendChild(frame);
             } else { //Now to the non compliant browsers
                 var node = document.createElement("div");
-                setAttr(node, "style", "display:none");
+                this._Dom.setAttribute(node, "style", "display:none");
                 //we are dealing with two well known iframe ie bugs here
                 //first the iframe has to be set via innerHTML to be present
                 //secondly the onload handler is immutable on ie, we have to

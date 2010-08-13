@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 /** @namespace myfaces._impl.xhrCore._AjaxUtils */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Object, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", myfaces._impl.xhrCore._FinalizeableObj, {
+      _processedExceptions: {},
+
     /**
      * Constructor
      * @param {function} onException - exception handler
      * @param {function} onWarning - warning handler
      */
     constructor_ : function(onException, onWarning) {
-
         this._onException = onException;
         this._onWarning = onWarning;
     },
@@ -223,5 +224,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", Obje
             }
 
         }
+    },
+
+    _finalize: function() {
+        delete this._onException;
+        delete this._onWarning;
     }
+
 });

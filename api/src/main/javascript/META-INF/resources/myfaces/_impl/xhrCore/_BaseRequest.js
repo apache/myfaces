@@ -23,7 +23,7 @@
  * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  */
 /** @namespace myfaces._impl.xhrCore._AjaxRequest */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Object, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", myfaces._impl.xhrCore._FinalizeableObj, {
 
     _Dom: myfaces._impl._util._Dom,
     _Lang: myfaces._impl._util._Lang,
@@ -79,42 +79,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Ob
 
     _VAL_AJAX: "partial/ajax",
 
+    
 
-    /**
-     * ie6 cleanup
-     */
-    _finalize: function() {
-        if(!this._RT.browser.isIE) {
-            //no ie, no broken garbage collector
-            return;
-        }
-        var resultArr = [];
-        for(var key in this) {
-            if(key != "_finalize" && key != "callback" && key.indexOf("_") == 0) {
-                resultArr.push(key);
-            }
-        }
-        //ie has a problem with its gc it cannot cleanup
-        //circular references between javascript and com
-        //to the worse every xhr object is a com object
-        //and some but not all inpucd Tcd cdt elements as well
-        //i cannot fix all mem leaks but at least I can
-        //reduce them , I cannot help with event handlers set
-        //on dom elements replaced, but ie7 gcs them at least
-        //during the window unload phase
-        for(var cnt = 0; cnt < resultArr.length; cnt++) {
-            if(this[resultArr[cnt]])
-            delete this[resultArr[cnt]];
-        }
-
-    },
 
     //abstract methods which have to be implemented
     //since we do not have abstract methods we simulate them
     //by using empty ones
     constructor_: function() {
+        this._callSuper("constructor");
         this._Lang = myfaces._impl._util._Lang;
         this._Dom = myfaces._impl._util._Dom;
+        this._initDefaultFinalizableFields();
     },
 
     /**
@@ -148,4 +123,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", Ob
        
         return ret;
     }
+
+    
 });

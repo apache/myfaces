@@ -15,7 +15,7 @@
  */
 
 /** @namespace myfaces._impl.xhrCore._AjaxResponse */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", Object, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", myfaces._impl.xhrCore._FinalizeableObj, {
 
     /*partial response types*/
     RESP_PARTIAL : "partial-response",
@@ -40,8 +40,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
     P_VIEWHEAD: "javax.faces.ViewHead",
     P_VIEWBODY: "javax.faces.ViewBody",
 
+
     /**
      * Constructor
+     * @param {function} base request classed parent object
      * @param {function} onException
      * @param {function} onWarning
      */
@@ -57,6 +59,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
 
         this._Lang = myfaces._impl._util._Lang;
         this._Dom = myfaces._impl._util._Dom;
+
     },
     /**
      * uses response to start Html element replacement
@@ -71,6 +74,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
      *
      */
     processResponse : function(request, context) {
+
         try {
             var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
 
@@ -178,7 +182,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
 
     _appendViewStateElem: function(parent, viewStateVal) {
         var element = document.createElement("div");
-        element.innerHTML = "<input type='hidden' name='"+this.P_VIEWSTATE+"' value='"+viewStateVal+"' />";
+        element.innerHTML = "<input type='hidden' name='" + this.P_VIEWSTATE + "' value='" + viewStateVal + "' />";
         //now we go to proper dom handling after having to deal with another ie screwup
         parent.appendChild(element.childNodes[0]);
     },
@@ -339,8 +343,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
             //to fix up all elements effected by the cycle
 
         }
-        else
-        {
+        else {
             // response may contain several blocks
             var cDataBlock = this._Dom.concatCDATABlocks(node);
 
@@ -381,16 +384,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
     _pushOperationResult: function(resultNode) {
         var pushSubnode = this._Lang.hitch(this, function(currNode) {
             var parentForm = this._Dom.getParent(currNode, "form");
-            if (null != parentForm)
-            {
+            if (null != parentForm) {
                 this._updateForms.push(parentForm);
             }
-            else
-            {
+            else {
                 this._updateElems.push(currNode);
             }
         });
-        var isArr = resultNode instanceof Array;
+        var isArr = 'undefined' != typeof resultNode.length && 'undefined' == typeof resultNode.nodeType;
         if (isArr && resultNode.length) {
             for (var cnt = 0; cnt < resultNode.length; cnt++) {
                 pushSubnode(resultNode[cnt]);
@@ -646,8 +647,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
         }
 
         var parentForm = this._Dom.getParent(item, "form");
-        if (null != parentForm)
-        {
+        if (null != parentForm) {
             this._updateForms.push(parentForm);
         }
         this._Dom.deleteItem(item);
@@ -715,6 +715,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", O
 
         }
         return true;
+    },
+    _finalize: function() {
+        delete this._onException;
+        delete this._onWarning;
+        delete this._updateElems;
+        // List of forms to be updated if any inner block is updated
+        delete this._updateForms;
+        delete this.appliedViewState;
     }
 
 });

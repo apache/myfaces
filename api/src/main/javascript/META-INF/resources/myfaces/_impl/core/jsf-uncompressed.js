@@ -21,6 +21,8 @@ if (!window.jsf) {
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_ListenerQueue.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_Dom.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_HtmlStripper.js']}", null, null, "UTF-8");
+
+    myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_FinalizeableObj.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxUtils.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequestQueue.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.xhrCore:_BaseRequest.js']}", null, null, "UTF-8");

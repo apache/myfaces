@@ -401,8 +401,15 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      */
     _stdErrorHandler: function(request, context, sourceClass, func, exception) {
         this._loadImpl();
+        var _Lang =  myfaces._impl._util._Lang;
+        var exProcessed = _Lang.isExceptionProcessed(exception);
         try {
-            if (this._threshold == "ERROR" && !exception._processed) {
+            //newer browsers do not allow to hold additional values on native objects like exceptions
+            //we hence capsule it into the request, which is gced automatically
+            //on ie as well, since the stdErrorHandler usually is called between requests
+            //this is a valid approach
+
+            if (this._threshold == "ERROR" && !exProcessed) {
                 this._Impl.sendError(request, context, this._Impl.CLIENT_ERROR, exception.name,
                         "MyFaces ERROR:" + this._Lang.createErrorMsg(sourceClass, func, exception));
             }
@@ -410,7 +417,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
             this._q.cleanup();
             //we forward the exception, just in case so that the client
             //will receive it in any way
-            exception._processed = true;
+            try {
+                if(!exProcessed) {
+                    _Lang.setExceptionProcessed(exception);
+                }
+            } catch(e) {
+
+            }
             throw exception;
         }
     },

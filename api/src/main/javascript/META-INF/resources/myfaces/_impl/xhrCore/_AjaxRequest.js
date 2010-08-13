@@ -41,10 +41,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
      */
     constructor_: function(arguments) {
         
-        if('undefined' == typeof arguments) return;
 
         try {
-
+            this._callSuper("constructor", arguments);
             /*namespace remapping for readability*/
             //we fetch in the standard arguments
             //and apply them to our protected attributes
@@ -58,7 +57,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
 
         } catch (e) {
             //_onError
-            this._onException(null, this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
+            this._onException(this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
         }
     },
 
@@ -188,9 +187,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 alert(e.toString());
         } finally {
             //final cleanup to terminate everything
+            this._Lang.clearExceptionProcessed();
+
             if(this._xhr.readyState == this._READY_STATE_DONE) {
                 this._callSuper("_finalize");
             }
+
         }
     },
 

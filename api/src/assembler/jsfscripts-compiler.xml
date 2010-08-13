@@ -46,14 +46,16 @@
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
+
+                <include>**/_impl/xhrCore/_FinalizeableObj.js</include>
                 <include>**/_impl/xhrCore/_AjaxUtils.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequestQueue.js</include>
                 <include>**/_impl/xhrCore/_BaseRequest.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
-                <!-- not yet used so we comment it out this is pure 2.1 functionality -->
 
+                <!-- this is pure 2.1 functionality -->
                 <include>**/_impl/xhrCore/_IFrameRequest.js</include>
-                
+
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
                 <include>**/_impl/xhrCore/_Transports.js</include>
                 <include>**/_impl/core/Impl.js</include>

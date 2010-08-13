@@ -60,6 +60,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     },
 
     _Lang:myfaces._impl._util._Lang,
+    _RT:myfaces._impl.core._Runtime,
 
     constructor_: function() {
         //we have to trigger it upfront because mozilla runs the eval
@@ -67,12 +68,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //under normal circumstances this works, if there are no normal ones
         //then this also will work at the second time, but the onload handler
         //should cover 99% of all use cases to avoid a loading race condition
-        myfaces._impl.core._Runtime.addOnLoad(window, function() {
+        this._RT.addOnLoad(window, function() {
             myfaces._impl._util._Dom.isManualScriptEval();
         });
         //safety fallback if the window onload handler is overwritten and not chained
         if (document.body) {
-            myfaces._impl.core._Runtime.addOnLoad(document.body, function() {
+            this._RT.addOnLoad(document.body, function() {
                 myfaces._impl._util._Dom.isManualScriptEval();
             });
         }
@@ -100,10 +101,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                         if (finalScripts.length) {
                             //script source means we have to eval the existing
                             //scripts before running the include
-                            myfaces._impl.core._Runtime.globalEval(finalScripts.join("\n"));
+                            this._RT.globalEval(finalScripts.join("\n"));
                             finalScripts = [];
                         }
-                    myfaces._impl.core._Runtime.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
+                    this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
                 } else {
                     // embedded script auto eval
                     var test = (!xmlData) ? item.text : this._Lang.serializeChilds(item);
@@ -137,7 +138,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 execScrpt(scriptElements[cnt]);
             }
             if (finalScripts.length) {
-                myfaces._impl.core._Runtime.globalEval(finalScripts.join("\n"));
+                this._RT.globalEval(finalScripts.join("\n"));
             }
         } finally {
             //the usual ie6 fix code
@@ -158,7 +159,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             throw Error("_Dom.deleteItem  Unknown Html-Component-ID: " + itemIdToReplace);
         }
 
-        item.parentNode.removeChild(item);
+        this._removeNode(item, false);
     },
 
     /**
@@ -178,44 +179,45 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         markup = this._Lang.trim(markup);
         if (markup !== "") {
-            var evalNodes = null;
+            var ret = null;
 
             //w3c compliant browsers with proper contextual fragments
             var parentNode;
             if (window.Range
                     && typeof Range.prototype.createContextualFragment == 'function') {
-                evalNodes = this._outerHTMLCompliant(item, markup);
+                ret = this._outerHTMLCompliant(item, markup);
             } else {
-                evalNodes = this._outerHTMLNonCompliant(item, markup);
+                ret = this._outerHTMLNonCompliant(item, markup);
             }
 
             // and remove the old item
             //first we have to save the node newly insert for easier access in our eval part
             if (this.isManualScriptEval()) {
-                var isArr = evalNodes instanceof Array;
-                if (isArr && evalNodes.length) {
-                    for (var cnt = 0; cnt < evalNodes.length; cnt++) {
-                        this.runScripts(evalNodes[cnt]);
+                var isArr = ret instanceof Array;
+                if (isArr && ret.length) {
+                    for (var cnt = 0; cnt < ret.length; cnt++) {
+                        this.runScripts(ret[cnt]);
                     }
                 } else if (!isArr) {
-                    this.runScripts(evalNodes);
+                    this.runScripts(ret);
                 }
             }
-            return evalNodes;
+            return ret;
         }
         // and remove the old item, in case of an empty newtag and do nothing else
-        item.parentNode.removeChild(item);
+        this._removeNode(item, false);
         return null;
     },
 
     _outerHTMLCompliant: function(item, markup) {
 
-        var b = myfaces._impl.core._Runtime.browser;
+        var b = this._RT.browser;
 
         var evalNodes = null;
         var dummyPlaceHolder = document.createElement("div");
         dummyPlaceHolder.innerHTML = markup;
         evalNodes = dummyPlaceHolder.childNodes;
+
         if ('undefined' == typeof evalNodes.length) {
             item.parentNode.replaceChild(evalNodes, item);
             return evalNodes;
@@ -224,15 +226,29 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             var ret = evalNodes[0];
             item.parentNode.replaceChild(evalNodes[0], item);
             return ret;
-            //return this.replaceElement(item, evalNodes[0]);
         } else {
-            return this.replaceElements(item, evalNodes)
+            return this.replaceElements(item, evalNodes);
         }
 
     },
 
-    _outerHTMLNonCompliant: function(item, markup) {
 
+
+
+    /**
+     * now to the evil browsers
+     * of what we are dealing with is various bugs
+     * first a simple replaceElement leaks memory
+     * secondly embedded scripts can be swallowed upon
+     * innerHTML
+     *
+     * the entire mess is called IE6 and IE7
+     *
+     * @param item
+     * @param markup
+     */
+    _outerHTMLNonCompliant: function(item, markup) {
+        var b = this._RT.browser;
         var evalNodes = null;
         //now to the non w3c compliant browsers
         //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
@@ -240,11 +256,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var probe = document.createElement("div");
         probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
         var depth = 0;
-        while (probe) {
-            probe = probe.childNodes[0];
+        var newProbe = probe;
+        while (newProbe) {
+            newProbe = newProbe.childNodes[0];
             depth++;
         }
         depth--;
+        this._removeNode(probe, false);
+
 
         var dummyPlaceHolder = document.createElement("div");
 
@@ -264,18 +283,149 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //note this is triggered only in htmlunit no other browser
             //so we are save here
             evalNodes = dummyPlaceHolder.childNodes[0].childNodes;
-            delete dummyPlaceHolder;
         }
 
-        //ie throws also an error on length requests
-        evalNodes = this._Lang.objToArray(evalNodes);
-        if (evalNodes.length == 1) {
-            item.parentNode.replaceChild(evalNodes[0], item);
-            delete item;
-            return evalNodes[0];
-            //return this.replaceElement(item, evalNodes[0]);
-        } else {
-            return this.replaceElements(item, evalNodes)
+
+        try {
+            //ie throws also an error on length requests
+            evalNodes = this._Lang.objToArray(evalNodes);
+
+            if (evalNodes.length == 1) {
+                var ret = evalNodes[0];
+                this.replaceElement(item, evalNodes[0]);
+                return ret;
+            } else {
+
+                return this.replaceElements(item, evalNodes);
+            }
+        } finally {
+            //now that Microsoft has finally given
+            //ie a working gc in 8 we can skip the costly operation
+            if (b.isIE && b.isIE < 8) {
+                this._removeNode(dummyPlaceHolder, false);
+            }
+        }
+    },
+
+
+    //now to another nasty issue:
+    //for ie we have to walk recursively over all nodes:
+    //http://msdn.microsoft.com/en-us/library/bb250448%28VS.85%29.aspx
+    //http://weblogs.java.net/blog/driscoll/archive/2009/11/13/ie-memory-management-and-you
+    //http://home.orange.nl/jsrosman/
+    //http://www.quirksmode.org/blog/archives/2005/10/memory_leaks_li.html
+    //http://www.josh-davis.org/node/7
+    _removeNode: function(node, breakEventsOpen) {
+        if (!node) return;
+        var b = this._RT.browser;
+
+        if (!b.isIE || b.isIE >= 8) {
+            //recursive descension only needed for old ie versions
+            //all newer browsers cleanup the garbage just fine without it
+            //thank you
+            if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
+                node.parentNode.removeChild(node);
+            return;
+        }
+
+        //now to the browsers with non working garbage collection
+        this._removeChildNodes(node, breakEventsOpen);
+
+        //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
+        //again to speed things up we precheck first
+
+        if (b.isIE && 'undefined' != typeof node.outerHTML) //ie8+ check done earlier we skip it here
+            node.outerHTML = '';
+        else {
+            if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
+                node.parentNode.removeChild(node);
+        }
+        delete node;
+    },
+
+    /**
+     * recursive delete child nodes
+     * node, this method only makes sense in the context of IE6 + 7 hence
+     * it is not exposed to the public API, modern browsers
+     * can garbage collect the nodes just fine by doing the standard removeNode method
+     * from the dom API!
+     *
+     * @param node  the node from which the childnodes have to be deletd
+     * @param breakEventsOpen if set to true a standard events breaking is performed
+     */
+    _removeChildNodes: function(node, breakEventsOpen) {
+        if (!node) return;
+
+        //node types which cannot be cleared up by normal means
+        var disallowedNodes = {
+            "thead": true,
+            "tbody": true,
+            "tr": true,
+            "td": true
+        };
+
+        //for now we do not enable it due to speed reasons
+        //normally the framework has to do some event detection
+        //which we cannot do yet, I will dig for options
+        //to enable it in a speedly manner
+        //ie7 fixes this area anyway
+        //this.breakEvents(node);
+
+        var b = this._RT.browser;
+        if (breakEventsOpen) {
+            this.breakEvents(node);
+        }
+
+        for (var cnt = node.childNodes.length - 1; cnt >= 0; cnt -= 1) {
+            var childNode = node.childNodes[cnt];
+            //we cannot use our generic recursive tree walking due to the needed head recursion
+            //to clean it up bottom up, the tail recursion we were using in the search either would use more time
+            //because we had to walk and then clean bottom up, so we are going for a direct head recusion here
+            if (childNode.hasChildNodes())
+                this._removeChildNodes(childNode);
+            try {
+                var nodeName = (childNode.nodeName) ? childNode.nodeName.toLowerCase() : null;
+                //ie chokes on clearing out table inner elements, this is also covered by our empty
+                //catch block, but to speed things up it makes more sense to precheck that
+                if (!disallowedNodes[nodeName]) {
+                    //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
+                    //again to speed things up we precheck first
+                    if (b.isIE && b.isIE < 8 && 'undefined' != childNode.outerHTML)
+                        childNode.outerHTML = '';
+                    else {
+                        node.removeChild(childNode);
+                    }
+                    delete childNode;
+                }
+            } catch (e) {
+                //on some elements the outerHTML can fail we skip those in favor
+                //of stability
+
+            }
+        }
+    },
+
+    /**
+     * break the standard events from an existing dom node
+     * (note this method is not yet used, but can be used
+     * by framework authors to get rid of ie circular event references)
+     *
+     * another way probably would be to check all attributes of a node
+     * for a function and if one is present break it by nulling it
+     * I have to do some further investigation on this.
+     *
+     * The final fix is to move away from ie6 at all which is the root cause of
+     * this.
+     *
+     * @param node the node which has to be broken off its events
+     */
+    breakEvents: function(node) {
+        if (!node) return;
+        var evtArr = this.IE_QUIRKS_EVENTS;
+        for (var key in evtArr) {
+            if (key != "onunload" && node[key]) {
+                node[key] = null;
+            }
         }
     },
 
@@ -290,9 +440,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param evalNodes
      */
     replaceElement: function(item, evalNode) {
-        evalNode = item.parentNode.replaceChild(evalNode, item);
-        delete item;
-        return evalNode;
+        var _Browser = this._RT.browser;
+        if (!_Browser.isIE || _Browser.isIE >= 8) {
+            //standards conform no leaking browser
+            item.parentNode.replaceChild(evalNode, item);
+        } else {
+            //browsers with defect garbage collection
+            item.parentNode.insertBefore(evalNode, item);
+            this._removeNode(item, false);
+        }
+
     },
 
 
@@ -314,8 +471,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         for (var cnt = 0; cnt < resultArr.length; cnt++) {
             if (cnt == 0) {
-                parentNode.replaceChild(resultArr[cnt], item);
-                delete item;
+                this.replaceElement(item, resultArr[cnt]);
             } else {
                 if (sibling) {
                     parentNode.insertBefore(resultArr[cnt], sibling);
@@ -324,10 +480,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
                 }
             }
-            evalNodes = resultArr;
         }
 
-        return evalNodes;
+        return resultArr;
     },
 
     /**
@@ -764,7 +919,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         //quirks mode and ie7 mode has the attributes problems ie8 standards mode behaves like
         //a good citizen
-        var _Browser = myfaces._impl.core._Runtime.browser;
+        var _Browser = this._RT.browser;
         if (!_Browser.isIE || _Browser.isIE > 7) {
             if (!node.setAttribute) {
                 return;
@@ -930,7 +1085,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //we can cover that case by simply adding one of our config params
         //the default is the weaker, but more correct portlet code
         //you can override it with myfaces_config.no_portlet_env = true globally
-        else if (1 == document.forms.length && myfaces._impl.core._Runtime.getGlobalConfig("no_portlet_env", false)) {
+        else if (1 == document.forms.length && this._RT.getGlobalConfig("no_portlet_env", false)) {
             return document.forms[0];
         }
         if (!elem) {
@@ -1193,7 +1348,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     isManualScriptEval: function() {
 
         if (!this._Lang.exists(myfaces, "config._autoeval")) {
-            var _Browser = myfaces._impl.core._Runtime.browser;
+            var _Browser = this._RT.browser;
             //now we rely on the document being processed if called for the first time
             var evalDiv = document.createElement("div");
             this._Lang.reserveNamespace("myfaces.config._autoeval");
