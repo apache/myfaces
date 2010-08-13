@@ -56,6 +56,8 @@ public class ResourceHandlerImpl extends ResourceHandler
 
     private ResourceHandlerSupport _resourceHandlerSupport;
 
+    private ResourceHandlerCache _resourceHandlerCache;
+
     //private static final Log log = LogFactory.getLog(ResourceHandlerImpl.class);
     private static final Logger log = Logger.getLogger(ResourceHandlerImpl.class.getName());
 
@@ -84,7 +86,10 @@ public class ResourceHandlerImpl extends ResourceHandler
             //Resolve contentType using ExternalContext.getMimeType
             contentType = FacesContext.getCurrentInstance().getExternalContext().getMimeType(resourceName);
         }
-
+        
+        if(getResourceLoaderCache().containsResource(resourceName, libraryName, contentType))
+            return getResourceLoaderCache().getResource(resourceName, libraryName, contentType);
+        
         for (ResourceLoader loader : getResourceHandlerSupport()
                 .getResourceLoaders())
         {
@@ -98,6 +103,8 @@ public class ResourceHandlerImpl extends ResourceHandler
                 break;
             }
         }
+        
+        getResourceLoaderCache().putResource(resourceName, libraryName, contentType, resource);
         return resource;
     }
 
@@ -553,5 +560,12 @@ public class ResourceHandlerImpl extends ResourceHandler
             _resourceHandlerSupport = new DefaultResourceHandlerSupport();
         }
         return _resourceHandlerSupport;
+    }
+
+    private ResourceHandlerCache getResourceLoaderCache()
+    {
+        if (_resourceHandlerCache == null)
+            _resourceHandlerCache = new ResourceHandlerCache();
+        return _resourceHandlerCache;
     }
 }

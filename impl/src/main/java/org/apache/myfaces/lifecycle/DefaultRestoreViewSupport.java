@@ -19,11 +19,14 @@
 package org.apache.myfaces.lifecycle;
 
 import java.net.MalformedURLException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.visit.VisitCallback;
@@ -34,6 +37,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.render.ResponseStateManager;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.application.InvalidViewIdException;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.Assert;
@@ -60,6 +64,17 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
     //private final Log log = LogFactory.getLog(DefaultRestoreViewSupport.class);
     private final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
+
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2")
+    private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
+    private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
+
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2")
+    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
+    private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
+
+    private Map<String, Boolean> _checkedViewIdMap = null;
+    private Boolean _checkedViewIdCacheEnabled = null;
 
     public void processComponentBinding(FacesContext facesContext, UIComponent component)
     {
@@ -381,6 +396,19 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         try
         {
+            if (isCheckedViewIdCachingEnabled(context))
+            {
+                Boolean resourceExists = getCheckedViewIDMap(context).get(
+                        viewId);
+                if (resourceExists == null)
+                {
+                    resourceExists = context.getExternalContext().getResource(
+                            viewId) != null;
+                    getCheckedViewIDMap(context).put(viewId, resourceExists);
+                }
+                return resourceExists;
+            }
+
             if (context.getExternalContext().getResource(viewId) != null)
             {
                 return true;
@@ -596,5 +624,68 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             }
         }
 
+    }
+
+    private Map<String, Boolean> getCheckedViewIDMap(FacesContext context)
+    {
+        if (_checkedViewIdMap == null)
+        {
+            _checkedViewIdMap = Collections.synchronizedMap(new _CheckedViewIDMap<String, Boolean>(getViewIDCacheMaxSize(context)));
+        }
+        return _checkedViewIdMap;
+    }
+
+    private boolean isCheckedViewIdCachingEnabled(FacesContext context)
+    {
+        if (_checkedViewIdCacheEnabled == null)
+        {
+            //first, check to make sure that ProjectStage is production, if not, skip caching
+            if (!context.isProjectStage(ProjectStage.Production))
+            {
+                return _checkedViewIdCacheEnabled = Boolean.FALSE;
+            }
+
+            //if in production, make sure that the cache is not explicitly disabled via context param
+            String configParam = context.getExternalContext().getInitParameter(
+                    CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE);
+            _checkedViewIdCacheEnabled = configParam == null ? CHECKED_VIEWID_CACHE_ENABLED_DEFAULT
+                    : Boolean.parseBoolean(configParam);
+
+            if (log.isLoggable(Level.FINE))
+            {
+                log.log(Level.FINE, "MyFaces ViewID Caching Enabled="
+                        + _checkedViewIdCacheEnabled);
+            }
+        }
+        return _checkedViewIdCacheEnabled;
+    }
+
+    private int getViewIDCacheMaxSize(FacesContext context)
+    {
+        ExternalContext externalContext = context.getExternalContext();
+
+        String configParam = externalContext == null ? null : externalContext
+                .getInitParameter(CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE);
+        return configParam == null ? CHECKED_VIEWID_CACHE_DEFAULT_SIZE
+                : Integer.parseInt(configParam);
+    }
+
+    private class _CheckedViewIDMap<K, V> extends LinkedHashMap<K, V>
+    {
+        private static final long serialVersionUID = 1L;
+        private int maxCapacity;
+
+        public _CheckedViewIDMap(int cacheSize)
+        {
+            // create map at max capacity and 1.1 load factor to avoid rehashing
+            super(cacheSize + 1, 1.1f, true);
+            maxCapacity = cacheSize;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest)
+        {
+            return size() > maxCapacity;
+        }
     }
 }
