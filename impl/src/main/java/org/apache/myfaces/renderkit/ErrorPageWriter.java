@@ -644,7 +644,7 @@ public final class ErrorPageWriter
                 byte[] stateBytes = StateUtils.getAsByteArray(state, faces.getExternalContext());
                 stateSize = stateBytes.length;
             }
-            catch (FacesException e)
+            catch (Exception e)
             {
                 stateSize = -1;
                 if (log.isLoggable(Level.FINEST))
