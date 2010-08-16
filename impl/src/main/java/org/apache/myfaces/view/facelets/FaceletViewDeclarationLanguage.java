@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
@@ -758,6 +759,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         
         PropertyDescriptor[] propertyDescriptors = compositeComponentMetadata.getPropertyDescriptors();
         
+        ELContext elContext = (ELContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+        
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors)
         {
             if (propertyDescriptor.getValue("type") != null)
@@ -780,7 +783,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             {
                 // Check if the value expression holds a method signature
                 // Note that it could be null, so in that case we don't have to do anything
-                methodSignature = (String) methodSignatureExpression.getValue(context.getELContext());
+                methodSignature = (String) methodSignatureExpression.getValue(elContext);
             }
             
             // either the attributeName has to be a knownMethod or there has to be a method-signature
@@ -794,7 +797,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 // ValueExpression that must evaluate to String
                 if (targetsExpression != null)
                 {
-                    targets = (String) targetsExpression.getValue(context.getELContext());
+                    targets = (String) targetsExpression.getValue(elContext);
                 }
                 
                 if (targets == null)
@@ -819,7 +822,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("required");
                         if (ve != null)
                         {
-                            Object requiredValue = ve.getValue (context.getELContext());
+                            Object requiredValue = ve.getValue (elContext);
                             Boolean required = null;
                             if (requiredValue instanceof Boolean)
                             {
@@ -862,8 +865,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         if ("action".equals(attributeName))
                         {
                             // target is ActionSource2
+                            
                             methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
+                                    createMethodExpression(elContext,
                                             attributeExpressionString, Object.class, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
                             
                             ((ActionSource2)innerComponent).setActionExpression(methodExpression);
@@ -872,11 +876,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         {
                            // target is ActionSource2
                             methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
+                                    createMethodExpression(elContext,
                                             attributeExpressionString, Void.TYPE, ACTION_LISTENER_SIGNATURE), attributeNameValueExpression);
                             
                             methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                createMethodExpression(context.getELContext(),
+                                createMethodExpression(elContext,
                                         attributeExpressionString, Void.TYPE, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
                             
                             ((ActionSource2)innerComponent).addActionListener(
@@ -886,7 +890,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         {
                             // target is EditableValueHolder
                             methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
+                                    createMethodExpression(elContext,
                                         attributeExpressionString, Void.TYPE, 
                                         VALIDATOR_SIGNATURE), attributeNameValueExpression);
 
@@ -897,12 +901,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         {
                             // target is EditableValueHolder
                             methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
+                                    createMethodExpression(elContext,
                                             attributeExpressionString, Void.TYPE, 
                                             VALUE_CHANGE_LISTENER_SIGNATURE), attributeNameValueExpression);
 
                             methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                    createMethodExpression(context.getELContext(),
+                                    createMethodExpression(elContext,
                                             attributeExpressionString, Void.TYPE, 
                                             EMPTY_CLASS_ARRAY), attributeNameValueExpression);
 
@@ -918,7 +922,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // to the topLevelComponent.
                     methodSignature = methodSignature.trim();
                     methodExpression = context.getApplication().getExpressionFactory().
-                            createMethodExpression(context.getELContext(),
+                            createMethodExpression(elContext,
                                     attributeExpressionString, _getReturnType(methodSignature), 
                                     _getParameters(methodSignature));
                     
