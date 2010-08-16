@@ -18,7 +18,11 @@
  */
 package org.apache.myfaces.el.unified;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.el.CompositeELResolver;
+import javax.el.ELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.FlashELResolver;
@@ -33,7 +37,6 @@ import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResol
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@SuppressWarnings("deprecation")
 public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELResolverBuilder
 {
     public ResolverBuilderForJSP(RuntimeConfig config)
@@ -41,17 +44,29 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
         super(config);
     }
 
-    public void build(CompositeELResolver elResolver)
+    public void build(CompositeELResolver compositeElResolver)
     {
-        elResolver.add(ImplicitObjectResolver.makeResolverForJSP());
+        // add the ELResolvers to a List first to be able to sort them
+        List<ELResolver> list = new ArrayList<ELResolver>();
+        
+        list.add(ImplicitObjectResolver.makeResolverForJSP());
         //Flash object is instanceof Map, so it is necessary to resolve
         //before MapELResolver. Better to put this one before
-        elResolver.add(new FlashELResolver());        
-        elResolver.add(new ManagedBeanResolver());
-        elResolver.add(new ResourceBundleResolver());
-        elResolver.add(new ResourceResolver());
+        list.add(new FlashELResolver());        
+        list.add(new ManagedBeanResolver());
+        list.add(new ResourceBundleResolver());
+        list.add(new ResourceResolver());
 
-        addFromRuntimeConfig(elResolver);
+        addFromRuntimeConfig(list);
+        
+        // give the user a chance to sort the resolvers
+        sortELResolvers(list);
+        
+        // add the resolvers from the list to the CompositeELResolver
+        for (ELResolver resolver : list)
+        {
+            compositeElResolver.add(resolver);
+        }
     }
 
 }

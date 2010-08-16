@@ -18,9 +18,13 @@
  */
 package org.apache.myfaces.el.unified;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
+import javax.el.ELResolver;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
@@ -40,7 +44,6 @@ import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResol
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@SuppressWarnings("deprecation")
 public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELResolverBuilder
 {
     public ResolverBuilderForFaces(RuntimeConfig config)
@@ -48,25 +51,40 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         super(config);
     }
 
-    public void build(CompositeELResolver elResolver)
+    public void build(CompositeELResolver compositeElResolver)
     {
-        elResolver.add(ImplicitObjectResolver.makeResolverForFaces());
-        elResolver.add (new CompositeComponentELResolver());
+        // add the ELResolvers to a List first to be able to sort them
+        List<ELResolver> list = new ArrayList<ELResolver>();
+        
+        list.add(ImplicitObjectResolver.makeResolverForFaces());
+        list.add(new CompositeComponentELResolver());
 
-        addFromRuntimeConfig(elResolver);
+        addFromRuntimeConfig(list);
 
         //Flash object is instanceof Map, so it is necessary to resolve
         //before MapELResolver. Better to put this one before
-        elResolver.add(new FlashELResolver());
-        elResolver.add(new ManagedBeanResolver());
-        elResolver.add(new ResourceResolver());
-        elResolver.add(new ResourceBundleELResolver());
-        elResolver.add(new ResourceBundleResolver());
-        elResolver.add(new MapELResolver());
-        elResolver.add(new ListELResolver());
-        elResolver.add(new ArrayELResolver());
-        elResolver.add(new BeanELResolver());
-        elResolver.add(new ScopedAttributeResolver());
+        list.add(new FlashELResolver());
+        list.add(new ManagedBeanResolver());
+        list.add(new ResourceResolver());
+        list.add(new ResourceBundleELResolver());
+        list.add(new ResourceBundleResolver());
+        list.add(new MapELResolver());
+        list.add(new ListELResolver());
+        list.add(new ArrayELResolver());
+        list.add(new BeanELResolver());
+        
+        // give the user a chance to sort the resolvers
+        sortELResolvers(list);
+        
+        // add the resolvers from the list to the CompositeELResolver
+        for (ELResolver resolver : list)
+        {
+            compositeElResolver.add(resolver);
+        }
+        
+        // the ScopedAttributeResolver has to be the last one in every
+        // case, because it always sets propertyResolved to true (per the spec)
+        compositeElResolver.add(new ScopedAttributeResolver());
     }
 
 }
