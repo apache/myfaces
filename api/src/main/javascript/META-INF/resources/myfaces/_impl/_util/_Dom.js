@@ -761,7 +761,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         attr = attr.toLowerCase();
 
         if (attr === "class") {
-            node.setAttribute("className", val);
+            //setAttribute does not work for winmobile browsers
+            //firect calls work
+            node.className = val;
         } else if (attr === "name") {
             node[attr] = val;
         } else if (attr === "for") {

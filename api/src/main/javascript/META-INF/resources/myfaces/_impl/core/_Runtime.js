@@ -485,7 +485,7 @@ if (!myfaces._impl.core._Runtime) {
         /**
          * delegation pattern
          * usage:
-         * _T.delegateObject("my.name.space", delegate,
+         * this.delegateObject("my.name.space", delegate,
          * {
          *  constructor_ :function(bla, bla1) {
          *      _T._callDelegate("constructor", bla1);
@@ -497,7 +497,7 @@ if (!myfaces._impl.core._Runtime) {
          * });
          *
          * or
-         * usage var newClass = _T.delegateObject(
+         * usage var newClass = this.delegateObject(
          * function (var1, var2) {
          *  _T._callDelegate("constructor", var1,var2);
          * };
@@ -777,6 +777,7 @@ if (!myfaces._impl.core._Runtime) {
                     dav = n.appVersion,
                     tv = parseFloat(dav);
 
+
             _T.browser = {};
             var d = _T.browser;
 
@@ -814,6 +815,7 @@ if (!myfaces._impl.core._Runtime) {
             }
             if (document.all && !d.isOpera) {
                 d.isIE = parseFloat(dav.split("MSIE ")[1]) || undefined;
+                d.isIEMobile = parseFloat(dua.split("IEMobile")[1]);
                 //In cases where the page has an HTTP header or META tag with
                 //X-UA-Compatible, then it is in emulation mode, for a previous
                 //version. Make sure isIE reflects the desired version.

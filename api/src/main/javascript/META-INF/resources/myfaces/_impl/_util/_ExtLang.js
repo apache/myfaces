@@ -84,6 +84,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang",
             }
         }
         var logHolder = document.getElementById("myfaces.logging");
+
         if (logHolder) {
             var elem = document.createElement("div");
             var b = this._browser;
@@ -92,13 +93,12 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang",
                 elem.setAttribute("class", "consoleLog " + logType);
             } else {
                 //ie quirks compliant class setting
-                elem.setAttribute("className", "consoleLog " + logType);
+                elem.className ="consoleLog " + logType;
             }
-            elem.innerHTML = logType.toUpperCase() + ": " + argsString;
             logHolder.appendChild(elem);
+            elem.innerHTML = logType.toUpperCase() + ": " + argsString;
         }
-    }
-    ,
+    },
 
     logError: function(/*varargs*/) {
         if (!this.logLevels[this._ERR]) return;
@@ -111,7 +111,6 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang",
     }
     ,
     logInfo: function(/*varargs*/) {
-        //Level 2 == info
         if (!this.logLevels[this._INF]) return;
         this._log(this._INF, arguments);
     }
