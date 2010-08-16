@@ -24,6 +24,9 @@ import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
 
 import javax.el.CompositeELResolver;
+import javax.el.ELResolver;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * build the el resolver for jsp. see 1.2 spec section 5.6.1
@@ -39,13 +42,25 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
         super(config);
     }
 
-    public void build(CompositeELResolver elResolver)
+    public void build(CompositeELResolver compositeElResolver)
     {
-        elResolver.add(ImplicitObjectResolver.makeResolverForJSP());
-        elResolver.add(new ManagedBeanResolver());
-        elResolver.add(new ResourceBundleResolver());
+        // add the ELResolvers to a List first to be able to sort them
+        List<ELResolver> list = new ArrayList<ELResolver>();
 
-        addFromRuntimeConfig(elResolver);
+        list.add(ImplicitObjectResolver.makeResolverForJSP());
+        list.add(new ManagedBeanResolver());
+        list.add(new ResourceBundleResolver());
+
+        addFromRuntimeConfig(list);
+
+        // give the user a chance to sort the resolvers
+        sortELResolvers(list);
+
+        // add the resolvers from the list to the CompositeELResolver
+        for (ELResolver resolver : list)
+        {
+            compositeElResolver.add(resolver);
+        }
     }
 
 }

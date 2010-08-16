@@ -24,12 +24,9 @@ import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ResourceBundleELResolver;
+import javax.el.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Create the el resolver for faces. see 1.2 spec section 5.6.2
@@ -45,20 +42,35 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         super(config);
     }
 
-    public void build(CompositeELResolver elResolver)
+    public void build(CompositeELResolver compositeElResolver)
     {
-        elResolver.add(ImplicitObjectResolver.makeResolverForFaces());
+        // add the ELResolvers to a List first to be able to sort them
+        List<ELResolver> list = new ArrayList<ELResolver>();
+        
+        list.add(ImplicitObjectResolver.makeResolverForFaces());
 
-        addFromRuntimeConfig(elResolver);
+        addFromRuntimeConfig(list);
 
-        elResolver.add(new ManagedBeanResolver());
-        elResolver.add(new ResourceBundleELResolver());
-        elResolver.add(new ResourceBundleResolver());
-        elResolver.add(new MapELResolver());
-        elResolver.add(new ListELResolver());
-        elResolver.add(new ArrayELResolver());
-        elResolver.add(new BeanELResolver());
-        elResolver.add(new ScopedAttributeResolver());
+        list.add(new ManagedBeanResolver());
+        list.add(new ResourceBundleELResolver());
+        list.add(new ResourceBundleResolver());
+        list.add(new MapELResolver());
+        list.add(new ListELResolver());
+        list.add(new ArrayELResolver());
+        list.add(new BeanELResolver());
+
+        // give the user a chance to sort the resolvers
+        sortELResolvers(list);
+
+        // add the resolvers from the list to the CompositeELResolver
+        for (ELResolver resolver : list)
+        {
+            compositeElResolver.add(resolver);
+        }
+
+        // the ScopedAttributeResolver has to be the last one in every
+        // case, because it always sets propertyResolved to true (per the spec)
+        compositeElResolver.add(new ScopedAttributeResolver());
     }
 
 }

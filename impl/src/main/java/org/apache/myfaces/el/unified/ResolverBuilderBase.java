@@ -18,15 +18,24 @@
  */
 package org.apache.myfaces.el.unified;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
 import org.apache.myfaces.el.convert.VariableResolverToELResolver;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
 import javax.faces.application.Application;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -35,6 +44,13 @@ import javax.faces.el.VariableResolver;
 @SuppressWarnings("deprecation")
 public class ResolverBuilderBase
 {
+    
+    private static final Logger log = Logger.getLogger(ResolverBuilderBase.class.getName());
+
+    @JSFWebConfigParam(since = "1.2.10, 2.0.2",
+            desc = "The Class of an Comparator<ELResolver> implementation.")
+    public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
+
     private final RuntimeConfig _config;
 
     public ResolverBuilderBase(RuntimeConfig config)
@@ -50,34 +66,89 @@ public class ResolverBuilderBase
      * @param elResolver
      *            the composite el resolver to which the resolvers where added
      */
-    protected void addFromRuntimeConfig(CompositeELResolver elResolver)
+    protected void addFromRuntimeConfig(List<ELResolver> resolvers)
     {
         if (_config.getFacesConfigElResolvers() != null)
         {
-            elResolver.add(_config.getFacesConfigElResolvers());
+            for (ELResolver resolver : _config.getFacesConfigElResolvers())
+            {
+                resolvers.add(resolver);
+            }
         }
 
         if (_config.getVariableResolver() != null)
         {
-            elResolver.add(createELResolver(_config.getVariableResolver()));
+            resolvers.add(createELResolver(_config.getVariableResolver()));
         }
         else if (_config.getVariableResolverChainHead() != null)
         {
-            elResolver.add(createELResolver(_config.getVariableResolverChainHead()));
+            resolvers.add(createELResolver(_config.getVariableResolverChainHead()));
         }
 
         if (_config.getPropertyResolver() != null)
         {
-            elResolver.add(createELResolver(_config.getPropertyResolver()));
+            resolvers.add(createELResolver(_config.getPropertyResolver()));
         }
         else if (_config.getPropertyResolverChainHead() != null)
         {
-            elResolver.add(createELResolver(_config.getPropertyResolverChainHead()));
+            resolvers.add(createELResolver(_config.getPropertyResolverChainHead()));
         }
 
         if (_config.getApplicationElResolvers() != null)
         {
-            elResolver.add(_config.getApplicationElResolvers());
+            for (ELResolver resolver : _config.getApplicationElResolvers())
+            {
+                resolvers.add(resolver);
+            }
+        }
+    }
+
+    /**
+     * Sort the ELResolvers with a custom Comparator provided by the user.
+     * @param resolvers
+     * @since 1.2.10, 2.0.2
+     */
+    @SuppressWarnings("unchecked")
+    protected void sortELResolvers(List<ELResolver> resolvers)
+    {
+        ExternalContext externalContext
+                = FacesContext.getCurrentInstance().getExternalContext();
+
+        String comparatorClass = externalContext
+                .getInitParameter(EL_RESOLVER_COMPARATOR);
+
+        if (comparatorClass != null && !"".equals(comparatorClass))
+        {
+            // the user provided the parameter.
+
+            // if we already have a cached instance, use it
+            Comparator<ELResolver> comparator
+                    = (Comparator<ELResolver>) externalContext.
+                        getApplicationMap().get(EL_RESOLVER_COMPARATOR);
+            try
+            {
+                if (comparator == null)
+                {
+                    // get the comparator class
+                    Class<Comparator<ELResolver>> clazz
+                             = ClassUtils.classForName(comparatorClass);
+
+                    // create the instance
+                    comparator = clazz.newInstance();
+
+                    // cache the instance, because it will be used at least two times
+                    externalContext.getApplicationMap()
+                            .put(EL_RESOLVER_COMPARATOR, comparator);
+                }
+
+                // sort the resolvers
+                Collections.sort(resolvers, comparator);
+            }
+            catch (Exception e)
+            {
+                log.log(Level.WARNING,
+                        "Could not sort ELResolvers with custom Comparator", e);
+            }
         }
     }
 

@@ -18,11 +18,7 @@
  */
 package org.apache.myfaces.config;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
@@ -58,8 +54,8 @@ public class RuntimeConfig
     private final Map<String, ResourceBundle> _resourceBundles = new HashMap<String, ResourceBundle>();
     private final Map<String, ManagedBean> _oldManagedBeans = new HashMap<String, ManagedBean>();
 
-    private CompositeELResolver facesConfigElResolvers;
-    private CompositeELResolver applicationElResolvers;
+    private List<ELResolver> facesConfigElResolvers;
+    private List<ELResolver> applicationElResolvers;
 
     private VariableResolver _variableResolver;
     private PropertyResolver _propertyResolver;
@@ -181,12 +177,12 @@ public class RuntimeConfig
     {
         if (facesConfigElResolvers == null)
         {
-            facesConfigElResolvers = new org.apache.myfaces.el.CompositeELResolver();
+            facesConfigElResolvers = new ArrayList<ELResolver>();
         }
         facesConfigElResolvers.add(resolver);
     }
 
-    public ELResolver getFacesConfigElResolvers()
+    public List<ELResolver> getFacesConfigElResolvers()
     {
         return facesConfigElResolvers;
     }
@@ -195,12 +191,12 @@ public class RuntimeConfig
     {
         if (applicationElResolvers == null)
         {
-            applicationElResolvers = new org.apache.myfaces.el.CompositeELResolver();
+            applicationElResolvers = new ArrayList<ELResolver>();
         }
         applicationElResolvers.add(resolver);
     }
 
-    public ELResolver getApplicationElResolvers()
+    public List<ELResolver> getApplicationElResolvers()
     {
         return applicationElResolvers;
     }
