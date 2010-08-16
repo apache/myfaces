@@ -415,8 +415,12 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         {
             // InternalClassLoaderResourceLoader will serve it, so return null in this case.
             return null;
-        }
-        else
+        } else if (_developmentStage && libraryName != null &&
+                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
+                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName)) {
+            // InternalClassLoaderResourceLoader will serve it, so return null in this case.
+             return null;
+        } else
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
         }

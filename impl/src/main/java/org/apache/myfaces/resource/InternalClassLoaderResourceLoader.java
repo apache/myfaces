@@ -94,6 +94,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     public ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
                                            String resourceName, String resourceVersion)
     {
+        //handle jsf.js
         if (libraryName != null && 
                 org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
                 org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName))
@@ -108,7 +109,14 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion, "jsf-uncompressed-full.js", false);
             }
         }
-        else if (libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
+        //handle the oamSubmit.js
+        else if (libraryName != null &&
+                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
+                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName))
+        {
+                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
+                    resourceName, resourceVersion, org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED, true);
+        } else if (libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
         }

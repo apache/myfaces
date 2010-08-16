@@ -20,6 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
+import javax.faces.FactoryFinder;
 import javax.faces.component.UIParameter;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlCommandButton;
@@ -51,6 +52,14 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
     
     public static Test suite() {
         return new TestSuite(HtmlButtonRendererTest.class);
+    }
+
+
+    @Override
+    protected void setFactories() throws Exception {
+        super.setFactories();
+        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
+        "org.apache.myfaces.test.mock.MockPartialViewContextFactory");
     }
     
     public void setUp() throws Exception {

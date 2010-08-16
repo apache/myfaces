@@ -20,6 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
+import javax.faces.FactoryFinder;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIParameter;
 import javax.faces.component.behavior.AjaxBehavior;
@@ -79,6 +80,8 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         writer = new MockResponseWriter(new StringWriter(), null, "UTF-8");
         facesContext.setResponseWriter(writer);
         facesContext.getApplication().setNavigationHandler(new NavigationHandlerImpl());
+       
+
 
         facesContext.getViewRoot().setRenderKitId(MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
         facesContext.getRenderKit().addRenderer(
@@ -99,6 +102,13 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
                 new HtmlLinkRenderer());
         
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
+    }
+
+    @Override
+    protected void setFactories() throws Exception {
+        super.setFactories();
+        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
+        "org.apache.myfaces.test.mock.MockPartialViewContextFactory");
     }
 
     public void tearDown() throws Exception
@@ -262,6 +272,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         {
             commandLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            System.out.println("----OUTPUT----"+output);
             assertTrue(output.matches("(?s).+id=\".+\".+"));
             assertTrue(output.matches("(?s).+name=\".+\".+"));
         }
