@@ -33,6 +33,8 @@ import org.apache.myfaces.config.RuntimeConfig;
  * 
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
+ *
+ * @since 1.2.10, 2.0.2
  */
 public class CustomFirstELResolverComparator implements Comparator<ELResolver>
 {
@@ -42,6 +44,12 @@ public class CustomFirstELResolverComparator implements Comparator<ELResolver>
     public int compare(ELResolver r1, ELResolver r2)
     {
         List<ELResolver> facesConfigResolvers = _getFacesConfigElResolvers();
+        
+        if (facesConfigResolvers == null)
+        {
+            // no el-resolvers in faces-config
+            return 0; // keep order
+        }
         
         boolean r1FromFacesConfig = facesConfigResolvers.contains(r1);
         boolean r2FromFacesConfig = facesConfigResolvers.contains(r2);

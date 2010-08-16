@@ -27,6 +27,8 @@ import javax.el.ELResolver;
  * 
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
+ *
+ * @since 1.2.10, 2.0.2
  */
 public class OpenWebBeansELResolverComparator implements Comparator<ELResolver>
 {
