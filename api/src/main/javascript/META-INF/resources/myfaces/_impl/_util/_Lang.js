@@ -192,7 +192,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             throw Error("myfaces._impl._util._Lang.strToArray param not of type string");
         }
         if (!splitter) {
-            throw Error("myfaces._impl._util._Lang.strToArray a splitter param must be provided which is either a tring or a regexp");
+            throw Error("myfaces._impl._util._Lang.strToArray a splitter param must be provided which is either a string or a regexp");
         }
         var retArr = it.split(splitter);
         var len = retArr.length;
@@ -320,7 +320,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         var ret = {};
         var keyIdx = {};
         var key = null;
-        var _udef = "undefined";
+        var _undef = "undefined";
         for (key in src) {
             /**
              *we always overwrite dest with source
@@ -333,15 +333,15 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
                  *on all values being non boolean, we would need an elvis
                  *operator in javascript to shorten this :-(
                  */
-                ret[key] = (_udef != typeof dest[key]) ? dest[key] : src[key];
+                ret[key] = (_undef != typeof dest[key]) ? dest[key] : src[key];
             } else {
-                ret[key] = (_udef != typeof src[key]) ? src[key] : dest[key];
+                ret[key] = (_undef != typeof src[key]) ? src[key] : dest[key];
             }
             keyIdx[key] = true;
         }
         for (key in dest) {
             /*if result.key does not exist we push in dest.key*/
-            ret[key] = (_udef != typeof ret[key]) ? ret[key] : dest[key];
+            ret[key] = (_undef != typeof ret[key]) ? ret[key] : dest[key];
         }
         return ret;
     }
@@ -551,22 +551,23 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * @param argNames the argument names to be transferred
      */
     applyArgs: function(dest, args, argNames) {
+        var _undef = 'undefined';
         if (argNames) {
             for (var cnt = 0; cnt < args.length; cnt++) {
                 //dest can be null or 0 hence no shortcut
-                if ('undefined' != typeof dest["_" + argNames[cnt]]) {
+                if (_undef != typeof dest["_" + argNames[cnt]]) {
                     dest["_" + argNames[cnt]] = args[cnt];
                 }
-                if ('undefined' != typeof dest[ argNames[cnt]]) {
+                if (_undef != typeof dest[ argNames[cnt]]) {
                     dest[argNames[cnt]] = args[cnt];
                 }
             }
         } else {
             for (var key in args) {
-                if ('undefined' != typeof dest["_" + key]) {
+                if (_undef != typeof dest["_" + key]) {
                     dest["_" + key] = args[key];
                 }
-                if ('undefined' != typeof dest[key]) {
+                if (_undef != typeof dest[key]) {
                     dest[key] = args[key];
                 }
             }
@@ -583,15 +584,16 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
     createErrorMsg: function(sourceClass, func, error) {
         var ret = [];
 
-        ret.push(this.keyValToStr("Affected Class: ", sourceClass));
-        ret.push(this.keyValToStr("Affected Method: ", func));
+        var keyValToStr = this.keyValToStr;
+        ret.push(keyValToStr("Affected Class: ", sourceClass));
+        ret.push(keyValToStr("Affected Method: ", func));
 
         if (error) {
-            ret.push(this.keyValToStr("Error name: ", error.name ? error.name : "undefined"));
-            ret.push(this.keyValToStr("Error message: ", error.message ? error.message : "undefined"));
-            ret.push(this.keyValToStr("Error description: ", error.description ? error.description : "undefined"));
-            ret.push(this.keyValToStr("Error number: ", 'undefined' != typeof error.number ? error.number : "undefined"));
-            ret.push(this.keyValToStr("Error line number: ", 'undefined' != typeof error.lineNumber ? error.lineNumber : "undefined"));
+            ret.push(keyValToStr("Error name: ", error.name ? error.name : "undefined"));
+            ret.push(keyValToStr("Error message: ", error.message ? error.message : "undefined"));
+            ret.push(keyValToStr("Error description: ", error.description ? error.description : "undefined"));
+            ret.push(keyValToStr("Error number: ", 'undefined' != typeof error.number ? error.number : "undefined"));
+            ret.push(keyValToStr("Error line number: ", 'undefined' != typeof error.lineNumber ? error.lineNumber : "undefined"));
         }
         return ret.join("");
     }

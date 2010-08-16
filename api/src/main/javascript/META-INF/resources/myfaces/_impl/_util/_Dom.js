@@ -61,6 +61,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     _Lang:myfaces._impl._util._Lang,
     _RT:myfaces._impl.core._Runtime,
+    _dummyPlaceHolder: document.createElement("div"),
 
     constructor_: function() {
         //we have to trigger it upfront because mozilla runs the eval
@@ -211,20 +212,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     _outerHTMLCompliant: function(item, markup) {
 
-        var b = this._RT.browser;
-
-        var evalNodes = null;
-        var dummyPlaceHolder = document.createElement("div");
+        var dummyPlaceHolder = this._dummyPlaceHolder; //document.createElement("div");
         dummyPlaceHolder.innerHTML = markup;
-        evalNodes = dummyPlaceHolder.childNodes;
+        var evalNodes = dummyPlaceHolder.childNodes;
+        var evalNodeLen = evalNodes.length;
 
-        if ('undefined' == typeof evalNodes.length) {
-            item.parentNode.replaceChild(evalNodes, item);
-            return evalNodes;
-            //return this.replaceElement(item, evalNodes);
-        } else if (evalNodes.length == 1) {
+        if (evalNodeLen == 1) {
             var ret = evalNodes[0];
-            item.parentNode.replaceChild(evalNodes[0], item);
+            item.parentNode.replaceChild(ret, item);
             return ret;
         } else {
             return this.replaceElements(item, evalNodes);
@@ -248,12 +243,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param markup
      */
     _outerHTMLNonCompliant: function(item, markup) {
+
         var b = this._RT.browser;
         var evalNodes = null;
         //now to the non w3c compliant browsers
         //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
         //we have to cope with deficiencies between ie and its simulations in this case
-        var probe = document.createElement("div");
+        var probe =  this._dummyPlaceHolder;//document.createElement("div");
         probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
         var depth = 0;
         var newProbe = probe;
@@ -262,10 +258,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             depth++;
         }
         depth--;
-        this._removeNode(probe, false);
+        this._removeChildNodes(probe, false);
+        probe.innerHTML = "";
 
 
-        var dummyPlaceHolder = document.createElement("div");
+        var dummyPlaceHolder = this._dummyPlaceHolder;//document.createElement("div");
 
         //fortunately a table element also works which is less critical than form elements regarding
         //the inner content
@@ -302,7 +299,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //now that Microsoft has finally given
             //ie a working gc in 8 we can skip the costly operation
             if (b.isIE && b.isIE < 8) {
-                this._removeNode(dummyPlaceHolder, false);
+                this._removeChildNodes(dummyPlaceHolder, false);
+                dummyPlaceHolder.innerHTML = "";
             }
         }
     },
@@ -486,117 +484,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     },
 
     /**
-     * finds a corresponding html item from a given identifier and
-     * dom fragment
-     * @param fragment the dom fragment to find the item for
-     * @param itemId the identifier of the item
-     */
-    findById : function(fragment, itemId) {
-        //we have to escape here
-
-        if (fragment.getElementById) {
-            return fragment.getElementById(itemId);
-        }
-
-        if (fragment.nodeType == 1 && fragment.querySelector) {
-            try {
-                //we can use the query selector here
-                var newItemId = itemId;
-                if (fragment.id && fragment.id === itemId) return fragment;
-                if (this._Lang.isString(newItemId)) {
-                    newItemId = newItemId.replace(/\./g, "\\.").replace(/:/g, "\\:");
-                }
-
-                return fragment.querySelector("#" + newItemId);
-            } catch(e) {
-                //in case the selector bombs we retry manually
-            }
-        }
-
-        var filter = function(node) {
-            return node && node.id && node.id === itemId;
-        };
-        try {
-            return this.findFirst(fragment, filter);
-        } finally {
-            //ie6 fix code
-            filter = null;
-        }
-    },
-
-    /**
-     * findfirst functionality, finds the first element
-     * for which the filter can trigger
-     *
-     * @param fragment the processed fragment/domNode
-     * @param filter a filter closure which either returns true or false depending on triggering or not
-     */
-    findFirst : function(fragment, filter) {
-        this._Lang.assertType(filter, "function");
-
-        if (document.createTreeWalker && NodeFilter) {
-            return this._iteratorFindFirst(fragment, filter);
-        } else {
-            return this._recursionFindFirst(fragment, filter);
-        }
-    },
-
-    /**
-     * a simple recusion based find first which iterates over the
-     * dom tree the classical way which is also the slowest one
-     * but that one will work back to ie6+
-     *
-     * @param fragment the starting fragment
-     * @param filter the filter to be applied to
-     */
-    _recursionFindFirst: function(fragment, filter) {
-        if (filter(fragment)) {
-            return fragment;
-        }
-
-        if (!fragment.childNodes) {
-            return null;
-        }
-
-        //sub-fragment usecases
-        var child;
-        var cnt;
-        var childLen = fragment.childNodes.length;
-        for (cnt = 0; cnt < childLen; cnt++) {
-            child = fragment.childNodes[cnt];
-            var item = this._recursionFindFirst(child, filter);
-            if (item != null)
-                return item;
-        }
-        return null;
-    },
-
-    /**
-     * the faster based iterator findFirst which will work
-     * on all html5 compliant browsers and a bunch of older ones
-     *
-     * @param fragment the fragment to be started from
-     * @param filter the filter which has to be used
-     */
-    _iteratorFindFirst:function(fragment, filter) {
-        if (filter(fragment)) {
-            return fragment;
-        }
-        //we have a tree walker in place this allows for an optimized deep scan
-
-        var walkerFilter = function (node) {
-            return (filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
-        };
-        var treeWalker = document.createTreeWalker(fragment, NodeFilter.SHOW_ELEMENT, walkerFilter, false);
-        if (treeWalker.nextNode()) {
-            /** @namespace treeWalker.currentNode */
-            return treeWalker.currentNode;
-        }
-        return null;
-    },
-
-
-    /**
      * optimized search for an array of tag names
      *
      * @param fragment the fragment which should be searched for
@@ -731,65 +618,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     }
     ,
 
-    /**
-     * finds the elements by an attached style class
-     *
-     * @param fragment the source fragment which is the root of our search (included in the search)
-     * @param styleClass the styleclass to search for
-     * @param deepScan if set to true a deep scan can be performed
-     */
-    findByStyleClass : function(fragment, styleClass, deepScan) {
-        var filter = this._Lang.hitch(this, function(node) {
-            var classes = this.getClasses(node);
-            var len = classes.length;
-            if (len == 0) return false;
-            else {
-                for (var cnt = 0; cnt < len; cnt++) {
-                    if (classes[cnt] === styleClass) return true;
-                }
-            }
-            return false;
-        });
-        try {
-            deepScan = !!deepScan;
-
-            //html5 getElementsByClassname
-
-            //TODO implement this
-            /*if (fragment.getElementsByClassName && deepScan) {
-             return fragment.getElementsByClassName(styleClass);
-             }
-
-             //html5 speed optimization for browsers which do not ,
-             //have the getElementsByClassName implemented
-             //but only for deep scan and normal parent nodes
-             else */
-            if (this._Lang.exists(fragment, "querySelectorAll") && deepScan) {
-                try {
-                    var result = fragment.querySelectorAll("." + styleClass.replace(/\./g, "\\."));
-
-                    if (fragment.nodeType == 1 && filter(fragment)) {
-                        result = (result == null) ? [] : result;
-                        result = this._Lang.objToArray(result);
-                        result.push(fragment);
-                    }
-                    return result;
-                } catch(e) {
-                    //in case the selector bombs we have to retry with a different method
-                }
-            } else {
-                //fallback to the classical filter methods if we cannot use the
-                //html 5 selectors for whatever reason
-                return this.findAll(fragment, filter, deepScan);
-            }
-
-        } finally {
-            //the usual IE6 is broken, fix code
-            filter = null;
-
-        }
-    }
-    ,
+    
 
     /**
      * a filtered findAll for subdom treewalking
@@ -882,28 +711,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //noinspection StatementWithEmptyBodyJS
         while (treeWalker.nextNode());
         return retVal;
-    }
-    ,
-
-    /**
-     *
-     * @param {Node} form
-     * @param {String} nameId
-     *
-     * checks for a a element with the name or identifier of nameOrIdentifier
-     * @returns the found node or null otherwise
-     */
-    findFormElement : function(form, nameId) {
-        if (!form) {
-            throw Error("_Dom.findFormElement a form node must be given");
-        }
-        if (!nameId) {
-            throw Error("_Dom.findFormElement an element or identifier must be given");
-        }
-        if (!form.elements) return null;
-        return form.elements[nameId] || this.findById(form, nameId);
-    }
-    ,
+    },
 
     /**
      * bugfixing for ie6 which does not cope properly with setAttribute
@@ -994,52 +802,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
     },
 
-    /**
-     * gets an element from a form with its id -> sometimes two elements have got
-     * the same id but are located in different forms -> MyFaces 1.1.4 two forms ->
-     * 2 inputHidden fields with ID jsf_tree_64 & jsf_state_64 ->
-     * http://www.arcknowledge.com/gmane.comp.jakarta.myfaces.devel/2005-09/msg01269.html
-     *
-     * @param {String} nameId - ID of the HTML element located inside the form
-     * @param {Node} form - form element containing the element
-     * @param {boolean} nameSearch if set to true a search for name is also done
-     * @param {boolean} localOnly if set to true a local search is performed only (a full document search is omitted)
-     * @return {Object}   the element if found else null
-     *
-     */
-    getElementFromForm : function(nameId, form, nameSearch, localOnly) {
-        if (!nameId) {
-            throw Error("_Dom.getElementFromForm an item id or name must be given");
-        }
-
-        if (!form) {
-            return this.byId(nameId);
-        }
-
-        var isNameSearch = !!nameSearch;
-        var isLocalSearchOnly = !!localOnly;
-
-        //we first check for a name entry!
-        if (isNameSearch && this._Lang.exists(form, "elements." + nameId)) {
-            return form.elements[nameId];
-        }
-
-        //if no name entry is found we check for an Id but only in the form
-        var element = this.findById(form, nameId);
-        if (element) {
-            return element;
-        }
-
-        // element not found inside the form -> try document.getElementById
-        // (can be null if element doesn't exist)
-        if (!isLocalSearchOnly) {
-            return this.byId(nameId);
-        }
-
-        return null;
-    }
-    ,
-
+  
     /**
      * fuzzy form detection which tries to determine the form
      * an item has been detached.
@@ -1160,8 +923,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             return parentItem && parentItem.tagName
                     && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
         };
-
-        return this.getFilteredParent(item, searchClosure);
+        try {
+            return this.getFilteredParent(item, searchClosure);
+        } finally {
+            searchClosure = null;
+            _Lang = null;
+        }
     }
     ,
 
@@ -1425,6 +1192,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     byId: function(id) {
         return this._Lang.byId(id);
+    },
+
+    getDummyPlaceHolder: function(markup) {
+        return this._dummyPlaceHolder;
     }
 });
 

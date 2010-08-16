@@ -95,6 +95,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
 
             // update the amount of space and check whether a shift should occur
             //added here a max limit of 30
+            //now bit shift left is a tad faster than multiplication on most vms and does the same
+            //unless we run into a bit skipping which is impossible in our usecases here
             if ((++this._space) << 1 >= qLen) {
 
                 // set the queue equal to the non-empty portion of the queue

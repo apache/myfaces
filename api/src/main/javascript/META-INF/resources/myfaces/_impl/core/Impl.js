@@ -310,6 +310,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             throw new Error("Transport type " + transportType + " does not exist");
         }
 
+        context._mfInternal = {} ;
+        var mfInternal = context._mfInternal;
+        //additional meta information to speed things up
+        mfInternal["_mfSourceFormId"] = form.id;
+        mfInternal["_mfSourceControlId"] = elementId;
+        mfInternal["_mfTransportType"] = transportType;
+
         this._transport[transportType](elem, form, context, passThrgh);
 
 

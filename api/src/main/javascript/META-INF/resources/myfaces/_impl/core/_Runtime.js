@@ -47,14 +47,14 @@ if (!myfaces._impl.core._Runtime) {
     myfaces._impl.core._Runtime = new function() {
         //the rest of the namespaces can be handled by our namespace feature
         //helper to avoid unneeded hitches
-        var _this = this;
+        var _T = this;
 
         //namespace idx to speed things up by hitting eval way less
-        _this._reservedNMS = {};
+        _T._reservedNMS = {};
         /**
          * global eval on scripts
          *
-         * usage return this.globalEval('myvar.myvar2;');
+         * usage return _T.globalEval('myvar.myvar2;');
          *
          *
          * Note some libraries like jquery use html head attachments
@@ -64,11 +64,11 @@ if (!myfaces._impl.core._Runtime) {
          * we do it via eval, we still can switch to the head method
          * if there are arguments why that one works better than ours
          */
-        this.globalEval = function(code) {
+        _T.globalEval = function(code) {
             //chrome as a diferent global eval, thanks for pointing this out
             //TODO add a config param which allows to evaluate global scripts even if the call
             //is embedded in an iframe
-            if (_this.browser.isIE && window.execScript) {
+            if (_T.browser.isIE && window.execScript) {
                 //execScript definitely only for IE otherwise we might have a custom
                 //window extension with undefined behavior on our necks
                 //window.execScript does not return anything
@@ -104,7 +104,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param nms the namespace to be assigned to
          * @param obj the  object to be assigned
          */
-        this.applyToGlobalNamespace = function(nms, obj) {
+        _T.applyToGlobalNamespace = function(nms, obj) {
             var splitted = nms.split(/\./);
             if (splitted.length == 1) {
                 window[namespace] = obj;
@@ -112,7 +112,7 @@ if (!myfaces._impl.core._Runtime) {
             }
             var parent = splitted.slice(0, splitted.length - 1);
             var child = splitted[splitted.length - 1];
-            var parentNamespace = _this.fetchNamespace(parent.join("."));
+            var parentNamespace = _T.fetchNamespace(parent.join("."));
             parentNamespace[child] = obj;
         };
 
@@ -121,16 +121,16 @@ if (!myfaces._impl.core._Runtime) {
          * @param nms the namespace which has to be fetched
          * @return the object the namespace points to or null if nothing is found
          */
-        this.fetchNamespace = function(nms) {
-            if ('undefined' == typeof nms || null == nms || !_this._reservedNMS[nms]) {
+        _T.fetchNamespace = function(nms) {
+            if ('undefined' == typeof nms || null == nms || !_T._reservedNMS[nms]) {
                 return null;
             }
 
             var ret = null;
             try {
-                if (!this.browser.isIE) {
+                if (!_T.browser.isIE) {
                     //in ie 6 and 7 we get an error entry despite the suppression
-                    ret = _this.globalEval("window." + nms);
+                    ret = _T.globalEval("window." + nms);
                 }
                 //namespace could point to numeric or boolean hence full
                 //save check
@@ -164,7 +164,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param it {|Object|} the object to be checked for being a string
          * @return true in case of being a string false otherwise
          */
-        this.isString = function(/*anything*/ it) {
+        _T.isString = function(/*anything*/ it) {
             //	summary:
             //		Return true if it is a String
             return !!arguments.length && it != null && (typeof it == "string" || it instanceof String); // Boolean
@@ -174,7 +174,7 @@ if (!myfaces._impl.core._Runtime) {
          * reserves a namespace in the specific scope
          *
          * usage:
-         * if(this.reserve("org.apache.myfaces.MyUtils")) {
+         * if(_T.reserve("org.apache.myfaces.MyUtils")) {
          *      org.apache.myfaces.MyUtils = function() {
          *      }
          * }
@@ -184,7 +184,7 @@ if (!myfaces._impl.core._Runtime) {
          *
          *
          * or:
-         * this.reserve("org.apache.myfaces.MyUtils", function() { .. });
+         * _T.reserve("org.apache.myfaces.MyUtils", function() { .. });
          *
          * reserves a namespace and if not already registered directly applies the function the namespace
          *
@@ -198,12 +198,12 @@ if (!myfaces._impl.core._Runtime) {
          * @returns true if it was not provided
          * false otherwise for further action
          */
-        this.reserveNamespace = function(nms, obj) {
+        _T.reserveNamespace = function(nms, obj) {
 
-            if (!_this.isString(nms)) {
+            if (!_T.isString(nms)) {
                 throw Error("Namespace must be a string with . as delimiter");
             }
-            if (_this._reservedNMS[nms] || null != _this.fetchNamespace(nms)) {
+            if (_T._reservedNMS[nms] || null != _T.fetchNamespace(nms)) {
                 return false;
             }
 
@@ -221,7 +221,7 @@ if (!myfaces._impl.core._Runtime) {
                 } else {
                     currNms = currNms[subNamespace];
                 }
-                _this._reservedNMS[tmpNmsName.join(".")] = true;
+                _T._reservedNMS[tmpNmsName.join(".")] = true;
 
             }
 
@@ -232,16 +232,16 @@ if (!myfaces._impl.core._Runtime) {
          * check if an element exists in the root
          * also allows to check for subelements
          * usage
-         * this.exists(rootElem,"my.name.space")
+         * _T.exists(rootElem,"my.name.space")
          * @param {Object} root the root element
          * @param {String} subNms the namespace
          */
-        this.exists = function(root, subNms) {
+        _T.exists = function(root, subNms) {
             if (!root) {
                 return false;
             }
             //special case locally reserved namespace
-            if (root == window && _this._reservedNMS[subNms]) {
+            if (root == window && _T._reservedNMS[subNms]) {
                 return true;
             }
 
@@ -287,7 +287,7 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return either the config entry or if none is given the default value
          */
-        this.getGlobalConfig = function(configName, defaultValue) {
+        _T.getGlobalConfig = function(configName, defaultValue) {
             /**
              * note we could use exists but this is an heavy operation, since the config name usually
              * given this function here is called very often
@@ -310,7 +310,7 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return either the config entry or if none is given the default value
          */
-        this.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
+        _T.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
             /*use(myfaces._impl._util)*/
             var _local = !!localOptions;
             var _localResult;
@@ -322,7 +322,7 @@ if (!myfaces._impl.core._Runtime) {
                 _local = 'undefined' != typeof _localResult;
             }
 
-            return (!_local) ? _this.getGlobalConfig(configName, defaultValue) : _localResult;
+            return (!_local) ? _T.getGlobalConfig(configName, defaultValue) : _localResult;
         };
 
         /**
@@ -331,11 +331,11 @@ if (!myfaces._impl.core._Runtime) {
          * 1.5 for mozillas send as binary implementation
          * 2 for xhr level 2
          */
-        this.getXHRLvl = function() {
-            if (!this.XHR_LEVEL) {
-                this.getXHRObject();
+        _T.getXHRLvl = function() {
+            if (!_T.XHR_LEVEL) {
+                _T.getXHRObject();
             }
-            return this.XHR_LEVEL;
+            return _T.XHR_LEVEL;
         }
 
         /**
@@ -347,23 +347,23 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return the xhr object according to the browser type
          */
-        this.getXHRObject = function() {
+        _T.getXHRObject = function() {
             //since this is a global object ie hates it if we do not check for undefined
             if (window.XMLHttpRequest) {
                 var _ret = new XMLHttpRequest();
                 //we now check the xhr level
                 //sendAsBinary = 1.5 which means mozilla only
                 //upload attribute present == level2
-                if(!this.XHR_LEVEL) {
-                    var _e = this.exists;
-                    this.XHR_LEVEL = (_e(_ret,"sendAsBinary")) ? 1.5 : 1;
-                    this.XHR_LEVEL = (_e(_ret,"upload") && 'undefined' != typeof FormData) ? 2 : this.XHR_LEVEL;
+                if(!_T.XHR_LEVEL) {
+                    var _e = _T.exists;
+                    _T.XHR_LEVEL = (_e(_ret,"sendAsBinary")) ? 1.5 : 1;
+                    _T.XHR_LEVEL = (_e(_ret,"upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
                 }
                 return _ret;
             }
             //IE
             try {
-                this.XHR_LEVEL = 1;
+                _T.XHR_LEVEL = 1;
                 return new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
 
@@ -378,8 +378,8 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
          * @param {String} charSet the charset under which the script has to be loaded
          */
-        this.loadScriptEval = function(src, type, defer, charSet) {
-            var xhr = _this.getXHRObject();
+        _T.loadScriptEval = function(src, type, defer, charSet) {
+            var xhr = _T.getXHRObject();
             xhr.open("GET", src, false);
 
             if (charSet) {
@@ -396,12 +396,12 @@ if (!myfaces._impl.core._Runtime) {
                     //we can achieve that with a small timeout, the timeout
                     //triggers after the processing is done!
                     if (!defer) {
-                        _this.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//@ sourceURL=" + src);
+                        _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//@ sourceURL=" + src);
                     } else {
                         //TODO not ideal we maybe ought to move to something else here
                         //but since it is not in use yet, it is ok
                         setTimeout(function() {
-                            _this.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
+                            _T.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
                         }, 1);
                     }
                 } else {
@@ -421,14 +421,14 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
          * @param {String} charSet the charset under which the script has to be loaded
          */
-        this.loadScriptByBrowser = function(src, type, defer, charSet) {
+        _T.loadScriptByBrowser = function(src, type, defer, charSet) {
             //if a head is already present then it is safer to simply
             //use the body, some browsers prevent head alterations
             //after the first initial rendering
 
             //ok this is nasty we have to do a head modification for ie pre 8
             //the rest can be finely served with body
-            var d = this.browser;
+            var d = _T.browser;
             var position = "head"
             //if(!d.isIE || d.isIE >= 8) {
             //    position = document.getElementsByTagName("body").length ? "body" : "head";
@@ -452,7 +452,7 @@ if (!myfaces._impl.core._Runtime) {
                 }
 
                 //fix for the white page issue
-                // if(this.browser.isIE && this.browser.isIE < 7) {
+                // if(_T.browser.isIE && _T.browser.isIE < 7) {
                 //   holder.insertBefore( script, holder.firstChild );
                 //   holder.removeChild( script );
                 // } else {
@@ -467,16 +467,16 @@ if (!myfaces._impl.core._Runtime) {
             return true;
         };
 
-        this.loadScript = function(src, type, defer, charSet) {
+        _T.loadScript = function(src, type, defer, charSet) {
             //the chrome engine has a nasty javascript bug which prevents
             //a correct order of scripts being loaded
             //if you use script source on the head, we  have to revert
             //to xhr+ globalEval for those
-            if (!_this.browser.isFF) {
-                _this.loadScriptEval(src, type, defer, charSet);
+            if (!_T.browser.isFF) {
+                _T.loadScriptEval(src, type, defer, charSet);
             } else {
                 //only firefox keeps the order, sorry ie...
-                _this.loadScriptByBrowser(src, type, defer, charSet)
+                _T.loadScriptByBrowser(src, type, defer, charSet)
             }
         };
 
@@ -485,25 +485,25 @@ if (!myfaces._impl.core._Runtime) {
         /**
          * delegation pattern
          * usage:
-         * this.delegateObject("my.name.space", delegate,
+         * _T.delegateObject("my.name.space", delegate,
          * {
          *  constructor_ :function(bla, bla1) {
-         *      this._callDelegate("constructor", bla1);
+         *      _T._callDelegate("constructor", bla1);
          *  },
          *  myFunc: function(yyy) {
          *      DoSomething;
-         *      this._callDelegate("someOtherFunc", yyyy);
+         *      _T._callDelegate("someOtherFunc", yyyy);
          *  }, null
          * });
          *
          * or
-         * usage var newClass = this.delegateObject(
+         * usage var newClass = _T.delegateObject(
          * function (var1, var2) {
-         *  this._callDelegate("constructor", var1,var2);
+         *  _T._callDelegate("constructor", var1,var2);
          * };
          * ,delegateObject);
          * newClass.prototype.myMethod = function(arg1) {
-         *      this._callDelegate("myMethod", arg1,"hello world");
+         *      _T._callDelegate("myMethod", arg1,"hello world");
          *
          *
          * @param newCls the new class name to be generated
@@ -511,8 +511,8 @@ if (!myfaces._impl.core._Runtime) {
          * @param protoFuncs the prototype functions which should be attached
          * @param nmsFuncs the namespace functions which should be attached to the namespace
          */
-        this.delegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
-            if (!_this.isString(newCls)) {
+        _T.delegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+            if (!_T.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
             }
 
@@ -558,13 +558,13 @@ if (!myfaces._impl.core._Runtime) {
          *
          * implements prototype delegaton inheritance dest <- a
          *
-         * usage var newClass = this.extends( function (var1, var2) {
-         *                                          this._callSuper("constructor", var1,var2);
+         * usage var newClass = _T.extends( function (var1, var2) {
+         *                                          _T._callSuper("constructor", var1,var2);
          *                                     };
          *                                  ,origClass);
          *
          *       newClass.prototype.myMethod = function(arg1) {
-         *              this._callSuper("myMethod", arg1,"hello world");
+         *              _T._callSuper("myMethod", arg1,"hello world");
          *       ....
          *
          * other option
@@ -573,7 +573,7 @@ if (!myfaces._impl.core._Runtime) {
          *                              init: function() {constructor...},
          *                              method1: function(f1, f2) {},
          *                              method2: function(f1, f2,f3) {
-         *                                  this._callSuper("method2", F1,"hello world");
+         *                                  _T._callSuper("method2", F1,"hello world");
          *                              }
          *              });
          *
@@ -588,11 +588,11 @@ if (!myfaces._impl.core._Runtime) {
          *  newClass.<namespaceFunction> = function() {...}
          */
 
-        this.extendClass = function(newCls, extendCls, protoFuncs, nmsFuncs) {
-            if (!_this.isString(newCls)) {
+        _T.extendClass = function(newCls, extendCls, protoFuncs, nmsFuncs) {
+            if (!_T.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
             }
-            if (_this._reservedNMS[newCls]) {
+            if (_T._reservedNMS[newCls]) {
                 return;
             }
 
@@ -629,7 +629,6 @@ if (!myfaces._impl.core._Runtime) {
                     var _mappedName = ["_",methodName,"_mf_r"].join("");
                     this._mfClsDescLvl = this._mfClsDescLvl || new Array();
                     var descLevel = this._mfClsDescLvl;
-
                     //we have to detect the descension level
                     //we now check if we are in a super descension for the current method already
                     //if not we are on this level
@@ -668,8 +667,8 @@ if (!myfaces._impl.core._Runtime) {
          * @param {function} extendsCls the function class to be extended
          * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
          */
-        this.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
-            return _makeSingleton(this.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
+        _T.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
+            return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
         };
 
         /**
@@ -680,11 +679,11 @@ if (!myfaces._impl.core._Runtime) {
          * @param protoFuncs the prototype functions which are attached on prototype level
          * @param nmsFuncs the functions which are attached on the classes namespace level
          */
-        this.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
-            if (_this._reservedNMS[newCls]) {
+        _T.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+            if (_T._reservedNMS[newCls]) {
                 return;
             }
-            return _makeSingleton(this.delegateObj, newCls, delegateObj, protoFuncs, nmsFuncs);
+            return _makeSingleton(_T.delegateObj, newCls, delegateObj, protoFuncs, nmsFuncs);
         };
 
         //since the object is self contained and only
@@ -692,15 +691,15 @@ if (!myfaces._impl.core._Runtime) {
         //functions here, the other parts of the
         //system have to emulate them via _ prefixes
         var _makeSingleton = function(ooFunc, newCls, delegateObj, protoFuncs, nmsFuncs) {
-            if (_this._reservedNMS[newCls]) {
+            if (_T._reservedNMS[newCls]) {
                 return;
             }
 
             var clazz = ooFunc(newCls + "._mfClazz", delegateObj, protoFuncs, nmsFuncs);
             if (clazz != null) {
-                _this.applyToGlobalNamespace(newCls, new clazz());
+                _T.applyToGlobalNamespace(newCls, new clazz());
             }
-            _this.fetchNamespace(newCls)["_mfClazz"] = clazz;
+            _T.fetchNamespace(newCls)["_mfClazz"] = clazz;
         };
 
         //internal class namespace reservation depending on the type (string or function)
@@ -713,10 +712,10 @@ if (!myfaces._impl.core._Runtime) {
                 constr = function() {
                 };
             }
-            if (!_this.reserveNamespace(newCls, constr)) {
+            if (!_T.reserveNamespace(newCls, constr)) {
                 return null;
             }
-            newCls = _this.fetchNamespace(newCls);
+            newCls = _T.fetchNamespace(newCls);
             return newCls;
         };
 
@@ -741,8 +740,8 @@ if (!myfaces._impl.core._Runtime) {
          * @param probe the probe to be checked for the correct type
          * @param theType the type to be checked for
          */
-        this.assertType = function(probe, theType) {
-            return this.isString(theType) ? probe == typeof theType : probe instanceof theType;
+        _T.assertType = function(probe, theType) {
+            return _T.isString(theType) ? probe == typeof theType : probe instanceof theType;
         };
 
         /**
@@ -750,9 +749,9 @@ if (!myfaces._impl.core._Runtime) {
          * @param func the function which should be added to the load
          * chain (note we cannot rely on return values here, hence jsf.util.chain will fail)
          */
-        this.addOnLoad = function(target, func) {
+        _T.addOnLoad = function(target, func) {
             var oldonload = target.onload;
-            target.onload = (!this.assertType(window.onload, "function")) ? func : function() {
+            target.onload = (!_T.assertType(window.onload, "function")) ? func : function() {
                 oldonload();
                 func();
             };
@@ -778,11 +777,11 @@ if (!myfaces._impl.core._Runtime) {
                     dav = n.appVersion,
                     tv = parseFloat(dav);
 
-            _this.browser = {};
-            var d = _this.browser;
+            _T.browser = {};
+            var d = _T.browser;
 
             if (dua.indexOf("Opera") >= 0) {
-                _this.isOpera = tv;
+                _T.isOpera = tv;
             }
             if (dua.indexOf("AdobeAIR") >= 0) {
                 d.isAIR = 1;
@@ -810,7 +809,7 @@ if (!myfaces._impl.core._Runtime) {
                 d.isMozilla = d.isMoz = tv;
             }
             if (d.isMoz) {
-                //We really need to get away from this. Consider a sane isGecko approach for the future.
+                //We really need to get away from _T. Consider a sane isGecko approach for the future.
                 d.isFF = parseFloat(dua.split("Firefox/")[1] || dua.split("Minefield/")[1] || dua.split("Shiretoko/")[1]) || undefined;
             }
             if (document.all && !d.isOpera) {
