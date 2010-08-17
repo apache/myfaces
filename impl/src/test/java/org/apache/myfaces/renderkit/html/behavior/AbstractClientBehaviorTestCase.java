@@ -18,9 +18,6 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import java.io.StringWriter;
-
-import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
@@ -72,14 +69,6 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractJsfTestCase
         parser = new ConfigParser();
         parser.parse(parser.getPlatformURLs());
         //parser.parse(this.getClass().getResource("/META-INF/faces-config.xml"));        
-    }
-
-
-    @Override
-    protected void setFactories() throws Exception {
-        super.setFactories();
-        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
-        "org.apache.myfaces.test.mock.MockPartialViewContextFactory");
     }
 
     /**

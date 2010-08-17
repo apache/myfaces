@@ -20,7 +20,6 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.FactoryFinder;
 import javax.faces.component.UIParameter;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlCommandButton;
@@ -30,8 +29,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
-import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
@@ -39,6 +36,8 @@ import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.mock.MockServletContext;
+import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
+import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 
 public class HtmlButtonRendererTest extends AbstractJsfTestCase {
 
@@ -54,14 +53,6 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
         return new TestSuite(HtmlButtonRendererTest.class);
     }
 
-
-    @Override
-    protected void setFactories() throws Exception {
-        super.setFactories();
-        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
-        "org.apache.myfaces.test.mock.MockPartialViewContextFactory");
-    }
-    
     public void setUp() throws Exception {
         super.setUp();
         writer = new MockResponseWriter(new StringWriter(), null, null);

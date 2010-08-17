@@ -20,7 +20,6 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.FactoryFinder;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIParameter;
 import javax.faces.component.behavior.AjaxBehavior;
@@ -102,13 +101,6 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
                 new HtmlLinkRenderer());
         
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
-    }
-
-    @Override
-    protected void setFactories() throws Exception {
-        super.setFactories();
-        FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
-        "org.apache.myfaces.test.mock.MockPartialViewContextFactory");
     }
 
     public void tearDown() throws Exception
