@@ -1118,15 +1118,13 @@
     <plugins>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.3</version>
         <configuration>
             <excludePackageNames>org.apache.myfaces.ee6</excludePackageNames>
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>changelog-maven-plugin</artifactId>
-        <version>2.0-beta-1</version>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <version>2.2</version>
         <reportSets>
           <reportSet>
             <id>dual-report</id>
@@ -1143,9 +1141,8 @@
         </reportSets>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jxr-maven-plugin</artifactId>
-        <version>2.0-beta-1</version>
+          <artifactId>maven-jxr-plugin</artifactId>
+          <version>2.2</version>
       </plugin>
       <plugin>
           <artifactId>maven-surefire-report-plugin</artifactId>
@@ -1154,17 +1151,11 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
-        <version>2.1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.2</version>
+        <version>2.4</version>
       </plugin>
       <!-- override PMD settings to set targetJdk -->
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.2</version>
         <configuration>
           <rulesets>
             <ruleset>/rulesets/basic.xml</ruleset>
