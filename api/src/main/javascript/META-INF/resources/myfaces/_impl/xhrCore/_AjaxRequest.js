@@ -53,8 +53,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
             if (!this._response) {
                 this._response = new myfaces._impl.xhrCore._AjaxResponse(this._onException, this._onWarning);
             }
-            this._ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(this._onException, this._onWarning);
 
+            this._ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(this._onException, this._onWarning);
         } catch (e) {
             //_onError
             this._onException(this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);

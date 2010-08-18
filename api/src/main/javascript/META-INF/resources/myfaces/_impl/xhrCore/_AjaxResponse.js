@@ -266,11 +266,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         //note we need to trace the changes which could affect our insert update or delete
         //se that we can realign our ViewStates afterwards
         //the realignment must happen post change processing
-
         for (var i = 0; i < changes.length; i++) {
             switch (changes[i].tagName) {
                 case this.CMD_UPDATE:
-                    if (!this.processUpdate(request, context, changes[i])) return false;
+                    if (!this.processUpdate(request, context, changes[i])) {
+                        return false;
+                    }
                     break;
                 case this.CMD_EVAL:
                     this._Lang.globalEval(changes[i].firstChild.data);
@@ -446,6 +447,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         var placeHolder = document.createElement("div");
         placeHolder.id = "myfaces_bodyplaceholder";
         var bodyParent = oldBody.parentNode;
+        bodyParent.replaceChild(newBody, oldBody);
+        //TODO .. ie gcing
 
         newBody.appendChild(placeHolder);
 
@@ -479,7 +482,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             }
         }
 
-        bodyParent.replaceChild(newBody, oldBody);
+
         var returnedElement = this.replaceHtmlItem(request, context, placeHolder, bodyData);
         if (returnedElement) {
             this._pushOperationResult(returnedElement);
@@ -525,6 +528,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
         /*remapping global namespaces for speed and readability reasons*/
         var _Impl = this._Impl;
+        var _Dom = this._Dom;
+        var _Lang = this._Lang;
 
         var insertId = node.getAttribute('id');
         var beforeId = node.getAttribute('before');
@@ -546,7 +551,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         var nodeHolder = null;
         var parentNode = null;
 
+
         var cDataBlock = this._Dom.concatCDATABlocks(node);
+
         var replacementFragment;
         if (isBefore) {
             beforeId = this._Lang.trim(beforeId);
@@ -582,6 +589,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
             nodeHolder = document.createElement("div");
             parentNode = afterNode.parentNode;
+            
+            //TODO nextsibling not working in ieMobile 6.1 we have to change the method
+            //of accessing it to something else
             parentNode.insertBefore(nodeHolder, afterNode.nextSibling);
 
             replacementFragment = this.replaceHtmlItem(request, context,

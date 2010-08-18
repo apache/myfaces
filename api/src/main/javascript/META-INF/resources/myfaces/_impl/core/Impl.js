@@ -127,6 +127,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         var _Dom = myfaces._impl._util._Dom;
 
         var elementId = null;
+
+
         /**
          * we cross reference statically hence the mapping here
          * the entire mapping between the functions is stateless
@@ -160,6 +162,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          */
         var passThrgh = _Lang.mixMaps({}, options, true);
 
+
         /*additional passthrough cleanup*/
         /*ie6 supportive code to prevent browser leaks*/
         passThrgh.onevent = null;
@@ -167,7 +170,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         /*ie6 supportive code to prevent browser leaks*/
         passThrgh.onerror = null;
         delete passThrgh.onerror;
-
+     
         if (event) {
             passThrgh[this.P_EVT] = event.type;
         }
@@ -185,8 +188,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         /**
          * fetch the parent form
          */
-
-        var form = _Dom.fuzzyFormDetection(elem);
+        var form = myfaces._impl._util._Dom.fuzzyFormDetection(elem);
 
         var formErr = "Sourceform could not be determined, either because element is not attached to a form or we have multiple forms with named elements of the same identifier or name, stopping the ajax processing";
 
@@ -301,7 +303,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          * iframeQueuedPost
          *
          */
-
         var transportType = (!isMultipart) ?
                 getConfig(context, "transportType", "xhrQueuedPost") :
                 getConfig(context, "transportType", "multipartQueuedPost");

@@ -61,7 +61,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     _Lang:myfaces._impl._util._Lang,
     _RT:myfaces._impl.core._Runtime,
-    _dummyPlaceHolder: document.createElement("div"),
+    _dummyPlaceHolder:null,
 
     constructor_: function() {
         //we have to trigger it upfront because mozilla runs the eval
@@ -69,6 +69,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //under normal circumstances this works, if there are no normal ones
         //then this also will work at the second time, but the onload handler
         //should cover 99% of all use cases to avoid a loading race condition
+        var b = myfaces._impl.core._Runtime.browser;
+
+
+        if (b.isIE <= 6 && b.isIEMobile) {
+            //winmobile hates add onLoad, and checks on the construct
+            //it does not eval scripts anyway
+            myfaces.config = myfaces.config||{};
+            myfaces.config._autoeval = false;
+            return;
+        }
         this._RT.addOnLoad(window, function() {
             myfaces._impl._util._Dom.isManualScriptEval();
         });
@@ -103,6 +113,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                             //script source means we have to eval the existing
                             //scripts before running the include
                             this._RT.globalEval(finalScripts.join("\n"));
+
                             finalScripts = [];
                         }
                     this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
@@ -212,7 +223,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     _outerHTMLCompliant: function(item, markup) {
 
-        var dummyPlaceHolder = this._dummyPlaceHolder; //document.createElement("div");
+        var dummyPlaceHolder = this.getDummyPlaceHolder(); //document.createElement("div");
         dummyPlaceHolder.innerHTML = markup;
         var evalNodes = dummyPlaceHolder.childNodes;
         var evalNodeLen = evalNodes.length;
@@ -243,13 +254,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param markup
      */
     _outerHTMLNonCompliant: function(item, markup) {
-
         var b = this._RT.browser;
         var evalNodes = null;
         //now to the non w3c compliant browsers
         //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
         //we have to cope with deficiencies between ie and its simulations in this case
-        var probe =  this._dummyPlaceHolder;//document.createElement("div");
+        var probe = this.getDummyPlaceHolder();//document.createElement("div");
+
         probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
         var depth = 0;
         var newProbe = probe;
@@ -259,19 +270,23 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
         depth--;
         this._removeChildNodes(probe, false);
+
         probe.innerHTML = "";
 
 
-        var dummyPlaceHolder = this._dummyPlaceHolder;//document.createElement("div");
+        var dummyPlaceHolder = this.getDummyPlaceHolder();//document.createElement("div");
+
 
         //fortunately a table element also works which is less critical than form elements regarding
         //the inner content
         dummyPlaceHolder.innerHTML = "<table><tbody><tr><td>" + markup + "</td></tr></tbody></table>";
         evalNodes = dummyPlaceHolder;
+
         for (var cnt = 0; cnt < depth; cnt++) {
             evalNodes = evalNodes.childNodes[0];
         }
         evalNodes = (evalNodes.parentNode) ? evalNodes.parentNode.childNodes : null;
+
 
         if ('undefined' == typeof evalNodes || null == evalNodes) {
             //fallback for htmlunit which should be good enough
@@ -300,8 +315,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //ie a working gc in 8 we can skip the costly operation
             if (b.isIE && b.isIE < 8) {
                 this._removeChildNodes(dummyPlaceHolder, false);
-                dummyPlaceHolder.innerHTML = "";
             }
+            dummyPlaceHolder.innerHTML = "";
         }
     },
 
@@ -316,7 +331,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     _removeNode: function(node, breakEventsOpen) {
         if (!node) return;
         var b = this._RT.browser;
-
         if (!b.isIE || b.isIE >= 8) {
             //recursive descension only needed for old ie versions
             //all newer browsers cleanup the garbage just fine without it
@@ -332,13 +346,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
         //again to speed things up we precheck first
 
-        if (b.isIE && 'undefined' != typeof node.outerHTML) //ie8+ check done earlier we skip it here
+        if (b.isIE && 'undefined' != typeof node.outerHTML) {//ie8+ check done earlier we skip it here
             node.outerHTML = '';
-        else {
+        } else {
             if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
                 node.parentNode.removeChild(node);
         }
-        delete node;
+        if (!b.isIEMobile) {
+            delete node;
+        }
     },
 
     /**
@@ -379,7 +395,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //we cannot use our generic recursive tree walking due to the needed head recursion
             //to clean it up bottom up, the tail recursion we were using in the search either would use more time
             //because we had to walk and then clean bottom up, so we are going for a direct head recusion here
-            if (childNode.hasChildNodes())
+            if ('undefined' != typeof childNode.childNodes && node.childNodes.length)
                 this._removeChildNodes(childNode);
             try {
                 var nodeName = (childNode.nodeName) ? childNode.nodeName.toLowerCase() : null;
@@ -393,7 +409,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     else {
                         node.removeChild(childNode);
                     }
-                    delete childNode;
+                    if (!b.isIEMobile) {
+                        delete childNode;
+                    }
                 }
             } catch (e) {
                 //on some elements the outerHTML can fail we skip those in favor
@@ -447,7 +465,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             item.parentNode.insertBefore(evalNode, item);
             this._removeNode(item, false);
         }
-
     },
 
 
@@ -618,7 +635,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     }
     ,
 
-    
+
 
     /**
      * a filtered findAll for subdom treewalking
@@ -765,9 +782,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //firect calls work
             node.className = val;
         } else if (attr === "name") {
+            //the ie debugger fails to assign the name via setAttr
+            //in quirks mode
             node[attr] = val;
         } else if (attr === "for") {
-            node.setAttribute("htmlFor", val);
+            if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
+                node.setAttribute("htmlFor", val);
+            } else {
+                node.htmlFor = val;
+            }
         } else if (attr === "style") {
             //We have to split the styles here and assign them one by one
             var styles = val.split(";");
@@ -778,11 +801,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     //special ie quirks handling for opacity
 
                     var opacityVal = Math.max(100, Math.round(parseFloat(keyVal[1]) * 10));
-                    node.style.setAttribute("arrFilter", "alpha(opacity=" + opacityVal + ")");
+                    //probably does not work in ie mobile anyway
+                    if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
+                        node.style.setAttribute("arrFilter", "alpha(opacity=" + opacityVal + ")");
+                    }
                     //if you need more hacks I would recommend
                     //to use the class attribute and conditional ie includes!
                 } else if (keyVal[0] != "") {
-                    node.style.setAttribute(keyVal[0], keyVal[1]);
+                    if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
+                        node.style.setAttribute(keyVal[0], keyVal[1]);
+                    } else {
+                        node.style[keyVal[0]] = keyVal[1];
+                    }
                 }
             }
         } else {
@@ -799,12 +829,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 }
             } else {
                 //unknown cases we try to catch them via standard setAttributes
-                node.setAttribute(attr, val);
+                if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
+                    node.setAttribute(attr, val);
+                } else {
+                    node[attr] = val;
+                }
             }
         }
     },
 
-  
+
     /**
      * fuzzy form detection which tries to determine the form
      * an item has been detached.
@@ -844,7 +878,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             return null;
         }
 
-
         // This will not work well on portlet case, because we cannot be sure
         // the returned form is right one.
         //we can cover that case by simply adding one of our config params
@@ -859,14 +892,27 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         //before going into the more complicated stuff we try the simple approach
         if (!this._Lang.isString(elem)) {
+
+            //html 5 allows finally the detachement of elements
+            //by introducing a form attribute
+            var elemForm = this.getAttribute(elem, "form");
+            if (elemForm) {
+                return this.byId(elemForm);
+            }
+
             //element of type form then we are already
             //at form level for the issuing element
             //https://issues.apache.org/jira/browse/MYFACES-2793
+
             if (this._Lang.equalsIgnoreCase(elem.tagName, "form")) {
                 return elem;
             }
-
-            return this.getParent(elem, "form");
+            var ret = this.getParent(elem, "form");
+            if (ret) return ret;
+        } else {
+            elem = this.byId(elem);
+            var ret = this.getParent(elem, "form");
+            if (ret) return ret;
         }
 
         var id = elem.id || null;
@@ -879,6 +925,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (id && '' != id) {
             //we have to assert that the element passed down is detached
             var domElement = this.byId(id);
+            var elemForm = this.getAttribute(domElement, "form");
+            if (elemForm) {
+                return this.byId(elemForm);
+            }
+
             if (domElement) {
                 foundForm = this.getParent(domElement, "form");
                 if (null != foundForm) return foundForm;
@@ -1134,11 +1185,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //it is less critical in some browsers (old ie versions)
             //to append as first element than as last
             //it should not make any difference layoutwise since we are on display none anyway.
-            if (document.body.childNodes.length > 0) {
-                document.body.insertBefore(evalDiv, document.body.firstChild);
-            } else {
-                document.body.appendChild(evalDiv);
-            }
+            this.insertFirst(evalDiv);
 
             //we remap it into a real boolean value
             if (window.Range
@@ -1192,11 +1239,33 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     },
 
 
+    insertFirst: function(newNode) {
+        var body = document.body;
+        if (body.childNodes.length > 0) {
+            body.insertBefore(newNode, body.firstChild);
+        } else {
+            body.appendChild(newNode);
+        }
+    },
+
     byId: function(id) {
         return this._Lang.byId(id);
     },
 
     getDummyPlaceHolder: function(markup) {
+        var created = false;
+        if (!this._dummyPlaceHolder) {
+            this._dummyPlaceHolder = document.createElement("div");
+            created = true;
+        }
+
+        //ieMobile in its 6.1-- incarnation cannot handle innerHTML detached objects so we have
+        //to attach the dummy placeholder, we try to avoid it for
+        //better browsers so that we do not have unecessary dom operations
+        if (this._RT.browser.isIEMobile && created) {
+            this.insertFirst(this._dummyPlaceHolder);
+        }
+
         return this._dummyPlaceHolder;
     }
 });
