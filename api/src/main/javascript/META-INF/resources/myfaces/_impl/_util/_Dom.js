@@ -75,7 +75,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (b.isIE <= 6 && b.isIEMobile) {
             //winmobile hates add onLoad, and checks on the construct
             //it does not eval scripts anyway
-            myfaces.config = myfaces.config||{};
+            myfaces.config = myfaces.config || {};
             myfaces.config._autoeval = false;
             return;
         }
@@ -895,10 +895,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
             //html 5 allows finally the detachement of elements
             //by introducing a form attribute
-            var elemForm = this.getAttribute(elem, "form");
+
+            var elemForm = this.html5FormDetection(elem);
             if (elemForm) {
-                return this.byId(elemForm);
+                return elemForm;
             }
+
+
 
             //element of type form then we are already
             //at form level for the issuing element
@@ -925,9 +928,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (id && '' != id) {
             //we have to assert that the element passed down is detached
             var domElement = this.byId(id);
-            var elemForm = this.getAttribute(domElement, "form");
+            var elemForm = this.html5FormDetection(domElement);
             if (elemForm) {
-                return this.byId(elemForm);
+                return elemForm;
             }
 
             if (domElement) {
@@ -959,6 +962,17 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         return (1 == foundElements.length ) ? foundElements[0] : null;
     }
     ,
+
+    html5FormDetection: function(item) {
+        if(this._RT.browser.isIEMobile && this._RT.browser.isIEMobile <= 7) {
+            return null;    
+        }
+        var elemForm = this.getAttribute(item, "form");
+        if (elemForm) {
+            return this.byId(elemForm);
+        }
+        return null;
+    },
 
     /**
      * gets a parent of an item with a given tagname

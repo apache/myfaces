@@ -118,7 +118,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      */
     request : function(elem, event, options) {
 
-
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
          *all the time
@@ -161,7 +160,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          * we should not touch the incoming params!
          */
         var passThrgh = _Lang.mixMaps({}, options, true);
-
 
         /*additional passthrough cleanup*/
         /*ie6 supportive code to prevent browser leaks*/
@@ -276,7 +274,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             _this = null;
             transformList = null;
         }
-
         var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
 
         /**

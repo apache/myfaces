@@ -161,8 +161,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         //if we set our no portlet env we safely can update all forms with
         //the new viewstate
         if (this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
-            for(var cnt = document.forms.length-1; cnt >= 0; cnt --) {
-                 this._setVSTForm(document.forms[cnt]);
+            for (var cnt = document.forms.length - 1; cnt >= 0; cnt --) {
+                this._setVSTForm(document.forms[cnt]);
             }
             return;
         }
@@ -268,6 +268,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         //the realignment must happen post change processing
         for (var i = 0; i < changes.length; i++) {
             switch (changes[i].tagName) {
+
                 case this.CMD_UPDATE:
                     if (!this.processUpdate(request, context, changes[i])) {
                         return false;
@@ -440,28 +441,33 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
      * @param {Node} parsedData (optional) preparsed XML representation data of the current document
      */
     _replaceBody : function(request, context, newData /*varargs*/) {
-        var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
 
+        var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
         var oldBody = document.getElementsByTagName("body")[0];
-        var newBody = document.createElement("body");
+
         var placeHolder = document.createElement("div");
+
         placeHolder.id = "myfaces_bodyplaceholder";
+
         var bodyParent = oldBody.parentNode;
-        bodyParent.replaceChild(newBody, oldBody);
-        //TODO .. ie gcing
+
+
+        if (!this._RT.browser.isIEMobile || this._RT.browser.isIEMobile >= 7) {
+            //if possible we replace the entire body to get all the old attributes cleaned up
+            //which works on all new browsers
+            var newBody = document.createElement("body");
+            bodyParent.replaceChild(newBody, oldBody);
+        } else {
+            //now to the problematic engines
+            oldBody.innerHTML = "";
+            //we just clean up the old body
+            var newBody = oldBody;
+        }
 
         newBody.appendChild(placeHolder);
 
-        //the contextualFragment trick does not work on the body tag instead we have to generate a manual body
-        //element and then add a child which then is the replacement holder for our fragment!
-
-        //Note, we also could offload this to the browser,
-        //but for now our parser seems to be faster than the browser offloading method
-        //and also does not interfere on security level
-        //the browser offloading methods would be first to use the xml parsing
-        //and if that fails revert to a hidden iframe
-        //var bodyData = parser.parse(newData, "body");
         var bodyData = null;
+
         var doc = (arguments.length > 3) ? arguments[3] : this._Lang.parseXML(newData);
         if (this._Lang.isXMLParseError(doc)) {
             doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]\/\/-->/g, "//-->"));
@@ -469,19 +475,23 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
         if (this._Lang.isXMLParseError(doc)) {
             //the standard xml parser failed we retry with the stripper
+
             var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
             bodyData = parser.parse(newData, "body");
         } else {
             //parser worked we go on
             var newBodyData = doc.getElementsByTagName("body")[0];
             bodyData = this._Lang.serializeChilds(newBodyData);
-            for (var cnt = 0; cnt < newBodyData.attributes.length; cnt++) {
-                var value = newBodyData.attributes[cnt].value;
-                if (value)
-                    this._Dom.setAttribute(newBody, newBodyData.attributes[cnt].name, value);
+
+            if (!this._RT.browser.isIEMobile || this._RT.browser.isIEMobile >= 7) {
+                //TODO check what is failing there
+                for (var cnt = 0; cnt < newBodyData.attributes.length; cnt++) {
+                    var value = newBodyData.attributes[cnt].value;
+                    if (value)
+                        this._Dom.setAttribute(newBody, newBodyData.attributes[cnt].name, value);
+                }
             }
         }
-
 
         var returnedElement = this.replaceHtmlItem(request, context, placeHolder, bodyData);
         if (returnedElement) {
@@ -589,7 +599,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
             nodeHolder = document.createElement("div");
             parentNode = afterNode.parentNode;
-            
+
             //TODO nextsibling not working in ieMobile 6.1 we have to change the method
             //of accessing it to something else
             parentNode.insertBefore(nodeHolder, afterNode.nextSibling);

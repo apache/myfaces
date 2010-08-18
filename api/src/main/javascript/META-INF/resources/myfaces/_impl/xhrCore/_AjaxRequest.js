@@ -40,7 +40,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
      *
      */
     constructor_: function(arguments) {
-        
+
 
         try {
             this._callSuper("constructor", arguments);
@@ -137,22 +137,22 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 //we unify the api, there must be always a request passed to the external function
                 //and always a context, no matter what
                     this._Lang.hitch(this,
-                            function() {
-                                //the hitch has to be done due to the setTimeout refocusing the scope of this
-                                //to window
-                                try {
-                                    _req.onreadystatechange = function() {
-                                    };
+                                    function() {
+                                        //the hitch has to be done due to the setTimeout refocusing the scope of this
+                                        //to window
+                                        try {
+                                            _req.onreadystatechange = function() {
+                                            };
 
-                                    //to avoid malformed whatever, we have
-                                    //the timeout covered already on the _onTimeout function
-                                    _req.abort();
-                                    this._onTimeout(_req, _context);
-                                } catch (e) {
-                                    alert(e);
-                                } finally {
-                                }
-                            })
+                                            //to avoid malformed whatever, we have
+                                            //the timeout covered already on the _onTimeout function
+                                            _req.abort();
+                                            this._onTimeout(_req, _context);
+                                        } catch (e) {
+                                            alert(e);
+                                        } finally {
+                                        }
+                                    })
                     , this._timeout);
         }
     },
@@ -181,7 +181,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 }
             }
         } catch (e) {
-            if(this._onException)
+            if (this._onException)
                 this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
             else
                 alert(e.toString());
@@ -190,7 +190,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
             this._Lang.clearExceptionProcessed();
 
             //this._context.source;
-            if(this._xhr.readyState == this._READY_STATE_DONE) {
+            if (this._xhr.readyState == this._READY_STATE_DONE) {
                 this._callSuper("_finalize");
             }
 
