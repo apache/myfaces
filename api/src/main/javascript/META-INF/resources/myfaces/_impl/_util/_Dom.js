@@ -1278,6 +1278,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //better browsers so that we do not have unecessary dom operations
         if (this._RT.browser.isIEMobile && created) {
             this.insertFirst(this._dummyPlaceHolder);
+
+            this.setAttribute(this._dummyPlaceHolder, "style", "display: none");
+           
         }
 
         return this._dummyPlaceHolder;
