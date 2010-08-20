@@ -113,6 +113,8 @@ import org.apache.myfaces.shared_impl.util.LocaleUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
+import org.apache.myfaces.spi.FacesConfigResourceProvider;
+import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
@@ -135,9 +137,9 @@ public class FacesConfigurator
     private static final Logger log = Logger.getLogger(FacesConfigurator.class.getName());
 
     private static final String STANDARD_FACES_CONFIG_RESOURCE = "META-INF/standard-faces-config.xml";
-    private static final String FACES_CONFIG_RESOURCE = "META-INF/faces-config.xml";
-    private static final String META_INF_PREFIX = "META-INF/";
-    private static final String FACES_CONFIG_SUFFIX = ".faces-config.xml";
+    //private static final String FACES_CONFIG_RESOURCE = "META-INF/faces-config.xml";
+    //private static final String META_INF_PREFIX = "META-INF/";
+    //private static final String FACES_CONFIG_SUFFIX = ".faces-config.xml";
 
     private static final String META_INF_SERVICES_RESOURCE_PREFIX = "META-INF/services/";
 
@@ -751,6 +753,38 @@ public class FacesConfigurator
     {
         try
         {
+            FacesConfigResourceProvider provider = FacesConfigResourceProviderFactory.
+                getFacesConfigResourceProviderFactory(_externalContext).createFacesConfigResourceProvider(_externalContext);
+            
+            Collection<URL> facesConfigs = provider.getMetaInfConfigurationResources(_externalContext);
+            
+            for (URL url : facesConfigs)
+            {
+                if (MyfacesConfig.getCurrentInstance(_externalContext).isValidateXML())
+                {
+                    validateFacesConfig(url);
+                }
+                InputStream stream = null;
+                try
+                {
+                    stream = openStreamWithoutCache(url);
+                    if (log.isLoggable(Level.INFO))
+                    {
+                        log.info("Reading config : " + url.toExternalForm());
+                    }
+                    appConfigResources.add(getUnmarshaller().getFacesConfig(stream, url.toExternalForm()));
+                    //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, entry.getKey()));
+                }
+                finally
+                {
+                    if (stream != null)
+                    {
+                        stream.close();
+                    }
+                }
+            }
+            
+            /*
             Map<String, URL> facesConfigs = new TreeMap<String, URL>();
             Iterator<URL> it = ClassUtils.getResources(FACES_CONFIG_RESOURCE, this);
             while (it.hasNext())
@@ -794,6 +828,7 @@ public class FacesConfigurator
                     }
                 }
             }
+            */
         }
         catch (Throwable e)
         {

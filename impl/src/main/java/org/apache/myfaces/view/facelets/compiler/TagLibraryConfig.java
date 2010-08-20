@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,15 +44,15 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.spi.FaceletConfigResourceProvider;
+import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
-import org.apache.myfaces.view.facelets.util.Classpath;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 import org.xml.sax.Attributes;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -68,7 +69,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public final class TagLibraryConfig
 {
 
-    private final static String SUFFIX = ".taglib.xml";
+    //private final static String SUFFIX = ".taglib.xml";
 
     //protected final static Logger log = Logger.getLogger("facelets.compiler");
     protected final static Logger log = Logger.getLogger(TagLibraryConfig.class.getName());
@@ -654,24 +655,33 @@ public final class TagLibraryConfig
     public void loadImplicit(Compiler compiler) throws IOException
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
-        URL[] urls = Classpath.search(cl, "META-INF/", SUFFIX);
-        for (int i = 0; i < urls.length; i++)
+        
+        //URL[] urls = Classpath.search(cl, "META-INF/", SUFFIX);
+        //for (int i = 0; i < urls.length; i++)
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        FaceletConfigResourceProvider provider = FaceletConfigResourceProviderFactory.
+            getFacesConfigResourceProviderFactory(externalContext).createFaceletConfigResourceProvider(externalContext);
+        Collection<URL> urls = provider.getFaceletTagLibConfigurationResources(externalContext);
+        for (URL url : urls)
         {
             try
             {
-                TagLibrary tl = create(urls[i]);
+                //TagLibrary tl = create(urls[i]);
+                TagLibrary tl = create(url);
                 if (tl != null)
                 {
                     compiler.addTagLibrary(tl);
                 }
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("Added Library from: " + urls[i]);
+                    //log.fine("Added Library from: " + urls[i]);
+                    log.fine("Added Library from: " + url);
                 }
             }
             catch (Exception e)
             {
-                log.log(Level.SEVERE, "Error Loading Library: " + urls[i], e);
+                //log.log(Level.SEVERE, "Error Loading Library: " + urls[i], e);
+                log.log(Level.SEVERE, "Error Loading Library: " + url, e);
             }
         }
     }
