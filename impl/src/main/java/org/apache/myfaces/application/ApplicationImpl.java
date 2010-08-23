@@ -198,6 +198,9 @@ public class ApplicationImpl extends Application
     private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap = new HashMap<Class<?>, List<ListenerFor>>() ;
     private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap = new HashMap<Class<?>, List<ResourceDependency>>() ;
     
+    private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
+            = new ArrayList<Class<? extends Converter>>();
+    
     // ~ Constructors
     // --------------------------------------------------------------------------
     // -----
@@ -1429,21 +1432,35 @@ public class ApplicationImpl extends Application
             try
             {
                 Class<? extends Converter> converterClass = ClassUtils.simpleClassForName(converterClassName);
-
                 Converter converter = null;
-                try
+                
+                // check cached constructor information
+                if (!_noArgConstructorConverterClasses.contains(converterClass))
                 {
-                    // look for a constructor that takes a single Class object
-                    // See JSF 1.2 javadoc for Converter
-                    Constructor<? extends Converter> constructor = converterClass
-                            .getConstructor(new Class[] { Class.class });
+                    // the converter class either supports the one-arg constructor
+                    // or has never been processed before
+                    try
+                    {
+                        // look for a constructor that takes a single Class object
+                        // See JSF 1.2 javadoc for Converter
+                        Constructor<? extends Converter> constructor = converterClass
+                                .getConstructor(new Class[] { Class.class });
 
-                    converter = constructor.newInstance(new Object[] { targetClass });
+                        converter = constructor.newInstance(new Object[] { targetClass });
+                    }
+                    catch (Exception e)
+                    {
+                        // the constructor does not exist
+                        // add the class to the no-arg constructor classes cache
+                        _noArgConstructorConverterClasses.add(converterClass);
+                        
+                        // use no-arg constructor
+                        converter = converterClass.newInstance();
+                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    // if there is no matching constructor use no-arg
-                    // constructor
+                    // use no-arg constructor
                     converter = converterClass.newInstance();
                 }
 
