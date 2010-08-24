@@ -207,11 +207,82 @@ public class UIInputTest extends AbstractJsfTestCase
             InitParameterMockExternalContext mockExtCtx =
                     new InitParameterMockExternalContext(servletContext, request, response);
             mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
+            mockExtCtx.getInitParameterMap().put(UIInput.VALIDATE_EMPTY_FIELDS_PARAM_NAME, "true");
             facesContext.setExternalContext(mockExtCtx);
+            
+            input.addValidator(new Validator()
+            {
+
+                public void validate(FacesContext context,
+                        UIComponent component, Object value)
+                        throws ValidatorException
+                {
+                    // the value must be null
+                    assertNull(value);
+                }
+
+                
+            });
+            
             input.setSubmittedValue("");
             input.validate(facesContext);
 
             assertEquals(null, input.getSubmittedValue());
+        }
+        finally
+        {
+            facesContext.setExternalContext(externalContext);
+        }
+    }
+    
+    public void testValidateWithNonStringWithEmptyStringAsNullEnabled()
+    {
+        try
+        {
+            InitParameterMockExternalContext mockExtCtx =
+                    new InitParameterMockExternalContext(servletContext, request, response);
+            mockExtCtx.getInitParameterMap().put("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
+            facesContext.setExternalContext(mockExtCtx);
+            
+            input.addValidator(new Validator()
+            {
+
+                public void validate(FacesContext context,
+                        UIComponent component, Object value)
+                        throws ValidatorException
+                {
+                    // the value must not be null
+                    assertNotNull(value);
+                    
+                    // throw Exception to ensure this was called
+                    throw new RuntimeException();
+                }
+
+                
+            });
+            
+            // set Object with toString() returning "" as submittedValue
+            input.setSubmittedValue(new Object()
+            {
+
+                @Override
+                public String toString()
+                {
+                    return "";
+                }
+                
+            });
+            
+            try
+            {
+                input.validate(facesContext);
+                
+                fail(); // validate() was not called --> fail!
+            }
+            catch (RuntimeException e)
+            {
+                // great - validate() was called!
+            }
         }
         finally
         {
