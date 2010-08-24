@@ -27,9 +27,10 @@ import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
-import javax.faces.render.Renderer;
-
 import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.PhaseId;
 import javax.faces.render.Renderer;
 
 import org.apache.myfaces.Assert;
@@ -140,7 +141,64 @@ public class UIDataTest extends AbstractJsfTestCase
      */
     public void testBroadcastFacesEvent()
     {
-        // TODO
+        // create event mock
+        final FacesEvent originalEvent = _mocksControl.createMock(FacesEvent.class);
+        
+        // create the component for the event
+        UIComponent eventComponent = new UICommand()
+        {
+
+            @Override
+            public void broadcast(FacesEvent event)
+                    throws AbortProcessingException
+            {
+                // the event must be the originalEvent
+                assertEquals(originalEvent, event);
+                
+                // the current row index must be the row index from the time the event was queued
+                assertEquals(5, _testImpl.getRowIndex());
+                
+                // the current component must be this (pushComponentToEL() must have happened)
+                assertEquals(this, UIComponent.getCurrentComponent(facesContext));
+                
+                // to be able to verify that broadcast() really has been called
+                getAttributes().put("broadcastCalled", Boolean.TRUE);
+            }
+            
+        };
+        
+        // set component on event
+        EasyMock.expect(originalEvent.getComponent()).andReturn(eventComponent).anyTimes();
+        // set phase on event
+        EasyMock.expect(originalEvent.getPhaseId()).andReturn(PhaseId.INVOKE_APPLICATION).anyTimes();
+        _mocksControl.replay();
+        
+        // set PhaseId for event processing
+        facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
+        // set row index for event
+        _testImpl.setRowIndex(5);
+        // UIData must be a child of UIViewRoot to queue and event
+        facesContext.getViewRoot().getChildren().add(_testImpl);
+        // queue event (this will create a FacesEventWrapper with the current row index)
+        _testImpl.queueEvent(originalEvent);
+        // change the current row index
+        _testImpl.setRowIndex(0);
+        // now broadcast the event (this will call UIData.broadcast())
+        facesContext.getViewRoot().broadcastEvents(facesContext, PhaseId.INVOKE_APPLICATION);
+        
+        // -= Assertions =-
+        
+        // the current component must be null (popComponentFromEL() must have happened)
+        assertNull(UIComponent.getCurrentComponent(facesContext));
+        
+        // the row index must now be 0 (at broadcast() it must be 5)
+        assertEquals(0, _testImpl.getRowIndex());
+        
+        // verify mock behavior
+        _mocksControl.verify();
+        
+        // verify that broadcast() really has been called
+        assertEquals(Boolean.TRUE, eventComponent.getAttributes().get("broadcastCalled"));
     }
 
     /**

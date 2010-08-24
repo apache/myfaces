@@ -751,14 +751,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             UIComponent source = originalEvent.getComponent();
             
             setRowIndex(eventRowIndex);
-            source.pushComponentToEL(getFacesContext(), source);
+            pushComponentToEL(getFacesContext(), source);
             try
             {
                 source.broadcast(originalEvent);
             }
             finally
             {
-                source.popComponentFromEL(getFacesContext());
+                popComponentFromEL(getFacesContext());
                 setRowIndex(currentRowIndex);
             }
         }
