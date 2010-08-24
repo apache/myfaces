@@ -747,14 +747,18 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             FacesEvent originalEvent = ((FacesEventWrapper) event).getWrappedFacesEvent();
             int eventRowIndex = ((FacesEventWrapper) event).getRowIndex();
-            int currentRowIndex = getRowIndex();
+            final int currentRowIndex = getRowIndex();
+            UIComponent source = originalEvent.getComponent();
+            
             setRowIndex(eventRowIndex);
+            source.pushComponentToEL(getFacesContext(), source);
             try
             {
-                originalEvent.getComponent().broadcast(originalEvent);
+                source.broadcast(originalEvent);
             }
             finally
             {
+                source.popComponentFromEL(getFacesContext());
                 setRowIndex(currentRowIndex);
             }
         }
