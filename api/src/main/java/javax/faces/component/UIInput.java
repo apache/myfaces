@@ -71,15 +71,19 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public static final String REQUIRED_MESSAGE_ID = "javax.faces.component.UIInput.REQUIRED";
     public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
 
+    @JSFWebConfigParam(defaultValue="auto", expectedValues="auto, true, false", since="2.0")
+    public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
+    
     /** -=Leonardo Uribe =- According to http://wiki.java.net/bin/view/Projects/Jsf2MR1ChangeLog 
       * this constant will be made public on 2.1. For now, since this param is handled in
       * 2.0, we should do it as well.
       **/
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0")
     private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
-    
-    @JSFWebConfigParam(defaultValue="auto", expectedValues="auto, true, false", since="2.0")
-    public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
+
+    // our own, cached key
+    private static final String MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME =
+      "org.apache.myfaces.UIInput.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
     
     /**
      * Extended debug info is stored under this key in the request
@@ -425,6 +429,41 @@ public class UIInput extends UIOutput implements EditableValueHolder
             _ComponentUtils.callValidators(context, this, convertedValue);
         }
     }
+    
+    /**
+     * Checks if the <code>validate()</code> should interpret an empty
+     * submitted value should be handle as <code>NULL</code>
+     * 
+     * @return a (cached) boolean to identify the interpretation as null
+     */
+    private boolean shouldInterpretEmptyStringSubmittedValuesAsNull(FacesContext context)
+    {
+        ExternalContext ec = context.getExternalContext();
+        Boolean interpretEmptyStringAsNull = (Boolean)ec.getApplicationMap().get(MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME);
+
+        // not yet cached...
+        if (interpretEmptyStringAsNull == null)
+        {
+            // parses the web.xml to get the "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL" value
+            String param = ec.getInitParameter(EMPTY_VALUES_AS_NULL_PARAM_NAME);
+
+            // evaluate the param
+            interpretEmptyStringAsNull = "true".equalsIgnoreCase(param);
+
+            // cache the parsed value
+            ec.getApplicationMap().put(MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME, interpretEmptyStringAsNull);
+        }
+
+        return interpretEmptyStringAsNull;
+    }
+
+    /**
+     * <p>Return <code>true</code> if the value is an empty <code>String</code>.</p>
+     */
+    private boolean isEmptyString(Object value)
+    {
+        return ((value instanceof String) && (((String) value).length() == 0));
+    }
 
     private boolean shouldValidateEmptyFields(FacesContext context)
     {
@@ -493,14 +532,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
             }
 
             // Begin new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
-            String contextParam = context.getExternalContext().getInitParameter(EMPTY_VALUES_AS_NULL_PARAM_NAME);
-            if (contextParam != null && contextParam.toLowerCase().equals("true"))
-            {
-                if (submittedValue.toString().length() == 0)
-                {
-                    setSubmittedValue(null);
-                    submittedValue = null;
-                }
+            if (shouldInterpretEmptyStringSubmittedValuesAsNull(context) && isEmptyString(submittedValue))
+            {   
+                // -= matzew = setSubmittedValue(null) is wrong, see:
+                // https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=671
+                setSubmittedValue(null);
+                submittedValue = null;
             }
             // End new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
 
