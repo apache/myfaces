@@ -1,4 +1,4 @@
-## Velocity template used to generate JSF1.2-compatible component classes
+## Velocity template used to generate JSF2.0-compatible component classes
 ## from component meta-data.
 ##
 ## Note that there are two types of component generation:
