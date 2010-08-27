@@ -44,7 +44,7 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     private MapEntries mapEntries;
     private ListEntries listEntries;
     private ValueExpression scopeValueExpression;
-
+    private String eager;
 
     public int getInitMode()
     {
@@ -177,6 +177,16 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
                 : null;
         }
         return scopeValueExpression;
+    }
+
+    public String getEager()
+    {
+        return eager;
+    }
+    
+    public void setEager(String eager)
+    {
+        this.eager = eager;
     }
     
 }

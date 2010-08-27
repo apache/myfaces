@@ -18,8 +18,10 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,8 +41,10 @@ import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.annotation.DefaultLifecycleProviderFactory;
+import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
@@ -123,6 +127,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             if (log.isLoggable(Level.INFO)) {
                 log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
             }
+            
+            // initialize eager managed beans
+            _createEagerBeans(facesContext);
 
             _dispatchApplicationEvent(servletContext, PostConstructApplicationEvent.class);
             
@@ -135,7 +142,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             // print out a very prominent log message if the project stage is != Production
             if (!facesContext.isProjectStage(ProjectStage.Production))
             {
-                ProjectStage projectStage = FacesContext.getCurrentInstance().getApplication().getProjectStage();
+                ProjectStage projectStage = facesContext.getApplication().getProjectStage();
                 StringBuilder message = new StringBuilder("\n\n");
                 message.append("*******************************************************************\n");
                 message.append("*** WARNING: Apache MyFaces-2 is running in ");
@@ -166,6 +173,57 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         } catch (Exception ex) {
             log.log(Level.SEVERE, "An error occured while initializing MyFaces: "
                       + ex.getMessage(), ex);
+        }
+    }
+    
+    /**
+     * Checks for application scoped managed-beans with eager=true,
+     * creates them and stores them in the application map.
+     * @param externalContext
+     */
+    private void _createEagerBeans(FacesContext facesContext)
+    {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
+        List<ManagedBean> eagerBeans = new ArrayList<ManagedBean>();
+        
+        // check all registered managed-beans
+        for (ManagedBean bean : runtimeConfig.getManagedBeans().values())
+        {
+            String eager = bean.getEager();
+            if (eager != null && "true".equals(eager))
+            {
+                // eager beans are only allowed for application scope
+                if (ManagedBeanBuilder.APPLICATION.equals(bean.getManagedBeanScope()))
+                {
+                    // add to eager beans
+                    eagerBeans.add(bean);
+                }
+                else
+                {
+                    // log warning and continue (the bean will be lazy loaded)
+                    log.log(Level.WARNING, "The managed-bean with name "
+                            + bean.getManagedBeanName()
+                            + " must be application scoped to support eager=true.");
+                }
+            }
+        }
+        
+        // check if there are any eager beans
+        if (!eagerBeans.isEmpty())
+        {
+            ManagedBeanBuilder managedBeanBuilder = new ManagedBeanBuilder();
+            Map<String, Object> applicationMap = externalContext.getApplicationMap();
+            
+            for (ManagedBean bean : eagerBeans)
+            {
+                // create instance
+                Object beanInstance = managedBeanBuilder
+                        .buildManagedBean(facesContext, bean);
+                
+                // put in application scope
+                applicationMap.put(bean.getManagedBeanName(), beanInstance);
+            }
         }
     }
 

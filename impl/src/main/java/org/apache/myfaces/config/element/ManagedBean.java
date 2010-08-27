@@ -69,4 +69,11 @@ public interface ManagedBean
      */
     public ValueExpression getManagedBeanScopeValueExpression(FacesContext facesContext);
     
+    /**
+     * Returns the value of the eager attribute. Default is false.
+     * @since 2.0
+     * @return
+     */
+    public String getEager();
+    
 }

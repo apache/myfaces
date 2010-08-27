@@ -158,6 +158,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/converter/property/property-extension", "addPropertyExtension", 0);
 
         digester.addObjectCreate("faces-config/managed-bean", ManagedBean.class);
+        digester.addSetProperties("faces-config/managed-bean", "eager", "eager");
         digester.addSetNext("faces-config/managed-bean", "addManagedBean");
         digester.addCallMethod("faces-config/managed-bean/description", "setDescription", 0);
         digester.addCallMethod("faces-config/managed-bean/managed-bean-name", "setName", 0);

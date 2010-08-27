@@ -271,6 +271,7 @@ public class AnnotationConfigurator
                     }
                     
                     mbc.setName(beanName);
+                    mbc.setEager(Boolean.toString(bean.eager()));
                     mbc.setBeanClass(clazz.getName());
                     
                     ApplicationScoped appScoped = (ApplicationScoped) clazz.getAnnotation(ApplicationScoped.class);
