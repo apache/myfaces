@@ -25,6 +25,10 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared_impl.resource.AliasResourceMetaImpl;
+import org.apache.myfaces.shared_impl.resource.ResourceLoader;
+import org.apache.myfaces.shared_impl.resource.ResourceMeta;
+import org.apache.myfaces.shared_impl.resource.ResourceMetaImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
