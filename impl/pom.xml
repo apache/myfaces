@@ -721,15 +721,9 @@
         <artifactId>taglist-maven-plugin</artifactId>
         <version>2.1</version>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.2</version>
-      </plugin>
       <!-- override PMD settings to set targetJdk -->
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.2</version>
         <configuration>
           <rulesets>
             <ruleset>/rulesets/basic.xml</ruleset>
