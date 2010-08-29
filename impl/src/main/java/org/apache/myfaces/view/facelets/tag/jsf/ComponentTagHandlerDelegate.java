@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
+import javax.faces.FacesWrapper;
 import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.component.ActionSource;
@@ -75,10 +76,40 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     private final TagAttribute _id;
 
     private final String _rendererType;
+    
+    private final ComponentBuilderHandler _componentBuilderHandlerDelegate;
 
+    @SuppressWarnings("unchecked")
     public ComponentTagHandlerDelegate(ComponentHandler delegate)
     {
         _delegate = delegate;
+        
+        ComponentHandler handler = _delegate;
+        boolean found = false;
+        while(handler != null && !found)
+        {
+            if (handler instanceof ComponentBuilderHandler)
+            {
+                found = true;
+            }
+            else if (handler instanceof FacesWrapper)
+            {
+                handler = ((FacesWrapper<? extends ComponentHandler>)handler).getWrapped();
+            }
+            else
+            {
+                handler = null;
+            }
+        }
+        if (found)
+        {
+            _componentBuilderHandlerDelegate = (ComponentBuilderHandler) handler;
+        }
+        else
+        {
+            _componentBuilderHandlerDelegate = null;
+        }
+        
         ComponentConfig delegateComponentConfig = delegate.getComponentConfig();
         _componentType = delegateComponentConfig.getComponentType();
         _rendererType = delegateComponentConfig.getRendererType();
@@ -426,11 +457,11 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      */
     protected UIComponent createComponent(FaceletContext ctx)
     {
-        if (_delegate instanceof ComponentBuilderHandler)
+        if (_componentBuilderHandlerDelegate != null)
         {
             // the call to Application.createComponent(FacesContext, Resource)
             // is delegated because we don't have here the required Resource instance
-            return ((ComponentBuilderHandler) _delegate).createComponent(ctx);
+            return _componentBuilderHandlerDelegate.createComponent(ctx);
         }
         UIComponent c = null;
         FacesContext faces = ctx.getFacesContext();
