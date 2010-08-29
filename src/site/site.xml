@@ -40,7 +40,7 @@
     <skin>
       <groupId>org.apache.myfaces.maven</groupId>
       <artifactId>myfaces-site-skin</artifactId>
-      <version>1-SNAPSHOT</version>
+      <version>1</version>
     </skin>
     
     <body>
@@ -60,12 +60,23 @@
             <item name="Core JSF-1.2"   href="http://myfaces.apache.org/core12/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
+            <item name="Core JSF-2.0"   href="http://myfaces.apache.org/core20/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
             <item name="Trinidad"       href="http://myfaces.apache.org/trinidad/index.html"/>
             <item name="Tobago"         href="http://myfaces.apache.org/tobago/index.html"/>
-            <item name="Tomahawk"       href="http://myfaces.apache.org/tomahawk/index.html"/>
-            <item name="Sandbox"        href="http://myfaces.apache.org/sandbox/index.html"/>
+            <item name="Tomahawk"       href="http://myfaces.apache.org/tomahawk/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
+            <item name="Sandbox"        href="http://myfaces.apache.org/sandbox/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
             <item name="Orchestra"      href="http://myfaces.apache.org/orchestra/index.html"/>
             <item name="Portlet Bridge" href="http://myfaces.apache.org/portlet-bridge/index.html"/>
+            <item name="ExtVal"         href="http://myfaces.apache.org/extensions/validator/index.html"/>
+            <item name="Commons"        href="http://myfaces.apache.org/commons/index.html"/>
+            <item name="Test"           href="http://myfaces.apache.org/test/index.html"/>
+            <item name="Others"         href="http://myfaces.apache.org/otherProjects.html"/>
         </menu>
         
         <menu name="Documentation" inherit="top">
