@@ -123,7 +123,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             for (var loop = 0; loop < childNodesLength; loop++) {
                 var childNode = partials.childNodes[loop];
                 var tagName = childNode.tagName;
-
                 /**
                  * <eval>
                  *      <![CDATA[javascript]]>

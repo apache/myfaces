@@ -70,8 +70,6 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             throw Error("_Lang.globalEval code must be of type String");
         }
         return this._callDelegate("globalEval", code);
-
-        //return this._RT.globalEval(code);
     },
 
     /**
@@ -97,6 +95,16 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             t = t.parentNode;
         }
         return t;
+    },
+
+    /**
+     * consume event in a browser independend manner
+     * @param event the event which should not be propagated anymore
+     */
+    consumeEvent: function(event) {
+        //w3c model vs ie model again
+        event = event || window.event;
+        (event.stopPropagation)? event.stopPropagation(): event.cancelBubble = true;
     },
 
     /**

@@ -117,7 +117,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * @param {|Object|} options  map of options being pushed into the ajax cycle
      */
     request : function(elem, event, options) {
-
         //options not set we define a default one with nothing
         options = options|| {};
         

@@ -85,7 +85,16 @@ if (!myfaces._impl.core._Runtime) {
                 //Mozilla behaves correctly if you just add an outer function, then the window scope is again
                 //accepted as the real scope
                 var func = function () {
-                    return window.eval.call(window, code);
+                    if (_T.browser.isBlackBerry > 5) {
+                        //todo check if we have to really scope otherwise we can handle
+                        //everything within one code block
+                        return window.eval.call(window, code);
+                    } else {
+                        //blackberry has to deal with nms the way we do
+                        //it for ie hence we can return safely null
+                        window.eval(code);
+                        return null;
+                    }
                 };
                 return func();
             }
@@ -128,7 +137,8 @@ if (!myfaces._impl.core._Runtime) {
 
             var ret = null;
             try {
-                if (!_T.browser.isIE) {
+                //blackberries have problems as well in older non webkit versions
+                if (!_T.browser.isIE && (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6)) {
                     //in ie 6 and 7 we get an error entry despite the suppression
                     ret = _T.globalEval("window." + nms);
                 }
@@ -209,7 +219,9 @@ if (!myfaces._impl.core._Runtime) {
 
             var entries = nms.split(/\./);
             var currNms = window;
+
             var tmpNmsName = [];
+
             for (var cnt = 0; cnt < entries.length; cnt++) {
                 var subNamespace = entries[cnt];
                 tmpNmsName.push(subNamespace)
@@ -224,6 +236,7 @@ if (!myfaces._impl.core._Runtime) {
                 _T._reservedNMS[tmpNmsName.join(".")] = true;
 
             }
+
 
             return true;
         };
@@ -354,10 +367,10 @@ if (!myfaces._impl.core._Runtime) {
                 //we now check the xhr level
                 //sendAsBinary = 1.5 which means mozilla only
                 //upload attribute present == level2
-                if(!_T.XHR_LEVEL) {
+                if (!_T.XHR_LEVEL) {
                     var _e = _T.exists;
-                    _T.XHR_LEVEL = (_e(_ret,"sendAsBinary")) ? 1.5 : 1;
-                    _T.XHR_LEVEL = (_e(_ret,"upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
+                    _T.XHR_LEVEL = (_e(_ret, "sendAsBinary")) ? 1.5 : 1;
+                    _T.XHR_LEVEL = (_e(_ret, "upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
                 }
                 return _ret;
             }
@@ -589,9 +602,11 @@ if (!myfaces._impl.core._Runtime) {
          */
 
         _T.extendClass = function(newCls, extendCls, protoFuncs, nmsFuncs) {
+
             if (!_T.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
             }
+
             if (_T._reservedNMS[newCls]) {
                 return;
             }
@@ -604,6 +619,7 @@ if (!myfaces._impl.core._Runtime) {
             //with this info we can inherit from objects also
             //instead of only from classes
             //sort of like   this.extendClass(newCls, extendObj._mfClazz...
+
             if (extendCls._mfClazz) {
                 extendCls = extendCls._mfClazz;
             }
@@ -611,7 +627,8 @@ if (!myfaces._impl.core._Runtime) {
             if ('undefined' != typeof extendCls && null != extendCls) {
                 //first we have to get rid of the constructor calling problem
                 //problem
-                var tmpFunc = function() {};
+                var tmpFunc = function() {
+                };
                 tmpFunc.prototype = extendCls.prototype;
                 newCls.prototype = new tmpFunc();
                 tmpFunc = null;
@@ -705,6 +722,7 @@ if (!myfaces._impl.core._Runtime) {
         //internal class namespace reservation depending on the type (string or function)
         var _reserveClsNms = function(newCls, protoFuncs) {
             var constr = null;
+
             if ('undefined' != typeof protoFuncs && null != protoFuncs) {
                 constr = ('undefined' != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
                 };
@@ -712,6 +730,7 @@ if (!myfaces._impl.core._Runtime) {
                 constr = function() {
                 };
             }
+
             if (!_T.reserveNamespace(newCls, constr)) {
                 return null;
             }
@@ -787,9 +806,13 @@ if (!myfaces._impl.core._Runtime) {
             if (dua.indexOf("AdobeAIR") >= 0) {
                 d.isAIR = 1;
             }
+            if (dua.indexOf("BlackBerry") >= 0) {
+                d.isBlackBerry = tv;
+            }
             d.isKhtml = (dav.indexOf("Konqueror") >= 0) ? tv : 0;
             d.isWebKit = parseFloat(dua.split("WebKit/")[1]) || undefined;
             d.isChrome = parseFloat(dua.split("Chrome/")[1]) || undefined;
+
 
             // safari detection derived from:
             //		http://developer.apple.com/internet/safari/faq.html#anchor2
@@ -806,6 +829,7 @@ if (!myfaces._impl.core._Runtime) {
             }
 
             //>>excludeStart("webkitMobile", kwArgs.webkitMobile);
+
             if (dua.indexOf("Gecko") >= 0 && !d.isKhtml && !d.isWebKit) {
                 d.isMozilla = d.isMoz = tv;
             }
@@ -813,7 +837,8 @@ if (!myfaces._impl.core._Runtime) {
                 //We really need to get away from _T. Consider a sane isGecko approach for the future.
                 d.isFF = parseFloat(dua.split("Firefox/")[1] || dua.split("Minefield/")[1] || dua.split("Shiretoko/")[1]) || undefined;
             }
-            if (document.all && !d.isOpera) {
+
+            if (document.all && !d.isOpera && !d.isBlackBerry) {
                 d.isIE = parseFloat(dav.split("MSIE ")[1]) || undefined;
                 d.isIEMobile = parseFloat(dua.split("IEMobile")[1]);
                 //In cases where the page has an HTTP header or META tag with
