@@ -395,7 +395,7 @@ public final class ErrorPageWriter
                                 {
                                     partialWriter.write(ex.getCause().toString());
                                 }
-                                else
+                                else if (ex.getMessage() != null)
                                 {
                                     partialWriter.write(ex.getMessage());
                                 }
