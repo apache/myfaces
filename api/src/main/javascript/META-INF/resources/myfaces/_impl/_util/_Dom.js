@@ -456,15 +456,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param evalNodes
      */
     replaceElement: function(item, evalNode) {
-        var _Browser = this._RT.browser;
-        if (!_Browser.isIE || _Browser.isIE >= 8) {
+      //  var _Browser = this._RT.browser;
+      //  if (!_Browser.isIE || _Browser.isIE >= 8) {
             //standards conform no leaking browser
             item.parentNode.replaceChild(evalNode, item);
-        } else {
+      // } else {
             //browsers with defect garbage collection
-            item.parentNode.insertBefore(evalNode, item);
+      //       item.parentNode.insertBefore(evalNode, item);
             this._removeNode(item, false);
-        }
+      //  }
     },
 
 

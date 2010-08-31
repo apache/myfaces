@@ -83,7 +83,16 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
     getEventTarget: function(evt) {
         //ie6 and 7 fallback
         evt = (!evt) ? window.event || {} : evt;
-        var t = (evt.srcElement ? evt.srcElement : (evt.target ? evt.target : null));
+       /**
+        * evt source is defined in the jsf events
+        * seems like some component authors use our code
+        * so we add it here see also
+        * https://issues.apache.org/jira/browse/MYFACES-2458
+        * not entirely a bug but makes sense to add this
+        * behavior. I dont use it that way but nevertheless it
+        * does not break anything so why not
+        * */
+        var t = evt.srcElement || evt.target  || evt.source || null;
         while ((t) && (t.nodeType != 1)) {
             t = t.parentNode;
         }

@@ -118,6 +118,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      */
     request : function(elem, event, options) {
 
+        //options not set we define a default one with nothing
+        options = options|| {};
+        
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
          *all the time
@@ -125,7 +128,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         var _Lang = this._Lang;
         var _Dom = myfaces._impl._util._Dom;
 
-        var elementId = null;
+        //blank to avoid errors in case nothing is determinable
+        var elementId = "";
 
 
         /**
@@ -249,7 +253,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
        try {
             if (passThrgh.execute) {
                 /*the options must be a blank delimited list of strings*/
-                transformList(this.P_EXECUTE, passThrgh.execute, true);
+                /*compliance with Mojarra which automatically adds @this to an execute*/
+                transformList(this.P_EXECUTE, passThrgh.execute+ " @this", true);
                 passThrgh.execute = null;
                 /*remap just in case we have a valid pointer to an existing object*/
                 delete passThrgh.execute;

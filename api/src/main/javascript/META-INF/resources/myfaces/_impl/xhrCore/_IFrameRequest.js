@@ -111,7 +111,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         //via our xml parser
         var request = {};
         try {
-            //Derived from the YUI library, looking this up saved me some time
             request.responseText = this._getFrameText();
             request.responseXML = this._getFrameXml();
             request.readyState = this._READY_STATE_DONE;
@@ -129,9 +128,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
             //_onError
             this._onException(null, this._context, this.CLS_NAME, "constructor", e);
         } finally {
-            //this closes any hanging or pedning comm channel caused by the iframe
-            //this._frame.src = "about:blank";
-            this._setFrameText("");
+            //this closes any hanging or pending comm channel caused by the iframe
+            this._clearFrame();
             this._frame = null;
         }
     },
@@ -139,27 +137,36 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
     /**
      * returns the frame text in a browser independend manner
      */
-    _getFrameText: function() {
-        var doc = this._frame.contentWindow.document;
-        return doc.body ? doc.body.innerHTML : doc.documentElement.textContent;
+    _getFrameDocument: function() {
+      //we cover various browsers here, because almost all browsers keep the document in a different
+      //position
+      return this._frame.contentWindow.document || this._frame.contentDocument || this._frame.document  ;
     },
 
-    /**
-     * sets the frame text in a browser independend manner
-     *
-     * @param text to be set
-     */
-    _setFrameText: function(text) {
-        var doc = this._frame.contentWindow.document;
-        doc.body ? (doc.body.innerHTML = text) : (doc.documentElement.textContent = text);
+    _getFrameText: function() {
+        var framedoc = this._getFrameDocument();
+        //also ie keeps the body in framedoc.body the rest in documentElement
+        var body = framedoc.body || framedoc.documentElement ;
+        return  body.innerHTML;
+    },
+
+    _clearFrame: function() {
+        var framedoc = this._getFrameDocument();
+        var body = framedoc.documentElement || framedoc.body;
+        //ie8 in 7 mode chokes on the innerHTML method
+        //direct dom removal is less flakey and works
+        //over all browsers, but is slower
+        this._Dom.removeChildNodes(body, false);
     },
 
     /**
      * returns the processed xml from the frame
      */
     _getFrameXml: function() {
-        var doc = this._frame.contentWindow.document;
-        return doc.XMLDocument ? doc.XMLDocument : doc;
+        var framedoc = this._getFrameDocument();
+        //same situation here, the xml is hosted either in xmlDocument or
+        //is located directly under the frame document
+        return  framedoc.XMLDocument ||  framedoc;
     },
 
 
