@@ -347,7 +347,8 @@ public class PartialViewContextImpl extends PartialViewContext {
 
     private void processPartialExecute(UIViewRoot viewRoot, PhaseId phaseId) 
     {
-        Collection<String> executeIds = getExecuteIds();
+        PartialViewContext pvc = _facesContext.getPartialViewContext();
+        Collection<String> executeIds = pvc.getExecuteIds();
         if (executeIds == null || executeIds.isEmpty()) 
         {
             return;
@@ -376,6 +377,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         // note that we cannot use this.getPartialResponseWriter(), because
         // this could cause problems if PartialResponseWriter is wrapped
         PartialResponseWriter writer = _facesContext.getPartialViewContext().getPartialResponseWriter();
+        PartialViewContext pvc = _facesContext.getPartialViewContext();
         
         ResponseWriter oldWriter = _facesContext.getResponseWriter();
         boolean inDocument = false;
@@ -397,13 +399,13 @@ public class PartialViewContextImpl extends PartialViewContext {
             inDocument = true;
             _facesContext.setResponseWriter(writer);
 
-            if (isRenderAll())
+            if (pvc.isRenderAll())
             {
                 processRenderAll(viewRoot, writer);
             }
             else
             {
-                Collection<String> renderIds = getRenderIds();
+                Collection<String> renderIds = pvc.getRenderIds();
                 //Only apply partial visit if we have ids to traverse
                 if (renderIds != null && !renderIds.isEmpty())
                 {
