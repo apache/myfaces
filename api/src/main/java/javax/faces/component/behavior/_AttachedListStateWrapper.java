@@ -18,30 +18,26 @@
  */
 package javax.faces.component.behavior;
 
-import java.util.Collection;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
- * TODO: COMMENT
- * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-14 15:15:08 -0400 (mer., 17 sept. 2008) $
- *
- * @since 2.0
+ * @author Manfred Geiler (latest modification by $Author: skitching $)
+ * @version $Revision: 676298 $ $Date: 2008-07-13 05:31:48 -0500 (dom, 13 jul 2008) $
  */
-public interface ClientBehaviorHolder
+class _AttachedListStateWrapper
+        implements Serializable
 {
-    public void addClientBehavior(String eventName, ClientBehavior behavior);
-    
-    /**
-     * Retruns an immutable <code>Map</code> of the attached <code>ClientBehavior</code>s for the
-     * component. If no behavior is present this method return an empty Map (<code>Collections.emptyMap()</code>). 
-     * @return
-     */
-    public Map<String,List<ClientBehavior>> getClientBehaviors();
-    
-    public String getDefaultEventName();
-    
-    public Collection<String> getEventNames();
+    private static final long serialVersionUID = -3958718149793179776L;
+    private List<Object> _wrappedStateList;
+
+    public _AttachedListStateWrapper(List<Object> wrappedStateList)
+    {
+        _wrappedStateList = wrappedStateList;
+    }
+
+    public List<Object> getWrappedStateList()
+    {
+        return _wrappedStateList;
+    }
 }

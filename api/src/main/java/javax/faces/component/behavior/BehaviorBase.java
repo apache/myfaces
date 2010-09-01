@@ -18,12 +18,12 @@
  */
 package javax.faces.component.behavior;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.event.BehaviorEvent;
 import javax.faces.event.BehaviorListener;
@@ -124,7 +124,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         {
             //Full
             _behaviorListeners = (_DeltaList<BehaviorListener>)
-                UIComponentBase.restoreAttachedState(context, state);
+                restoreAttachedState(context, state);
         }
     }
 
@@ -149,7 +149,100 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
         else
         {
-            return UIComponentBase.saveAttachedState(facesContext,_behaviorListeners);
+            return saveAttachedState(facesContext,_behaviorListeners);
+        }
+    }
+
+    private static Object saveAttachedState(FacesContext context, Object attachedObject)
+    {
+        if (context == null)
+        {
+            throw new NullPointerException ("context");
+        }
+        
+        if (attachedObject == null)
+            return null;
+        // StateHolder interface should take precedence over
+        // List children
+        if (attachedObject instanceof StateHolder)
+        {
+            StateHolder holder = (StateHolder) attachedObject;
+            if (holder.isTransient())
+            {
+                return null;
+            }
+
+            return new _AttachedStateWrapper(attachedObject.getClass(), holder.saveState(context));
+        }        
+        else if (attachedObject instanceof List)
+        {
+            List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
+            for (Object item : (List<?>) attachedObject)
+            {
+                if (item != null)
+                {
+                    lst.add(saveAttachedState(context, item));
+                }
+            }
+
+            return new _AttachedListStateWrapper(lst);
+        }
+        else if (attachedObject instanceof Serializable)
+        {
+            return attachedObject;
+        }
+        else
+        {
+            return new _AttachedStateWrapper(attachedObject.getClass(), null);
+        }
+    }
+
+    private static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException
+    {
+        if (context == null)
+            throw new NullPointerException("context");
+        if (stateObj == null)
+            return null;
+        if (stateObj instanceof _AttachedListStateWrapper)
+        {
+            List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
+            List<Object> restoredList = new ArrayList<Object>(lst.size());
+            for (Object item : lst)
+            {
+                restoredList.add(restoreAttachedState(context, item));
+            }
+            return restoredList;
+        }
+        else if (stateObj instanceof _AttachedStateWrapper)
+        {
+            Class<?> clazz = ((_AttachedStateWrapper) stateObj).getClazz();
+            Object restoredObject;
+            try
+            {
+                restoredObject = clazz.newInstance();
+            }
+            catch (InstantiationException e)
+            {
+                throw new RuntimeException("Could not restore StateHolder of type " + clazz.getName()
+                        + " (missing no-args constructor?)", e);
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new RuntimeException(e);
+            }
+            if (restoredObject instanceof StateHolder)
+            {
+                _AttachedStateWrapper wrapper = (_AttachedStateWrapper) stateObj;
+                Object wrappedState = wrapper.getWrappedStateObject();
+
+                StateHolder holder = (StateHolder) restoredObject;
+                holder.restoreState(context, wrappedState);
+            }
+            return restoredObject;
+        }
+        else
+        {
+            return stateObj;
         }
     }
 
