@@ -59,7 +59,7 @@ public class HtmlMessagesRenderer extends HtmlMessagesRendererBase
             }
         }
         
-        renderMessages(facesContext, component);
+        renderMessages(facesContext, component, false, true);
     }
 
     @Override

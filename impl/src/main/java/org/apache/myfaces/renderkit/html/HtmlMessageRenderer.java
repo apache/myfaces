@@ -58,7 +58,7 @@ public class HtmlMessageRenderer extends HtmlMessageRendererBase
             }
         }
         
-        renderMessage(facesContext, component);
+        renderMessage(facesContext, component, false, true);
     }
 
     @Override
