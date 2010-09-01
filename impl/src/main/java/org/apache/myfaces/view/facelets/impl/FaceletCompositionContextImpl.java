@@ -33,6 +33,7 @@ import javax.faces.view.AttachedObjectHandler;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * @since 2.0.1
@@ -62,8 +63,14 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private Boolean _refreshTransientBuildOnPSS;
     
     private Boolean _usingPSSOnThisView;
+
+    private List<Map<String, UIComponent>> _componentsMarkedForDeletion;
+    
+    private int _deletionLevel;
     
     private final Map<UIComponent, List<AttachedObjectHandler>> _attachedObjectHandlers;
+
+    private static final String VIEWROOT_FACELET_ID = "oam.VIEW_ROOT";
     
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
@@ -71,6 +78,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _factory = factory;
         _facesContext = facesContext;
         _attachedObjectHandlers = new HashMap<UIComponent, List<AttachedObjectHandler>>();
+        _componentsMarkedForDeletion = new ArrayList<Map<String,UIComponent>>();
+        _deletionLevel = -1;
     }
 
     public FaceletFactory getFaceletFactory()
@@ -89,6 +98,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _excludedValidatorIdsStack = null;
         _uniqueIdVendorStack = null;
         _validationGroupsStack = null;
+        _componentsMarkedForDeletion = null;
     }
    
     @Override
@@ -355,4 +365,165 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     {
         return _attachedObjectHandlers.get(compositeComponentParent);
     }
+
+    /**
+     * Add a level of components marked for deletion.
+     *
+     * @param levelSize the number of elements on this level.
+     */
+    private void increaseComponentLevelMarkedForDeletion()
+    {
+        _deletionLevel++;
+        if (_componentsMarkedForDeletion.size() <= _deletionLevel)
+        {
+            _componentsMarkedForDeletion.add(new HashMap<String, UIComponent>());
+            
+        }
+    }
+
+    /**
+     * Remove the last component level from the components marked to be deleted. The components are removed
+     * from this list because they are deleted from the tree. This is done in ComponentSupport.finalizeForDeletion.
+     *
+     * @return the array of components that are removed.
+     */
+    private void decreaseComponentLevelMarkedForDeletion()
+    {
+        //The common case is this co
+        if (!_componentsMarkedForDeletion.get(_deletionLevel).isEmpty())
+        {
+            _componentsMarkedForDeletion.get(_deletionLevel).clear();
+        }
+        _deletionLevel--;
+    }
+
+    /** Mark a component to be deleted from the tree. The component to be deleted is addded on the
+     * current level. This is done from ComponentSupport.markForDeletion
+     *
+     * @param component the component marked for deletion.
+     * @param index the index to add the component at.
+     */
+    private void markComponentForDeletion(String id , UIComponent component)
+    {
+        _componentsMarkedForDeletion.get(_deletionLevel).put(id, component);
+    }
+
+    /**
+     * Remove a component from the last level of components marked to be deleted.
+     *
+     * @param component the component to be removed.
+     */
+    private UIComponent removeComponentForDeletion(String id)
+    {
+        UIComponent removedComponent = _componentsMarkedForDeletion.get(_deletionLevel).remove(id); 
+        if (removedComponent != null && _deletionLevel > 0)
+        {
+            _componentsMarkedForDeletion.get(_deletionLevel-1).remove(id);
+        }
+        return removedComponent;
+    }
+    
+    public void markForDeletion(UIComponent component)
+    {
+        increaseComponentLevelMarkedForDeletion();
+        
+        String id = (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);
+        id = (id == null) ? VIEWROOT_FACELET_ID : id;
+        markComponentForDeletion(id, component);
+        
+        Map<String, UIComponent> facets = component.getFacets();
+        if (!facets.isEmpty())
+        {
+            for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
+            {
+                UIComponent fc = itr.next();
+                id = (String) fc.getAttributes().get(ComponentSupport.MARK_CREATED);
+                if (id != null)
+                {
+                    markComponentForDeletion(id, fc);
+                }
+                else if (Boolean.TRUE.equals(fc.getAttributes().get(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
+                {
+                    //Mark its children, but do not mark itself.
+                    for (Iterator<UIComponent> fciter = fc.getChildren().iterator(); fciter.hasNext();)
+                    {
+                        UIComponent child = fciter.next();
+                        id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
+                        if (id != null)
+                        {
+                            markComponentForDeletion(id, child);
+                        }
+                    }
+                }
+            }
+        }
+                
+        if (component.getChildCount() > 0)
+        {
+            for (Iterator<UIComponent> iter = component.getChildren().iterator(); iter.hasNext();)
+            {
+                UIComponent child = iter.next();
+                id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
+                if (id != null)
+                {
+                    markComponentForDeletion(id, child);
+                }
+            }
+        }
+    }
+    
+    public void finalizeForDeletion(UIComponent component)
+    {
+        String id = (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);
+        id = (id == null) ? VIEWROOT_FACELET_ID : id;
+        // remove any existing marks of deletion
+        removeComponentForDeletion(id);
+        
+        // finally remove any children marked as deleted
+        if (component.getChildCount() > 0)
+        {
+            for (Iterator<UIComponent> iter = component.getChildren().iterator(); iter.hasNext();)
+            {
+                UIComponent child = iter.next();
+                id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED); 
+                if (id != null && removeComponentForDeletion(id) != null)
+                {
+                    iter.remove();
+                }
+            }
+        }
+
+        // remove any facets marked as deleted
+        Map<String, UIComponent> facets = component.getFacets();
+        if (!facets.isEmpty())
+        {
+            for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
+            {
+                UIComponent fc = itr.next();
+                id = (String) fc.getAttributes().get(ComponentSupport.MARK_CREATED);
+                if (id != null && removeComponentForDeletion(id) != null)
+                {
+                    itr.remove();
+                }
+                else if ( id == null && Boolean.TRUE.equals(fc.getAttributes().get(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
+                {
+                    for (Iterator<UIComponent> fciter = fc.getChildren().iterator(); fciter.hasNext();)
+                    {
+                        UIComponent child = fciter.next();
+                        id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
+                        if (id != null && removeComponentForDeletion(id) != null)
+                        {
+                            fciter.remove();
+                        }
+                    }
+                    if (fc.getChildCount() == 0)
+                    {
+                        itr.remove();
+                    }
+                }
+            }
+        }
+        
+        decreaseComponentLevelMarkedForDeletion();
+    }    
 }

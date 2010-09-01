@@ -91,20 +91,19 @@ abstract public class FaceletCompositionContext
      * This could be used by InsertChildrenHandler and InsertFacetHandler to retrieve the current
      * composite component to be applied.
      * 
-     * @since 2.0
-     * @param facesContext
+     * @since 2.0.1
      * @return
      */
     public abstract UIComponent getCompositeComponentFromStack();
 
     /**
-     * @since 2.0
+     * @since 2.0.1
      * @param parent
      */
     public abstract void pushCompositeComponentToStack(UIComponent parent);
 
     /**
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract void popCompositeComponentToStack();
     
@@ -114,79 +113,79 @@ abstract public class FaceletCompositionContext
      * Note that facelets tree is built from leafs to root, that means use UIComponent.getParent() does not
      * always return parent components.
      * 
-     * @since 2.0
+     * @since 2.0.1
      * @return
      */
     public abstract UniqueIdVendor getUniqueIdVendorFromStack();
 
     /**
-     * @since 2.0
+     * @since 2.0.1
      * @param parent
      */
     public abstract void pushUniqueIdVendorToStack(UniqueIdVendor parent);
 
     /**
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract void popUniqueIdVendorToStack();
     
     /**
      * Gets the top of the validationGroups stack.
      * @return
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract String getFirstValidationGroupFromStack();
     
     /**
      * Removes top of stack.
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract void popValidationGroupsToStack();
     
     /**
      * Pushes validationGroups to the stack.
      * @param validationGroups
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract void pushValidationGroupsToStack(String validationGroups);
     
     /**
      * Gets all validationIds on the stack.
      * @return
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract Iterator<String> getExcludedValidatorIds();
     
     /**
      * Removes top of stack.
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract void popExcludedValidatorIdToStack();
     
     /**
      * Pushes validatorId to the stack of excluded validatorIds.
      * @param validatorId
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract void pushExcludedValidatorIdToStack(String validatorId);
     
     /**
      * Gets all validationIds on the stack.
      * @return
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract Iterator<String> getEnclosingValidatorIds();
     
     /**
      * Removes top of stack.
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract void popEnclosingValidatorIdToStack();
     
     /**
      * Pushes validatorId to the stack of all enclosing validatorIds.
      * @param validatorId
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract void pushEnclosingValidatorIdToStack(String validatorId);
     
@@ -195,7 +194,7 @@ abstract public class FaceletCompositionContext
      * and adding/removing components under c:if or c:forEach or not.
      * 
      * @return
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract boolean isRefreshingTransientBuild();
     
@@ -204,7 +203,7 @@ abstract public class FaceletCompositionContext
      * all components must call UIComponent.markInitialState.
      * 
      * @return
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract boolean isMarkInitialState();
     
@@ -219,7 +218,7 @@ abstract public class FaceletCompositionContext
      *    (c:if, c:forEach...)
      * 
      * @return
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract boolean isRefreshTransientBuildOnPSS();
     
@@ -227,10 +226,14 @@ abstract public class FaceletCompositionContext
      * Check if we are using partial state saving on this view
      * 
      * @return
-     * @since 2.0
+     * @since 2.0.1
      */
     public abstract boolean isUsingPSSOnThisView();
     
+    /**
+     * @since 2.0.1
+     * @return
+     */
     public abstract boolean isMarkInitialStateAndIsRefreshTransientBuildOnPSS();
 
     /**
@@ -240,6 +243,7 @@ abstract public class FaceletCompositionContext
      * Tag Handlers exposing attached objects should call this method to expose them when the
      * parent to be applied is a composite components.
      *
+     * @since 2.0.2
      * @param compositeComponentParent
      * @param handler
      */
@@ -248,15 +252,36 @@ abstract public class FaceletCompositionContext
     /**
      * Remove from the composite component parent the list of attached handlers.
      * 
+     * @since 2.0.2
      * @param compositeComponentParent
      */
     public abstract void removeAttachedObjectHandlers(UIComponent compositeComponentParent);
 
     /**
      * Retrieve the list of object handlers attached to a composite component parent. 
-     *
+     * 
+     * @since 2.0.2
      * @param compositeComponentParent
      */
     public abstract List<AttachedObjectHandler> getAttachedObjectHandlers(UIComponent compositeComponentParent);
+
+    /**
+     * Marks all direct children and Facets with an attribute for deletion.
+     *
+     * @since 2.0.2
+     * @see #finalizeForDeletion(FaceletCompositionContext, UIComponent)
+     * @param component
+     *            UIComponent to mark
+     */
+    public abstract void markForDeletion(UIComponent component);
     
+    /**
+     * Used in conjunction with markForDeletion where any UIComponent marked will be removed.
+     * 
+     * @since 2.0.2
+     * @param component
+     *            UIComponent to finalize
+     */
+    public abstract void finalizeForDeletion(UIComponent component);
+
 }

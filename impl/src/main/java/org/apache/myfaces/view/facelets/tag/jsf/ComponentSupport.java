@@ -59,9 +59,11 @@ public final class ComponentSupport
     /**
      * Used in conjunction with markForDeletion where any UIComponent marked will be removed.
      * 
+     * @deprecated use FaceletCompositionContext.finalizeForDeletion
      * @param component
      *            UIComponent to finalize
      */
+    @Deprecated
     public static void finalizeForDeletion(UIComponent component)
     {
         // remove any existing marks of deletion
@@ -243,10 +245,12 @@ public final class ComponentSupport
     /**
      * Marks all direct children and Facets with an attribute for deletion.
      * 
+     * @deprecated use FaceletCompositionContext.markForDeletion
      * @see #finalizeForDeletion(UIComponent)
      * @param component
      *            UIComponent to mark
      */
+    @Deprecated
     public static void markForDeletion(UIComponent component)
     {
         // flag this component as deleted

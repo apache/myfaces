@@ -142,7 +142,7 @@ final class UIInstructionHandler extends AbstractUIHandler
             {
                 componentFound = true;
                 // mark all children for cleaning
-                ComponentSupport.markForDeletion(c);
+                mctx.markForDeletion(c);
             }
             else
             {
@@ -189,7 +189,7 @@ final class UIInstructionHandler extends AbstractUIHandler
             // finish cleaning up orphaned children
             if (componentFound)
             {
-                ComponentSupport.finalizeForDeletion(c);
+                mctx.finalizeForDeletion(c);
                 if (!componentFoundInserted)
                 {
                     if (mctx.isRefreshingTransientBuild())

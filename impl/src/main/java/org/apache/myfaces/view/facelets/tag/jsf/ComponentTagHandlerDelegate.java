@@ -121,17 +121,17 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * <ol>
      * <li>First determines this UIComponent's id by calling {@link #getId(FaceletContext) getId(FaceletContext)}.</li>
      * <li>Search the parent for an existing UIComponent of the id we just grabbed</li>
-     * <li>If found, {@link #markForDeletion(UIComponent) mark} its children for deletion.</li>
+     * <li>If found, {@link #FaceletCompositionContext.markForDeletion(UIComponent) mark} its children for deletion.</li>
      * <li>If <i>not</i> found, call {@link #createComponent(FaceletContext) createComponent}.
      * <ol>
-     * <li>Only here do we apply {@link TagHandler#setAttributes(FaceletContext, Object) attributes}</li>
+     * <li>Only here do we apply {@link TagHandler#setAttributes(FaceletCompositionContext, Object) attributes}</li>
      * <li>Set the UIComponent's id</li>
      * <li>Set the RendererType of this instance</li>
      * </ol>
      * </li>
      * <li>Now apply the nextHandler, passing the UIComponent we've created/found.</li>
      * <li>Now add the UIComponent to the passed parent</li>
-     * <li>Lastly, if the UIComponent already existed (found), then {@link #finalizeForDeletion(UIComponent) finalize}
+     * <li>Lastly, if the UIComponent already existed (found), then {@link #finalizeForDeletion(FaceletCompositionContext, UIComponent) finalize}
      * for deletion.</li>
      * </ol>
      * 
@@ -226,7 +226,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 log.fine(_delegate.getTag() + " Component[" + id + "] Found, marking children for cleanup");
             }
-            ComponentSupport.markForDeletion(c);
+            mctx.markForDeletion(c);
         }
         else
         {
@@ -297,7 +297,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // finish cleaning up orphaned children
         if (componentFound)
         {
-            ComponentSupport.finalizeForDeletion(c);
+            mctx.finalizeForDeletion(c);
 
             if (!componentFoundInserted)
             {
@@ -665,7 +665,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * Determine if the default Validator with the given validatorId should be added.
      *
      * @param validatorId The validatorId.
-     * @param context The FacesContext.
+     * @param facesContext The FacesContext.
      * @param mctx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validator should be added.
      * @return true if the Validator should be added, false otherwise.

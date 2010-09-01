@@ -139,9 +139,9 @@ final class DefaultFacelet extends AbstractFacelet
             }
             
             this.refresh(parent);
-            ComponentSupport.markForDeletion(parent);
+            myFaceletContext.markForDeletion(parent);
             _root.apply(ctx, parent);
-            ComponentSupport.finalizeForDeletion(parent);
+            myFaceletContext.finalizeForDeletion(parent);
             this.markApplied(parent);
             
             // remove the UniqueIdVendor from the stack again
@@ -383,16 +383,17 @@ final class DefaultFacelet extends AbstractFacelet
         // push the parent as a UniqueIdVendor to the stack here,
         // if there is no UniqueIdVendor on the stack yet
         boolean pushedUniqueIdVendor = false;
+        FaceletCompositionContext mctx = ctx.getFaceletCompositionContext();
         if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
         {
-            ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+            mctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
             pushedUniqueIdVendor = true;
         }
         
         this.refresh(parent);
-        ComponentSupport.markForDeletion(parent);
+        mctx.markForDeletion(parent);
         f._root.apply(new DefaultFaceletContext( (DefaultFaceletContext)ctx, f, true), parent);
-        ComponentSupport.finalizeForDeletion(parent);
+        mctx.finalizeForDeletion(parent);
         this.markApplied(parent);
         
         // remove the UniqueIdVendor from the stack again
