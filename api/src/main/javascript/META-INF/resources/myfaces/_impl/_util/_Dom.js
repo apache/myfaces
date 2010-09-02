@@ -222,10 +222,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     },
 
     _outerHTMLCompliant: function(item, markup) {
-
-        var dummyPlaceHolder = this.getDummyPlaceHolder(); //document.createElement("div");
-        dummyPlaceHolder.innerHTML = markup;
-        var evalNodes = dummyPlaceHolder.childNodes;
+        var evalNodes;
+        var itemNodeName = item.nodeName.toLowerCase();
+        if (itemNodeName == "table" || itemNodeName == "thead" ||
+            itemNodeName == "tbody" || itemNodeName == "tfoot" ||
+            itemNodeName == "th"    || itemNodeName == "tr"    ||
+            itemNodeName == "td"){
+            evalNodes = this._outerHTMLGetEvalTableNodes(item, markup);
+        } else {
+            var dummyPlaceHolder = this.getDummyPlaceHolder(); //document.createElement("div");
+            dummyPlaceHolder.innerHTML = markup;
+            evalNodes = dummyPlaceHolder.childNodes;
+        }
         var evalNodeLen = evalNodes.length;
 
         if (evalNodeLen == 1) {
@@ -235,10 +243,39 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         } else {
             return this.replaceElements(item, evalNodes);
         }
-
     },
 
-
+    _outerHTMLGetEvalTableNodes: function(item, markup) {
+        var evalNodes;
+        var itemNodeName = item.nodeName.toLowerCase();
+        var probe = this.getDummyPlaceHolder(); //document.createElement("div");
+        if (itemNodeName == "td"){
+            probe.innerHTML = "<table><tbody><tr><td></td></tr></tbody></table>";
+        } else {
+            probe.innerHTML = "<table><"+itemNodeName+"></"+itemNodeName+">"+"</table>";
+        }
+        var depth = 0;
+        var newProbe = probe;
+        while (newProbe) {
+            newProbe = newProbe.childNodes[0];
+            depth++;
+        }
+        depth--;
+        this._removeChildNodes(probe, false);
+        probe.innerHTML = "";
+        var dummyPlaceHolder = this.getDummyPlaceHolder();//document.createElement("div");
+        if (itemNodeName == "td"){
+            dummyPlaceHolder.innerHTML = "<table><tbody><tr>"+markup+"</tr></tbody></table>";
+        } else {
+            dummyPlaceHolder.innerHTML = "<table>"+markup+"</table>";
+        }
+        evalNodes = dummyPlaceHolder;
+        for (var cnt = 0; cnt < depth; cnt++) {
+            evalNodes = evalNodes.childNodes[0];
+        }
+        evalNodes = (evalNodes.parentNode) ? evalNodes.parentNode.childNodes : null;
+        return evalNodes
+    },
 
 
     /**
@@ -260,8 +297,17 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
         //we have to cope with deficiencies between ie and its simulations in this case
         var probe = this.getDummyPlaceHolder();//document.createElement("div");
-
-        probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
+        var isTableContentTag = false;
+        var itemNodeName = item.nodeName.toLowerCase();
+        if (itemNodeName == "thead" || itemNodeName == "tbody" || itemNodeName == "tfoot" ||
+            itemNodeName == "th"    || itemNodeName == "tr"){
+            probe.innerHTML = "<table><"+itemNodeName+"></"+itemNodeName+">"+"</table>";
+            isTableContentTag = true;
+        } else if (itemNodeName == "td"){
+            probe.innerHTML = "<table><tbody><tr><td></td></tr></tbody></table>";
+        } else {
+            probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
+        }
         var depth = 0;
         var newProbe = probe;
         while (newProbe) {
@@ -276,10 +322,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         var dummyPlaceHolder = this.getDummyPlaceHolder();//document.createElement("div");
 
-
         //fortunately a table element also works which is less critical than form elements regarding
         //the inner content
-        dummyPlaceHolder.innerHTML = "<table><tbody><tr><td>" + markup + "</td></tr></tbody></table>";
+        if (isTableContentTag){
+            dummyPlaceHolder.innerHTML = "<table>"+markup+"</table>";
+        }else if (itemNodeName == "td"){
+            dummyPlaceHolder.innerHTML = "<table><tbody><tr>"+markup+"</tr></tbody></table>";
+        }else{
+            dummyPlaceHolder.innerHTML = "<table><tbody><tr><td>" + markup + "</td></tr></tbody></table>";
+        }
+        
         evalNodes = dummyPlaceHolder;
 
         for (var cnt = 0; cnt < depth; cnt++) {
