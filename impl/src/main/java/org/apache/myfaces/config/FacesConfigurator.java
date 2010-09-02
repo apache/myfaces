@@ -984,7 +984,7 @@ public class FacesConfigurator
             //Relative ordering
             for (FacesConfig resource : appConfigResources)
             {
-                if (resource.getOrdering() != null)
+                if (resource.getAbsoluteOrdering() != null)
                 {
                     if (log.isLoggable(Level.WARNING))
                     {
