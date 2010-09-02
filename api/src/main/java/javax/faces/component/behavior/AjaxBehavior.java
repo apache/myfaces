@@ -22,11 +22,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.el.ValueExpression;
+import javax.faces.component.StateHelper;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorListener;
 
@@ -67,11 +67,10 @@ public class AjaxBehavior extends ClientBehaviorBase
     private static final Collection<String> VAL_NONE_LIST = Collections.singletonList(VAL_NONE);
 
     //To enable delta state saving we need this one
-    private _AjaxBehaviorDeltaStateHelper<AjaxBehavior> deltaStateHelper 
-            = new _AjaxBehaviorDeltaStateHelper<AjaxBehavior>(this);
+    private _DeltaStateHelper<AjaxBehavior> _stateHelper = null;
     
-    private Map<String, ValueExpression> _valueExpressions 
-            = new HashMap<String, ValueExpression>();
+    //private Map<String, ValueExpression> _valueExpressions 
+    //        = new HashMap<String, ValueExpression>();
 
     public AjaxBehavior() 
     {
@@ -98,27 +97,27 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public void setExecute(Collection<String> execute) 
     {
-        deltaStateHelper.put(ATTR_EXECUTE, execute);
+        getStateHelper().put(ATTR_EXECUTE, execute);
     }
 
     public String getOnerror() 
     {
-        return (String) deltaStateHelper.eval(ATTR_ON_ERROR);
+        return (String) getStateHelper().eval(ATTR_ON_ERROR);
     }
 
     public void setOnerror(String onError) 
     {
-        deltaStateHelper.put(ATTR_ON_ERROR, onError);
+        getStateHelper().put(ATTR_ON_ERROR, onError);
     }
 
     public String getOnevent() 
     {
-        return (String) deltaStateHelper.eval(ATTR_ON_EVENT);
+        return (String) getStateHelper().eval(ATTR_ON_EVENT);
     }
 
     public void setOnevent(String onEvent) 
     {
-        deltaStateHelper.put(ATTR_ON_EVENT, onEvent);
+        getStateHelper().put(ATTR_ON_EVENT, onEvent);
     }
 
     public Collection<String> getRender() 
@@ -131,54 +130,80 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public void setRender(Collection<String> render) 
     {
-        deltaStateHelper.put(ATTR_RENDER, render);
+        getStateHelper().put(ATTR_RENDER, render);
     }
 
+    @SuppressWarnings("unchecked")
     public ValueExpression getValueExpression(String name) 
     {
-        return getValueExpressionMap().get(name);
+        //return getValueExpressionMap().get(name);
+        if (name == null) {
+            throw new NullPointerException("name can not be null");
+        }
+        
+        Map<String,Object> bindings = (Map<String,Object>) getStateHelper().
+            get(PropertyKeys.bindings);
+        if (bindings != null)
+        {
+            return (ValueExpression) bindings.get(name);
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public void setValueExpression(String name, ValueExpression item) 
+    public void setValueExpression(String name, ValueExpression expression) 
     {
+        /*
         if (item == null) 
         {
             getValueExpressionMap().remove(name);
-            deltaStateHelper.remove(name);
+            getStateHelper().remove(name);
         } 
         else 
         {
             getValueExpressionMap().put(name, item);
         }
+        */
+        if (name == null) {
+            throw new NullPointerException("name");
+        }
+
+        if (expression == null) {
+            getStateHelper().remove(PropertyKeys.bindings, name);
+        } else {
+            getStateHelper().put(PropertyKeys.bindings, name, expression);
+        }
     }
 
     public boolean isDisabled() 
     {
-        Boolean retVal = (Boolean) deltaStateHelper.eval(ATTR_DISABLED);
+        Boolean retVal = (Boolean) getStateHelper().eval(ATTR_DISABLED);
         retVal = (retVal == null) ? false : retVal;
         return retVal;
     }
 
     public void setDisabled(boolean disabled) 
     {
-        deltaStateHelper.put(ATTR_DISABLED, disabled);
+        getStateHelper().put(ATTR_DISABLED, disabled);
     }
 
     public boolean isImmediate() 
     {
-        Boolean retVal = (Boolean) deltaStateHelper.eval(ATTR_IMMEDIATE);
+        Boolean retVal = (Boolean) getStateHelper().eval(ATTR_IMMEDIATE);
         retVal = (retVal == null) ? false : retVal;
         return retVal;
     }
 
     public void setImmediate(boolean immediate) 
     {
-        deltaStateHelper.put(ATTR_IMMEDIATE, immediate);
+        getStateHelper().put(ATTR_IMMEDIATE, immediate);
     }
 
     public boolean isImmediateSet() 
     {
-        return deltaStateHelper.eval(ATTR_IMMEDIATE) != null;
+        return getStateHelper().eval(ATTR_IMMEDIATE) != null;
     }
 
     @Override
@@ -205,40 +230,69 @@ public class AjaxBehavior extends ClientBehaviorBase
         {
             super.restoreState(facesContext, values[0]);
         }
-        deltaStateHelper.restoreState(facesContext, values[1]);
+        getStateHelper().restoreState(facesContext, values[1]);
     }
 
+    private StateHelper getStateHelper() {
+        return getStateHelper(true);
+    }
+
+    /**
+     * returns a delta state saving enabled state helper
+     * for the current component
+     * @param create if true a state helper is created if not already existing
+     * @return an implementation of the StateHelper interface or null if none exists and create is set to false
+     */
+    private StateHelper getStateHelper(boolean create) {
+        if(_stateHelper != null) {
+            return _stateHelper;
+        }
+        if(create) {
+            _stateHelper = new _DeltaStateHelper<AjaxBehavior>(this);
+        }
+        return _stateHelper;
+    }
+    
     @Override
     public Object saveState(FacesContext facesContext)
     {
         if (initialStateMarked())
         {
             Object parentSaved = super.saveState(facesContext);
-            Object deltaStateHelperSaved = deltaStateHelper.saveState(facesContext);
-            
-            if (parentSaved == null && deltaStateHelperSaved == null)
+            Object stateHelperSaved = null;
+            StateHelper stateHelper = getStateHelper(false);
+            if (stateHelper != null)
+            {
+                stateHelperSaved = stateHelper.saveState(facesContext);
+            }
+
+            if (parentSaved == null && stateHelperSaved == null)
             {
                 //No values
                 return null;
             }   
-            return new Object[]{parentSaved, deltaStateHelperSaved};
+            return new Object[]{parentSaved, stateHelperSaved};
         }
         else
         {
             Object[] values = new Object[2];
             values[0] = super.saveState(facesContext);
-            values[1] = deltaStateHelper.saveState(facesContext);
+            StateHelper stateHelper = getStateHelper(false);
+            if (stateHelper != null)
+            {
+                values[1] = stateHelper.saveState(facesContext);
+            }
             return values;
         }
     }
 
-    private Map<String, ValueExpression> getValueExpressionMap() 
-    {
-        return _valueExpressions;
-    }
+    //private Map<String, ValueExpression> getValueExpressionMap() 
+    //{
+    //    return _valueExpressions;
+    //}
     
     /**
-     * Invokes eval on the deltaStateHelper and tries to get a
+     * Invokes eval on the getStateHelper() and tries to get a
      * Collection out of the result.
      * @param attributeName
      * @return
@@ -246,7 +300,7 @@ public class AjaxBehavior extends ClientBehaviorBase
     @SuppressWarnings("unchecked")
     private Collection<String> evalForCollection(String attributeName)
     {
-        Object value = deltaStateHelper.eval(attributeName);
+        Object value = getStateHelper().eval(attributeName);
         if (value == null)
         {
             return Collections.<String>emptyList();
@@ -295,5 +349,9 @@ public class AjaxBehavior extends ClientBehaviorBase
         String[] arrValue = stringValue.split(" ");
         return Arrays.asList(arrValue);
     }
-    
+ 
+    private enum PropertyKeys
+    {
+        bindings,
+    }
 }
