@@ -180,26 +180,26 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             if (componentResource.getParent() != null &&
                 componentResource.getParent().getId() != null &&
-                componentResource.getParent().getId().startsWith(JAVAX_FACES_LOCATION_PREFIX))
+                componentResource.getParent().getId().equals(JAVAX_FACES_LOCATION_PREFIX + target))
             {
                 // We can assume safely that the component is in place, because there is no way to 
                 // put a component resource on a component resource container without call addComponentResource
                 // so relocation here will not happen.
                 alreadyAdded = true;
             }
-            else if (componentId != null)
+        }
+        else if (componentId != null)
+        {
+            for(Iterator<UIComponent> it = componentResources.iterator(); it.hasNext();)
             {
-                for(Iterator<UIComponent> it = componentResources.iterator(); it.hasNext();)
+                UIComponent component = it.next();
+                if(componentId.equals(component.getId()) && componentResource != component)
                 {
-                    UIComponent component = it.next();
-                    if(componentId.equals(component.getId()) && componentResource != component)
-                    {
-                        it.remove();
-                    }
-                    else if (componentResource == component)
-                    {
-                        alreadyAdded = true;
-                    }
+                    it.remove();
+                }
+                else if (componentResource == component)
+                {
+                    alreadyAdded = true;
                 }
             }
         }
