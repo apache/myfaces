@@ -192,7 +192,16 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 //lets leave it for now as it is
                 //quotes etc.. should be transferred directly
                 //and the rest is up to the toString properly implemented
-                parameterList.add(param.getName() + COLON + param.getValue().toString());
+                //ANS: Both name and value should be quoted
+                StringBuilder paramVal = new StringBuilder();
+                paramVal.append(QUOTE);
+                paramVal.append(param.getName());
+                paramVal.append(QUOTE);
+                paramVal.append(COLON);
+                paramVal.append(QUOTE);
+                paramVal.append(param.getValue().toString());
+                paramVal.append(QUOTE);
+                parameterList.add(paramVal.toString());
             }
         }
 
