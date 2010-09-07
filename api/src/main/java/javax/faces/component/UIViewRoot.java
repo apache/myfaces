@@ -187,6 +187,21 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 // so relocation here will not happen.
                 alreadyAdded = true;
             }
+            else if (componentId != null)
+            {
+                for(Iterator<UIComponent> it = componentResources.iterator(); it.hasNext();)
+                {
+                    UIComponent component = it.next();
+                    if(componentId.equals(component.getId()) && componentResource != component)
+                    {
+                        it.remove();
+                    }
+                    else if (componentResource == component)
+                    {
+                        alreadyAdded = true;
+                    }
+                }
+            }
         }
         else if (componentId != null)
         {
