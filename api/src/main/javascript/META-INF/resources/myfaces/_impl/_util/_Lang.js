@@ -44,7 +44,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
     clearExceptionProcessed: function() {
         //ie again
-        for(var key in this._processedExceptions) {
+        for (var key in this._processedExceptions) {
             this._processedExceptions[key] = null;
         }
         this._processedExceptions = {};
@@ -81,16 +81,16 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
     getEventTarget: function(evt) {
         //ie6 and 7 fallback
         evt = (!evt) ? window.event || {} : evt;
-       /**
-        * evt source is defined in the jsf events
-        * seems like some component authors use our code
-        * so we add it here see also
-        * https://issues.apache.org/jira/browse/MYFACES-2458
-        * not entirely a bug but makes sense to add this
-        * behavior. I dont use it that way but nevertheless it
-        * does not break anything so why not
-        * */
-        var t = evt.srcElement || evt.target  || evt.source || null;
+        /**
+         * evt source is defined in the jsf events
+         * seems like some component authors use our code
+         * so we add it here see also
+         * https://issues.apache.org/jira/browse/MYFACES-2458
+         * not entirely a bug but makes sense to add this
+         * behavior. I dont use it that way but nevertheless it
+         * does not break anything so why not
+         * */
+        var t = evt.srcElement || evt.target || evt.source || null;
         while ((t) && (t.nodeType != 1)) {
             t = t.parentNode;
         }
@@ -104,7 +104,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
     consumeEvent: function(event) {
         //w3c model vs ie model again
         event = event || window.event;
-        (event.stopPropagation)? event.stopPropagation(): event.cancelBubble = true;
+        (event.stopPropagation) ? event.stopPropagation() : event.cancelBubble = true;
     },
 
     /**
@@ -636,18 +636,23 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
 
     parseXML: function(txt) {
-        var parser = null, xmlDoc = null;
-        if (window.DOMParser) {
-            parser = new DOMParser();
-            xmlDoc = parser.parseFromString(txt, "text/xml");
+        try {
+            var parser = null, xmlDoc = null;
+            if (window.DOMParser) {
+                parser = new DOMParser();
+                xmlDoc = parser.parseFromString(txt, "text/xml");
+            }
+            else // Internet Explorer
+            {
+                xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                xmlDoc.async = "false";
+                xmlDoc.loadXML(txt);
+            }
+            return xmlDoc;
+        } catch (e) {
+            //undefined internal parser error
+            return null;
         }
-        else // Internet Explorer
-        {
-            xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-            xmlDoc.async = "false";
-            xmlDoc.loadXML(txt);
-        }
-        return xmlDoc;
     }
     ,
 
@@ -668,6 +673,10 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
     }
     ,
     isXMLParseError: function(xmlContent) {
+
+        //no xml content
+        if (xmlContent == null) return true;
+
         var findParseError = function(node) {
             if (!node || !node.childNodes) return false;
             for (var cnt = 0; cnt < node.childNodes.length; cnt++) {
@@ -678,7 +687,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         };
         return !xmlContent ||
                 (this.exists(xmlContent, "parseError.errorCode") && xmlContent.parseError.errorCode != 0) ||
-                findParseError(xmlContent)
+                findParseError(xmlContent);
+
 
     }
     ,

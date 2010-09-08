@@ -331,9 +331,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
             switch (node.getAttribute('id')) {
                 case this.P_VIEWROOT:
+
+
                     cDataBlock = cDataBlock.substring(cDataBlock.indexOf("<html"));
+
                     var parsedData = this._replaceHead(request, context, cDataBlock);
-                    var resultNode = (parsedData) ? this._replaceBody(request, context, cDataBlock, parsedData) : this._replaceBody(request, context, cDataBlock);
+
+                    var resultNode = ('undefined' != typeof parsedData &&  null != parsedData) ? this._replaceBody(request, context, cDataBlock, parsedData) : this._replaceBody(request, context, cDataBlock);
                     if (resultNode) {
                         this._pushOperationResult(resultNode);
                     }
@@ -396,32 +400,39 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
      * @return an xml representation of the page for further processing if possible
      */
     _replaceHead: function(request, context, newData) {
+
         var _Impl = this._Impl;
+
         var doc = this._Lang.parseXML(newData);
+
         var newHead = null;
         if (this._Lang.isXMLParseError(doc)) {
-            doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]\/\/-->/g, "//-->"));
+            doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]*\/\/-->/g, "//-->"));
         }
 
         if (this._Lang.isXMLParseError(doc)) {
             //the standard xml parser failed we retry with the stripper
             var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
             var headData = parser.parse(newData, "head");
-            newHead = this._Lang.parseXML("<root>" + headData + "</root>");
+
+            newHead = this._Lang.parseXML("<head>" + headData + "</head>");
+            //last and slowest option create a new head element and let the browser
+            //do its slow job
             if (this._Lang.isXMLParseError(newHead)) {
-                //we give up no further fallbacks
-                _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
-                return null;
+                try {
+                    newHead = document.createElement("head");
+                    newHead.innerHTML = headData;
+                } catch (e) {
+                    //we give up no further fallbacks
+                    _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error head replacement failed reason:"+e.toString());
+                    return null;
+                }
             }
         } else {
             //parser worked we go on
             newHead = doc.getElementsByTagName("head")[0];
         }
 
-        //since we are xml enabled here we probably can walk over it via xml <head> ... </head> normally is valid xml
-        //the ie tricks with form etc... do not work out, so we have to rely on internal xml parsing
-        //prestripping the body should reduce the failure rate of this method
-        ///var xmlData = this._Lang.parseXML("<root>"+headData+"</root>");
         this._Dom.runScripts(newHead, true);
 
         return doc;
@@ -450,32 +461,25 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
         var bodyParent = oldBody.parentNode;
 
-
-        if (!this._RT.browser.isIEMobile || this._RT.browser.isIEMobile >= 7) {
-            //if possible we replace the entire body to get all the old attributes cleaned up
-            //which works on all new browsers
-            var newBody = document.createElement("body");
-            bodyParent.replaceChild(newBody, oldBody);
-        } else {
-            //now to the problematic engines
-            oldBody.innerHTML = "";
-            //we just clean up the old body
-            var newBody = oldBody;
-        }
+        this._Dom._removeChildNodes(oldBody);
+        var newBody = oldBody;
 
         newBody.appendChild(placeHolder);
 
         var bodyData = null;
 
         var doc = (arguments.length > 3) ? arguments[3] : this._Lang.parseXML(newData);
+
         if (this._Lang.isXMLParseError(doc)) {
-            doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]\/\/-->/g, "//-->"));
+            doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]*\/\/-->/g, "//-->"));
         }
 
         if (this._Lang.isXMLParseError(doc)) {
             //the standard xml parser failed we retry with the stripper
 
             var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
+
+
             bodyData = parser.parse(newData, "body");
         } else {
             //parser worked we go on
@@ -492,7 +496,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             }
         }
 
+       
         var returnedElement = this.replaceHtmlItem(request, context, placeHolder, bodyData);
+
         if (returnedElement) {
             this._pushOperationResult(returnedElement);
         }
