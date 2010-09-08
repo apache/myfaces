@@ -158,7 +158,7 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
         {
             // TODO local or global JNDI
             lookedupResource =
-                    context.lookup(JAVA_COMP_ENV + instance.getClass().getName() + "/" + method.getName().substring(3));
+                    context.lookup(JAVA_COMP_ENV + instance.getClass().getName() + "/" + getFieldName(method));
         }
 
         boolean accessibility = method.isAccessible();
@@ -166,4 +166,25 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
         method.invoke(instance, lookedupResource);
         method.setAccessible(accessibility);
     }
+
+    /**
+     * Returns the field name for the given Method.
+     * E.g. setName() will be "name". 
+     *
+     * @param setter the setter method
+     * @return the field name of the given setter method
+     */
+    protected static String getFieldName(Method setter)
+    {
+        StringBuilder name = new StringBuilder(setter.getName());
+
+        // remove 'set'
+        name.delete(0, 3);
+
+        // lowercase first char
+        name.setCharAt(0, Character.toLowerCase(name.charAt(0)));
+
+        return name.toString();
+    }
+
 }
