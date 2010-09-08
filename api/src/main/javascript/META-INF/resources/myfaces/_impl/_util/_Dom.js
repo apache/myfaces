@@ -258,7 +258,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * of what we are dealing with is various bugs
      * first a simple replaceElement leaks memory
      * secondly embedded scripts can be swallowed upon
-     * innerHTML
+     * innerHTML, we probably could also use direct outerHTML
+     * but then we would run into the script swallow bug
      *
      * the entire mess is called IE6 and IE7
      *

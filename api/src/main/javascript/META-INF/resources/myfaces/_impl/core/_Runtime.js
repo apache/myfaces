@@ -65,10 +65,9 @@ if (!myfaces._impl.core._Runtime) {
          * if there are arguments why that one works better than ours
          */
         _T.globalEval = function(code) {
-            //chrome as a diferent global eval, thanks for pointing this out
             //TODO add a config param which allows to evaluate global scripts even if the call
             //is embedded in an iframe
-            if (_T.browser.isIE && window.execScript) {
+            if (window.execScript) {
                 //execScript definitely only for IE otherwise we might have a custom
                 //window extension with undefined behavior on our necks
                 //window.execScript does not return anything
@@ -80,50 +79,76 @@ if (!myfaces._impl.core._Runtime) {
                 return ret;
             } else if (window.eval) {
 
-                //fix for a Mozilla bug, Mozilla prevents, that the window is properly applied
-                //the former approach was to scope an outer anonymous function but the scoping is not necessary
-                //Mozilla behaves correctly if you just add an outer function, then the window scope is again
-                //accepted as the real scope
-                var func = function () {
-                    if (_T.browser.isBlackBerry > 5) {
-                        //todo check if we have to really scope otherwise we can handle
-                        //everything within one code block
-                        return window.eval.call(window, code);
-                    } else {
-                        //blackberry has to deal with nms the way we do
-                        //it for ie hence we can return safely null
-                        window.eval(code);
-                        return null;
-                    }
-                };
-                return func();
+                //fix which works in a cross browser way
+                //we used to scope an anonymous function
+                //but I think this is better
+                //the reason is firefox applies a wrong scope
+                //if we call eval by not scoping
+
+                if (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6) {
+                    var gEval = function () {
+
+                        var ret = window.eval(code);
+                        if ('undefined' == typeof ret) return null;
+                        return ret;
+                    };
+                } else {
+                    //blackberry 5- only understands the flakey head method
+                    //which fails on literally all newer browsers one way or the other
+                    return _T._globalEvalHeadAppendixMethod(code);
+                }
+                //we scope the call in window
+                var ret = gEval();
+                if ('undefined' == typeof ret) return null;
+                return null;
+
             }
             //we probably have covered all browsers, but this is a safety net which might be triggered
             //by some foreign browser which is not covered by the above cases
-            return eval.call(window, code);
+            eval.call(window, code);
+            return null;
         };
 
         /**
-         * applies an object to a namespace
-         * basically does what bla.my.name.space = obj does
-         * note we cannot use var myNameSpace = fetchNamespace("my.name.space")
-         * myNameSpace = obj because the result of fetch is already the object
-         * which the namespace points to, hence this function
+         * flakey head appendix method which does not work in the correct
+         * order or at all for all modern browsers
+         * but seems to be the only method which works on blackberry correctly
+         * hence we are going to use it as fallback
          *
-         * @param nms the namespace to be assigned to
-         * @param obj the  object to be assigned
+         * @param code the code part to be evaled
          */
-        _T.applyToGlobalNamespace = function(nms, obj) {
-            var splitted = nms.split(/\./);
-            if (splitted.length == 1) {
-                window[namespace] = obj;
-                return;
-            }
-            var parent = splitted.slice(0, splitted.length - 1);
-            var child = splitted[splitted.length - 1];
-            var parentNamespace = _T.fetchNamespace(parent.join("."));
-            parentNamespace[child] = obj;
-        };
+        _T._globalEvalHeadAppendixMethod = function(code) {
+            var location = document.getElementsByTagName("head")[0] || document.documentElement;
+            var placeHolder = document.createElement("script");
+            placeHolder.type = "text/javascript";
+            placeHolder.text = code;
+            location.insertBefore(placeHolder, location.firstChild);
+            location.removeChild(placeHolder);
+            return null;
+        },
+
+
+            /**
+             * applies an object to a namespace
+             * basically does what bla.my.name.space = obj does
+             * note we cannot use var myNameSpace = fetchNamespace("my.name.space")
+             * myNameSpace = obj because the result of fetch is already the object
+             * which the namespace points to, hence this function
+             *
+             * @param nms the namespace to be assigned to
+             * @param obj the  object to be assigned
+             */
+                _T.applyToGlobalNamespace = function(nms, obj) {
+                    var splitted = nms.split(/\./);
+                    if (splitted.length == 1) {
+                        window[namespace] = obj;
+                        return;
+                    }
+                    var parent = splitted.slice(0, splitted.length - 1);
+                    var child = splitted[splitted.length - 1];
+                    var parentNamespace = _T.fetchNamespace(parent.join("."));
+                    parentNamespace[child] = obj;
+                };
 
         /**
          * fetches the object the namespace points to
@@ -138,7 +163,7 @@ if (!myfaces._impl.core._Runtime) {
             var ret = null;
             try {
                 //blackberries have problems as well in older non webkit versions
-                if (!_T.browser.isIE && (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6)) {
+                if (!_T.browser.isIE) {
                     //in ie 6 and 7 we get an error entry despite the suppression
                     ret = _T.globalEval("window." + nms);
                 }
