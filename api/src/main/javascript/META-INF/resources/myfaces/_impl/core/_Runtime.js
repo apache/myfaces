@@ -88,19 +88,20 @@ if (!myfaces._impl.core._Runtime) {
                 if (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6) {
                     var gEval = function () {
 
-                        var ret = window.eval(code);
+                        var ret = window.eval.call(window, code);
                         if ('undefined' == typeof ret) return null;
                         return ret;
                     };
+                    var ret = gEval();
+                    if ('undefined' == typeof ret) return null;
+                    return ret;
                 } else {
                     //blackberry 5- only understands the flakey head method
                     //which fails on literally all newer browsers one way or the other
                     return _T._globalEvalHeadAppendixMethod(code);
                 }
                 //we scope the call in window
-                var ret = gEval();
-                if ('undefined' == typeof ret) return null;
-                return null;
+
 
             }
             //we probably have covered all browsers, but this is a safety net which might be triggered
