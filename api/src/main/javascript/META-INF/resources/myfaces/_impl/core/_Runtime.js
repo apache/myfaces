@@ -51,6 +51,12 @@ if (!myfaces._impl.core._Runtime) {
 
         //namespace idx to speed things up by hitting eval way less
         _T._reservedNMS = {};
+
+        /**
+         * replacement counter for plugin classes
+         */
+        _T._classReplacementCnt = 0;
+
         /**
          * global eval on scripts
          *
@@ -318,6 +324,23 @@ if (!myfaces._impl.core._Runtime) {
                 return false;
             }
         };
+
+        /**
+         * A dojo like require to load scripts dynamically, note
+         * to use this mechanism you have to set your global config param
+         * myfacesScriptRoot to the root of your script files (aka under normal circumstances
+         * resources/scripts)
+         *
+         * @param localOptions
+         * @param configName
+         * @param defaultValue
+         */
+        _T.require = function(nms) {
+            //namespace exists
+            if(_T.exists(nms)) return;
+            var rootPath = _T.getGlobalConfig("myfacesScriptRoot","");
+            _T.loadScriptEval(rootPath+"/"+nms.replace(/\./g,"/")+".js");
+        },
 
         /**
          * fetches a global config entry
@@ -701,6 +724,39 @@ if (!myfaces._impl.core._Runtime) {
 
             return newCls;
         };
+
+        /**
+         * convenience method which basically replaces an existing class
+         * with a new one under the same namespace, note all old functionality will be
+         * presereced by pushing the original class into an new nampespace
+         *
+         * @param classNms the namespace for the class, must already be existing
+         * @param protoFuncs the new prototype functions which are plugins for the old ones
+         * @param overWrite if set to true replaces the old funcs entirely otherwise just does an implicit
+         * inheritance with super being remapped
+         *
+         * TODO do not use this function yet it needs some refinement, it will be interesting later
+         * anyway
+         */
+        _T.pluginClass = function(classNms, protoFuncs, overWrite) {
+            var oldClass = _T.fetchNamespace(classNms);
+            if(!oldClass) throw new Error("The class namespace "+classNms+" is not existent");
+
+            if(!overWrite) {
+                var preserveNMS = classNms+"."+(""+T._classReplacementCnt++);
+                _T.reserveNamespace(preserveNMS, oldClass);
+
+                return _T.extendClass(classNms, preserveNMS, protoFuncs);
+            } else {
+                //TODO constructor mapping?
+                if(protoFuncs.constructor_) {
+                    //TODO needs testing if this works!
+                    newCls.prototype.constructor = protoFuncs.constructor_;
+                }
+               _applyFuncs(oldClass, protoFuncs, true);
+            }
+        },
+
 
         /**
          * Extends a class and puts a singleton instance at the reserved namespace instead

@@ -265,7 +265,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         //note we need to trace the changes which could affect our insert update or delete
         //se that we can realign our ViewStates afterwards
         //the realignment must happen post change processing
+        
         for (var i = 0; i < changes.length; i++) {
+         
             switch (changes[i].tagName) {
 
                 case this.CMD_UPDATE:
@@ -305,7 +307,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
      * @param node the changes node to be processed
      */
     processUpdate : function(request, context, node) {
-
         if (node.getAttribute('id') == this.P_VIEWSTATE) {
             //update the submitting forms viewstate to the new value
             // The source form has to be pulled out of the CURRENT document first because the context object
@@ -454,14 +455,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
         var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
         var oldBody = document.getElementsByTagName("body")[0];
-
         var placeHolder = document.createElement("div");
 
         placeHolder.id = "myfaces_bodyplaceholder";
 
         var bodyParent = oldBody.parentNode;
-
         this._Dom._removeChildNodes(oldBody);
+        oldBody.innerHTML = "";
         var newBody = oldBody;
 
         newBody.appendChild(placeHolder);
@@ -540,7 +540,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
      * the after is the id if set which the component has to be inserted after
      **/
     processInsert : function(request, context, node) {
-
         /*remapping global namespaces for speed and readability reasons*/
         var _Impl = this._Impl;
         var _Dom = this._Dom;
@@ -586,10 +585,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             nodeHolder = document.createElement("div");
             parentNode = beforeNode.parentNode;
             parentNode.insertBefore(nodeHolder, beforeNode);
-
             replacementFragment = this.replaceHtmlItem(request, context,
                     nodeHolder, cDataBlock);
-
             if (replacementFragment) {
                 this._pushOperationResult(replacementFragment);
             }

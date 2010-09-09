@@ -72,6 +72,21 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         return this._callDelegate("globalEval", code);
     },
 
+
+    /**
+     * determines the correct event depending
+     * on the browsers state
+     *
+     * @param evt incoming event object (note not all browsers
+     * have this)
+     *
+     * @return an event object no matter what is incoming
+     */
+    getEvent: function(evt) {
+        evt = (!evt) ? window.event || {} : evt;
+        return evt;
+    },
+
     /**
      * cross port from the dojo lib
      * browser save event resolution
@@ -80,7 +95,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      */
     getEventTarget: function(evt) {
         //ie6 and 7 fallback
-        evt = (!evt) ? window.event || {} : evt;
+        evt = this.getEvent(evt);
         /**
          * evt source is defined in the jsf events
          * seems like some component authors use our code
@@ -125,6 +140,26 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         return source.toLowerCase() === destination.toLowerCase();
     },
 
+    /**
+     * escapes a strings special chars (crossported from dojo 1.3+)
+     *
+     * @param str the string
+     *
+     * @param except a set of exceptions
+     */
+    escapeString: function(/*String*/str, /*String?*/except) {
+        //	summary:
+        //		Adds escape sequences for special characters in regular expressions
+        // except:
+        //		a String with special characters to be left unescaped
+
+        return str.replace(/([\.$?*|:{}\(\)\[\]\\\/\+^])/g, function(ch) {
+            if (except && except.indexOf(ch) != -1) {
+                return ch;
+            }
+            return "\\" + ch;
+        }); // String
+    },
 
     /**
      @see this._RT.extendClass
