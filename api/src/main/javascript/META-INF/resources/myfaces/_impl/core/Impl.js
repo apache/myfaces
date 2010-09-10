@@ -118,8 +118,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      */
     request : function(elem, event, options) {
         //options not set we define a default one with nothing
-        options = options|| {};
-        
+        options = options || {};
+
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
          *all the time
@@ -171,7 +171,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         /*ie6 supportive code to prevent browser leaks*/
         passThrgh.onerror = null;
         delete passThrgh.onerror;
-     
+
         if (event) {
             passThrgh[this.P_EVT] = event.type;
         }
@@ -213,7 +213,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         passThrgh[this.P_AJAX] = true;
 
         var _this = this;
-        var transformList = function(target, srcStr, appendIdentifier) {
+        var transformList = function(target, srcStr) {
 
             //this is probably the fastest transformation method
             //it uses an array and an index to position all elements correctly
@@ -227,9 +227,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
                     all = idIdx[_this.IDENT_ALL],
                     theThis = idIdx[_this.IDENT_THIS],
                     theForm = idIdx[_this.IDENT_FORM];
+            if (none) {
+                passThrgh[target] = _this.IDENT_NONE;
+                return;
+            }
 
-
-            if (!none && !all) {
+            if (!all) {
                 if (theForm) {
                     vals[theForm - offset] = form.id;
                 }
@@ -244,25 +247,40 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
                 //}
 
                 passThrgh[target] = vals.join(" ");
-            } else if (all) {
+            } else {
                 passThrgh[target] = _this.IDENT_ALL;
             }
         };
 
-       try {
+        var clearNone = function(target) {
+            if (passThrgh[target] == _this.IDENT_NONE) {
+                //according to jsf 2.0reva not even a blank execute is allowed if none is sent
+                passThrgh[target] = null;
+                delete passThrgh[target];
+            }
+        };
+
+        try {
             if (passThrgh.execute) {
                 /*the options must be a blank delimited list of strings*/
-                /*compliance with Mojarra which automatically adds @this to an execute*/
-                transformList(this.P_EXECUTE, passThrgh.execute+ " @this", true);
+                /*compliance with Mojarra which automatically adds @this to an execute
+                 * the spec rev 2.0a however states, if none is issued nothing at all should be sent down
+                 */
+                transformList(this.P_EXECUTE, passThrgh.execute+" @this");
                 passThrgh.execute = null;
                 /*remap just in case we have a valid pointer to an existing object*/
+                clearNone(this.P_EXECUTE);
+
+                passThrgh.execute = null;
                 delete passThrgh.execute;
             } else {
                 passThrgh[this.P_EXECUTE] = elementId;
             }
 
             if (passThrgh.render) {
-                transformList(this.P_RENDER, passThrgh.render, false);
+                transformList(this.P_RENDER, passThrgh.render);
+                clearNone(this.P_RENDER);
+
                 passThrgh.render = null;
                 delete passThrgh.render;
             }
@@ -277,6 +295,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             //ie6 mem leak clearing
             _this = null;
             transformList = null;
+            clearNone = null;
         }
         var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
 
@@ -312,12 +331,19 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             throw new Error("Transport type " + transportType + " does not exist");
         }
 
-        context._mfInternal = {} ;
+        context._mfInternal = {};
         var mfInternal = context._mfInternal;
         //additional meta information to speed things up
         mfInternal["_mfSourceFormId"] = form.id;
         mfInternal["_mfSourceControlId"] = elementId;
         mfInternal["_mfTransportType"] = transportType;
+
+        //mojarra compatibility, mojarra is sending the form id as well
+        //this is not documented behavior but can be determined by running
+        //mojarra under blackbox conditions
+        //i assume it does the same as our formId_submit=1 so leaving it out
+        //wont hurt but for the sake of compatibility we are going to add it
+        passThrgh[form.id] = form.id;
 
         this._transport[transportType](elem, form, context, passThrgh);
 
@@ -404,7 +430,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * sends an event
      */
     sendEvent : function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
-        var _Lang = this._Lang;
         var eventData = {};
         eventData.type = this.EVENT;
 
