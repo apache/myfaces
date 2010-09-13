@@ -132,30 +132,30 @@ if (!myfaces._impl.core._Runtime) {
             location.insertBefore(placeHolder, location.firstChild);
             location.removeChild(placeHolder);
             return null;
-        },
+        };
 
 
-            /**
-             * applies an object to a namespace
-             * basically does what bla.my.name.space = obj does
-             * note we cannot use var myNameSpace = fetchNamespace("my.name.space")
-             * myNameSpace = obj because the result of fetch is already the object
-             * which the namespace points to, hence this function
-             *
-             * @param nms the namespace to be assigned to
-             * @param obj the  object to be assigned
-             */
-                _T.applyToGlobalNamespace = function(nms, obj) {
-                    var splitted = nms.split(/\./);
-                    if (splitted.length == 1) {
-                        window[namespace] = obj;
-                        return;
-                    }
-                    var parent = splitted.slice(0, splitted.length - 1);
-                    var child = splitted[splitted.length - 1];
-                    var parentNamespace = _T.fetchNamespace(parent.join("."));
-                    parentNamespace[child] = obj;
-                };
+        /**
+         * applies an object to a namespace
+         * basically does what bla.my.name.space = obj does
+         * note we cannot use var myNameSpace = fetchNamespace("my.name.space")
+         * myNameSpace = obj because the result of fetch is already the object
+         * which the namespace points to, hence this function
+         *
+         * @param nms the namespace to be assigned to
+         * @param obj the  object to be assigned
+         */
+        _T.applyToGlobalNamespace = function(nms, obj) {
+            var splitted = nms.split(/\./);
+            if (splitted.length == 1) {
+                window[namespace] = obj;
+                return;
+            }
+            var parent = splitted.slice(0, splitted.length - 1);
+            var child = splitted[splitted.length - 1];
+            var parentNamespace = _T.fetchNamespace(parent.join("."));
+            parentNamespace[child] = obj;
+        };
 
         /**
          * fetches the object the namespace points to
@@ -337,29 +337,29 @@ if (!myfaces._impl.core._Runtime) {
          */
         _T.require = function(nms) {
             //namespace exists
-            if(_T.exists(nms)) return;
-            var rootPath = _T.getGlobalConfig("myfacesScriptRoot","");
-            _T.loadScriptEval(rootPath+"/"+nms.replace(/\./g,"/")+".js");
+            if (_T.exists(nms)) return;
+            var rootPath = _T.getGlobalConfig("myfacesScriptRoot", "");
+            _T.loadScriptEval(rootPath + "/" + nms.replace(/\./g, "/") + ".js");
         },
 
-        /**
-         * fetches a global config entry
-         * @param {String} configName the name of the configuration entry
-         * @param {Object} defaultValue
-         *
-         * @return either the config entry or if none is given the default value
-         */
-        _T.getGlobalConfig = function(configName, defaultValue) {
             /**
-             * note we could use exists but this is an heavy operation, since the config name usually
-             * given this function here is called very often
-             * is a single entry without . in between we can do the lighter shortcut
+             * fetches a global config entry
+             * @param {String} configName the name of the configuration entry
+             * @param {Object} defaultValue
+             *
+             * @return either the config entry or if none is given the default value
              */
-            return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
-                    myfaces.config[configName]
-                    :
-                    defaultValue;
-        };
+                _T.getGlobalConfig = function(configName, defaultValue) {
+                    /**
+                     * note we could use exists but this is an heavy operation, since the config name usually
+                     * given this function here is called very often
+                     * is a single entry without . in between we can do the lighter shortcut
+                     */
+                    return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
+                            myfaces.config[configName]
+                            :
+                            defaultValue;
+                };
 
         /**
          * gets the local or global options with local ones having higher priority
@@ -740,35 +740,35 @@ if (!myfaces._impl.core._Runtime) {
          */
         _T.pluginClass = function(classNms, protoFuncs, overWrite) {
             var oldClass = _T.fetchNamespace(classNms);
-            if(!oldClass) throw new Error("The class namespace "+classNms+" is not existent");
+            if (!oldClass) throw new Error("The class namespace " + classNms + " is not existent");
 
-            if(!overWrite) {
-                var preserveNMS = classNms+"."+(""+T._classReplacementCnt++);
+            if (!overWrite) {
+                var preserveNMS = classNms + "." + ("" + T._classReplacementCnt++);
                 _T.reserveNamespace(preserveNMS, oldClass);
 
                 return _T.extendClass(classNms, preserveNMS, protoFuncs);
             } else {
                 //TODO constructor mapping?
-                if(protoFuncs.constructor_) {
+                if (protoFuncs.constructor_) {
                     //TODO needs testing if this works!
                     newCls.prototype.constructor = protoFuncs.constructor_;
                 }
-               _applyFuncs(oldClass, protoFuncs, true);
+                _applyFuncs(oldClass, protoFuncs, true);
             }
         },
 
 
-        /**
-         * Extends a class and puts a singleton instance at the reserved namespace instead
-         * of its original class
-         *
-         * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
-         * @param {function} extendsCls the function class to be extended
-         * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
-         */
-        _T.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
-            return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
-        };
+            /**
+             * Extends a class and puts a singleton instance at the reserved namespace instead
+             * of its original class
+             *
+             * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
+             * @param {function} extendsCls the function class to be extended
+             * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
+             */
+                _T.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
+                    return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
+                };
 
         /**
          * delegation pattern which attached singleton generation
