@@ -211,7 +211,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * partial state saving and it is necessary to call UIComponent.markInitialState
      * after component instances are populated. 
      */
-    public final static String MARK_INITIAL_STATE_KEY = "org.apache.myfaces.MARK_INITIAL_STATE";
+    public final static String MARK_INITIAL_STATE_KEY = "javax.faces.MARK_INITIAL_STATE";
     
     public final static String CLEAN_TRANSIENT_BUILD_ON_RESTORE = "org.apache.myfaces.CLEAN_TRANSIENT_BUILD_ON_RESTORE";
 
