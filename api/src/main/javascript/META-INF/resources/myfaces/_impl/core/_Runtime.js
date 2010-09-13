@@ -148,7 +148,7 @@ if (!myfaces._impl.core._Runtime) {
         _T.applyToGlobalNamespace = function(nms, obj) {
             var splitted = nms.split(/\./);
             if (splitted.length == 1) {
-                window[namespace] = obj;
+                window[nms] = obj;
                 return;
             }
             var parent = splitted.slice(0, splitted.length - 1);
@@ -256,7 +256,7 @@ if (!myfaces._impl.core._Runtime) {
 
             for (var cnt = 0; cnt < entries.length; cnt++) {
                 var subNamespace = entries[cnt];
-                tmpNmsName.push(subNamespace)
+                tmpNmsName.push(subNamespace);
                 if ('undefined' == typeof currNms[subNamespace]) {
                     currNms[subNamespace] = {};
                 }
@@ -398,7 +398,7 @@ if (!myfaces._impl.core._Runtime) {
                 _T.getXHRObject();
             }
             return _T.XHR_LEVEL;
-        }
+        };
 
         /**
          * encapsulated xhr object which tracks down various implementations
@@ -743,7 +743,7 @@ if (!myfaces._impl.core._Runtime) {
             if (!oldClass) throw new Error("The class namespace " + classNms + " is not existent");
 
             if (!overWrite) {
-                var preserveNMS = classNms + "." + ("" + T._classReplacementCnt++);
+                var preserveNMS = classNms + "." + ("" + _T._classReplacementCnt++);
                 _T.reserveNamespace(preserveNMS, oldClass);
 
                 return _T.extendClass(classNms, preserveNMS, protoFuncs);
