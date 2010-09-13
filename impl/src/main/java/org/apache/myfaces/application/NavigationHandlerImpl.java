@@ -33,7 +33,9 @@ import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.application.ConfigurableNavigationHandler;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationCase;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
@@ -201,6 +203,13 @@ public class NavigationHandlerImpl
             //if outcome is null, we don't check outcome based nav cases
             //otherwise, if navgiationCase is still null, check outcome-based nav cases
             navigationCase = getOutcomeNavigationCase (facesContext, fromAction, outcome);
+        }
+        
+        if (outcome != null && navigationCase == null && !facesContext.isProjectStage(ProjectStage.Production)) {
+            final FacesMessage facesMessage = new FacesMessage("No navigation case match for viewId " + viewId + 
+                    ",  action " + fromAction + " and outcome " + outcome);
+            facesMessage.setSeverity(FacesMessage.SEVERITY_WARN);
+            facesContext.addMessage(null, facesMessage);
         }
 
         return navigationCase;  //if navigationCase == null, will stay on current view
