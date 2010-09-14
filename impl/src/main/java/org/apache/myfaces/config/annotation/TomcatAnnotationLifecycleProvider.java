@@ -66,7 +66,7 @@ public class TomcatAnnotationLifecycleProvider implements
             annotationProcessor =  (org.apache.AnnotationProcessor) ((ServletContext)
                      externalContext.getContext()).getAttribute(org.apache.AnnotationProcessor.class.getName());
             return annotationProcessor != null;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // ignore
         }
         return false;

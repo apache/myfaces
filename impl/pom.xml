@@ -977,9 +977,16 @@
       <groupId>org.apache.tomcat</groupId>
       <artifactId>catalina</artifactId>
       <version>6.0.13</version>
-      <scope>provided</scope>
+      <scope>compile</scope> <!-- optional=true needs compile-scope -->
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-catalina</artifactId>
+      <version>7.0.0</version>
+      <scope>compile</scope> <!-- optional=true needs compile-scope -->
+      <optional>true</optional>
+    </dependency>    
     <dependency>
       <groupId>org.apache.myfaces.buildtools</groupId>
       <artifactId>myfaces-builder-annotations</artifactId>

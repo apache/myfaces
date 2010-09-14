@@ -54,17 +54,18 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
 
         checkAnnotation(instance.getClass(), instance);
 
-        /* TODO the servlet spec is not clear about searching in superclass??
+        /* 
          * May be only check non private fields and methods
          * for @Resource (JSR 250), if used all superclasses MUST be examined
          * to discover all uses of this annotation.
+         */
 
         Class superclass = instance.getClass().getSuperclass();
         while (superclass != null && (!superclass.equals(Object.class)))
         {
             checkAnnotation(superclass, instance);
             superclass = superclass.getSuperclass();
-        } */
+        } 
     }
 
     private void checkAnnotation(Class<?> clazz, Object instance)

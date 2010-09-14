@@ -136,7 +136,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             //initialize LifecycleProvider. 
             //if not set here, first call of getLifecycleProvider is invoked with null external context
             //and org.apache.myfaces.config.annotation.LifecycleProvider context parameter is ignored.
-            //see MYFACES-2555
+            //see MYFACES-2555 and MYFACES-2919
             DefaultLifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);
             
             // print out a very prominent log message if the project stage is != Production

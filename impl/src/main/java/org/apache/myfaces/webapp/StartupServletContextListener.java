@@ -18,8 +18,9 @@
  */
 package org.apache.myfaces.webapp;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.discovery.tools.DiscoverSingleton;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
@@ -36,10 +37,8 @@ import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-
-import org.apache.commons.discovery.tools.DiscoverSingleton;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Initialise the MyFaces system.
