@@ -40,6 +40,7 @@ import org.apache.myfaces.shared_impl.resource.ResourceHandlerSupport;
 import org.apache.myfaces.shared_impl.resource.ResourceImpl;
 import org.apache.myfaces.shared_impl.resource.ResourceLoader;
 import org.apache.myfaces.shared_impl.resource.ResourceMeta;
+import org.apache.myfaces.shared_impl.resource.ResourceHandlerCache.ResourceValue;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.ExternalContextUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
@@ -90,23 +91,30 @@ public class ResourceHandlerImpl extends ResourceHandler
         }
         
         if(getResourceLoaderCache().containsResource(resourceName, libraryName, contentType))
-            return getResourceLoaderCache().getResource(resourceName, libraryName, contentType);
-        
-        for (ResourceLoader loader : getResourceHandlerSupport()
-                .getResourceLoaders())
         {
-            ResourceMeta resourceMeta = deriveResourceMeta(loader,
-                    resourceName, libraryName);
-
-            if (resourceMeta != null)
+            ResourceValue resourceValue = getResourceLoaderCache().getResource(resourceName, libraryName, contentType);
+            resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
+                    getResourceHandlerSupport(), contentType);
+        }
+        else
+        {
+            for (ResourceLoader loader : getResourceHandlerSupport()
+                    .getResourceLoaders())
             {
-                resource = new ResourceImpl(resourceMeta, loader,
-                        getResourceHandlerSupport(), contentType);
-                break;
+                ResourceMeta resourceMeta = deriveResourceMeta(loader,
+                        resourceName, libraryName);
+    
+                if (resourceMeta != null)
+                {
+                    resource = new ResourceImpl(resourceMeta, loader,
+                            getResourceHandlerSupport(), contentType);
+                    
+                    getResourceLoaderCache().putResource(resourceName, libraryName, contentType, resourceMeta, loader);
+                    break;
+                }
             }
         }
         
-        getResourceLoaderCache().putResource(resourceName, libraryName, contentType, resource);
         return resource;
     }
 
