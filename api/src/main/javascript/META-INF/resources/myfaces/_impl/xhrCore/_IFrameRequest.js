@@ -156,7 +156,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         //ie8 in 7 mode chokes on the innerHTML method
         //direct dom removal is less flakey and works
         //over all browsers, but is slower
-        this._Dom.removeChildNodes(body, false);
+        this._Dom._removeChildNodes(body, false);
     },
 
     /**
@@ -175,6 +175,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         //this._appendHiddenValue(_Impl.P_AJAX, "");
         var appendHiddenValue = this._Lang.hitch(this, this._appendHiddenValue);
         for (var key in this._passThrough) {
+
             appendHiddenValue(key, this._passThrough[key]);
         }
         //marker that this is an ajax iframe request
@@ -190,12 +191,22 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         //I am still not sure why, but probably because the function itself
         //was called under finally and I ran into a bug in the fox 4
         //scripting engine
-        var removeHiddenValue = this._Lang.hitch(this, this._removeHiddenValue);
-        for (var key in this._passThrough) {
-            removeHiddenValue(key);
+        var toDelete = [];
+        var possibleKeys = {};
+        for(var key in this._passThrough) {
+            possibleKeys[key] = true;
         }
-        removeHiddenValue(this.JX_PART_IFRAME);
-        removeHiddenValue(this.MF_PART_IFRAME);
+        possibleKeys[this.JX_PART_IFRAME] = true;
+        possibleKeys[this.MF_PART_IFRAME] = true;
+        (possibleKeys["javax.faces.ViewState"])? delete possibleKeys["javax.faces.ViewState"]:null;
+
+        for(var cnt = this._sourceForm.elements.length -1; cnt >= 0; cnt--) {
+            var elem = this._sourceForm.elements[cnt];
+            if(possibleKeys[elem.name] && elem.type == "hidden") {
+                elem.parentNode.removeChild(elem);
+                delete elem;
+            }
+        }
     },
 
     _appendHiddenValue: function(key, value) {
@@ -204,6 +215,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         }
         var input = document.createElement("input");
         //the dom is a singleton nothing can happen by remapping
+        this._Dom.setAttribute(input, "type", "hidden");
         this._Dom.setAttribute(input, "name", key);
         this._Dom.setAttribute(input, "style", "display:none");
         this._Dom.setAttribute(input, "value", value);
@@ -213,6 +225,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
     _removeHiddenValue: function(key) {
         var elem = this._Dom.findByName(this._sourceForm, key, true);
         if (elem.length) {
+
             elem[0].parentNode.removeChild(elem[0]);
             delete elem[0];
         }
@@ -248,6 +261,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
                 //use a dummy onload handler in this case and call that one
                 //from the onload handler
                 node.innerHTML = "<iframe id='" + this._FRAME_ID + "' name='" + this._FRAME_ID + "' style='display:none;' src='about:blank' type='content' onload='this.onload_IE();'  ></iframe>";
+
                 //avoid the ie open tag problem
                 var body = document.body;
                 if (body.firstChild) {
@@ -256,6 +270,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
                     body.appendChild(node);
                 }
             }
+
         }
         //helps to for the onload handlers and innerhtml to be in sync again
         return document.getElementById(this._FRAME_ID);
