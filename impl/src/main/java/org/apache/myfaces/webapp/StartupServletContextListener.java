@@ -23,6 +23,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.faces.FactoryFinder;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextAttributeEvent;
@@ -37,6 +38,7 @@ import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -101,12 +103,15 @@ public class StartupServletContextListener implements ServletContextListener,
 
             // Create startup FacesContext before initializing
             FacesContext facesContext = _facesInitializer.initStartupFacesContext(_servletContext);
+
+            // publish the ManagedBeanDestroyerListener instance in the application map
+            _publishManagedBeanDestroyerListener(facesContext);
             
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
-            _facesInitializer.initFaces(_servletContext);
+            _facesInitializer.initFaces(_servletContext); //TODO maybe return value not needed
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
             _servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
-            
+
             // call contextInitialized on ManagedBeanDestroyerListener
             _detroyerListener.contextInitialized(event);
             
@@ -117,6 +122,21 @@ public class StartupServletContextListener implements ServletContextListener,
         {
             log.info("MyFaces already initialized");
         }
+    }
+
+    /**
+     * Publishes the ManagedBeanDestroyerListener instance in the application map.
+     * This allows the FacesConfigurator to access the instance and to set the
+     * correct ManagedBeanDestroyer instance on it.
+     *
+     * @param facesContext
+     */
+    private void _publishManagedBeanDestroyerListener(FacesContext facesContext)
+    {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map<String, Object> applicationMap = externalContext.getApplicationMap();
+
+        applicationMap.put(ManagedBeanDestroyerListener.APPLICATION_MAP_KEY, _detroyerListener);
     }
     
     public void contextDestroyed(ServletContextEvent event)
@@ -225,7 +245,7 @@ public class StartupServletContextListener implements ServletContextListener,
     }
     
     /* the following methods are needed to serve ManagedBeanDestroyerListener */
-    /* Session related methods */
+    /* Session related methods ***********************************************/
     
     public void attributeAdded(HttpSessionBindingEvent event)
     {
@@ -252,7 +272,7 @@ public class StartupServletContextListener implements ServletContextListener,
         _detroyerListener.sessionDestroyed(event);
     }
     
-    /* Context related methods */
+    /* Context related methods ***********************************************/
     
     public void attributeAdded(ServletContextAttributeEvent event)
     {
@@ -269,7 +289,7 @@ public class StartupServletContextListener implements ServletContextListener,
         _detroyerListener.attributeReplaced(event);
     }
     
-    /* Request related methods */
+    /* Request related methods ***********************************************/
     
     public void attributeAdded(ServletRequestAttributeEvent event)
     {

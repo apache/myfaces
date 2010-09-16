@@ -61,10 +61,27 @@ public class ManagedBeanDestroyerListener implements
         ServletContextListener, ServletContextAttributeListener,
         ServletRequestListener, ServletRequestAttributeListener
 {
-    
-    private ManagedBeanDestroyer destroyer = new ManagedBeanDestroyer();
 
-    /* Session related methods */
+    /**
+     * The instance of the ManagedBeanDestroyerListener created by
+     * StartupServletContextListener is stored under this key in the
+     * ApplicationMap.
+     */
+    public static final String APPLICATION_MAP_KEY = "org.apache.myfaces.ManagedBeanDestroyerListener";
+
+    private ManagedBeanDestroyer _destroyer = null;
+
+    /**
+     * Sets the ManagedBeanDestroyer instance to use.
+     *  
+     * @param destroyer
+     */
+    public void setManagedBeanDestroyer(ManagedBeanDestroyer destroyer)
+    {
+        _destroyer = destroyer;
+    }
+
+    /* Session related methods ***********************************************/
     
     public void attributeAdded(HttpSessionBindingEvent event)
     {
@@ -73,12 +90,18 @@ public class ManagedBeanDestroyerListener implements
 
     public void attributeRemoved(HttpSessionBindingEvent event)
     {
-        destroyer.destroy(event.getName(), event.getValue());
+        if (_destroyer != null)
+        {
+            _destroyer.destroy(event.getName(), event.getValue());
+        }
     }
 
     public void attributeReplaced(HttpSessionBindingEvent event)
     {
-        destroyer.destroy(event.getName(), event.getValue());
+        if (_destroyer != null)
+        {
+            _destroyer.destroy(event.getName(), event.getValue());
+        }
     }
 
     public void sessionCreated(HttpSessionEvent event)
@@ -89,25 +112,26 @@ public class ManagedBeanDestroyerListener implements
     @SuppressWarnings("unchecked")
     public void sessionDestroyed(HttpSessionEvent event)
     {
-        HttpSession session = event.getSession();
-        Enumeration<String> attributes = session.getAttributeNames();
-        if (!attributes.hasMoreElements())
+        if (_destroyer != null)
         {
-            // nothing to do
-            return;
-        }
-        // optimization: provide the LifecycleProvider, because there could be a lot of elements
-        LifecycleProvider provider = destroyer.getCurrentLifecycleProvider();
-        
-        while (attributes.hasMoreElements())
-        {
-            String name = attributes.nextElement();
-            Object value = session.getAttribute(name);
-            destroyer.destroy(name, value, provider);
+            HttpSession session = event.getSession();
+            Enumeration<String> attributes = session.getAttributeNames();
+            if (!attributes.hasMoreElements())
+            {
+                // nothing to do
+                return;
+            }
+
+            while (attributes.hasMoreElements())
+            {
+                String name = attributes.nextElement();
+                Object value = session.getAttribute(name);
+                _destroyer.destroy(name, value);
+            }
         }
     }
     
-    /* Context related methods */
+    /* Context related methods ***********************************************/
     
     public void attributeAdded(ServletContextAttributeEvent event)
     {
@@ -116,57 +140,48 @@ public class ManagedBeanDestroyerListener implements
 
     public void attributeRemoved(ServletContextAttributeEvent event)
     {
-        destroyer.destroy(event.getName(), event.getValue());
+        if (_destroyer != null)
+        {
+            _destroyer.destroy(event.getName(), event.getValue());
+        }
     }
 
     public void attributeReplaced(ServletContextAttributeEvent event)
     {
-        destroyer.destroy(event.getName(), event.getValue());
+        if (_destroyer != null)
+        {
+            _destroyer.destroy(event.getName(), event.getValue());
+        }
     }
 
     public void contextInitialized(ServletContextEvent event)
     {
-        // set the RuntimeConfig of ManagedBeanDestroyer, because
-        // in requestDestroyed, contextDestroyed FacesContext.getCurrentInstance() returns
-        // null and so we wouln't get the RuntimeConfig.
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext == null)
-        {
-            return;
-        }
-        ExternalContext externalContext = facesContext.getExternalContext();
-        RuntimeConfig config = RuntimeConfig.getCurrentInstance(externalContext);
-        destroyer.setRuntimeConfig(config);
-        destroyer.setServletContext(event.getServletContext());
-
-        // configure ManagedBeanDestroyer to listen to PreDestroyCustomScopeEvent and PreDestroyViewMapEvent
-        facesContext.getApplication().subscribeToEvent(PreDestroyCustomScopeEvent.class, destroyer);
-        facesContext.getApplication().subscribeToEvent(PreDestroyViewMapEvent.class, destroyer);
+        // noop
     }
     
     @SuppressWarnings("unchecked")
     public void contextDestroyed(ServletContextEvent event)
     {
-        ServletContext ctx = event.getServletContext();
-        Enumeration<String> attributes = ctx.getAttributeNames();
-        if (!attributes.hasMoreElements())
+        if (_destroyer != null)
         {
-            // nothing to do
-            return;
-        }
-        // optimization: provide the LifecycleProvider, because there could be a lot of elements
-        LifecycleProvider provider = destroyer.getCurrentLifecycleProvider();
-        
-        while (attributes.hasMoreElements())
-        {
-            String name = attributes.nextElement();
-            Object value = ctx.getAttribute(name);
-            destroyer.destroy(name, value, provider);
-        }
+            ServletContext ctx = event.getServletContext();
+            Enumeration<String> attributes = ctx.getAttributeNames();
+            if (!attributes.hasMoreElements())
+            {
+                // nothing to do
+                return;
+            }
 
+            while (attributes.hasMoreElements())
+            {
+                String name = attributes.nextElement();
+                Object value = ctx.getAttribute(name);
+                _destroyer.destroy(name, value);
+            }
+        }
     }
     
-    /* Request related methods */
+    /* Request related methods ***********************************************/
     
     public void attributeAdded(ServletRequestAttributeEvent event)
     {
@@ -175,12 +190,18 @@ public class ManagedBeanDestroyerListener implements
 
     public void attributeRemoved(ServletRequestAttributeEvent event)
     {
-        destroyer.destroy(event.getName(), event.getValue());
+        if (_destroyer != null)
+        {
+            _destroyer.destroy(event.getName(), event.getValue());
+        }
     }
 
     public void attributeReplaced(ServletRequestAttributeEvent event)
     {
-        destroyer.destroy(event.getName(), event.getValue());
+        if (_destroyer != null)
+        {
+            _destroyer.destroy(event.getName(), event.getValue());
+        }
     }
 
     public void requestInitialized(ServletRequestEvent event)
@@ -190,22 +211,23 @@ public class ManagedBeanDestroyerListener implements
     
     @SuppressWarnings("unchecked")
     public void requestDestroyed(ServletRequestEvent event)
-    {        
-        ServletRequest request = event.getServletRequest();
-        Enumeration<String> attributes = request.getAttributeNames();
-        if (!attributes.hasMoreElements())
+    {
+        if (_destroyer != null)
         {
-            // nothing to do
-            return;
-        }
-        // optimization: provide the LifecycleProvider, because there could be a lot of elements
-        LifecycleProvider provider = destroyer.getCurrentLifecycleProvider();
-        
-        while (attributes.hasMoreElements())
-        {
-            String name = attributes.nextElement();
-            Object value = request.getAttribute(name);
-            destroyer.destroy(name, value, provider);
+            ServletRequest request = event.getServletRequest();
+            Enumeration<String> attributes = request.getAttributeNames();
+            if (!attributes.hasMoreElements())
+            {
+                // nothing to do
+                return;
+            }
+            
+            while (attributes.hasMoreElements())
+            {
+                String name = attributes.nextElement();
+                Object value = request.getAttribute(name);
+                _destroyer.destroy(name, value);
+            }
         }
     }
 

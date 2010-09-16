@@ -49,37 +49,21 @@ public class ManagedBeanDestroyer implements SystemEventListener
     
     private static Logger log = Logger.getLogger(ManagedBeanDestroyer.class.getName());
     
-    private RuntimeConfig runtimeConfig;
+    private RuntimeConfig _runtimeConfig;
+    private LifecycleProvider _lifecycleProvider;
 
-    private ServletContext servletContext;
-    
-    public void setRuntimeConfig(RuntimeConfig runtimeConfig)
+    /**
+     * Creates the ManagedBeanDestroyer for the given RuntimeConfig
+     * and LifecycleProvider.
+     * 
+     * @param lifecycleProvider
+     * @param runtimeConfig
+     */
+    public ManagedBeanDestroyer(LifecycleProvider lifecycleProvider,
+                                RuntimeConfig runtimeConfig)
     {
-        this.runtimeConfig = runtimeConfig;
-    }
-    
-    public RuntimeConfig getRuntimeConfig()
-    {
-        if (runtimeConfig == null)
-        {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            if (facesContext != null)
-            {
-                ExternalContext externalContext = facesContext.getExternalContext();
-                runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
-            }
-        }
-        return runtimeConfig;
-    }
-    
-    public ServletContext getServletContext()
-    {
-        return servletContext;
-    }
-
-    public void setServletContext(ServletContext servletContext)
-    {
-        this.servletContext = servletContext;
+        _lifecycleProvider = lifecycleProvider;
+        _runtimeConfig = runtimeConfig;
     }
 
     public boolean isListenerForSource(Object source)
@@ -88,7 +72,6 @@ public class ManagedBeanDestroyer implements SystemEventListener
         // and source of PreDestroyViewMapEvent is UIViewRoot
         return (source instanceof ScopeContext) || (source instanceof UIViewRoot);
     }
-
 
     /**
      * Listens to PreDestroyCustomScopeEvent and PreDestroyViewMapEvent
@@ -119,11 +102,10 @@ public class ManagedBeanDestroyer implements SystemEventListener
             return;
         }
         
-        LifecycleProvider provider = getCurrentLifecycleProvider();
         for (String key : scope.keySet())
         {
             Object value = scope.get(key);
-            this.destroy(key, value, provider);
+            this.destroy(key, value);
         }
     }
     
@@ -134,41 +116,21 @@ public class ManagedBeanDestroyer implements SystemEventListener
      */
     public boolean isManagedBean(String name)
     {
-        RuntimeConfig config = getRuntimeConfig();
-        if (config != null)
-        {
-            return config.getManagedBean(name) != null;
-        }
-        // we have no RuntimeConfig, thus theres no FacesContext --> no managed bean
-        return false;
+        return (_runtimeConfig.getManagedBean(name) != null);
     }
     
     /**
-     * Destroys the given managed bean with the current LifecycleProvider.
+     * Destroys the given managed bean.
      * @param name
      * @param instance
      */
     public void destroy(String name, Object instance)
     {
-        destroy(name, instance, getCurrentLifecycleProvider());
-    }
-    
-    /**
-     * Destroys the given managed bean with the given LifecycleProvider
-     * @param name
-     * @param instance
-     * @param provider
-     */
-    public void destroy(String name, Object instance, LifecycleProvider provider)
-    {
-        if (isManagedBean(name)) {
-            if (provider == null)
-            {
-                provider = getCurrentLifecycleProvider();
-            }
+        if (instance != null && isManagedBean(name))
+        {
             try
             {
-                provider.destroyInstance(instance);
+                _lifecycleProvider.destroyInstance(instance);
             } 
             catch (IllegalAccessException e)
             {
@@ -181,21 +143,5 @@ public class ManagedBeanDestroyer implements SystemEventListener
             }
         }
     }
-    
-    /**
-     * Retrieves the current LifecycleProvider from the LifecycleProviderFactory
-     * @return
-     */
-    public LifecycleProvider getCurrentLifecycleProvider()
-    {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext == null)
-        {
-            ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
-            return LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);
-        }
-        ExternalContext externalContext = facesContext.getExternalContext();
-        return LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);
-    }
-    
+
 }

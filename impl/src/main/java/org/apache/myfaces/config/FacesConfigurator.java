@@ -80,6 +80,8 @@ import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
+import org.apache.myfaces.config.annotation.LifecycleProvider;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.ManagedBean;
@@ -119,6 +121,7 @@ import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
+import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
 import org.xml.sax.SAXException;
 
 /**
@@ -440,12 +443,6 @@ public class FacesConfigurator
                 FacesContext facesContext = FacesContext.getCurrentInstance();
                 Application application = facesContext.getApplication();
                 
-                // TODO: This is a workaround, to make this feature work. In theory, the method update should be called
-                // in a way that StartupServletContextListener could "get involved".
-                ManagedBeanDestroyer mbDestroyer = new ManagedBeanDestroyer();
-                application.subscribeToEvent(PreDestroyCustomScopeEvent.class, mbDestroyer);
-                application.subscribeToEvent(PreDestroyViewMapEvent.class, mbDestroyer);
-                
                 application.publishEvent(facesContext, PostConstructApplicationEvent.class, Application.class, application);
             }
         }
@@ -541,7 +538,7 @@ public class FacesConfigurator
         configureRuntimeConfig();
         configureLifecycle();
         handleSerialFactory();
-        
+        configureManagedBeanDestroyer();
 
         // record the time of update
         lastUpdate = System.currentTimeMillis();
@@ -2092,11 +2089,6 @@ public class FacesConfigurator
         runtimeConfig.setVariableResolverChainHead(getApplicationObject(VariableResolver.class,
                                                                         dispenser.getVariableResolverIterator(),
                                                                         new VariableResolverImpl()));
-        
-        // configure ManagedBeanDestroyer to listen to PreDestroyCustomScopeEvent and PreDestroyViewMapEvent
-        //ManagedBeanDestroyer mbDestroyer = new ManagedBeanDestroyer();
-        //application.subscribeToEvent(PreDestroyCustomScopeEvent.class, mbDestroyer);
-        //application.subscribeToEvent(PreDestroyViewMapEvent.class, mbDestroyer);
     }
 
     /**
@@ -2723,4 +2715,41 @@ public class FacesConfigurator
         log.info("Serialization provider : " + serialFactory.getClass());
         _externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY, serialFactory);
     }
+
+    private void configureManagedBeanDestroyer()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map<String, Object> applicationMap = externalContext.getApplicationMap();
+        Application application = facesContext.getApplication();
+
+        // get RuntimeConfig and LifecycleProvider
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
+        LifecycleProvider lifecycleProvider = LifecycleProviderFactory
+                .getLifecycleProviderFactory().getLifecycleProvider(externalContext);
+
+        // create ManagedBeanDestroyer
+        ManagedBeanDestroyer mbDestroyer
+                = new ManagedBeanDestroyer(lifecycleProvider, runtimeConfig);
+
+        // subscribe ManagedBeanDestroyer as listener for needed events 
+        application.subscribeToEvent(PreDestroyCustomScopeEvent.class, mbDestroyer);
+        application.subscribeToEvent(PreDestroyViewMapEvent.class, mbDestroyer);
+
+        // get ManagedBeanDestroyerListener instance 
+        ManagedBeanDestroyerListener listener = (ManagedBeanDestroyerListener)
+                applicationMap.get(ManagedBeanDestroyerListener.APPLICATION_MAP_KEY);
+        if (listener != null)
+        {
+            // set the instance on the listener
+            listener.setManagedBeanDestroyer(mbDestroyer);
+        }
+        else
+        {
+            log.log(Level.SEVERE, "No ManagedBeanDestroyerListener instance found, thus "
+                    + "@PreDestroy methods won't get called in every case. "
+                    + "This instance needs to be published before configuration is started.");
+        }
+    }
+
 }

@@ -18,12 +18,19 @@
  */
 package org.apache.myfaces.webapp;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.FacesConfigValidator;
+import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.config.ManagedBeanBuilder;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+import org.apache.myfaces.shared_impl.context.ExceptionHandlerImpl;
+import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 import javax.el.ExpressionFactory;
 import javax.faces.application.Application;
@@ -36,21 +43,12 @@ import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyApplicationEvent;
 import javax.faces.event.SystemEvent;
 import javax.servlet.ServletContext;
-
-import org.apache.myfaces.application.ApplicationImpl;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.FacesConfigValidator;
-import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.annotation.DefaultLifecycleProviderFactory;
-import org.apache.myfaces.config.element.ManagedBean;
-import org.apache.myfaces.context.ReleaseableExternalContext;
-import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
-import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.shared_impl.context.ExceptionHandlerImpl;
-import org.apache.myfaces.shared_impl.util.StateUtils;
-import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Performs common initialization tasks.
@@ -133,12 +131,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
 
             _dispatchApplicationEvent(servletContext, PostConstructApplicationEvent.class);
             
-            //initialize LifecycleProvider. 
-            //if not set here, first call of getLifecycleProvider is invoked with null external context
-            //and org.apache.myfaces.config.annotation.LifecycleProvider context parameter is ignored.
-            //see MYFACES-2555 and MYFACES-2919
-            DefaultLifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);
-            
             // print out a very prominent log message if the project stage is != Production
             if (!facesContext.isProjectStage(ProjectStage.Production))
             {
@@ -179,7 +171,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
     /**
      * Checks for application scoped managed-beans with eager=true,
      * creates them and stores them in the application map.
-     * @param externalContext
+     * @param facesContext
      */
     private void _createEagerBeans(FacesContext facesContext)
     {
