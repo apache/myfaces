@@ -41,9 +41,9 @@
     <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
   </issueManagement>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/trunk</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/trunk</url>
   </scm>
   <modules>
     <!-- module>build</module -->
