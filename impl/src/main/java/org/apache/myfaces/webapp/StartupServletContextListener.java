@@ -108,7 +108,7 @@ public class StartupServletContextListener implements ServletContextListener,
             _publishManagedBeanDestroyerListener(facesContext);
             
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
-            _facesInitializer.initFaces(_servletContext); //TODO maybe return value not needed
+            _facesInitializer.initFaces(_servletContext);
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
             _servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
 
