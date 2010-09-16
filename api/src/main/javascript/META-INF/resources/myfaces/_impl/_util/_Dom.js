@@ -247,7 +247,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param innerOnly
      */
     _isTableElement: function(item) {
-        var itemNodeName = item.nodeName || item.tagName;
+        var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
 
         return itemNodeName == "table" || itemNodeName == "thead" ||
                 itemNodeName == "tbody" || itemNodeName == "tfoot" ||
