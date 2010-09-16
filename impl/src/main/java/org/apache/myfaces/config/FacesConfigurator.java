@@ -434,11 +434,18 @@ public class FacesConfigurator
                     log.severe("Error during configuration clean-up" + e.getMessage());
                 }
                 configure();
-                
+                                
                 // JSF 2.0 Publish PostConstructApplicationEvent after all configuration resources
                 // has been parsed and processed
                 FacesContext facesContext = FacesContext.getCurrentInstance();
-                Application application = facesContext.getApplication(); 
+                Application application = facesContext.getApplication();
+                
+                // TODO: This is a workaround, to make this feature work. In theory, the method update should be called
+                // in a way that StartupServletContextListener could "get involved".
+                ManagedBeanDestroyer mbDestroyer = new ManagedBeanDestroyer();
+                application.subscribeToEvent(PreDestroyCustomScopeEvent.class, mbDestroyer);
+                application.subscribeToEvent(PreDestroyViewMapEvent.class, mbDestroyer);
+                
                 application.publishEvent(facesContext, PostConstructApplicationEvent.class, Application.class, application);
             }
         }
