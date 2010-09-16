@@ -38,6 +38,7 @@
       <outputDirectory>src</outputDirectory>
       <includes>
         <include>*.jar</include>
+        <include>*.zip</include>
       </includes>
     </fileSet>
   </fileSets>
