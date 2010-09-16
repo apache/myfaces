@@ -79,6 +79,16 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                         lifecycleProvider = resolveFallbackLifecycleProvider();
                         externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE, lifecycleProvider);
                     }
+                    else
+                    {
+                        //Retrieve it because it was resolved
+                        lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE);
+                    }
+                }
+                else
+                {
+                    //Retrieve it because it was resolved
+                    lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE);
                 }
             }
             log.info("Using LifecycleProvider "+ LIFECYCLE_PROVIDER_INSTANCE.getClass().getName());
