@@ -31,9 +31,11 @@ import javax.faces.event.PreDestroyViewMapEvent;
 import javax.faces.event.ScopeContext;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.servlet.ServletContext;
 
 import org.apache.myfaces.config.annotation.LifecycleProvider;
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 
 /**
  * Destroyes managed beans with the current LifecycleProvider.
@@ -48,6 +50,8 @@ public class ManagedBeanDestroyer implements SystemEventListener
     private static Logger log = Logger.getLogger(ManagedBeanDestroyer.class.getName());
     
     private RuntimeConfig runtimeConfig;
+
+    private ServletContext servletContext;
     
     public void setRuntimeConfig(RuntimeConfig runtimeConfig)
     {
@@ -68,6 +72,16 @@ public class ManagedBeanDestroyer implements SystemEventListener
         return runtimeConfig;
     }
     
+    public ServletContext getServletContext()
+    {
+        return servletContext;
+    }
+
+    public void setServletContext(ServletContext servletContext)
+    {
+        this.servletContext = servletContext;
+    }
+
     public boolean isListenerForSource(Object source)
     {
         // source of PreDestroyCustomScopeEvent is ScopeContext
@@ -177,7 +191,8 @@ public class ManagedBeanDestroyer implements SystemEventListener
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext == null)
         {
-            return LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(null);
+            ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
+            return LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);
         }
         ExternalContext externalContext = facesContext.getExternalContext();
         return LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);

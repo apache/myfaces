@@ -22,6 +22,8 @@ import java.util.Enumeration;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PreDestroyCustomScopeEvent;
+import javax.faces.event.PreDestroyViewMapEvent;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextAttributeListener;
@@ -135,6 +137,11 @@ public class ManagedBeanDestroyerListener implements
         ExternalContext externalContext = facesContext.getExternalContext();
         RuntimeConfig config = RuntimeConfig.getCurrentInstance(externalContext);
         destroyer.setRuntimeConfig(config);
+        destroyer.setServletContext(event.getServletContext());
+
+        // configure ManagedBeanDestroyer to listen to PreDestroyCustomScopeEvent and PreDestroyViewMapEvent
+        facesContext.getApplication().subscribeToEvent(PreDestroyCustomScopeEvent.class, destroyer);
+        facesContext.getApplication().subscribeToEvent(PreDestroyViewMapEvent.class, destroyer);
     }
     
     @SuppressWarnings("unchecked")
