@@ -78,6 +78,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     private final String _rendererType;
     
     private final ComponentBuilderHandler _componentBuilderHandlerDelegate;
+    
+    private final RelocatableResourceHandler _relocatableResourceHandler;
 
     @SuppressWarnings("unchecked")
     public ComponentTagHandlerDelegate(ComponentHandler delegate)
@@ -108,6 +110,33 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         else
         {
             _componentBuilderHandlerDelegate = null;
+        }
+        
+        //Check if this component is instance of RelocatableResourceHandler
+        handler = _delegate;
+        found = false;
+        while(handler != null && !found)
+        {
+            if (handler instanceof RelocatableResourceHandler)
+            {
+                found = true;
+            }
+            else if (handler instanceof FacesWrapper)
+            {
+                handler = ((FacesWrapper<? extends ComponentHandler>)handler).getWrapped();
+            }
+            else
+            {
+                handler = null;
+            }
+        }
+        if (found)
+        {
+            _relocatableResourceHandler = (RelocatableResourceHandler) handler;
+        }
+        else
+        {
+            _relocatableResourceHandler = null;
         }
         
         ComponentConfig delegateComponentConfig = delegate.getComponentConfig();
@@ -164,11 +193,12 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // grab our component
         UIComponent c = null;
         boolean componentFoundInserted = false;
-        if (mctx.isRefreshingTransientBuild())
-        {
-            if (_delegate instanceof RelocatableResourceHandler)
+        // MYFACES-2924 This optimization does not work as expected when component bindings are used.
+        //if (mctx.isRefreshingTransientBuild())
+        //{
+            if (_relocatableResourceHandler != null)
             {
-                c = ((RelocatableResourceHandler)_delegate).findChildByTagId(ctx, parent, id);
+                c = _relocatableResourceHandler.findChildByTagId(ctx, parent, id);
             }
             else
             {
@@ -216,7 +246,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
             */
-        }
+        //}
         boolean componentFound = false;
         if (c != null)
         {

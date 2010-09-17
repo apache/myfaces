@@ -92,8 +92,9 @@ final class UIInstructionHandler extends AbstractUIHandler
             UIComponent c = null;
             FaceletCompositionContext mctx= FaceletCompositionContext.getCurrentInstance(ctx);
             boolean componentFoundInserted = false;
-            if (mctx.isRefreshingTransientBuild())
-            {
+            // MYFACES-2924 This optimization does not work as expected when component bindings are used.
+            //if (mctx.isRefreshingTransientBuild())
+            //{
                 c = ComponentSupport.findChildByTagId(parent, id);
                 /*
                 if (c == null && mctx.isRefreshTransientBuildOnPSS() && 
@@ -136,7 +137,7 @@ final class UIInstructionHandler extends AbstractUIHandler
                     }
                 }
                 */
-            }
+            //}
             boolean componentFound = false;
             if (c != null)
             {
