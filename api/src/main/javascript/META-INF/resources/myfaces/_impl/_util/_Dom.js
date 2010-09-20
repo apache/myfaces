@@ -432,17 +432,29 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //now to the browsers with non working garbage collection
         this._removeChildNodes(node, breakEventsOpen);
 
-        //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
-        //again to speed things up we precheck first
-        node.innerHTML = "";
-        if (b.isIE && 'undefined' != typeof node.outerHTML) {//ie8+ check done earlier we skip it here
-            node.outerHTML = '';
-        } else {
-            if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
-                node.parentNode.removeChild(node);
-        }
-        if (!b.isIEMobile) {
-            delete node;
+        try {
+            //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
+            //again to speed things up we precheck first
+            node.innerHTML = "";
+            if (b.isIE && 'undefined' != typeof node.outerHTML) {//ie8+ check done earlier we skip it here
+                node.outerHTML = '';
+            } else {
+                if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
+                    node.parentNode.removeChild(node);
+            }
+            if (!b.isIEMobile) {
+                delete node;
+            }
+        } catch (e) {
+            //on some elements the outerHTML can fail we skip those in favor
+            //of stability
+            try {
+                // both innerHTML and outerHTML fails when <tr> is the node, but in that case 
+                // we need to force node removal, otherwise it will be on the tree (IE 7 IE 6)
+                if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
+                    node.parentNode.removeChild(node);
+            } catch (e1) {
+            }
         }
     }
     ,
