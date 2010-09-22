@@ -233,6 +233,6 @@
     </distributionManagement>
 
     <properties>
-      <myfaces-shared.version>4.0.3</myfaces-shared.version>
+      <myfaces-shared.version>4.0.4-SNAPSHOT</myfaces-shared.version>
     </properties>
 </project>
