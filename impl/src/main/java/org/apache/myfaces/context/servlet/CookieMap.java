@@ -34,7 +34,7 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public final class CookieMap extends AbstractAttributeMap<Object>
+public final class CookieMap extends AbstractAttributeMap<Cookie>
 {
     private static final Cookie[] EMPTY_ARRAY = new Cookie[0];
 
@@ -89,13 +89,13 @@ public final class CookieMap extends AbstractAttributeMap<Object>
     }
 
     @Override
-    public void putAll(final Map<? extends String, ? extends Object> t)
+    public void putAll(final Map t)
     {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected Object getAttribute(final String key)
+    protected Cookie getAttribute(final String key)
     {
         final Cookie[] cookies = _httpServletRequest.getCookies();
         if (cookies == null)
@@ -112,7 +112,7 @@ public final class CookieMap extends AbstractAttributeMap<Object>
     }
 
     @Override
-    protected void setAttribute(final String key, final Object value)
+    protected void setAttribute(final String key, final Cookie value)
     {
         throw new UnsupportedOperationException(
             "Cannot set HttpRequest Cookies");
