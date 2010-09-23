@@ -20,9 +20,10 @@ package org.apache.myfaces.context.portlet;
 
 import java.util.Enumeration;
 import java.util.Map;
+
 import javax.portlet.PortletContext;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
 
 
 /**
@@ -31,7 +32,7 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author  Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationMap extends AbstractAttributeMap<Object>
+public class ApplicationMap extends AbstractThreadSafeAttributeMap<Object>
 {
     final PortletContext _portletContext;
 

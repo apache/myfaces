@@ -45,6 +45,7 @@ public final class CookieMap extends AbstractAttributeMap<Cookie>
         _httpServletRequest = httpServletRequest;
     }
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException(
@@ -110,18 +111,21 @@ public final class CookieMap extends AbstractAttributeMap<Cookie>
         return null;
     }
 
+    @Override
     protected void setAttribute(final String key, final Cookie value)
     {
         throw new UnsupportedOperationException(
             "Cannot set HttpRequest Cookies");
     }
 
+    @Override
     protected void removeAttribute(final String key)
     {
         throw new UnsupportedOperationException(
             "Cannot remove HttpRequest Cookies");
     }
 
+    @Override
     protected Enumeration<String> getAttributeNames()
     {
         final Cookie[] cookies = _httpServletRequest.getCookies();

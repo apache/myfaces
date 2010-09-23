@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.shared_impl.util.NullEnumeration;
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
 
 
 /**
@@ -34,7 +34,7 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public final class SessionMap extends AbstractAttributeMap<Object>
+public final class SessionMap extends AbstractThreadSafeAttributeMap<Object>
 {
     private final HttpServletRequest _httpRequest;
 
@@ -75,7 +75,7 @@ public final class SessionMap extends AbstractAttributeMap<Object>
     }
 
     @Override
-    public void putAll(final Map t)
+    public void putAll(final Map<? extends String, ? extends Object> t)
     {
         throw new UnsupportedOperationException();
     }

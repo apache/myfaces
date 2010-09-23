@@ -22,7 +22,6 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -42,20 +41,28 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     private Collection<V> _values;
     private Set<Entry<String, V>> _entrySet;
 
+    @Override
     public void clear()
     {
-        final List<String> names = Collections.list(getAttributeNames());
+        final List<String> names = new ArrayList<String>();
+        for (final Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
+        {
+            names.add(e.nextElement());
+        }
 
-        for (String name : names) {
-          removeAttribute(name);
+        for (String name : names)
+        {
+            removeAttribute(name);
         }
     }
 
+    @Override
     public final boolean containsKey(final Object key)
     {
         return getAttribute(key.toString()) != null;
     }
 
+    @Override
     public boolean containsValue(final Object findValue)
     {
         if (findValue == null)
@@ -81,21 +88,25 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         return (_entrySet != null) ? _entrySet : (_entrySet = new EntrySet());
     }
 
+    @Override
     public V get(final Object key)
     {
         return getAttribute(key.toString());
     }
 
+    @Override
     public boolean isEmpty()
     {
         return !getAttributeNames().hasMoreElements();
     }
 
+    @Override
     public Set<String> keySet()
     {
         return (_keySet != null) ? _keySet : (_keySet = new KeySet());
     }
 
+    @Override
     public final V put(final String key, final V value)
     {
         final V retval = getAttribute(key);
@@ -103,11 +114,13 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         return retval;
     }
 
+    @Override
     public void putAll(final Map<? extends String, ? extends V> t)
     {
-      for (final Entry<? extends String, ? extends V> entry : t.entrySet()) {
-        setAttribute(entry.getKey(), entry.getValue());
-      }
+        for (final Entry<? extends String, ? extends V> entry : t.entrySet())
+        {
+            setAttribute(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
@@ -123,7 +136,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     public int size()
     {
         int size = 0;
-        for (final Enumeration e = getAttributeNames(); e.hasMoreElements();)
+        for (final Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
         {
             size++;
             e.nextElement();
@@ -190,17 +203,14 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
     private abstract class AbstractAttributeIterator<E> implements Iterator<E>
     {
-        // We use a copied version of the Enumeration from getAttributeNames()
-        // here, because directly using it might cause a ConcurrentModificationException
-        // when performing remove(). Note that we can do this since the Enumeration
-        // from getAttributeNames() will contain exactly the attribute names from the time
-        // getAttributeNames() was called and it will not be updated if attributes are 
-        // removed or added.
-        protected final Iterator<String> _i = Collections.list(getAttributeNames()).iterator();
+        protected final Enumeration<String> _e = getAttributeNames();
         protected String _currentKey;
 
         public void remove()
         {
+            // remove() may cause ConcurrentModificationException.
+            // We could throw an exception here, but not throwing an exception
+            // allows one call to remove() to succeed
             if (_currentKey == null)
             {
                 throw new NoSuchElementException("You must call next() at least once");
@@ -210,12 +220,12 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
         public boolean hasNext()
         {
-            return _i.hasNext();
+            return _e.hasMoreElements();
         }
 
         public E next()
         {
-            return getValue(_currentKey = _i.next());
+            return getValue(_currentKey = _e.nextElement());
         }
 
         protected abstract E getValue(String attributeName);
@@ -246,7 +256,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            for (final Iterator it = iterator(); it.hasNext();)
+            for (final Iterator<V> it = iterator(); it.hasNext();)
             {
                 if (o.equals(it.next()))
                 {
@@ -265,7 +275,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            for (final Iterator it = iterator(); it.hasNext();)
+            for (final Iterator<V> it = iterator(); it.hasNext();)
             {
                 if (o.equals(it.next()))
                 {
@@ -295,6 +305,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
             return new EntryIterator();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean contains(final Object o)
         {
@@ -303,7 +314,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            final Entry entry = (Entry) o;
+            final Entry<String, V> entry = (Entry<String, V>)o;
             final Object key = entry.getKey();
             final Object value = entry.getValue();
             if (key == null || value == null)
@@ -314,6 +325,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
             return value.equals(AbstractAttributeMap.this.get(key));
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean remove(final Object o)
         {
@@ -322,7 +334,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            final Entry entry = (Entry) o;
+            final Entry<String, V> entry = (Entry<String, V>)o;
             final Object key = entry.getKey();
             final Object value = entry.getValue();
             if (key == null || value == null || !value.equals(AbstractAttributeMap.this.get(key)))
@@ -330,7 +342,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             }
 
-            return AbstractAttributeMap.this.remove(((Entry) o).getKey()) != null;
+            return AbstractAttributeMap.this.remove(((Entry<String, V>)o).getKey()) != null;
         }
     }
 
@@ -390,7 +402,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            final EntrySetEntry other = (EntrySetEntry) obj;
+            final EntrySetEntry other = (EntrySetEntry)obj;
             if (_currentKey == null)
             {
                 if (other._currentKey != null)

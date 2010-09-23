@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
 
 
 /**
@@ -32,7 +32,7 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public final class ApplicationMap extends AbstractAttributeMap<Object>
+public final class ApplicationMap extends AbstractThreadSafeAttributeMap<Object>
 {
     final ServletContext _servletContext;
 
@@ -41,21 +41,25 @@ public final class ApplicationMap extends AbstractAttributeMap<Object>
         _servletContext = servletContext;
     }
 
+    @Override
     protected Object getAttribute(final String key)
     {
         return _servletContext.getAttribute(key);
     }
 
+    @Override
     protected void setAttribute(final String key, final Object value)
     {
         _servletContext.setAttribute(key, value);
     }
 
+    @Override
     protected void removeAttribute(final String key)
     {
         _servletContext.removeAttribute(key);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
@@ -63,12 +67,14 @@ public final class ApplicationMap extends AbstractAttributeMap<Object>
     }
 
 
-    public void putAll(final Map t)
+    @Override
+    public void putAll(final Map<? extends String, ? extends Object> t)
     {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException();

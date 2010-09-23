@@ -18,13 +18,14 @@
  */
 package org.apache.myfaces.context.portlet;
 
-import org.apache.myfaces.shared_impl.util.NullEnumeration;
-import org.apache.myfaces.util.AbstractAttributeMap;
-
 import java.util.Enumeration;
 import java.util.Map;
+
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletSession;
+
+import org.apache.myfaces.shared_impl.util.NullEnumeration;
+import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
 
 /**
  * Portlet scope PortletSession attibutes as Map.
@@ -32,7 +33,7 @@ import javax.portlet.PortletSession;
  * @author  Stan Silvert (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class SessionMap extends AbstractAttributeMap<Object>
+public class SessionMap extends AbstractThreadSafeAttributeMap<Object>
 {
     private final PortletRequest _portletRequest;
 

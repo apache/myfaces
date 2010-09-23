@@ -69,7 +69,7 @@ public final class RequestHeaderMap extends AbstractAttributeMap<String>
     }
 
     @Override
-    public void putAll(final Map t)
+    public void putAll(final Map<? extends String, ? extends String> t)
     {
         throw new UnsupportedOperationException();
     }
