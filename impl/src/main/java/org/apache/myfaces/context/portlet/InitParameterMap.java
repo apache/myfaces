@@ -24,7 +24,8 @@ import java.util.Enumeration;
 import java.util.Map;
 
 import javax.portlet.PortletContext;
-import org.apache.myfaces.context.servlet.AbstractAttributeMap;
+
+import org.apache.myfaces.util.AbstractAttributeMap;
 
 
 /**

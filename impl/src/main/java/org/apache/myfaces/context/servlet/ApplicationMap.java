@@ -23,6 +23,8 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
+
 
 /**
  * ServletContext attributes as a Map.
@@ -30,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ApplicationMap extends AbstractAttributeMap
+public class ApplicationMap extends AbstractThreadSafeAttributeMap
 {
     final ServletContext _servletContext;
 

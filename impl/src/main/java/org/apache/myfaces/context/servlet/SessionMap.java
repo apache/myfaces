@@ -18,12 +18,14 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.shared_impl.util.NullEnumeration;
+import java.util.Enumeration;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
-import java.util.Map;
+
+import org.apache.myfaces.shared_impl.util.NullEnumeration;
+import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
 
 
 /**
@@ -32,7 +34,7 @@ import java.util.Map;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class SessionMap extends AbstractAttributeMap
+public class SessionMap extends AbstractThreadSafeAttributeMap
 {
     private final HttpServletRequest _httpRequest;
 

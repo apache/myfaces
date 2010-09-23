@@ -24,6 +24,8 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.myfaces.util.AbstractAttributeMap;
+
 /**
  * HttpServletRequest Cookies as Map.
  *
