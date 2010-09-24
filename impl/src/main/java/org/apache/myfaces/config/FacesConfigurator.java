@@ -232,33 +232,46 @@ public class FacesConfigurator
     }
 
     private void purgeConfiguration() {
-
+        Method appplicationPurgeMethod = null;
+        Method renderKitPurgeMethod = null;
+        Method lifecyclePurgeMethod = null;
+        
+        Class[] emptyParameterList = new Class[]{};
+        
+        ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        
         try {
-            Method purgeMethod;
-            Class[] emptyParameterList = new Class[]{};
 
-            ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-            purgeMethod = applicationFactory.getClass().getMethod("purgeApplication", emptyParameterList);
-            purgeMethod.invoke(applicationFactory, emptyParameterList);
-
-            RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-            purgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", emptyParameterList);
-            purgeMethod.invoke(renderKitFactory, emptyParameterList);
-
-            RuntimeConfig.getCurrentInstance(_externalContext).purge();
-
-            LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            purgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", emptyParameterList);
-            purgeMethod.invoke(lifecycleFactory, emptyParameterList);
-
+            appplicationPurgeMethod = applicationFactory.getClass().getMethod("purgeApplication", emptyParameterList);
+            renderKitPurgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", emptyParameterList);
+            lifecyclePurgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", emptyParameterList);
             // factories and serial factory need not be purged...
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e)
+        {
             log.error("Configuration objects do not support clean-up. Update aborted",e);
             return;
-        } catch (IllegalAccessException e) {
-            log.fatal("Error during configuration clean-up" + e.getMessage(),e);
-        } catch (InvocationTargetException e) {
-            log.fatal("Error during configuration clean-up" + e.getMessage(),e);
+        } 
+        
+        if (appplicationPurgeMethod != null && renderKitPurgeMethod != null && lifecyclePurgeMethod != null)
+        {
+            try
+            {
+                RuntimeConfig.getCurrentInstance(_externalContext).purge();
+                appplicationPurgeMethod.invoke(applicationFactory, emptyParameterList);
+                renderKitPurgeMethod.invoke(renderKitFactory, emptyParameterList);
+                lifecyclePurgeMethod.invoke(lifecycleFactory, emptyParameterList);
+            }
+            catch (IllegalAccessException e)
+            {
+                log.fatal("Error during configuration clean-up" + e.getMessage(),e);
+            }
+            catch (InvocationTargetException e)
+            {
+                log.fatal("Error during configuration clean-up" + e.getMessage(),e);
+            }
         }
     }
 
@@ -796,17 +809,6 @@ public class FacesConfigurator
             }
         }
 
-        if(application instanceof ApplicationImpl)
-        {
-            for (Iterator it = _dispenser.getConverterConfigurationByClassName(); it.hasNext();)
-            {
-                String converterClassName = (String) it.next();
-
-                ((ApplicationImpl) application).addConverterConfiguration(converterClassName,
-                                                                          _dispenser.getConverterConfiguration(converterClassName));
-            }
-        }
-
         for (Iterator it = _dispenser.getValidatorIds(); it.hasNext();)
         {
             String validatorId = (String) it.next();
@@ -897,6 +899,14 @@ public class FacesConfigurator
             NavigationRule rule = (NavigationRule) iterator.next();
             runtimeConfig.addNavigationRule(rule);
 
+        }
+        
+        for (Iterator it = _dispenser.getConverterConfigurationByClassName(); it.hasNext();)
+        {
+            String converterClassName = (String) it.next();
+
+            runtimeConfig.addConverterConfiguration(converterClassName,
+                                                                      _dispenser.getConverterConfiguration(converterClassName));
         }
     }
 

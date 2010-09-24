@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 
@@ -36,6 +39,8 @@ import java.util.*;
  */
 public class RuntimeConfig
 {
+    private static final Log log = LogFactory.getLog(RuntimeConfig.class);
+    
     private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class.getName();
 
     private Collection _navigationRules = new ArrayList();
@@ -43,6 +48,7 @@ public class RuntimeConfig
     private Map _oldManagedBeans = new HashMap();
     private Map _managedBeansPerLocation = new HashMap();
     private boolean _navigationRulesChanged=false;
+    private Map _converterClassNameToConfigurationMap = Collections.synchronizedMap(new HashMap());
 
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
@@ -63,6 +69,7 @@ public class RuntimeConfig
         _managedBeans = new HashMap();
         _managedBeansPerLocation = new HashMap();
         _navigationRulesChanged = false;
+        _converterClassNameToConfigurationMap = Collections.synchronizedMap(new HashMap());
     }
 
     /**
@@ -144,5 +151,27 @@ public class RuntimeConfig
 
     public void resetManagedBeansNotReaddedAfterPurge() {
         _oldManagedBeans = null;
+    }
+    
+    public void addConverterConfiguration(String converterClassName,
+            org.apache.myfaces.config.impl.digester.elements.Converter configuration)
+    {
+        if ((converterClassName == null) || (converterClassName.length() == 0))
+        {
+        log.error("addConverterConfiguration: converterClassName = null is not allowed");
+            throw new NullPointerException("addConverterConfiguration: converterClassName = null is not allowed");
+        }
+        if ((configuration == null))
+        {
+        log.error("addConverterConfiguration: configuration = null is not allowed");
+            throw new NullPointerException("addConverterConfiguration: configuration = null is not allowed");
+        }
+        
+        _converterClassNameToConfigurationMap.put(converterClassName, configuration);
+    }
+    
+    public org.apache.myfaces.config.impl.digester.elements.Converter getConverterConfiguration(String converterClassName)
+    {
+        return (org.apache.myfaces.config.impl.digester.elements.Converter)_converterClassNameToConfigurationMap.get(converterClassName);
     }
 }

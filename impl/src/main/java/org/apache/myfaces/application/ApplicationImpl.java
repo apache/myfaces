@@ -26,6 +26,7 @@ import org.apache.myfaces.el.ValueBindingImpl;
 import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.shared_impl.util.BiLevelCacheMap;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.Property;
 
 import org.apache.commons.logging.Log;
@@ -83,7 +84,6 @@ public class ApplicationImpl
     // components, converters, and validators can be added at runtime--must synchronize
     private final Map _converterIdToClassMap = Collections.synchronizedMap(new HashMap());
     private final Map _converterClassNameToClassMap = Collections.synchronizedMap(new HashMap());
-    private final Map _converterClassNameToConfigurationMap = Collections.synchronizedMap(new HashMap());
     private final Map _componentClassMap = Collections.synchronizedMap(new HashMap());
     private final Map _validatorClassMap = Collections.synchronizedMap(new HashMap());
 
@@ -330,23 +330,6 @@ public class ApplicationImpl
         }
     }
 
-    public void addConverterConfiguration(String converterClassName,
-                                          org.apache.myfaces.config.impl.digester.elements.Converter configuration)
-    {
-        if ((converterClassName == null) || (converterClassName.length() == 0))
-        {
-            log.error("addConverterConfiguration: converterClassName = null is not allowed");
-            throw new NullPointerException("addConverterConfiguration: converterClassName = null is not allowed");
-        }
-        if ((configuration == null))
-        {
-            log.error("addConverterConfiguration: configuration = null is not allowed");
-            throw new NullPointerException("addConverterConfiguration: configuration = null is not allowed");
-        }
-
-        _converterClassNameToConfigurationMap.put(converterClassName, configuration);
-    }
-
     public void addValidator(String validatorId, String validatorClass)
     {
         if ((validatorId == null) || (validatorId.length() == 0))
@@ -559,9 +542,17 @@ public class ApplicationImpl
     }
 
     private void setConverterProperties(Class converterClass, Converter converter) {
-        org.apache.myfaces.config.impl.digester.elements.Converter converterConfig =
-                (org.apache.myfaces.config.impl.digester.elements.Converter)
-                        _converterClassNameToConfigurationMap.get(converterClass.getName());
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = null;
+        if (facesContext != null)
+        {
+            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
+            converterConfig = runtimeConfig.getConverterConfiguration(converterClass.getName());
+        }
+        else
+        {
+            log.warn("Cannot retrieve RuntimeConfig instance, because FacesContext is null.");            
+        }
 
         if(converterConfig != null) {
 
