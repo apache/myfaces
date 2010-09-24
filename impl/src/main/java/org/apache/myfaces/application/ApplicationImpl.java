@@ -113,7 +113,6 @@ public class ApplicationImpl extends Application
     // synchronize, uses ConcurrentHashMap to allow concurrent read of map
     private final Map<String, Class> _converterIdToClassMap = new ConcurrentHashMap<String, Class>();
     private final Map<Class, String> _converterClassNameToClassMap = new ConcurrentHashMap<Class, String>();
-    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap = new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
     private final Map<String, Class> _componentClassMap = new ConcurrentHashMap<String, Class>();
     private final Map<String, Class> _validatorClassMap = new ConcurrentHashMap<String, Class>();
 
@@ -621,16 +620,6 @@ public class ApplicationImpl extends Application
         }
     }
 
-    public final void addConverterConfiguration(final String converterClassName,
-            final org.apache.myfaces.config.impl.digester.elements.Converter configuration)
-    {
-        checkNull(converterClassName, "converterClassName");
-        checkEmpty(converterClassName, "converterClassName");
-        checkNull(configuration, "configuration");
-
-        _converterClassNameToConfigurationMap.put(converterClassName, configuration);
-    }
-
     @Override
     public final void addValidator(final String validatorId, final String validatorClass)
     {
@@ -882,8 +871,8 @@ public class ApplicationImpl extends Application
 
     private void setConverterProperties(final Class converterClass, final Converter converter)
     {
-        final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _converterClassNameToConfigurationMap
-                .get(converterClass.getName());
+        final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _runtimeConfig
+                .getConverterConfiguration(converterClass.getName());
 
         if (converterConfig != null)
         {

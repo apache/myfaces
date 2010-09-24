@@ -18,9 +18,14 @@
  */
 package org.apache.myfaces.config;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.faces.context.ExternalContext;
@@ -66,6 +71,9 @@ public class RuntimeConfig
 
     private VariableResolver _variableResolverChainHead;
 
+    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap =
+        new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
+
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
         RuntimeConfig runtimeConfig = (RuntimeConfig) externalContext.getApplicationMap().get(
@@ -85,6 +93,7 @@ public class RuntimeConfig
         _oldManagedBeans.putAll(_managedBeans);
         _managedBeans.clear();
         _navigationRulesChanged = false;
+        _converterClassNameToConfigurationMap.clear();
     }
 
     /**
@@ -134,6 +143,38 @@ public class RuntimeConfig
         _managedBeans.put(name, managedBean);
         if(_oldManagedBeans!=null)
             _oldManagedBeans.remove(name);
+    }
+
+    
+    public final void addConverterConfiguration(final String converterClassName,
+            final org.apache.myfaces.config.impl.digester.elements.Converter configuration)
+    {
+        checkNull(converterClassName, "converterClassName");
+        checkEmpty(converterClassName, "converterClassName");
+        checkNull(configuration, "configuration");
+
+        _converterClassNameToConfigurationMap.put(converterClassName, configuration);
+    }
+    
+    public org.apache.myfaces.config.impl.digester.elements.Converter getConverterConfiguration(String converterClassName)
+    {
+        return (org.apache.myfaces.config.impl.digester.elements.Converter)_converterClassNameToConfigurationMap.get(converterClassName);
+    }
+    
+    private void checkNull(final Object param, final String paramName)
+    {
+        if (param == null)
+        {
+            throw new NullPointerException(paramName + " can not be null.");
+        }
+    }
+
+    private void checkEmpty(final String param, final String paramName)
+    {
+        if (param.length() == 0)
+        {
+            throw new NullPointerException("String " + paramName + " can not be empty.");
+        }
     }
 
     /**
