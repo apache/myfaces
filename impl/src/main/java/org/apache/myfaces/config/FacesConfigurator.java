@@ -2011,15 +2011,6 @@ public class FacesConfigurator
             }
         }
 
-        if (application instanceof ApplicationImpl)
-        {
-            for (String converterClassName : dispenser.getConverterConfigurationByClassName())
-            {
-                ApplicationImpl app = (ApplicationImpl)application;
-                app.addConverterConfiguration(converterClassName, dispenser.getConverterConfiguration(converterClassName));
-            }
-        }
-
         for (String validatorId : dispenser.getValidatorIds())
         {
             application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
@@ -2295,6 +2286,12 @@ public class FacesConfigurator
         for (NavigationRule rule : dispenser.getNavigationRules())
         {
             runtimeConfig.addNavigationRule(rule);
+        }
+
+        for (String converterClassName : dispenser.getConverterConfigurationByClassName())
+        {
+            runtimeConfig.addConverterConfiguration(converterClassName,
+                                                                      _dispenser.getConverterConfiguration(converterClassName));
         }
 
         for (ResourceBundle bundle : dispenser.getResourceBundles())
