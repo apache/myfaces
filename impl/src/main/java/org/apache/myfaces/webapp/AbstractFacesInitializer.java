@@ -30,6 +30,7 @@ import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
 import javax.el.ExpressionFactory;
@@ -321,7 +322,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      *         <code>null</code>, if no no custom implementation was specified
      */
     protected static ExpressionFactory getUserDefinedExpressionFactory(ExternalContext externalContext) {
-        String expressionFactoryClassName = externalContext.getInitParameter(EXPRESSION_FACTORY);
+        String expressionFactoryClassName = WebConfigParamUtils.getStringInitParameter(externalContext, EXPRESSION_FACTORY);
         if (expressionFactoryClassName != null
             && expressionFactoryClassName.trim().length() > 0) {
             if (log.isLoggable(Level.FINE)) {

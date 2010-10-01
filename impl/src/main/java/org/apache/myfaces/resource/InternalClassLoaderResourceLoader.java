@@ -21,7 +21,6 @@ package org.apache.myfaces.resource;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -30,6 +29,7 @@ import org.apache.myfaces.shared_impl.resource.ResourceLoader;
 import org.apache.myfaces.shared_impl.resource.ResourceMeta;
 import org.apache.myfaces.shared_impl.resource.ResourceMetaImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
 
 /**
  * A resource loader implementation which loads resources from the thread ClassLoader.
@@ -52,8 +52,8 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
-        _useMultipleJsFilesForJsfUncompressedJs = _getBooleanParameter(FacesContext.getCurrentInstance().getExternalContext(),
-                USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, null, false);
+        _useMultipleJsFilesForJsfUncompressedJs = WebConfigParamUtils.getBooleanInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
+                USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, false);
     }
 
     @Override
@@ -161,42 +161,6 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             }
         }
         return false;
-    }
-
-    private String _getStringParameter(ExternalContext context, String name, String deprecatedName)
-    {
-        String param = context.getInitParameter(name);
-        
-        if ((param == null) && (deprecatedName != null))
-        {
-            param = context.getInitParameter (deprecatedName);
-        }
-        
-        if (param == null)
-        {
-            return null;
-        }
-
-        param = param.trim();
-        if (param.length() == 0)
-        {
-            return null;
-        }
-
-        return param;
-    }
-
-    private boolean _getBooleanParameter(ExternalContext context, String name, String deprecatedName, boolean defaultValue)
-    {
-        String param = _getStringParameter(context, name, deprecatedName);
-        if (param == null)
-        {
-            return defaultValue;
-        }
-        else
-        {
-            return Boolean.parseBoolean(param.toLowerCase());
-        }
     }
 
 }
