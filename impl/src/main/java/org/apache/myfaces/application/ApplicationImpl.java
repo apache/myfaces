@@ -545,7 +545,7 @@ public class ApplicationImpl extends Application
             if (uiViewRoot != null)
             {
                 //Call listeners on view level
-                event = _traverseListenerList(uiViewRoot.getViewListenersForEventClass(systemEventClass), 
+                event = _traverseListenerListWithCopy(uiViewRoot.getViewListenersForEventClass(systemEventClass), 
                         systemEventClass, source, event);
             }
 
@@ -2095,6 +2095,99 @@ public class ApplicationImpl extends Application
                         // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
                         // instance.
                         event.processListener(listener);
+                    }
+                }
+            }
+        }
+
+        return event;
+    }
+    
+    private static SystemEvent _traverseListenerListWithCopy(List<? extends SystemEventListener> listeners,
+            Class<? extends SystemEvent> systemEventClass, Object source,
+            SystemEvent event)
+    {
+        if (listeners != null && !listeners.isEmpty())
+        {
+            List<SystemEventListener> listenersCopy = new ArrayList<SystemEventListener>();
+            int processedListenerIndex = 0;
+            
+            for (int i = 0; i < listeners.size(); i++)
+            {
+                listenersCopy.add(listeners.get(i));
+            }
+            
+            // If the inner for is succesful, processedListenerIndex == listenersCopy.size()
+            // and the loop will be complete.
+            while (processedListenerIndex < listenersCopy.size())
+            {                
+                for (; processedListenerIndex < listenersCopy.size(); processedListenerIndex++ )
+                {
+                    SystemEventListener listener = listenersCopy.get(processedListenerIndex);
+                    // Call SystemEventListener.isListenerForSource(java.lang.Object), passing the source argument.
+                    // If this returns false, take no action on the listener.
+                    if (listener.isListenerForSource(source))
+                    {
+                        // Otherwise, if the event to be passed to the listener instances has not yet been constructed,
+                        // construct the event, passing source as the argument to the one-argument constructor that takes
+                        // an Object. This same event instance must be passed to all listener instances.
+                        event = _createEvent(systemEventClass, source, event);
+    
+                        // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
+                        // instance as the argument. If this returns false, take no action on the listener.
+                        if (event.isAppropriateListener(listener))
+                        {
+                            // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
+                            // instance.
+                            event.processListener(listener);
+                        }
+                    }
+                }
+                
+                boolean listChanged = false;
+                if (listeners.size() == listenersCopy.size())
+                {
+                    for (int i = 0; i < listenersCopy.size(); i++)
+                    {
+                        if (listenersCopy.get(i) != listeners.get(i))
+                        {
+                            listChanged = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    listChanged = true;
+                }
+                
+                if (listChanged)
+                {
+                    for (int i = 0; i < listeners.size(); i++)
+                    {
+                        SystemEventListener listener = listeners.get(i);
+                        
+                        // check if listenersCopy.get(i) is valid
+                        if (i < listenersCopy.size())
+                        {
+                            // The normal case is a listener was added, 
+                            // so as heuristic, check first
+                            // if we can find it at the same location
+                            if (!listener.equals(listenersCopy.get(i)))
+                            {
+                                if (!listenersCopy.contains(listener))
+                                {
+                                    listenersCopy.add(listener);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (!listenersCopy.contains(listener))
+                            {
+                                listenersCopy.add(listener);
+                            }
+                        }
                     }
                 }
             }
