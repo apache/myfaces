@@ -52,6 +52,7 @@ import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.HashMapUtils;
 
 /**
  * This class implements partial state saving feature when facelets
@@ -225,91 +226,105 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 
                 if (clientIdsRemoved != null)
                 {
+                    Set<String> idsRemovedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsRemoved.size()));
                     for (String clientId : clientIdsRemoved)
                     {
-                        view.invokeOnComponent(context, clientId, new ContextCallback()
-                            {
-                                public void invokeContextCallback(FacesContext context,
-                                        UIComponent target)
+                        if (!idsRemovedSet.contains(clientId))
+                        {
+                            view.invokeOnComponent(context, clientId, new ContextCallback()
                                 {
-                                    if (target.getParent() != null)
+                                    public void invokeContextCallback(FacesContext context,
+                                            UIComponent target)
                                     {
-                                        if (!target.getParent().getChildren().remove(target))
+                                        if (target.getParent() != null)
                                         {
-                                            String key = null;
-                                            for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
+                                            if (!target.getParent().getChildren().remove(target))
                                             {
-                                                if (entry.getValue()==target)
+                                                String key = null;
+                                                for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
                                                 {
-                                                    key = entry.getKey();
-                                                    break;
+                                                    if (entry.getValue()==target)
+                                                    {
+                                                        key = entry.getKey();
+                                                        break;
+                                                    }
                                                 }
-                                            }
-                                            if (key != null)
-                                            {
-                                                target.getParent().getFacets().remove(key);
+                                                if (key != null)
+                                                {
+                                                    target.getParent().getFacets().remove(key);
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            });
+                                });
+                            idsRemovedSet.add(clientId);
+                        }
                     }
+                    clientIdsRemoved.clear();
+                    clientIdsRemoved.addAll(idsRemovedSet);
                 }
                 
                 List<String> clientIdsAdded = getClientIdsAdded(view);
                 if (clientIdsAdded != null)
                 {
+                    Set<String> idsAddedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsAdded.size()));
                     for (String clientId : clientIdsAdded)
                     {
-                        final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
-                        if (wrapper != null)
+                        if (!idsAddedSet.contains(clientId))
                         {
-                            final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
-                            if (addedState != null)
+                            final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
+                            if (wrapper != null)
                             {
-                                if (addedState.length == 2)
+                                final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
+                                if (addedState != null)
                                 {
-                                    view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
-                                    view.processRestoreState(context, addedState[1]);
-                                    break;
-                                }
-                                else
-                                {
-                                    final String parentClientId = (String) addedState[0];
-                                    view.invokeOnComponent(context, parentClientId, new ContextCallback()
+                                    if (addedState.length == 2)
                                     {
-                                        public void invokeContextCallback(FacesContext context,
-                                                UIComponent target)
+                                        view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
+                                        view.processRestoreState(context, addedState[1]);
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        final String parentClientId = (String) addedState[0];
+                                        view.invokeOnComponent(context, parentClientId, new ContextCallback()
                                         {
-                                            if (addedState[1] != null)
+                                            public void invokeContextCallback(FacesContext context,
+                                                    UIComponent target)
                                             {
-                                                String facetName = (String) addedState[1];
-                                                UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
-                                                child.processRestoreState(context, addedState[4]);
-                                                target.getFacets().put(facetName,child);
-                                            }
-                                            else
-                                            {
-                                                Integer childIndex = (Integer) addedState[2];
-                                                UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
-                                                child.processRestoreState(context, addedState[4]);
-                                                try
+                                                if (addedState[1] != null)
                                                 {
-                                                    target.getChildren().add(childIndex, child);
+                                                    String facetName = (String) addedState[1];
+                                                    UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                                    child.processRestoreState(context, addedState[4]);
+                                                    target.getFacets().put(facetName,child);
                                                 }
-                                                catch (IndexOutOfBoundsException e)
+                                                else
                                                 {
-                                                    // We can't be sure about where should be this 
-                                                    // item, so just add it. 
-                                                    target.getChildren().add(child);
+                                                    Integer childIndex = (Integer) addedState[2];
+                                                    UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                                    child.processRestoreState(context, addedState[4]);
+                                                    try
+                                                    {
+                                                        target.getChildren().add(childIndex, child);
+                                                    }
+                                                    catch (IndexOutOfBoundsException e)
+                                                    {
+                                                        // We can't be sure about where should be this 
+                                                        // item, so just add it. 
+                                                        target.getChildren().add(child);
+                                                    }
                                                 }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
                             }
+                            idsAddedSet.add(clientId);
                         }
                     }
+                    clientIdsAdded.clear();
+                    clientIdsAdded.addAll(idsAddedSet);
                 }
             }
         }
