@@ -81,6 +81,10 @@ import org.apache.myfaces.shared_impl.util.HashMapUtils;
  *    all its children and facets from view inclusive.
  * 9. It is necessary to save and restore the list of added/removed components between several
  *    requests.
+ * 10.All components ids removed in any moment of time must be preserved.
+ * 11.Each component must be restored only once.
+ * 11.The order is important for ids added when it is traversed the tree, otherwise the algorithm 
+ *    could change the order in which components will be restored.  
  * 
  * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
  * @version $Revision: 793245 $ $Date: 2009-07-11 18:50:53 -0500 (Sat, 11 Jul 2009) $
@@ -99,10 +103,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
      * state saving. There are two possible values:
      * 
      * Key not present: The component uses pss.
-     * Boolean.TRUE: The component was added to the view after build view.
-     * Boolean.FALSE: The component was removed/added to the view. Itself and all
+     * ComponentState.ADD: The component was added to the view after build view.
+     * ComponentState.REMOVE_ADD: The component was removed/added to the view. Itself and all
      * descendants should be saved and restored, but we have to unregister/register
-     * from CLIENTIDS_ADDED and CLIENTIDS_REMOVED lists.
+     * from CLIENTIDS_ADDED and CLIENTIDS_REMOVED lists. See ComponentSupport.markComponentToRestoreFully
+     * for details.
+     * ComponentState.ADDED: The component has been added or removed/added, but it has
+     * been already processed.
      */
     public  static final String COMPONENT_ADDED_AFTER_BUILD_VIEW = "oam.COMPONENT_ADDED_AFTER_BUILD_VIEW"; 
     
@@ -227,41 +234,49 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 if (clientIdsRemoved != null)
                 {
                     Set<String> idsRemovedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsRemoved.size()));
-                    for (String clientId : clientIdsRemoved)
+                    context.getAttributes().put(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD, Boolean.TRUE);
+                    try
                     {
-                        if (!idsRemovedSet.contains(clientId))
+                        for (String clientId : clientIdsRemoved)
                         {
-                            view.invokeOnComponent(context, clientId, new ContextCallback()
-                                {
-                                    public void invokeContextCallback(FacesContext context,
-                                            UIComponent target)
+                            if (!idsRemovedSet.contains(clientId))
+                            {
+                                view.invokeOnComponent(context, clientId, new ContextCallback()
                                     {
-                                        if (target.getParent() != null)
+                                        public void invokeContextCallback(FacesContext context,
+                                                UIComponent target)
                                         {
-                                            if (!target.getParent().getChildren().remove(target))
+                                            if (target.getParent() != null)
                                             {
-                                                String key = null;
-                                                for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
+                                                if (!target.getParent().getChildren().remove(target))
                                                 {
-                                                    if (entry.getValue()==target)
+                                                    String key = null;
+                                                    for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
                                                     {
-                                                        key = entry.getKey();
-                                                        break;
+                                                        if (entry.getValue()==target)
+                                                        {
+                                                            key = entry.getKey();
+                                                            break;
+                                                        }
                                                     }
-                                                }
-                                                if (key != null)
-                                                {
-                                                    target.getParent().getFacets().remove(key);
+                                                    if (key != null)
+                                                    {
+                                                        target.getParent().getFacets().remove(key);
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                });
-                            idsRemovedSet.add(clientId);
+                                    });
+                                idsRemovedSet.add(clientId);
+                            }
                         }
+                        clientIdsRemoved.clear();
+                        clientIdsRemoved.addAll(idsRemovedSet);
                     }
-                    clientIdsRemoved.clear();
-                    clientIdsRemoved.addAll(idsRemovedSet);
+                    finally
+                    {
+                        context.getAttributes().remove(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD);
+                    }
                 }
                 
                 List<String> clientIdsAdded = getClientIdsAdded(view);
@@ -323,8 +338,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                             idsAddedSet.add(clientId);
                         }
                     }
+                    // Reset this list, because it will be calculated later when the view is being saved
+                    // in the right order, preventing duplicates (see COMPONENT_ADDED_AFTER_BUILD_VIEW for details).
                     clientIdsAdded.clear();
-                    clientIdsAdded.addAll(idsAddedSet);
                 }
             }
         }
@@ -637,6 +653,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                                 registerOnAddList(child.getClientId());
                                 child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                             }
+                            else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddList(child.getClientId());
+                            }
                             ensureClearInitialState(child);
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
@@ -680,6 +700,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                             {
                                 registerOnAddList(child.getClientId());
                                 child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                            }
+                            else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
+                            {
+                                registerOnAddList(child.getClientId());
                             }
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
@@ -879,6 +903,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
             else
             {
+                // In this case if we are removing components on build, it is not necessary to register
+                // again the current id, and its more, it could cause a concurrent exception. But note
+                // we need to propagate PreRemoveFromViewEvent, otherwise the view will not be restored
+                // correctly.
+                if (FaceletViewDeclarationLanguage.isRemovingComponentBuild(facesContext))
+                {
+                    return;
+                }
+                
                 //PreRemoveFromViewEvent
                 UIViewRoot uiViewRoot = facesContext.getViewRoot();
                 

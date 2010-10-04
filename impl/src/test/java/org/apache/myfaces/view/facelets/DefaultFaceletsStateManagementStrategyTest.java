@@ -22,7 +22,6 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
@@ -33,6 +32,7 @@ import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
@@ -41,27 +41,32 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 
+import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.view.ViewMetadataBase;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKit;
+import org.apache.myfaces.view.ViewMetadataBase;
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.google.inject.cglib.proxy.Factory;
 
 public class DefaultFaceletsStateManagementStrategyTest extends
-        AbstractJsfTestCase
+        AbstractJsfConfigurableMockTestCase
 {
 
-    public DefaultFaceletsStateManagementStrategyTest(String name)
+    public DefaultFaceletsStateManagementStrategyTest()
     {
-        super(name);
+        super();
     }
     
     public Object stateToRestore;
     
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         
@@ -106,10 +111,8 @@ public class DefaultFaceletsStateManagementStrategyTest extends
                 new HtmlTextRenderer());           
     }
 
-
-    
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         stateToRestore = null;
         super.tearDown();
@@ -128,9 +131,18 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         
     }
     
+    @Override
+    protected void setFactories() throws Exception
+    {
+        super.setFactories();
+        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
+                ApplicationFactoryImpl.class.getName());
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, MockViewDeclarationLanguageFactory.class.getName());
+    }
+
+    @Test
     public void testSimpleSaveRestore() throws Exception
     {
-        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, MockViewDeclarationLanguageFactory.class.getName());
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
@@ -138,21 +150,27 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
+        stateManagement.suscribeListeners(viewRoot);
         
         viewRoot.getAttributes().put("somekey", "somevalue");
         
         Object state1 = stateManagement.saveView(facesContext);
         stateToRestore = state1;
+        facesContext.setViewRoot(null);
         stateManagement.restoreView(facesContext, "/root", viewRoot.getRenderKitId());
         
         viewRoot = facesContext.getViewRoot();
         
-        assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        Assert.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        Assert.assertNotNull(viewRoot.findComponent("form1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:foo1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:var1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:button1"));
     }
     
+    @Test
     public void testSaveRestoreAddComponent() throws Exception
     {
-        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, MockViewDeclarationLanguageFactory.class.getName());
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
@@ -160,7 +178,8 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
-        
+        stateManagement.suscribeListeners(viewRoot);
+
         viewRoot.getAttributes().put("somekey", "somevalue");
         
         HtmlOutputText a = new HtmlOutputText();
@@ -170,27 +189,247 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         
         viewRoot.getChildren().add(a);
         
-        //Simulate event
-        PostAddToViewEvent evt = new PostAddToViewEvent(a);
-        
-        DefaultFaceletsStateManagementStrategy.PostAddPreRemoveFromViewListener listener =
-            new DefaultFaceletsStateManagementStrategy.PostAddPreRemoveFromViewListener();
-        
-        listener.processEvent(evt);
-        
         Object state1 = stateManagement.saveView(facesContext);
         stateToRestore = state1;
+        facesContext.setViewRoot(null);
         stateManagement.restoreView(facesContext, "/root", viewRoot.getRenderKitId());
         
         viewRoot = facesContext.getViewRoot();
         
-        assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        Assert.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        Assert.assertNotNull(viewRoot.findComponent("form1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:foo1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:var1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:button1"));
         
         a = (HtmlOutputText) viewRoot.findComponent("output1");
-        assertNotNull(a);
-        assertEquals("testOutput1",a.getValue());
+        Assert.assertNotNull(a);
+        Assert.assertEquals("testOutput1",a.getValue());
     }
     
+    @Test
+    public void testSaveRestoreAddComponentMultiplePostback() throws Exception
+    {
+        ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
+        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
+        
+        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        
+        UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
+        
+        facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
+        
+        vdl.buildView(facesContext, viewRoot);
+        
+        stateManagement.suscribeListeners(viewRoot);
+        
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
+        viewRoot.getAttributes().put("somekey", "somevalue");
+        
+        HtmlOutputText a = new HtmlOutputText();
+        a.setId("output1");
+        a.setValue("testOutput1");
+        viewRoot.getChildren().add(a);
+        
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        HtmlOutputText b = new HtmlOutputText();
+        b.setId("output2");
+        b.setValue("testOutput2");
+        viewRoot.getChildren().add(b);
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+        
+        HtmlOutputText c = new HtmlOutputText();
+        c.setId("output3");
+        c.setValue("testOutput3");
+        viewRoot.getChildren().add(c);
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+        
+        HtmlOutputText d = new HtmlOutputText();
+        d.setId("output4");
+        d.setValue("testOutput4");
+        viewRoot.getChildren().add(d);
+        
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+        
+        Assert.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        Assert.assertNotNull(viewRoot.findComponent("form1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:foo1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:var1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:button1"));
+        
+        a = (HtmlOutputText) viewRoot.findComponent("output1");
+        Assert.assertNotNull(a);
+        Assert.assertEquals("testOutput1",a.getValue());
+        b = (HtmlOutputText) viewRoot.findComponent("output2");
+        Assert.assertNotNull(b);
+        Assert.assertEquals("testOutput2",b.getValue());
+        c = (HtmlOutputText) viewRoot.findComponent("output3");
+        Assert.assertNotNull(c);
+        Assert.assertEquals("testOutput3",c.getValue());
+        d = (HtmlOutputText) viewRoot.findComponent("output4");
+        Assert.assertNotNull(d);
+        Assert.assertEquals("testOutput4",d.getValue());
+    }
+    
+    @Test
+    public void testSaveRestoreToogleComponent() throws Exception
+    {
+        ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
+        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
+        
+        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        
+        UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
+        vdl.buildView(facesContext, viewRoot);
+        stateManagement.suscribeListeners(viewRoot);
+
+        viewRoot.getAttributes().put("somekey", "somevalue");
+        
+        HtmlOutputText a = new HtmlOutputText();
+        a.setId("output1");
+        a.setValue("testOutput1");
+        
+        viewRoot.getChildren().add(a);
+        
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+        
+        Assert.assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        
+        UIComponent component = viewRoot.getChildren().remove( 0 );
+        viewRoot.getChildren().add( component );
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        Assert.assertEquals("output1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("form1",viewRoot.getChildren().get(1).getId());
+        
+        component = viewRoot.getChildren().remove( 0 );
+        viewRoot.getChildren().add( component );
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        Assert.assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        
+        component = viewRoot.getChildren().remove( 0 );
+        viewRoot.getChildren().add( component );
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        Assert.assertEquals("output1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("form1",viewRoot.getChildren().get(1).getId());
+        
+        component = viewRoot.getChildren().remove( 0 );
+        viewRoot.getChildren().add( component );
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        Assert.assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        
+        Assert.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        Assert.assertNotNull(viewRoot.findComponent("form1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:foo1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:var1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:button1"));
+        
+        a = (HtmlOutputText) viewRoot.findComponent("output1");
+        Assert.assertNotNull(a);
+        Assert.assertEquals("testOutput1",a.getValue());
+    }
+    
+    @Test
+    public void testSaveRestoreToogleComponent2() throws Exception
+    {
+        ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
+        DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
+        
+        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        
+        UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
+        vdl.buildView(facesContext, viewRoot);
+        stateManagement.suscribeListeners(viewRoot);
+
+        viewRoot.getAttributes().put("somekey", "somevalue");
+        
+        HtmlOutputText a = new HtmlOutputText();
+        a.setId("output1");
+        a.setValue("testOutput1");        
+        viewRoot.getChildren().add(a);
+
+        HtmlOutputText b = new HtmlOutputText();
+        b.setId("output2");
+        b.setValue("testOutput2");        
+        viewRoot.getChildren().add(b);
+        
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+        
+        Assert.assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        Assert.assertEquals("output2",viewRoot.getChildren().get(2).getId());
+        
+        UIComponent component = viewRoot.getChildren().remove( 0 );
+        viewRoot.getChildren().add( component );
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        Assert.assertEquals("output1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("output2",viewRoot.getChildren().get(1).getId());
+        Assert.assertEquals("form1",viewRoot.getChildren().get(2).getId());
+        
+        component = viewRoot.getChildren().remove( 0 );
+        viewRoot.getChildren().add( component );
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        Assert.assertEquals("output2",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("form1",viewRoot.getChildren().get(1).getId());
+        Assert.assertEquals("output1",viewRoot.getChildren().get(2).getId());
+
+        component = viewRoot.getChildren().remove( 0 );
+        viewRoot.getChildren().add( component );
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        Assert.assertEquals("form1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("output1",viewRoot.getChildren().get(1).getId());
+        Assert.assertEquals("output2",viewRoot.getChildren().get(2).getId());
+        
+        component = viewRoot.getChildren().remove( 0 );
+        viewRoot.getChildren().add( component );
+
+        viewRoot = saveAndRestore(stateManagement, viewRoot);
+
+        Assert.assertEquals("output1",viewRoot.getChildren().get(0).getId());
+        Assert.assertEquals("output2",viewRoot.getChildren().get(1).getId());
+        Assert.assertEquals("form1",viewRoot.getChildren().get(2).getId());
+
+        Assert.assertEquals("somevalue", viewRoot.getAttributes().get("somekey"));
+        Assert.assertNotNull(viewRoot.findComponent("form1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:foo1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:var1"));
+        Assert.assertNotNull(viewRoot.findComponent("form1:button1"));
+        
+        a = (HtmlOutputText) viewRoot.findComponent("output1");
+        Assert.assertNotNull(a);
+        Assert.assertEquals("testOutput1",a.getValue());
+    }
+    
+    public UIViewRoot saveAndRestore(StateManagementStrategy stateManagement, UIViewRoot viewRoot)
+    {
+        externalContext.getRequestMap()
+        .remove(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR);        
+        Object state1 = stateManagement.saveView(facesContext);
+        stateToRestore = state1;
+        facesContext.setViewRoot(null);
+        stateManagement.restoreView(facesContext, "/root", viewRoot.getRenderKitId());
+        return facesContext.getViewRoot();
+    }
     
     public static class MockViewDeclarationLanguage extends ViewDeclarationLanguage
     {

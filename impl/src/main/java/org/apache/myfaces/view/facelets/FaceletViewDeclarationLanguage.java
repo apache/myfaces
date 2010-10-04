@@ -220,6 +220,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public final static String REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS";
     
     public final static String USING_PSS_ON_THIS_VIEW = "org.apache.myfaces.USING_PSS_ON_THIS_VIEW";
+    
+    public final static String REMOVING_COMPONENTS_BUILD = "org.apache.myfaces.REMOVING_COMPONENTS_BUILD";
     //END CONSTANTS SET ON BUILD VIEW
     
     /**
@@ -587,7 +589,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         return context.getAttributes().containsKey(REFRESHING_TRANSIENT_BUILD);
     }
-    
+
+    public static boolean isRemovingComponentBuild(FacesContext context)
+    {
+        return context.getAttributes().containsKey(REMOVING_COMPONENTS_BUILD);
+    }
+
     public static boolean isMarkInitialState(FacesContext context)
     {
         return context.getAttributes().containsKey(MARK_INITIAL_STATE_KEY);
