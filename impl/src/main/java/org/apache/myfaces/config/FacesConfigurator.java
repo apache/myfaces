@@ -1926,7 +1926,7 @@ public class FacesConfigurator
         Application application = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
 
         FacesConfigDispenser<FacesConfig> dispenser = getDispenser();
-        application.setActionListener(getApplicationObject(ActionListener.class,
+        application.setActionListener(ClassUtils.buildApplicationObject(ActionListener.class,
                                                            dispenser.getActionListenerIterator(), null));
 
         if (dispenser.getDefaultLocale() != null)
@@ -1944,17 +1944,17 @@ public class FacesConfigurator
             application.setMessageBundle(dispenser.getMessageBundle());
         }
 
-        application.setNavigationHandler(getApplicationObject(NavigationHandler.class,
+        application.setNavigationHandler(ClassUtils.buildApplicationObject(NavigationHandler.class,
                                                               ConfigurableNavigationHandler.class,
                                                               BackwardsCompatibleNavigationHandlerWrapper.class,
                                                               dispenser.getNavigationHandlerIterator(),
                                                               application.getNavigationHandler()));
 
-        application.setStateManager(getApplicationObject(StateManager.class,
+        application.setStateManager(ClassUtils.buildApplicationObject(StateManager.class,
                                                          dispenser.getStateManagerIterator(),
                                                          application.getStateManager()));
 
-        application.setResourceHandler(getApplicationObject(ResourceHandler.class,
+        application.setResourceHandler(ClassUtils.buildApplicationObject(ResourceHandler.class,
                                                             dispenser.getResourceHandlerIterator(),
                                                             application.getResourceHandler()));
 
@@ -1966,7 +1966,7 @@ public class FacesConfigurator
 
         application.setSupportedLocales(locales);
 
-        application.setViewHandler(getApplicationObject(ViewHandler.class,
+        application.setViewHandler(ClassUtils.buildApplicationObject(ViewHandler.class,
                                                         dispenser.getViewHandlerIterator(),
                                                         application.getViewHandler()));
         for (SystemEventListener systemEventListener : dispenser.getSystemEventListeners())
@@ -2073,11 +2073,11 @@ public class FacesConfigurator
         
         RuntimeConfig runtimeConfig = getRuntimeConfig();
 
-        runtimeConfig.setPropertyResolverChainHead(getApplicationObject(PropertyResolver.class,
+        runtimeConfig.setPropertyResolverChainHead(ClassUtils.buildApplicationObject(PropertyResolver.class,
                                                                         dispenser.getPropertyResolverIterator(),
                                                                         new DefaultPropertyResolver()));
 
-        runtimeConfig.setVariableResolverChainHead(getApplicationObject(VariableResolver.class,
+        runtimeConfig.setVariableResolverChainHead(ClassUtils.buildApplicationObject(VariableResolver.class,
                                                                         dispenser.getVariableResolverIterator(),
                                                                         new VariableResolverImpl()));
     }
@@ -2120,148 +2120,6 @@ public class FacesConfigurator
     public void setRuntimeConfig(RuntimeConfig runtimeConfig)
     {
         _runtimeConfig = runtimeConfig;
-    }
-    
-    private <T> T getApplicationObject(Class<T> interfaceClass, Collection<String> classNamesIterator, T defaultObject)
-    {
-        return getApplicationObject(interfaceClass, null, null, classNamesIterator, defaultObject);
-    }
-
-    /**
-     * Creates ApplicationObjects like NavigationHandler or StateManager and creates 
-     * the right wrapping chain of the ApplicationObjects known as the decorator pattern. 
-     * @param <T>
-     * @param interfaceClass The class from which the implementation has to inherit from.
-     * @param extendedInterfaceClass A subclass of interfaceClass which specifies a more
-     *                               detailed implementation.
-     * @param extendedInterfaceWrapperClass A wrapper class for the case that you have an ApplicationObject
-     *                                      which only implements the interfaceClass but not the 
-     *                                      extendedInterfaceClass.
-     * @param classNamesIterator All the class names of the actual ApplicationObject implementations
-     *                           from the faces-config.xml.
-     * @param defaultObject The default implementation for the given ApplicationObject.
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T getApplicationObject(Class<T> interfaceClass, Class<? extends T> extendedInterfaceClass,
-            Class<? extends T> extendedInterfaceWrapperClass,
-            Collection<String> classNamesIterator, T defaultObject)
-    {
-        T current = defaultObject;
-        
-
-        for (String implClassName : classNamesIterator)
-        {
-            Class<? extends T> implClass = ClassUtils.simpleClassForName(implClassName);
-
-            // check, if class is of expected interface type
-            if (!interfaceClass.isAssignableFrom(implClass))
-            {
-                throw new IllegalArgumentException("Class " + implClassName + " is no " + interfaceClass.getName());
-            }
-
-            if (current == null)
-            {
-                // nothing to decorate
-                current = (T) ClassUtils.newInstance(implClass);
-            }
-            else
-            {
-                // let's check if class supports the decorator pattern
-                T newCurrent = null;
-                try
-                {
-                    Constructor<? extends T> delegationConstructor = null;
-                    
-                    // first, if there is a extendedInterfaceClass,
-                    // try to find a constructor that uses that
-                    if (extendedInterfaceClass != null 
-                            && extendedInterfaceClass.isAssignableFrom(current.getClass()))
-                    {
-                        try
-                        {
-                            delegationConstructor = 
-                                    implClass.getConstructor(new Class[] {extendedInterfaceClass});
-                        }
-                        catch (NoSuchMethodException mnfe)
-                        {
-                            // just eat it
-                        }
-                    }
-                    if (delegationConstructor == null)
-                    {
-                        // try to find the constructor with the "normal" interfaceClass
-                        delegationConstructor = 
-                                implClass.getConstructor(new Class[] {interfaceClass});
-                    }
-                    // impl class supports decorator pattern at this point
-                    try
-                    {
-                        // create new decorator wrapping current
-                        newCurrent = delegationConstructor.newInstance(new Object[] { current });
-                    }
-                    catch (InstantiationException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                }
-                catch (NoSuchMethodException e)
-                {
-                    // no decorator pattern support
-                    newCurrent = (T) ClassUtils.newInstance(implClass);
-                }
-                
-                // now we have a new current object (newCurrent)
-                // --> find out if it is assignable from extendedInterfaceClass
-                // and if not, wrap it in a backwards compatible wrapper (if available)
-                if (extendedInterfaceWrapperClass != null
-                        && !extendedInterfaceClass.isAssignableFrom(newCurrent.getClass()))
-                {
-                    try
-                    {
-                        Constructor<? extends T> wrapperConstructor
-                                = extendedInterfaceWrapperClass.getConstructor(
-                                        new Class[] {interfaceClass, extendedInterfaceClass});
-                        newCurrent = wrapperConstructor.newInstance(new Object[] {newCurrent, current});
-                    }
-                    catch (NoSuchMethodException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InstantiationException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                }
-                
-                current = newCurrent;
-            }
-        }
-
-        return current;
     }
 
     private void configureRuntimeConfig()
@@ -2348,7 +2206,7 @@ public class FacesConfigurator
             }
 
             //RenderKit renderKit = (RenderKit) ClassUtils.newInstance(renderKitClass);
-            RenderKit renderKit = (RenderKit) getApplicationObject(RenderKit.class, renderKitClass, null);
+            RenderKit renderKit = (RenderKit) ClassUtils.buildApplicationObject(RenderKit.class, renderKitClass, null);
 
             for (Renderer element : dispenser.getRenderers(renderKitId))
             {

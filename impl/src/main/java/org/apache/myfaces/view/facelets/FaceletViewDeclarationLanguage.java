@@ -25,11 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -1392,69 +1389,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             ArrayList<String> classNames = new ArrayList<String>(1);
             classNames.add(faceletsResourceResolverClassName);
-            resolver = getApplicationObject(ResourceResolver.class, classNames, resolver);
+            resolver = ClassUtils.buildApplicationObject(ResourceResolver.class, classNames, resolver);
         }
 
         return new DefaultFaceletFactory(compiler, resolver, refreshPeriod);
     }
     
-    private <T> T getApplicationObject(Class<T> interfaceClass, Collection<String> classNamesIterator, T defaultObject)
-    {
-        T current = defaultObject;
-
-        for (String implClassName : classNamesIterator)
-        {
-            Class<? extends T> implClass = ClassUtils.simpleClassForName(implClassName);
-
-            // check, if class is of expected interface type
-            if (!interfaceClass.isAssignableFrom(implClass))
-            {
-                throw new IllegalArgumentException("Class " + implClassName + " is no " + interfaceClass.getName());
-            }
-
-            if (current == null)
-            {
-                // nothing to decorate
-                current = (T) ClassUtils.newInstance(implClass);
-            }
-            else
-            {
-                // let's check if class supports the decorator pattern
-                try
-                {
-                    Constructor<? extends T> delegationConstructor = 
-                        implClass.getConstructor(new Class[] {interfaceClass});
-                    // impl class supports decorator pattern,
-                    try
-                    {
-                        // create new decorator wrapping current
-                        current = delegationConstructor.newInstance(new Object[] { current });
-                    }
-                    catch (InstantiationException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                }
-                catch (NoSuchMethodException e)
-                {
-                    // no decorator pattern support
-                    current = (T) ClassUtils.newInstance(implClass);
-                }
-            }
-        }
-        return current;
-    }
 
     protected ResponseWriter createResponseWriter(FacesContext context) throws IOException, FacesException
     {

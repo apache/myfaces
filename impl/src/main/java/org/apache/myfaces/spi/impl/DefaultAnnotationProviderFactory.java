@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -32,7 +31,6 @@ import org.apache.commons.discovery.ResourceNameIterator;
 import org.apache.commons.discovery.resource.ClassLoaders;
 import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
 import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 
@@ -43,9 +41,12 @@ import org.apache.myfaces.spi.AnnotationProviderFactory;
  */
 public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
 {
-    private static Logger log = Logger.getLogger(DefaultAnnotationProviderFactory.class.getName());
-
     public static final String ANNOTATION_PROVIDER = AnnotationProvider.class.getName();
+    
+    private Logger getLogger()
+    {
+        return Logger.getLogger(DefaultAnnotationProviderFactory.class.getName());
+    }
     
     @Override
     public AnnotationProvider createAnnotationProvider(
@@ -85,15 +86,15 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         }
         catch (InstantiationException e)
         {
-            log.log(Level.SEVERE, "", e);
+            getLogger().log(Level.SEVERE, "", e);
         }
         catch (IllegalAccessException e)
         {
-            log.log(Level.SEVERE, "", e);
+            getLogger().log(Level.SEVERE, "", e);
         }
         catch (InvocationTargetException e)
         {
-            log.log(Level.SEVERE, "", e);
+            getLogger().log(Level.SEVERE, "", e);
         }
         catch (PrivilegedActionException e)
         {
@@ -119,148 +120,6 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         loaders.put(classLoader);
         DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
         ResourceNameIterator iter = dsn.findResourceNames(ANNOTATION_PROVIDER);
-        return getApplicationObject(AnnotationProvider.class, iter, new DefaultAnnotationProvider());
+        return SpiUtils.buildApplicationObject(AnnotationProvider.class, iter, new DefaultAnnotationProvider());
     }
-
-    private <T> T getApplicationObject(Class<T> interfaceClass, ResourceNameIterator classNamesIterator, T defaultObject)
-    {
-        return getApplicationObject(interfaceClass, null, null, classNamesIterator, defaultObject);
-    }
-
-    /**
-     * Creates ApplicationObjects like NavigationHandler or StateManager and creates 
-     * the right wrapping chain of the ApplicationObjects known as the decorator pattern. 
-     * @param <T>
-     * @param interfaceClass The class from which the implementation has to inherit from.
-     * @param extendedInterfaceClass A subclass of interfaceClass which specifies a more
-     *                               detailed implementation.
-     * @param extendedInterfaceWrapperClass A wrapper class for the case that you have an ApplicationObject
-     *                                      which only implements the interfaceClass but not the 
-     *                                      extendedInterfaceClass.
-     * @param classNamesIterator All the class names of the actual ApplicationObject implementations
-     *                           from the faces-config.xml.
-     * @param defaultObject The default implementation for the given ApplicationObject.
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T getApplicationObject(Class<T> interfaceClass, Class<? extends T> extendedInterfaceClass,
-            Class<? extends T> extendedInterfaceWrapperClass,
-            ResourceNameIterator classNamesIterator, T defaultObject)
-    {
-        T current = defaultObject;
-
-        while (classNamesIterator.hasNext())
-        {
-            String implClassName = classNamesIterator.nextResourceName();
-            Class<? extends T> implClass = ClassUtils.simpleClassForName(implClassName);
-
-            // check, if class is of expected interface type
-            if (!interfaceClass.isAssignableFrom(implClass))
-            {
-                throw new IllegalArgumentException("Class " + implClassName + " is no " + interfaceClass.getName());
-            }
-
-            if (current == null)
-            {
-                // nothing to decorate
-                current = (T) ClassUtils.newInstance(implClass);
-            }
-            else
-            {
-                // let's check if class supports the decorator pattern
-                T newCurrent = null;
-                try
-                {
-                    Constructor<? extends T> delegationConstructor = null;
-                    
-                    // first, if there is a extendedInterfaceClass,
-                    // try to find a constructor that uses that
-                    if (extendedInterfaceClass != null 
-                            && extendedInterfaceClass.isAssignableFrom(current.getClass()))
-                    {
-                        try
-                        {
-                            delegationConstructor = 
-                                    implClass.getConstructor(new Class[] {extendedInterfaceClass});
-                        }
-                        catch (NoSuchMethodException mnfe)
-                        {
-                            // just eat it
-                        }
-                    }
-                    if (delegationConstructor == null)
-                    {
-                        // try to find the constructor with the "normal" interfaceClass
-                        delegationConstructor = 
-                                implClass.getConstructor(new Class[] {interfaceClass});
-                    }
-                    // impl class supports decorator pattern at this point
-                    try
-                    {
-                        // create new decorator wrapping current
-                        newCurrent = delegationConstructor.newInstance(new Object[] { current });
-                    }
-                    catch (InstantiationException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                }
-                catch (NoSuchMethodException e)
-                {
-                    // no decorator pattern support
-                    newCurrent = (T) ClassUtils.newInstance(implClass);
-                }
-                
-                // now we have a new current object (newCurrent)
-                // --> find out if it is assignable from extendedInterfaceClass
-                // and if not, wrap it in a backwards compatible wrapper (if available)
-                if (extendedInterfaceWrapperClass != null
-                        && !extendedInterfaceClass.isAssignableFrom(newCurrent.getClass()))
-                {
-                    try
-                    {
-                        Constructor<? extends T> wrapperConstructor
-                                = extendedInterfaceWrapperClass.getConstructor(
-                                        new Class[] {interfaceClass, extendedInterfaceClass});
-                        newCurrent = wrapperConstructor.newInstance(new Object[] {newCurrent, current});
-                    }
-                    catch (NoSuchMethodException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InstantiationException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                }
-                
-                current = newCurrent;
-            }
-        }
-
-        return current;
-    }    
 }
