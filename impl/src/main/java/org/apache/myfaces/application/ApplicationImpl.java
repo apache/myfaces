@@ -1952,6 +1952,17 @@ public class ApplicationImpl extends Application
 
     private void _handleResourceDependencyAnnotations(FacesContext context, Class<?> inspectedClass, UIComponent component, boolean isProduction)
     {
+        // This and only this method handles @ResourceDependency and @ResourceDependencies annotations
+        // The source of these annotations is Class<?> inspectedClass. Because Class<?> and its annotations cannot change 
+        // during request/response, it is sufficient to process Class<?> only once per view.
+        RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);
+        if (rvc.isClassAlreadyProcessed(inspectedClass))
+        {
+            return;
+        }
+        boolean classAlreadyProcessed = false;
+
+        
         List<ResourceDependency> dependencyList = null;
         boolean isCachedList = false;
         
@@ -1985,7 +1996,6 @@ public class ApplicationImpl extends Application
         {
             for (ResourceDependency dependency : dependencyList)
             {
-                RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);
                 if (!rvc.isResourceDependencyAlreadyProcessed(dependency))
                 {
                     _handleResourceDependency(context, component, dependency);
@@ -1996,6 +2006,10 @@ public class ApplicationImpl extends Application
         
         if(isProduction && !isCachedList)   //if we're in production and the list is not yet cached, store it
             _classToResourceDependencyMap.put(inspectedClass, dependencyList);  //null value stored for dependencyList means no annotations were found
+        
+        if (!classAlreadyProcessed) { 
+            rvc.setClassProcessed(inspectedClass);
+        }
     }
     
     private void _handleResourceDependency(FacesContext context, UIComponent component, ResourceDependency annotation)

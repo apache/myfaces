@@ -36,7 +36,9 @@ public class RequestViewContext
 
     public static final String VIEW_CONTEXT_KEY = "oam.VIEW_CONTEXT";
     
-    private Map<ResourceDependency, Boolean> addedResources = new HashMap<ResourceDependency,Boolean>(); 
+    private Map<ResourceDependency, Boolean> addedResources = new HashMap<ResourceDependency,Boolean>();
+    
+    private Map<Class<?>, Boolean> processedClasses = new HashMap<Class<?>,Boolean>();
 
     static public RequestViewContext getCurrentInstance()
     {
@@ -82,5 +84,15 @@ public class RequestViewContext
     public void setResourceDependencyAsProcessed(ResourceDependency dependency)
     {
         addedResources.put(dependency, true);
+    }
+
+    public boolean isClassAlreadyProcessed(Class<?> inspectedClass)
+    {
+        return processedClasses.containsKey(inspectedClass);
+    }
+
+    public void setClassProcessed(Class<?> inspectedClass)
+    {
+        processedClasses.put(inspectedClass, Boolean.TRUE);
     }
 }
