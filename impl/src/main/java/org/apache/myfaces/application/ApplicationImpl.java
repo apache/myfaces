@@ -56,6 +56,7 @@ import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIComponentBase;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
@@ -198,6 +199,18 @@ public class ApplicationImpl extends Application
     
     private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
             = new ArrayList<Class<? extends Converter>>();
+    
+    /**
+     * Represents semantic null in _componentClassMap. 
+     */
+    private static final UIComponent NOTHING = new UIComponentBase()
+    {
+        @Override
+        public String getFamily()
+        {
+            return null;
+        }
+    };
     
     // ~ Constructors
     // --------------------------------------------------------------------------
@@ -1186,20 +1199,32 @@ public class ApplicationImpl extends Application
                  * re-throw it. If any other exception is thrown, log the exception and continue to the next step.
                  */
 
+                boolean isProduction = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Production);
                 String name = componentResource.getResourceName();
                 String className = name.substring(0, name.lastIndexOf('.'));
                 fqcn = componentResource.getLibraryName() + "." + className;
-
-                try
-                {
-                    componentClass = ClassUtils.classForName(fqcn);
+                
+                if (isProduction) {
+                    componentClass = (Class<? extends UIComponent>) _componentClassMap.get(fqcn);
                 }
-                catch (ClassNotFoundException e)
-                {
+                if (componentClass == null) {
+                    try
+                    {
+                        componentClass = ClassUtils.classForName(fqcn);
+                        if (isProduction) {
+                            _componentClassMap.put(fqcn, componentClass);
+                        }
+                    }
+                    catch (ClassNotFoundException e)
+                    {
+                        // Remember here that classForName did not find Class
+                        if (isProduction) {
+                            _componentClassMap.put(fqcn, NOTHING.getClass());
+                        }
+                    }
                 }
 
-                if (componentClass != null)
-                {
+                if (componentClass != null && NOTHING.getClass() != componentClass)                {
                     try
                     {
                         component = componentClass.newInstance();
