@@ -22,6 +22,8 @@ import java.util.Iterator;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PostValidateEvent;
+import javax.faces.event.PreValidateEvent;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -132,6 +134,10 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 }
                 if (!isSubmitted())
                     return;
+
+                //Pre validation event dispatch for component
+                context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
+                
                 for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
                 {
                     it.next().processValidators(context);
@@ -139,6 +145,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
             }
             finally
             {
+                context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
                 popComponentFromEL(context);
             }
         }
