@@ -18,6 +18,11 @@
  */
 package javax.faces.component;
 
+import java.util.Collection;
+
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -116,6 +121,72 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
     public boolean isRendered()
     {
         return super.isRendered();
+    }
+    
+    @Override
+    public boolean visitTree(VisitContext context, VisitCallback callback)
+    {
+        boolean isCachedFacesContext = isCachedFacesContext();
+        try
+        {
+            if (!isCachedFacesContext)
+            {
+                setCachedFacesContext(context.getFacesContext());
+            }
+            
+            if (!isVisitable(context)) {
+                return false;
+            }
+    
+            pushComponentToEL(context.getFacesContext(), this);
+            try {
+                VisitResult res = context.invokeVisitCallback(this, callback);
+                switch (res) {
+                //we are done nothing has to be processed anymore
+                case COMPLETE:
+                    return true;
+    
+                case REJECT:
+                    return false;
+    
+                //accept
+                default:
+                    // Take advantage of the fact this is a NamingContainer
+                    // and we can know if there are ids to visit inside it 
+                    Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
+                    
+                    if (subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty())
+                    {
+                        if (getFacetCount() > 0) {
+                            for (UIComponent facet : getFacets().values()) {
+                                if (facet.visitTree(context, callback)) {
+                                    return true;
+                                }
+                            }
+                        }
+                        if (getChildCount() > 0) {
+                            for (UIComponent child : getChildren()) {
+                                if (child.visitTree(context, callback)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+            finally {
+                //all components must call popComponentFromEl after visiting is finished
+                popComponentFromEL(context.getFacesContext());
+            }
+        }
+        finally
+        {
+            if (!isCachedFacesContext)
+            {
+                setCachedFacesContext(null);
+            }
+        }
     }
 
     enum PropertyKeys
