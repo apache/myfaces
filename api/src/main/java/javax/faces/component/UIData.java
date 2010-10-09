@@ -863,6 +863,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 return;
             }
+            pushComponentToEL(context, this);
             setRowIndex(-1);
             processFacets(context, PROCESS_DECODES);
             processColumnFacets(context, PROCESS_DECODES);
@@ -880,6 +881,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         finally
         {
+            popComponentFromEL(context);
             setCachedFacesContext(null);
         }
     }
@@ -900,6 +902,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 return;
             }
     
+            pushComponentToEL(context, this);
             setRowIndex(-1);
             processFacets(context, PROCESS_VALIDATORS);
             processColumnFacets(context, PROCESS_VALIDATORS);
@@ -914,6 +917,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         finally
         {
+            popComponentFromEL(context);
             setCachedFacesContext(null);
         }
     }
@@ -928,6 +932,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             if (!isRendered())
             {
                 return;
@@ -945,6 +950,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         finally
         {
+            popComponentFromEL(context);
             setCachedFacesContext(null);
         }
     }

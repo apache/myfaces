@@ -183,6 +183,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             {
                 try
                 {
+                    pushComponentToEL(context, this);
                     //Pre validation event dispatch for component
                     context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
     
@@ -196,6 +197,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 finally
                 {
                     context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
+                    popComponentFromEL(context);
                 }
                 if (!isValid())
                 {
@@ -238,6 +240,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             {
                 try
                 {
+                    pushComponentToEL(context, this);
                     //Pre validation event dispatch for component
                     context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
     
@@ -251,6 +254,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 finally
                 {
                     context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
+                    popComponentFromEL(context);
                 }
                 if (!isValid())
                 {
@@ -291,12 +295,17 @@ public class UIInput extends UIOutput implements EditableValueHolder
             setCachedFacesContext(context);
             try
             {
+                pushComponentToEL(context, this);
                 updateModel(context);
             }
             catch (RuntimeException e)
             {
                 context.renderResponse();
                 throw e;
+            }
+            finally
+            {
+                popComponentFromEL(context);
             }
             if (!isValid())
             {
