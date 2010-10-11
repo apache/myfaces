@@ -34,7 +34,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 /**
  * @author Jacob Hookom
  * @author Roland Huss
@@ -43,6 +44,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
  */
 public final class Classpath
 {
+    private static final Charset UTF8 = Charset.forName("UTF-8");
     private Classpath()
     {
     }
@@ -265,7 +267,8 @@ public final class Classpath
             {
                 jarFileUrl = jarFileUrl.substring("file:".length());
             }
-
+            // make sure this is a valid file system path by removing escaping of white-space characters, etc. 
+            jarFileUrl = decodeFilesystemUrl(jarFileUrl);
             return new JarFile(jarFileUrl);
         }
 
@@ -295,6 +298,40 @@ public final class Classpath
                 // shallow
             }
         }
+    }
+    
+    private static String decodeFilesystemUrl(String url) {
+        //borrowed from commons-io FileUtils.
+        String decoded = url;
+        if (url != null && url.indexOf('%') >= 0) {
+            int n = url.length();
+            StringBuffer buffer = new StringBuffer();
+            ByteBuffer bytes = ByteBuffer.allocate(n);
+            for (int i = 0; i < n;) {
+                if (url.charAt(i) == '%') {
+                    try {
+                        do {
+                            byte octet = (byte) Integer.parseInt(url.substring(i + 1, i + 3), 16);
+                            bytes.put(octet);
+                            i += 3;
+                        } while (i < n && url.charAt(i) == '%');
+                        continue;
+                    } catch (RuntimeException e) {
+                        // malformed percent-encoded octet, fall through and
+                        // append characters literally
+                    } finally {
+                        if (bytes.position() > 0) {
+                            bytes.flip();
+                            buffer.append(UTF8.decode(bytes).toString());
+                            bytes.clear();
+                        }
+                    }
+                }
+                buffer.append(url.charAt(i++));
+            }
+            decoded = buffer.toString();
+        }
+        return decoded;
     }
 
 }
