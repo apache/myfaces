@@ -18,24 +18,25 @@
  */
 package org.apache.myfaces.application;
 
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.myfaces.application.jsp.JspStateManagerImpl;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.impl.digester.elements.Property;
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.context.RequestViewContext;
+import org.apache.myfaces.el.PropertyResolverImpl;
+import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
+import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
+import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
+import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
+import org.apache.myfaces.el.unified.ELResolverBuilder;
+import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.lifecycle.LifecycleImpl;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.view.facelets.el.ELText;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
@@ -85,26 +86,24 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.myfaces.application.jsp.JspStateManagerImpl;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.Property;
-import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
-import org.apache.myfaces.context.RequestViewContext;
-import org.apache.myfaces.el.PropertyResolverImpl;
-import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
-import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
-import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
-import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
-import org.apache.myfaces.el.unified.ELResolverBuilder;
-import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
-import org.apache.myfaces.lifecycle.LifecycleImpl;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.view.facelets.el.ELText;
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * DOCUMENT ME!
@@ -124,9 +123,6 @@ public class ApplicationImpl extends Application
     private final static VariableResolver VARIABLERESOLVER = new VariableResolverToApplicationELResolverAdapter();
 
     private final static PropertyResolver PROPERTYRESOLVER = new PropertyResolverImpl();
-
-    // recives the runtime config instance during initializing
-    private final static ThreadLocal<RuntimeConfig> initializingRuntimeConfig = new ThreadLocal<RuntimeConfig>();
 
     // the name for the system property which specifies the current ProjectStage (see MYFACES-2545 for details)
     public final static String PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "faces.PROJECT_STAGE";
@@ -218,38 +214,13 @@ public class ApplicationImpl extends Application
 
     public ApplicationImpl()
     {
-        this(internalGetRuntimeConfig());
+        this(getRuntimeConfig());
     }
 
-    private static RuntimeConfig internalGetRuntimeConfig()
+    private static RuntimeConfig getRuntimeConfig()
     {
-        if (initializingRuntimeConfig.get() == null)
-        {
-            // It may happen that the current thread value
-            // for initializingRuntimeConfig is not set
-            // (note that this value is final, so it just
-            // allow set only once per thread).
-            // So the better for this case is try to get
-            // the value using RuntimeConfig.getCurrentInstance()
-            // instead throw an IllegalStateException (only fails if
-            // the constructor is called before setInitializingRuntimeConfig).
-            // From other point of view, AbstractFacesInitializer do
-            // the same as below, so there is not problem if
-            // we do this here and this is the best place to do
-            // this.
-            // log.info(
-            // "initializingRuntimeConfig.get() == null, so loading from ExternalContext"
-            // );
-            ApplicationImpl.setInitializingRuntimeConfig(RuntimeConfig.getCurrentInstance(FacesContext
-                    .getCurrentInstance().getExternalContext()));
-
-            // throw new IllegalStateException(
-            // "The runtime config instance which is created while initialize myfaces "
-            // +
-            // "must be set through ApplicationImpl.setInitializingRuntimeConfig"
-            // );
-        }
-        return initializingRuntimeConfig.get();
+        return RuntimeConfig.getCurrentInstance(
+                FacesContext.getCurrentInstance().getExternalContext());
     }
 
     ApplicationImpl(final RuntimeConfig runtimeConfig)
@@ -271,11 +242,6 @@ public class ApplicationImpl extends Application
 
         if (log.isLoggable(Level.FINEST))
             log.finest("New Application instance created");
-    }
-
-    public static void setInitializingRuntimeConfig(RuntimeConfig config)
-    {
-        initializingRuntimeConfig.set(config);
     }
 
     // ~ Methods

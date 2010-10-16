@@ -19,25 +19,7 @@
 
 package org.apache.myfaces.view.facelets;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.net.URL;
-
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.RenderKitFactory;
-
 import org.apache.myfaces.application.ApplicationFactoryImpl;
-import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
@@ -58,6 +40,22 @@ import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
+
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.ProjectStage;
+import javax.faces.application.StateManager;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import javax.faces.render.RenderKitFactory;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.net.URI;
+import java.net.URL;
 
 public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCase
 {
@@ -194,8 +192,6 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
     @Override
     protected void setUpApplication() throws Exception
     {
-        ApplicationImpl.setInitializingRuntimeConfig(RuntimeConfig.getCurrentInstance(externalContext));
-        
         super.setUpApplication();
         
         ViewHandlerImpl viewHandler = (ViewHandlerImpl) facesContext.getApplication().getViewHandler();
@@ -237,12 +233,11 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
 
     }
     
-    @Override
+    /*@Override
     public void tearDown() throws Exception
     {
-        ApplicationImpl.setInitializingRuntimeConfig(null);
         super.tearDown();
-    }
+    }*/
 
     protected void loadStandardFacesConfig() throws Exception
     {

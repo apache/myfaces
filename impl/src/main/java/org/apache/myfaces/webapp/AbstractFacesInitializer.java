@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.webapp;
 
-import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
@@ -290,8 +289,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                                                ExternalContext externalContext, ExpressionFactory expressionFactory) {
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         runtimeConfig.setExpressionFactory(expressionFactory);
-
-        ApplicationImpl.setInitializingRuntimeConfig(runtimeConfig);
 
         // And configure everything
         new FacesConfigurator(externalContext).configure();
