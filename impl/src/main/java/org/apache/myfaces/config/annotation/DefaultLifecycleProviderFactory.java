@@ -18,24 +18,23 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.discovery.ResourceNameIterator;
+import org.apache.commons.discovery.resource.ClassLoaders;
+import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.apache.commons.discovery.ResourceNameIterator;
-import org.apache.commons.discovery.resource.ClassLoaders;
-import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * Date: Mar 12, 2007
@@ -44,9 +43,8 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     //private static Log log = LogFactory.getLog(DefaultLifecycleProviderFactory.class);
     private static Logger log = Logger.getLogger(DefaultLifecycleProviderFactory.class.getName());
-    //private static LifecycleProvider LIFECYCLE_PROVIDER_INSTANCE;
 
-    public static final String LIFECYCLE_PROVIDER_INSTANCE = LifecycleProvider.class.getName() + ".LIFECYCLE_PROVIDER_INSTANCE";
+    public static final String LIFECYCLE_PROVIDER_INSTANCE_KEY = LifecycleProvider.class.getName() + ".LIFECYCLE_PROVIDER_INSTANCE";
 
     @JSFWebConfigParam(name="org.apache.myfaces.config.annotation.LifecycleProvider", since="1.1")
     public static final String LIFECYCLE_PROVIDER = LifecycleProvider.class.getName();
@@ -59,7 +57,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     @Override
     public LifecycleProvider getLifecycleProvider(ExternalContext externalContext)
     {
-        LifecycleProvider lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE);
+        LifecycleProvider lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
         if (lifecycleProvider == null)
         {
             if (externalContext == null)
@@ -77,21 +75,21 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                     if (!resolveLifecycleProviderFromService(externalContext))
                     {
                         lifecycleProvider = resolveFallbackLifecycleProvider();
-                        externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE, lifecycleProvider);
+                        externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, lifecycleProvider);
                     }
                     else
                     {
                         //Retrieve it because it was resolved
-                        lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE);
+                        lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
                     }
                 }
                 else
                 {
                     //Retrieve it because it was resolved
-                    lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE);
+                    lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
                 }
             }
-            log.info("Using LifecycleProvider "+ LIFECYCLE_PROVIDER_INSTANCE.getClass().getName());
+            log.info("Using LifecycleProvider "+ lifecycleProvider.getClass().getName());
         }
         return lifecycleProvider;
     }
@@ -114,7 +112,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                 Object obj = createClass(lifecycleProvider, externalContext);
 
                 if (obj instanceof LifecycleProvider) {
-                    externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE, (LifecycleProvider) obj);
+                    externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, (LifecycleProvider) obj);
                     return true;
                 }
             }
@@ -172,7 +170,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                                         DiscoverableLifecycleProvider discoverableLifecycleProvider = (DiscoverableLifecycleProvider) obj;
                                         if (discoverableLifecycleProvider.isAvailable())
                                         {
-                                            extContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE, discoverableLifecycleProvider);
+                                            extContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, discoverableLifecycleProvider);
                                             return (Boolean) true;
                                         }
                                     }
@@ -198,7 +196,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                         DiscoverableLifecycleProvider discoverableLifecycleProvider = (DiscoverableLifecycleProvider) obj;
                         if (discoverableLifecycleProvider.isAvailable())
                         {
-                            extContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE, discoverableLifecycleProvider);
+                            extContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, discoverableLifecycleProvider);
                             return true;
                         }
                     }
