@@ -20,11 +20,10 @@ package javax.faces.component;
 
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.test.mock.MockFacesContext12;
-import static org.easymock.EasyMock.*;
+import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import static org.testng.Assert.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -35,12 +34,28 @@ import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
-import javax.faces.event.*;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.aryEq;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.fail;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -73,7 +88,7 @@ public class UIViewRootTest
 
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
-        _facesContext = new MockFacesContext12(_externalContext);
+        _facesContext = new MockFacesContext20(_externalContext);
         _application = _mocksControl.createMock(Application.class);
         _lifecycleFactory = _mocksControl.createMock(LifecycleFactory.class);
         _testimpl = new UIViewRoot();

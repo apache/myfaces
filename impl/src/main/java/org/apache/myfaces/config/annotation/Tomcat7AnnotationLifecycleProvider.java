@@ -38,7 +38,7 @@ public class Tomcat7AnnotationLifecycleProvider implements
 
     private static Logger log = Logger.getLogger(TomcatAnnotationLifecycleProvider.class.getName());
     
-    private Map<ClassLoader, InstanceManager> instanceManagers = null;
+    private WeakHashMap<ClassLoader, InstanceManager> instanceManagers = null;
 
     public Tomcat7AnnotationLifecycleProvider(ExternalContext externalContext)
     {

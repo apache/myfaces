@@ -18,18 +18,9 @@
  */
 package javax.faces.component;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -51,10 +42,18 @@ import javax.faces.event.SystemEventListener;
 import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.view.Location;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -79,9 +78,10 @@ public abstract class UIComponentBase extends UIComponent
     //private static Log log = LogFactory.getLog(UIComponentBase.class);
     private static Logger log = Logger.getLogger(UIComponentBase.class.getName());
 
-    private static final ThreadLocal<StringBuilder> _STRING_BUILDER = new ThreadLocal<StringBuilder>();
-
     private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = new _EmptyIterator<UIComponent>();
+
+    private static final String _STRING_BUILDER_KEY
+            = "javax.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
 
     private _ComponentAttributesMap _attributesMap = null;
     private List<UIComponent> _childrenList = null;
@@ -2085,7 +2085,7 @@ public abstract class UIComponentBase extends UIComponent
 
 /**
      * <p>
-     * This gets a single threadlocal shared stringbuilder instance, each time you call
+     * This gets a single FacesContext-local shared stringbuilder instance, each time you call
      * __getSharedStringBuilder it sets the length of the stringBuilder instance to 0.
      * </p><p>
      * This allows you to use the same StringBuilder instance over and over.
@@ -2118,12 +2118,15 @@ public abstract class UIComponentBase extends UIComponent
      */
     static StringBuilder __getSharedStringBuilder()
     {
-        StringBuilder sb = _STRING_BUILDER.get();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<Object, Object> attributes = facesContext.getAttributes();
+
+        StringBuilder sb = (StringBuilder) attributes.get(_STRING_BUILDER_KEY);
 
         if (sb == null)
         {
             sb = new StringBuilder();
-            _STRING_BUILDER.set(sb);
+            attributes.put(_STRING_BUILDER_KEY, sb);
         }
 
         // clear out the stringBuilder by setting the length to 0

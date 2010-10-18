@@ -18,16 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.myfaces.view.facelets.tag.BeanPropertyTagRule;
+import org.apache.myfaces.view.facelets.tag.MetadataImpl;
+import org.apache.myfaces.view.facelets.tag.MetadataTargetImpl;
+import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.MetaRuleset;
@@ -36,11 +32,14 @@ import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
-
-import org.apache.myfaces.view.facelets.tag.BeanPropertyTagRule;
-import org.apache.myfaces.view.facelets.tag.MetadataImpl;
-import org.apache.myfaces.view.facelets.tag.MetadataTargetImpl;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CompositeMetaRulesetImpl extends MetaRuleset
 {
@@ -49,7 +48,26 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
     //private final static Logger log = Logger.getLogger("facelets.tag.meta");
     private final static Logger log = Logger.getLogger(CompositeMetadataTargetImpl.class.getName());
     
-    private final static WeakHashMap<String, MetadataTarget> _metadata = new WeakHashMap<String, MetadataTarget>();
+    private static final String METADATA_KEY
+            = "org.apache.myfaces.view.facelets.tag.composite.CompositeMetaRulesetImpl.METADATA";
+
+    private static Map<String, MetadataTarget> getMetaData()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, Object> applicationMap = facesContext
+                .getExternalContext().getApplicationMap();
+
+        Map<String, MetadataTarget> metadata =
+                (Map<String, MetadataTarget>) applicationMap.get(METADATA_KEY);
+
+        if (metadata == null)
+        {
+            metadata = new HashMap<String, MetadataTarget>();
+            applicationMap.put(METADATA_KEY, metadata);
+        }
+
+        return metadata;
+    }
 
     private final Map<String, TagAttribute> _attributes;
 
@@ -196,9 +214,10 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
     
     private final MetadataTarget _getBaseMetadataTarget()
     {
+        Map<String, MetadataTarget> metadata = getMetaData();
         String key = _type.getName();
 
-        MetadataTarget meta = _metadata.get(key);
+        MetadataTarget meta = metadata.get(key);
         if (meta == null)
         {
             try
@@ -210,7 +229,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
                 throw new TagException(_tag, "Error Creating TargetMetadata", e);
             }
 
-            _metadata.put(key, meta);
+            metadata.put(key, meta);
         }
 
         return meta;

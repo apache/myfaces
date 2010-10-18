@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.MetaRuleset;
@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,8 +49,26 @@ public final class MetaRulesetImpl extends MetaRuleset
     //private final static Logger log = Logger.getLogger("facelets.tag.meta");
     private final static Logger log = Logger.getLogger(MetaRulesetImpl.class.getName());
 
-    private final static WeakHashMap<ClassLoader, WeakHashMap<String, MetadataTarget>> _metadata
-            = new WeakHashMap<ClassLoader, WeakHashMap<String, MetadataTarget>>();
+    private static final String METADATA_KEY
+            = "org.apache.myfaces.view.facelets.tag.MetaRulesetImpl.METADATA";
+
+    private static Map<String, MetadataTarget> getMetaData()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, Object> applicationMap = facesContext
+                .getExternalContext().getApplicationMap();
+
+        Map<String, MetadataTarget> metadata =
+                (Map<String, MetadataTarget>) applicationMap.get(METADATA_KEY);
+
+        if (metadata == null)
+        {
+            metadata = new HashMap<String, MetadataTarget>();
+            applicationMap.put(METADATA_KEY, metadata);
+        }
+
+        return metadata;
+    }
 
     private final Map<String, TagAttribute> _attributes;
 
@@ -182,23 +199,10 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     private final MetadataTarget _getMetadataTarget()
     {
-        ClassLoader classLoader = ClassUtils.getContextClassLoader();
+        Map<String, MetadataTarget> metadata = getMetaData();
         String metaKey = _type.getName();
-        MetadataTarget meta = null;
 
-        WeakHashMap<String, MetadataTarget> classLoaderMetadata = _metadata.get(classLoader);
-        if (classLoaderMetadata == null)
-        {
-            // first time with this ClassLoader - create new (inner) WeakHashMap
-            classLoaderMetadata = new WeakHashMap<String, MetadataTarget>();
-            _metadata.put(classLoader, classLoaderMetadata);
-        }
-        else
-        {
-            // we already have a inner WeakHashMap, try to get the existing metadata
-            meta = classLoaderMetadata.get(metaKey);
-        }
-
+        MetadataTarget meta = metadata.get(metaKey);
         if (meta == null)
         {
             try
@@ -210,7 +214,7 @@ public final class MetaRulesetImpl extends MetaRuleset
                 throw new TagException(_tag, "Error Creating TargetMetadata", e);
             }
 
-            classLoaderMetadata.put(metaKey, meta);
+            metadata.put(metaKey, meta);
         }
 
         return meta;

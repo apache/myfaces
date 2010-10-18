@@ -18,10 +18,11 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import org.apache.myfaces.view.facelets.util.FastWriter;
+
+import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.io.Writer;
-
-import org.apache.myfaces.view.facelets.util.FastWriter;
 
 /**
  * A class for handling state insertion. Content is written directly to "out" until an attempt to write state; at that
@@ -46,6 +47,8 @@ import org.apache.myfaces.view.facelets.util.FastWriter;
 public final class StateWriter extends Writer
 {
 
+    private static final String CURRENT_WRITER_KEY = "org.apache.myfaces.view.facelets.StateWriter.CURRENT_WRITER";
+
     private int initialSize;
     private Writer out;
     private FastWriter fast;
@@ -53,7 +56,23 @@ public final class StateWriter extends Writer
 
     static public StateWriter getCurrentInstance()
     {
-        return (StateWriter) CURRENT_WRITER.get();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+
+        return (StateWriter)facesContext.getAttributes().get(CURRENT_WRITER_KEY);
+    }
+
+    private static void setCurrentInstance(StateWriter stateWriter)
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+
+        if (stateWriter == null)
+        {
+            facesContext.getAttributes().remove(CURRENT_WRITER_KEY);
+        }
+        else
+        {
+            facesContext.getAttributes().put(CURRENT_WRITER_KEY, stateWriter);
+        }
     }
 
     public StateWriter(Writer initialOut, int initialSize)
@@ -66,7 +85,7 @@ public final class StateWriter extends Writer
         this.initialSize = initialSize;
         this.out = initialOut;
 
-        CURRENT_WRITER.set(this);
+        setCurrentInstance(this);
     }
 
     /**
@@ -138,8 +157,8 @@ public final class StateWriter extends Writer
 
     public void release()
     {
-        CURRENT_WRITER.remove();
+        // remove from FacesContext attribute Map
+        setCurrentInstance(null);
     }
 
-    static private final ThreadLocal<StateWriter> CURRENT_WRITER = new ThreadLocal<StateWriter>();
 }

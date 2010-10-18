@@ -18,12 +18,11 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import java.io.IOException;
-import java.net.URL;
-
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.view.facelets.FaceletException;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * FaceletFactory for producing Facelets relative to the context of the underlying implementation.
@@ -128,7 +127,14 @@ public abstract class FaceletFactory
      */
     public static final void setInstance(FaceletFactory factory)
     {
-        instance.set(factory);
+        if (factory == null)
+        {
+            instance.remove();
+        }
+        else
+        {
+            instance.set(factory);
+        }
     }
 
     /**
