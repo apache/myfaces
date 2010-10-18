@@ -196,16 +196,6 @@ public class FlashELResolver extends ELResolver
      * 
      * This var do the job.
      */
-    /*private static ThreadLocal<Boolean> _keepStatus =
-        new ThreadLocal<Boolean>()
-        {
-            @Override
-            protected Boolean initialValue()
-            {
-                return Boolean.FALSE;
-            }
-        }; */
-
     private static final String KEEP_STATUS_KEY = "org.apache.myfaces.el.FlashELResolver.KEEP_STATUS";
 
     private static boolean isDoKeepPromotion(FacesContext facesContext)
