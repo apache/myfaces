@@ -658,71 +658,81 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     public boolean invokeOnComponent(FacesContext faces, String clientId,
             ContextCallback callback) throws FacesException
     {
+        
         // get the index-less clientId
-        String indexLessId = getClientId(faces);
-        if (clientId.startsWith(indexLessId))
+        pushComponentToEL(faces, this);
+        try
         {
-            // the index for which the component should be invoked
-            int invokeIndex = -1;
-            
-            // try to get the invokeIndex out of the given clientId.
-            // Note that the clientId of UIRepeat contains the current index,
-            // if the index is >= 0 (see getContainerClientId()).
-            int idxStart = clientId.indexOf(UINamingContainer.getSeparatorChar(faces),
-                    indexLessId.length());
-            if (idxStart != -1 && Character.isDigit(clientId.charAt(idxStart + 1)))
+            String indexLessId = getClientId(faces);
+            if (clientId.startsWith(indexLessId))
             {
-                int idxEnd = clientId.indexOf(UINamingContainer.getSeparatorChar(faces), idxStart + 1);
-                if (idxEnd != -1)
-                {
-                    invokeIndex = Integer.parseInt(clientId.substring(idxStart + 1, idxEnd));
-                }
-            }
-            
-            // safe the current index, count aside
-            final int prevIndex = _index;
-            final int prevCount = _count;
-            
-            try
-            {
-                // save the current scope values and set the right index
-                _captureScopeValues();
-                if (invokeIndex != -1)
-                {
-                    // calculate count for RepeatStatus
-                    _count = _calculateCountForIndex(invokeIndex);
-                }
-                _setIndex(invokeIndex);
+                // the index for which the component should be invoked
+                int invokeIndex = -1;
                 
-                if (_isIndexAvailable())
+                // try to get the invokeIndex out of the given clientId.
+                // Note that the clientId of UIRepeat contains the current index,
+                // if the index is >= 0 (see getContainerClientId()).
+                int idxStart = clientId.indexOf(UINamingContainer.getSeparatorChar(faces),
+                        indexLessId.length());
+                if (idxStart != -1 && Character.isDigit(clientId.charAt(idxStart + 1)))
                 {
-                    return super.invokeOnComponent(faces, clientId, callback);
+                    int idxEnd = clientId.indexOf(UINamingContainer.getSeparatorChar(faces), idxStart + 1);
+                    if (idxEnd != -1)
+                    {
+                        invokeIndex = Integer.parseInt(clientId.substring(idxStart + 1, idxEnd));
+                    }
                 }
-                else if (clientId.equals(indexLessId))
+                
+                // safe the current index, count aside
+                final int prevIndex = _index;
+                final int prevCount = _count;
+                
+                try
                 {
-                    // the only proper case for invokeIndex == -1 (Note that for 
-                    // a invokeIndex of -1 we must not invoke our children or facets)
-                    callback.invokeContextCallback(faces, this);
-                    return true;
+                    // save the current scope values and set the right index
+                    _captureScopeValues();
+                    if (invokeIndex != -1)
+                    {
+                        // calculate count for RepeatStatus
+                        _count = _calculateCountForIndex(invokeIndex);
+                    }
+                    _setIndex(invokeIndex);
+                    
+                    if (_isIndexAvailable())
+                    {
+                        return super.invokeOnComponent(faces, clientId, callback);
+                    }
+                    else if (clientId.equals(indexLessId))
+                    {
+                        // the only proper case for invokeIndex == -1 (Note that for 
+                        // a invokeIndex of -1 we must not invoke our children or facets)
+                        callback.invokeContextCallback(faces, this);
+                        return true;
+                    }
+                    else
+                    {
+                        // most likely no valid clientId
+                        return false;
+                    }
                 }
-                else
+                finally
                 {
-                    // most likely no valid clientId
-                    return false;
+                    // restore the previous count, index and scope values
+                    _count = prevCount;
+                    _setIndex(prevIndex);
+                    _restoreScopeValues();
                 }
             }
-            finally
+            else
             {
-                // restore the previous count, index and scope values
-                _count = prevCount;
-                _setIndex(prevIndex);
-                _restoreScopeValues();
+                // the clientId does not match to this component or one of its children
+                return false;
             }
         }
-        else
+        finally
         {
-            // the clientId does not match to this component or one of its children
-            return false;
+            //all components must call popComponentFromEl after visiting is finished
+            popComponentFromEL(faces);
         }
     }
     

@@ -313,6 +313,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             setCachedFacesContext(context);
         }
         
+        pushComponentToEL(context, this);
         try
         {
             if (returnValue)
@@ -416,6 +417,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         finally
         {
+            //all components must call popComponentFromEl after visiting is finished
+            popComponentFromEL(context);
             if (!isCachedFacesContext)
             {
                 setCachedFacesContext(null);

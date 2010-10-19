@@ -194,22 +194,30 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             throw new NullPointerException();
         }
 
-        // searching for this component?
-        boolean found = clientId.equals(this.getClientId(context));
-        if (found) {
-            try {
-                callback.invokeContextCallback(context, this);
-            } catch (Exception e) {
-                throw new FacesException(e);
+        pushComponentToEL(context, this);
+        try
+        {
+            // searching for this component?
+            boolean found = clientId.equals(this.getClientId(context));
+            if (found) {
+                try {
+                    callback.invokeContextCallback(context, this);
+                } catch (Exception e) {
+                    throw new FacesException(e);
+                }
+                return found;
+            }
+            // Searching for this component's children/facets
+            for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();) {
+                found = it.next().invokeOnComponent(context, clientId, callback);
             }
             return found;
         }
-        // Searching for this component's children/facets
-        for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext();) {
-            found = it.next().invokeOnComponent(context, clientId, callback);
+        finally
+        {
+            //all components must call popComponentFromEl after visiting is finished
+            popComponentFromEL(context);
         }
-
-        return found;
     }
 
     /**
