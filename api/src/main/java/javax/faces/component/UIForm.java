@@ -54,7 +54,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     public String createUniqueId(FacesContext context, String seed)
     {
         ExternalContext extCtx = context.getExternalContext();
-        StringBuilder bld = __getSharedStringBuilder();
+        StringBuilder bld = __getSharedStringBuilder(context);
 
         Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
         uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;

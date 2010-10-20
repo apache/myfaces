@@ -770,7 +770,7 @@ public abstract class UIComponentBase extends UIComponent
             String containerClientId = namingContainer.getContainerClientId(context);
             if (containerClientId != null)
             {
-                StringBuilder bld = __getSharedStringBuilder();
+                StringBuilder bld = __getSharedStringBuilder(context);
                 _clientId = bld.append(containerClientId).append(UINamingContainer.getSeparatorChar(context)).append(id).toString();
             }
             else
@@ -2118,7 +2118,11 @@ public abstract class UIComponentBase extends UIComponent
      */
     static StringBuilder __getSharedStringBuilder()
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        return __getSharedStringBuilder(FacesContext.getCurrentInstance());
+    }
+    
+    static StringBuilder __getSharedStringBuilder(FacesContext facesContext)
+    {
         Map<Object, Object> attributes = facesContext.getAttributes();
 
         StringBuilder sb = (StringBuilder) attributes.get(_STRING_BUILDER_KEY);
