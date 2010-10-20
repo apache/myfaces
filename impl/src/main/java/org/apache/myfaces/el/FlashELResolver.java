@@ -18,6 +18,10 @@
  */
 package org.apache.myfaces.el;
 
+import java.beans.FeatureDescriptor;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -26,9 +30,6 @@ import javax.el.PropertyNotWritableException;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Resolver for Flash object 
@@ -117,19 +118,16 @@ public class FlashELResolver extends ELResolver
 
         String strProperty = castAndIntern(property);
 
-        FacesContext facesContext = facesContext(elContext);
-        ExternalContext externalContext = facesContext.getExternalContext();
-
         if (base == null)
         {
             if (FLASH.equals(strProperty))
             {
                 //Access to flash object
                 elContext.setPropertyResolved(true);
-                Flash flash = externalContext.getFlash();
+                Flash flash = externalContext(elContext).getFlash();
                 //This is just to make sure after this point
                 //we are not in "keep" promotion.
-                setDoKeepPromotion(false, facesContext);
+                setDoKeepPromotion(false);
                 
                 // Note that after this object is returned, Flash.get() and Flash.put()
                 // methods are called from javax.el.MapELResolver, since 
@@ -142,7 +140,7 @@ public class FlashELResolver extends ELResolver
             Flash flash = (Flash) base;
             if (KEEP.equals(strProperty))
             {
-                setDoKeepPromotion(true, facesContext);
+                setDoKeepPromotion(true);
                 // Since we returned a Flash instance getValue will 
                 // be called again but this time the property name
                 // to be resolved will be called, so we can do keep
@@ -152,22 +150,22 @@ public class FlashELResolver extends ELResolver
             else if (NOW.equals(strProperty))
             {
                 //Prevent invalid syntax #{flash.keep.now.someKey}
-                if (!isDoKeepPromotion(facesContext))
+                if (!isDoKeepPromotion())
                 {
                     // According to the javadoc of Flash.putNow() and 
                     // Flash.keep(), this is an alias to requestMap, used
                     // as a "buffer" to promote vars to flash scope using
                     // "keep" method
                     elContext.setPropertyResolved(true);
-                    return externalContext.getRequestMap();
+                    return externalContext(elContext).getRequestMap();
                 }
             }
-            else if (isDoKeepPromotion(facesContext))
+            else if (isDoKeepPromotion())
             {
                 //Resolve property calling get or keep
                 elContext.setPropertyResolved(true);
                 //Obtain the value on requestMap if any
-                Object value = externalContext.getRequestMap().get(strProperty);
+                Object value = externalContext(elContext).getRequestMap().get(strProperty);
                 //promote it to flash scope
                 flash.keep(strProperty);
                 return value;
@@ -196,23 +194,24 @@ public class FlashELResolver extends ELResolver
      * 
      * This var do the job.
      */
-    private static final String KEEP_STATUS_KEY = "org.apache.myfaces.el.FlashELResolver.KEEP_STATUS";
-
-    private static boolean isDoKeepPromotion(FacesContext facesContext)
-    {
-        Boolean doKeepPromotion = (Boolean) facesContext.getAttributes().get(KEEP_STATUS_KEY);
-
-        if (doKeepPromotion == null)
+    private static ThreadLocal<Boolean> _keepStatus = 
+        new ThreadLocal<Boolean>()
         {
-            doKeepPromotion = false;
-        }
+            @Override
+            protected Boolean initialValue()
+            {
+                return Boolean.FALSE;
+            }
+        };
 
-        return doKeepPromotion;
+    private static boolean isDoKeepPromotion()
+    {
+        return _keepStatus.get();
     }
 
-    private static void setDoKeepPromotion(boolean value, FacesContext facesContext)
+    private static void setDoKeepPromotion(boolean value)
     {
-        facesContext.getAttributes().put(KEEP_STATUS_KEY, Boolean.valueOf(value));
+        _keepStatus.set(Boolean.valueOf(value));
     }
     
     // get the FacesContext from the ELContext
