@@ -72,6 +72,10 @@ public final class CompositeComponentELUtils
      */
     public static final Pattern CC_ATTRS_METHOD_EXPRESSION_REGEX = Pattern.compile("[^\\(]*[^\\w\\.\\(]cc\\.attrs\\.[^\\.]*(\\(.*)?");
     
+    private static final String CC = "cc";
+    
+    private static final String CC_ATTRS = "cc.attrs";
+    
     /**
      * private constructor
      */
@@ -167,7 +171,14 @@ public final class CompositeComponentELUtils
      */
     public static boolean isCompositeComponentExpression(String expression)
     {
-        return CC_EXPRESSION_REGEX.matcher(expression).matches();
+        if (expression.contains(CC))
+        {
+            return CC_EXPRESSION_REGEX.matcher(expression).matches();
+        }
+        else
+        {
+            return false;
+        }
     }
     
     /**
@@ -180,7 +191,14 @@ public final class CompositeComponentELUtils
      */
     public static boolean isCompositeComponentAttrsMethodExpression(String expression)
     {
-        return CC_ATTRS_METHOD_EXPRESSION_REGEX.matcher(expression).matches();
+        if (expression.contains(CC_ATTRS))
+        {
+            return CC_ATTRS_METHOD_EXPRESSION_REGEX.matcher(expression).matches();
+        }
+        else
+        {
+            return false;
+        }
     }
     
 }
