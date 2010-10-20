@@ -23,7 +23,6 @@ import java.beans.BeanDescriptor;
 import java.beans.FeatureDescriptor;
 import java.beans.PropertyDescriptor;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.util.Map;
 
 import javax.el.MethodExpression;
@@ -45,6 +44,7 @@ import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.DummyBean;
+import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -259,6 +259,41 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         
         String resp = sw.toString();
     }
+    
+    @Test
+    public void testCompositeActionMethodInvocation() throws Exception
+    {
+        HelloWorld helloWorld = new HelloWorld(); 
+        
+        facesContext.getExternalContext().getRequestMap().put("helloWorldBean",
+                helloWorld);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testCompositeActionMethodInvocation.xhtml");
+        
+        UIComponent form = root.findComponent("testForm1");
+        Assert.assertNotNull(form);
+        UINamingContainer compositeComponent = (UINamingContainer) form.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent);
+        UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("button1");
+        Assert.assertNotNull(compositeComponent2);
+        UICommand button = (UICommand) compositeComponent2.findComponent("button2");
+        Assert.assertNotNull(button);
+        
+        Assert.assertNotNull(button.getActionExpression());
+        
+        Assert.assertEquals("success", button.getActionExpression().invoke(facesContext.getELContext(), null));
+        
+        Assert.assertEquals(1, button.getActionListeners().length);
+        
+        //StringWriter sw = new StringWriter();
+        //MockResponseWriter mrw = new MockResponseWriter(sw);
+        //facesContext.setResponseWriter(mrw);
+        
+        //root.encodeAll(facesContext);
+        //sw.flush();
+        //System.out.print(sw.toString());
+    }    
     
     /**
      * Tests if unspecified attributes on <composite:interface>, <composite:attribute>

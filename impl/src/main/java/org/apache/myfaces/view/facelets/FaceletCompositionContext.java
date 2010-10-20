@@ -18,8 +18,10 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
@@ -283,5 +285,34 @@ abstract public class FaceletCompositionContext
      *            UIComponent to finalize
      */
     public abstract void finalizeForDeletion(UIComponent component);
+
+    /**
+     * Add a method expression as targeted for the provided composite component
+     * 
+     * @since 2.0.2
+     * @param compositeComponentParent
+     * @param attributeName
+     * @param backingValue A value that could be useful to revert its effects.
+     */
+    public abstract void addMethodExpressionTargeted(UIComponent compositeComponentParent, String attributeName, Object backingValue);
+    
+    /**
+     * Get all method expressions targeted for the provided composite component
+     * 
+     * @since 2.0.2
+     * @param compositeComponentParent
+     * @return
+     */
+    public abstract Map<String, Object> getMethodExpressionsTargeted(UIComponent compositeComponentParent);
+    
+    /**
+     * Remove a method expression as targeted for the provided composite component
+     * 
+     * @since 2.0.2
+     * @param compositeComponentParent
+     * @param attributeName
+     * @return A value that could be useful to revert its effects.
+     */
+    public abstract Object removeMethodExpressionTargeted(UIComponent compositeComponentParent, String attributeName);
 
 }

@@ -17,22 +17,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:composite="http://java.sun.com/jsf/composite">
+	xmlns:composite="http://java.sun.com/jsf/composite"
+    xmlns:tc="http://myfaces.apache.org/testComponent"
+    xmlns:testComposite="http://java.sun.com/jsf/composite/testComposite">
 <head>
 </head>
 <body>
 <composite:interface>
-    <composite:attribute name="action" targets="button" method-signature="String someAction()"/>
-    <composite:attribute name="actionListener" targets="link" method-signature="void someAction(javax.faces.event.ActionEvent)"/>
-    <composite:attribute name="validator" targets="input" method-signature="void validateSomething(javax.faces.context.FacesContext,javax.faces.component.UIComponent,Object)"/>
-    <composite:attribute name="valueChangeListener" targets="input" method-signature="void afterSomeChange(javax.faces.event.ValueChangeEvent)"/>
-    <!-- Here targets should be ignored, because it is only valid for the previous four attributes -->
-    <composite:attribute name="metodo" method-signature="String someAction()"/>
+    <composite:attribute name="customMethod" method-signature="String doSomething(String)" targets="simpleAttributeMethodExpressionTarget"/>
 </composite:interface>
 <composite:implementation>
-    <h:commandButton id="button" action="#{cc.attrs.action}" value="Press Me" />
-    <h:commandLink id="link" value="Press Me" />
-    <h:inputText id="input"/>
+    <testComposite:simpleAttributeMethodExpressionTarget id="simpleAttributeMethodExpressionTarget"/>
 </composite:implementation>
 </body>
 </html>

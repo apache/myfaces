@@ -19,6 +19,8 @@
 package org.apache.myfaces.view.facelets.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -69,6 +71,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private int _deletionLevel;
     
     private final Map<UIComponent, List<AttachedObjectHandler>> _attachedObjectHandlers;
+    
+    private final Map<UIComponent, Map<String, Object> > _methodExpressionsTargeted;
 
     private static final String VIEWROOT_FACELET_ID = "oam.VIEW_ROOT";
     
@@ -79,6 +83,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _facesContext = facesContext;
         _attachedObjectHandlers = new HashMap<UIComponent, List<AttachedObjectHandler>>();
         _componentsMarkedForDeletion = new ArrayList<Map<String,UIComponent>>();
+        _methodExpressionsTargeted = new HashMap<UIComponent, Map<String, Object>>();
         _deletionLevel = -1;
     }
 
@@ -364,6 +369,42 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public List<AttachedObjectHandler> getAttachedObjectHandlers(UIComponent compositeComponentParent)
     {
         return _attachedObjectHandlers.get(compositeComponentParent);
+    }
+    
+    @Override
+    public void addMethodExpressionTargeted(UIComponent compositeComponentParent, String attributeName, Object backingValue)
+    {
+        Map<String, Object> map = _methodExpressionsTargeted.get(compositeComponentParent);
+
+        if (map == null)
+        {
+            map = new HashMap<String, Object>(8);
+            _methodExpressionsTargeted.put(compositeComponentParent, map);
+        }
+
+        map.put(attributeName, backingValue);
+    }
+
+    @Override
+    public Map<String, Object> getMethodExpressionsTargeted(UIComponent compositeComponentParent)
+    {
+        Map<String, Object> map = _methodExpressionsTargeted.get(compositeComponentParent);
+        if (map == null)
+        {
+            map = Collections.emptyMap();
+        }
+        return map;
+    }
+    
+    @Override
+    public Object removeMethodExpressionTargeted(UIComponent compositeComponentParent, String attributeName)
+    {
+        Map<String, Object> map = _methodExpressionsTargeted.get(compositeComponentParent);
+        if (map != null)
+        {
+            return map.remove(attributeName);
+        }
+        return null;
     }
 
     /**
