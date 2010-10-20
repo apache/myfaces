@@ -904,7 +904,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 // target is ActionSource2
                                 methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
                                         createMethodExpression(elContext,
-                                                attributeExpressionString, Object.class, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
+                                                attributeExpressionString, null, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
                                 
                                 ((ActionSource2)innerComponent).setActionExpression(methodExpression);
                                 mctx.addMethodExpressionTargeted(topLevelComponent, attributeName, methodExpression);

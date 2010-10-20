@@ -54,7 +54,7 @@ public final class ActionSourceRule extends MetaRule
 
         public void applyMetadata(FaceletContext ctx, Object instance) {
             ((ActionSource) instance).setAction(new LegacyMethodBinding(
-                    this.attr.getMethodExpression(ctx, String.class,
+                    this.attr.getMethodExpression(ctx, null,
                             ActionSourceRule.ACTION_SIG)));
         }
     }
@@ -70,7 +70,7 @@ public final class ActionSourceRule extends MetaRule
 
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            MethodExpression expr = _attr.getMethodExpression(ctx, String.class, ActionSourceRule.ACTION_SIG);
+            MethodExpression expr = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
             ((ActionSource2) instance).setActionExpression(expr);
         }
     }
