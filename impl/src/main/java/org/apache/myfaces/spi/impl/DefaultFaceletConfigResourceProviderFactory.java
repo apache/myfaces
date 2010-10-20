@@ -18,23 +18,21 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import java.lang.reflect.Constructor;
+import org.apache.commons.discovery.ResourceNameIterator;
+import org.apache.commons.discovery.resource.ClassLoaders;
+import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
+import org.apache.myfaces.shared_impl.spi.impl.SpiUtils;
+import org.apache.myfaces.spi.FaceletConfigResourceProvider;
+import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
+import org.apache.myfaces.view.facelets.compiler.DefaultFaceletConfigResourceProvider;
+
+import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-
-import org.apache.commons.discovery.ResourceNameIterator;
-import org.apache.commons.discovery.resource.ClassLoaders;
-import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.spi.FaceletConfigResourceProvider;
-import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
-import org.apache.myfaces.view.facelets.compiler.DefaultFaceletConfigResourceProvider;
 
 /**
  * 
