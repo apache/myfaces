@@ -47,7 +47,13 @@ import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 public final class TagAttributeImpl extends TagAttribute
 {
 
-    private final boolean literal;
+    private final static int EL_LITERAL = 1;
+    
+    private final static int EL_CC = 2;
+    
+    private final static int EL_CC_ATTR_ME = 4;
+    
+    private final int capabilities;
 
     private final String localName;
 
@@ -63,19 +69,32 @@ public final class TagAttributeImpl extends TagAttribute
 
     public TagAttributeImpl(Location location, String ns, String localName, String qName, String value)
     {
+        boolean literal;
+        boolean compositeComponentExpression;
+        boolean compositeComponentAttrMethodExpression;
         this.location = location;
         this.namespace = ns;
         this.localName = localName;
         this.qName = qName;
         this.value = value;
+
         try
         {
-            this.literal = ELText.isLiteral(this.value);
+            literal = ELText.isLiteral(this.value);
         }
         catch (ELException e)
         {
             throw new TagAttributeException(this, e);
         }
+        
+        compositeComponentExpression = !literal ? 
+                CompositeComponentELUtils.isCompositeComponentExpression(this.value) : 
+                    false;
+        compositeComponentAttrMethodExpression = compositeComponentExpression ? 
+                CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(this.value) : 
+                    false;
+
+        this.capabilities = (literal ? EL_LITERAL : 0) | (compositeComponentExpression ? EL_CC : 0) | (compositeComponentAttrMethodExpression ? EL_CC_ATTR_ME : 0); 
     }
 
     /**
@@ -90,7 +109,7 @@ public final class TagAttributeImpl extends TagAttribute
      */
     public boolean getBoolean(FaceletContext ctx)
     {
-        if (this.literal)
+        if ((this.capabilities & EL_LITERAL) != 0)
         {
             return Boolean.valueOf(this.value).booleanValue();
         }
@@ -112,7 +131,7 @@ public final class TagAttributeImpl extends TagAttribute
      */
     public int getInt(FaceletContext ctx)
     {
-        if (this.literal)
+        if ((this.capabilities & EL_LITERAL) != 0)
         {
             return Integer.parseInt(this.value);
         }
@@ -167,7 +186,7 @@ public final class TagAttributeImpl extends TagAttribute
             // and if so deal with it as an indirection.
             // NOTE that we have to check if the expression refers to cc.attrs for a MethodExpression
             // (#{cc.attrs.myMethod}) or only for MethodExpression parameters (#{bean.method(cc.attrs.value)}).
-            if (CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(this.getValue()))
+            if ((this.capabilities & EL_CC_ATTR_ME) != 0)
             {
                 // The MethodExpression is on parent composite component attribute map.
                 // create a pointer that are referred to the real one that is created in other side
@@ -196,7 +215,7 @@ public final class TagAttributeImpl extends TagAttribute
                 // to be able to resolve the right composite component (the one that was
                 // created from the file the Location is pointing to) later.
                 // (see MYFACES-2561 for details)
-                if (CompositeComponentELUtils.isCompositeComponentExpression(this.value))
+                if ((this.capabilities & EL_CC) != 0)
                 {
                     methodExpression = new LocationMethodExpression(getLocation(), methodExpression);
                 }
@@ -263,7 +282,7 @@ public final class TagAttributeImpl extends TagAttribute
      */
     public String getValue(FaceletContext ctx)
     {
-        if (this.literal)
+        if ((this.capabilities & EL_LITERAL) != 0)
         {
             return this.value;
         }
@@ -288,7 +307,7 @@ public final class TagAttributeImpl extends TagAttribute
      */
     public Object getObject(FaceletContext ctx, Class type)
     {
-        if (this.literal)
+        if ((this.capabilities & EL_LITERAL) != 0)
         {
             if (String.class.equals(type))
             {
@@ -352,7 +371,7 @@ public final class TagAttributeImpl extends TagAttribute
             // to be able to resolve the right composite component (the one that was
             // created from the file the Location is pointing to) later.
             // (see MYFACES-2561 for details)
-            if (CompositeComponentELUtils.isCompositeComponentExpression(this.value))
+            if ((this.capabilities & EL_CC) != 0)
             {
                 if (ExternalSpecifications.isUnifiedELAvailable())
                 {
@@ -379,7 +398,7 @@ public final class TagAttributeImpl extends TagAttribute
      */
     public boolean isLiteral()
     {
-        return this.literal;
+        return (this.capabilities & EL_LITERAL) != 0;
     }
 
     /*
