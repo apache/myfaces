@@ -22,31 +22,36 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.TestRunner;
-import org.easymock.EasyMock;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
      * Tests for
  * {@link UIComponent#invokeOnComponent(javax.faces.context.FacesContext, String, ContextCallback)}.
  */
-public class UIComponentInvokeOnComponentTest extends UIComponentTestBase
+public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
 {
+    protected IMocksControl _mocksControl;
     private UIComponent _testimpl;
     private ContextCallback _contextCallback;
 
     @Override
-    @BeforeMethod(alwaysRun = true)
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         super.setUp();
+        _mocksControl = EasyMock.createNiceControl();
         Collection<Method> mockedMethods = new ArrayList<Method>();
         Class<UIComponent> clazz = UIComponent.class;
         mockedMethods.add(clazz.getDeclaredMethod("getClientId", new Class[] { FacesContext.class }));
@@ -60,25 +65,32 @@ public class UIComponentInvokeOnComponentTest extends UIComponentTestBase
     @Test
     public void testInvokeOnComponentWithSameClientId() throws Exception
     {
-        EasyMock.expect(_testimpl.getClientId(EasyMock.same(_facesContext))).andReturn("xxxId");
-        _contextCallback.invokeContextCallback(EasyMock.same(_facesContext), EasyMock.same(_testimpl));
+        final UIComponent testimpl = new UIOutput();
+        testimpl.setId("xxxId");
+
+        //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
+        _contextCallback.invokeContextCallback(EasyMock.same(facesContext), EasyMock.same(testimpl));
         _mocksControl.replay();
-        Assert.assertTrue(_testimpl.invokeOnComponent(_facesContext, "xxxId", _contextCallback));
+        Assert.assertTrue(testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
         _mocksControl.verify();
     }
 
     @Test
     public void testInvokeOnComponentWithException() throws Exception
     {
-        EasyMock.expect(_testimpl.getClientId(EasyMock.same(_facesContext))).andReturn("xxxId");
-        _contextCallback.invokeContextCallback(EasyMock.same(_facesContext), EasyMock.same(_testimpl));
+        final UIComponent testimpl = new UIOutput();
+        testimpl.setId("xxxId");
+
+        //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
+        _contextCallback.invokeContextCallback(EasyMock.same(facesContext), EasyMock.same(testimpl));
         EasyMock.expectLastCall().andThrow(new RuntimeException());
         _mocksControl.replay();
+        
         org.apache.myfaces.Assert.assertException(FacesException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
-                Assert.assertTrue(_testimpl.invokeOnComponent(_facesContext, "xxxId", _contextCallback));
+                Assert.assertTrue(testimpl.invokeOnComponent(facesContext, "xxxId", _contextCallback));
             }
         });
     }
@@ -86,25 +98,32 @@ public class UIComponentInvokeOnComponentTest extends UIComponentTestBase
     @Test
     public void testInvokeOnComponentAndNotFindComponentWithClientId() throws Exception
     {
-        List<UIComponent> emptyList = Collections.emptyList();
-        
-        EasyMock.expect(_testimpl.getClientId(EasyMock.same(_facesContext))).andReturn("xxxId");
-        EasyMock.expect(_testimpl.getFacetsAndChildren()).andReturn(emptyList.iterator());
-        _mocksControl.replay();
-        Assert.assertFalse(_testimpl.invokeOnComponent(_facesContext, "xxId", _contextCallback));
-        _mocksControl.verify();
+        //List<UIComponent> emptyList = Collections.emptyList();
+        final UIComponent testimpl = new UIPanel();
+        testimpl.setId("xxxId");
+
+        //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
+        //EasyMock.expect(_testimpl.getFacetsAndChildren()).andReturn(emptyList.iterator());
+        //_mocksControl.replay();
+        Assert.assertFalse(testimpl.invokeOnComponent(facesContext, "xxId", _contextCallback));
+        //_mocksControl.verify();
     }
 
     @Test
     public void testInvokeOnComponentOnChild() throws Exception
     {
-        EasyMock.expect(_testimpl.getClientId(EasyMock.same(_facesContext))).andReturn("xxxId");
+        final UIComponent testimpl = new UIPanel();
+        testimpl.setId("xxxId");
+        //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
         String childId = "childId";
-        UIComponent child = _mocksControl.createMock(UIComponent.class);
-        EasyMock.expect(_testimpl.getFacetsAndChildren()).andReturn(Collections.singletonList(child).iterator());
-        EasyMock.expect(child.invokeOnComponent(EasyMock.same(_facesContext), EasyMock.eq(childId), EasyMock.same(_contextCallback))).andReturn(true);
+        UIComponent child = new UIOutput();/*_mocksControl.createMock(UIComponent.class);*/
+        child.setId(childId);
+        testimpl.getChildren().add(child);
+        //EasyMock.expect(testimpl.getFacetsAndChildren()).andReturn(Collections.singletonList(child).iterator());
+        //EasyMock.expect(child.invokeOnComponent(EasyMock.same(facesContext), EasyMock.eq(childId), EasyMock.same(_contextCallback))).andReturn(true);
+        _contextCallback.invokeContextCallback(EasyMock.same(facesContext), EasyMock.same(child));
         _mocksControl.replay();
-        Assert.assertTrue(_testimpl.invokeOnComponent(_facesContext, "childId", _contextCallback));
+        Assert.assertTrue(testimpl.invokeOnComponent(facesContext, "childId", _contextCallback));
         _mocksControl.verify();
     }
 
@@ -122,14 +141,14 @@ public class UIComponentInvokeOnComponentTest extends UIComponentTestBase
         {
             public void run() throws Throwable
             {
-                _testimpl.invokeOnComponent(_facesContext, null, _contextCallback);
+                _testimpl.invokeOnComponent(facesContext, null, _contextCallback);
             }
         });
         org.apache.myfaces.Assert.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
-                _testimpl.invokeOnComponent(_facesContext, "xxx", null);
+                _testimpl.invokeOnComponent(facesContext, "xxx", null);
             }
         });
     }
