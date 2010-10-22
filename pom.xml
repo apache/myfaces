@@ -129,7 +129,7 @@
         <plugin>
           <groupId>org.apache.myfaces.buildtools</groupId>
           <artifactId>myfaces-builder-plugin</artifactId>
-          <version>1.0.7</version>
+          <version>1.0.8-SNAPSHOT</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
