@@ -18,11 +18,6 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.After;
 import org.junit.Assert;
@@ -30,6 +25,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Test cases for ServletExternalContextImpl.
@@ -95,5 +95,21 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         Assert.assertTrue(bookmarkableUrl.contains("param1=myvalue1"));
         Assert.assertTrue(bookmarkableUrl.contains("param2=myvalue2"));
     }
+
+    @Test
+    public void testEncodeRedirectUrlWithEmptyParamInBaseUrl()
+    {
+        // query parameter p1 has an empty value
+        String baseUrl = "/test?p1=&p2=test";
+        
+        // encode that URL without adding further parameters
+        final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
+        
+        // the URL should not change
+        Assert.assertTrue(redirectUrl.contains("p1="));
+        Assert.assertTrue(redirectUrl.contains("p2=test"));
+
+    }
+
     
 }
