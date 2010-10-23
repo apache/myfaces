@@ -355,6 +355,43 @@
           </archive>
        </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.3.3</version>
+        <executions>
+            <execution>
+                <phase>package</phase>
+                <goals>
+                    <goal>shade</goal>
+                </goals>
+            </execution>
+        </executions>
+        <configuration>
+            <createDependencyReducedPom>false</createDependencyReducedPom>
+            <createSourcesJar>true</createSourcesJar>
+            <artifactSet>
+                <includes>
+                    <include>org.apache.myfaces.core:myfaces-impl-ee6</include>
+                </includes>
+            </artifactSet>
+            <filters>
+                <filter>
+                  <artifact>org.apache.myfaces.core:myfaces-impl-ee6</artifact>
+                  <includes>
+                    <include>META-INF/services/**</include>
+                    <include>org/apache/myfaces/**</include>
+                  </includes>
+                  <excludes>
+                    <exclude>META-INF/LICENSE</exclude>
+                    <exclude>META-INF/NOTICE</exclude>
+                    <exclude>META-INF/DEPENDENCIES</exclude>
+                    <exclude>META-INF/MANIFEST.MF</exclude>
+                  </excludes>
+                </filter>
+            </filters>
+        </configuration>
+      </plugin>
       <plugin>   
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -394,6 +431,7 @@
                   javax.servlet.jsp;version="[2.1.0, 3.1)",
                   javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
                   javax.servlet.jsp.tagext;version="[2.1.0, 3.1)",
+                  javax.servlet.annotation;resolution:=optional,
                   javax.xml.parsers,
                   org.apache;resolution:=optional,
                   org.apache.commons.beanutils;version="[1.8.3, 2.0.0)",
@@ -522,10 +560,14 @@
                         </artifactItem>
                       </artifactItems>
                       <!-- Just include the .class files in org/** and the META-INF/services directory -->
-                      <includes>org/**,META-INF/services/**</includes>
+                      <!-- <includes>org/**,META-INF/services/**</includes> -->
+                      <!-- Only need copy .class, because maven shade plugin will do it at package
+                           and maven-bundle-plugin requires it to include this entre on the manifest -->
+                      <includes>org/**</includes>
                       <outputDirectory>${project.build.directory}/classes</outputDirectory>
                     </configuration>
                   </execution>
+                  <!--  
                   <execution>
                     <id>unpack-impl-ee6-sources</id>
                     <phase>process-resources</phase>
@@ -541,11 +583,14 @@
                                 <classifier>sources</classifier>
                             </artifactItem>
                         </artifactItems>
+                         -->
                         <!-- Just include the .java files in org/** and the META-INF/services directory -->
+                        <!-- 
                         <includes>org/**,META-INF/services/**</includes> 
                         <outputDirectory>${project.build.directory}/implee6_sources</outputDirectory>
                     </configuration>
                   </execution>
+                   -->
                 </executions>
               </plugin>
               <plugin>
@@ -574,7 +619,9 @@
                     <configuration>
                       <sources>
                         <source>${project.build.directory}/shared_sources</source>
+                        <!-- 
                         <source>${project.build.directory}/implee6_sources</source>
+                         -->
                       </sources>
                     </configuration>
                   </execution>
@@ -583,8 +630,9 @@
             </plugins>
         </build>
     </profile>
-    <profile>
+    <!-- <profile> No longer necessary by use of maven shade plugin  -->
         <!-- USAGE: mvn eclipse:eclipse -Ddev=eclipse -->
+        <!-- 
         <id>eclipse-with-unpacked-shared</id>
         <activation>
             <property>
@@ -616,6 +664,7 @@
           </plugins>
         </build>
     </profile>
+     -->
     <profile>
       <!--
         - Whenever the full website is generated, the command
@@ -999,7 +1048,14 @@
       <version>1.0.CR3</version>
       <optional>true</optional>
     </dependency>
-    
+    <!-- maven-shade-plugin will exclude this dependency automatically -->
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-impl-ee6</artifactId>
+      <version>${project.version}</version>
+      <optional>true</optional>
+    </dependency>
+
     <!-- TEST DEPENDENCIES -->
     <dependency>
       <groupId>junit</groupId>
