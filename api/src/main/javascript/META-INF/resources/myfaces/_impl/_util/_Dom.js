@@ -1026,6 +1026,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (ret) return ret;
         } else {
             elem = this.byId(elem);
+            // element might have removed from DOM in method processUpdate 
+            if (!elem){
+            	return null;
+            }
             var ret = this.getParent(elem, "form");
             if (ret) return ret;
         }

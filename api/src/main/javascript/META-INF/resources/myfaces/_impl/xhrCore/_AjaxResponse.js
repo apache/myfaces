@@ -321,7 +321,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             //we now skip this phase and just add everything we need for the fixup code
 
             if (!sourceForm) {
-                return;
+            	// We have to return true, because we want to continue left phases (especially we want to set up viewStates in other forms)
+                return true;
             }
 
             this._setVSTForm(sourceForm);
