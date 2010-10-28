@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
-import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.MetaRuleset;
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,22 +50,35 @@ public final class MetaRulesetImpl extends MetaRuleset
     //private final static Logger log = Logger.getLogger("facelets.tag.meta");
     private final static Logger log = Logger.getLogger(MetaRulesetImpl.class.getName());
 
-    private static final String METADATA_KEY
-            = "org.apache.myfaces.view.facelets.tag.MetaRulesetImpl.METADATA";
+    /**
+     * Cache the MetadataTarget instances per ClassLoader using the Class-Name of the type variable
+     * of MetadataTarget.
+     * NOTE that we do it this way, because the only other valid way in order to support a shared
+     * classloader scenario would be to use a WeakHashMap<Class<?>, MetadataTarget>, but this
+     * creates a cyclic reference between the key and the value of the WeakHashMap which will
+     * most certainly cause a memory leak! Furthermore we can manually cleanup the Map when
+     * the webapp is undeployed just by removing the Map for the current ClassLoader. 
+     */
+    private final static WeakHashMap<ClassLoader, Map<String, MetadataTarget>> _metadata
+            = new WeakHashMap<ClassLoader, Map<String, MetadataTarget>>();
+
+    /**
+     * Removes the cached MetadataTarget instances in order to prevent a memory leak.
+     */
+    public static void clearMetadataTargetCache()
+    {
+        _metadata.remove(ClassUtils.getContextClassLoader());
+    }
 
     private static Map<String, MetadataTarget> getMetaData()
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        Map<String, Object> applicationMap = facesContext
-                .getExternalContext().getApplicationMap();
-
-        Map<String, MetadataTarget> metadata =
-                (Map<String, MetadataTarget>) applicationMap.get(METADATA_KEY);
+        Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>)
+                _metadata.get(ClassUtils.getContextClassLoader());
 
         if (metadata == null)
         {
             metadata = new HashMap<String, MetadataTarget>();
-            applicationMap.put(METADATA_KEY, metadata);
+            _metadata.put(ClassUtils.getContextClassLoader(), metadata);
         }
 
         return metadata;

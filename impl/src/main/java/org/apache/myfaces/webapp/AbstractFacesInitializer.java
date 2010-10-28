@@ -31,6 +31,7 @@ import org.apache.myfaces.shared_impl.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
 import javax.el.ExpressionFactory;
 import javax.faces.application.Application;
@@ -271,6 +272,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         }
         
         _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
+
+        // clear the cache of MetaRulesetImpl in order to prevent a memory leak
+        MetaRulesetImpl.clearMetadataTargetCache();
 
         // TODO is it possible to make a real cleanup?
     }
