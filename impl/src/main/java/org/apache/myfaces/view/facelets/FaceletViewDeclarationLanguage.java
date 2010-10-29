@@ -873,10 +873,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 MethodExpression methodExpression2 = null;
                 
                 FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance();
-                
-                if (isKnownMethod)
+
+                if (!mctx.isMethodExpressionAttributeApplied(topLevelComponent, attributeName))
                 {
-                    if (!mctx.isMethodExpressionAttributeApplied(topLevelComponent, attributeName))
+                    if (isKnownMethod)
                     {
                         for (String target : targetsArray)
                         {
@@ -974,53 +974,51 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 }
                             }
                         }
-                        
-                        mctx.markMethodExpressionAttribute(topLevelComponent, attributeName);
                     }
-                }
-                else
-                {
-                    // composite:attribute targets property only has sense for action, actionListener,
-                    // validator or valueChangeListener. This means we have to retarget the method expression
-                    // to the topLevelComponent.
-                    
-                    // Since a MethodExpression has no state, we can use it multiple times without problem, so
-                    // first create it here.
-                    methodSignature = methodSignature.trim();
-                    methodExpression = context.getApplication().getExpressionFactory().
-                            createMethodExpression(elContext,
-                                    attributeExpressionString, _getReturnType(methodSignature), 
-                                    _getParameters(methodSignature));
-                    
-                    methodExpression = reWrapMethodExpression(methodExpression, attributeNameValueExpression);
-
-                    for (String target : targetsArray)
+                    else
                     {
-                        UIComponent innerComponent = topLevelComponent.findComponent(target);
+                        // composite:attribute targets property only has sense for action, actionListener,
+                        // validator or valueChangeListener. This means we have to retarget the method expression
+                        // to the topLevelComponent.
                         
-                        if (innerComponent == null)
-                        {
-                            continue;
-                        }
+                        // Since a MethodExpression has no state, we can use it multiple times without problem, so
+                        // first create it here.
+                        methodSignature = methodSignature.trim();
+                        methodExpression = context.getApplication().getExpressionFactory().
+                                createMethodExpression(elContext,
+                                        attributeExpressionString, _getReturnType(methodSignature), 
+                                        _getParameters(methodSignature));
                         
-                        // If a component is found, that means the expression should be retarget to the
-                        // components related
-                        if (isCompositeComponentRetarget(context, innerComponent, attributeName))
+                        methodExpression = reWrapMethodExpression(methodExpression, attributeNameValueExpression);
+    
+                        for (String target : targetsArray)
                         {
-                            innerComponent.getAttributes().put(attributeName, attributeNameValueExpression);
+                            UIComponent innerComponent = topLevelComponent.findComponent(target);
                             
-                            mctx.clearMethodExpressionAttribute(innerComponent, attributeName);
+                            if (innerComponent == null)
+                            {
+                                continue;
+                            }
                             
-                            retargetMethodExpressions(context, innerComponent);
+                            // If a component is found, that means the expression should be retarget to the
+                            // components related
+                            if (isCompositeComponentRetarget(context, innerComponent, attributeName))
+                            {
+                                innerComponent.getAttributes().put(attributeName, attributeNameValueExpression);
+                                
+                                mctx.clearMethodExpressionAttribute(innerComponent, attributeName);
+                                
+                                retargetMethodExpressions(context, innerComponent);
+                            }
+                            else
+                            {
+                                //Put the retarget
+                                innerComponent.getAttributes().put(attributeName, methodExpression);
+                            }
                         }
-                        else
-                        {
-                            //Put the retarget
-                            innerComponent.getAttributes().put(attributeName, methodExpression);
-                        }
+                        //Store the method expression to the topLevelComponent to allow reference it through EL
+                        topLevelComponent.getAttributes().put(attributeName, methodExpression);
                     }
-                    //Store the method expression to the topLevelComponent to allow reference it through EL
-                    topLevelComponent.getAttributes().put(attributeName, methodExpression);
                     mctx.markMethodExpressionAttribute(topLevelComponent, attributeName);
                 }
                 
