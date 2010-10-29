@@ -289,30 +289,49 @@ abstract public class FaceletCompositionContext
     /**
      * Add a method expression as targeted for the provided composite component
      * 
-     * @since 2.0.2
+     * @since 2.0.3
      * @param compositeComponentParent
      * @param attributeName
      * @param backingValue A value that could be useful to revert its effects.
      */
-    public abstract void addMethodExpressionTargeted(UIComponent compositeComponentParent, String attributeName, Object backingValue);
-    
+    public abstract void addMethodExpressionTargeted(UIComponent targetedComponent, String attributeName, Object backingValue);
+
     /**
-     * Get all method expressions targeted for the provided composite component
+     * Check if the MethodExpression attribute has been applied using vdl.retargetMethodExpression 
      * 
-     * @since 2.0.2
+     * @since 2.0.3
      * @param compositeComponentParent
+     * @param attributeName
      * @return
      */
-    public abstract Map<String, Object> getMethodExpressionsTargeted(UIComponent compositeComponentParent);
+    public abstract boolean isMethodExpressionAttributeApplied(UIComponent compositeComponentParent, String attributeName);
+    
+    /**
+     * Mark the MethodExpression attribute as applied using vdl.retargetMethodExpression
+     * 
+     * @since 2.0.3
+     * @param compositeComponentParent
+     * @param attributeName
+     */
+    public abstract void markMethodExpressionAttribute(UIComponent compositeComponentParent, String attributeName);
+    
+    /**
+     * Clear the MethodExpression attribute to call vdl.retargetMethodExpression again
+     * 
+     * @since 2.0.3
+     * @param compositeComponentParent
+     * @param attributeName
+     */
+    public abstract void clearMethodExpressionAttribute(UIComponent compositeComponentParent, String attributeName);
     
     /**
      * Remove a method expression as targeted for the provided composite component
      * 
-     * @since 2.0.2
+     * @since 2.0.3
      * @param compositeComponentParent
      * @param attributeName
      * @return A value that could be useful to revert its effects.
      */
-    public abstract Object removeMethodExpressionTargeted(UIComponent compositeComponentParent, String attributeName);
+    public abstract Object removeMethodExpressionTargeted(UIComponent targetedComponent, String attributeName);
 
 }

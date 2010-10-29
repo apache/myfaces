@@ -28,7 +28,7 @@
  <composite:attribute name="actionListener" targets="button1"/>
 </composite:interface>
 <composite:implementation>
- <testComposite:simpleActionMethodInvocation id="button1" value="#{cc.attrs.value}" action="nothing"/>
+ <testComposite:simpleActionMethodInvocation id="button1" value="#{cc.attrs.value}" actionListener="#{helloWorldBean.actionListener}" action="nothing"/>
 </composite:implementation>
 </body>
 </html>
