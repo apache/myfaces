@@ -98,6 +98,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
      */
     private static final String FACES_SERVLET_ADDED_ATTRIBUTE = "org.apache.myfaces.DYNAMICALLY_ADDED_FACES_SERVLET";
     
+    private static final String INITIALIZE_ALWAYS_STANDALONE = "org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE";
     private static final String FACES_CONFIG_RESOURCE = "/WEB-INF/faces-config.xml";
     private static final Logger log = Logger.getLogger(MyFacesContainerInitializer.class.getName());
     private static final String[] FACES_SERVLET_MAPPINGS = { "/faces/*", "*.jsf", "*.faces" };
@@ -107,6 +108,16 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
 
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException
     {
+        boolean startDireclty = shouldStartupRegardless(servletContext);
+
+        if (startDireclty)
+        {
+            // if the INITIALIZE_ALWAYS_STANDALONE param was set to true,
+            // we do not want to have the FacesServlet beeing added, we simply 
+            // do no extra configuration in here.
+            return;
+        }
+
         if ((clazzes != null && !clazzes.isEmpty()) || isFacesConfigPresent(servletContext))
         {
             // look for the FacesServlet
@@ -150,6 +161,26 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                         + Arrays.toString(mappings));
             }
 
+        }
+    }
+
+    /**
+     * Checks if the <code>INITIALIZE_ALWAYS_STANDALONE</code> flag is ture in <code>web.xml</code>.
+     * If the flag is true, this means we should not add the FacesServlet, instead we want to
+     * init MyFaces regardless...
+     */
+    private boolean shouldStartupRegardless(ServletContext servletContext)
+    {
+        try
+        {
+            String standaloneStartup = servletContext.getInitParameter(INITIALIZE_ALWAYS_STANDALONE);
+
+            // "true".equalsIgnoreCase(param) is faster than Boolean.valueOf()
+            return "true".equalsIgnoreCase(standaloneStartup);
+        }
+        catch (Exception e)
+        {
+            return false;
         }
     }
 
