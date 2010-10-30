@@ -78,7 +78,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * If this param is set to true, the check for faces servlet mapping is not done 
      */
     @JSFWebConfigParam(since="2.0.3", defaultValue="false")
-    protected static final String INITIALIZE_ALWAYS = "org.apache.myfaces.INITIALIZE_ALWAYS";
+    protected static final String INITIALIZE_ALWAYS_STANDALONE = "org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE";
 
     /**
      * Performs all necessary initialization tasks like configuring this JSF
@@ -101,7 +101,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
 
             // Parse and validate the web.xml configuration file
             
-            if (!WebConfigParamUtils.getBooleanInitParameter(externalContext, INITIALIZE_ALWAYS, false))
+            if (!WebConfigParamUtils.getBooleanInitParameter(externalContext, INITIALIZE_ALWAYS_STANDALONE, false))
             {
                 WebXml webXml = WebXml.getWebXml(externalContext);
                 if (webXml == null) {
@@ -258,7 +258,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         
         FacesContext facesContext = FacesContext.getCurrentInstance();
         
-        if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(), INITIALIZE_ALWAYS, false))
+        if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(), INITIALIZE_ALWAYS_STANDALONE, false))
         {
             //We need to check if the current application was initialized by myfaces
             WebXml webXml = WebXml.getWebXml(facesContext.getExternalContext());
