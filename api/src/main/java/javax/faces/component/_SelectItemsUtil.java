@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
@@ -31,20 +32,18 @@ import javax.faces.model.SelectItemGroup;
  */
 class _SelectItemsUtil
 {
-    static interface _ValueConverter
-    {
-        Object getConvertedValue(FacesContext context, String value);
-    }
-    
+
     /**
      * @param context the faces context
+     * @param uiComponent the component instance
      * @param value the value to check
-     * @param converter 
+     * @param converter a converter instance
      * @param iterator contains instances of SelectItem
      * @return if the value of a selectitem is equal to the given value
      */
-    public static boolean matchValue(FacesContext context, Object value,
-                    Iterator<SelectItem> selectItemsIter, _ValueConverter converter)
+    public static boolean matchValue(FacesContext context,
+            UIComponent uiComponent, Object value,
+            Iterator<SelectItem> selectItemsIter, Converter converter)
     {
         while (selectItemsIter.hasNext())
         {
@@ -54,38 +53,37 @@ class _SelectItemsUtil
                 SelectItemGroup itemgroup = (SelectItemGroup) item;
                 SelectItem[] selectItems = itemgroup.getSelectItems();
                 if (selectItems != null
-                                && selectItems.length > 0
-                                && matchValue(context, value, Arrays.asList(
-                                                selectItems).iterator(), converter))
+                        && selectItems.length > 0
+                        && matchValue(context, uiComponent, value, Arrays
+                                .asList(selectItems).iterator(), converter))
                 {
                     return true;
                 }
             }
             else
             {
-                Object itemValue = item.getValue();
-                if(converter != null && itemValue instanceof String)
-                {
-                    itemValue = converter.getConvertedValue(context, (String)itemValue);
-                }
-                if (value==itemValue || value.equals(itemValue))
+                Object itemValue = _convertOrCoerceValue(context,
+                        uiComponent, value, item, converter);
+                if (value == itemValue || value.equals(itemValue))
                 {
                     return true;
                 }
             }
         }
         return false;
-    }  
-    
+    }
+
     /**
      * @param context the faces context
+     * @param uiComponent the component instance
      * @param value the value to check
      * @param converter 
      * @param iterator contains instances of SelectItem
      * @return if the value is a SelectItem of selectItemsIter, on which noSelectionOption is true
      */
-    public static boolean isNoSelectionOption(FacesContext context, Object value,
-            Iterator<SelectItem> selectItemsIter, _ValueConverter converter)
+    public static boolean isNoSelectionOption(FacesContext context,
+            UIComponent uiComponent, Object value,
+            Iterator<SelectItem> selectItemsIter, Converter converter)
     {
         while (selectItemsIter.hasNext())
         {
@@ -95,26 +93,46 @@ class _SelectItemsUtil
                 SelectItemGroup itemgroup = (SelectItemGroup) item;
                 SelectItem[] selectItems = itemgroup.getSelectItems();
                 if (selectItems != null
-                                && selectItems.length > 0
-                                && isNoSelectionOption(context, value, Arrays.asList(
-                                                selectItems).iterator(), converter))
+                        && selectItems.length > 0
+                        && isNoSelectionOption(context, uiComponent, value,
+                                Arrays.asList(selectItems).iterator(),
+                                converter))
                 {
                     return true;
                 }
             }
-            else if(item.isNoSelectionOption())
+            else if (item.isNoSelectionOption())
             {
-                Object itemValue = item.getValue();
-                if(converter != null && itemValue instanceof String)
-                {
-                    itemValue = converter.getConvertedValue(context, (String)itemValue);
-                }
-                if (value==itemValue || value.equals(itemValue))
+                Object itemValue = _convertOrCoerceValue(context, uiComponent,
+                        value, item, converter);
+                if (value == itemValue || value.equals(itemValue))
                 {
                     return true;
                 }
             }
         }
         return false;
-        }
     }
+
+    /**
+     * If converter is available and selectItem.value is String uses getAsObject,
+     * otherwise uses EL type coertion and return result.
+     */
+    private static Object _convertOrCoerceValue(FacesContext facesContext,
+            UIComponent uiComponent, Object value, SelectItem selectItem,
+            Converter converter)
+    {
+        Object itemValue = selectItem.getValue();
+        if (converter != null && itemValue instanceof String)
+        {
+            itemValue = converter.getAsObject(facesContext, uiComponent,
+                    (String) itemValue);
+        }
+        else
+        {
+            itemValue = _ClassUtils.convertToType(itemValue, value.getClass());
+        }
+        return itemValue;
+    }
+
+}

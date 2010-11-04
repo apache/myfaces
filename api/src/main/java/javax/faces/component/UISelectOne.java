@@ -19,10 +19,10 @@
 package javax.faces.component;
 
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Component for choosing one option out of a set of possibilities.
@@ -71,20 +71,13 @@ public class UISelectOne extends UIInput
             return;
         }
 
-        _SelectItemsUtil._ValueConverter converter = new _SelectItemsUtil._ValueConverter()
-        {
-            public Object getConvertedValue(FacesContext context, String value)
-            {
-                return UISelectOne.this.getConvertedValue(context, value);
-            }
-        };
-
         // selected value must match to one of the available options
         // and if required is true it must not match an option with noSelectionOption set to true (since 2.0)
-        if (!(_SelectItemsUtil.matchValue(context, value, new _SelectItemsIterator(this, context), converter)
+        Converter converter = getConverter();
+        if (!(_SelectItemsUtil.matchValue(context, this, value, new _SelectItemsIterator(this, context), converter)
               && (!this.isRequired() 
                   || (this.isRequired() 
-                      && !_SelectItemsUtil.isNoSelectionOption(context, value, new _SelectItemsIterator(this, context), converter)))))
+                      && !_SelectItemsUtil.isNoSelectionOption(context, this, value, new _SelectItemsIterator(this, context), converter)))))
         {
             _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[] { _MessageUtils.getLabel(
                 context, this) });

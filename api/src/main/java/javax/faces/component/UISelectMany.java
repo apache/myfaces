@@ -28,6 +28,7 @@ import java.util.Iterator;
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.el.ValueBinding;
 import javax.faces.model.SelectItem;
@@ -350,39 +351,22 @@ public class UISelectMany extends UIInput
         {
             // all selected values must match to the values of the available options
 
-            _SelectItemsUtil._ValueConverter converter = new _SelectItemsUtil._ValueConverter()
-            {
-                public Object getConvertedValue(FacesContext context, String value)
-                {
-                    Object convertedValue = UISelectMany.this.getConvertedValue(context, new String[] { value });
-                    if (convertedValue instanceof Collection)
-                    {
-                        Iterator<?> iter = ((Collection<?>) convertedValue).iterator();
-                        if (iter.hasNext())
-                        {
-                            return iter.next();
-                        }
-                        return null;
-                    }
-                    return ((Object[]) convertedValue)[0];
-                }
-            };
-
             Collection<SelectItem> items = new ArrayList<SelectItem>();
             for (Iterator<SelectItem> iter = new _SelectItemsIterator(this, context); iter.hasNext();)
             {
                 items.add(iter.next());
             }
+            Converter converter = getConverter();
             while (itemValues.hasNext())
             {
                 Object itemValue = itemValues.next();
 
                 // selected value must match to one of the available options
                 // and if required is true it must not match an option with noSelectionOption set to true (since 2.0)
-                if (!_SelectItemsUtil.matchValue(context, itemValue, items.iterator(), converter)
+                if (!_SelectItemsUtil.matchValue(context, this, itemValue, items.iterator(), converter)
                         || (
                             this.isRequired()
-                            && _SelectItemsUtil.isNoSelectionOption(context, itemValue, items.iterator(), converter)
+                            && _SelectItemsUtil.isNoSelectionOption(context, this, itemValue, items.iterator(), converter)
                         ))
                 {    
                     _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID,
