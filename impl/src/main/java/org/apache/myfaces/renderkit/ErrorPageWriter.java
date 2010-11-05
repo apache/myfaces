@@ -73,6 +73,8 @@ import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import org.apache.myfaces.spi.WebConfigProvider;
+import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 
 /**
@@ -357,8 +359,12 @@ public final class ErrorPageWriter
         
         // check if an error page is present in web.xml
         // if so, do not generate an error page
-        WebXml webXml = WebXml.getWebXml(facesContext.getExternalContext());
-        if (webXml.isErrorPagePresent())
+        //WebXml webXml = WebXml.getWebXml(facesContext.getExternalContext());
+        //if (webXml.isErrorPagePresent())
+        WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebXmlProviderFactory(
+                facesContext.getExternalContext()).getWebXmlProvider(facesContext.getExternalContext());
+        
+        if(webConfigProvider.isErrorPagePresent(facesContext.getExternalContext()))
         {
             // save current view in the request map to access it on the error page
             facesContext.getExternalContext().getRequestMap().put(VIEW_KEY, facesContext.getViewRoot());
