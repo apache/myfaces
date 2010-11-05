@@ -31,6 +31,8 @@ import org.apache.myfaces.shared_impl.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
+import org.apache.myfaces.spi.WebConfigProvider;
+import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
 import javax.el.ExpressionFactory;
@@ -103,15 +105,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             
             if (!WebConfigParamUtils.getBooleanInitParameter(externalContext, INITIALIZE_ALWAYS_STANDALONE, false))
             {
-                WebXml webXml = WebXml.getWebXml(externalContext);
-                if (webXml == null) {
-                    if (log.isLoggable(Level.WARNING)) {
-                        log.warning("Couldn't find the web.xml configuration file. "
-                                 + "Abort initializing MyFaces.");
-                    }
-    
-                    return;
-                } else if (webXml.getFacesServletMappings().isEmpty()) {
+                WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebXmlProviderFactory(
+                        facesContext.getExternalContext()).getWebXmlProvider(facesContext.getExternalContext());
+
+                if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty()) {
                     // check if the FacesServlet has been added dynamically
                     // in a Servlet 3.0 environment by MyFacesContainerInitializer
                     Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
@@ -261,15 +258,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(), INITIALIZE_ALWAYS_STANDALONE, false))
         {
             //We need to check if the current application was initialized by myfaces
-            WebXml webXml = WebXml.getWebXml(facesContext.getExternalContext());
-            if (webXml == null) {
-                if (log.isLoggable(Level.WARNING)) {
-                    log.warning("Couldn't find the web.xml configuration file. "
-                             + "Abort destroy MyFaces.");
-                }
-    
-                return;
-            } else if (webXml.getFacesServletMappings().isEmpty()) {
+            WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebXmlProviderFactory(
+                    facesContext.getExternalContext()).getWebXmlProvider(facesContext.getExternalContext());
+            
+            if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty()) {
                 // check if the FacesServlet has been added dynamically
                 // in a Servlet 3.0 environment by MyFacesContainerInitializer
                 Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
