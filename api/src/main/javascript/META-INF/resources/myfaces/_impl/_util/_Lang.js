@@ -704,7 +704,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
             ret.push(keyValToStr(this.getMessage("MSG_ERROR_MESSAGE"), error.message ? error.message : _UDEF));
             ret.push(keyValToStr(this.getMessage("MSG_ERROR_DESC"), error.description ? error.description : _UDEF));
             ret.push(keyValToStr(this.getMessage("MSG_ERROR_NO"), _UDEF != typeof error.number ? error.number : _UDEF));
-            ret.push(keyValToStr(this.getMessage("MST_ERROR_LINENO"), _UDEF != typeof error.lineNumber ? error.lineNumber : _UDEF));
+            ret.push(keyValToStr(this.getMessage("MSG_ERROR_LINENO"), _UDEF != typeof error.lineNumber ? error.lineNumber : _UDEF));
         }
         return ret.join("");
     }
