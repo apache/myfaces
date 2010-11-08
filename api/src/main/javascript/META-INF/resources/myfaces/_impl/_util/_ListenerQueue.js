@@ -43,7 +43,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", my
      */
     _assertListener : function(/*function*/listener) {
         if ("function" != typeof (listener)) {
-            throw Error("Error: myfaces._impl._util._ListenerQueue." + arguments.caller.toString() + "Parameter must be of type function");
+            var msg = myfaces._impl._util._Lang.getMessage("ERR_PARAM_GENERIC",null,"_ListenerQueue", arguments.caller.toString(),"function" );
+            throw Error(msg);
         }
     },
 

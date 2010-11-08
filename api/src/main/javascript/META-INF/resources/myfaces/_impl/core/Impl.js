@@ -19,57 +19,60 @@
 myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Object, {
 
     //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
-    _transport : new (myfaces._impl.core._Runtime.getGlobalConfig("transport", myfaces._impl.xhrCore._Transports))(),
+    _transport      : new (myfaces._impl.core._Runtime.getGlobalConfig("transport", myfaces._impl.xhrCore._Transports))(),
 
     /**
      * external event listener queue!
      */
-    _evtListeners : new (myfaces._impl.core._Runtime.getGlobalConfig("eventListenerQueue", myfaces._impl._util._ListenerQueue))(),
+    _evtListeners   : new (myfaces._impl.core._Runtime.getGlobalConfig("eventListenerQueue", myfaces._impl._util._ListenerQueue))(),
 
     /**
      * external error listener queue!
      */
-    _errListeners : new (myfaces._impl.core._Runtime.getGlobalConfig("errorListenerQueue", myfaces._impl._util._ListenerQueue))(),
+    _errListeners   : new (myfaces._impl.core._Runtime.getGlobalConfig("errorListenerQueue", myfaces._impl._util._ListenerQueue))(),
 
     /*CONSTANTS*/
 
     /*internal identifiers for options*/
-    IDENT_ALL : "@all",
-    IDENT_NONE : "@none",
-    IDENT_THIS : "@this",
-    IDENT_FORM : "@form",
+    IDENT_ALL:  "@all",
+    IDENT_NONE: "@none",
+    IDENT_THIS: "@this",
+    IDENT_FORM: "@form",
 
     /*
      * [STATIC] constants
      */
 
-    P_PARTIAL_SOURCE : "javax.faces.source",
-    P_VIEWSTATE : "javax.faces.ViewState",
-    P_AJAX : "javax.faces.partial.ajax",
-    P_EXECUTE : "javax.faces.partial.execute",
-    P_RENDER : "javax.faces.partial.render",
-    P_EVT : "javax.faces.partial.event",
+    P_PARTIAL_SOURCE:   "javax.faces.source",
+    P_VIEWSTATE:        "javax.faces.ViewState",
+    P_AJAX:             "javax.faces.partial.ajax",
+    P_EXECUTE:          "javax.faces.partial.execute",
+    P_RENDER:           "javax.faces.partial.render",
+    P_EVT:              "javax.faces.partial.event",
 
     /* message types */
-    ERROR : "error",
-    EVENT : "event",
+    ERROR: "error",
+    EVENT: "event",
 
     /* event emitting stages */
-    BEGIN : "begin",
-    COMPLETE : "complete",
-    SUCCESS : "success",
+    BEGIN:      "begin",
+    COMPLETE:   "complete",
+    SUCCESS:    "success",
 
     /*ajax errors spec 14.4.2*/
-    HTTPERROR : "httpError",
-    EMPTY_RESPONSE : "emptyResponse",
-    MALFORMEDXML : "malformedXML",
-    SERVER_ERROR : "serverError",
-    CLIENT_ERROR : "clientError",
-    TIMEOUT_EVENT: "timeout",
+    HTTPERROR:      "httpError",
+    EMPTY_RESPONSE: "emptyResponse",
+    MALFORMEDXML:   "malformedXML",
+    SERVER_ERROR:   "serverError",
+    CLIENT_ERROR:   "clientError",
+    TIMEOUT_EVENT:  "timeout",
 
-    _Lang: myfaces._impl._util._Lang,
+    _Lang:  myfaces._impl._util._Lang,
+    _Dom:   myfaces._impl._util._Dom,
 
-
+    /*blockfilter for the passthrough filtering, the attributes given here
+     * will not be transmitted from the options into the passthrough*/
+    _BLOCKFILTER: {onerror: true, onevent: true, render: true, execute: true, myfaces: true},
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -91,7 +94,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         if (!form
                 || !form.nodeName
                 || form.nodeName.toLowerCase() != "form") {
-            throw new Error("jsf.viewState: param value not of type form!");
+            throw new Error(this._Lang.getMessage("ERR_VIEWSTATE"));
         }
 
         var ajaxUtils = new myfaces._impl.xhrCore._AjaxUtils(0);
@@ -115,21 +118,32 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * @param {String|Node} elem any dom element no matter being it html or jsf, from which the event is emitted
      * @param {|Event|} event any javascript event supported by that object
      * @param {|Object|} options  map of options being pushed into the ajax cycle
+     *
+     *
+     * TODO refactoring, the passthrgh handling is only for dragging in request parameters
+     * we should rewrite this part
+     *
+     *
+     * a) transformArguments out of the function
+     * b) passThrough handling with a map copy with a filter map block map
      */
     request : function(elem, event, options) {
-        //options not set we define a default one with nothing
-        options = options || {};
-
+     
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
          *all the time
          **/
         var _Lang = this._Lang;
-        var _Dom = myfaces._impl._util._Dom;
+        var _Dom =  this._Dom;
+        var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
 
-        //blank to avoid errors in case nothing is determinable
-        var elementId = "";
+        /*assert if the onerror is set and once if it is set it must be of type function*/
+        _Lang.assertType(options.onerror, "function");
+        /*assert if the onevent is set and once if it is set it must be of type function*/
+        _Lang.assertType(options.onevent, "function");
 
+        //options not set we define a default one with nothing
+        options = options || {};
 
         /**
          * we cross reference statically hence the mapping here
@@ -141,36 +155,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
 
         elem = _Lang.byId(elem);
-
-        if (elem) {
-            //detached element handling, we also store the element name
-            //to get a fallback option in case the identifier is not determinable
-            // anymore, in case of a framework induced detachment the element.name should
-            // be shared if the identifier is not determinable anymore
-            elementId = elem.id || elem.name;
-            if ((elementId == null || elementId == '') && elem.name) {
-                elementId = elem.name;
-            }
-        }
-
-        /*assert if the onerror is set and once if it is set it must be of type function*/
-        _Lang.assertType(options.onerror, "function");
-        /*assert if the onevent is set and once if it is set it must be of type function*/
-        _Lang.assertType(options.onevent, "function");
+        var elementId = _Dom.nodeIdOrName(elem);
 
         /*
          * We make a copy of our options because
          * we should not touch the incoming params!
          */
-        var passThrgh = _Lang.mixMaps({}, options, true);
-
-        /*additional passthrough cleanup*/
-        /*ie6 supportive code to prevent browser leaks*/
-        passThrgh.onevent = null;
-        delete passThrgh.onevent;
-        /*ie6 supportive code to prevent browser leaks*/
-        passThrgh.onerror = null;
-        delete passThrgh.onerror;
+        var passThrgh = _Lang.mixMaps({}, options, true, this._BLOCKFILTER);
 
         if (event) {
             passThrgh[this.P_EVT] = event.type;
@@ -183,24 +174,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         var context = {
             source: elem,
             onevent: options.onevent,
-            onerror: options.onerror
+            onerror: options.onerror,
+
+            //TODO move the myfaces part into the _mfInternal part
+            myfaces: options.myfaces
         };
 
         /**
          * fetch the parent form
+         *
+         * note we also add an override possibility here
+         * so that people can use dummy forms and work
+         * with detached objects
          */
-        var form = myfaces._impl._util._Dom.fuzzyFormDetection(elem);
-
-        var formErr = "Sourceform could not be determined, either because element is not attached to a form or we have multiple forms with named elements of the same identifier or name, stopping the ajax processing";
-
-        if (!form && event) {
-            form = _Dom.fuzzyFormDetection(_Lang.getEventTarget(event));
-            if (!form) {
-                throw Error(formErr);
-            }
-        } else if (!form) {
-            throw Error(formErr);
-        }
+        var form = (options.myfaces && options.myfaces.form)?
+                _Lang.byId(options.myfaces.form):
+                this._getForm(elem, event);
 
         /**
          * binding contract the javax.faces.source must be set
@@ -212,93 +201,87 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          */
         passThrgh[this.P_AJAX] = true;
 
-        var _this = this;
-        var transformList = function(target, srcStr) {
-
-            //this is probably the fastest transformation method
-            //it uses an array and an index to position all elements correctly
-            //the offset variable is there to prevent 0 which results in a javascript
-            //false
-            var offset = 1,
-                    vals = (srcStr) ? srcStr.split(/\s+/) : [],
-                    idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {},
-                //helpers to improve speed and compression
-                    none = idIdx[_this.IDENT_NONE],
-                    all = idIdx[_this.IDENT_ALL],
-                    theThis = idIdx[_this.IDENT_THIS],
-                    theForm = idIdx[_this.IDENT_FORM];
-            if (none) {
-                passThrgh[target] = _this.IDENT_NONE;
-                return;
-            }
-
-            if (!all) {
-                if (theForm) {
-                    vals[theForm - offset] = form.id;
-                }
-                if (theThis && !idIdx[elementId]) {
-                    vals[theThis - offset] = elementId;
-                }
-
-                //this has yet to be cleared up within the open list
-                //
-                //if (appendIdentifier && !idIdx[_this.IDENT_THIS] && !idIdx[elementId]) {
-                //    vals.push(elementId);
-                //}
-
-                passThrgh[target] = vals.join(" ");
-            } else {
-                passThrgh[target] = _this.IDENT_ALL;
-            }
-        };
-
-        var clearNone = function(target) {
-            if (passThrgh[target] == _this.IDENT_NONE) {
-                //according to jsf 2.0reva not even a blank execute is allowed if none is sent
-                passThrgh[target] = null;
-                delete passThrgh[target];
-            }
-        };
-
-        try {
-            if (passThrgh.execute) {
-                /*the options must be a blank delimited list of strings*/
-                /*compliance with Mojarra which automatically adds @this to an execute
-                 * the spec rev 2.0a however states, if none is issued nothing at all should be sent down
-                 */
-                transformList(this.P_EXECUTE, passThrgh.execute+" @this");
-                passThrgh.execute = null;
-                /*remap just in case we have a valid pointer to an existing object*/
-                clearNone(this.P_EXECUTE);
-
-                passThrgh.execute = null;
-                delete passThrgh.execute;
-            } else {
-                passThrgh[this.P_EXECUTE] = elementId;
-            }
-
-            if (passThrgh.render) {
-                transformList(this.P_RENDER, passThrgh.render);
-                clearNone(this.P_RENDER);
-
-                passThrgh.render = null;
-                delete passThrgh.render;
-            }
-
-            //implementation specific options are added to the context for further processing
-            if (passThrgh.myfaces) {
-                context.myfaces = passThrgh.myfaces;
-                delete passThrgh.myfaces;
-            }
-
-        } finally {
-            //ie6 mem leak clearing
-            _this = null;
-            transformList = null;
-            clearNone = null;
+        if (options.execute) {
+            /*the options must be a blank delimited list of strings*/
+            /*compliance with Mojarra which automatically adds @this to an execute
+             * the spec rev 2.0a however states, if none is issued nothing at all should be sent down
+             */
+            this._transformList(passThrgh, this.P_EXECUTE, options.execute + " @this", form, elementId);
+        } else {
+            passThrgh[this.P_EXECUTE] = elementId;
         }
-        var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
 
+        if (options.render) {
+            this._transformList(passThrgh, this.P_RENDER, options.render, form, elementId);
+        }
+
+        /**
+         * multiple transports upcoming jsf 2.1 feature currently allowed
+         * default (no value) xhrQueuedPost
+         *
+         * xhrQueuedPost
+         * xhrPost
+         * xhrGet
+         * xhrQueuedGet
+         * iframePost
+         * iframeQueuedPost
+         *
+         */
+        var transportType = this._getTransportType(context, passThrgh, form);
+
+        //additional meta information to speed things up, note internal non jsf
+        //pass through options are stored under _mfInternal in the context
+        context._mfInternal = {};
+        var mfInternal = context._mfInternal;
+
+        mfInternal["_mfSourceFormId"] =     form.id;
+        mfInternal["_mfSourceControlId"] =  elementId;
+        mfInternal["_mfTransportType"] =    transportType;
+
+        //mojarra compatibility, mojarra is sending the form id as well
+        //this is not documented behavior but can be determined by running
+        //mojarra under blackbox conditions
+        //i assume it does the same as our formId_submit=1 so leaving it out
+        //wont hurt but for the sake of compatibility we are going to add it
+        passThrgh[form.id] = form.id;
+
+        this._transport[transportType](elem, form, context, passThrgh);
+
+    },
+
+    /**
+     * fetches the form in an unprecise manner depending
+     * on an element or event target
+     *
+     * @param elem
+     * @param event
+     */
+    _getForm: function(elem, event) {
+        var _Dom =  this._Dom;
+        var _Lang = this._Lang;
+        var form =  _Dom.fuzzyFormDetection(elem);
+
+        if (!form && event) {
+            //in case of no form is given we retry over the issuing event
+            form = _Dom.fuzzyFormDetection(_Lang.getEventTarget(event));
+            if (!form) {
+                throw Error(_Lang.getMessage("ERR_FORM"));
+            }
+        } else if (!form) {
+            throw Error(_Lang.getMessage("ERR_FORM"));
+        }
+        return form;
+    },
+
+    /**
+     * determines the transport type to be called
+     * for the ajax call
+     *
+     * @param context
+     * @param passThrgh
+     * @param form
+     */
+    _getTransportType: function(context, passThrgh, form) {
         /**
          * if execute or render exist
          * we have to pass them down as a blank delimited string representation
@@ -306,6 +289,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          */
         //for now we turn off the transport auto selection, to enable 2.0 backwards compatibility
         //on protocol level, the file upload only can be turned on if the auto selection is set to true
+        var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
+        var _Lang     = this._Lang;
+        var _Dom      = this._Dom;
+
         var transportAutoSelection = getConfig(context, "transportAutoSelection", false);
         var isMultipart = (transportAutoSelection && _Dom.getAttribute(form, "enctype") == "multipart/form-data") ?
                 _Dom.isMultipartCandidate(passThrgh[this.P_EXECUTE]) :
@@ -326,31 +313,67 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         var transportType = (!isMultipart) ?
                 getConfig(context, "transportType", "xhrQueuedPost") :
                 getConfig(context, "transportType", "multipartQueuedPost");
-
         if (!this._transport[transportType]) {
-            throw new Error("Transport type " + transportType + " does not exist");
+            //throw new Error("Transport type " + transportType + " does not exist");
+            throw new Error(_Lang.getMessage("ERR_TRANSPORT",null, transportType));
         }
-
-        context._mfInternal = {};
-        var mfInternal = context._mfInternal;
-        //additional meta information to speed things up
-        mfInternal["_mfSourceFormId"] = form.id;
-        mfInternal["_mfSourceControlId"] = elementId;
-        mfInternal["_mfTransportType"] = transportType;
-
-        //mojarra compatibility, mojarra is sending the form id as well
-        //this is not documented behavior but can be determined by running
-        //mojarra under blackbox conditions
-        //i assume it does the same as our formId_submit=1 so leaving it out
-        //wont hurt but for the sake of compatibility we are going to add it
-        passThrgh[form.id] = form.id;
-
-        this._transport[transportType](elem, form, context, passThrgh);
-
+        return transportType;
 
     },
 
+    /**
+     * transforms the list to the expected one
+     * with the proper none all form and this handling
+     * (note we also could use a simple string replace but then
+     * we would have had double entries under some circumstances)
+     *
+     * @param passThrgh
+     * @param target
+     * @param srcStr
+     * @param form
+     * @param elementId
+     */
+    _transformList: function(passThrgh, target, srcStr, form, elementId) {
+        var _Lang = this._Lang;
+        //this is probably the fastest transformation method
+        //it uses an array and an index to position all elements correctly
+        //the offset variable is there to prevent 0 which results in a javascript
+        //false
+        var offset = 1,
+                vals  = (srcStr) ? srcStr.split(/\s+/) : [],
+                idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {},
 
+                //helpers to improve speed and compression
+                none    = idIdx[this.IDENT_NONE],
+                all     = idIdx[this.IDENT_ALL],
+                theThis = idIdx[this.IDENT_THIS],
+                theForm = idIdx[this.IDENT_FORM];
+
+        if (none) {
+            //in case of none only one value is returned
+            passThrgh[target] = this.IDENT_NONE;
+            return passThrgh;
+        }
+        if (all) {
+            //in case of all only one value is returned
+            passThrgh[target] = this.IDENT_ALL;
+            return passThrgh;
+        }
+
+        if (theForm) {
+            //the form is replaced with the proper id but the other
+            //values are not touched
+            vals[theForm - offset] = form.id;
+        }
+        if (theThis && !idIdx[elementId]) {
+            //in case of this, the element id is set
+            vals[theThis - offset] = elementId;
+        }
+
+        //the final list must be blank separated
+        passThrgh[target] = vals.join(" ");
+        return passThrgh;
+    },
 
     addOnError : function(/*function*/errorListener) {
         /*error handling already done in the assert of the queue*/
@@ -383,23 +406,25 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      *
      */
     sendError : function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage) {
+        var _Lang = myfaces._impl._util._Lang;
+
         var eventData = {};
         //we keep this in a closure because we might reuse it for our serverErrorMessage
         var malFormedMessage = function() {
-            return (name && name === myfaces._impl.core.Impl.MALFORMEDXML) ? "The server response could not be parsed, the server has returned with a response which is not xml !" : "";
+            return (name && name === myfaces._impl.core.Impl.MALFORMEDXML) ? _Lang.getMessage("ERR_MALFORMEDXML") : "";
         };
 
         eventData.type = this.ERROR;
 
-        eventData.status = name;
-        eventData.serverErrorName = serverErrorName;
-        eventData.serverErrorMessage = serverErrorMessage;
+        eventData.status            = name;
+        eventData.serverErrorName   = serverErrorName;
+        eventData.serverErrorMessage =  serverErrorMessage;
 
         try {
-            eventData.source = context.source;
-            eventData.responseCode = request.status;
-            eventData.responseText = request.responseText;
-            eventData.responseXML = request.responseXML;
+            eventData.source        = context.source;
+            eventData.responseCode  = request.status;
+            eventData.responseText  = request.responseText;
+            eventData.responseXML   = request.responseXML;
         } catch (e) {
             // silently ignore: user can find out by examining the event data
         }
@@ -421,8 +446,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             finalMessage.push((serverErrorMessage) ? serverErrorMessage : "");
             finalMessage.push(malFormedMessage());
 
-            defaultErrorOutput(finalMessage.join("-") + " Note, this message is only sent, because project stage is development and no " +
-                    "other error listeners are registered.");
+            defaultErrorOutput(finalMessage.join("-") + _Lang.getMessage("MSG_DEV_MODE"));
         }
     },
 
@@ -430,6 +454,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * sends an event
      */
     sendEvent : function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
+        var _Lang = myfaces._impl._util._Lang;
         var eventData = {};
         eventData.type = this.EVENT;
 
@@ -450,12 +475,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
 
                 eventData.responseCode = getValue(request, "status");
                 eventData.responseText = getValue(request, "responseText");
-                eventData.responseXML = getValue(request, "responseXML");
+                eventData.responseXML  = getValue(request, "responseXML");
 
             } catch (e) {
                 var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
                 impl.sendError(request, context, this.CLIENT_ERROR, "ErrorRetrievingResponse",
-                        "Parts of the response couldn't be retrieved when constructing the event data: " + e);
+                        _Lang.getMessage("ERR_CONSTRUCT", e.toString()));
+                     
                 //client errors are not swallowed
                 throw e;
             }
@@ -490,17 +516,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
     getProjectStage : function() {
         /* run through all script tags and try to find the one that includes jsf.js */
         var scriptTags = document.getElementsByTagName("script");
-        var getConfig = myfaces._impl.core._Runtime.getGlobalConfig;
+        var getConfig  = myfaces._impl.core._Runtime.getGlobalConfig;
+        
         for (var i = 0; i < scriptTags.length; i++) {
             if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
                 var result = scriptTags[i].src.match(/stage=([^&;]*)/);
                 if (result) {
                     // we found stage=XXX
                     // return only valid values of ProjectStage
-                    if (result[1] == "Production"
-                            || result[1] == "Development"
-                            || result[1] == "SystemTest"
-                            || result[1] == "UnitTest") {
+                    if (   result[1] == "Production"
+                        || result[1] == "Development"
+                        || result[1] == "SystemTest"
+                        || result[1] == "UnitTest") {
                         return result[1];
                     }
                 }
@@ -537,15 +564,18 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      *   but can be undefined
      */
     chain : function(source, event) {
-        var len = arguments.length;
+        var len   = arguments.length;
+        var _Lang = this._Lang;
+
         //the spec is contradicting here, it on one hand defines event, and on the other
         //it says it is optional, I have cleared this up now
         //the spec meant the param must be passed down, but can be 'undefined'
         if (len < 2) {
-            throw new Error(" an event object or unknown must be passed as second parameter ");
+            throw new Error(_Lang.getMessage("ERR_EV_OR_UNKNOWN"));
         } else if (len < 3) {
             if ('function' == typeof event || this._Lang.isString(event)) {
-                throw new Error(" an event must be passed down (either a an event object null or undefined) ");
+
+                throw new Error(_Lang.getMessage("ERR_EVT_PASS"));
             }
             //nothing to be done here, move along
             return true;
@@ -557,20 +587,20 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         //assertions source either null or set as dom element:
 
         if ('undefined' == typeof source) {
-            throw new Error(" source must be defined or null");
+            throw new Error(_Lang.getMessage("ERR_SOURCE_DEF_NULL"));
             //allowed chain datatypes
         } else if ('function' == typeof source) {
-            throw new Error(" source cannot be a function (probably source and event were not defined or set to null");
+            throw new Error(_Lang.getMessage("ERR_SOURCE_FUNC"));
         }
         if (this._Lang.isString(source)) {
-            throw new Error(" source cannot be a string ");
+            throw new Error(_Lang.getMessage("ERR_SOURCE_NOSTR"));
         }
 
         //assertion if event is a function or a string we already are in our function elements
         //since event either is undefined, null or a valid event object
 
         if ('function' == typeof event || this._Lang.isString(event)) {
-            throw new Error(" an event must be passed down (either a an event object null or undefined) ");
+            throw new Error(_Lang.getMessage("ERR_EV_OR_UNKNOWN"));
         }
 
         for (var cnt = 2; cnt < len; cnt++) {

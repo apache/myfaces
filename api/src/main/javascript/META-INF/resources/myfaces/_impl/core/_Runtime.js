@@ -266,10 +266,7 @@ if (!myfaces._impl.core._Runtime) {
                     currNms = currNms[subNamespace];
                 }
                 _T._reservedNMS[tmpNmsName.join(".")] = true;
-
             }
-
-
             return true;
         };
 
@@ -342,24 +339,24 @@ if (!myfaces._impl.core._Runtime) {
             _T.loadScriptEval(rootPath + "/" + nms.replace(/\./g, "/") + ".js");
         },
 
+        /**
+         * fetches a global config entry
+         * @param {String} configName the name of the configuration entry
+         * @param {Object} defaultValue
+         *
+         * @return either the config entry or if none is given the default value
+         */
+        _T.getGlobalConfig = function(configName, defaultValue) {
             /**
-             * fetches a global config entry
-             * @param {String} configName the name of the configuration entry
-             * @param {Object} defaultValue
-             *
-             * @return either the config entry or if none is given the default value
+             * note we could use exists but this is an heavy operation, since the config name usually
+             * given this function here is called very often
+             * is a single entry without . in between we can do the lighter shortcut
              */
-                _T.getGlobalConfig = function(configName, defaultValue) {
-                    /**
-                     * note we could use exists but this is an heavy operation, since the config name usually
-                     * given this function here is called very often
-                     * is a single entry without . in between we can do the lighter shortcut
-                     */
-                    return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
-                            myfaces.config[configName]
-                            :
-                            defaultValue;
-                };
+            return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
+                    myfaces.config[configName]
+                    :
+                    defaultValue;
+        };
 
         /**
          * gets the local or global options with local ones having higher priority
@@ -416,11 +413,12 @@ if (!myfaces._impl.core._Runtime) {
                 //we now check the xhr level
                 //sendAsBinary = 1.5 which means mozilla only
                 //upload attribute present == level2
+                /*
                 if (!_T.XHR_LEVEL) {
                     var _e = _T.exists;
                     _T.XHR_LEVEL = (_e(_ret, "sendAsBinary")) ? 1.5 : 1;
                     _T.XHR_LEVEL = (_e(_ret, "upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
-                }
+                }*/
                 return _ret;
             }
             //IE
@@ -758,17 +756,17 @@ if (!myfaces._impl.core._Runtime) {
         },
 
 
-            /**
-             * Extends a class and puts a singleton instance at the reserved namespace instead
-             * of its original class
-             *
-             * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
-             * @param {function} extendsCls the function class to be extended
-             * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
-             */
-                _T.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
-                    return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
-                };
+        /**
+         * Extends a class and puts a singleton instance at the reserved namespace instead
+         * of its original class
+         *
+         * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
+         * @param {function} extendsCls the function class to be extended
+         * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
+         */
+        _T.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
+            return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
+        };
 
         /**
          * delegation pattern which attached singleton generation
@@ -856,6 +854,32 @@ if (!myfaces._impl.core._Runtime) {
                 oldonload();
                 func();
             };
+        };
+
+        /**
+         * returns the internationalisation setting
+         * for the given browser so that
+         * we can i18n our messages
+         *
+         * @returns a map with following entires:
+         * <ul>
+         *      <li>language: the lowercase language iso code</li>
+         *      <li>variant: the uppercase variant iso code</li>
+         * </ul>
+         * null is returned if the browser fails to determine the language settings
+         */
+        _T.getLanguage = function(languageOverride) {
+            var deflt = {language: "en", variant: "UK"}; //default language and variant
+            try {
+                var lang = languageOverride || navigator.language || navigator.browserLanguage;
+                if(!lang || lang.length < 2) return deflt;
+                return {
+                    language: lang.substr(0,2),
+                    variant: (lang.length >=5)?lang.substr(3,5): null
+                };
+            } catch(e) {
+                return deflt;    
+            }
         };
 
         //initial browser detection, we encapsule it in a closure

@@ -59,8 +59,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         "onmouseup": true
     },
 
-    _Lang:myfaces._impl._util._Lang,
-    _RT:myfaces._impl.core._Runtime,
+    _Lang:  myfaces._impl._util._Lang,
+    _RT:    myfaces._impl.core._Runtime,
     _dummyPlaceHolder:null,
 
     constructor_: function() {
@@ -70,7 +70,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //then this also will work at the second time, but the onload handler
         //should cover 99% of all use cases to avoid a loading race condition
         var b = myfaces._impl.core._Runtime.browser;
-
 
         if (b.isIE <= 6 && b.isIEMobile) {
             //winmobile hates add onLoad, and checks on the construct
@@ -97,8 +96,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param {|Node|} item
      */
     runScripts: function(item, xmlData) {
-        var finalScripts = [];
-        var execScrpt = this._Lang.hitch(this, function(item) {
+        var finalScripts    = [];
+        var execScrpt       = this._Lang.hitch(this, function(item) {
             if (item.tagName && this._Lang.equalsIgnoreCase(item.tagName, "script")) {
                 var src = item.getAttribute('src');
                 if ('undefined' != typeof src
@@ -162,6 +161,22 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
     },
 
+    nodeIdOrName: function(elem) {
+        if (elem) {
+            elem = this.byId(elem);
+            //detached element handling, we also store the element name
+            //to get a fallback option in case the identifier is not determinable
+            // anymore, in case of a framework induced detachment the element.name should
+            // be shared if the identifier is not determinable anymore
+            var elementId = elem.id || elem.name;
+            if ((elementId == null || elementId == '') && elem.name) {
+                elementId = elem.name;
+            }
+            return elementId;
+        }
+        return null;
+    },
+
     /**
      * Simple delete on an existing item
      */
@@ -183,10 +198,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     outerHTML : function(item, markup) {
         if (!item) {
-            throw Error("myfaces._impl._util._Dom.outerHTML: item must be passed down");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null,"myfaces._impl._util._Dom.outerHTML", "item"));
         }
         if (!markup) {
-            throw Error("myfaces._impl._util._Dom.outerHTML: markup must be passed down");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null,"myfaces._impl._util._Dom.outerHTML", "markup"));
         }
 
         markup = this._Lang.trim(markup);
@@ -249,10 +264,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     _isTableElement: function(item) {
         var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
 
+        return this._isTableStructureElement(item) || itemNodeName == "td";
+    },
+
+    _isTableStructureElement: function(item) {
+        var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
+
         return itemNodeName == "table" || itemNodeName == "thead" ||
                 itemNodeName == "tbody" || itemNodeName == "tfoot" ||
-                itemNodeName == "th" || itemNodeName == "tr" ||
-                itemNodeName == "td";
+                itemNodeName == "th" || itemNodeName == "tr";
     },
 
     /**
@@ -327,7 +347,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             probe.innerHTML = "<table><" + itemNodeName + "></" + itemNodeName + ">" + "</table>";
         }
         var depth = this._determineDepth(probe);
-        ;
+        
         this._removeChildNodes(probe, false);
         probe.innerHTML = "";
 
@@ -352,7 +372,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param markup the marku code
      */
     _buildNodesNonCompliant: function(markup) {
-       
+
         var evalNodes = null;
 
         //now to the non w3c compliant browsers
@@ -369,9 +389,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         this._removeChildNodes(probe, false);
         probe.innerHTML = "";
 
-
         var dummyPlaceHolder = this.getDummyPlaceHolder();//document.createElement("div");
-
 
         //fortunately a table element also works which is less critical than form elements regarding
         //the inner content
@@ -382,7 +400,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             evalNodes = evalNodes.childNodes[0];
         }
         evalNodes = (evalNodes.parentNode) ? evalNodes.parentNode.childNodes : null;
-
 
         if ('undefined' == typeof evalNodes || null == evalNodes) {
             //fallback for htmlunit which should be good enough
@@ -435,29 +452,36 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         try {
             //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
             //again to speed things up we precheck first
-            node.innerHTML = "";
+            if(!this._isTableStructureElement(childNode)) {
+                //we do not do a table structure innnerhtml on table elements except td
+                //htmlunit rightfully complains that we should not do it
+                node.innerHTML = "";
+            }
             if (b.isIE && 'undefined' != typeof node.outerHTML) {//ie8+ check done earlier we skip it here
                 node.outerHTML = '';
             } else {
-                if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
-                    node.parentNode.removeChild(node);
+                this._removeFromParent(node);
             }
             if (!b.isIEMobile) {
                 delete node;
             }
         } catch (e) {
-            //on some elements the outerHTML can fail we skip those in favor
-            //of stability
+            //on some elements we might not have covered by our table check on the outerHTML
+            // can fail we skip those in favor of stability
             try {
                 // both innerHTML and outerHTML fails when <tr> is the node, but in that case 
                 // we need to force node removal, otherwise it will be on the tree (IE 7 IE 6)
-                if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
-                    node.parentNode.removeChild(node);
+                this._removeFromParent(node);
             } catch (e1) {
             }
         }
     }
     ,
+
+    _removeFromParent: function(node) {
+        if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
+                    node.parentNode.removeChild(node);
+    },
 
     /**
      * recursive delete child nodes
@@ -506,7 +530,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 if (!disallowedNodes[nodeName]) {
                     //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
                     //again to speed things up we precheck first
-                    childNode.innerHTML = "";
+                    if(!this._isTableStructureElement(childNode)) {    //table elements cannot be deleted
+                        childNode.innerHTML = "";
+                    }
                     if (b.isIE && b.isIE < 8 && 'undefined' != childNode.outerHTML)
                         childNode.outerHTML = '';
                     else {
@@ -583,12 +609,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param evalNodes the elements
      */
     replaceElements: function (item, evalNodes) {
+        var evalNodesDefined = evalNodes && 'undefined' != typeof evalNodes.length;
+        if (!evalNodesDefined) {
+            throw new Error(this._Lang.getMessage("ERR_REPLACE_EL"));
+        }
 
         var parentNode = item.parentNode;
-        var evalNodesDefined = 'undefined' != typeof evalNodes.length;
-        if (!evalNodesDefined) {
-            throw new Error("replaceElements called while evalNodes is not an array");
-        }
+
         var sibling = item.nextSibling;
         var resultArr = this._Lang.objToArray(evalNodes);
 
@@ -848,10 +875,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     setAttribute : function(node, attr, val) {
 
         if (!node) {
-            throw Error("_Dom.setAttribute a  node must be given");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.setAttribute", "node {DomNode}"));
         }
         if (!attr) {
-            throw Error("_Dom.setAttribute an attribute must be given");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.setAttribute", "attr {String}"));
         }
 
         //quirks mode and ie7 mode has the attributes problems ie8 standards mode behaves like
@@ -1014,7 +1041,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 return elemForm;
             }
 
-
             //element of type form then we are already
             //at form level for the issuing element
             //https://issues.apache.org/jira/browse/MYFACES-2793
@@ -1099,7 +1125,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     getParent : function(item, tagName) {
 
         if (!item) {
-            throw Error("myfaces._impl._util._Dom.getParent: item must be set");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getParent", "item {DomNode}"));
         }
 
         var _Lang = this._Lang;
@@ -1125,10 +1151,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     getFilteredParent : function(item, filter) {
         if (!item) {
-            throw Error("myfaces._impl._util._Dom.getFilteredParent: item must be set");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getFilteredParent", "item {DomNode}"));
         }
         if (!filter) {
-            throw Error("myfaces._impl._util._Dom.getFilteredParent: filter must be set");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getFilteredParent", "filter {function}"));
         }
 
         //search parent tag parentName
@@ -1151,10 +1177,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      */
     getFilteredChild: function(item, filter) {
         if (!item) {
-            throw Error("myfaces._impl._util._Dom.getFilteredChild: item must be set");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getFilteredParent", "item {DomNode}"));
         }
         if (!filter) {
-            throw Error("myfaces._impl._util._Dom.getFilteredChild: filter must be set");
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getFilteredParent", "filter {function}"));
         }
 
         var childs = item.childNodes;

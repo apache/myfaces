@@ -34,6 +34,61 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
     _processedExceptions: {},
 
+    _installedLocale: null,
+
+    /**
+     * returns a given localized message upon a given key
+     * basic java log like templating functionality is included
+     *
+     * @param {String} key the key for the message
+     * @param {String} optional default message if none was found
+     *
+     * Additionally you can pass additional arguments, which are used
+     * in the same way java log templates use the params
+     *
+     * @param key
+     */
+    getMessage: function(key, defaultMessage /*,vararg templateParams*/) {
+        if(!this._installedLocale) {
+            //we first try to install language and variant, if that one fails
+            //we try to install the language only, and if that one fails
+            //we install the base messages
+            this.initLocale();
+        }
+
+        var msg = this._installedLocale[key] || defaultMessage || key + " - undefined message";
+        for(var cnt = 2; cnt < arguments.length; cnt++) {
+          msg = msg.replace(new RegExp(["\\{",cnt-2,"\\}"].join(""),"g"),new String(arguments[cnt]));   
+        }
+        return msg;
+    },
+
+    /**
+     * (re)inits the currently installed
+     * messages so that after loading the main scripts
+     * a new locale can be installed optionally
+     * to our i18n subsystem
+     *
+     * @param newLocale locale override 
+     */
+    initLocale: function(newLocale) {
+        if(newLocale) {
+            this._installedLocale = new newLocale();
+            return;
+        }
+        var language_Variant = this._callDelegate("getLanguage", this._callDelegate("getGlobalConfig","locale")); 
+        var langStr = language_Variant ? language_Variant.language:"";
+        var variantStr = language_Variant ? [language_Variant.language,"_",language_Variant.variant||""].join(""):"";
+
+        var i18nRoot = myfaces._impl.i18n;
+        var i18nHolder = i18nRoot["Messages_"+variantStr] ||
+                         i18nRoot["Messages_"+langStr]    ||
+                         i18nRoot.Messages;
+
+        this._installedLocale = new i18nHolder();
+    },
+
+
     isExceptionProcessed: function(e) {
         return !! this._processedExceptions[e.toString()];
     },
@@ -52,22 +107,21 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
     fetchNamespace : function(namespace) {
         if (!namespace || !this.isString(namespace)) {
-            throw Error("_Lang.fetchNamespace namespace must be of type String");
+            throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.fetchNamespace","namespace"));
         }
         return this._callDelegate("fetchNamespace", namespace);
     },
 
     reserveNamespace : function(namespace) {
         if (!this.isString(namespace)) {
-            throw Error("_Lang.reserveNamespace namespace must be of type String");
+            throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.reserveNamespace", "namespace"));
         }
         return this._callDelegate("reserveNamespace", namespace);
-        //return this._RT.reserveNamespace(namespace);
     },
 
     globalEval : function(code) {
         if (!this.isString(code)) {
-            throw Error("_Lang.globalEval code must be of type String");
+            throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.globalEval", "code"));
         }
         return this._callDelegate("globalEval", code);
     },
@@ -177,7 +231,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      */
     byId : function(/*object*/ reference) {
         if (!reference) {
-            throw Error("_Lang.byId , a reference node or identifier must be provided");
+            throw Error(this.getMessage("ERR_REF_OR_ID",null,"_Lang.byId","reference"));
         }
         return (this.isString(reference)) ? document.getElementById(reference) : reference;
     },
@@ -241,10 +295,10 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         //		Return true if it is a String
 
         if (!this.isString(it)) {
-            throw Error("myfaces._impl._util._Lang.strToArray param not of type string");
+            throw Error(this.getMessage("ERR_PARAM_STR",null, "myfaces._impl._util._Lang.strToArray", "it"));
         }
         if (!splitter) {
-            throw Error("myfaces._impl._util._Lang.strToArray a splitter param must be provided which is either a string or a regexp");
+            throw Error(this.getMessage("ERR_PARAM_STR_RE",null, "myfaces._impl._util._Lang.strToArray", "splitter"));
         }
         var retArr = it.split(splitter);
         var len = retArr.length;
@@ -261,7 +315,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      */
     trim : function(/*string*/ str) {
         if (!this.isString(str)) {
-            throw Error("_Lang.trim, parameter must be of type String");
+            throw Error(this.getMessage("ERR_PARAM_STR",null,"_Lang.trim", "str"));
         }
         str = str.replace(/^\s\s*/, '');
         var ws = /\s/;
@@ -361,9 +415,9 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * @param {|Object|} src the source map
      * @param {|boolean|} overwrite if set to true the destination is overwritten if the keys exist in both maps
      **/
-    mixMaps : function(dest, src, overwrite) {
+    mixMaps : function(dest, src, overwrite, blockFilter) {
         if (!dest || !src) {
-            throw Error("_Lang.mixMaps, both a source as well as a destination map must be provided");
+            throw Error(this.getMessage("ERR_PARAM_MIXMAPS",null,"_Lang.mixMaps"));
         }
 
         /**
@@ -374,6 +428,9 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         var key = null;
         var _undef = "undefined";
         for (key in src) {
+            if(blockFilter && blockFilter[key]) {
+                continue;
+            }
             /**
              *we always overwrite dest with source
              *unless overWrite is not set or source does not exist
@@ -406,7 +463,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      */
     contains : function(arr, str) {
         if (!arr || !str) {
-            throw Error("_Lang.contains an array and a string must be provided");
+            throw Error(this.getMessage("ERR_MUST_BE_PROVIDED",null,"_Lang.contains", "arr {array}", "str {string}"));
         }
 
         for (var cnt = 0; cnt < arr.length; cnt++) {
@@ -443,7 +500,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      */
     arrToString : function(/*String or array*/ arr, /*string*/ delimiter) {
         if (!arr) {
-            throw Error("_Lang.arrayToString array must be set");
+            throw Error(this.getMessage("ERR_MUST_BE_PROVIDED1",null, "arr {array}"));
         }
         if (this.isString(arr)) {
             return arr;
@@ -637,15 +694,17 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
         var ret = [];
 
         var keyValToStr = this.keyValToStr;
-        ret.push(keyValToStr("Affected Class: ", sourceClass));
-        ret.push(keyValToStr("Affected Method: ", func));
+        ret.push(keyValToStr(this.getMessage("MSG_AFFECTED_CLASS"), sourceClass));
+        ret.push(keyValToStr(this.getMessage("MSG_AFFECTED_METHOD"), func));
 
         if (error) {
-            ret.push(keyValToStr("Error name: ", error.name ? error.name : "undefined"));
-            ret.push(keyValToStr("Error message: ", error.message ? error.message : "undefined"));
-            ret.push(keyValToStr("Error description: ", error.description ? error.description : "undefined"));
-            ret.push(keyValToStr("Error number: ", 'undefined' != typeof error.number ? error.number : "undefined"));
-            ret.push(keyValToStr("Error line number: ", 'undefined' != typeof error.lineNumber ? error.lineNumber : "undefined"));
+            var _UDEF = "undefined";
+
+            ret.push(keyValToStr(this.getMessage("MSG_ERROR_NAME"), error.name ? error.name : _UDEF));
+            ret.push(keyValToStr(this.getMessage("MSG_ERROR_MESSAGE"), error.message ? error.message : _UDEF));
+            ret.push(keyValToStr(this.getMessage("MSG_ERROR_DESC"), error.description ? error.description : _UDEF));
+            ret.push(keyValToStr(this.getMessage("MSG_ERROR_NO"), _UDEF != typeof error.number ? error.number : _UDEF));
+            ret.push(keyValToStr(this.getMessage("MST_ERROR_LINENO"), _UDEF != typeof error.lineNumber ? error.lineNumber : _UDEF));
         }
         return ret.join("");
     }

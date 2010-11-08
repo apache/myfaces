@@ -44,6 +44,10 @@
                 <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.util</targetPath>
             </resource>
             <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/i18n</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.i18n</targetPath>
+            </resource>
+            <resource>
                 <directory>src/main/javascript/META-INF/resources/myfaces/_impl/core</directory>
                 <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.core</targetPath>
             </resource>

@@ -75,7 +75,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
      *
      */
     processResponse : function(request, context) {
-
         try {
             var _Impl = this._Impl;
 
@@ -86,7 +85,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             // istead of ISO-8859-1
 
             if (!request) {
-                throw Exception("jsf.ajaxResponse: The response cannot be null or empty!");
+                throw Exception(this._Lang.getMessage("ERR_EMPTY_RESPONSE",null,"jsf.ajaxResponse"));
             }
 
             if (!this._Lang.exists(request, "responseXML")) {
@@ -239,7 +238,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         if (!redirectUrl) {
             var _Impl = this._Impl;
 
-            _Impl.sendError(request, context, myfaces._impl.core.Impl.MALFORMEDXML, myfaces._impl.core.Impl.MALFORMEDXML, "Redirect without url");
+            _Impl.sendError(request, context, myfaces._impl.core.Impl.MALFORMEDXML, myfaces._impl.core.Impl.MALFORMEDXML,this._Lang.getMessage("ERR_RED_URL", null, "_AjaxResponse.processRedirect"));
             return false;
         }
         redirectUrl = this._Lang.trim(redirectUrl);
@@ -321,8 +320,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             //we now skip this phase and just add everything we need for the fixup code
 
             if (!sourceForm) {
-            	// We have to return true, because we want to continue left phases (especially we want to set up viewStates in other forms)
-                return true;
+                return;
             }
 
             this._setVSTForm(sourceForm);
@@ -520,7 +518,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             var item = (!this._Lang.isString(itemIdToReplace)) ? itemIdToReplace :
                     this._Dom.byId(itemIdToReplace) /*used to call getElementFromForm*/;
             if (!item) {
-                throw Error("myfaces._impl.xhrCore._AjaxResponse.replaceHtmlItem: item with identifier " + itemIdToReplace.toString() + " could not be found");
+                throw Error(this._Lang.getMessage("ERR_ITEM_ID_NOTFOUND", null,"_AjaxResponse.replaceHtmlItem","itemIdToReplace.toString()"));
             }
             return this._Dom.outerHTML(item, markup);
 
@@ -555,11 +553,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         var isAfter = afterId && this._Lang.trim(afterId) != "";
 
         if (!isInsert) {
-            _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, id must be present");
+            _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML,this._Lang.getMessage("ERR_PPR_IDREQ"));
             return false;
         }
         if (!(isBefore || isAfter)) {
-            _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, before id or after id must be present");
+            _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML,this._Lang.getMessage("ERR_PPR_INSERTBEFID"));
             return false;
         }
         //either before or after but not two at the same time
@@ -574,7 +572,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             beforeId = this._Lang.trim(beforeId);
             var beforeNode = document.getElementById(beforeId);
             if (!beforeNode) {
-                _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, before  node of id " + beforeId + " does not exist in document");
+                _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML,this._Lang.getMessage("ERR_PPR_INSERTBEFID_1", null,"_AjaxResponse.processInsert",beforeId));
                 return false;
             }
             /**
@@ -596,7 +594,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             afterId = this._Lang.trim(afterId);
             var afterNode = document.getElementById(afterId);
             if (!afterNode) {
-                _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, "Error in PPR Insert, after  node of id " + afterId + " does not exist in document");
+                _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, this._Lang.getMessage("ERR_PPR_INSERTBEFID_2", null,"_AjaxResponse.processInsert", afterId));
                 return false;
             }
 
@@ -625,13 +623,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         var deleteId = node.getAttribute('id');
         if (!deleteId) {
             _Impl.sendError(request, context, _Impl.MALFORMEDXML,
-                    _Impl.MALFORMEDXML, "Error in delete, id not in xml markup");
+                    _Impl.MALFORMEDXML,this._Lang.getMessage("ERR_PPR_DELID", null,"_AjaxResponse.processDelete"));
             return false;
         }
 
         var item = this._Dom.byId(deleteId);
         if (!item) {
-            throw Error("_AjaxResponse.processDelete  Unknown Html-Component-ID: " + deleteId);
+            throw Error(this._Lang.getMessage("ERR_PPR_UNKNOWNCID", null,"_AjaxResponse.processDelete",deleteId));
         }
 
         var parentForm = this._Dom.getParent(item, "form");
@@ -684,11 +682,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
             switch (elemId) {
                 case this.P_VIEWROOT:
-                    throw new Error("Changing of viewRoot attributes is not supported");
+                    throw new Error(this._Lang.getMessage("ERR_NO_VIEWROOTATTR", null,"_AjaxResponse.processAttributes"));
                     break;
 
                 case this.P_VIEWHEAD:
-                    throw new Error("Changing of head attributes is not supported");
+                    throw new Error(this._Lang.getMessage("ERR_NO_HEADATTR", null,"_AjaxResponse.processAttributes"));
                     break;
 
                 case this.P_VIEWBODY:

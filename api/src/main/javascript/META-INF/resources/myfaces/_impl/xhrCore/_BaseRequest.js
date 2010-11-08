@@ -112,7 +112,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", my
      * Additionally the hidden element javax.faces.ViewState
      *
      *
-     * @return {FormDataWrapper} - an element of formDataWrapper
+     * @return  an element of formDataWrapper
      * which keeps the final Send Representation of the
      */
     getViewState : function() {
