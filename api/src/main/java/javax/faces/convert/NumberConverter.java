@@ -98,15 +98,43 @@ public class NumberConverter
             {
                 NumberFormat format = getNumberFormat(facesContext);
                 format.setParseIntegerOnly(_integerOnly);
+                
+                DecimalFormat df = (DecimalFormat)format;
+                //df.setParseBigDecimal(true);
+                DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
+                boolean changed = false;
+                if(dfs.getGroupingSeparator() == '\u00a0')
+                {
+                  dfs.setGroupingSeparator(' ');
+                  df.setDecimalFormatSymbols(dfs);
+                  changed = true;
+                }
+                
+                formatCurrency(format);
+                
                 try
                 {
                     return format.parse(value);
                 }
                 catch (ParseException e)
                 {
+                  if(changed)
+                  {
+                    dfs.setGroupingSeparator('\u00a0');
+                    df.setDecimalFormatSymbols(dfs);
+                  }
+                  try
+                  {
+                    return format.parse(value);
+                  }
+                  catch (ParseException pe)
+                  {
+
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                                                                                CONVERSION_MESSAGE_ID,
                                                                                new Object[]{uiComponent.getId(),value}), e);
+
+                  }
                 }
             }
         }
