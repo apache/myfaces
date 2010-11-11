@@ -118,6 +118,9 @@ public class NumberConverter
                   df.setDecimalFormatSymbols(dfs);
                   changed = true;
                 }
+                
+                formatCurrency(format);
+                
                 try
                 {
                     return format.parse(value);
