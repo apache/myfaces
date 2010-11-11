@@ -65,7 +65,7 @@ public class BigDecimalConverter
                     {
                         throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                                                                                    DECIMAL_ID,
-                                                                                   new Object[]{value,"4815,16",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                                                                                   new Object[]{value,new BigDecimal(4815.16).toString(),_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                     }
                 }
             }
