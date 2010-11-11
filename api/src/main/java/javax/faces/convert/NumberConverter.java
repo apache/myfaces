@@ -18,6 +18,7 @@
  */
 package javax.faces.convert;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -25,6 +26,7 @@ import java.text.ParseException;
 import java.util.Currency;
 import java.util.Locale;
 
+import javax.el.ValueExpression;
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -109,7 +111,22 @@ public class NumberConverter
                 format.setParseIntegerOnly(_integerOnly);
                 
                 DecimalFormat df = (DecimalFormat)format;
-                //df.setParseBigDecimal(true);
+                
+                // The best we can do in this case is check if there is a ValueExpression
+                // with a BigDecimal as returning type , and if that so enable BigDecimal parsing
+                // to prevent loss in precision, and do not break existing examples (since
+                // in those cases it is expected to return Double). See MYFACES-1890 and TRINIDAD-1124
+                // for details
+                ValueExpression valueBinding = uiComponent.getValueExpression("value");
+                if (valueBinding != null)
+                {
+                    Class<?> destType = valueBinding.getType(facesContext.getELContext());
+                    if (destType != null && BigDecimal.class.isAssignableFrom(destType))
+                    {
+                        df.setParseBigDecimal(true);
+                    }
+                }
+                
                 DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
                 boolean changed = false;
                 if(dfs.getGroupingSeparator() == '\u00a0')
