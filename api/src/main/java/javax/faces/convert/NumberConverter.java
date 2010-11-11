@@ -18,6 +18,7 @@
  */
 package javax.faces.convert;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -25,6 +26,7 @@ import java.text.ParseException;
 import java.util.Currency;
 import java.util.Locale;
 
+import javax.el.ValueExpression;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
