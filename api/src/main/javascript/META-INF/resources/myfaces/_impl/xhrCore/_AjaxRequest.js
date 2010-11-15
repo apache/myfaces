@@ -96,7 +96,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
         this._xhr = myfaces._impl.core._Runtime.getXHRObject();
         this._postCreateXHR();
 
-        this._xhr.open(this._ajaxType, this._sourceForm.action, true);
+        this._xhr.open(this._ajaxType, this._sourceForm.action+
+                ((this._ajaxType == "GET")? "?"+this._requestParameters.makeFinal():"")
+                , true);
 
         var contentType = this._contentType;
         if (this._encoding) {
@@ -113,7 +115,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
         this._preSend();
 
         try {
-            this._xhr.send(this._requestParameters.makeFinal());
+            this._xhr.send((this._ajaxType != "GET")? this._requestParameters.makeFinal():null);
         } finally {
             this._postSend();
         }

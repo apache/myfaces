@@ -518,7 +518,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             var item = (!this._Lang.isString(itemIdToReplace)) ? itemIdToReplace :
                     this._Dom.byId(itemIdToReplace) /*used to call getElementFromForm*/;
             if (!item) {
-                throw Error(this._Lang.getMessage("ERR_ITEM_ID_NOTFOUND", null,"_AjaxResponse.replaceHtmlItem","itemIdToReplace.toString()"));
+                throw Error(this._Lang.getMessage("ERR_ITEM_ID_NOTFOUND", null,"_AjaxResponse.replaceHtmlItem",(itemIdToReplace)? itemIdToReplace.toString():"undefined"));
             }
             return this._Dom.outerHTML(item, markup);
 
