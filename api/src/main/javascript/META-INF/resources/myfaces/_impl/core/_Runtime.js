@@ -102,7 +102,7 @@ if (!myfaces._impl.core._Runtime) {
                     if ('undefined' == typeof ret) return null;
                     return ret;
                 } else {
-                    //blackberry 5- only understands the flakey head method
+                    //blackberry 5- only understands the flaky head method
                     //which fails on literally all newer browsers one way or the other
                     return _T._globalEvalHeadAppendixMethod(code);
                 }
@@ -849,8 +849,8 @@ if (!myfaces._impl.core._Runtime) {
          * chain (note we cannot rely on return values here, hence jsf.util.chain will fail)
          */
         _T.addOnLoad = function(target, func) {
-            var oldonload = target.onload;
-            target.onload = (!_T.assertType(window.onload, "function")) ? func : function() {
+            var oldonload = (target)? target.onload: null;
+            target.onload = (!oldonload || !_T.assertType(oldonload, "function")) ? func : function() {
                 oldonload();
                 func();
             };
@@ -868,10 +868,10 @@ if (!myfaces._impl.core._Runtime) {
          * </ul>
          * null is returned if the browser fails to determine the language settings
          */
-        _T.getLanguage = function(languageOverride) {
+        _T.getLanguage = function(lOverride) {
             var deflt = {language: "en", variant: "UK"}; //default language and variant
             try {
-                var lang = languageOverride || navigator.language || navigator.browserLanguage;
+                var lang = lOverride || navigator.language || navigator.browserLanguage;
                 if(!lang || lang.length < 2) return deflt;
                 return {
                     language: lang.substr(0,2),
