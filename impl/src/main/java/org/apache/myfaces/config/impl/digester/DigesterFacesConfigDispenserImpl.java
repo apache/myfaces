@@ -39,6 +39,7 @@ import org.apache.myfaces.config.impl.digester.elements.Converter;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
+import org.apache.myfaces.config.impl.digester.elements.NamedEvent;
 import org.apache.myfaces.config.impl.digester.elements.RenderKit;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
@@ -94,6 +95,8 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     private List<ResourceBundle> resourceBundles = new ArrayList<ResourceBundle>();
 
     private List<SystemEventListener> systemEventListeners = new ArrayList<SystemEventListener>();
+    
+    private List<NamedEvent> namedEvents = new ArrayList<NamedEvent>();
     
     /**
      * Add another unmarshalled faces config object.
@@ -214,6 +217,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
         managedBeans.addAll(config.getManagedBeans());
         navigationRules.addAll(config.getNavigationRules());
         facesVersion = config.getVersion();
+        namedEvents.addAll(config.getNamedEvents());
     }
 
     /**
@@ -624,5 +628,10 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     public String getFacesVersion ()
     {
         return facesVersion;
+    }
+    
+    public Collection<NamedEvent> getNamedEvents()
+    {
+        return namedEvents;
     }
 }

@@ -487,13 +487,7 @@ public class FacesConfigurator
             feedStandardConfig();
             //2. Feed META-INF/services factories
             feedMetaInfServicesFactories();
-            
-            //3. Retrieve all appConfigResources
-            List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
-            addClassloaderConfigurations(appConfigResources);
-            addContextSpecifiedConfig(appConfigResources);
-            
-            //4. Retrieve webAppFacesConfig
+            //3. Retrieve webAppFacesConfig (we need check for metadataComplete and config ordering algorithm)
             FacesConfig webAppFacesConfig = getWebAppConfig();
 
             //read metadata-complete attribute on WEB-INF/faces-config.xml
@@ -506,7 +500,12 @@ public class FacesConfigurator
                 metadataComplete = false;   //assume false if no faces-config.xml was found
                                             //metadata-complete can only be specified in faces-config.xml per the JSF 2.0 schema 
             }
+            feedAnnotationConfig(metadataComplete);
             
+            //3. Retrieve all appConfigResources
+            List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+            addClassloaderConfigurations(appConfigResources);
+            addContextSpecifiedConfig(appConfigResources);
             
             //5. Ordering of Artifacts (see section 11.4.7 of the spec)
             orderAndFeedArtifacts(appConfigResources,webAppFacesConfig); 
@@ -530,10 +529,10 @@ public class FacesConfigurator
         configureRenderKits();
         
                 //Now we can configure annotations
-        getAnnotationConfigurator().configure(
-                ((ApplicationFactory) FactoryFinder.getFactory(
-                        FactoryFinder.APPLICATION_FACTORY)).getApplication(),
-                getDispenser(), metadataComplete);
+        //getAnnotationConfigurator().configure(
+        //        ((ApplicationFactory) FactoryFinder.getFactory(
+        //                FactoryFinder.APPLICATION_FACTORY)).getApplication(),
+        //        getDispenser(), metadataComplete);
         
         configureRuntimeConfig();
         configureLifecycle();
@@ -565,6 +564,15 @@ public class FacesConfigurator
             log.info("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
         getDispenser().feed(getUnmarshaller().getFacesConfig(stream, STANDARD_FACES_CONFIG_RESOURCE));
         stream.close();
+    }
+    
+    private void feedAnnotationConfig(boolean metadataComplete)
+    {
+        FacesConfig annotationConfig = getAnnotationConfigurator().createFacesConfig(metadataComplete);
+        if (annotationConfig != null)
+        {
+            getDispenser().feed(annotationConfig);
+        }
     }
 
     /**

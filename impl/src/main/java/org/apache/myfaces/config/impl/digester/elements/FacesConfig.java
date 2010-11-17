@@ -39,6 +39,7 @@ public class FacesConfig
     private List<String> lifecyclePhaseListener = new ArrayList<String>();
     private Map<String, String> validators = new HashMap<String, String>();
     private List<Behavior> behaviors = new ArrayList<Behavior>();
+    private List<NamedEvent> namedEvents = new ArrayList<NamedEvent>();
     
     private String metadataComplete;
     private String version;
@@ -99,6 +100,11 @@ public class FacesConfig
         behaviors.add (behavior);
     }
     
+    public void addNamedEvent (NamedEvent namedEvent)
+    {
+        namedEvents.add(namedEvent);
+    }
+    
     public List<Application> getApplications()
     {
         return applications;
@@ -147,6 +153,27 @@ public class FacesConfig
     public List<Behavior> getBehaviors ()
     {
         return behaviors;
+    }
+    
+    public List<NamedEvent> getNamedEvents ()
+    {
+        return namedEvents;
+    }
+    
+    public RenderKit getRenderKit(String renderKitId)
+    {
+        for (org.apache.myfaces.config.impl.digester.elements.RenderKit rk : getRenderKits())
+        {
+            if (renderKitId != null && renderKitId.equals(rk.getId()))
+            {
+                return rk;
+            }
+            else if (renderKitId == null && rk.getId() == null)
+            {
+                return rk;
+            }
+        }
+        return null;
     }
     
     public String getName()
