@@ -28,6 +28,7 @@ import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.elements.Converter;
+import org.apache.myfaces.config.impl.digester.elements.NamedEvent;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
 
@@ -274,4 +275,10 @@ public interface FacesConfigDispenser<C>
      * @return Faces application version.
      */
     public String getFacesVersion ();
+    
+    /**
+     * 
+     * @return
+     */
+    public Collection<NamedEvent> getNamedEvents();
 }

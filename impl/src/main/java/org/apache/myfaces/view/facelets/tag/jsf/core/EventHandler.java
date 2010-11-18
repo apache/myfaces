@@ -45,6 +45,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.config.NamedEventManager;
+import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
@@ -139,7 +140,9 @@ public final class EventHandler extends TagHandler {
         
         // We can look up the event class by name in the NamedEventManager.
         
-        events = NamedEventManager.getInstance().getNamedEvent (value);
+        events = RuntimeConfig.getCurrentInstance(
+                context.getFacesContext().getExternalContext()).
+                    getNamedEventManager().getNamedEvent(value);
         
         if (events == null)
         {

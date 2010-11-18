@@ -76,6 +76,8 @@ public class RuntimeConfig
 
     private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap =
         new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
+    
+    private NamedEventManager _namedEventManager;
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -313,5 +315,15 @@ public class RuntimeConfig
     void setFacesVersion (String facesVersion)
     {
         _facesVersion = facesVersion;
+    }
+
+    public NamedEventManager getNamedEventManager()
+    {
+        return _namedEventManager;
+    }
+
+    public void setNamedEventManager(NamedEventManager namedEventManager)
+    {
+        this._namedEventManager = namedEventManager;
     }
 }

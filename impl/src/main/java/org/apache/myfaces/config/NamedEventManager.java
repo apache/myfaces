@@ -35,11 +35,11 @@ import javax.faces.event.PreValidateEvent;
  */
 
 public class NamedEventManager {
-    private static final NamedEventManager instance = new NamedEventManager();
+    //private static final NamedEventManager instance = new NamedEventManager();
     
     private HashMap<String, Collection<Class<? extends ComponentSystemEvent>>> events;
     
-    private NamedEventManager ()
+    public NamedEventManager ()
     {
         events = new HashMap<String, Collection<Class<? extends ComponentSystemEvent>>>();
         
@@ -52,10 +52,10 @@ public class NamedEventManager {
         addNamedEvent ("postValidate", PostValidateEvent.class);
     }
     
-    public static NamedEventManager getInstance ()
-    {
-        return instance;
-    }
+    //public static NamedEventManager getInstance ()
+    //{
+    //    return instance;
+    //}
     
     /**
      * Registers a named event.

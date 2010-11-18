@@ -63,6 +63,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.PhaseListener;
 import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyCustomScopeEvent;
@@ -92,6 +93,7 @@ import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerIm
 import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
+import org.apache.myfaces.config.impl.digester.elements.NamedEvent;
 import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.Ordering;
 import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
@@ -2171,6 +2173,19 @@ public class FacesConfigurator
         }
         
         runtimeConfig.setFacesVersion (dispenser.getFacesVersion());
+        
+        runtimeConfig.setNamedEventManager(new NamedEventManager());
+        
+        for (NamedEvent event : dispenser.getNamedEvents())
+        {
+            try
+            {
+                Class<? extends ComponentSystemEvent> clazz = ClassUtils.classForName(event.getEventClass());
+                runtimeConfig.getNamedEventManager().addNamedEvent(event.getShortName(), clazz);                
+            } catch (ClassNotFoundException e) {
+                log.log(Level.SEVERE, "Named event could not be initialized, reason:",e);
+            }
+        }
     }
 
     private void removePurgedBeansFromSessionAndApplication(RuntimeConfig runtimeConfig)
