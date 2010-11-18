@@ -93,6 +93,7 @@ import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerIm
 import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
+import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.config.impl.digester.elements.NamedEvent;
 import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.Ordering;
@@ -677,6 +678,9 @@ public class FacesConfigurator
     {
         try
         {
+            FacesConfig facesConfig = new FacesConfig();
+            Factory factory = new Factory();
+            facesConfig.addFactory(factory);
             for (String factoryName : FACTORY_NAMES)
             {
                 Iterator<URL> it = ClassUtils.getResources(META_INF_SERVICES_RESOURCE_PREFIX + factoryName, this);
@@ -719,31 +723,32 @@ public class FacesConfigurator
 
                     if (factoryName.equals(FactoryFinder.APPLICATION_FACTORY))
                     {
-                        getDispenser().feedApplicationFactory(className);
+                        factory.addApplicationFactory(className);
                     } else if (factoryName.equals(FactoryFinder.EXTERNAL_CONTEXT_FACTORY))
                     {
-                        getDispenser().feedExternalContextFactory(className);
+                        factory.addExternalContextFactory(className);
                     } else if (factoryName.equals(FactoryFinder.FACES_CONTEXT_FACTORY))
                     {
-                        getDispenser().feedFacesContextFactory(className);
+                        factory.addFacesContextFactory(className);
                     } else if (factoryName.equals(FactoryFinder.LIFECYCLE_FACTORY))
                     {
-                        getDispenser().feedLifecycleFactory(className);
+                        factory.addLifecycleFactory(className);
                     } else if (factoryName.equals(FactoryFinder.RENDER_KIT_FACTORY))
                     {
-                        getDispenser().feedRenderKitFactory(className);
+                        factory.addRenderkitFactory(className);
                     } else if (factoryName.equals(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY))
                     {
-                        getDispenser().feedPartialViewContextFactory(className);
+                        factory.addPartialViewContextFactory(className);
                     } else if(factoryName.equals(FactoryFinder.VISIT_CONTEXT_FACTORY)) 
                     {
-                        getDispenser().feedVisitContextFactory(className);
+                        factory.addVisitContextFactory(className);
                     } else
                     {
                         throw new IllegalStateException("Unexpected factory name " + factoryName);
                     }
                 }
             }
+            getDispenser().feed(facesConfig);
         }
         catch (Throwable e)
         {
