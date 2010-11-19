@@ -18,6 +18,16 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
+import org.apache.myfaces.view.facelets.Facelet;
+import org.apache.myfaces.view.facelets.FaceletFactory;
+import org.apache.myfaces.view.facelets.compiler.Compiler;
+import org.apache.myfaces.view.facelets.util.ParameterCheck;
+
+import javax.el.ELException;
+import javax.faces.FacesException;
+import javax.faces.view.facelets.FaceletException;
+import javax.faces.view.facelets.FaceletHandler;
+import javax.faces.view.facelets.ResourceResolver;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,17 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.ResourceResolver;
-
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
-import org.apache.myfaces.view.facelets.compiler.Compiler;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
+import java.util.regex.Pattern;
 
 /**
  * Default FaceletFactory implementation.
@@ -274,7 +274,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             log.fine("Creating Facelet for: " + url);
         }
 
-        String alias = "/" + url.getFile().replaceFirst(_baseUrl.getFile(), "");
+        String alias = "/" + _removeFirst(url.getFile(), _baseUrl.getFile());
         try
         {
             FaceletHandler h = _compiler.compile(url, alias);
@@ -305,7 +305,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String alias = "/viewMetadata/" + url.getFile().replaceFirst(_baseUrl.getFile(), "");
+        String alias = "/viewMetadata/" + _removeFirst(url.getFile(), _baseUrl.getFile());
         try
         {
             FaceletHandler h = _compiler.compileViewMetadata(url, alias);
@@ -337,7 +337,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String alias = "/compositeComponentMetadata/" + url.getFile().replaceFirst(_baseUrl.getFile(), "");
+        String alias = "/compositeComponentMetadata/" + _removeFirst(url.getFile(), _baseUrl.getFile());
         try
         {
             FaceletHandler h = _compiler.compileCompositeComponentMetadata(url, alias);
@@ -454,6 +454,24 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
         
         return f;
+    }
+
+    /**
+     * Removes the first appearance of toRemove in string.
+     *
+     * Works just like string.replaceFirst(toRemove, ""), except that toRemove
+     * is not treated as a regex (which could cause problems with filenames).
+     *
+     * @param string
+     * @param toRemove
+     * @return
+     */
+    private String _removeFirst(String string, String toRemove)
+    {
+        // do exactly what String.replaceFirst(toRemove, "") internally does,
+        // except treating the search as literal text and not as regex
+
+        return Pattern.compile(toRemove, Pattern.LITERAL).matcher(string).replaceFirst("");
     }
 
 }
