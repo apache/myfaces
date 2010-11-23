@@ -18,17 +18,6 @@
  */
 package javax.faces;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import javax.faces.application.ApplicationFactory;
 import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.context.ExceptionHandlerFactory;
@@ -39,6 +28,16 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.facelets.TagHandlerDelegateFactory;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -77,6 +76,7 @@ public final class FactoryFinder
 
     private static final Set<String> VALID_FACTORY_NAMES = new HashSet<String>();
     private static final Map<String, Class<?>> ABSTRACT_FACTORY_CLASSES = new HashMap<String, Class<?>>();
+    private static final ClassLoader myFacesClassLoader;
 
     static
     {
@@ -101,6 +101,30 @@ public final class FactoryFinder
         ABSTRACT_FACTORY_CLASSES.put(TAG_HANDLER_DELEGATE_FACTORY, TagHandlerDelegateFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(VIEW_DECLARATION_LANGUAGE_FACTORY, ViewDeclarationLanguageFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(VISIT_CONTEXT_FACTORY, VisitContextFactory.class);
+        try
+        {
+            ClassLoader classLoader;
+            if (System.getSecurityManager() != null) {
+                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction() {
+                    public Object run() {
+                        return FactoryFinder.class.getClassLoader();
+                    }
+                });
+            }
+            else {
+                classLoader = FactoryFinder.class.getClassLoader();
+            }
+
+            if (classLoader == null)
+            {
+                throw new FacesException("jsf api class loader cannot be identified", null);
+            }
+            myFacesClassLoader = classLoader;
+        }
+        catch (Exception e)
+        {
+            throw new FacesException("jsf api class loader cannot be identified", e);
+        }
     }
 
     // avoid instantiation
@@ -186,8 +210,8 @@ public final class FactoryFinder
             }
         }
 
-        List<String> classNames = null;
-        Object factory = null;
+        List<String> classNames;
+        Object factory;
         synchronized (factoryClassNames)
         {
             factory = factoryMap.get(factoryName);
@@ -224,7 +248,12 @@ public final class FactoryFinder
             while (classNamesIterator.hasNext())
             {
                 String implClassName = classNamesIterator.next();
-                Class<?> implClass = classLoader.loadClass(implClassName);
+                Class<?> implClass = null;
+                try {
+                    implClass = classLoader.loadClass(implClassName);
+                } catch (ClassNotFoundException e) {
+                    implClass = myFacesClassLoader.loadClass(implClassName);
+                }
 
                 // check, if class is of expected interface type
                 if (!interfaceClass.isAssignableFrom(implClass))
