@@ -184,6 +184,16 @@ public class AjaxHandler extends TagHandler implements
         //Apply only if we are creating a new component
         if (!ComponentHandler.isNew(parent))
         {
+            if (_wrapMode)
+            {
+                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+                // In this case it will be only applied to components inserted by 
+                // c:if or related tags, in other cases, ComponentTagHandlerDelegate should
+                // not reapply ajax tag.
+                actx.pushAjaxHandlerToStack(this);
+                nextHandler.apply(ctx, parent);
+                actx.popAjaxHandlerToStack();
+            }
             return;
         }
         if (_wrapMode)

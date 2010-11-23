@@ -192,7 +192,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 
         // grab our component
         UIComponent c = null;
-        boolean componentFoundInserted = false;
+        //boolean componentFoundInserted = false;
         // MYFACES-2924 This optimization does not work as expected when component bindings are used.
         //if (mctx.isRefreshingTransientBuild())
         //{
@@ -329,8 +329,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             mctx.finalizeForDeletion(c);
 
-            if (!componentFoundInserted)
-            {
+            //if (!componentFoundInserted)
+            //{
                 if (mctx.isRefreshingTransientBuild())
                 {
                     facesContext.setProcessingEvents(false); 
@@ -347,7 +347,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 {
                     facesContext.setProcessingEvents(oldProcessingEvents);
                 }
-            }
+            //}
         }
         
         /*
@@ -390,29 +390,32 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         */
 
-        if (c instanceof ClientBehaviorHolder && !UIComponent.isCompositeComponent(c))
+        if (!componentFound)
         {
-            Iterator<AjaxHandler> it = ((AbstractFaceletContext) ctx).getAjaxHandlers();
-            if (it != null)
+            if (c instanceof ClientBehaviorHolder && !UIComponent.isCompositeComponent(c))
             {
-                while(it.hasNext())
+                Iterator<AjaxHandler> it = ((AbstractFaceletContext) ctx).getAjaxHandlers();
+                if (it != null)
                 {
-                    it.next().applyAttachedObject(facesContext, c);
+                    while(it.hasNext())
+                    {
+                        it.next().applyAttachedObject(facesContext, c);
+                    }
                 }
             }
-        }
-        
-        if (c instanceof EditableValueHolder)
-        {
-            // add default validators here, because this feature 
-            // is only available in facelets (see MYFACES-2362 for details)
-            addDefaultValidators(mctx, facesContext, (EditableValueHolder) c);
+            
+            if (c instanceof EditableValueHolder)
+            {
+                // add default validators here, because this feature 
+                // is only available in facelets (see MYFACES-2362 for details)
+                addDefaultValidators(mctx, facesContext, (EditableValueHolder) c);
+            }
         }
         
         _delegate.onComponentPopulated(ctx, c, parent);
 
-        if (!componentFoundInserted)
-        {
+        //if (!componentFoundInserted)
+        //{
             // add to the tree afterwards
             // this allows children to determine if it's
             // been part of the tree or not yet
@@ -432,7 +435,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 facesContext.setProcessingEvents(oldProcessingEvents);
             }
-        }
+        //}
         /*
         else
         {
