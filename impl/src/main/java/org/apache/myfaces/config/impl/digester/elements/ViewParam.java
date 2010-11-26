@@ -19,7 +19,9 @@
 
 package org.apache.myfaces.config.impl.digester.elements;
 
-public class ViewParam implements org.apache.myfaces.config.element.ViewParam
+import java.io.Serializable;
+
+public class ViewParam extends org.apache.myfaces.config.element.ViewParam implements Serializable
 {
     private String name;
     private String value;

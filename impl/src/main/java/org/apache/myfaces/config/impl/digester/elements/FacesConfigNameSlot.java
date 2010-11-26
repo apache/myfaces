@@ -18,7 +18,9 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
-public class FacesConfigNameSlot implements OrderSlot
+import java.io.Serializable;
+
+public class FacesConfigNameSlot extends org.apache.myfaces.config.element.FacesConfigNameSlot implements Serializable
 {
     private String name;
 

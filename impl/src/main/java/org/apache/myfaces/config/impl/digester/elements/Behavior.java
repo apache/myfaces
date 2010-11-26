@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
  * Implementation of model for <behavior> element.
  */
 
-public class Behavior implements org.apache.myfaces.config.element.Behavior
+public class Behavior extends org.apache.myfaces.config.element.Behavior implements Serializable
 {
     private String behaviorClass;
     private String behaviorId;

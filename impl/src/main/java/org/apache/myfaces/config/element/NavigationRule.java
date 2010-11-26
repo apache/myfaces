@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -27,14 +28,14 @@ import java.util.Collection;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface NavigationRule
+public abstract class NavigationRule implements Serializable
 {
     // <!ELEMENT navigation-rule (description*, display-name*, icon*, from-view-id?, navigation-case*)>
 
-    public String getFromViewId();
+    public abstract String getFromViewId();
 
     /**
      * @return a Collection of {@link org.apache.myfaces.config.element.NavigationCase}s
      */
-    public Collection<? extends NavigationCase> getNavigationCases();
+    public abstract Collection<? extends NavigationCase> getNavigationCases();
 }

@@ -36,7 +36,7 @@ import javax.faces.el.VariableResolver;
 
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.config.element.ResourceBundle;
 
 /**
  * Holds all configuration information (from the faces-config xml files) that is needed later during runtime. The config
@@ -74,8 +74,8 @@ public class RuntimeConfig
 
     private VariableResolver _variableResolverChainHead;
 
-    private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap =
-        new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
+    private final Map<String, org.apache.myfaces.config.element.Converter> _converterClassNameToConfigurationMap =
+        new ConcurrentHashMap<String, org.apache.myfaces.config.element.Converter>();
     
     private NamedEventManager _namedEventManager;
 
@@ -152,7 +152,7 @@ public class RuntimeConfig
 
     
     public final void addConverterConfiguration(final String converterClassName,
-            final org.apache.myfaces.config.impl.digester.elements.Converter configuration)
+            final org.apache.myfaces.config.element.Converter configuration)
     {
         checkNull(converterClassName, "converterClassName");
         checkEmpty(converterClassName, "converterClassName");
@@ -161,9 +161,9 @@ public class RuntimeConfig
         _converterClassNameToConfigurationMap.put(converterClassName, configuration);
     }
     
-    public org.apache.myfaces.config.impl.digester.elements.Converter getConverterConfiguration(String converterClassName)
+    public org.apache.myfaces.config.element.Converter getConverterConfiguration(String converterClassName)
     {
-        return (org.apache.myfaces.config.impl.digester.elements.Converter)_converterClassNameToConfigurationMap.get(converterClassName);
+        return (org.apache.myfaces.config.element.Converter)_converterClassNameToConfigurationMap.get(converterClassName);
     }
     
     private void checkNull(final Object param, final String paramName)

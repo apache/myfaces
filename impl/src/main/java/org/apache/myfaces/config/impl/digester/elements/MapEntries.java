@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -26,12 +27,12 @@ import java.util.Iterator;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class MapEntries implements org.apache.myfaces.config.element.MapEntries
+public class MapEntries extends org.apache.myfaces.config.element.MapEntries implements Serializable
 {
 
     private String keyClass;
     private String valueClass;
-    private List<Entry> entries = new ArrayList<Entry>();
+    private List<org.apache.myfaces.config.element.MapEntry> entries = new ArrayList<org.apache.myfaces.config.element.MapEntry>();
 
 
     public String getKeyClass()
@@ -62,13 +63,13 @@ public class MapEntries implements org.apache.myfaces.config.element.MapEntries
     }
 
 
-    public Iterator<Entry> getMapEntries()
+    public Iterator<org.apache.myfaces.config.element.MapEntry> getMapEntries()
     {
         return entries.iterator();
     }
 
 
-    public static class Entry implements org.apache.myfaces.config.element.MapEntry {
+    public static class Entry extends org.apache.myfaces.config.element.MapEntry {
        String key;
         boolean nullValue = false;
         String value;

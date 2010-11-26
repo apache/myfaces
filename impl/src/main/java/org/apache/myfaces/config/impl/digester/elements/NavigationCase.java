@@ -18,7 +18,8 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
-import org.apache.myfaces.config.impl.digester.elements.Redirect;
+import java.io.Serializable;
+
 
 
 
@@ -26,14 +27,14 @@ import org.apache.myfaces.config.impl.digester.elements.Redirect;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class NavigationCase implements org.apache.myfaces.config.element.NavigationCase
+public class NavigationCase extends org.apache.myfaces.config.element.NavigationCase implements Serializable
 {
 
     private String fromAction;
     private String fromOutcome;
     private String ifValue;
     private String toViewId;
-    private Redirect redirect;
+    private org.apache.myfaces.config.element.Redirect redirect;
 
 
     public String getFromAction()
@@ -81,13 +82,13 @@ public class NavigationCase implements org.apache.myfaces.config.element.Navigat
     }
 
 
-    public void setRedirect(Redirect redirect)
+    public void setRedirect(org.apache.myfaces.config.element.Redirect redirect)
     {
         this.redirect = redirect;
     }
 
 
-    public Redirect getRedirect()
+    public org.apache.myfaces.config.element.Redirect getRedirect()
     {
         return redirect;
     }

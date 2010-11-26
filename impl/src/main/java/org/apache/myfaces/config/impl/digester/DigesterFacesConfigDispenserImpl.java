@@ -34,21 +34,25 @@ import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
-import org.apache.myfaces.config.impl.digester.elements.Application;
-import org.apache.myfaces.config.impl.digester.elements.Converter;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
-import org.apache.myfaces.config.impl.digester.elements.Factory;
-import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
-import org.apache.myfaces.config.impl.digester.elements.NamedEvent;
-import org.apache.myfaces.config.impl.digester.elements.RenderKit;
-import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
-import org.apache.myfaces.config.impl.digester.elements.SystemEventListener;
+import org.apache.myfaces.config.element.Application;
+import org.apache.myfaces.config.element.Converter;
+import org.apache.myfaces.config.element.FacesConfig;
+import org.apache.myfaces.config.element.Factory;
+import org.apache.myfaces.config.element.LocaleConfig;
+import org.apache.myfaces.config.element.NamedEvent;
+import org.apache.myfaces.config.element.RenderKit;
+import org.apache.myfaces.config.element.ResourceBundle;
+import org.apache.myfaces.config.element.SystemEventListener;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<FacesConfig>
+public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3550379003287939559L;
     // Factories
     private List<String> applicationFactories = new ArrayList<String>();
     private List<String> exceptionHandlerFactories = new ArrayList<String>();
@@ -76,7 +80,7 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
     
     private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
     
-    private Map<String, RenderKit> renderKits = new LinkedHashMap<String, RenderKit>();
+    private Map<String, org.apache.myfaces.config.impl.digester.elements.RenderKit> renderKits = new LinkedHashMap<String, org.apache.myfaces.config.impl.digester.elements.RenderKit>();
     
     private List<String> actionListeners = new ArrayList<String>();
     private List<String> elResolvers = new ArrayList<String>();
@@ -201,11 +205,14 @@ public class DigesterFacesConfigDispenserImpl implements FacesConfigDispenser<Fa
                 renderKitId = RenderKitFactory.HTML_BASIC_RENDER_KIT;
             }
 
-            RenderKit existing = renderKits.get(renderKitId);
+            org.apache.myfaces.config.impl.digester.elements.RenderKit existing = renderKits.get(renderKitId);
 
             if (existing == null)
             {
-                renderKits.put(renderKitId, renderKit);
+                existing = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
+                existing.merge(renderKit);
+                renderKits.put(renderKitId, existing);
+                //renderKits.put(renderKitId, renderKit);
             }
             else
             {

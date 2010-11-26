@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
+
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 
@@ -30,7 +32,7 @@ import org.apache.myfaces.config.element.ListEntries;
 
  * @version $Revision$ $Date$
  */
-public interface ManagedProperty
+public abstract class ManagedProperty implements Serializable
 {
     // <!ELEMENT managed-property (description*, display-name*, icon*, property-name, property-class?, (map-entries|null-value|value|list-entries))>
 
@@ -40,13 +42,13 @@ public interface ManagedProperty
     public static final int TYPE_VALUE = 3;
     public static final int TYPE_LIST = 4;
 
-    public String getPropertyName();
-    public String getPropertyClass();
+    public abstract String getPropertyName();
+    public abstract String getPropertyClass();
 
-    public int getType();
-    public MapEntries getMapEntries();
-    public ListEntries getListEntries();
-    public Object getRuntimeValue(FacesContext facesContext);
-    public boolean isValueReference();
-    public ValueBinding getValueBinding(FacesContext facesContext);
+    public abstract int getType();
+    public abstract MapEntries getMapEntries();
+    public abstract ListEntries getListEntries();
+    public abstract Object getRuntimeValue(FacesContext facesContext);
+    public abstract boolean isValueReference();
+    public abstract ValueBinding getValueBinding(FacesContext facesContext);
 }

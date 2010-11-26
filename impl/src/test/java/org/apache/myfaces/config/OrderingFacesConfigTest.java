@@ -26,9 +26,9 @@ import javax.faces.FacesException;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.digester.elements.AbsoluteOrdering;
 import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
-import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
+import org.apache.myfaces.config.element.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.Ordering;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
@@ -126,11 +126,11 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");        
-        FacesConfig cfgA = new FacesConfig();
-        FacesConfig cfgB = new FacesConfig();
-        FacesConfig cfgC = new FacesConfig();
-        FacesConfig cfgD = new FacesConfig();
-        FacesConfig cfgE = new FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
         
         cfgA.setName("A");
         cfgB.setName("B");
@@ -200,11 +200,11 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
      */
     public void testMaxConditionsOrdering() throws Exception
     {
-        FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");        
-        FacesConfig cfgA = new FacesConfig();
-        FacesConfig cfgB = new FacesConfig();
-        FacesConfig cfgC = new FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
 
         cfgA.setName("A");
         cfgB.setName("B");
@@ -250,12 +250,12 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx1()
     {      
-        FacesConfig cfgA = new FacesConfig();
-        FacesConfig cfgB = new FacesConfig();
-        FacesConfig cfgC = new FacesConfig();
-        FacesConfig cfgD = new FacesConfig();
-        FacesConfig cfgE = new FacesConfig();
-        FacesConfig cfgF = new FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgF = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
 
         cfgA.setName("A");
         cfgB.setName("B");
@@ -301,12 +301,12 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx2()
     {
-        FacesConfig cfg = new FacesConfig();
-        FacesConfig cfgB = new FacesConfig();
-        FacesConfig cfgC = new FacesConfig();
-        FacesConfig cfgD = new FacesConfig();
-        FacesConfig cfgE = new FacesConfig();
-        FacesConfig cfgF = new FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfg = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgF = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
 
         cfgB.setName("B");
         cfgC.setName("C");
@@ -347,10 +347,10 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx3()
     {
-        FacesConfig cfgA = new FacesConfig();
-        FacesConfig cfgB = new FacesConfig();
-        FacesConfig cfgC = new FacesConfig();
-        FacesConfig cfgD = new FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
 
         cfgA.setName("A");
         cfgB.setName("B");
@@ -694,9 +694,9 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testAbsoluteOrdering1() throws Exception
     {
-        FacesConfig cfgAbs = new FacesConfig();
-        FacesConfig cfgMK = new FacesConfig();
-        FacesConfig cfgOWB = new FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgAbs = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgMK = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgOWB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
 
         cfgMK.setName("cz_markoc_faces");
         

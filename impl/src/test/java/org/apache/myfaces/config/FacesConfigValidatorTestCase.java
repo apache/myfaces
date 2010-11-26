@@ -31,7 +31,7 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 {
 
-    private FacesConfigDispenser<FacesConfig> dispenser;
+    private FacesConfigDispenser dispenser;
     private FacesConfigUnmarshaller<FacesConfig> unmarshaller;
     
     public FacesConfigValidatorTestCase(String name)

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
+
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 
@@ -31,7 +33,7 @@ import org.apache.myfaces.util.ContainerUtils;
  *
  * @version $Revision$ $Date$
  */
-public class ManagedProperty implements org.apache.myfaces.config.element.ManagedProperty
+public class ManagedProperty extends org.apache.myfaces.config.element.ManagedProperty implements Serializable
 {
     private static final ValueBinding DUMMY_VB = new DummyValueBinding();
 
@@ -40,8 +42,8 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
     private String                    _propertyClass;
     private ValueBinding              _valueBinding;
     private String                    _value;
-    private MapEntries                _mapEntries;
-    private ListEntries               _listEntries;
+    private org.apache.myfaces.config.element.MapEntries                _mapEntries;
+    private org.apache.myfaces.config.element.ListEntries               _listEntries;
 
     public int getType()
     {
@@ -53,7 +55,7 @@ public class ManagedProperty implements org.apache.myfaces.config.element.Manage
         return _mapEntries;
     }
     
-    public void setMapEntries(MapEntries mapEntries)
+    public void setMapEntries(org.apache.myfaces.config.element.MapEntries mapEntries)
     {
         _mapEntries = mapEntries;
         _type = TYPE_MAP;

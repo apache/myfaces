@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.apache.myfaces.view.facelets.el.ELText;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class ManagedBean implements org.apache.myfaces.config.element.ManagedBean
+public class ManagedBean extends org.apache.myfaces.config.element.ManagedBean implements Serializable
 {
 
     private String description;
@@ -40,9 +41,9 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     private String beanClassName;
     private Class<?> beanClass;
     private String scope;
-    private List<ManagedProperty> property = new ArrayList<ManagedProperty>();
-    private MapEntries mapEntries;
-    private ListEntries listEntries;
+    private List<org.apache.myfaces.config.element.ManagedProperty> property = new ArrayList<org.apache.myfaces.config.element.ManagedProperty>();
+    private org.apache.myfaces.config.element.MapEntries mapEntries;
+    private org.apache.myfaces.config.element.ListEntries listEntries;
     private ValueExpression scopeValueExpression;
     private String eager;
 
@@ -68,7 +69,7 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     }
 
 
-    public void setMapEntries(MapEntries mapEntries)
+    public void setMapEntries(org.apache.myfaces.config.element.MapEntries mapEntries)
     {
         this.mapEntries = mapEntries;
     }
@@ -80,7 +81,7 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     }
 
 
-    public void setListEntries(ListEntries listEntries)
+    public void setListEntries(org.apache.myfaces.config.element.ListEntries listEntries)
     {
         this.listEntries = listEntries;
     }
@@ -146,13 +147,13 @@ public class ManagedBean implements org.apache.myfaces.config.element.ManagedBea
     }
 
 
-    public void addProperty(ManagedProperty value)
+    public void addProperty(org.apache.myfaces.config.element.ManagedProperty value)
     {
         property.add(value);
     }
 
 
-    public Collection<? extends ManagedProperty> getManagedProperties()
+    public Collection<? extends org.apache.myfaces.config.element.ManagedProperty> getManagedProperties()
     {
         return property;
     }

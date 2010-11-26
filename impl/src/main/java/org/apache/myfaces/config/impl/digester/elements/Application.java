@@ -18,13 +18,14 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Application
+public class Application extends org.apache.myfaces.config.element.Application implements Serializable
 {
 
     private final List<String> actionListener = new ArrayList<String>();
@@ -38,10 +39,10 @@ public class Application
     private final List<String> stateManager = new ArrayList<String>();
     private final List<String> propertyResolver = new ArrayList<String>();
     private final List<String> variableResolver = new ArrayList<String>();
-    private final List<LocaleConfig> localeConfig = new ArrayList<LocaleConfig>();
+    private final List<org.apache.myfaces.config.element.LocaleConfig> localeConfig = new ArrayList<org.apache.myfaces.config.element.LocaleConfig>();
     private final List<String> elResolver = new ArrayList<String>();
-    private final List<ResourceBundle> resourceBundle = new ArrayList<ResourceBundle>();
-    private final List<SystemEventListener> systemEventListeners = new ArrayList<SystemEventListener>();
+    private final List<org.apache.myfaces.config.element.ResourceBundle> resourceBundle = new ArrayList<org.apache.myfaces.config.element.ResourceBundle>();
+    private final List<org.apache.myfaces.config.element.SystemEventListener> systemEventListeners = new ArrayList<org.apache.myfaces.config.element.SystemEventListener>();
     private boolean defaultValidatorsPresent = false;
     
     public void addActionListener(String listener)
@@ -79,7 +80,7 @@ public class Application
         stateManager.add(manager);
     }
     
-    public void addSystemEventListener (SystemEventListener systemEventListener)
+    public void addSystemEventListener (org.apache.myfaces.config.element.SystemEventListener systemEventListener)
     {
         systemEventListeners.add (systemEventListener);
     }
@@ -94,7 +95,7 @@ public class Application
         variableResolver.add(handler);
     }
 
-    public void addLocaleConfig(LocaleConfig config)
+    public void addLocaleConfig(org.apache.myfaces.config.element.LocaleConfig config)
     {
         localeConfig.add(config);
     }
@@ -114,7 +115,7 @@ public class Application
         elResolver.add(handler);
     }
 
-    public void addResourceBundle(ResourceBundle bundle)
+    public void addResourceBundle(org.apache.myfaces.config.element.ResourceBundle bundle)
     {
         resourceBundle.add(bundle);
     }
@@ -154,7 +155,7 @@ public class Application
         return resourceHandler;
     }
     
-    public List<SystemEventListener> getSystemEventListeners ()
+    public List<org.apache.myfaces.config.element.SystemEventListener> getSystemEventListeners ()
     {
         return systemEventListeners;
     }
@@ -179,7 +180,7 @@ public class Application
         return variableResolver;
     }
 
-    public List<LocaleConfig> getLocaleConfig()
+    public List<org.apache.myfaces.config.element.LocaleConfig> getLocaleConfig()
     {
         return localeConfig;
     }
@@ -189,7 +190,7 @@ public class Application
         return elResolver;
     }
 
-    public List<ResourceBundle> getResourceBundle()
+    public List<org.apache.myfaces.config.element.ResourceBundle> getResourceBundle()
     {
         return resourceBundle;
     }

@@ -18,11 +18,13 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
+
 /**
  * Config holder for <client-behavior-renderer> element.
  */
 
-public class ClientBehaviorRenderer implements org.apache.myfaces.config.element.ClientBehaviorRenderer
+public class ClientBehaviorRenderer extends org.apache.myfaces.config.element.ClientBehaviorRenderer implements Serializable
 {
     private String rendererType;
     private String rendererClass;

@@ -18,19 +18,21 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbsoluteOrdering
+public class AbsoluteOrdering extends org.apache.myfaces.config.element.AbsoluteOrdering implements Serializable
 {
-    private List<OrderSlot> orderList = new ArrayList<OrderSlot>();
+    private List<org.apache.myfaces.config.element.OrderSlot> orderList = 
+        new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
     
-    public void addOrderSlot(OrderSlot slot)
+    public void addOrderSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
         orderList.add(slot);
     }
     
-    public List<OrderSlot> getOrderList()
+    public List<org.apache.myfaces.config.element.OrderSlot> getOrderList()
     {
         return orderList;
     }

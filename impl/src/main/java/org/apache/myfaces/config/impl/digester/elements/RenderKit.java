@@ -18,13 +18,14 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class RenderKit
+public class RenderKit extends org.apache.myfaces.config.element.RenderKit implements Serializable
 {
 
     private String id;
@@ -72,7 +73,7 @@ public class RenderKit
         renderer.add(value);
     }
 
-    public void merge(RenderKit renderKit)
+    public void merge(org.apache.myfaces.config.element.RenderKit renderKit)
     {
         renderKitClasses.addAll(renderKit.getRenderKitClasses());
         clientBehaviorRenderers.addAll (renderKit.getClientBehaviorRenderers());

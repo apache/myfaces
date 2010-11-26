@@ -18,7 +18,9 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
-public class NamedEvent
+import java.io.Serializable;
+
+public class NamedEvent extends org.apache.myfaces.config.element.NamedEvent implements Serializable
 {
     private String shortName;
     private String eventClass;

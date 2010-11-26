@@ -18,21 +18,22 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface ListEntries
+public abstract class ListEntries implements Serializable
 {
     // <!ELEMENT list-entries    (value-class?, (null-value|value)*)>
 
-    public String getValueClass();
+    public abstract String getValueClass();
 
     /**
      * @return Iterator over {@link ListEntry} entries
      */
-    public Iterator<? extends ListEntry> getListEntries();
+    public abstract Iterator<? extends ListEntry> getListEntries();
 
 }

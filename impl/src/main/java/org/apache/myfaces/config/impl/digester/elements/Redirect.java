@@ -19,6 +19,7 @@
 
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 import org.apache.myfaces.config.impl.digester.elements.ViewParam;
 
-public class Redirect implements org.apache.myfaces.config.element.Redirect
+public class Redirect extends org.apache.myfaces.config.element.Redirect implements Serializable
 {
     private Map<String,List<String>> viewParams = new HashMap<String,List<String>>();
     private String includeViewParams;     

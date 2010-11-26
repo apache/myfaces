@@ -22,8 +22,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.myfaces.application.jsp.JspStateManagerImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.Property;
-import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
+import org.apache.myfaces.config.element.Property;
+import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.el.PropertyResolverImpl;
 import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
@@ -1498,7 +1498,7 @@ public class ApplicationImpl extends Application
 
     private void setConverterProperties(final Class<?> converterClass, final Converter converter)
     {
-        final org.apache.myfaces.config.impl.digester.elements.Converter converterConfig = _runtimeConfig
+        final org.apache.myfaces.config.element.Converter converterConfig = _runtimeConfig
                 .getConverterConfiguration(converterClass.getName());
         
         // if the converter is a DataTimeConverter, check the init param for the default timezone (since 2.0)

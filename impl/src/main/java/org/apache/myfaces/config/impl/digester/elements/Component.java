@@ -18,11 +18,13 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
+
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Component
+public class Component extends org.apache.myfaces.config.element.Component implements Serializable
 {
 
     private String componentType;

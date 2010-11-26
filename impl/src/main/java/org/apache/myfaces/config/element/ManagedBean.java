@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.el.ValueExpression;
@@ -27,7 +28,7 @@ import javax.faces.context.FacesContext;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface ManagedBean
+public abstract class ManagedBean implements Serializable
 {
     // <!ELEMENT managed-bean (description*, display-name*, icon*, managed-bean-name, managed-bean-class, managed-bean-scope, (managed-property* | map-entries | list-entries))>
 
@@ -36,29 +37,29 @@ public interface ManagedBean
     public static final int INIT_MODE_MAP = 2;
     public static final int INIT_MODE_LIST = 3;
 
-    public String getDescription();
-    public String getManagedBeanName();
-    public String getManagedBeanClassName();
-    public Class<?> getManagedBeanClass();
-    public String getManagedBeanScope();
+    public abstract String getDescription();
+    public abstract String getManagedBeanName();
+    public abstract String getManagedBeanClassName();
+    public abstract Class<?> getManagedBeanClass();
+    public abstract String getManagedBeanScope();
     
-    public int getInitMode();
+    public abstract int getInitMode();
 
     /**
      * @return Iterator over {@link ManagedProperty} entries
      */
-    public Collection<? extends ManagedProperty> getManagedProperties();
+    public abstract Collection<? extends ManagedProperty> getManagedProperties();
 
-    public MapEntries getMapEntries();
+    public abstract MapEntries getMapEntries();
 
-    public ListEntries getListEntries();
+    public abstract ListEntries getListEntries();
     
     /**
      * Is the value of managed-bean-scope a EL ValueExpression?
      * @since 2.0
      * @return
      */
-    public boolean isManagedBeanScopeValueExpression();
+    public abstract boolean isManagedBeanScopeValueExpression();
     
     /**
      * Returns the ValueExpression for managed-bean-scope
@@ -67,13 +68,13 @@ public interface ManagedBean
      * @since 2.0
      * @return
      */
-    public ValueExpression getManagedBeanScopeValueExpression(FacesContext facesContext);
+    public abstract ValueExpression getManagedBeanScopeValueExpression(FacesContext facesContext);
     
     /**
      * Returns the value of the eager attribute. Default is false.
      * @since 2.0
      * @return
      */
-    public String getEager();
+    public abstract String getEager();
     
 }

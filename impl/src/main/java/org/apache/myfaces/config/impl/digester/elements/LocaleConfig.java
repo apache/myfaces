@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class LocaleConfig
+public class LocaleConfig extends org.apache.myfaces.config.element.LocaleConfig implements Serializable
 {
 
     private String defaultLocale;

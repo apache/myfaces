@@ -148,10 +148,10 @@ public final class ResourceBundleResolver extends ELResolver
 
         final ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
 
-        final Map<String, org.apache.myfaces.config.impl.digester.elements.ResourceBundle> resourceBundles =
+        final Map<String, org.apache.myfaces.config.element.ResourceBundle> resourceBundles =
                 runtimeConfig(context).getResourceBundles();
 
-        for (org.apache.myfaces.config.impl.digester.elements.ResourceBundle resourceBundle : resourceBundles.values())
+        for (org.apache.myfaces.config.element.ResourceBundle resourceBundle : resourceBundles.values())
         {
             descriptors.add(makeDescriptor(resourceBundle));
         }
@@ -201,7 +201,7 @@ public final class ResourceBundleResolver extends ELResolver
     }
 
     private static FeatureDescriptor makeDescriptor(
-                                                    org.apache.myfaces.config.impl.digester.elements.ResourceBundle bundle)
+                                                    org.apache.myfaces.config.element.ResourceBundle bundle)
     {
         final FeatureDescriptor fd = new FeatureDescriptor();
         fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);

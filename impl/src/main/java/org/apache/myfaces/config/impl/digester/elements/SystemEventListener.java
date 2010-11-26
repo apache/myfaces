@@ -19,7 +19,9 @@
  
 package org.apache.myfaces.config.impl.digester.elements;
 
-public class SystemEventListener
+import java.io.Serializable;
+
+public class SystemEventListener extends org.apache.myfaces.config.element.SystemEventListener implements Serializable
 {
     private String systemEventListenerClass;
     private String systemEventClass;

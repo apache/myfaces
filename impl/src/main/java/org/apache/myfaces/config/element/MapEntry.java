@@ -18,16 +18,18 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
+
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface MapEntry
+public abstract class MapEntry implements Serializable
 {
     // <!ELEMENT map-entry (key, (null-value|value))>
 
-    public String getKey();
-    public boolean isNullValue();
-    public String getValue();
+    public abstract String getKey();
+    public abstract boolean isNullValue();
+    public abstract String getValue();
 
 }

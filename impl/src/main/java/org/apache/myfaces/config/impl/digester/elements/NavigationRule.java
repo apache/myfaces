@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
@@ -28,11 +29,11 @@ import org.apache.myfaces.config.impl.digester.elements.NavigationCase;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class NavigationRule implements org.apache.myfaces.config.element.NavigationRule
+public class NavigationRule extends org.apache.myfaces.config.element.NavigationRule implements Serializable
 {
 
     private String fromViewId;
-    private List<NavigationCase> navigationCases = new ArrayList<NavigationCase>();
+    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases = new ArrayList<org.apache.myfaces.config.element.NavigationCase>();
 
 
     public String getFromViewId()
@@ -47,13 +48,13 @@ public class NavigationRule implements org.apache.myfaces.config.element.Navigat
     }
 
 
-    public void addNavigationCase(NavigationCase value)
+    public void addNavigationCase(org.apache.myfaces.config.element.NavigationCase value)
     {
         navigationCases.add(value);
     }
 
 
-    public Collection<NavigationCase> getNavigationCases()
+    public Collection<org.apache.myfaces.config.element.NavigationCase> getNavigationCases()
     {
         return navigationCases;
     }

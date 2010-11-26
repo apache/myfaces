@@ -18,11 +18,13 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
+
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResourceBundle
+public class ResourceBundle extends org.apache.myfaces.config.element.ResourceBundle implements Serializable
 {
     private String baseName;
     private String var;

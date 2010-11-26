@@ -18,12 +18,16 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
+
 /**
  * Model for <behavior> config element.
  */
 
-public interface Behavior
+public abstract class Behavior implements Serializable
 {
-    public String getBehaviorId ();
-    public String getBehaviorClass ();
+    public abstract String getBehaviorId ();
+    
+    public abstract String getBehaviorClass ();
+    
 }

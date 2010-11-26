@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 /**
@@ -25,17 +26,17 @@ import java.util.Iterator;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface MapEntries
+public abstract class MapEntries implements Serializable
 {
     // <!ELEMENT map-entries (key-class?, value-class?, map-entry*)>
 
-    public String getKeyClass();
+    public abstract String getKeyClass();
 
-    public String getValueClass();
+    public abstract String getValueClass();
 
     /**
      * @return Iterator over {@link MapEntry} entries
      */
-    public Iterator<? extends MapEntry> getMapEntries();
+    public abstract Iterator<? extends MapEntry> getMapEntries();
 
 }

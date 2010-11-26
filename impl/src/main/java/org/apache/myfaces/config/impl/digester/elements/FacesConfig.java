@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,20 +27,20 @@ import java.util.Map;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class FacesConfig
+public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig implements Serializable
 {
 
-    private List<Application> applications = new ArrayList<Application>();
-    private List<Factory> factories = new ArrayList<Factory>();
+    private List<org.apache.myfaces.config.element.Application> applications = new ArrayList<org.apache.myfaces.config.element.Application>();
+    private List<org.apache.myfaces.config.element.Factory> factories = new ArrayList<org.apache.myfaces.config.element.Factory>();
     private Map<String, String> components = new HashMap<String, String>();
-    private List<Converter> converters = new ArrayList<Converter>();
-    private List<ManagedBean> managedBeans = new ArrayList<ManagedBean>();
-    private List<NavigationRule> navigationRules = new ArrayList<NavigationRule>();
-    private List<RenderKit> renderKits = new ArrayList<RenderKit>();
+    private List<org.apache.myfaces.config.element.Converter> converters = new ArrayList<org.apache.myfaces.config.element.Converter>();
+    private List<org.apache.myfaces.config.element.ManagedBean> managedBeans = new ArrayList<org.apache.myfaces.config.element.ManagedBean>();
+    private List<org.apache.myfaces.config.element.NavigationRule> navigationRules = new ArrayList<org.apache.myfaces.config.element.NavigationRule>();
+    private List<org.apache.myfaces.config.element.RenderKit> renderKits = new ArrayList<org.apache.myfaces.config.element.RenderKit>();
     private List<String> lifecyclePhaseListener = new ArrayList<String>();
     private Map<String, String> validators = new HashMap<String, String>();
-    private List<Behavior> behaviors = new ArrayList<Behavior>();
-    private List<NamedEvent> namedEvents = new ArrayList<NamedEvent>();
+    private List<org.apache.myfaces.config.element.Behavior> behaviors = new ArrayList<org.apache.myfaces.config.element.Behavior>();
+    private List<org.apache.myfaces.config.element.NamedEvent> namedEvents = new ArrayList<org.apache.myfaces.config.element.NamedEvent>();
     
     private String metadataComplete;
     private String version;
@@ -47,15 +48,15 @@ public class FacesConfig
     //This information are not merged, and helps
     //with preprocessing of faces-config files
     private String name;
-    private AbsoluteOrdering absoluteOrdering;
-    private Ordering ordering;
+    private org.apache.myfaces.config.element.AbsoluteOrdering absoluteOrdering;
+    private org.apache.myfaces.config.element.Ordering ordering;
 
-    public void addApplication(Application application)
+    public void addApplication(org.apache.myfaces.config.element.Application application)
     {
         applications.add(application);
     }
 
-    public void addFactory(Factory factory)
+    public void addFactory(org.apache.myfaces.config.element.Factory factory)
     {
         factories.add(factory);
     }
@@ -65,22 +66,22 @@ public class FacesConfig
         components.put(componentType, componentClass);
     }
 
-    public void addConverter(Converter converter)
+    public void addConverter(org.apache.myfaces.config.element.Converter converter)
     {
         converters.add(converter);
     }
 
-    public void addManagedBean(ManagedBean bean)
+    public void addManagedBean(org.apache.myfaces.config.element.ManagedBean bean)
     {
         managedBeans.add(bean);
     }
 
-    public void addNavigationRule(NavigationRule rule)
+    public void addNavigationRule(org.apache.myfaces.config.element.NavigationRule rule)
     {
         navigationRules.add(rule);
     }
 
-    public void addRenderKit(RenderKit renderKit)
+    public void addRenderKit(org.apache.myfaces.config.element.RenderKit renderKit)
     {
         renderKits.add(renderKit);
     }
@@ -95,22 +96,22 @@ public class FacesConfig
         validators.put(id, validatorClass);
     }
     
-    public void addBehavior (Behavior behavior)
+    public void addBehavior (org.apache.myfaces.config.element.Behavior behavior)
     {
         behaviors.add (behavior);
     }
     
-    public void addNamedEvent (NamedEvent namedEvent)
+    public void addNamedEvent (org.apache.myfaces.config.element.NamedEvent namedEvent)
     {
         namedEvents.add(namedEvent);
     }
     
-    public List<Application> getApplications()
+    public List<org.apache.myfaces.config.element.Application> getApplications()
     {
         return applications;
     }
 
-    public List<Factory> getFactories()
+    public List<org.apache.myfaces.config.element.Factory> getFactories()
     {
         return factories;
     }
@@ -120,22 +121,22 @@ public class FacesConfig
         return components;
     }
 
-    public List<Converter> getConverters()
+    public List<org.apache.myfaces.config.element.Converter> getConverters()
     {
         return converters;
     }
 
-    public List<ManagedBean> getManagedBeans()
+    public List<org.apache.myfaces.config.element.ManagedBean> getManagedBeans()
     {
         return managedBeans;
     }
 
-    public List<NavigationRule> getNavigationRules()
+    public List<org.apache.myfaces.config.element.NavigationRule> getNavigationRules()
     {
         return navigationRules;
     }
 
-    public List<RenderKit> getRenderKits()
+    public List<org.apache.myfaces.config.element.RenderKit> getRenderKits()
     {
         return renderKits;
     }
@@ -150,19 +151,19 @@ public class FacesConfig
         return validators;
     }
     
-    public List<Behavior> getBehaviors ()
+    public List<org.apache.myfaces.config.element.Behavior> getBehaviors ()
     {
         return behaviors;
     }
     
-    public List<NamedEvent> getNamedEvents ()
+    public List<org.apache.myfaces.config.element.NamedEvent> getNamedEvents ()
     {
         return namedEvents;
     }
     
-    public RenderKit getRenderKit(String renderKitId)
+    public org.apache.myfaces.config.element.RenderKit getRenderKit(String renderKitId)
     {
-        for (org.apache.myfaces.config.impl.digester.elements.RenderKit rk : getRenderKits())
+        for (org.apache.myfaces.config.element.RenderKit rk : getRenderKits())
         {
             if (renderKitId != null && renderKitId.equals(rk.getId()))
             {
@@ -186,22 +187,22 @@ public class FacesConfig
         this.name = name;
     }
     
-    public AbsoluteOrdering getAbsoluteOrdering()
+    public org.apache.myfaces.config.element.AbsoluteOrdering getAbsoluteOrdering()
     {
         return absoluteOrdering;
     }
 
-    public void setAbsoluteOrdering(AbsoluteOrdering absoluteOrdering)
+    public void setAbsoluteOrdering(org.apache.myfaces.config.element.AbsoluteOrdering absoluteOrdering)
     {
         this.absoluteOrdering = absoluteOrdering;
     }
 
-    public Ordering getOrdering()
+    public org.apache.myfaces.config.element.Ordering getOrdering()
     {
         return ordering;
     }
 
-    public void setOrdering(Ordering ordering)
+    public void setOrdering(org.apache.myfaces.config.element.Ordering ordering)
     {
         this.ordering = ordering;
     }

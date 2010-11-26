@@ -29,7 +29,7 @@ import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
@@ -60,7 +60,7 @@ import java.net.URL;
 public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCase
 {
     private final String filePath = this.getDirectory();
-    protected FacesConfigDispenser<FacesConfig> dispenser = null;
+    protected FacesConfigDispenser dispenser = null;
     protected MockFaceletViewDeclarationLanguage vdl;
 
 

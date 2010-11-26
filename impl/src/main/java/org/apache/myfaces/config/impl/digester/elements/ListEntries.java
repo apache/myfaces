@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -26,11 +27,11 @@ import java.util.Iterator;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class ListEntries implements org.apache.myfaces.config.element.ListEntries
+public class ListEntries extends org.apache.myfaces.config.element.ListEntries implements Serializable
 {
 
     private String valueClass;
-    private List<Entry> entries = new ArrayList<Entry>();
+    private List<org.apache.myfaces.config.element.ListEntry> entries = new ArrayList<org.apache.myfaces.config.element.ListEntry>();
 
 
     public String getValueClass()
@@ -46,19 +47,19 @@ public class ListEntries implements org.apache.myfaces.config.element.ListEntrie
 
 
 
-    public void addEntry(Entry entry)
+    public void addEntry(org.apache.myfaces.config.element.ListEntry entry)
     {
         entries.add(entry);
     }
 
 
-    public Iterator<Entry> getListEntries()
+    public Iterator<org.apache.myfaces.config.element.ListEntry> getListEntries()
     {
         return entries.iterator();
     }
 
 
-    public static class Entry implements org.apache.myfaces.config.element.ListEntry {
+    public static class Entry extends org.apache.myfaces.config.element.ListEntry {
         private boolean nullValue;
         private String value;
 

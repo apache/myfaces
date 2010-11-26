@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
+
 
 
 /**
@@ -26,13 +28,13 @@ package org.apache.myfaces.config.element;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface NavigationCase
+public abstract class NavigationCase implements Serializable
 {
     // <!ELEMENT navigation-case (description*, display-name*, icon*, from-action?, from-outcome?, to-view-id, redirect?)>
 
-    public String getFromAction();
-    public String getFromOutcome();
-    public String getIf();
-    public Redirect getRedirect();
-    public String getToViewId();
+    public abstract String getFromAction();
+    public abstract String getFromOutcome();
+    public abstract String getIf();
+    public abstract Redirect getRedirect();
+    public abstract String getToViewId();
 }

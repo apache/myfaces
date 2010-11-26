@@ -288,9 +288,9 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         // Fix for http://issues.apache.org/jira/browse/MYFACES-236
         FacesConfig config = (FacesConfig) digester.parse(is);
 
-        for (Application application : config.getApplications())
+        for (org.apache.myfaces.config.element.Application application : config.getApplications())
         {
-            for (LocaleConfig localeConfig : application.getLocaleConfig())
+            for (org.apache.myfaces.config.element.LocaleConfig localeConfig : application.getLocaleConfig())
             {
                 if (!localeConfig.getSupportedLocales().contains(localeConfig.getDefaultLocale()))
                 {

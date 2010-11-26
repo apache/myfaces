@@ -18,9 +18,11 @@
  */
 package org.apache.myfaces.config.element;
 
-public interface ViewParam
+import java.io.Serializable;
+
+public abstract class ViewParam implements Serializable
 {
-    public String getName();
-    public String getValue();
+    public abstract String getName();
+    public abstract String getValue();
     
 }

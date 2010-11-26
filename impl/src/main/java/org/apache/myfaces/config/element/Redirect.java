@@ -19,11 +19,12 @@
  
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public interface Redirect
+public abstract class Redirect implements Serializable
 {
-    public Map<String, List<String>> getViewParams();
-    public String getIncludeViewParams();
+    public abstract Map<String, List<String>> getViewParams();
+    public abstract String getIncludeViewParams();
 }

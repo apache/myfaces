@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,14 +28,14 @@ import java.util.List;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Converter
+public class Converter extends org.apache.myfaces.config.element.Converter implements Serializable
 {
 
     private String converterId;
     private String forClass;
     private String converterClass;
-    private List<Property> _properties = null;
-    private List<Attribute> _attributes = null;
+    private List<org.apache.myfaces.config.element.Property> _properties = null;
+    private List<org.apache.myfaces.config.element.Attribute> _attributes = null;
 
 
     public String getConverterId()
@@ -72,17 +73,17 @@ public class Converter
         this.converterClass = converterClass;
     }
 
-    public void addProperty(Property value)
+    public void addProperty(org.apache.myfaces.config.element.Property value)
     {
         if(_properties == null)
         {
-            _properties = new ArrayList<Property>();
+            _properties = new ArrayList<org.apache.myfaces.config.element.Property>();
         }
 
         _properties.add(value);
     }
 
-    public Collection<? extends Property> getProperties()
+    public Collection<? extends org.apache.myfaces.config.element.Property> getProperties()
     {
         if(_properties == null)
         {
@@ -92,17 +93,17 @@ public class Converter
         return _properties;
     }
     
-    public void addAttribute(Attribute value)
+    public void addAttribute(org.apache.myfaces.config.element.Attribute value)
     {
         if(_attributes == null)
         {
-            _attributes = new ArrayList<Attribute>();
+            _attributes = new ArrayList<org.apache.myfaces.config.element.Attribute>();
         }
 
         _attributes.add(value);
     }
 
-    public Collection<? extends Attribute> getAttributes()
+    public Collection<? extends org.apache.myfaces.config.element.Attribute> getAttributes()
     {
         if(_attributes == null)
         {

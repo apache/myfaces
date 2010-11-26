@@ -18,12 +18,14 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
+
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface ListEntry
+public abstract class ListEntry implements Serializable
 {
-    public boolean isNullValue();
-    public String getValue();
+    public abstract boolean isNullValue();
+    public abstract String getValue();
 }

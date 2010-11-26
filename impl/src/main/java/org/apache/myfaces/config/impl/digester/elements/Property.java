@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,7 +40,7 @@ import java.util.List;
 
  *          <p/>
  */
-public class Property
+public class Property extends org.apache.myfaces.config.element.Property implements Serializable
 {
     private List<String> _description;
     private List<String> _displayName;

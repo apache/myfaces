@@ -18,16 +18,18 @@
  */
 package org.apache.myfaces.config.element;
 
+import java.io.Serializable;
+
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface Renderer
+public abstract class Renderer implements Serializable
 {
     // <!ELEMENT renderer (description*, display-name*, icon*, component-family, renderer-type, renderer-class, attribute*, renderer-extension*)>
 
-    public String getComponentFamily();
-    public String getRendererType();
-    public String getRendererClass();
+    public abstract String getComponentFamily();
+    public abstract String getRendererType();
+    public abstract String getRendererClass();
 
 }

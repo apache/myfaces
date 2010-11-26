@@ -20,12 +20,12 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.config.impl.digester.elements.Application;
-import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
-import org.apache.myfaces.config.impl.digester.elements.LocaleConfig;
-import org.apache.myfaces.config.impl.digester.elements.OrderSlot;
+import org.apache.myfaces.config.element.Application;
+import org.apache.myfaces.config.element.ConfigOthersSlot;
+import org.apache.myfaces.config.element.FacesConfig;
+import org.apache.myfaces.config.element.FacesConfigNameSlot;
+import org.apache.myfaces.config.element.LocaleConfig;
+import org.apache.myfaces.config.element.OrderSlot;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -119,7 +119,7 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         
         assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
         assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
-        assertEquals(ConfigOthersSlot.class, orderList.get(2).getClass());
+        assertEquals(org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot.class, orderList.get(2).getClass());
         assertEquals("d", ((FacesConfigNameSlot) orderList.get(3)).getName());
         
         assertTrue(cfg.getApplications().isEmpty());
@@ -143,7 +143,7 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         List<OrderSlot> orderList = cfg.getOrdering().getBeforeList();        
         assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
         assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
-        assertEquals(ConfigOthersSlot.class, orderList.get(2).getClass());
+        assertEquals(org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot.class, orderList.get(2).getClass());
         
         orderList = cfg.getOrdering().getAfterList();        
         assertEquals("d", ((FacesConfigNameSlot) orderList.get(0)).getName());

@@ -83,20 +83,17 @@ public class AnnotationConfigurator
 {
     //private static final Log log = LogFactory.getLog(AnnotationConfigurator.class);
     private static final Logger log = Logger.getLogger(AnnotationConfigurator.class.getName());
-    
-    private final ExternalContext _externalContext;
 
     /**
      * <p>The render kit factory for this application.</p>
      */
     private RenderKitFactory rkFactory = null;
 
-    public AnnotationConfigurator(ExternalContext externalContext)
+    public AnnotationConfigurator()
     {
-        _externalContext = externalContext;
     }
 
-    public FacesConfig createFacesConfig(boolean metadataComplete)
+    public FacesConfig createFacesConfig(ExternalContext _externalContext, boolean metadataComplete)
     {
         if (!metadataComplete)
         {
@@ -215,7 +212,8 @@ public class AnnotationConfigurator
                                 + ", " + clazz.getName() + ")");
                     }
                     
-                    org.apache.myfaces.config.impl.digester.elements.RenderKit renderKit = facesConfig.getRenderKit(renderKitId);
+                    org.apache.myfaces.config.impl.digester.elements.RenderKit renderKit =
+                       (org.apache.myfaces.config.impl.digester.elements.RenderKit) facesConfig.getRenderKit(renderKitId);
                     if (renderKit == null)
                     {
                         renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
@@ -440,7 +438,8 @@ public class AnnotationConfigurator
                              clazz.getName() + ")");
                     }
                     
-                    org.apache.myfaces.config.impl.digester.elements.RenderKit renderKit = facesConfig.getRenderKit(renderKitId);
+                    org.apache.myfaces.config.impl.digester.elements.RenderKit renderKit =
+                        (org.apache.myfaces.config.impl.digester.elements.RenderKit) facesConfig.getRenderKit(renderKitId);
                     if (renderKit == null)
                     {
                         renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
