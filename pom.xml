@@ -50,6 +50,7 @@
     <module>api</module>
     <module>implee6</module>
     <module>impl</module>
+    <module>bundle</module>
   </modules>
   <repositories>
      <repository>
