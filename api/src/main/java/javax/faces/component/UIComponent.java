@@ -708,8 +708,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
          * (and thus must be removed), the equals() method on the existing listener must be invoked, passing the
          * argument componentListener, rather than the other way around.
          * 
-         * What is that supposed to mean? Are we supposed to keep an internal map of created listener wrappers? TODO:
-         * Check with the EG what's the meaning of this, equals should be commutative -= Simon Lessard =-
+         * -=Simon Lessard=- What is that supposed to mean? Are we supposed to keep an internal map of created listener wrappers? 
+         * -= Leonardo Uribe=- Yes, it is supposed a wrapper should be used to hold listener references, to prevent
+         * serialize component instances on the state.
          */
         if (eventClass == null)
         {
@@ -720,9 +721,23 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             throw new NullPointerException("componentListener required");
         }
 
-        SystemEventListener listener = new EventListenerWrapper(this, componentListener);
-
-        getFacesContext().getApplication().unsubscribeFromEvent(eventClass, listener);
+        if (_systemEventListenerClassMap != null)
+        {
+            List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
+            
+            if (listeners != null && !listeners.isEmpty())
+            {
+                for (Iterator<SystemEventListener> it = listeners.iterator(); it.hasNext();)
+                {
+                    ComponentSystemEventListener listener = ((EventListenerWrapper) it.next()).getComponentSystemEventListener(); 
+                    if (listener != null && listener.equals(componentListener))
+                    {
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -1094,6 +1109,11 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             // if the instance class of this UIComponent is assignable from the argument to isListenerForSource.
 
             return source.getClass().isAssignableFrom(componentClass);
+        }
+        
+        public ComponentSystemEventListener getComponentSystemEventListener()
+        {
+            return listener;
         }
 
         public void processEvent(SystemEvent event)
