@@ -23,13 +23,14 @@ import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 
+import org.apache.myfaces.config.element.FacesConfig;
+import org.apache.myfaces.config.element.OrderSlot;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.digester.elements.AbsoluteOrdering;
 import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
-import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
-import org.apache.myfaces.config.element.OrderSlot;
 import org.apache.myfaces.config.impl.digester.elements.Ordering;
+import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class OrderingFacesConfigTest extends AbstractJsfTestCase
@@ -403,7 +404,8 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
 
     public void applyAlgorithm(List<FacesConfig> appConfigResources) throws FacesException
     {
-        FacesConfigurator configurator = new FacesConfigurator(externalContext);
+        //FacesConfigurator configurator = new FacesConfigurator(externalContext);
+        DefaultFacesConfigurationProvider configurator = new DefaultFacesConfigurationProvider();
         
         //printFacesConfigList("Start List", appConfigResources);
         
@@ -642,7 +644,8 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
 
     public void applyAlgorithm2(List<FacesConfig> appConfigResources) throws FacesException
     {
-        FacesConfigurator configurator = new FacesConfigurator(externalContext);
+        //FacesConfigurator configurator = new FacesConfigurator(externalContext);
+        DefaultFacesConfigurationProvider configurator = new DefaultFacesConfigurationProvider();
         
         System.out.println("");
         System.out.print("Start List: [");
