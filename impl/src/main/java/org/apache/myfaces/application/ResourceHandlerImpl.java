@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
@@ -326,7 +327,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 return;
             }
     
-            httpServletResponse.setContentType(resource.getContentType());
+            httpServletResponse.setContentType(_getContentType(resource, facesContext.getExternalContext()));
     
             Map<String, String> headers = resource.getResponseHeaders();
     
@@ -577,5 +578,18 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (_resourceHandlerCache == null)
             _resourceHandlerCache = new ResourceHandlerCache();
         return _resourceHandlerCache;
+    }
+
+    private String _getContentType(Resource resource, ExternalContext externalContext)
+    {
+        String contentType = resource.getContentType();
+
+        if (contentType == null || "".equals(contentType))
+        {
+            // the resource does not provide a content-type --> determine it via mime-type
+            contentType = externalContext.getMimeType(resource.getResourceName());
+        }
+
+        return contentType;
     }
 }
