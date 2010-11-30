@@ -361,8 +361,8 @@ public final class ErrorPageWriter
         // if so, do not generate an error page
         //WebXml webXml = WebXml.getWebXml(facesContext.getExternalContext());
         //if (webXml.isErrorPagePresent())
-        WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebXmlProviderFactory(
-                facesContext.getExternalContext()).getWebXmlProvider(facesContext.getExternalContext());
+        WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
+                facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
         
         if(webConfigProvider.isErrorPagePresent(facesContext.getExternalContext()))
         {

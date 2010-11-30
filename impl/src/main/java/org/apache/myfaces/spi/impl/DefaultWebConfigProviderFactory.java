@@ -53,7 +53,7 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
     }
 
     @Override
-    public WebConfigProvider getWebXmlProvider(ExternalContext externalContext)
+    public WebConfigProvider getWebConfigProvider(ExternalContext externalContext)
     {
         WebConfigProvider returnValue = null;
         final ExternalContext extContext = externalContext;

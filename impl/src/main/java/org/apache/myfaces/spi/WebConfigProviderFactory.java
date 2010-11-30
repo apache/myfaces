@@ -42,7 +42,7 @@ public abstract class WebConfigProviderFactory
 
     private static final String FACTORY_KEY = WebConfigProviderFactory.class.getName();
 
-    public static WebConfigProviderFactory getWebXmlProviderFactory(ExternalContext ctx)
+    public static WebConfigProviderFactory getWebConfigProviderFactory(ExternalContext ctx)
     {
         WebConfigProviderFactory factory = (WebConfigProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
         if (factory != null)
@@ -81,17 +81,17 @@ public abstract class WebConfigProviderFactory
         if (factory != null)
         {
             // cache instance on ApplicationMap
-            setWebXmlProviderFactory(ctx, factory);
+            setWebConfigProviderFactory(ctx, factory);
         }
 
         return factory;
     }
 
-    public static void setWebXmlProviderFactory(ExternalContext ctx, WebConfigProviderFactory factory)
+    public static void setWebConfigProviderFactory(ExternalContext ctx, WebConfigProviderFactory factory)
     {
         ctx.getApplicationMap().put(FACTORY_KEY, factory);
     }
 
-    public abstract WebConfigProvider getWebXmlProvider(ExternalContext externalContext);
+    public abstract WebConfigProvider getWebConfigProvider(ExternalContext externalContext);
 
 }

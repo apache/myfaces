@@ -105,8 +105,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             
             if (!WebConfigParamUtils.getBooleanInitParameter(externalContext, INITIALIZE_ALWAYS_STANDALONE, false))
             {
-                WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebXmlProviderFactory(
-                        facesContext.getExternalContext()).getWebXmlProvider(facesContext.getExternalContext());
+                WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
+                        facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
 
                 if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty()) {
                     // check if the FacesServlet has been added dynamically
@@ -258,8 +258,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(), INITIALIZE_ALWAYS_STANDALONE, false))
         {
             //We need to check if the current application was initialized by myfaces
-            WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebXmlProviderFactory(
-                    facesContext.getExternalContext()).getWebXmlProvider(facesContext.getExternalContext());
+            WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
+                    facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
             
             if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty()) {
                 // check if the FacesServlet has been added dynamically
