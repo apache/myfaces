@@ -41,6 +41,8 @@ public class EnumConverter implements Converter, PartialStateHolder
 
     /**
      * If value is a String instance and this param is true, pass it directly without try any change.
+     * 
+     * See MYFACES-2739 for details.
      */
     @JSFWebConfigParam(name="org.apache.myfaces.ENUM_CONVERTER_ALLOW_STRING_PASSTROUGH", since="2.0.1", expectedValues="true,false",defaultValue="false")
     private static final String ALLOW_STRING_PASSTROUGH = "org.apache.myfaces.ENUM_CONVERTER_ALLOW_STRING_PASSTROUGH";
