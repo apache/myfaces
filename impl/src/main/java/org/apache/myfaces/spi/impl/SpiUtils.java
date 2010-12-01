@@ -19,6 +19,7 @@
 package org.apache.myfaces.spi.impl;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
@@ -41,6 +42,11 @@ public final class SpiUtils
         
         if (classList != null && !classList.isEmpty())
         {
+            if (classList.size() > 1)
+            {
+                getLogger().log(Level.WARNING, "More than one SPI interface for "+spiClass.getName()+
+                        " found :" + classList.toString() + ". Setting up the first one found.");
+            }
             return ClassUtils.newInstance(classList.get(0));
         }
         return ClassUtils.newInstance(defaultImpl);
