@@ -21,6 +21,8 @@ package org.apache.myfaces.config.annotation;
 import java.io.DataInput;
 import java.io.IOException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Scan .class files for annotation signature directly, without load them.
@@ -31,6 +33,9 @@ import java.util.Set;
  */
 class _ClassByteCodeAnnotationFilter
 {
+    
+    private static final Logger log = Logger.getLogger(_ClassByteCodeAnnotationFilter.class.getName());
+    
     //Constants used to define type in cp_info structure
     private static final int CP_INFO_CLASS = 7;
     private static final int CP_INFO_FIELD_REF = 9;
@@ -156,6 +161,8 @@ class _ClassByteCodeAnnotationFilter
                     //u4 low_bytes
                     in.readInt();
                     in.readInt();
+                    // this tag takes two entries in the constants pool
+                    i++;
                     break;
                 case CP_INFO_NAME_AND_TYPE: //ignore
                     //u2 name_index
@@ -164,9 +171,13 @@ class _ClassByteCodeAnnotationFilter
                     in.readUnsignedShort();
                     break;
                 default:
-                    //TODO: THIS SHOULD NOT HAPPEN! Log error info
+                    // THIS SHOULD NOT HAPPEN! Log error info
                     // and break for loop, because from this point
                     // we are reading corrupt data.
+                    if (log.isLoggable(Level.WARNING))
+                    {
+                        log.warning("Unknown tag in constants pool: " + tag);
+                    }
                     i = constantsPoolCount;
                     break;
             }
