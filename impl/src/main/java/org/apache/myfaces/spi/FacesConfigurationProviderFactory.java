@@ -24,8 +24,8 @@ import java.security.PrivilegedActionException;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
-import org.apache.commons.discovery.tools.DiscoverSingleton;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
+import org.apache.myfaces.spi.impl.SpiUtils;
 
 /**
  * SPI to provide a FacesConfigurationProviderFactory implementation and thus
@@ -56,12 +56,14 @@ public abstract class FacesConfigurationProviderFactory
 
             if (System.getSecurityManager() != null)
             {
+                final ExternalContext ectx = ctx;
                 factory = (FacesConfigurationProviderFactory) AccessController.doPrivileged(
                         new java.security.PrivilegedExceptionAction<Object>()
                         {
                             public Object run() throws PrivilegedActionException
                             {
-                                return DiscoverSingleton.find(
+                                //return DiscoverSingleton.find(
+                                return SpiUtils.build(ectx,
                                         FacesConfigurationProviderFactory.class,
                                         FACTORY_DEFAULT);
                             }
@@ -69,7 +71,8 @@ public abstract class FacesConfigurationProviderFactory
             }
             else
             {
-                factory = (FacesConfigurationProviderFactory) DiscoverSingleton.find(FacesConfigurationProviderFactory.class, FACTORY_DEFAULT);
+                //factory = (FacesConfigurationProviderFactory) DiscoverSingleton.find(FacesConfigurationProviderFactory.class, FACTORY_DEFAULT);
+                factory = (FacesConfigurationProviderFactory) SpiUtils.build(ctx, FacesConfigurationProviderFactory.class, FACTORY_DEFAULT);
             }
         }
         catch (PrivilegedActionException pae)

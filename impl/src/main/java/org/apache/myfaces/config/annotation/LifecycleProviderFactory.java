@@ -23,8 +23,9 @@ import java.security.PrivilegedActionException;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
-import org.apache.commons.discovery.tools.DiscoverSingleton;
+import org.apache.myfaces.spi.impl.SpiUtils;
 
 
 public abstract class LifecycleProviderFactory {
@@ -33,6 +34,12 @@ public abstract class LifecycleProviderFactory {
     private static volatile LifecycleProviderFactory INSTANCE;
 
     public static LifecycleProviderFactory getLifecycleProviderFactory()
+    {
+        // Since we always provide a StartupFacesContext on initialization time, this is safe:
+        return getLifecycleProviderFactory(FacesContext.getCurrentInstance().getExternalContext());
+    }
+    
+    public static LifecycleProviderFactory getLifecycleProviderFactory(ExternalContext ctx)
     {
         LifecycleProviderFactory instance = INSTANCE;
         if (instance != null)
@@ -45,11 +52,12 @@ public abstract class LifecycleProviderFactory {
 
             if (System.getSecurityManager() != null)
             {
+                final ExternalContext ectx = ctx; 
                 lpf = (LifecycleProviderFactory) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
                         {
                             public Object run() throws PrivilegedActionException
                             {
-                                return DiscoverSingleton.find(
+                                return SpiUtils.build(ectx,
                                         LifecycleProviderFactory.class,
                                         FACTORY_DEFAULT);
                             }
@@ -57,7 +65,7 @@ public abstract class LifecycleProviderFactory {
             }
             else
             {
-                lpf = (LifecycleProviderFactory) DiscoverSingleton.find(LifecycleProviderFactory.class, FACTORY_DEFAULT);
+                lpf = (LifecycleProviderFactory) SpiUtils.build(ctx, LifecycleProviderFactory.class, FACTORY_DEFAULT);
             }
         }
         catch (PrivilegedActionException pae)

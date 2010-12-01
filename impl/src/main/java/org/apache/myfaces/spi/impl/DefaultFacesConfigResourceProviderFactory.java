@@ -21,18 +21,17 @@ package org.apache.myfaces.spi.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
-import org.apache.commons.discovery.ResourceNameIterator;
-import org.apache.commons.discovery.resource.ClassLoaders;
-import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
 import org.apache.myfaces.config.DefaultFacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
+import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
 
 /**
  * 
@@ -41,7 +40,9 @@ import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
  */
 public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResourceProviderFactory
 {
-    public static final String ANNOTATION_PROVIDER = FacesConfigResourceProvider.class.getName();
+    public static final String FACES_CONFIG_PROVIDER = FacesConfigResourceProvider.class.getName();
+    
+    public static final String FACES_CONFIG_PROVIDER_LIST = FacesConfigResourceProvider.class.getName()+".LIST";
     
     private Logger getLogger()
     {
@@ -111,16 +112,14 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
             InvocationTargetException,
             PrivilegedActionException
     {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null)
+        List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACES_CONFIG_PROVIDER_LIST);
+        if (classList == null)
         {
-            classLoader = this.getClass().getClassLoader();
+            classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(FACES_CONFIG_PROVIDER);
+            externalContext.getApplicationMap().put(FACES_CONFIG_PROVIDER_LIST, classList);
         }
-        ClassLoaders loaders = new ClassLoaders();
-        loaders.put(classLoader);
-        DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
-        ResourceNameIterator iter = dsn.findResourceNames(ANNOTATION_PROVIDER);
-        return SpiUtils.buildApplicationObject(FacesConfigResourceProvider.class, iter, new DefaultFacesConfigResourceProvider());
+
+        return SpiUtils.buildApplicationObject(externalContext, FacesConfigResourceProvider.class, classList, new DefaultFacesConfigResourceProvider());        
     }
 
 }

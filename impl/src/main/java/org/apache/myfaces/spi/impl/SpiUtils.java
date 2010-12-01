@@ -18,15 +18,13 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
+import java.util.List;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
 
-import org.apache.commons.discovery.ResourceNameIterator;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
 
 /**
  * Utils for SPI implementations.
@@ -36,147 +34,36 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
  */
 public final class SpiUtils
 {
-
-    public static <T> T buildApplicationObject(Class<T> interfaceClass, ResourceNameIterator classNamesIterator, T defaultObject)
+    
+    public static Object build(ExternalContext ectx, Class spiClass, String defaultImpl)
     {
-        return buildApplicationObject(interfaceClass, null, null, classNamesIterator, defaultObject);
-    }
-
-    /**
-     * Creates ApplicationObjects like NavigationHandler or StateManager and creates
-     * the right wrapping chain of the ApplicationObjects known as the decorator pattern.
-     * @param <T>
-     * @param interfaceClass The class from which the implementation has to inherit from.
-     * @param extendedInterfaceClass A subclass of interfaceClass which specifies a more
-     *                               detailed implementation.
-     * @param extendedInterfaceWrapperClass A wrapper class for the case that you have an ApplicationObject
-     *                                      which only implements the interfaceClass but not the
-     *                                      extendedInterfaceClass.
-     * @param classNamesIterator All the class names of the actual ApplicationObject implementations
-     *                           from the faces-config.xml.
-     * @param defaultObject The default implementation for the given ApplicationObject.
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T buildApplicationObject(Class<T> interfaceClass, Class<? extends T> extendedInterfaceClass,
-            Class<? extends T> extendedInterfaceWrapperClass,
-            ResourceNameIterator classNamesIterator, T defaultObject)
-    {
-        T current = defaultObject;
-
-        while (classNamesIterator.hasNext())
+        List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(spiClass.getName());
+        
+        if (classList != null && !classList.isEmpty())
         {
-            String implClassName = classNamesIterator.nextResourceName();
-            Class<? extends T> implClass = ClassUtils.simpleClassForName(implClassName);
-
-            // check, if class is of expected interface type
-            if (!interfaceClass.isAssignableFrom(implClass))
-            {
-                throw new IllegalArgumentException("Class " + implClassName + " is no " + interfaceClass.getName());
-            }
-
-            if (current == null)
-            {
-                // nothing to decorate
-                current = (T) ClassUtils.newInstance(implClass);
-            }
-            else
-            {
-                // let's check if class supports the decorator pattern
-                T newCurrent = null;
-                try
-                {
-                    Constructor<? extends T> delegationConstructor = null;
-
-                    // first, if there is a extendedInterfaceClass,
-                    // try to find a constructor that uses that
-                    if (extendedInterfaceClass != null
-                            && extendedInterfaceClass.isAssignableFrom(current.getClass()))
-                    {
-                        try
-                        {
-                            delegationConstructor =
-                                    implClass.getConstructor(new Class[] {extendedInterfaceClass});
-                        }
-                        catch (NoSuchMethodException mnfe)
-                        {
-                            // just eat it
-                        }
-                    }
-                    if (delegationConstructor == null)
-                    {
-                        // try to find the constructor with the "normal" interfaceClass
-                        delegationConstructor =
-                                implClass.getConstructor(new Class[] {interfaceClass});
-                    }
-                    // impl class supports decorator pattern at this point
-                    try
-                    {
-                        // create new decorator wrapping current
-                        newCurrent = delegationConstructor.newInstance(new Object[] { current });
-                    }
-                    catch (InstantiationException e)
-                    {
-                        getLogger().log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        getLogger().log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        getLogger().log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                }
-                catch (NoSuchMethodException e)
-                {
-                    // no decorator pattern support
-                    newCurrent = (T) ClassUtils.newInstance(implClass);
-                }
-
-                // now we have a new current object (newCurrent)
-                // --> find out if it is assignable from extendedInterfaceClass
-                // and if not, wrap it in a backwards compatible wrapper (if available)
-                if (extendedInterfaceWrapperClass != null
-                        && !extendedInterfaceClass.isAssignableFrom(newCurrent.getClass()))
-                {
-                    try
-                    {
-                        Constructor<? extends T> wrapperConstructor
-                                = extendedInterfaceWrapperClass.getConstructor(
-                                        new Class[] {interfaceClass, extendedInterfaceClass});
-                        newCurrent = wrapperConstructor.newInstance(new Object[] {newCurrent, current});
-                    }
-                    catch (NoSuchMethodException e)
-                    {
-                        getLogger().log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InstantiationException e)
-                    {
-                        getLogger().log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        getLogger().log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        getLogger().log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                }
-
-                current = newCurrent;
-            }
+            return ClassUtils.newInstance(classList.get(0));
         }
-
-        return current;
+        return ClassUtils.newInstance(defaultImpl);
+    }
+    
+    public static <T> T buildApplicationObject(ExternalContext ectx, Class<T> interfaceClass, T defaultObject)
+    {
+        List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(interfaceClass.getName());
+        
+        if (classList != null && !classList.isEmpty())
+        {
+            return ClassUtils.buildApplicationObject(interfaceClass, classList, defaultObject);
+        }
+        return defaultObject;
+    }
+    
+    public static <T> T buildApplicationObject(ExternalContext ectx, Class<T> interfaceClass, List<String> classList,  T defaultObject)
+    {
+        if (classList != null && !classList.isEmpty())
+        {
+            return ClassUtils.buildApplicationObject(interfaceClass, classList, defaultObject);
+        }
+        return defaultObject;
     }
 
     private static Logger getLogger()

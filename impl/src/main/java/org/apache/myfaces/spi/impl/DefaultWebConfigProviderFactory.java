@@ -21,15 +21,14 @@ package org.apache.myfaces.spi.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
-import org.apache.commons.discovery.ResourceNameIterator;
-import org.apache.commons.discovery.resource.ClassLoaders;
-import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
+import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
 
@@ -45,7 +44,9 @@ import org.apache.myfaces.spi.WebConfigProviderFactory;
 public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
 {
 
-    public static final String WEB_XML_PROVIDER = WebConfigProvider.class.getName();
+    public static final String WEB_CONFIG_PROVIDER = WebConfigProvider.class.getName();
+    
+    public static final String WEB_CONFIG_PROVIDER_LIST = WebConfigProvider.class.getName()+".LIST";
 
     private Logger getLogger()
     {
@@ -115,17 +116,14 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
             InvocationTargetException,
             PrivilegedActionException
     {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null)
+        List<String> classList = (List<String>) externalContext.getApplicationMap().get(WEB_CONFIG_PROVIDER_LIST);
+        if (classList == null)
         {
-            classLoader = this.getClass().getClassLoader();
+            classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(WEB_CONFIG_PROVIDER);
+            externalContext.getApplicationMap().put(WEB_CONFIG_PROVIDER_LIST, classList);
         }
-        ClassLoaders loaders = new ClassLoaders();
-        loaders.put(classLoader);
-        DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
-        ResourceNameIterator iter = dsn.findResourceNames(WEB_XML_PROVIDER);
 
-        return SpiUtils.buildApplicationObject(WebConfigProvider.class, iter, new DefaultWebConfigProvider());
+        return SpiUtils.buildApplicationObject(externalContext, WebConfigProvider.class, classList, new DefaultWebConfigProvider());
     }
 
 }

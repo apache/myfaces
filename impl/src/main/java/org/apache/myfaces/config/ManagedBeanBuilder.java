@@ -157,7 +157,7 @@ public class ManagedBeanBuilder
         try
         {
             LifecycleProvider lifecycleProvider =
-                    LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(facesContext.getExternalContext());
+                    LifecycleProviderFactory.getLifecycleProviderFactory(facesContext.getExternalContext()).getLifecycleProvider(facesContext.getExternalContext());
             
             final Object bean = lifecycleProvider.newInstance(beanConfiguration.getManagedBeanClassName());
 

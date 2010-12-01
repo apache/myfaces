@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.webapp;
 
-import org.apache.commons.discovery.tools.DiscoverSingleton;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
@@ -160,7 +159,7 @@ public class StartupServletContextListener implements ServletContextListener,
             }
             
             FactoryFinder.releaseFactories();
-            DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
+            //DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
         }
         

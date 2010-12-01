@@ -18,20 +18,20 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import org.apache.commons.discovery.ResourceNameIterator;
-import org.apache.commons.discovery.resource.ClassLoaders;
-import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
-import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
-import org.apache.myfaces.spi.AnnotationProvider;
-import org.apache.myfaces.spi.AnnotationProviderFactory;
-
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
+
+import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
+import org.apache.myfaces.spi.AnnotationProvider;
+import org.apache.myfaces.spi.AnnotationProviderFactory;
+import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
 
 /**
  * 
@@ -41,6 +41,8 @@ import java.util.logging.Logger;
 public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
 {
     public static final String ANNOTATION_PROVIDER = AnnotationProvider.class.getName();
+    
+    public static final String ANNOTATION_PROVIDER_LIST = AnnotationProvider.class.getName()+".LIST";
     
     private Logger getLogger()
     {
@@ -110,15 +112,12 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
             InvocationTargetException,
             PrivilegedActionException
     {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null)
+        List<String> classList = (List<String>) externalContext.getApplicationMap().get(ANNOTATION_PROVIDER_LIST);
+        if (classList == null)
         {
-            classLoader = this.getClass().getClassLoader();
+            classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(ANNOTATION_PROVIDER);
+            externalContext.getApplicationMap().put(ANNOTATION_PROVIDER_LIST, classList);
         }
-        ClassLoaders loaders = new ClassLoaders();
-        loaders.put(classLoader);
-        DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
-        ResourceNameIterator iter = dsn.findResourceNames(ANNOTATION_PROVIDER);
-        return SpiUtils.buildApplicationObject(AnnotationProvider.class, iter, new DefaultAnnotationProvider());
+        return SpiUtils.buildApplicationObject(externalContext, AnnotationProvider.class, classList, new DefaultAnnotationProvider());
     }
 }

@@ -59,6 +59,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
+import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -201,41 +202,13 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             org.apache.myfaces.config.impl.digester.elements.FacesConfig facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
             org.apache.myfaces.config.impl.digester.elements.Factory factory = new org.apache.myfaces.config.impl.digester.elements.Factory();
             facesConfig.addFactory(factory);
+            
             for (String factoryName : FACTORY_NAMES)
             {
-                Iterator<URL> it = ClassUtils.getResources(META_INF_SERVICES_RESOURCE_PREFIX + factoryName, this);
-                while (it.hasNext())
+                List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(factoryName);
+                
+                for (String className : classList)
                 {
-                    URL url = it.next();
-                    InputStream stream = openStreamWithoutCache(url);
-                    InputStreamReader isr = new InputStreamReader(stream);
-                    BufferedReader br = new BufferedReader(isr);
-                    String className;
-                    try
-                    {
-                        className = br.readLine();
-                    }
-                    catch (IOException e)
-                    {
-                        throw new FacesException("Unable to read class name from file " + url.toExternalForm(), e);
-                    }
-                    finally
-                    {
-                        if (br != null)
-                        {
-                            br.close();
-                        }
-                        if (isr != null)
-                        {
-                            isr.close();
-                        }
-                        if (stream != null)
-                        {
-                            stream.close();
-                        }
-                    }
-
-
                     if (log.isLoggable(Level.INFO))
                     {
                         log.info("Found " + factoryName + " factory implementation: " + className);

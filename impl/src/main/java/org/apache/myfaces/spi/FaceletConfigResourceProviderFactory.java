@@ -24,8 +24,8 @@ import java.security.PrivilegedActionException;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
-import org.apache.commons.discovery.tools.DiscoverSingleton;
 import org.apache.myfaces.spi.impl.DefaultFaceletConfigResourceProviderFactory;
+import org.apache.myfaces.spi.impl.SpiUtils;
 
 /**
  * 
@@ -36,26 +36,27 @@ public abstract class FaceletConfigResourceProviderFactory
 {
     protected static final String FACTORY_DEFAULT = DefaultFaceletConfigResourceProviderFactory.class.getName();
 
-    //private static final String FACTORY_KEY = FaceletConfigResourceProviderFactory.class.getName();
+    private static final String FACTORY_KEY = FaceletConfigResourceProviderFactory.class.getName();
 
     public static FaceletConfigResourceProviderFactory getFacesConfigResourceProviderFactory(ExternalContext ctx)
     {
-        //FaceletConfigResourceProviderFactory instance = (FaceletConfigResourceProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
-        //if (instance != null)
-        //{
-        //    return instance;
-        //}
+        FaceletConfigResourceProviderFactory instance = (FaceletConfigResourceProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+        if (instance != null)
+        {
+            return instance;
+        }
         FaceletConfigResourceProviderFactory lpf = null;
         try
         {
 
             if (System.getSecurityManager() != null)
             {
+                final ExternalContext ectx = ctx;
                 lpf = (FaceletConfigResourceProviderFactory) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
                         {
                             public Object run() throws PrivilegedActionException
                             {
-                                return DiscoverSingleton.find(
+                                return SpiUtils.build(ectx, 
                                         FaceletConfigResourceProviderFactory.class,
                                         FACTORY_DEFAULT);
                             }
@@ -63,24 +64,24 @@ public abstract class FaceletConfigResourceProviderFactory
             }
             else
             {
-                lpf = (FaceletConfigResourceProviderFactory) DiscoverSingleton.find(FaceletConfigResourceProviderFactory.class, FACTORY_DEFAULT);
+                lpf = (FaceletConfigResourceProviderFactory) SpiUtils.build(ctx, FaceletConfigResourceProviderFactory.class, FACTORY_DEFAULT);
             }
         }
         catch (PrivilegedActionException pae)
         {
             throw new FacesException(pae);
         }
-        //if (lpf != null)
-        //{
-        //    setFaceletConfigResourceProviderFactory(ctx, lpf);
-        //}
+        if (lpf != null)
+        {
+            setFaceletConfigResourceProviderFactory(ctx, lpf);
+        }
         return lpf;
     }
 
-    //public static void setFaceletConfigResourceProviderFactory(ExternalContext ctx, FaceletConfigResourceProviderFactory instance)
-    //{
-    //    ctx.getApplicationMap().put(FACTORY_KEY, instance);
-    //}
+    public static void setFaceletConfigResourceProviderFactory(ExternalContext ctx, FaceletConfigResourceProviderFactory instance)
+    {
+        ctx.getApplicationMap().put(FACTORY_KEY, instance);
+    }
 
     public abstract FaceletConfigResourceProvider createFaceletConfigResourceProvider(ExternalContext externalContext);
 }

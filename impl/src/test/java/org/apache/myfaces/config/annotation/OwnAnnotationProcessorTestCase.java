@@ -34,7 +34,7 @@ public class OwnAnnotationProcessorTestCase extends AbstractJsfTestCase
 
     public void setUp() throws Exception {
         super.setUp();
-        LifecycleProviderFactory.getLifecycleProviderFactory().release();
+        LifecycleProviderFactory.getLifecycleProviderFactory(externalContext).release();
         servletContext.addInitParameter(DefaultLifecycleProviderFactory.LIFECYCLE_PROVIDER, TEST_LIFECYCLE_PROVIDER);
         lifecycleProvider = LifecycleProviderFactory.getLifecycleProviderFactory().getLifecycleProvider(externalContext);
         managedBean = new AnnotatedManagedBean();

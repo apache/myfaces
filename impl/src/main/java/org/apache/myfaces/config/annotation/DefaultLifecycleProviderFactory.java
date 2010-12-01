@@ -18,23 +18,24 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import org.apache.commons.discovery.ResourceNameIterator;
-import org.apache.commons.discovery.resource.ClassLoaders;
-import org.apache.commons.discovery.resource.names.DiscoverServiceNames;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
 
 /*
  * Date: Mar 12, 2007
@@ -155,15 +156,11 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                                     InvocationTargetException,
                                     PrivilegedActionException
                             {
-                                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                                ClassLoaders loaders = new ClassLoaders();
-                                loaders.put(classLoader);
-                                loaders.put(this.getClass().getClassLoader());
-                                DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
-                                ResourceNameIterator iter = dsn.findResourceNames(LIFECYCLE_PROVIDER);
+                                List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
+                                Iterator<String> iter = classList.iterator();
                                 while (iter.hasNext())
                                 {
-                                    String className = iter.nextResourceName();
+                                    String className = iter.next();
                                     Object obj = createClass(className,extContext);
                                     if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass()))
                                     {
@@ -181,23 +178,19 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
             }
             else
             {
-                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                ClassLoaders loaders = new ClassLoaders();
-                loaders.put(classLoader);
-                loaders.put(this.getClass().getClassLoader());
-                DiscoverServiceNames dsn = new DiscoverServiceNames(loaders);
-                ResourceNameIterator iter = dsn.findResourceNames(LIFECYCLE_PROVIDER);
+                List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
+                Iterator<String> iter = classList.iterator();
                 while (iter.hasNext())
                 {
-                    String className = iter.nextResourceName();
-                    Object obj = createClass(className, externalContext);
+                    String className = iter.next();
+                    Object obj = createClass(className,extContext);
                     if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass()))
                     {
                         DiscoverableLifecycleProvider discoverableLifecycleProvider = (DiscoverableLifecycleProvider) obj;
                         if (discoverableLifecycleProvider.isAvailable())
                         {
                             extContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, discoverableLifecycleProvider);
-                            return true;
+                            return (Boolean) true;
                         }
                     }
                 }
