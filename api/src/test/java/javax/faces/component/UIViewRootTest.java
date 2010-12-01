@@ -18,28 +18,15 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.TestRunner;
-import org.apache.myfaces.test.mock.MockFacesContext12;
-import org.apache.myfaces.test.mock.MockFacesContext20;
-import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.aryEq;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.webapp.FacesServlet;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,20 +35,41 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.aryEq;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.getCurrentArguments;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
+import javax.el.ELContext;
+import javax.el.MethodExpression;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ProjectStage;
+import javax.faces.application.ViewHandler;
+import javax.faces.context.ExternalContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.ActionListener;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.webapp.FacesServlet;
+
+import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.MockFacesContext12;
+import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+
+
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class UIViewRootTest
+public class UIViewRootTest extends AbstractJsfTestCase
 {
     private Map<PhaseId, Class<? extends PhaseListener>> phaseListenerClasses;
     private IMocksControl _mocksControl;
@@ -76,9 +84,10 @@ public class UIViewRootTest
 
     private static ThreadLocal<LifecycleFactory> LIFECYCLEFACTORY = new ThreadLocal<LifecycleFactory>();
 
-    @BeforeMethod(alwaysRun=true)
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
+        super.setUp();
         phaseListenerClasses = new HashMap<PhaseId, Class<? extends PhaseListener>>();
         phaseListenerClasses.put(PhaseId.APPLY_REQUEST_VALUES, ApplyRequesValuesPhaseListener.class);
         phaseListenerClasses.put(PhaseId.PROCESS_VALIDATIONS, ProcessValidationsPhaseListener.class);
@@ -88,7 +97,7 @@ public class UIViewRootTest
 
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
-        _facesContext = new MockFacesContext20(_externalContext);
+        _facesContext = (MockFacesContext12) facesContext;
         _application = _mocksControl.createMock(Application.class);
         _lifecycleFactory = _mocksControl.createMock(LifecycleFactory.class);
         _testimpl = new UIViewRoot();
@@ -99,11 +108,14 @@ public class UIViewRootTest
 
         LIFECYCLEFACTORY.set(_lifecycleFactory);
         FactoryFinder.setFactory(FactoryFinder.LIFECYCLE_FACTORY, MockLifeCycleFactory.class.getName());
+        servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.UnitTest.name());
+        
     }
 
-    @AfterMethod(alwaysRun=true)
-    protected void tearDown() throws Exception
+    @After
+    public void tearDown() throws Exception
     {
+        super.tearDown();
         _mocksControl.reset();
     }
 
@@ -483,6 +495,31 @@ public class UIViewRootTest
         _mocksControl.verify();
     }
 
+    private final class ActionListenerImplementation implements ActionListener
+    {
+        public int invocationCount = 0;
+        
+        public ActionEvent newActionEventFromListener;
+
+        public ActionListenerImplementation(UICommand otherUiCommand)
+        {
+            // from spec: Queue one or more additional events, from the same source component
+            // or a DIFFERENT one
+            newActionEventFromListener = new ActionEvent(otherUiCommand);
+        }
+
+        public void processAction(ActionEvent actionEvent)
+                throws AbortProcessingException
+        {
+            invocationCount++;
+              
+            newActionEventFromListener.queue();
+            
+            // Simulate infinite recursion,most likely coding error:
+            actionEvent.queue();
+        }
+    }
+
     public static class MockLifeCycleFactory extends LifecycleFactory
     {
 
@@ -560,6 +597,43 @@ public class UIViewRootTest
         {
             return PhaseId.RENDER_RESPONSE;
         }
+    }
+
+    @Test
+    public void testBroadcastEvents()
+    {
+        
+        UICommand uiCommand = new UICommand();
+        uiCommand.setId("idOfCommandOne");
+        facesContext.getViewRoot().getChildren().add(uiCommand);
+        
+        // Spec 3.4.2.6 Event Broadcasting: During event broadcasting, a listener processing an event may
+        // Queue one or more additional events from the same source component or a different one:
+        // and the DIFFERENT ONE is the next UICommand instance
+        UICommand differentUiCommand = new UICommand();
+        uiCommand.setId("idOfdifferentUiCommand");
+        facesContext.getViewRoot().getChildren().add(differentUiCommand);
+        
+        
+        ActionListenerImplementation actionListener = new ActionListenerImplementation(differentUiCommand);
+        uiCommand.addActionListener(actionListener);
+        
+        ActionListener differentActionListener = org.easymock.EasyMock.createNiceMock(ActionListener.class);
+        differentActionListener.processAction(actionListener.newActionEventFromListener);
+        org.easymock.EasyMock.expectLastCall().times(1);
+        org.easymock.EasyMock.replay(differentActionListener);
+        differentUiCommand.addActionListener(differentActionListener);
+        
+        // Simulates first event, in most cases click in GUI
+        ActionEvent invokeApplicationEvent = new ActionEvent(uiCommand);
+        invokeApplicationEvent.queue();
+        
+        // tested method: In this method is actionListener called and that
+        // listener itself queues new event
+        facesContext.getViewRoot().broadcastEvents(facesContext, PhaseId.INVOKE_APPLICATION);
+        
+        assertEquals(15, actionListener.invocationCount);
+        org.easymock.EasyMock.verify(differentActionListener);
     }
 
 }

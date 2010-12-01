@@ -34,10 +34,12 @@ import java.util.logging.Logger;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
+import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.FacesEvent;
@@ -246,31 +248,61 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             return;
         }
-
-        // Gather the events and purge the event list to prevent concurrent modification during broadcasting
-        List<FacesEvent> anyPhase = new ArrayList<FacesEvent>(_events.size());
-        List<FacesEvent> onPhase = new ArrayList<FacesEvent>(_events.size());
-        for (Iterator<FacesEvent> iterator = _events.iterator(); iterator.hasNext();)
+        
+        Events events = _getEvents(phaseId);
+        
+        // Spec. 3.4.2.6 Event Broadcasting:
+        // Queue one or more additional events, from the same source component or a different one, for processing during the
+        // current lifecycle phase.
+        
+        // Unfortunately with that requirement it is easy to create infinite loop in processing. One example can be:
+        //
+        // public processAction(ActionEvent actionEvent)
+        // {
+        // actionEvent  = new ActionEvent(actionEvent.getComponent());
+        // actionEvent.queue();
+        // }
+        // 
+        // Thus we iterate here only 15x. If iteration overreachs 15 we output a warning  
+        
+        int loops = 0;
+        int maxLoops = 15;
+        do
         {
-            FacesEvent event = iterator.next();
-            if (event.getPhaseId().equals(PhaseId.ANY_PHASE))
+            // First broadcast events that have been queued for PhaseId.ANY_PHASE.
+            if (_broadcastAll(context, events.getAnyPhase()))
             {
-                anyPhase.add(event);
-                iterator.remove();
+                _broadcastAll(context, events.getOnPhase());
             }
-            else if (event.getPhaseId().equals(phaseId))
-            {
-                onPhase.add(event);
-                iterator.remove();
-            }
-        }
 
-        // First broadcast events that have been queued for PhaseId.ANY_PHASE.
-        if (_broadcastAll(context, anyPhase))
-        {
-            _broadcastAll(context, onPhase);
+            events = _getEvents(phaseId);
+            loops++;
+            
+        } while (events.hasMoreEvents() && loops < maxLoops);
+        
+        if (loops == maxLoops && events.hasMoreEvents()) {
+            // broadcast reach maxLoops - probably a infinitive recursion:
+            boolean production = getFacesContext().isProjectStage(ProjectStage.Production);
+            Level level = production ? Level.FINE : Level.WARNING;
+            if (logger.isLoggable(level)) {
+                List<String> name = new ArrayList<String>(events.getAnyPhase().size() + events.getOnPhase().size());
+                for (FacesEvent facesEvent : events.getAnyPhase())
+                {
+                    String clientId = facesEvent.getComponent().getClientId(getFacesContext());
+                    name.add(clientId);
+                }
+                for (FacesEvent facesEvent : events.getOnPhase())
+                {
+                    String clientId = facesEvent.getComponent().getClientId(getFacesContext());
+                    name.add(clientId);
+                }
+                logger.log(level, "Event broadcating for PhaseId {0} at UIViewRoot {1} reaches maximal limit, please check " +
+                        "listeners for infinite recursion. Component id: {2}",
+                        new Object [] {phaseId, getViewId(), name});
+            }
         }
     }
+
 
     /**
      * Provides a unique id for this component instance.
@@ -1290,6 +1322,34 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         super.processValidators(context);
     }
 
+    /**
+     * Gathers all event for current and ANY phase
+     * @param phaseId current phase id
+     */
+    private Events _getEvents(PhaseId phaseId) {
+        // Gather the events and purge the event list to prevent concurrent modification during broadcasting
+        List<FacesEvent> anyPhase = new ArrayList<FacesEvent>(
+                _events.size());
+        List<FacesEvent> onPhase = new ArrayList<FacesEvent>(_events.size());
+        for (Iterator<FacesEvent> iterator = _events.iterator(); iterator
+                .hasNext();)
+        {
+            FacesEvent event = iterator.next();
+            if (event.getPhaseId().equals(PhaseId.ANY_PHASE))
+            {
+                anyPhase.add(event);
+                iterator.remove();
+            }
+            else if (event.getPhaseId().equals(phaseId))
+            {
+                onPhase.add(event);
+                iterator.remove();
+            }
+        }
+        
+        return new Events(anyPhase, onPhase);
+    }
+
     private static interface PhaseProcessor
     {
         public void process(FacesContext context, UIViewRoot root);
@@ -1409,5 +1469,37 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             super.clear();
         }
         
+    }
+
+    /**
+     * Agregates events for ANY_PHASE and current phase 
+     */
+    private class Events {
+        
+        private final List<FacesEvent> _anyPhase;
+        
+        private final List<FacesEvent> _onPhase;
+        
+        public Events(List<FacesEvent> anyPhase, List<FacesEvent> onPhase)
+        {
+            super();
+            this._anyPhase = anyPhase;
+            this._onPhase = onPhase;
+        }
+
+        public boolean hasMoreEvents()
+        {
+            return (_anyPhase != null && _anyPhase.size() > 0) || (_onPhase != null && _onPhase.size() > 0); 
+        }
+
+        public List<FacesEvent> getAnyPhase()
+        {
+            return _anyPhase;
+        }
+
+        public List<FacesEvent> getOnPhase()
+        {
+            return _onPhase;
+        }
     }
 }
