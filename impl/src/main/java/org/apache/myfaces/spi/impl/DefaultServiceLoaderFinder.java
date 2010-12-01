@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.spi.ServiceLoaderFinder;
+import org.apache.myfaces.spi.ServiceProviderFinder;
 
 /**
  * 
@@ -40,7 +40,7 @@ import org.apache.myfaces.spi.ServiceLoaderFinder;
  * @since 2.0.3
  *
  */
-public class DefaultServiceLoaderFinder extends ServiceLoaderFinder
+public class DefaultServiceLoaderFinder extends ServiceProviderFinder
 {
     private static final String META_INF_SERVICES = "META-INF/services/";
 

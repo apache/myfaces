@@ -31,7 +31,7 @@ import javax.faces.context.ExternalContext;
 import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
-import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
 /**
  * 
@@ -115,7 +115,7 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(ANNOTATION_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(ANNOTATION_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(ANNOTATION_PROVIDER);
             externalContext.getApplicationMap().put(ANNOTATION_PROVIDER_LIST, classList);
         }
         return SpiUtils.buildApplicationObject(externalContext, AnnotationProvider.class, classList, new DefaultAnnotationProvider());

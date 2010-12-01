@@ -32,7 +32,7 @@ import org.apache.myfaces.spi.impl.DefaultServiceLoaderFinder;
  * @since 2.0.3
  *
  */
-public class ServiceLoaderFinderFactory
+public class ServiceProviderFinderFactory
 {
 
     private final static String SERVICE_LOADER_KEY = "org.apache.myfaces.spi.ServiceLoaderFinder";
@@ -46,9 +46,9 @@ public class ServiceLoaderFinderFactory
      * @param ectx
      * @return
      */
-    public static ServiceLoaderFinder getServiceLoaderFinder(ExternalContext ectx)
+    public static ServiceProviderFinder getServiceLoaderFinder(ExternalContext ectx)
     {
-        ServiceLoaderFinder slp = (ServiceLoaderFinder) ectx.getApplicationMap().get(SERVICE_LOADER_KEY);
+        ServiceProviderFinder slp = (ServiceProviderFinder) ectx.getApplicationMap().get(SERVICE_LOADER_KEY);
         if (slp == null)
         {
             slp = _getServiceLoaderFinderFromInitParam(ectx);
@@ -73,12 +73,12 @@ public class ServiceLoaderFinderFactory
      * @param ectx
      * @param slp
      */
-    public static void setServiceLoaderFinder(ExternalContext ectx, ServiceLoaderFinder slp)
+    public static void setServiceLoaderFinder(ExternalContext ectx, ServiceProviderFinder slp)
     {
         ectx.getApplicationMap().put(SERVICE_LOADER_KEY, slp);
     }
     
-    public static void setServiceLoaderFinder(ServletContext ctx, ServiceLoaderFinder slp)
+    public static void setServiceLoaderFinder(ServletContext ctx, ServiceProviderFinder slp)
     {
         ctx.setAttribute(SERVICE_LOADER_KEY, slp);
     }
@@ -88,7 +88,7 @@ public class ServiceLoaderFinderFactory
      * @param context
      * @return
      */
-    private static ServiceLoaderFinder _getServiceLoaderFinderFromInitParam(ExternalContext context)
+    private static ServiceProviderFinder _getServiceLoaderFinderFromInitParam(ExternalContext context)
     {
         String initializerClassName = context.getInitParameter(SERVICE_LOADER_FINDER_PARAM);
         if (initializerClassName != null)
@@ -97,14 +97,14 @@ public class ServiceLoaderFinderFactory
             {
                 // get Class object
                 Class<?> clazz = ClassUtils.classForName(initializerClassName);
-                if (!ServiceLoaderFinder.class.isAssignableFrom(clazz))
+                if (!ServiceProviderFinder.class.isAssignableFrom(clazz))
                 {
                     throw new FacesException("Class " + clazz 
                             + " does not implement FacesInitializer");
                 }
                 
                 // create instance and return it
-                return (ServiceLoaderFinder) ClassUtils.newInstance(clazz);
+                return (ServiceProviderFinder) ClassUtils.newInstance(clazz);
             }
             catch (ClassNotFoundException cnfe)
             {

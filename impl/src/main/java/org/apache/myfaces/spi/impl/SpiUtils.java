@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
 /**
  * Utils for SPI implementations.
@@ -37,7 +37,7 @@ public final class SpiUtils
     
     public static Object build(ExternalContext ectx, Class spiClass, String defaultImpl)
     {
-        List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(spiClass.getName());
+        List<String> classList = ServiceProviderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(spiClass.getName());
         
         if (classList != null && !classList.isEmpty())
         {
@@ -48,7 +48,7 @@ public final class SpiUtils
     
     public static <T> T buildApplicationObject(ExternalContext ectx, Class<T> interfaceClass, T defaultObject)
     {
-        List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(interfaceClass.getName());
+        List<String> classList = ServiceProviderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(interfaceClass.getName());
         
         if (classList != null && !classList.isEmpty())
         {

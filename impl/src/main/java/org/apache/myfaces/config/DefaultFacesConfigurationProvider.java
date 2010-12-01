@@ -59,7 +59,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
-import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -205,7 +205,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             
             for (String factoryName : FACTORY_NAMES)
             {
-                List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(factoryName);
+                List<String> classList = ServiceProviderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(factoryName);
                 
                 for (String className : classList)
                 {

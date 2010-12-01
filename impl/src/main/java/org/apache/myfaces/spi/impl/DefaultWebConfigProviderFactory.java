@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
-import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
 
@@ -119,7 +119,7 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(WEB_CONFIG_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(WEB_CONFIG_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(WEB_CONFIG_PROVIDER);
             externalContext.getApplicationMap().put(WEB_CONFIG_PROVIDER_LIST, classList);
         }
 

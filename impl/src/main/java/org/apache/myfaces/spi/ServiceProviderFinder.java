@@ -31,7 +31,7 @@ import java.util.List;
  * @since 2.0.3
  *
  */
-public abstract class ServiceLoaderFinder
+public abstract class ServiceProviderFinder
 {
     
     /**

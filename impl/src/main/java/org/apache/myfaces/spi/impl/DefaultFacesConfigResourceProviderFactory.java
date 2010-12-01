@@ -31,7 +31,7 @@ import javax.faces.context.ExternalContext;
 import org.apache.myfaces.config.DefaultFacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
-import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
 /**
  * 
@@ -115,7 +115,7 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACES_CONFIG_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(FACES_CONFIG_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(FACES_CONFIG_PROVIDER);
             externalContext.getApplicationMap().put(FACES_CONFIG_PROVIDER_LIST, classList);
         }
 

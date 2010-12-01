@@ -35,7 +35,7 @@ import javax.naming.NamingException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.spi.ServiceLoaderFinderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
 /*
  * Date: Mar 12, 2007
@@ -156,7 +156,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                                     InvocationTargetException,
                                     PrivilegedActionException
                             {
-                                List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
+                                List<String> classList = ServiceProviderFinderFactory.getServiceLoaderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
                                 Iterator<String> iter = classList.iterator();
                                 while (iter.hasNext())
                                 {
@@ -178,7 +178,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
             }
             else
             {
-                List<String> classList = ServiceLoaderFinderFactory.getServiceLoaderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
+                List<String> classList = ServiceProviderFinderFactory.getServiceLoaderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
                 Iterator<String> iter = classList.iterator();
                 while (iter.hasNext())
                 {
