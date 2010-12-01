@@ -176,7 +176,7 @@ public final class SAXCompiler extends Compiler
              * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else
              * if (systemId != null && systemId.startsWith("file:/")) { return new InputSource(systemId); }
              */
-            URL url = ClassUtils.getContextClassLoader().getResource(dtd);
+            URL url = ClassUtils.getResource(dtd);
             return new InputSource(url.toString());
         }
 
@@ -370,7 +370,7 @@ public final class SAXCompiler extends Compiler
              * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else
              * if (systemId != null && systemId.startsWith("file:/")) { return new InputSource(systemId); }
              */
-            URL url = ClassUtils.getContextClassLoader().getResource(dtd);
+            URL url = ClassUtils.getResource(dtd);
             return new InputSource(url.toString());
         }
 
@@ -576,7 +576,7 @@ public final class SAXCompiler extends Compiler
              * if ("-//W3C//DTD XHTML 1.0 Transitional//EN".equals(publicId)) { dtd = "xhtml1-transitional.dtd"; } else
              * if (systemId != null && systemId.startsWith("file:/")) { return new InputSource(systemId); }
              */
-            URL url = ClassUtils.getContextClassLoader().getResource(dtd);
+            URL url = ClassUtils.getResource(dtd);
             return new InputSource(url.toString());
         }
 

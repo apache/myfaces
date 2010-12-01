@@ -103,12 +103,7 @@ public final class IncludeHandler extends TagHandler
             if (ctx.getFacesContext().isProjectStage(ProjectStage.Development) 
                     && ERROR_PAGE_INCLUDE_PATH.equals(path))
             {
-                URL url = ClassUtils.getContextClassLoader().getResource(ERROR_FACELET);
-                if (url == null) 
-                {
-                    // fallback
-                    url = getClass().getClassLoader().getResource(ERROR_FACELET);
-                }
+                URL url = ClassUtils.getResource(ERROR_FACELET);
 
                 try
                 {

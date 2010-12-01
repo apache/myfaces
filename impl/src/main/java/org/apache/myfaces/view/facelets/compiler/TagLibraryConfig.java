@@ -545,7 +545,7 @@ public final class TagLibraryConfig
         {
             if ("-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN".equals(publicId))
             {
-                URL url = ClassUtils.getContextClassLoader().getResource("org/apache/myfaces/resource/facelet-taglib_1_0.dtd");
+                URL url = ClassUtils.getResource("org/apache/myfaces/resource/facelet-taglib_1_0.dtd");
                 return new InputSource(url.toExternalForm());
             }
             return null;
@@ -654,8 +654,6 @@ public final class TagLibraryConfig
 
     public void loadImplicit(Compiler compiler) throws IOException
     {
-        ClassLoader cl = ClassUtils.getContextClassLoader();
-        
         //URL[] urls = Classpath.search(cl, "META-INF/", SUFFIX);
         //for (int i = 0; i < urls.length; i++)
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();

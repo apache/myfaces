@@ -156,11 +156,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         {
             if (MyfacesConfig.getCurrentInstance(ectx).isValidateXML())
             {
-                URL url = ClassUtils.getContextClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
-                if (url == null)
-                {
-                    url = this.getClass().getResource(STANDARD_FACES_CONFIG_RESOURCE);
-                }
+                URL url = ClassUtils.getResource(STANDARD_FACES_CONFIG_RESOURCE);
                 if (url != null)
                 {
                     validateFacesConfig(ectx, url);
