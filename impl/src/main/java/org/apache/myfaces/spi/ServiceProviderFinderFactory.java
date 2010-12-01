@@ -24,7 +24,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.spi.impl.DefaultServiceLoaderFinder;
+import org.apache.myfaces.spi.impl.DefaultServiceProviderFinder;
 
 /**
  * 
@@ -35,10 +35,10 @@ import org.apache.myfaces.spi.impl.DefaultServiceLoaderFinder;
 public class ServiceProviderFinderFactory
 {
 
-    private final static String SERVICE_LOADER_KEY = "org.apache.myfaces.spi.ServiceLoaderFinder";
+    private final static String SERVICE_PROVIDER_KEY = "org.apache.myfaces.spi.ServiceProviderFinder";
     
-    @JSFWebConfigParam(since = "2.0.3", desc = "Class name of a custom ServiceLoaderFinder implementation.")
-    private static final String SERVICE_LOADER_FINDER_PARAM = "org.apache.myfaces.SERVICE_LOADER_FINDER";
+    @JSFWebConfigParam(since = "2.0.3", desc = "Class name of a custom ServiceProviderFinder implementation.")
+    private static final String SERVICE_PROVIDER_FINDER_PARAM = "org.apache.myfaces.SERVICE_PROVIDER_FINDER";
     
 
     /**
@@ -48,13 +48,13 @@ public class ServiceProviderFinderFactory
      */
     public static ServiceProviderFinder getServiceLoaderFinder(ExternalContext ectx)
     {
-        ServiceProviderFinder slp = (ServiceProviderFinder) ectx.getApplicationMap().get(SERVICE_LOADER_KEY);
+        ServiceProviderFinder slp = (ServiceProviderFinder) ectx.getApplicationMap().get(SERVICE_PROVIDER_KEY);
         if (slp == null)
         {
             slp = _getServiceLoaderFinderFromInitParam(ectx);
             if (slp == null)
             {
-                slp = new DefaultServiceLoaderFinder();
+                slp = new DefaultServiceProviderFinder();
                 setServiceLoaderFinder(ectx, slp);
             }
         }
@@ -75,12 +75,12 @@ public class ServiceProviderFinderFactory
      */
     public static void setServiceLoaderFinder(ExternalContext ectx, ServiceProviderFinder slp)
     {
-        ectx.getApplicationMap().put(SERVICE_LOADER_KEY, slp);
+        ectx.getApplicationMap().put(SERVICE_PROVIDER_KEY, slp);
     }
     
     public static void setServiceLoaderFinder(ServletContext ctx, ServiceProviderFinder slp)
     {
-        ctx.setAttribute(SERVICE_LOADER_KEY, slp);
+        ctx.setAttribute(SERVICE_PROVIDER_KEY, slp);
     }
 
     /**
@@ -90,7 +90,7 @@ public class ServiceProviderFinderFactory
      */
     private static ServiceProviderFinder _getServiceLoaderFinderFromInitParam(ExternalContext context)
     {
-        String initializerClassName = context.getInitParameter(SERVICE_LOADER_FINDER_PARAM);
+        String initializerClassName = context.getInitParameter(SERVICE_PROVIDER_FINDER_PARAM);
         if (initializerClassName != null)
         {
             try

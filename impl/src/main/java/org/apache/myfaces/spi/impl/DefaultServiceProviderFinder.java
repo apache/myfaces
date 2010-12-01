@@ -40,7 +40,7 @@ import org.apache.myfaces.spi.ServiceProviderFinder;
  * @since 2.0.3
  *
  */
-public class DefaultServiceLoaderFinder extends ServiceProviderFinder
+public class DefaultServiceProviderFinder extends ServiceProviderFinder
 {
     private static final String META_INF_SERVICES = "META-INF/services/";
 
