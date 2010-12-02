@@ -37,10 +37,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationCase;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
+import javax.faces.view.ViewDeclarationLanguage;
+import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
@@ -135,7 +138,39 @@ public class NavigationHandlerImpl
                     partialViewContext.setRenderAll(true);
                 }
                 
-                UIViewRoot viewRoot = viewHandler.createView(facesContext, newViewId);
+                //UIViewRoot viewRoot = viewHandler.createView(facesContext, newViewId);
+                UIViewRoot viewRoot = null;
+                
+                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
+                        viewHandler.deriveViewId(facesContext, newViewId));
+                
+                if (vdl != null)
+                {
+                    ViewMetadata metadata = vdl.getViewMetadata(facesContext, newViewId);
+                    
+                    Collection<UIViewParameter> viewParameters = null;
+                    
+                    if (metadata != null)
+                    {
+                        viewRoot = metadata.createMetadataView(facesContext);
+                        
+                        if (viewRoot != null)
+                        {
+                            viewParameters = ViewMetadata.getViewParameters(viewRoot);
+                        }
+                    }
+                }
+                
+                // viewRoot can be null here, if ...
+                //   - we don't have a ViewDeclarationLanguage (e.g. when using facelets-1.x)
+                //   - there is no view metadata or metadata.createMetadataView() returned null
+                if (viewRoot == null)
+                {
+                    // call ViewHandler.createView(), passing the FacesContext instance for the current request and 
+                    // the view identifier
+                    viewRoot = viewHandler.createView(facesContext, newViewId);
+                }
+                
                 facesContext.setViewRoot(viewRoot);
                 facesContext.renderResponse();
             }
