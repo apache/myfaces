@@ -49,6 +49,8 @@
                             javax.faces.*;version="${project.version}",
                             org.apache.myfaces.config.annotation;version="${project.version}",
                             org.apache.myfaces.shared_impl.webapp.webxml;version="${project.version}",
+                            org.apache.myfaces.shared_impl.taglib;version="${project.version}",
+                            org.apache.myfaces.shared_impl.taglib.core;version="${project.version}",
                             org.apache.myfaces.spi;version="${project.version}",
                             org.apache.myfaces.webapp;version="${project.version}",
                             org.apache.myfaces.taglib.*;version="${project.version}",
