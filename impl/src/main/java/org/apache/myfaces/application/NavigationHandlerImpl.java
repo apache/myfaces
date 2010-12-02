@@ -141,22 +141,26 @@ public class NavigationHandlerImpl
                 //UIViewRoot viewRoot = viewHandler.createView(facesContext, newViewId);
                 UIViewRoot viewRoot = null;
                 
-                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
-                        viewHandler.deriveViewId(facesContext, newViewId));
+                String derivedViewId = viewHandler.deriveViewId(facesContext, newViewId);
                 
-                if (vdl != null)
+                if (derivedViewId != null)
                 {
-                    ViewMetadata metadata = vdl.getViewMetadata(facesContext, newViewId);
+                    ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, derivedViewId);
                     
-                    Collection<UIViewParameter> viewParameters = null;
-                    
-                    if (metadata != null)
+                    if (vdl != null)
                     {
-                        viewRoot = metadata.createMetadataView(facesContext);
+                        ViewMetadata metadata = vdl.getViewMetadata(facesContext, newViewId);
                         
-                        if (viewRoot != null)
+                        Collection<UIViewParameter> viewParameters = null;
+                        
+                        if (metadata != null)
                         {
-                            viewParameters = ViewMetadata.getViewParameters(viewRoot);
+                            viewRoot = metadata.createMetadataView(facesContext);
+                            
+                            if (viewRoot != null)
+                            {
+                                viewParameters = ViewMetadata.getViewParameters(viewRoot);
+                            }
                         }
                     }
                 }
