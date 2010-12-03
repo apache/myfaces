@@ -458,7 +458,13 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 {
                     //Add it to the sorted list
                     FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
-                    getDispenser().feed(getFacesConfig(appConfigResources, nameSlot.getName()));
+                    // We need to check if the resource is on appConfigResources, otherwise we can
+                    // ignore it safely.
+                    FacesConfig targetFacesConfig = getFacesConfig(appConfigResources, nameSlot.getName());
+                    if (targetFacesConfig != null)
+                    {
+                        getDispenser().feed(targetFacesConfig);
+                    }
                 }
             }
         }
