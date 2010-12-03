@@ -137,12 +137,12 @@ public class NavigationHandlerImpl
                 {
                     partialViewContext.setRenderAll(true);
                 }
-                
-                //UIViewRoot viewRoot = viewHandler.createView(facesContext, newViewId);
+
+                // create UIViewRoot for new view
                 UIViewRoot viewRoot = null;
                 
                 String derivedViewId = viewHandler.deriveViewId(facesContext, newViewId);
-                
+
                 if (derivedViewId != null)
                 {
                     ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, derivedViewId);
@@ -151,16 +151,9 @@ public class NavigationHandlerImpl
                     {
                         ViewMetadata metadata = vdl.getViewMetadata(facesContext, newViewId);
                         
-                        Collection<UIViewParameter> viewParameters = null;
-                        
                         if (metadata != null)
                         {
                             viewRoot = metadata.createMetadataView(facesContext);
-                            
-                            if (viewRoot != null)
-                            {
-                                viewParameters = ViewMetadata.getViewParameters(viewRoot);
-                            }
                         }
                     }
                 }
@@ -168,10 +161,9 @@ public class NavigationHandlerImpl
                 // viewRoot can be null here, if ...
                 //   - we don't have a ViewDeclarationLanguage (e.g. when using facelets-1.x)
                 //   - there is no view metadata or metadata.createMetadataView() returned null
+                //   - viewHandler.deriveViewId() returned null
                 if (viewRoot == null)
                 {
-                    // call ViewHandler.createView(), passing the FacesContext instance for the current request and 
-                    // the view identifier
                     viewRoot = viewHandler.createView(facesContext, newViewId);
                 }
                 
