@@ -97,6 +97,18 @@ public class NavigationHandlerImpl
                 String toViewId = navigationCase.getToViewId(facesContext);
                 String redirectPath = viewHandler.getRedirectURL(facesContext, toViewId, navigationCase.getParameters(), navigationCase.isIncludeViewParams());
                 
+                //Clear ViewMap if we are redirecting to other resource
+                UIViewRoot viewRoot = facesContext.getViewRoot(); 
+                if (viewRoot != null && !viewRoot.getViewId().equals(toViewId))
+                {
+                    //call getViewMap(false) to prevent unnecessary map creation
+                    Map<String, Object> viewMap = viewRoot.getViewMap(false);
+                    if (viewMap != null)
+                    {
+                        viewMap.clear();
+                    }
+                }
+                
                 // JSF 2.0 the javadoc of handleNavigation() says something like this 
                 // "...If the view has changed after an application action, call
                 // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
