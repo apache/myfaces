@@ -130,7 +130,7 @@
         <plugin>
           <groupId>org.apache.myfaces.buildtools</groupId>
           <artifactId>myfaces-builder-plugin</artifactId>
-          <version>1.0.8-SNAPSHOT</version>
+          <version>1.0.8</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -199,6 +199,11 @@
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-annotation_1.0_spec</artifactId>
         <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.myfaces.buildtools</groupId>
+        <artifactId>myfaces-builder-annotations</artifactId>
+        <version>1.0.7</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
