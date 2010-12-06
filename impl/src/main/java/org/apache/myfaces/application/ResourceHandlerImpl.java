@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
+import javax.faces.application.ResourceWrapper;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
@@ -584,12 +585,40 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         String contentType = resource.getContentType();
 
-        if (contentType == null || "".equals(contentType))
+        // the resource does not provide a content-type --> determine it via mime-type
+        if (contentType == null || contentType.length() == 0)
         {
-            // the resource does not provide a content-type --> determine it via mime-type
-            contentType = externalContext.getMimeType(resource.getResourceName());
+            String resourceName = getWrappedResourceName(resource);
+
+            if (resourceName != null)
+            {
+                contentType = externalContext.getMimeType(resourceName);
+            }
         }
 
         return contentType;
+    }
+
+    /**
+     * Recursively unwarp the resource until we find the real resourceName
+     * This is needed because the JSF2 specced ResourceWrapper doesn't override
+     * the getResourceName() method :(
+     * @param resource
+     * @return the first non-null resourceName or <code>null</code> if none set
+     */
+    private String getWrappedResourceName(Resource resource)
+    {
+        String resourceName = resource.getResourceName();
+        if (resourceName != null)
+        {
+            return resourceName;
+        }
+
+        if (resource instanceof ResourceWrapper)
+        {
+            return getWrappedResourceName(((ResourceWrapper) resource).getWrapped());
+        }
+
+        return null;
     }
 }
