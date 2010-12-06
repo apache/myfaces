@@ -33,7 +33,7 @@ Tutorial : Configuring MyFaces 2 to run on Google App Engine with Eclipse
   Google App Engine support for MyFaces 2 made trunk and it is released with MyFaces Core 2.0.0-beta-3. 
   In this tutorial, I will explain how to use it. I assume that you have basic Eclipse, JSF and Facelets knowledge.
 
-  You can find IDE-independent instructions {{{googleappenginesupport.html}here}}. Additionally, there is a tutorial for IntelliJ IDEA {{{myfaces2-googleappengine-idea-tutorial.html}here}}.
+  You can find IDE-independent instructions {{{./googleappenginesupport.html}here}}. Additionally, there is a tutorial for IntelliJ IDEA {{{./myfaces2-googleappengine-idea-tutorial.html}here}}.
 
   {{{http://sites.google.com/a/aliok.com.tr/upload/uploads/tutorial-gae-myfaces2.zip?attredirects=0&d=1}Here}} 
   is the complete source code and the Eclipse project of the example application (which I took from 

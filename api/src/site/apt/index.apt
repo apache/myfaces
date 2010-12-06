@@ -25,5 +25,5 @@ MyFaces Core 2.0: API Project
   If you are looking for API documentation about the classes that your JSF application
   needs to use, then see the javadoc for this module.
   
-  Check the download page or you can check the nightly builds {{{http://people.apache.org/repo/m2-snapshot-repository/org/apache/myfaces/core}here}}.
+  Check the download page or you can check the nightly builds {{{https://repository.apache.org/content/repositories/snapshots/org/apache/myfaces/core}here}}.
   
