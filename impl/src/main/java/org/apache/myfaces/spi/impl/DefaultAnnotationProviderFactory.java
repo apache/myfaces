@@ -44,9 +44,23 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
     
     public static final String ANNOTATION_PROVIDER_LIST = AnnotationProvider.class.getName()+".LIST";
     
+    public static final String ANNOTATION_PROVIDER_INSTANCE = AnnotationProvider.class.getName()+".INSTANCE";
+    
     private Logger getLogger()
     {
         return Logger.getLogger(DefaultAnnotationProviderFactory.class.getName());
+    }
+    
+    @Override
+    public AnnotationProvider getAnnotationProvider(ExternalContext externalContext)
+    {
+        AnnotationProvider annotationProvider = (AnnotationProvider) externalContext.getApplicationMap().get(ANNOTATION_PROVIDER_INSTANCE);
+        if (annotationProvider == null)
+        {
+            annotationProvider = createAnnotationProvider(externalContext);
+            externalContext.getApplicationMap().put(ANNOTATION_PROVIDER_INSTANCE, annotationProvider);
+        }
+        return annotationProvider;
     }
     
     @Override
@@ -115,7 +129,7 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(ANNOTATION_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(ANNOTATION_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(ANNOTATION_PROVIDER);
             externalContext.getApplicationMap().put(ANNOTATION_PROVIDER_LIST, classList);
         }
         return SpiUtils.buildApplicationObject(externalContext, AnnotationProvider.class, classList, new DefaultAnnotationProvider());

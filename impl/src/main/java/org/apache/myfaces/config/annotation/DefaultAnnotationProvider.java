@@ -52,6 +52,7 @@ import javax.faces.validator.FacesValidator;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
+import org.apache.myfaces.spi.AnnotationProviderFactory;
 import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**
@@ -165,7 +166,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         //2. Scan for annotations on classpath
         try
         {
-            classes = getAnnotatedMetaInfClasses(ctx, getBaseUrls());
+            AnnotationProvider provider = AnnotationProviderFactory.getAnnotationProviderFactory(ctx).getAnnotationProvider(ctx);
+            classes = getAnnotatedMetaInfClasses(ctx, provider.getBaseUrls());
         }
         catch (IOException e)
         {

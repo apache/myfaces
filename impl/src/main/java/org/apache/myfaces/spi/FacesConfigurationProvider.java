@@ -18,8 +18,11 @@
  */
 package org.apache.myfaces.spi;
 
+import java.util.List;
+
 import javax.faces.context.ExternalContext;
 
+import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesConfigData;
 
 /**
@@ -29,12 +32,65 @@ import org.apache.myfaces.config.element.FacesConfigData;
  * this information, preventing calculate it over and over each time the web application
  * is started.
  * 
+ * <p>To wrap the default FacesConfigurationProvider, use a constructor like 
+ * CustomFacesConfigurationProvider(FacesConfigurationProvider fcp)</p>
+ * 
  * @author Leonardo Uribe
  * @since 2.0.3
  *
  */
 public abstract class FacesConfigurationProvider
 {
+    /**
+     * Return the FacesConfig object model retrieved from MyFaces META-INF/standard-faces-config.xml file. 
+     * 
+     * @param ectx
+     * @return
+     */
+    public abstract FacesConfig getStandardFacesConfig(ExternalContext ectx);
+    
+    /**
+     * Return the FacesConfig object model retrieved from locate all JSF factories from META-INF/services/[factory_key].
+     * 
+     * The default implementation uses ServiceProviderFinder facilities to locate this SPI interfaces.
+     * 
+     * @param ectx
+     * @return
+     */
+    public abstract FacesConfig getMetaInfServicesFacesConfig(ExternalContext ectx);
+    
+    /**
+     * Return the FacesConfig object model retrieved from scanning annotations on the classpath.
+     * 
+     * @param ectx
+     * @param metadataComplete
+     * @return
+     */
+    public abstract FacesConfig getAnnotationsFacesConfig(ExternalContext ectx, boolean metadataComplete);
+    
+    /**
+     * Return the FacesConfig object model retrieved from resources under the path META-INF/faces-config.xml and META-INF/[prefix].faces-config.xml
+     * 
+     * @param ectx
+     * @return
+     */
+    public abstract List<FacesConfig> getClassloaderFacesConfig(ExternalContext ectx);
+    
+    /**
+     * Return the FacesConfig object model retrieved from javax.faces.CONFIG_FILES web config attribute
+     * 
+     * @param ectx
+     * @return
+     */
+    public abstract List<FacesConfig> getContextSpecifiedFacesConfig(ExternalContext ectx);
+    
+    /**
+     * Return the FacesConfig object model retrieved from WEB-INF/faces-config.xml
+     * 
+     * @param ectx
+     * @return
+     */
+    public abstract FacesConfig getWebAppFacesConfig(ExternalContext ectx); 
     
     /**
      * Returns an object that collect all config information used by MyFaces

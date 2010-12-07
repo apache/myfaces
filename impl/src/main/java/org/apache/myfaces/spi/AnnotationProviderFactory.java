@@ -84,4 +84,9 @@ public abstract class AnnotationProviderFactory
     }
 
     public abstract AnnotationProvider createAnnotationProvider(ExternalContext externalContext);
+    
+    public AnnotationProvider getAnnotationProvider(ExternalContext externalContext)
+    {
+        return createAnnotationProvider(externalContext);
+    }
 }

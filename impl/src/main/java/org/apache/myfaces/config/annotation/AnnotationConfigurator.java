@@ -26,9 +26,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.CustomScoped;
 import javax.faces.bean.ManagedBean;
@@ -42,17 +39,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.convert.FacesConverter;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.NamedEvent;
-import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
-import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
-import javax.faces.render.Renderer;
 import javax.faces.validator.FacesValidator;
 
-import org.apache.myfaces.config.FacesConfigDispenser;
-import org.apache.myfaces.config.NamedEventManager;
-import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.Behavior;
 import org.apache.myfaces.config.impl.digester.elements.Converter;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
@@ -97,7 +88,7 @@ public class AnnotationConfigurator
     {
         if (!metadataComplete)
         {
-            AnnotationProvider provider = AnnotationProviderFactory.getAnnotationProviderFactory(_externalContext).createAnnotationProvider(_externalContext);
+            AnnotationProvider provider = AnnotationProviderFactory.getAnnotationProviderFactory(_externalContext).getAnnotationProvider(_externalContext);
             Map<Class<? extends Annotation>,Set<Class<?>>> map = provider.getAnnotatedClasses(_externalContext);
             return createFacesConfig(map);
         }

@@ -119,7 +119,7 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(WEB_CONFIG_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(WEB_CONFIG_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(WEB_CONFIG_PROVIDER);
             externalContext.getApplicationMap().put(WEB_CONFIG_PROVIDER_LIST, classList);
         }
 

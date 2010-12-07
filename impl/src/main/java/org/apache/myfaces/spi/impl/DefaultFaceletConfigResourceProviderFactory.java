@@ -115,7 +115,7 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACELET_CONFIG_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(FACELET_CONFIG_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(FACELET_CONFIG_PROVIDER);
             externalContext.getApplicationMap().put(FACELET_CONFIG_PROVIDER_LIST, classList);
         }
         

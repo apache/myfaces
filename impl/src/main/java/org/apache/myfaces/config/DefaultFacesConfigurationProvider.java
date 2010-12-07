@@ -18,10 +18,8 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -59,6 +57,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
+import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.xml.sax.SAXException;
 
@@ -72,7 +71,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
 
     private static final String STANDARD_FACES_CONFIG_RESOURCE = "META-INF/standard-faces-config.xml";
     
-    private static final String META_INF_SERVICES_RESOURCE_PREFIX = "META-INF/services/";
+    //private static final String META_INF_SERVICES_RESOURCE_PREFIX = "META-INF/services/";
 
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
@@ -96,8 +95,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     
     private AnnotationConfigurator _annotationConfigurator;
 
-    private FacesConfigDispenser _dispenser;
-
     protected void setUnmarshaller(ExternalContext ectx, FacesConfigUnmarshaller<? extends FacesConfig> unmarshaller)
     {
         _unmarshaller = unmarshaller;
@@ -111,28 +108,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             _unmarshaller = new DigesterFacesConfigUnmarshallerImpl(ectx);
         }
         return _unmarshaller;
-    }
-    
-    /**
-     * @param dispenser
-     *            the dispenser to set
-     */
-    protected void setDispenser(FacesConfigDispenser dispenser)
-    {
-        _dispenser = dispenser;
-    }
-
-    /**
-     * @return the dispenser
-     */
-    protected FacesConfigDispenser getDispenser()
-    {
-        if (_dispenser == null)
-        {
-            _dispenser = new DigesterFacesConfigDispenserImpl();
-        }
-
-        return _dispenser;
     }
     
     protected void setAnnotationConfigurator(AnnotationConfigurator configurator)
@@ -149,8 +124,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         return _annotationConfigurator;
     }
 
-
-    protected FacesConfig getStandardFacesConfig(ExternalContext ectx)
+    @Override
+    public FacesConfig getStandardFacesConfig(ExternalContext ectx)
     {
         try
         {
@@ -182,8 +157,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         }
     }
 
-
-    protected FacesConfig getAnnotationsFacesConfig(ExternalContext ectx, boolean metadataComplete)
+    @Override
+    public FacesConfig getAnnotationsFacesConfig(ExternalContext ectx, boolean metadataComplete)
     {
         return getAnnotationConfigurator().createFacesConfig(ectx, metadataComplete);
     }
@@ -191,7 +166,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     /**
      * This method performs part of the factory search outlined in section 10.2.6.1.
      */
-    protected FacesConfig getMetaInfServicesFacesConfig(ExternalContext ectx)
+    @Override
+    public FacesConfig getMetaInfServicesFacesConfig(ExternalContext ectx)
     {
         try
         {
@@ -201,7 +177,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             
             for (String factoryName : FACTORY_NAMES)
             {
-                List<String> classList = ServiceProviderFinderFactory.getServiceLoaderFinder(ectx).getServiceProviderList(factoryName);
+                List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(ectx).getServiceProviderList(factoryName);
                 
                 for (String className : classList)
                 {
@@ -255,7 +231,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     /**
      * This method fixes MYFACES-208
      */
-    protected List<FacesConfig> getClassloaderFacesConfig(ExternalContext ectx)
+    @Override
+    public List<FacesConfig> getClassloaderFacesConfig(ExternalContext ectx)
     {
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         try
@@ -298,7 +275,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         return appConfigResources;
     }
 
-    protected List<FacesConfig> getContextSpecifiedFacesConfig(ExternalContext ectx)
+    @Override
+    public List<FacesConfig> getContextSpecifiedFacesConfig(ExternalContext ectx)
     {
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         try
@@ -365,7 +343,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         return configFilesList;
     }
 
-    protected FacesConfig getWebAppFacesConfig(ExternalContext ectx)
+    public FacesConfig getWebAppFacesConfig(ExternalContext ectx)
     {
         try
         {
@@ -410,7 +388,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         }
     }
     
-    protected void orderAndFeedArtifacts(List<FacesConfig> appConfigResources, FacesConfig webAppConfig)
+    protected void orderAndFeedArtifacts(FacesConfigDispenser dispenser, List<FacesConfig> appConfigResources, FacesConfig webAppConfig)
         throws FacesException
     {
         if (webAppConfig != null && webAppConfig.getAbsoluteOrdering() != null)
@@ -451,7 +429,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     //Add all mentioned in othersResources
                     for (FacesConfig resource : othersResources)
                     {
-                        getDispenser().feed(resource);
+                        dispenser.feed(resource);
                     }
                 }
                 else
@@ -463,7 +441,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     FacesConfig targetFacesConfig = getFacesConfig(appConfigResources, nameSlot.getName());
                     if (targetFacesConfig != null)
                     {
-                        getDispenser().feed(targetFacesConfig);
+                        dispenser.feed(targetFacesConfig);
                     }
                 }
             }
@@ -498,13 +476,13 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             for (FacesConfig resource : sortedList)
             {
                 //Feed
-                getDispenser().feed(resource);
+                dispenser.feed(resource);
             }            
         }
         
         if(webAppConfig != null)    //add null check for apps which don't have a faces-config.xml (e.g. tomahawk examples for 1.1/1.2)
         {
-            getDispenser().feed(webAppConfig);
+            dispenser.feed(webAppConfig);
         }
     }
 
@@ -1363,13 +1341,17 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         boolean metadataComplete = false;
 
-        setDispenser(new DigesterFacesConfigDispenserImpl());
+        FacesConfigurationProvider provider = FacesConfigurationProviderFactory.
+            getFacesConfigurationProviderFactory(_externalContext).
+                getFacesConfigurationProvider(_externalContext);
+        
+        FacesConfigDispenser dispenser = new DigesterFacesConfigDispenserImpl(); 
         //1. Feed standard-faces-config.xml first.
-        getDispenser().feed(getStandardFacesConfig(_externalContext));
+        dispenser.feed(provider.getStandardFacesConfig(_externalContext));
         
-        getDispenser().feed(getMetaInfServicesFacesConfig(_externalContext));
+        dispenser.feed(provider.getMetaInfServicesFacesConfig(_externalContext));
         
-        FacesConfig webAppFacesConfig = getWebAppFacesConfig(_externalContext);
+        FacesConfig webAppFacesConfig = provider.getWebAppFacesConfig(_externalContext);
         
         //read metadata-complete attribute on WEB-INF/faces-config.xml
         if(webAppFacesConfig != null)
@@ -1382,21 +1364,21 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                                         //metadata-complete can only be specified in faces-config.xml per the JSF 2.0 schema 
         }
         
-        FacesConfig annotationFacesConfig = getAnnotationsFacesConfig(_externalContext, metadataComplete);
+        FacesConfig annotationFacesConfig = provider.getAnnotationsFacesConfig(_externalContext, metadataComplete);
         
         if (annotationFacesConfig != null)
         {
-            getDispenser().feed(annotationFacesConfig);
+            dispenser.feed(annotationFacesConfig);
         }
         
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         
-        appConfigResources.addAll(getClassloaderFacesConfig(_externalContext));
-        appConfigResources.addAll(getContextSpecifiedFacesConfig(_externalContext));
+        appConfigResources.addAll(provider.getClassloaderFacesConfig(_externalContext));
+        appConfigResources.addAll(provider.getContextSpecifiedFacesConfig(_externalContext));
         
-        orderAndFeedArtifacts(appConfigResources,webAppFacesConfig);
+        orderAndFeedArtifacts(dispenser, appConfigResources,webAppFacesConfig);
 
-        return getDispenser();
+        return dispenser;
     }    
     
 

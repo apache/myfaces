@@ -44,6 +44,8 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
     public static final String FACES_CONFIGURATION_PROVIDER = FacesConfigurationProvider.class.getName();
     
     public static final String FACES_CONFIGURATION_PROVIDER_LIST = FacesConfigurationProvider.class.getName()+".LIST";
+    
+    public static final String FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY = FacesConfigurationProvider.class.getName() + ".INSTANCE";
 
     private Logger getLogger()
     {
@@ -54,54 +56,59 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
     public FacesConfigurationProvider getFacesConfigurationProvider(
             ExternalContext externalContext)
     {
-        FacesConfigurationProvider returnValue = null;
-        final ExternalContext extContext = externalContext;
-        try
+        FacesConfigurationProvider returnValue = (FacesConfigurationProvider) externalContext.getApplicationMap().get(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY);
+        if (returnValue == null)
         {
-            if (System.getSecurityManager() != null)
+            final ExternalContext extContext = externalContext;
+            try
             {
-                returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<FacesConfigurationProvider>()
-                        {
-                            public FacesConfigurationProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
+                if (System.getSecurityManager() != null)
+                {
+                    returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<FacesConfigurationProvider>()
                             {
-                                return resolveFacesConfigurationProviderFromService(extContext);
-                            }
-                        });
+                                public FacesConfigurationProvider run() throws ClassNotFoundException,
+                                        NoClassDefFoundError,
+                                        InstantiationException,
+                                        IllegalAccessException,
+                                        InvocationTargetException,
+                                        PrivilegedActionException
+                                {
+                                    return resolveFacesConfigurationProviderFromService(extContext);
+                                }
+                            });
+                }
+                else
+                {
+                    returnValue = resolveFacesConfigurationProviderFromService(extContext);
+                }
+                externalContext.getApplicationMap().put(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, returnValue);
             }
-            else
+            catch (ClassNotFoundException e)
             {
-                returnValue = resolveFacesConfigurationProviderFromService(extContext);
+                // ignore
+            }
+            catch (NoClassDefFoundError e)
+            {
+                // ignore
+            }
+            catch (InstantiationException e)
+            {
+                getLogger().log(Level.SEVERE, "", e);
+            }
+            catch (IllegalAccessException e)
+            {
+                getLogger().log(Level.SEVERE, "", e);
+            }
+            catch (InvocationTargetException e)
+            {
+                getLogger().log(Level.SEVERE, "", e);
+            }
+            catch (PrivilegedActionException e)
+            {
+                throw new FacesException(e);
             }
         }
-        catch (ClassNotFoundException e)
-        {
-            // ignore
-        }
-        catch (NoClassDefFoundError e)
-        {
-            // ignore
-        }
-        catch (InstantiationException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (IllegalAccessException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (InvocationTargetException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (PrivilegedActionException e)
-        {
-            throw new FacesException(e);
-        }
+
 
         return returnValue;
     }
@@ -117,7 +124,7 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACES_CONFIGURATION_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceLoaderFinder(externalContext).getServiceProviderList(FACES_CONFIGURATION_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(FACES_CONFIGURATION_PROVIDER);
             externalContext.getApplicationMap().put(FACES_CONFIGURATION_PROVIDER_LIST, classList);
         }
 

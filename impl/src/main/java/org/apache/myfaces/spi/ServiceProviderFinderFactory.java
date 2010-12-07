@@ -46,16 +46,16 @@ public class ServiceProviderFinderFactory
      * @param ectx
      * @return
      */
-    public static ServiceProviderFinder getServiceLoaderFinder(ExternalContext ectx)
+    public static ServiceProviderFinder getServiceProviderFinder(ExternalContext ectx)
     {
         ServiceProviderFinder slp = (ServiceProviderFinder) ectx.getApplicationMap().get(SERVICE_PROVIDER_KEY);
         if (slp == null)
         {
-            slp = _getServiceLoaderFinderFromInitParam(ectx);
+            slp = _getServiceProviderFinderFromInitParam(ectx);
             if (slp == null)
             {
                 slp = new DefaultServiceProviderFinder();
-                setServiceLoaderFinder(ectx, slp);
+                setServiceProviderFinder(ectx, slp);
             }
         }
         return slp;
@@ -73,12 +73,12 @@ public class ServiceProviderFinderFactory
      * @param ectx
      * @param slp
      */
-    public static void setServiceLoaderFinder(ExternalContext ectx, ServiceProviderFinder slp)
+    public static void setServiceProviderFinder(ExternalContext ectx, ServiceProviderFinder slp)
     {
         ectx.getApplicationMap().put(SERVICE_PROVIDER_KEY, slp);
     }
     
-    public static void setServiceLoaderFinder(ServletContext ctx, ServiceProviderFinder slp)
+    public static void setServiceProviderFinder(ServletContext ctx, ServiceProviderFinder slp)
     {
         ctx.setAttribute(SERVICE_PROVIDER_KEY, slp);
     }
@@ -88,7 +88,7 @@ public class ServiceProviderFinderFactory
      * @param context
      * @return
      */
-    private static ServiceProviderFinder _getServiceLoaderFinderFromInitParam(ExternalContext context)
+    private static ServiceProviderFinder _getServiceProviderFinderFromInitParam(ExternalContext context)
     {
         String initializerClassName = context.getInitParameter(SERVICE_PROVIDER_FINDER_PARAM);
         if (initializerClassName != null)
@@ -100,7 +100,7 @@ public class ServiceProviderFinderFactory
                 if (!ServiceProviderFinder.class.isAssignableFrom(clazz))
                 {
                     throw new FacesException("Class " + clazz 
-                            + " does not implement FacesInitializer");
+                            + " does not implement ServiceProviderFinder");
                 }
                 
                 // create instance and return it
@@ -108,7 +108,7 @@ public class ServiceProviderFinderFactory
             }
             catch (ClassNotFoundException cnfe)
             {
-                throw new FacesException("Could not find class of specified FacesInitializer", cnfe);
+                throw new FacesException("Could not find class of specified ServiceProviderFinder", cnfe);
             }
         }
         return null;

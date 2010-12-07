@@ -156,7 +156,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                                     InvocationTargetException,
                                     PrivilegedActionException
                             {
-                                List<String> classList = ServiceProviderFinderFactory.getServiceLoaderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
+                                List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
                                 Iterator<String> iter = classList.iterator();
                                 while (iter.hasNext())
                                 {
@@ -178,7 +178,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
             }
             else
             {
-                List<String> classList = ServiceProviderFinderFactory.getServiceLoaderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
+                List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).getServiceProviderList(LIFECYCLE_PROVIDER);
                 Iterator<String> iter = classList.iterator();
                 while (iter.hasNext())
                 {
