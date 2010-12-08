@@ -52,11 +52,14 @@ public class ServiceProviderFinderFactory
         if (slp == null)
         {
             slp = _getServiceProviderFinderFromInitParam(ectx);
+
             if (slp == null)
             {
                 slp = new DefaultServiceProviderFinder();
-                setServiceProviderFinder(ectx, slp);
             }
+
+            // cache on ApplicationMap
+            setServiceProviderFinder(ectx, slp);
         }
         return slp;
     }
