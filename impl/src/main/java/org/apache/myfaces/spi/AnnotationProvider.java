@@ -79,8 +79,6 @@ public abstract class AnnotationProvider implements FacesWrapper<AnnotationProvi
      * </p>
      * 
      * @param ctx The current ExternalContext
-     * @param urls A set of URL pointing to faces-config.xml files that could be used to retrieve annotations from
-     * the classpath.
      * @return A map with all classes that could contain annotations.
      */
     public abstract Map<Class<? extends Annotation>,Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx);
