@@ -18,20 +18,20 @@
  */
 package org.apache.myfaces.spi.impl;
 
+import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.spi.AnnotationProvider;
+import org.apache.myfaces.spi.AnnotationProviderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
+
+import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-
-import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
-import org.apache.myfaces.spi.AnnotationProvider;
-import org.apache.myfaces.spi.AnnotationProviderFactory;
-import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
 /**
  * 
@@ -132,6 +132,6 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
             classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(ANNOTATION_PROVIDER);
             externalContext.getApplicationMap().put(ANNOTATION_PROVIDER_LIST, classList);
         }
-        return SpiUtils.buildApplicationObject(externalContext, AnnotationProvider.class, classList, new DefaultAnnotationProvider());
+        return ClassUtils.buildApplicationObject(AnnotationProvider.class, classList, new DefaultAnnotationProvider());
     }
 }

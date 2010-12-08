@@ -18,20 +18,20 @@
  */
 package org.apache.myfaces.spi.impl;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.spi.FaceletConfigResourceProvider;
+import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
+import org.apache.myfaces.view.facelets.compiler.DefaultFaceletConfigResourceProvider;
+
+import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-
-import org.apache.myfaces.spi.FaceletConfigResourceProvider;
-import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
-import org.apache.myfaces.spi.ServiceProviderFinderFactory;
-import org.apache.myfaces.view.facelets.compiler.DefaultFaceletConfigResourceProvider;
 
 /**
  * 
@@ -119,7 +119,7 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
             externalContext.getApplicationMap().put(FACELET_CONFIG_PROVIDER_LIST, classList);
         }
         
-        return SpiUtils.buildApplicationObject(externalContext, FaceletConfigResourceProvider.class, classList, new DefaultFaceletConfigResourceProvider());        
+        return ClassUtils.buildApplicationObject(FaceletConfigResourceProvider.class, classList, new DefaultFaceletConfigResourceProvider());        
     }
 
 }

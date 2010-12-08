@@ -51,26 +51,6 @@ public final class SpiUtils
         }
         return ClassUtils.newInstance(defaultImpl);
     }
-    
-    public static <T> T buildApplicationObject(ExternalContext ectx, Class<T> interfaceClass, T defaultObject)
-    {
-        List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(ectx).getServiceProviderList(interfaceClass.getName());
-        
-        if (classList != null && !classList.isEmpty())
-        {
-            return ClassUtils.buildApplicationObject(interfaceClass, classList, defaultObject);
-        }
-        return defaultObject;
-    }
-    
-    public static <T> T buildApplicationObject(ExternalContext ectx, Class<T> interfaceClass, List<String> classList,  T defaultObject)
-    {
-        if (classList != null && !classList.isEmpty())
-        {
-            return ClassUtils.buildApplicationObject(interfaceClass, classList, defaultObject);
-        }
-        return defaultObject;
-    }
 
     private static Logger getLogger()
     {

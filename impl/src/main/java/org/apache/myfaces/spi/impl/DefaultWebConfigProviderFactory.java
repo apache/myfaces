@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
@@ -123,7 +124,7 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
             externalContext.getApplicationMap().put(WEB_CONFIG_PROVIDER_LIST, classList);
         }
 
-        return SpiUtils.buildApplicationObject(externalContext, WebConfigProvider.class, classList, new DefaultWebConfigProvider());
+        return ClassUtils.buildApplicationObject(WebConfigProvider.class, classList, new DefaultWebConfigProvider());
     }
 
 }
