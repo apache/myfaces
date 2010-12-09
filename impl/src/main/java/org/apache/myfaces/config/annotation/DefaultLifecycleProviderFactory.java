@@ -228,17 +228,14 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     {
         Class<?> clazz = ClassUtils.classForName(className);
 
-        Object obj;
         try
         {
-            Constructor<?> constructor = clazz.getConstructor(ExternalContext.class);
-            obj = constructor.newInstance(externalContext);
+            return ClassUtils.newInstance(clazz, new Class<?>[]{ ExternalContext.class }, externalContext);
         }
         catch (NoSuchMethodException e)
         {
-            obj = clazz.newInstance();
+            return ClassUtils.newInstance(clazz);
         }
-        return obj;
     }
 
 
