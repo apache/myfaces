@@ -18,56 +18,6 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.el.ELResolver;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PhaseListener;
-import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.PreDestroyCustomScopeEvent;
-import javax.faces.event.PreDestroyViewMapEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.validator.BeanValidator;
-import javax.faces.webapp.FacesServlet;
-
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
@@ -101,14 +51,63 @@ import org.apache.myfaces.shared_impl.util.LocaleUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
-import org.apache.myfaces.spi.FacesConfigurationProvider;
-import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
+import org.apache.myfaces.spi.FacesConfigurationMerger;
+import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
+
+import javax.el.ELResolver;
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
+import javax.faces.application.ConfigurableNavigationHandler;
+import javax.faces.application.NavigationHandler;
+import javax.faces.application.ProjectStage;
+import javax.faces.application.ResourceHandler;
+import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandler;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.VariableResolver;
+import javax.faces.event.ActionListener;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.PhaseListener;
+import javax.faces.event.PostConstructApplicationEvent;
+import javax.faces.event.PreDestroyCustomScopeEvent;
+import javax.faces.event.PreDestroyViewMapEvent;
+import javax.faces.event.SystemEvent;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.validator.BeanValidator;
+import javax.faces.webapp.FacesServlet;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
@@ -445,10 +444,12 @@ public class FacesConfigurator
 
     public void configure() throws FacesException
     {
-        FacesConfigurationProvider provider = FacesConfigurationProviderFactory.getFacesConfigurationProviderFactory(_externalContext).
-                            getFacesConfigurationProvider(_externalContext);
-        
-        setDispenser(provider.getFacesConfigData(_externalContext)); 
+        // get FacesConfigurationMerger SPI implementation
+        FacesConfigurationMerger facesConfigurationMerger = FacesConfigurationMergerFactory
+                .getFacesConfigurationMergerFactory(_externalContext).getFacesConfigurationMerger(_externalContext);
+
+        // get all faces-config data, merge it and set it as Dispenser
+        setDispenser(facesConfigurationMerger.getFacesConfigData(_externalContext));
 
         configureFactories();
         configureApplication();

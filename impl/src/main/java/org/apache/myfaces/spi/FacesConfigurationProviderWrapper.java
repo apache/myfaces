@@ -72,8 +72,4 @@ public abstract class FacesConfigurationProviderWrapper
         return getWrapped().getWebAppFacesConfig(ectx);
     }
 
-    public FacesConfigData getFacesConfigData(ExternalContext ectx)
-    {
-        return getWrapped().getFacesConfigData(ectx);
-    }
 }

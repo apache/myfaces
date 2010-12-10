@@ -15,14 +15,6 @@
  */
 package org.apache.myfaces.config;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.faces.FacesException;
-
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.OrderSlot;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
@@ -30,8 +22,14 @@ import org.apache.myfaces.config.impl.digester.elements.AbsoluteOrdering;
 import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
 import org.apache.myfaces.config.impl.digester.elements.Ordering;
-import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
+
+import javax.faces.FacesException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OrderingFacesConfigTest extends AbstractJsfTestCase
 {
@@ -404,19 +402,16 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
 
     public void applyAlgorithm(List<FacesConfig> appConfigResources) throws FacesException
     {
-        //FacesConfigurator configurator = new FacesConfigurator(externalContext);
-        DefaultFacesConfigurationProvider configurator = new DefaultFacesConfigurationProvider();
+        DefaultFacesConfigurationMerger merger = new DefaultFacesConfigurationMerger();
+
+        List<FacesConfig> postOrderedList = merger.getPostOrderedList(appConfigResources);
         
-        //printFacesConfigList("Start List", appConfigResources);
-        
-        List<FacesConfig> postOrderedList = configurator.getPostOrderedList(appConfigResources);
-        
-        List<FacesConfig> sortedList = configurator.sortRelativeOrderingList(postOrderedList);
+        List<FacesConfig> sortedList = merger.sortRelativeOrderingList(postOrderedList);
         
         if (sortedList == null)
         {
             //The previous algorithm can't sort correctly, try this one
-            sortedList = configurator.applySortingAlgorithm(appConfigResources);
+            sortedList = merger.applySortingAlgorithm(appConfigResources);
         }
         
         //printFacesConfigList("Sorted List", sortedList);
@@ -644,8 +639,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
 
     public void applyAlgorithm2(List<FacesConfig> appConfigResources) throws FacesException
     {
-        //FacesConfigurator configurator = new FacesConfigurator(externalContext);
-        DefaultFacesConfigurationProvider configurator = new DefaultFacesConfigurationProvider();
+        DefaultFacesConfigurationMerger merger = new DefaultFacesConfigurationMerger();
         
         System.out.println("");
         System.out.print("Start List: [");
@@ -662,7 +656,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
         System.out.println("]");
         
-        List<FacesConfig> postOrderedList = configurator.getPostOrderedList(appConfigResources);
+        List<FacesConfig> postOrderedList = merger.getPostOrderedList(appConfigResources);
         
         System.out.print("Pre-Ordered-List: [");
         for (int i = 0; i < postOrderedList.size();i++)
@@ -678,7 +672,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         }
         System.out.println("]");
         
-        List<FacesConfig> sortedList = configurator.sortRelativeOrderingList(postOrderedList);
+        List<FacesConfig> sortedList = merger.sortRelativeOrderingList(postOrderedList);
         
         System.out.print("Sorted-List: [");
         for (int i = 0; i < sortedList.size();i++)

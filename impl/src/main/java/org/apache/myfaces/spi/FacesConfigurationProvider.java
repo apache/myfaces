@@ -92,13 +92,4 @@ public abstract class FacesConfigurationProvider
      */
     public abstract FacesConfig getWebAppFacesConfig(ExternalContext ectx); 
     
-    /**
-     * Returns an object that collect all config information used by MyFaces
-     * to initialize the web application.
-     * 
-     * @param ectx
-     * @return
-     */
-    public abstract FacesConfigData getFacesConfigData(ExternalContext ectx);
-    
 }
