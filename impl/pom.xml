@@ -782,12 +782,18 @@
     <profile>
       <!--
         - Whenever files are deployed to a snapshot or release repository,
-        -   mvn -Pgenerate-assembly -Pgenerate-tlddoc deploy
+        -   mvn -Pgenerate-assembly deploy
         - should be used. This will create additional artifacts that are
         - useful but too time-consuming to create when just doing a local
         - "mvn install" operation.
         -->
       <id>generate-assembly</id>
+      <activation>
+          <property>
+              <name>performRelease</name>
+              <value>true</value>
+          </property>
+      </activation>      
       <build>
         <plugins>
           <plugin>

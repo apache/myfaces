@@ -52,6 +52,43 @@
     <module>impl</module>
     <module>bundle</module>
   </modules>
+  <profiles>
+    <!-- This profile is invoked by -DprepareRelease=true.  This allows mvn release:prepare to
+        run successfully on the assembly projects. -->
+    <profile>
+        <id>prepare-release</id>
+        <activation>
+            <property>
+                <name>prepareRelease</name>
+            </property>
+        </activation>
+        <modules>
+            <module>assembly</module>
+        </modules>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <arguments>-DprepareRelease</arguments>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>perform-release</id>
+        <activation>
+            <property>
+                <name>performRelease</name>
+                <value>true</value>
+            </property>
+        </activation>
+        <modules>
+            <module>assembly</module>
+        </modules>
+    </profile>
+  </profiles>
   <repositories>
      <repository>
        <id>java.net</id>
