@@ -40,7 +40,7 @@
     <skin>
       	<groupId>org.apache.myfaces.maven</groupId>
       	<artifactId>myfaces-site-skin</artifactId>
-      	<version>1</version>
+      	<version>2</version>
     </skin>
     
     <body>
