@@ -176,6 +176,45 @@
       </plugin>
 
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/assembly/out/myfaces-core-${project.version}-bin.zip</file>
+                  <type>zip</type>
+                  <classifier>bin</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/assembly/out/myfaces-core-${project.version}-bin.tar.gz</file>
+                  <type>tar.gz</type>
+                  <classifier>bin</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/assembly/out/myfaces-core-${project.version}-src.zip</file>
+                  <type>zip</type>
+                  <classifier>src</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/assembly/out/myfaces-core-${project.version}-src.tar.gz</file>
+                  <type>tar.gz</type>
+                  <classifier>src</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.myfaces.maven</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
         <version>1.0.6</version>
@@ -201,6 +240,12 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-bundle</artifactId>
       <version>${project.version}</version>
     </dependency>
 
