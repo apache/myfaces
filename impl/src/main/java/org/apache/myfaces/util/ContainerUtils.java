@@ -19,7 +19,6 @@
 package org.apache.myfaces.util;
 
 import javax.faces.context.ExternalContext;
-import javax.portlet.PortletContext;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.shared_impl.util.ExternalContextUtils;
