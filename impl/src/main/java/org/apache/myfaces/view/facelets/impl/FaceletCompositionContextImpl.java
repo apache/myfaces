@@ -18,24 +18,22 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.FaceletFactory;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.UniqueIdVendor;
+import javax.faces.context.FacesContext;
+import javax.faces.view.AttachedObjectHandler;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.faces.component.UIComponent;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectHandler;
-
-import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.FaceletFactory;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * @since 2.0.1
@@ -514,9 +512,22 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         Map<String, UIComponent> facets = component.getFacets();
         if (!facets.isEmpty())
         {
+            UIComponent metadataFacet = null;
+            if (component instanceof UIViewRoot)
+            {
+                metadataFacet = facets.get(UIViewRoot.METADATA_FACET_NAME);
+            }
+
             for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
             {
                 UIComponent fc = itr.next();
+
+                if (fc == metadataFacet)
+                {
+                    // skip metadata facet
+                    continue;
+                }
+
                 id = (String) fc.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (id != null)
                 {
