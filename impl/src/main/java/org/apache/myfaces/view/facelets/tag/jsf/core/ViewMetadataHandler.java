@@ -71,30 +71,20 @@ public final class ViewMetadataHandler extends TagHandler
                 metadataFacet.getAttributes().put(ComponentSupport.FACET_CREATED_UIPANEL_MARKER, true);
                 parent.getFacets().put(UIViewRoot.METADATA_FACET_NAME, metadataFacet);
             }
-            parent.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
-            try
-            {
-                this.nextHandler.apply(ctx, parent);
-            }
-            finally
-            {
-                parent.getAttributes().remove(FacetHandler.KEY);
-            }
         }
-        else
+
+        // We have to do nextHandler.apply() in any case, because even if we're not building ViewMetadata
+        // we still need to do it so that the mark/delete components can be applied correctly.
+        // (The only tag that needs to do something special is f:event, because in this case
+        // ComponentHandler.isNew(parent) does not work for UIViewRoot.)
+        parent.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
+        try
         {
-            // In this case we need to call nextHandler so the mark/delete components could be applied
-            // correctly. The only tag that needs to do something special is f:event, because in this case 
-            // ComponentHandler.isNew(parent) does not work for UIViewRoot.
-            parent.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
-            try
-            {
-                this.nextHandler.apply(ctx, parent);
-            }
-            finally
-            {
-                parent.getAttributes().remove(FacetHandler.KEY);
-            }
+            this.nextHandler.apply(ctx, parent);
+        }
+        finally
+        {
+            parent.getAttributes().remove(FacetHandler.KEY);
         }
     }
 }
