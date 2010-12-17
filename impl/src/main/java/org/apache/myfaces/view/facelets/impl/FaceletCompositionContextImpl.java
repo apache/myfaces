@@ -512,21 +512,21 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         Map<String, UIComponent> facets = component.getFacets();
         if (!facets.isEmpty())
         {
-            UIComponent metadataFacet = null;
-            if (component instanceof UIViewRoot)
-            {
-                metadataFacet = facets.get(UIViewRoot.METADATA_FACET_NAME);
-            }
+            //UIComponent metadataFacet = null;
+            //if (component instanceof UIViewRoot)
+            //{
+            //    metadataFacet = facets.get(UIViewRoot.METADATA_FACET_NAME);
+            //}
 
             for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
             {
                 UIComponent fc = itr.next();
 
-                if (fc == metadataFacet)
-                {
+                //if (fc == metadataFacet)
+                //{
                     // skip metadata facet
-                    continue;
-                }
+                    //continue;
+                //}
 
                 id = (String) fc.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (id != null)

@@ -47,6 +47,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -87,9 +88,18 @@ public final class EventHandler extends TagHandler {
         {
             return;
         }
-        if (parent instanceof UIViewRoot && FaceletCompositionContext.getCurrentInstance(ctx).isRefreshingTransientBuild())
+        if (parent instanceof UIViewRoot)
         {
-            return;
+            if (FaceletCompositionContext.getCurrentInstance(ctx).isRefreshingTransientBuild())
+            {
+                return;
+            }
+            else if (!FaceletViewDeclarationLanguage.isBuildingViewMetadata(ctx.getFacesContext()) &&
+                    UIViewRoot.METADATA_FACET_NAME.equals((String) parent.getAttributes().get(FacetHandler.KEY)))
+            {
+                // Already processed when the view metadata was created
+                return;
+            }
         }
         
         Class<? extends ComponentSystemEvent> eventClass = getEventClass(ctx);

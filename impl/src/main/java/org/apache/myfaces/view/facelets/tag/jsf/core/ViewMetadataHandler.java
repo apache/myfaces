@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
@@ -70,6 +71,21 @@ public final class ViewMetadataHandler extends TagHandler
                 metadataFacet.getAttributes().put(ComponentSupport.FACET_CREATED_UIPANEL_MARKER, true);
                 parent.getFacets().put(UIViewRoot.METADATA_FACET_NAME, metadataFacet);
             }
+            parent.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
+            try
+            {
+                this.nextHandler.apply(ctx, parent);
+            }
+            finally
+            {
+                parent.getAttributes().remove(FacetHandler.KEY);
+            }
+        }
+        else
+        {
+            // In this case we need to call nextHandler so the mark/delete components could be applied
+            // correctly. The only tag that needs to do something special is f:event, because in this case 
+            // ComponentHandler.isNew(parent) does not work for UIViewRoot.
             parent.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
             try
             {
