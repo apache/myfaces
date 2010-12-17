@@ -446,8 +446,6 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
 
     /**
      * Add a level of components marked for deletion.
-     *
-     * @param levelSize the number of elements on this level.
      */
     private void increaseComponentLevelMarkedForDeletion()
     {
@@ -478,8 +476,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     /** Mark a component to be deleted from the tree. The component to be deleted is addded on the
      * current level. This is done from ComponentSupport.markForDeletion
      *
+     * @param id
      * @param component the component marked for deletion.
-     * @param index the index to add the component at.
      */
     private void markComponentForDeletion(String id , UIComponent component)
     {
@@ -489,7 +487,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     /**
      * Remove a component from the last level of components marked to be deleted.
      *
-     * @param component the component to be removed.
+     * @param id
      */
     private UIComponent removeComponentForDeletion(String id)
     {
@@ -512,21 +510,9 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         Map<String, UIComponent> facets = component.getFacets();
         if (!facets.isEmpty())
         {
-            //UIComponent metadataFacet = null;
-            //if (component instanceof UIViewRoot)
-            //{
-            //    metadataFacet = facets.get(UIViewRoot.METADATA_FACET_NAME);
-            //}
-
             for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
             {
                 UIComponent fc = itr.next();
-
-                //if (fc == metadataFacet)
-                //{
-                    // skip metadata facet
-                    //continue;
-                //}
 
                 id = (String) fc.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (id != null)
