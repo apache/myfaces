@@ -38,7 +38,7 @@
     
     <issueManagement>
         <system>jira</system>
-        <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
+        <url>https://issues.apache.org/jira/browse/MYFACES</url>
     </issueManagement>
 
     <scm>
