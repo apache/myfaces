@@ -16,7 +16,6 @@
  * limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
@@ -24,9 +23,17 @@
         <version>2.0.4-SNAPSHOT</version>
     </parent>
 
+    <modelVersion>4.0.0</modelVersion>
+
     <artifactId>myfaces-bundle</artifactId>
     <name>Apache MyFaces JSF-2.0 Core OSGi Bundle</name>
     <packaging>bundle</packaging>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/bundle</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/bundle</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/bundle</url>
+    </scm>
     
     <build>
         <plugins>
@@ -96,17 +103,17 @@
         </plugins>
     </build>
 
+    
     <dependencies>
+        <!-- include myfaces-api and myfaces-impl in the bundle -->
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-impl</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
