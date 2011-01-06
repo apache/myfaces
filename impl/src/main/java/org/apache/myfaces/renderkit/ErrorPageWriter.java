@@ -743,7 +743,7 @@ public final class ErrorPageWriter
                 if (!(target instanceof UIColumn))
                 {
                     if (parent instanceof UIColumn
-                            && (parent.getChildren().get(0) == target
+                            && ((parent.getChildCount() > 0 && parent.getChildren().get(0) == target)
                                     ||  (facetName != null &&_getVisitedFacetCount(parent) == 0)))
                     {
                         if (parent.getParent() instanceof UIData
