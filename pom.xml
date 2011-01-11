@@ -451,7 +451,7 @@
             <dependency>
                 <groupId>org.apache.myfaces.test</groupId>
                 <artifactId>myfaces-test20</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
 

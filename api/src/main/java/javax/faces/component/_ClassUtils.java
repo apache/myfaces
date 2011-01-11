@@ -344,6 +344,16 @@ final class _ClassUtils
         }
     }
 
+    public static Object convertToTypeNoLogging(FacesContext facesContext, Object value, Class<?> desiredClass)
+        throws Exception
+    {
+        if (value == null)
+            return null;
+
+        ExpressionFactory expFactory = facesContext.getApplication().getExpressionFactory();
+        return expFactory.coerceToType(value, desiredClass);
+    }    
+
     /**
      * Gets the ClassLoader associated with the current thread. Returns the class loader associated with the specified
      * default object if no context loader is associated with the current thread.

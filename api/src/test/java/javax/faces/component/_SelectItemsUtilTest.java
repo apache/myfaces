@@ -96,7 +96,7 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         assertFalse(matchValue);
     }
     
-    @Test @Ignore // TODO martinkoci remove @Ignore after myfaces-test 1.0.1 release 
+    @Test
     public void testMatchValueWithEnums() throws Exception
     {
         noSelectionOption.setItemValue("NONE");
@@ -115,9 +115,41 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         assertFalse(matchValue);
     }
     
+    @Test 
+    public void testMatchValueWithEnumsNoExtends() throws Exception
+    {
+        noSelectionOption.setItemValue("NONE");
+        selectItem1.setItemValue("ONE");
+        selectItem2.setItemValue("TWO");
+        selectItem3.setItemValue("THREE");
+        iterator = new _SelectItemsIterator(uiComponent, facesContext);
+        
+        Object enumValue = MockEnum.TWO;
+        boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
+        
+        assertTrue("Value Enum TWO must match SelectItem.value \"TWO\" (type of String)", matchValue);
+    }
     
     private static enum MockEnum {
-        NONE, ONE,TWO, THREE, FOUR
+        NONE,
+        ONE {
+
+            @Override
+            public String toString()
+            {
+                return "ONE";
+            } 
+            
+        },TWO,
+        THREE {
+ 
+            @Override
+            public String toString()
+            {
+                return "THREE";
+            } 
+            
+        }, FOUR
     }
 
     @Test

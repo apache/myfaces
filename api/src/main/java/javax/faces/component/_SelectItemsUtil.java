@@ -130,7 +130,43 @@ class _SelectItemsUtil
         }
         else
         {
-            itemValue = _ClassUtils.convertToType(itemValue, value.getClass());
+            // The javadoc of UISelectOne/UISelectMany says : 
+            // "... Before comparing each option, coerce the option value type
+            //  to the type of this component's value following the 
+            // Expression Language coercion rules ..."
+            // If the coercion fails, just return the value without coerce,
+            // because it could be still valid the comparison for that value.
+            // and swallow the exception, because its information is no relevant
+            // on this context.
+            try
+            {
+                if (value instanceof java.lang.Enum)
+                {
+                    // Values from an enum are a special case. There is one syntax were the
+                    // particular enumeration is extended using something like
+                    // SOMEVALUE { ... }, usually to override toString() method. In this case,
+                    // value.getClass is not the target enum class, so we need to get the 
+                    // right one from super class.
+                    Class targetClass = value.getClass();
+                    if (targetClass != null && !targetClass.isEnum())
+                    {
+                        targetClass = targetClass.getSuperclass();
+                    }
+                    itemValue = _ClassUtils.convertToTypeNoLogging(facesContext, itemValue, targetClass);
+                }
+                else
+                {
+                    itemValue = _ClassUtils.convertToTypeNoLogging(facesContext, itemValue, value.getClass());
+                }
+            }
+            catch (IllegalArgumentException e)
+            {
+                //itemValue = selectItem.getValue();
+            }
+            catch (Exception e)
+            {
+                //itemValue = selectItem.getValue();
+            }
         }
         return itemValue;
     }
