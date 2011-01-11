@@ -443,6 +443,12 @@ public final class ServletExternalContextImpl extends ExternalContext implements
         this._servletRequest = (ServletRequest) request;
         this._httpServletRequest = isHttpServletRequest(_servletRequest) ? (HttpServletRequest) _servletRequest : null;
         this._httpServletRequest = isHttpServletRequest(_servletRequest) ? (HttpServletRequest) _servletRequest : null;
+        this._requestHeaderMap = null;
+        this._requestHeaderValuesMap = null;
+        this._requestMap = null;
+        this._requestParameterMap = null;
+        this._requestParameterValuesMap = null;
+        this._sessionMap = null;
     }
 
     /**
