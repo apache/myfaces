@@ -52,17 +52,17 @@ public final class ViewMetadataHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
+        if (parent == null)
+        {
+            throw new TagException(this.tag, "Parent UIComponent was null");
+        }
+        if (! (parent instanceof UIViewRoot) )
+        {
+            throw new TagException(this.tag, "Parent UIComponent "+parent.getId()+" should be instance of UIViewRoot");
+        }
         if (FaceletViewDeclarationLanguage.
                 isBuildingViewMetadata(ctx.getFacesContext()))
         {
-            if (parent == null)
-            {
-                throw new TagException(this.tag, "Parent UIComponent was null");
-            }
-            if (! (parent instanceof UIViewRoot) )
-            {
-                throw new TagException(this.tag, "Parent UIComponent "+parent.getId()+" should be instance of UIViewRoot");
-            }
             UIComponent metadataFacet = parent.getFacet(UIViewRoot.METADATA_FACET_NAME);
             if (metadataFacet == null)
             {
