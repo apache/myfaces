@@ -52,7 +52,7 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
      * @param elResolver
      */
     @Override
-    public final void add(final ELResolver elResolver)
+    public final synchronized void add(final ELResolver elResolver)
     {
         super.add(elResolver);
 

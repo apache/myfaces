@@ -92,7 +92,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     /**
      * Initialize the supported view declaration languages.
      */
-    private void initialize()
+    private synchronized void initialize()
     {
         if (!_initialized)
         {
