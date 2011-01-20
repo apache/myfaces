@@ -16,6 +16,7 @@
 if (!window.jsf) {
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.i18n:Messages.js']}", null, null, "UTF-8");
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.i18n:Messages_de.js']}", null, null, "UTF-8");
+    myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.i18n:Messages_nl.js']}", null, null, "UTF-8");
 
     myfaces._impl.core._Runtime.loadScript("#{resource['org.apache.myfaces.core.impl.util:_Lang.js']}", null, null, "UTF-8");
 
