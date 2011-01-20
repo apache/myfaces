@@ -44,6 +44,7 @@
 
                 <include>**/_impl/i18n/Messages.js</include>
                 <include>**/_impl/i18n/Messages_de.js</include>
+                <include>**/_impl/i18n/Messages_nl.js</include>
                 
                 <include>**/_impl/_util/_Lang.js</include>
                 <include>**/_impl/_util/_ExtLang.js</include>
