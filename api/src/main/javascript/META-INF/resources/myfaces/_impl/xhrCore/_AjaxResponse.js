@@ -190,7 +190,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             this._Dom.setAttribute(viewStateField, "value", this.appliedViewState);
         } else if (!viewStateField) {
             var element = this._Dom.getDummyPlaceHolder();
-            element.innerHTML = ["<input type='hidden' name='", this.P_VIEWSTATE ,"' value='" , this.appliedViewState , "' />"].join("");
+            element.innerHTML = ["<input type='hidden'", "id='", this.P_VIEWSTATE ,"' name='", this.P_VIEWSTATE ,"' value='" , this.appliedViewState , "' />"].join("");
             //now we go to proper dom handling after having to deal with another ie screwup
             try {
                 theForm.appendChild(element.childNodes[0]);
@@ -320,7 +320,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             //we now skip this phase and just add everything we need for the fixup code
 
             if (!sourceForm) {
-                return;
+                //no source form found is not an error because
+                //we might be able to recover one way or the other
+                return true;
             }
 
             this._setVSTForm(sourceForm);
