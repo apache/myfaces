@@ -147,6 +147,7 @@ public class FlashELResolver extends ELResolver
                 // be called again but this time the property name
                 // to be resolved will be called, so we can do keep
                 // promotion.
+                elContext.setPropertyResolved(true);
                 return base;
             }
             else if (NOW.equals(strProperty))
@@ -166,10 +167,10 @@ public class FlashELResolver extends ELResolver
             {
                 //Resolve property calling get or keep
                 elContext.setPropertyResolved(true);
-                //Obtain the value on requestMap if any
-                Object value = externalContext.getRequestMap().get(strProperty);
                 //promote it to flash scope
                 flash.keep(strProperty);
+                //Obtain the value on requestMap if any
+                Object value = externalContext.getRequestMap().get(strProperty);
                 return value;
             }
             else
