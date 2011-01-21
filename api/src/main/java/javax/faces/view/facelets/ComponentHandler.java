@@ -38,11 +38,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler
         super(config);
         
         this.config = config;
-        
-        // Spec seems to indicate that the helper is created here, as opposed to other Handler
-        // instances, where it's presumably a new instance for every getter call.
-        
-        this.helper = delegateFactory.createComponentHandlerDelegate (this);
+
     }
 
     public ComponentConfig getComponentConfig()
@@ -114,6 +110,13 @@ public class ComponentHandler extends DelegatingMetaTagHandler
 
     protected TagHandlerDelegate getTagHandlerDelegate()
     {
+        if (helper == null)
+        {
+            // Spec seems to indicate that the helper is created here, as opposed to other Handler
+            // instances, where it's presumably a new instance for every getter call.
+            
+            this.helper = delegateFactory.createComponentHandlerDelegate (this);
+        }
         return helper;
     }
 }
