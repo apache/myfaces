@@ -19,6 +19,7 @@
 package org.apache.myfaces.webapp;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 import javax.faces.FactoryFinder;
@@ -151,6 +152,8 @@ public class StartupServletContextListener implements ServletContextListener,
 
             _facesInitializer.destroyFaces(_servletContext);
             
+            LifecycleProviderFactory.getLifecycleProviderFactory().release();
+
             // Destroy startup FacesContext, but note we do before publish postdestroy event on
             // plugins and before release factories.
             if (facesContext != null)
@@ -159,6 +162,7 @@ public class StartupServletContextListener implements ServletContextListener,
             }
             
             FactoryFinder.releaseFactories();
+
             //DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
         }
