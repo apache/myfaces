@@ -22,6 +22,7 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.io.StringWriter;
 
 import javax.el.MethodExpression;
+import javax.el.ValueExpression;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -102,6 +103,12 @@ public class CompositeComponentTestCase extends FaceletTestCase
         Assert.assertEquals("class1", text1.getStyleClass());
         //set as default
         Assert.assertEquals("background:red", text1.getStyle());
+        //Check coercion of attribute using type value
+        Assert.assertEquals(5, compositeComponent1.getAttributes().get("index"));
+        //Check default coercion
+        ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(
+                facesContext.getELContext(), "#{cc.attrs.cols}", Object.class);
+        Assert.assertEquals(1, ve.getValue(facesContext.getELContext()));
         text1.popComponentFromEL(facesContext);
         facet1.popComponentFromEL(facesContext);
         compositeComponent1.popComponentFromEL(facesContext);

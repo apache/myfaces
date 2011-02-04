@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
 import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -37,6 +38,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -318,7 +320,36 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             }
             if (_default != null)
             {
-                attributeDescriptor.setValue("default", _default.getValueExpression(ctx, String.class));
+                if (_type != null)
+                {
+                    String type = _type.getValue(ctx);
+                    Class clazz = String.class;
+                    if (type != null)
+                    {
+                        try
+                        {
+                            clazz = FaceletViewDeclarationLanguage._javaTypeToClass(type);
+                        }
+                        catch (ClassNotFoundException e)
+                        {
+                            //Assume String
+                        }
+                    }
+                    
+                    if (_default.isLiteral())
+                    {
+                        //If it is literal, calculate it and store it on a ValueExpression
+                        attributeDescriptor.setValue("default", _default.getObject(ctx, clazz));
+                    }
+                    else
+                    {
+                        attributeDescriptor.setValue("default", _default.getValueExpression(ctx, clazz));
+                    }
+                }
+                else
+                {
+                    attributeDescriptor.setValue("default", _default.getValueExpression(ctx, String.class));
+                }
             }
             if (_required != null)
             {

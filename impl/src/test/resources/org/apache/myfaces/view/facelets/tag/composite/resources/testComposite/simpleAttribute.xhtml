@@ -24,6 +24,8 @@
 <composite:interface>
     <composite:attribute name="style" default="background:red"/>
     <composite:attribute name="styleClass" />
+    <composite:attribute name="index" type="java.lang.Integer"/>
+    <composite:attribute name="cols" type="java.lang.Integer" default="1"/>
 </composite:interface>
 <composite:implementation>
     <h:outputText id="text" value="Hello World" style="#{cc.attrs.style}" styleClass="#{cc.attrs.styleClass}"/>

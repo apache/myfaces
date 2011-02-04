@@ -56,6 +56,25 @@ final class CompositeComponentRule extends MetaRule
             //        ctx.getFacesContext().getApplication().getExpressionFactory().createValueExpression(_value, Object.class));
         }
     }
+    
+    final class TypedLiteralAttributeMetadata extends Metadata
+    {
+        private final String _name;
+        private final TagAttribute _attr;
+        private final Class<?> _type;
+
+        public TypedLiteralAttributeMetadata(String name, Class<?> type, TagAttribute attr)
+        {
+            _name = name;
+            _attr = attr;
+            _type = type;
+        }
+
+        public void applyMetadata(FaceletContext ctx, Object instance)
+        {
+            ((UIComponent) instance).getAttributes().put(_name, _attr.getObject(ctx, _type));
+        }
+    }
 
     final static class ValueExpressionMetadata extends Metadata
     {
@@ -116,11 +135,21 @@ final class CompositeComponentRule extends MetaRule
             }
             else if (meta.getWriteMethod(name) == null)
             {
+                Class<?> type = meta.getPropertyType(name);
+                if (type == null)
+                {
+                    if (meta.getProperty(name) == null)
+                    {
+                        // this was an attribute literal, but not property
+                        warnAttr(attribute, meta.getTargetClass(), name);
+                    }
 
-                // this was an attribute literal, but not property
-                warnAttr(attribute, meta.getTargetClass(), name);
-
-                return new LiteralAttributeMetadata(name, attribute.getValue());
+                    return new LiteralAttributeMetadata(name, attribute.getValue());
+                }
+                else
+                {
+                    return new TypedLiteralAttributeMetadata(name, type, attribute);
+                }
             }
         }
         return null;
