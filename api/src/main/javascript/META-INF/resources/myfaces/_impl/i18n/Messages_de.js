@@ -26,9 +26,8 @@
  * By using inheritance we can be sure that we fall back to the default one
  * automatically and that our variants only have to override the parts
  * which have changed from the baseline
- */ 
-
-
+ *
+ */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_de", myfaces._impl.i18n.Messages, {
 
     MSG_TEST:               "Testnachricht",

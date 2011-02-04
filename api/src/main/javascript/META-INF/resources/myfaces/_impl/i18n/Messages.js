@@ -18,6 +18,8 @@
  * System messages base version
  * (note the base version is basically the en_US) version
  * of all messages
+ *
+ * @namespace myfaces._impl.i18n.Messages
  */
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages", Object, {
 
