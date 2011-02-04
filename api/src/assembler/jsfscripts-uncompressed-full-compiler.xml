@@ -37,6 +37,7 @@
             <script type = "text/javascript" src = "./myfaces/api/jsf.js"></script>
         -->
 
+
         <script>
             <fileName>jsf-uncompressed-full.js</fileName>
             <includes>

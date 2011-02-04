@@ -20,7 +20,6 @@
  * of all messages
  *
  */
-
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_it", myfaces._impl.i18n.Messages, {
     /*Messages*/
     MSG_DEV_MODE:           "Questo messaggio è stato inviato esclusivamente perchè il progetto è in development stage e nessun altro listener è stato registrato.",

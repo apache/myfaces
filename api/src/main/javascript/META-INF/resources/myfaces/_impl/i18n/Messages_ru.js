@@ -20,7 +20,6 @@
  * of all messages
  *
  */
-
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_ru", myfaces._impl.i18n.Messages, {
 
     MSG_TEST:               "ТестовоеСообщение",
