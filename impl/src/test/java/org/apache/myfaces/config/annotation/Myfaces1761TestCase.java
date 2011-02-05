@@ -58,15 +58,15 @@ public class Myfaces1761TestCase extends AbstractJsfTestCase
         managedProperty.setValue(INJECTED_VALUE);
         beanConfiguration.addProperty(managedProperty);
         
-        LifecycleProviderFactory.getLifecycleProviderFactory().release();
+        LifecycleProviderFactory.getLifecycleProviderFactory(externalContext).release();
         servletContext.addInitParameter(DefaultLifecycleProviderFactory.LIFECYCLE_PROVIDER, TEST_LIFECYCLE_PROVIDER);
     }
 
     public void tearDown() throws Exception
     {
+        LifecycleProviderFactory.getLifecycleProviderFactory(externalContext).release();
         super.tearDown();
         managedBeanBuilder = null;
-        LifecycleProviderFactory.getLifecycleProviderFactory().release();
     }
     
     public void testPostConstruct() throws Exception
