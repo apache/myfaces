@@ -140,8 +140,15 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
 
         for (String badVal : baaadValues)
         {
-            d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, badVal);
-            assertNotNull(d);
+            try
+            {
+                d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, badVal);
+                fail();
+            }
+            catch(ConverterException cex)
+            {
+                // all is well, we expect the Converter to detect the baaad values...
+            }
         }
     }
 

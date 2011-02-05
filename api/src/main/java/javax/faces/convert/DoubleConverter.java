@@ -146,11 +146,12 @@ public class DoubleConverter
                     normalized.append(c);
                 }
             }
-            if (normalized.toString().contains("22250738585072012"))
+
+            String normalizedString = normalized.toString();
+            if (normalizedString.contains("22250738585072012") && normalizedString.contains("e-"))
             {
                 // oops, baaad value!
-                // this is so low, that we just return zero instead...
-                return 0.0d;
+               throw new NumberFormatException("Not Allowed! This value could possibly kill the VM!");
             }
         }
 
