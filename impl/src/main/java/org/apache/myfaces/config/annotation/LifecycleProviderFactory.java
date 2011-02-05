@@ -20,19 +20,27 @@ package org.apache.myfaces.config.annotation;
 
 import org.apache.commons.discovery.tools.DiscoverSingleton;
 
-
+import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 
 public abstract class LifecycleProviderFactory {
     protected static final String FACTORY_DEFAULT = DefaultLifecycleProviderFactory.class.getName();
 
-    private static volatile LifecycleProviderFactory INSTANCE;
+    private static final String FACTORY_KEY = LifecycleProviderFactory.class.getName();
 
     public static LifecycleProviderFactory getLifecycleProviderFactory()
     {
-        LifecycleProviderFactory instance = INSTANCE;
-        if (instance != null) {
+        // Since we always provide a StartupFacesContext on initialization time, this is safe:
+        return getLifecycleProviderFactory(FacesContext.getCurrentInstance().getExternalContext());
+    }
+    
+    public static LifecycleProviderFactory getLifecycleProviderFactory(ExternalContext ctx)
+    {
+        LifecycleProviderFactory instance = (LifecycleProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+        if (instance != null)
+        {
             return instance;
         }
         return (LifecycleProviderFactory) DiscoverSingleton.find(LifecycleProviderFactory.class, FACTORY_DEFAULT);
@@ -40,7 +48,7 @@ public abstract class LifecycleProviderFactory {
 
 
     public static void setLifecycleProviderFactory(LifecycleProviderFactory instance) {
-        INSTANCE = instance;
+        FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put(FACTORY_KEY, instance);
     }
 
     public abstract LifecycleProvider getLifecycleProvider(ExternalContext externalContext);

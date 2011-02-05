@@ -20,17 +20,19 @@ package org.apache.myfaces.webapp;
 
 import java.util.Enumeration;
 
+import javax.faces.FactoryFinder;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
 import org.apache.commons.discovery.tools.DiscoverSingleton;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.util.ContainerUtils;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-
-import javax.faces.FactoryFinder;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import org.apache.myfaces.util.ContainerUtils;
 
 /**
  * Initialise the MyFaces system.
@@ -66,7 +68,116 @@ public class StartupServletContextListener extends AbstractMyFacesListener
 
     private FacesInitializer _facesInitializer;
     private ServletContext _servletContext;
+    
+    public void contextInitialized(ServletContextEvent event)
+    {
+        if (_servletContext != null)
+        {
+            throw new IllegalStateException("context is already initialized");
+        }
+        _servletContext = event.getServletContext();
+        
+        Boolean b = (Boolean) _servletContext.getAttribute(FACES_INIT_DONE);
+        if (b == null || b.booleanValue() == false)
+        {
+            FacesInitializer facesInitializer = getFacesInitializer();
 
+            // Create startup FacesContext before initializing
+            FacesContext facesContext = facesInitializer.initStartupFacesContext(_servletContext);
+
+            dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
+            facesInitializer.initFaces(_servletContext);
+            dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
+            _servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
+
+            //Destroy startup FacesContext
+            facesInitializer.destroyStartupFacesContext(facesContext);
+        }
+        else
+        {
+            log.info("MyFaces already initialized");
+        }
+    }
+
+
+    public void contextDestroyed(ServletContextEvent event)
+    {
+        if (_facesInitializer != null && _servletContext != null)
+        {
+            // Create startup FacesContext before start undeploy
+            FacesContext facesContext = _facesInitializer.initShutdownFacesContext(_servletContext);
+            
+            doPredestroy(event);
+            
+            _facesInitializer.destroyFaces(_servletContext);
+            
+            LifecycleProviderFactory.getLifecycleProviderFactory().release();
+
+            // Destroy startup FacesContext, but note we do before publish postdestroy event on
+            // plugins and before release factories.
+            if (facesContext != null)
+            {
+                _facesInitializer.destroyShutdownFacesContext(facesContext);
+            }
+            
+            FactoryFinder.releaseFactories();
+
+            DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
+            dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
+        }
+        
+        _servletContext = null;
+    }
+
+    protected FacesInitializer getFacesInitializer()
+    {
+        if (_facesInitializer == null)
+        {
+            if (ContainerUtils.isJsp21()) 
+            {
+                _facesInitializer = new Jsp21FacesInitializer();
+            } 
+            else 
+            {
+                _facesInitializer = new Jsp20FacesInitializer();
+            }
+        }
+        
+        return _facesInitializer;
+    }
+
+    /**
+     * configure the faces initializer
+     * 
+     * @param facesInitializer
+     */
+    public void setFacesInitializer(FacesInitializer facesInitializer)
+    {
+        if (_facesInitializer != null && _facesInitializer != facesInitializer && _servletContext != null)
+        {
+            _facesInitializer.destroyFaces(_servletContext);
+        }
+        _facesInitializer = facesInitializer;
+        if (_servletContext != null)
+        {
+            facesInitializer.initFaces(_servletContext);
+        }
+    }
+    
+    private void doPredestroy(ServletContextEvent event) {
+                
+           ServletContext ctx = event.getServletContext();
+
+           dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
+           Enumeration<String> attributes = ctx.getAttributeNames();
+
+           while(attributes.hasMoreElements()) 
+           {
+               String name = attributes.nextElement();
+               Object value = ctx.getAttribute(name);
+               doPreDestroy(value, name, ManagedBeanBuilder.APPLICATION);
+           }
+    }
 
     /**
      * the central initialisation event dispatcher which calls
@@ -128,91 +239,4 @@ public class StartupServletContextListener extends AbstractMyFacesListener
         log.info("Processing plugins done");
     }
 
-
-    public void contextInitialized(ServletContextEvent event)
-    {
-        if (_servletContext != null)
-        {
-            throw new IllegalStateException("context is already initialized");
-        }
-        _servletContext = event.getServletContext();
-        Boolean b = (Boolean) _servletContext.getAttribute(FACES_INIT_DONE);
-
-        if (b == null || b.booleanValue() == false)
-        {
-            dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
-            getFacesInitializer().initFaces(_servletContext);
-            dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
-            _servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
-        }
-        else
-        {
-            log.info("MyFaces already initialized");
-        }
-    }
-
-    protected FacesInitializer getFacesInitializer()
-    {
-        if (_facesInitializer == null)
-        {
-            if (ContainerUtils.isJsp21()) 
-            {
-                _facesInitializer = new Jsp21FacesInitializer();
-            } 
-            else 
-            {
-                _facesInitializer = new Jsp20FacesInitializer();
-            }
-        }
-        
-        return _facesInitializer;
-    }
-
-    /**
-     * configure the faces initializer
-     * 
-     * @param facesInitializer
-     */
-    public void setFacesInitializer(FacesInitializer facesInitializer)
-    {
-        if (_facesInitializer != null && _facesInitializer != facesInitializer && _servletContext != null)
-        {
-            _facesInitializer.destroyFaces(_servletContext);
-        }
-        _facesInitializer = facesInitializer;
-        if (_servletContext != null)
-        {
-            facesInitializer.initFaces(_servletContext);
-        }
-    }
-
-    public void contextDestroyed(ServletContextEvent event)
-    {
-        doPredestroy(event);
-        
-        if (_facesInitializer != null && _servletContext != null)
-        {
-            _facesInitializer.destroyFaces(_servletContext);
-        }
-        FactoryFinder.releaseFactories();
-        DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
-        dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
-
-        _servletContext = null;
-    }
-    
-    private void doPredestroy(ServletContextEvent event) {
-                
-           ServletContext ctx = event.getServletContext();
-
-           dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
-           Enumeration<String> attributes = ctx.getAttributeNames();
-
-           while(attributes.hasMoreElements()) 
-           {
-               String name = attributes.nextElement();
-               Object value = ctx.getAttribute(name);
-               doPreDestroy(value, name, ManagedBeanBuilder.APPLICATION);
-           }
-    }
 }

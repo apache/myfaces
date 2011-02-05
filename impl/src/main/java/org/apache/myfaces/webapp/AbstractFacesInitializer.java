@@ -19,9 +19,12 @@
 package org.apache.myfaces.webapp;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.el.ExpressionFactory;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +34,10 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 
@@ -67,8 +73,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             // by using an ExternalContext. However, that's no problem as long as no 
             // one tries to call methods depending on either the ServletRequest or 
             // the ServletResponse.
-            ExternalContext externalContext = new ServletExternalContextImpl(
-                    servletContext, null, null);
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+                //new ServletExternalContextImpl(servletContext, null, null);
 
             // Parse and validate the web.xml configuration file
             WebXml webXml = WebXml.getWebXml(externalContext);
@@ -132,7 +138,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         runtimeConfig.setExpressionFactory(expressionFactory);
         
-        ApplicationImpl.setInitializingRuntimeConfig(runtimeConfig);
+        //ApplicationImpl.setInitializingRuntimeConfig(runtimeConfig);
         
         // And configure everything
         new FacesConfigurator(externalContext).configure();
@@ -204,7 +210,54 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
        
        return null;
     }
-
+    
+    public FacesContext initStartupFacesContext(ServletContext servletContext)
+    {
+        // We cannot use FacesContextFactory, because it is necessary to initialize 
+        // before Application and RenderKit factories, so we should use different object. 
+        return _createFacesContext(servletContext, true);
+    }
+        
+    public void destroyStartupFacesContext(FacesContext facesContext)
+    {
+        _releaseFacesContext(facesContext);
+    }
+    
+    public FacesContext initShutdownFacesContext(ServletContext servletContext)
+    {
+        return _createFacesContext(servletContext, false);
+    }
+        
+    public void destroyShutdownFacesContext(FacesContext facesContext)
+    {
+        _releaseFacesContext(facesContext);
+    }
+    
+    private FacesContext _createFacesContext(ServletContext servletContext, boolean startup)
+    {
+        ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, startup);
+        FacesContext facesContext = new StartupFacesContextImpl(externalContext, 
+                (ReleaseableExternalContext) externalContext, startup);
+        
+        // If getViewRoot() is called during application startup or shutdown, 
+        // it should return a new UIViewRoot with its locale set to Locale.getDefault().
+        UIViewRoot startupViewRoot = new UIViewRoot();
+        startupViewRoot.setLocale(Locale.getDefault());
+        facesContext.setViewRoot(startupViewRoot);
+        
+        return facesContext;
+    }
+    
+    private void _releaseFacesContext(FacesContext facesContext)
+    {        
+        // make sure that the facesContext gets released.
+        // This is important in an OSGi environment 
+        if (facesContext != null)
+        {
+            facesContext.release();
+        }        
+    }
+    
     /**
      * Performs initialization tasks depending on the current environment.
      * 

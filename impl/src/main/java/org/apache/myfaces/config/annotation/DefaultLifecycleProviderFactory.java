@@ -39,8 +39,8 @@ import java.lang.reflect.Constructor;
  */
 public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     private static Log log = LogFactory.getLog(DefaultLifecycleProviderFactory.class);
-    private static LifecycleProvider LIFECYCLE_PROVIDER_INSTANCE;
-    
+    public static final String LIFECYCLE_PROVIDER_INSTANCE_KEY = LifecycleProvider.class.getName() + ".LIFECYCLE_PROVIDER_INSTANCE";
+
     @JSFWebConfigParam(name="org.apache.myfaces.config.annotation.LifecycleProvider", since="1.1")
     public static final String LIFECYCLE_PROVIDER = LifecycleProvider.class.getName();
 
@@ -49,32 +49,47 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     {
     }
 
+    @Override
     public LifecycleProvider getLifecycleProvider(ExternalContext externalContext)
     {
-        if (LIFECYCLE_PROVIDER_INSTANCE == null)
+        LifecycleProvider lifecycleProvider = null;
+        if (externalContext == null)
         {
-            if (externalContext == null)
+            log.info("No ExternalContext using fallback LifecycleProvider.");
+            lifecycleProvider = resolveFallbackLifecycleProvider();
+        }
+        else
+        {
+            lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
+        }
+        if (lifecycleProvider == null)
+        {
+            if (!resolveLifecycleProviderFromExternalContext(externalContext))
             {
-                log.info("No ExternalContext using fallback LifecycleProvider.");
-                resolveFallbackLifecycleProvider();
+                if (!resolveLifecycleProviderFromService(externalContext))
+                {
+                    lifecycleProvider = resolveFallbackLifecycleProvider();
+                    externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, lifecycleProvider);
+                }
+                else
+                {
+                    //Retrieve it because it was resolved
+                    lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
+                }
             }
             else
             {
-                if (!resolveLifecycleProviderFromExternalContext(externalContext))
-                {
-                    if (!resolveLifecycleProviderFromService(externalContext))
-                    {
-                        resolveFallbackLifecycleProvider();
-                    }
-                }
+                //Retrieve it because it was resolved
+                lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
             }
-            log.info("Using LifecycleProvider "+ LIFECYCLE_PROVIDER_INSTANCE.getClass().getName());
+            log.info("Using LifecycleProvider "+ lifecycleProvider.getClass().getName());
         }
-        return LIFECYCLE_PROVIDER_INSTANCE;
+        return lifecycleProvider;
     }
 
+    @Override
     public void release() {
-        LIFECYCLE_PROVIDER_INSTANCE = null;
+
     }
 
 
@@ -90,7 +105,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                 Object obj = createClass(lifecycleProvider, externalContext);
 
                 if (obj instanceof LifecycleProvider) {
-                    LIFECYCLE_PROVIDER_INSTANCE = (LifecycleProvider) obj;
+                    externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, (LifecycleProvider) obj);
                     return true;
                 }
             }
@@ -131,7 +146,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
                     DiscoverableLifecycleProvider discoverableLifecycleProvider =
                             (DiscoverableLifecycleProvider) obj;
                     if (discoverableLifecycleProvider.isAvailable()) {
-                        LIFECYCLE_PROVIDER_INSTANCE = discoverableLifecycleProvider;
+                        externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, discoverableLifecycleProvider);
                         return true;
                     }
                 }
@@ -179,7 +194,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     }
 
 
-    private void resolveFallbackLifecycleProvider()
+    private LifecycleProvider resolveFallbackLifecycleProvider()
     {
         try
         {
@@ -188,8 +203,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
         catch (ClassNotFoundException e)
         {
             // no annotation available don't process annotations
-            LIFECYCLE_PROVIDER_INSTANCE = new NoAnnotationLifecyleProvider();
-            return;
+            return new NoAnnotationLifecyleProvider(); 
         }
         Context context;
         try
@@ -199,20 +213,19 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
             {
                 ClassUtils.classForName("javax.ejb.EJB");
                 // Asume full JEE 5 container
-                LIFECYCLE_PROVIDER_INSTANCE = new AllAnnotationLifecycleProvider(context);
+                return new AllAnnotationLifecycleProvider(context);
             }
             catch (ClassNotFoundException e)
             {
                 // something else
-                LIFECYCLE_PROVIDER_INSTANCE = new ResourceAnnotationLifecycleProvider(context);
+                return new ResourceAnnotationLifecycleProvider(context);
             }
         }
         catch (NamingException e)
         {
             // no initial context available no injection
-            LIFECYCLE_PROVIDER_INSTANCE = new NoInjectionAnnotationLifecycleProvider();
             log.error("No InitialContext found. Using NoInjectionAnnotationProcessor.", e);
-
+            return new NoInjectionAnnotationLifecycleProvider();
         }
     }
 }

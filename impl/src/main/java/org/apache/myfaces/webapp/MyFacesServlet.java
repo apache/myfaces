@@ -18,14 +18,21 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.io.IOException;
+
+import javax.faces.context.FacesContext;
+import javax.faces.webapp.FacesServlet;
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
 import org.apache.myfaces.util.ContainerUtils;
-
-import javax.faces.webapp.FacesServlet;
-import javax.servlet.*;
-import java.io.IOException;
 
 /**
  * Derived FacesServlet that can be used for debugging purpose
@@ -84,17 +91,29 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
     {
         //Check, if ServletContextListener already called
         ServletContext servletContext = servletConfig.getServletContext();
+        
+        FacesInitializer facesInitializer = getFacesInitializer();
+        
+        // Create startup FacesContext before initializing
+        FacesContext facesContext = facesInitializer.initStartupFacesContext(servletContext);
+
         Boolean b = (Boolean)servletContext.getAttribute(StartupServletContextListener.FACES_INIT_DONE);
         if (b == null || b.booleanValue() == false)
         {
             if(log.isWarnEnabled())
+            {
                 log.warn("ServletContextListener not yet called");
-            getFacesInitializer().initFaces(servletConfig.getServletContext());
+            }
+            facesInitializer.initFaces(servletConfig.getServletContext());
         }
+        
+        // Destroy startup FacesContext
+        facesInitializer.destroyStartupFacesContext(facesContext);
+        
         delegate.init(servletConfig);
         log.info("MyFacesServlet for context '" + servletConfig.getServletContext().getRealPath("/") + "' initialized.");
     }
-
+    
     public void service(ServletRequest request, ServletResponse response)
             throws IOException,
                    ServletException
