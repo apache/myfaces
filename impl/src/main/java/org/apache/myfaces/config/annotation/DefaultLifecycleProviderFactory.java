@@ -58,37 +58,38 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     @Override
     public LifecycleProvider getLifecycleProvider(ExternalContext externalContext)
     {
-        LifecycleProvider lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
+        LifecycleProvider lifecycleProvider = null;
+        if (externalContext == null)
+        {
+            // Really in jsf 2.0, this will not happen, because a Startup/Shutdown
+            // FacesContext and ExternalContext are provided on initialization and shutdown,
+            // and in other scenarios the real FacesContext/ExternalContext is provided.
+            log.info("No ExternalContext using fallback LifecycleProvider.");
+            lifecycleProvider = resolveFallbackLifecycleProvider();
+        }
+        else
+        {
+            lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
+        }
         if (lifecycleProvider == null)
         {
-            if (externalContext == null)
+            if (!resolveLifecycleProviderFromExternalContext(externalContext))
             {
-                // Really in jsf 2.0, this will not happen, because a Startup/Shutdown
-                // FacesContext and ExternalContext are provided on initialization and shutdown,
-                // and in other scenarios the real FacesContext/ExternalContext is provided.
-                log.info("No ExternalContext using fallback LifecycleProvider.");
-                lifecycleProvider = resolveFallbackLifecycleProvider();
-            }
-            else
-            {
-                if (!resolveLifecycleProviderFromExternalContext(externalContext))
+                if (!resolveLifecycleProviderFromService(externalContext))
                 {
-                    if (!resolveLifecycleProviderFromService(externalContext))
-                    {
-                        lifecycleProvider = resolveFallbackLifecycleProvider();
-                        externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, lifecycleProvider);
-                    }
-                    else
-                    {
-                        //Retrieve it because it was resolved
-                        lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
-                    }
+                    lifecycleProvider = resolveFallbackLifecycleProvider();
+                    externalContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY, lifecycleProvider);
                 }
                 else
                 {
                     //Retrieve it because it was resolved
                     lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
                 }
+            }
+            else
+            {
+                //Retrieve it because it was resolved
+                lifecycleProvider = (LifecycleProvider) externalContext.getApplicationMap().get(LIFECYCLE_PROVIDER_INSTANCE_KEY);
             }
             log.info("Using LifecycleProvider "+ lifecycleProvider.getClass().getName());
         }

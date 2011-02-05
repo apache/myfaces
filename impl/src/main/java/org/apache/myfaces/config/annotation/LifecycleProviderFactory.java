@@ -31,7 +31,7 @@ import org.apache.myfaces.spi.impl.SpiUtils;
 public abstract class LifecycleProviderFactory {
     protected static final String FACTORY_DEFAULT = DefaultLifecycleProviderFactory.class.getName();
 
-    private static volatile LifecycleProviderFactory INSTANCE;
+    private static final String FACTORY_KEY = LifecycleProviderFactory.class.getName();
 
     public static LifecycleProviderFactory getLifecycleProviderFactory()
     {
@@ -41,7 +41,7 @@ public abstract class LifecycleProviderFactory {
     
     public static LifecycleProviderFactory getLifecycleProviderFactory(ExternalContext ctx)
     {
-        LifecycleProviderFactory instance = INSTANCE;
+        LifecycleProviderFactory instance = (LifecycleProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
         if (instance != null)
         {
             return instance;
@@ -77,7 +77,7 @@ public abstract class LifecycleProviderFactory {
 
 
     public static void setLifecycleProviderFactory(LifecycleProviderFactory instance) {
-        INSTANCE = instance;
+        FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put(FACTORY_KEY, instance);
     }
 
     public abstract LifecycleProvider getLifecycleProvider(ExternalContext externalContext);
