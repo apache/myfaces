@@ -77,6 +77,17 @@ class _ParametrizableFacesMessage extends FacesMessage
         return _evaluatedDetail;
     }
 
+    public void setDetail(String detail)
+    {
+        super.setDetail(detail);
+        _evaluatedDetail = null;
+    }
+    
+    public String getUnformattedDetail()
+    {
+        return super.getDetail();
+    }
+
     public String getSummary()
     {
         if (_evaluatedArgs == null && _args != null)
@@ -89,6 +100,17 @@ class _ParametrizableFacesMessage extends FacesMessage
             _evaluatedSummary = format.format(_evaluatedArgs);
         }
         return _evaluatedSummary;
+    }
+
+    public void setSummary(String summary)
+    {
+        super.setSummary(summary);
+        _evaluatedSummary = null;
+    }
+    
+    public String getUnformattedSummary()
+    {
+        return super.getSummary();
     }
 
     private void evaluateArgs()
