@@ -56,7 +56,7 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
     /**
      * the focus here is on the comma separator ',' in germany.
      */
-    @Test(timeout = 2000L)
+    @Test
     public void testDoubleParsingGermany()
     {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.GERMANY);
@@ -86,7 +86,7 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
     /**
      * the focus here is on the comma separator '.' in the US.
      */
-    @Test(timeout = 2000L)
+    @Test
     public void testDoubleParsingUS()
     {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.US);
@@ -111,8 +111,40 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
             }
 
         }
-
     }
+
+
+    /**
+     * This tests a workaround which got introduced for the jvm bug
+     * described in MYFACES-3024. This is necessary as long as the jvm
+     * contains this bug resulting in the whole thread basically stalling
+     * at 100% CPU conumption and never return from the
+     * @link http://www.exploringbinary.com/java-hangs-when-converting-2-2250738585072012e-308/
+     *
+     *
+     */
+    @Test
+    public void testDoubleParsingJvmBugWorkaround()
+    {
+        String[] baaadValues = new String[] {
+                "0.00022250738585072012e-304",
+                "2.225073858507201200000e-308",
+                "2.225073858507201200000e-308",
+                "2.2250738585072012e-00308",
+                "2.2250738585072012997800001e-308"
+        };
+
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.US);
+        UIInput input = new UIInput();
+        Double d;
+
+        for (String badVal : baaadValues)
+        {
+            d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, badVal);
+            assertNotNull(d);
+        }
+    }
+
 
 
 }

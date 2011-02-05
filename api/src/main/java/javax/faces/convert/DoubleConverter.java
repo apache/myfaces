@@ -128,7 +128,33 @@ public class DoubleConverter
         return value;
     }
 
-    private Double stringToDouble(String value) {
+    private Double stringToDouble(String value)
+    {
+        // this is a special hack for a jvm vulnerability with
+        // converting some special double values.
+        // e.g. "2.225073858507201200000e-308"
+        // see MYFACES-3024 for further information
+        // TODO we can remove this hack, once this got fixed in the jvm!
+        if (value.length() >= 23)
+        {
+            StringBuffer normalized = new StringBuffer();
+            for (int i=0; i< value.length(); i++)
+            {
+                char c = value.charAt(i);
+                if ( c != '.')
+                {
+                    normalized.append(c);
+                }
+            }
+            if (normalized.toString().contains("22250738585072012"))
+            {
+                // oops, baaad value!
+                // this is so low, that we just return zero instead...
+                return 0.0d;
+            }
+        }
+
+
         return Double.valueOf(value);
     }
 
