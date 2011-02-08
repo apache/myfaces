@@ -178,25 +178,45 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     if (factoryName.equals(FactoryFinder.APPLICATION_FACTORY))
                     {
                         factory.addApplicationFactory(className);
-                    } else if (factoryName.equals(FactoryFinder.EXTERNAL_CONTEXT_FACTORY))
+                    } 
+                    else if(factoryName.equals(FactoryFinder.EXCEPTION_HANDLER_FACTORY)) 
+                    {
+                        factory.addExceptionHandlerFactory(className);
+                    } 
+                    else if (factoryName.equals(FactoryFinder.EXTERNAL_CONTEXT_FACTORY))
                     {
                         factory.addExternalContextFactory(className);
-                    } else if (factoryName.equals(FactoryFinder.FACES_CONTEXT_FACTORY))
+                    } 
+                    else if (factoryName.equals(FactoryFinder.FACES_CONTEXT_FACTORY))
                     {
                         factory.addFacesContextFactory(className);
-                    } else if (factoryName.equals(FactoryFinder.LIFECYCLE_FACTORY))
+                    } 
+                    else if (factoryName.equals(FactoryFinder.LIFECYCLE_FACTORY))
                     {
                         factory.addLifecycleFactory(className);
-                    } else if (factoryName.equals(FactoryFinder.RENDER_KIT_FACTORY))
+                    } 
+                    else if (factoryName.equals(FactoryFinder.RENDER_KIT_FACTORY))
                     {
                         factory.addRenderkitFactory(className);
-                    } else if (factoryName.equals(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY))
+                    } 
+                    else if(factoryName.equals(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY)) 
+                    {
+                        factory.addTagHandlerDelegateFactory(className);
+                    } 
+                    else if (factoryName.equals(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY))
                     {
                         factory.addPartialViewContextFactory(className);
-                    } else if(factoryName.equals(FactoryFinder.VISIT_CONTEXT_FACTORY)) 
+                    } 
+                    else if(factoryName.equals(FactoryFinder.VISIT_CONTEXT_FACTORY)) 
                     {
                         factory.addVisitContextFactory(className);
-                    } else
+                    } 
+                    else if(factoryName.equals(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)) 
+                    {
+                        factory.addViewDeclarationLanguageFactory(className);
+                    }
+                    
+                    else
                     {
                         throw new IllegalStateException("Unexpected factory name " + factoryName);
                     }
