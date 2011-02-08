@@ -73,6 +73,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.2")
     private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
+    
+    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
     private Map<String, Boolean> _checkedViewIdMap = null;
     private Boolean _checkedViewIdCacheEnabled = null;
@@ -81,7 +83,13 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         // JSF 2.0: Old hack related to t:aliasBean was fixed defining a event that traverse
         // whole tree and let components to override UIComponent.processEvent() method to include it.
+        
+        // TODO: Remove this hack and use VisitHints.SKIP_ITERATION in JSF 2.1
+        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+        
         component.visitTree(VisitContext.createVisitContext(facesContext), new RestoreStateCallback());
+        
+        facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
         
         /*
         ValueExpression binding = component.getValueExpression("binding");
