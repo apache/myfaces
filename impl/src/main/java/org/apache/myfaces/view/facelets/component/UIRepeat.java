@@ -65,6 +65,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     public static final String COMPONENT_TYPE = "facelets.ui.Repeat";
 
     public static final String COMPONENT_FAMILY = "facelets";
+    
+    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
     private final static DataModel<?> EMPTY_MODEL = new ListDataModel<Object>(Collections.emptyList());
 
@@ -741,6 +743,12 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         // override the behavior from UIComponent to visit
         // all children once per "row"
+        
+        Boolean skipIterationHint = (Boolean) context.getFacesContext().getAttributes().get(SKIP_ITERATION_HINT);
+        if (skipIterationHint != null && skipIterationHint.booleanValue())
+        {
+            return super.visitTree(context, callback);
+        }
         
         if (!isVisitable(context)) 
         {
