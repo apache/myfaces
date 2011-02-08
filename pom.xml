@@ -56,7 +56,7 @@
 
     <properties>
         <!-- MyFaces shared-impl version to use -->
-        <myfaces-shared.version>4.0.5-SNAPSHOT</myfaces-shared.version>
+        <myfaces-shared.version>4.0.5</myfaces-shared.version>
     </properties>
 
     <build>
