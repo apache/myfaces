@@ -97,8 +97,10 @@ public class DoubleConverter
             return value;
         }
 
-
-        DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(loc);
+        // TODO: DecimalFormatSymbols.getInstance exists only on JDK 1.6
+        // change it on JSF 2.1
+        //DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(loc);
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols(loc);
 
         char decSep   = dfs.getDecimalSeparator();
 
