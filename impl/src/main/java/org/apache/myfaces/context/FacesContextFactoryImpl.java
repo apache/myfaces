@@ -149,8 +149,8 @@ public class FacesContextFactoryImpl extends FacesContextFactory
             }
         }
         
-        if (context instanceof ServletContext)
-        {
+        //if (context instanceof ServletContext)
+        //{
             FacesContext facesContext;
             if (externalContext instanceof ReleaseableExternalContext)
             {
@@ -169,9 +169,9 @@ public class FacesContextFactoryImpl extends FacesContextFactory
             
             return facesContext;
             //return new FacesContextImpl((ServletContext)context, (ServletRequest)request, (ServletResponse)response);
-        }
+        //}
 
-        throw new FacesException("Unsupported context type " + context.getClass().getName());
+        //throw new FacesException("Unsupported context type " + context.getClass().getName());
     }
 
     public void release()
