@@ -567,7 +567,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // From jsr-314-open list it was made clear this facet is transient,
             // because all component resources does not change its inner state between
             // requests
-            facet.setTransient(true);
+            //
+            // MYFACES-3047 It was found that resources added using ResourceDependency annotation
+            // requires to be saved and restored, so it is not possible to mark this facets
+            // as transient. The previous statement is true only for PSS.
+            //facet.setTransient(true);
 
             // Add the facet to the facets Map using target as the key
             getFacets().put(target, facet);
