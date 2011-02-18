@@ -18,16 +18,18 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.tomcat.InstanceManager;
-
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
+
+import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.naming.NamingException;
+
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.tomcat.InstanceManager;
 
 /**
  * An annotation lifecycle provider for Tomcat 7.
@@ -53,21 +55,6 @@ public class Tomcat7AnnotationLifecycleProvider implements
         log.info("Creating instance of " + className);
         Object object = clazz.newInstance();
 
-        InstanceManager manager = instanceManagers
-                .get(ClassUtils.getContextClassLoader());
-        if (manager == null)
-        {
-            //Initialize manager
-            manager = initManager();
-        }
-
-        //Is initialized
-        if (manager != null)
-        {
-            //Inject resources
-            manager.newInstance(object);
-        }
-
         return object;
     }
 
@@ -86,7 +73,27 @@ public class Tomcat7AnnotationLifecycleProvider implements
     public void postConstruct(Object instance)
             throws IllegalAccessException, InvocationTargetException
     {
-        //do nothing
+        InstanceManager manager = instanceManagers
+                .get(ClassUtils.getContextClassLoader());
+        if (manager == null)
+        {
+            //Initialize manager
+            manager = initManager();
+        }
+
+        //Is initialized
+        if (manager != null)
+        {
+            //Inject resources
+            try 
+            {
+                manager.newInstance(instance);
+            }
+            catch (NamingException e)
+            {
+                throw new FacesException(e);
+            }
+        }
     }
 
     public boolean isAvailable()
