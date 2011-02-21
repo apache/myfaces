@@ -108,7 +108,6 @@ if (!myfaces._impl.core._Runtime) {
                 }
                 //we scope the call in window
 
-
             }
             //we probably have covered all browsers, but this is a safety net which might be triggered
             //by some foreign browser which is not covered by the above cases
@@ -133,7 +132,6 @@ if (!myfaces._impl.core._Runtime) {
             location.removeChild(placeHolder);
             return null;
         };
-
 
         /**
          * applies an object to a namespace
@@ -346,17 +344,17 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return either the config entry or if none is given the default value
          */
-        _T.getGlobalConfig = function(configName, defaultValue) {
-            /**
-             * note we could use exists but this is an heavy operation, since the config name usually
-             * given this function here is called very often
-             * is a single entry without . in between we can do the lighter shortcut
-             */
-            return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
-                    myfaces.config[configName]
-                    :
-                    defaultValue;
-        };
+                _T.getGlobalConfig = function(configName, defaultValue) {
+                    /**
+                     * note we could use exists but this is an heavy operation, since the config name usually
+                     * given this function here is called very often
+                     * is a single entry without . in between we can do the lighter shortcut
+                     */
+                    return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
+                            myfaces.config[configName]
+                            :
+                            defaultValue;
+                };
 
         /**
          * gets the local or global options with local ones having higher priority
@@ -414,11 +412,11 @@ if (!myfaces._impl.core._Runtime) {
                 //sendAsBinary = 1.5 which means mozilla only
                 //upload attribute present == level2
                 /*
-                if (!_T.XHR_LEVEL) {
-                    var _e = _T.exists;
-                    _T.XHR_LEVEL = (_e(_ret, "sendAsBinary")) ? 1.5 : 1;
-                    _T.XHR_LEVEL = (_e(_ret, "upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
-                }*/
+                 if (!_T.XHR_LEVEL) {
+                 var _e = _T.exists;
+                 _T.XHR_LEVEL = (_e(_ret, "sendAsBinary")) ? 1.5 : 1;
+                 _T.XHR_LEVEL = (_e(_ret, "upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
+                 }*/
                 return _ret;
             }
             //IE
@@ -755,7 +753,6 @@ if (!myfaces._impl.core._Runtime) {
             }
         },
 
-
         /**
          * Extends a class and puts a singleton instance at the reserved namespace instead
          * of its original class
@@ -764,9 +761,9 @@ if (!myfaces._impl.core._Runtime) {
          * @param {function} extendsCls the function class to be extended
          * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
          */
-        _T.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
-            return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
-        };
+                _T.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
+                    return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
+                };
 
         /**
          * delegation pattern which attached singleton generation
@@ -849,10 +846,15 @@ if (!myfaces._impl.core._Runtime) {
          * chain (note we cannot rely on return values here, hence jsf.util.chain will fail)
          */
         _T.addOnLoad = function(target, func) {
-            var oldonload = (target)? target.onload: null;
-            target.onload = (!oldonload || !_T.assertType(oldonload, "function")) ? func : function() {
-                oldonload();
-                func();
+            var oldonload = (target) ? target.onload : null;
+            target.onload = (!oldonload) ? func : function() {
+                try {
+                    oldonload();
+                } catch (e) {
+                    throw e;
+                } finally {
+                    func();
+                }
             };
         };
 
@@ -872,13 +874,13 @@ if (!myfaces._impl.core._Runtime) {
             var deflt = {language: "en", variant: "UK"}; //default language and variant
             try {
                 var lang = lOverride || navigator.language || navigator.browserLanguage;
-                if(!lang || lang.length < 2) return deflt;
+                if (!lang || lang.length < 2) return deflt;
                 return {
-                    language: lang.substr(0,2),
-                    variant: (lang.length >=5)?lang.substr(3,5): null
+                    language: lang.substr(0, 2),
+                    variant: (lang.length >= 5) ? lang.substr(3, 5) : null
                 };
             } catch(e) {
-                return deflt;    
+                return deflt;
             }
         };
 
@@ -902,7 +904,6 @@ if (!myfaces._impl.core._Runtime) {
                     dav = n.appVersion,
                     tv = parseFloat(dav);
 
-
             _T.browser = {};
             var d = _T.browser;
 
@@ -918,7 +919,6 @@ if (!myfaces._impl.core._Runtime) {
             d.isKhtml = (dav.indexOf("Konqueror") >= 0) ? tv : 0;
             d.isWebKit = parseFloat(dua.split("WebKit/")[1]) || undefined;
             d.isChrome = parseFloat(dua.split("Chrome/")[1]) || undefined;
-
 
             // safari detection derived from:
             //		http://developer.apple.com/internet/safari/faq.html#anchor2

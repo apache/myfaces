@@ -65,7 +65,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", my
      */
     remove : function(/*function*/listener) {
         this._assertListener(listener);
-        this._callSuper("remove");
+        this._callSuper("remove", listener);
     },
 
     /**
