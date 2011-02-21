@@ -812,7 +812,7 @@
                                 <configuration>
                                     <attach>false</attach>
                                     <tldDocDir>${basedir}/target/site/tlddoc-facelets</tldDocDir>
-                                    <tlddocJar>${basedir}/target/${artifactId}-${version}-facelets-tlddoc.jar</tlddocJar>
+                                    <tlddocJar>${basedir}/target/${project.artifactId}-${project.version}-facelets-tlddoc.jar</tlddocJar>
                                 </configuration>
                             </execution>
                             
@@ -833,7 +833,7 @@
                                 <configuration>
                                     <artifacts>
                                         <artifact>
-                                            <file>${basedir}/target/${artifactId}-${version}-facelets-tlddoc.jar</file>
+                                            <file>${basedir}/target/${project.artifactId}-${project.version}-facelets-tlddoc.jar</file>
                                             <type>jar</type>
                                             <classifier>facelets-tlddoc</classifier>
                                         </artifact>

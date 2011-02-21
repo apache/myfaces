@@ -18,17 +18,10 @@
  */
 package javax.faces.validator;
 
-import java.beans.FeatureDescriptor;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.logging.Logger;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
@@ -48,11 +41,18 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import java.beans.FeatureDescriptor;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -212,6 +212,9 @@ public class BeanValidator implements Validator, PartialStateHolder
 
     }
 
+    // This boolean is used to make sure that the log isn't trashed with warnings.
+    private static volatile boolean firstValueReferenceWarning = true;
+
     /**
      * Get the ValueReference from the ValueExpression.
      *
@@ -219,7 +222,6 @@ public class BeanValidator implements Validator, PartialStateHolder
      * @param context The FacesContext.
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
-
     private _ValueReferenceWrapper getValueReference(
             final ValueExpression valueExpression, final FacesContext context)
     {
@@ -227,12 +229,32 @@ public class BeanValidator implements Validator, PartialStateHolder
         if (_ExternalSpecifications.isUnifiedELAvailable())
         {
             // unified el 2.2 is available --> we can use ValueExpression.getValueReference()
-            
             // we can't access ValueExpression.getValueReference() directly here, because
             // Class loading would fail in applications with el-api versions prior to 2.2
-            return  _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
+            final _ValueReferenceWrapper wrapper = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
+            if (wrapper != null)
+            {
+                if (wrapper.getProperty() == null)
+                {
+                    // Fix for issue in Glassfish EL-impl-2.2.3
+                    if (firstValueReferenceWarning && log.isLoggable(Level.WARNING))
+                    {
+                        firstValueReferenceWarning = false;
+                        log.warning("ValueReference.getProperty() is null. " +
+                                    "Falling back to classic ValueReference resolving. " +
+                                    "This fallback may hurt performance. " +
+                                    "This may be caused by a bug your EL implementation. " +
+                                    "Glassfish EL-impl-2.2.3 is known for this issue. " +
+                                    "Try switching to a different EL implementation.");
+                    }
+                }
+                else
+                {
+                    return wrapper;
+                }
+            }
         }
-        
+
         // get base object and property name the "old-fashioned" way
         return _ValueReferenceResolver.resolve(valueExpression, elCtx);
     }
