@@ -112,6 +112,12 @@ public class ManagedBeanDestroyerListener implements
     @SuppressWarnings("unchecked")
     public void sessionDestroyed(HttpSessionEvent event)
     {
+        // MYFACES-3040 @PreDestroy Has Called 2 times
+        // attributeRemoved receives the event too, so it does not 
+        // have sense to handle it here. Unfortunately, it is not possible to 
+        // handle it first and then on attributeRemoved, so the best bet is
+        // let the code in just one place.
+        /*
         if (_destroyer != null)
         {
             HttpSession session = event.getSession();
@@ -128,7 +134,7 @@ public class ManagedBeanDestroyerListener implements
                 Object value = session.getAttribute(name);
                 _destroyer.destroy(name, value);
             }
-        }
+        }*/
     }
     
     /* Context related methods ***********************************************/
