@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.FacesException;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.CustomScoped;
 import javax.faces.bean.ManagedBean;
@@ -145,19 +146,25 @@ public class AnnotationConfigurator
                     }
                     //If there is a previous entry on Application Configuration Resources,
                     //the entry there takes precedence
-                    if (!Object.class.equals(conv.forClass()))
+                    boolean hasForClass = !Object.class.equals(conv.forClass());
+                    boolean hasValue = conv.value().length() > 0;
+                    if (hasForClass || hasValue)
                     {
                         Converter converter = new Converter();
-                        converter.setForClass(conv.forClass().getName());
+                        if (hasForClass)
+                        {
+                            converter.setForClass(conv.forClass().getName());
+                        }
+                        if (hasValue) {
+                            converter.setConverterId(conv.value());
+                        }
                         converter.setConverterClass(clazz.getName());
                         facesConfig.addConverter(converter);
                     }
                     else
-                    {
-                        Converter converter = new Converter();
-                        converter.setConverterId(conv.value());
-                        converter.setConverterClass(clazz.getName());
-                        facesConfig.addConverter(converter);
+                    {   
+                        // TODO MartinKoci MYFACES-3053
+                        throw new FacesException("@FacesConverter must have value, forClass or both. Check annotation @FacesConverter on class: "  + clazz.getName());
                     }
                 }                
             }
