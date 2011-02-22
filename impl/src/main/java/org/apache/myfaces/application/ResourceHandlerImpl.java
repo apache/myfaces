@@ -18,6 +18,23 @@
  */
 package org.apache.myfaces.application;
 
+import org.apache.myfaces.renderkit.ErrorPageWriter;
+import org.apache.myfaces.shared_impl.resource.ResourceHandlerCache;
+import org.apache.myfaces.shared_impl.resource.ResourceHandlerCache.ResourceValue;
+import org.apache.myfaces.shared_impl.resource.ResourceHandlerSupport;
+import org.apache.myfaces.shared_impl.resource.ResourceImpl;
+import org.apache.myfaces.shared_impl.resource.ResourceLoader;
+import org.apache.myfaces.shared_impl.resource.ResourceMeta;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.ExternalContextUtils;
+import org.apache.myfaces.shared_impl.util.StringUtils;
+
+import javax.faces.application.Resource;
+import javax.faces.application.ResourceHandler;
+import javax.faces.application.ResourceWrapper;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,24 +45,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.ResourceWrapper;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.shared_impl.resource.ResourceHandlerCache;
-import org.apache.myfaces.shared_impl.resource.ResourceHandlerSupport;
-import org.apache.myfaces.shared_impl.resource.ResourceImpl;
-import org.apache.myfaces.shared_impl.resource.ResourceLoader;
-import org.apache.myfaces.shared_impl.resource.ResourceMeta;
-import org.apache.myfaces.shared_impl.resource.ResourceHandlerCache.ResourceValue;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.shared_impl.util.ExternalContextUtils;
-import org.apache.myfaces.shared_impl.util.StringUtils;
 
 /**
  * DOCUMENT ME!
@@ -466,14 +465,14 @@ public class ResourceHandlerImpl extends ResourceHandler
         try
         {
             // First we try the JSF implementation class loader
-            return ResourceBundle.getBundle(bundleName, locale, facesContext.getClass().getClassLoader());
+            return ResourceBundle.getBundle(bundleName, locale, ResourceHandlerImpl.class.getClassLoader());
         }
         catch (MissingResourceException ignore1)
         {
             try
             {
                 // Next we try the JSF API class loader
-                return ResourceBundle.getBundle(bundleName, locale, ResourceHandlerImpl.class.getClassLoader());
+                return ResourceBundle.getBundle(bundleName, locale, ResourceHandler.class.getClassLoader());
             }
             catch (MissingResourceException ignore2)
             {
