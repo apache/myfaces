@@ -1,52 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
+
+    <parent>
+        <groupId>org.apache.myfaces.core</groupId>
+        <artifactId>myfaces-core-project</artifactId>
+        <version>1.2.10-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
     <groupId>org.apache.myfaces.core</groupId>
-    <artifactId>myfaces-core-project</artifactId>
-    <version>1.2.10-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.myfaces.core</groupId>
-  <artifactId>myfaces-api</artifactId>
-  <name>Apache Myfaces JSF Core-1.2 API</name>
-  <description>
-    The public API classes of the Apache MyFaces CORE JSF-1.2 project
-  </description>
-  <url>http://myfaces.apache.org/core12/myfaces-api</url>
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1.2.x/api</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1.2.x/api</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1.2.x/api</url>
-  </scm>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.2</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <archive>  
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-          </archive> 
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.0.4</version>
-        <executions>
-          <execution>
-            <id>attach-source</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-         </executions>
-        </plugin>
+    <artifactId>myfaces-api</artifactId>
+    <name>Apache Myfaces JSF Core-1.2 API</name>
+    <description>
+        The public API classes of the Apache MyFaces CORE JSF-1.2 project
+    </description>
+    <url>http://myfaces.apache.org/core12/myfaces-api</url>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1.2.x/api</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1.2.x/api</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1.2.x/api</url>
+    </scm>
+    
+    <build>
+        <plugins>
+
+            <!-- we want to use the test cases also in myfacse-impl, thus creating a test-jar -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+
         <!-- 
       <plugin>
         <groupId>org.apache.myfaces.buildtools</groupId>
@@ -76,94 +89,112 @@
         </dependencies>
       </plugin>
        -->
-      <plugin>
-        <groupId>org.apache.myfaces.buildtools</groupId>
-        <artifactId>myfaces-builder-plugin</artifactId>
-        <version>1.0.4</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build-metadata</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>makecomp</id>
-            <configuration>
-               <jsfVersion>12</jsfVersion>
-            </configuration>            
-            <goals>
-              <goal>make-components</goal>
-            </goals>
-          </execution>        
-        </executions>
-      </plugin>          
-      <plugin>   
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.1.0</version>
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>    
-              <goal>manifest</goal>
-            </goals>
-            <configuration>
-              <instructions>
-                <Bundle-SymbolicName>org.apache.myfaces.core.api</Bundle-SymbolicName>
-                <Bundle-Classpath>.</Bundle-Classpath>
-                <Build-Jdk>${java.version}</Build-Jdk>
-                <Implementation-Title>${project.name}</Implementation-Title>
-                <Implementation-Version>${project.version}</Implementation-Version>
-                <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
-                <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
-                <Export-Package>
-                  *;version="${project.version}"
-                </Export-Package>
-                <Import-Package>
-                  javax.el;version="[1.0.0, 3.0.0)",
-                  javax.servlet;version="[2.5.0, 3.0.0)",
-                  javax.servlet.http;version="[2.5.0, 3.0.0)",
-                  javax.servlet.jsp;version="[2.1.0, 3.0.0)",
-                  javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
-                  javax.servlet.jsp.jstl.sql;version="[1.1.2, 2.0.0)",
-                  javax.servlet.jsp.tagext;version="[2.1.0, 3.0.0)",
-                  org.apache.commons.logging;version="[1.1.1, 2.0.0)",
-                  javax.faces.*;version="${project.version}"
-                </Import-Package>
-                <Require-Bundle>org.apache.myfaces.core.impl;bundle-version="${project.version}"</Require-Bundle>
-              </instructions>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-  <profiles>
-    <profile>
-      <!--
+
+            <!-- myfaces-builder-plugin for metadata and component classes -->
+            <plugin>
+                <groupId>org.apache.myfaces.buildtools</groupId>
+                <artifactId>myfaces-builder-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-metadata</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>makecomp</id>
+                        <configuration>
+                            <jsfVersion>12</jsfVersion>
+                        </configuration>
+                        <goals>
+                            <goal>make-components</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- create manifest.mf for OSGi -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.1.0</version>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <instructions>
+                                <Bundle-SymbolicName>org.apache.myfaces.core.api</Bundle-SymbolicName>
+                                <Bundle-Classpath>.</Bundle-Classpath>
+                                <Build-Jdk>${java.version}</Build-Jdk>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+                                <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                                <Export-Package>
+                                    *;version="${project.version}"
+                                </Export-Package>
+                                <Import-Package>
+                                    javax.el;version="[1.0.0, 3.0.0)",
+                                    javax.servlet;version="[2.5.0, 3.0.0)",
+                                    javax.servlet.http;version="[2.5.0, 3.0.0)",
+                                    javax.servlet.jsp;version="[2.1.0, 3.0.0)",
+                                    javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
+                                    javax.servlet.jsp.jstl.sql;version="[1.1.2, 2.0.0)",
+                                    javax.servlet.jsp.tagext;version="[2.1.0, 3.0.0)",
+                                    org.apache.commons.logging;version="[1.1.1, 2.0.0)",
+                                    javax.faces.*;version="${project.version}"
+                                </Import-Package>
+                                <Require-Bundle>
+                                    org.apache.myfaces.core.impl;bundle-version="${project.version}"
+                                </Require-Bundle>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- execute tests (JUnit and TestNG) -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+        
+    </build>
+
+    
+    <profiles>
+
+        <!-- TODO jakobk: we could change this to -Papache-release -->
+        <!--
         - Generate files that are good to have when doing a release to main
-        - repositories, but which are not wanted when doing a quick 
+        - repositories, but which are not wanted when doing a quick
         - "mvn install" before testing some code modifications.
         -->
-      <id>generate-assembly</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.4</version>
-            <executions>
-              <execution>
-                <id>attach-javadoc</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
+        <profile>
+            <id>generate-assembly</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadoc</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     <profile>
       <!-- This plugin verifies the binary compablity with the jsf api of the RI
            TODO: add this to the normal build if 2.1 (or higher) of clirr-maven-plugin is released
@@ -171,228 +202,242 @@
            https://svn.codehaus.org/mojo/trunk/mojo/clirr-maven-plugin
            There is also a pending bug which patch must be applied before using this plugin:
            http://jira.codehaus.org/browse/MCLIRR-5 -->
-      <id>checkCompability</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>clirr-maven-plugin</artifactId>
-            <version>2.1.1</version>
-            <configuration>
-              <comparisonArtifacts>
-                <comparisonArtifact>
-                  <groupId>javax.faces</groupId>
-                  <artifactId>jsf-api</artifactId>
-                  <version>1.2_03</version>
-                </comparisonArtifact>
-              </comparisonArtifacts>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-                <phase>test</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-        <id>checkJDK</id>
-        <activation>
-            <property>
-                <name>performRelease</name>
-                <value>true</value>
-            </property>
-        </activation>
-        <build>
-            <plugins>
-                <plugin>
-                  <groupId>org.jvnet</groupId>
-                  <artifactId>animal-sniffer</artifactId>
-                  <version>1.2</version>
-                  <executions>
-                    <execution>
-                      <goals>
-                        <goal>check</goal>
-                      </goals>
-                      <configuration>
-                        <signature>
-                          <groupId>org.jvnet.animal-sniffer</groupId>
-                          <artifactId>java1.5</artifactId>
-                          <version>1.0</version>
-                        </signature>
-                      </configuration>
-                    </execution>
-                  </executions>
-                </plugin>            
-            </plugins>
-        </build>
-        <pluginRepositories>
-            <pluginRepository>
-                <id>java.net.repo</id>
-                <name>java.net repository</name>
-                <url>http://download.java.net/maven/2/</url>
-            </pluginRepository>
-        </pluginRepositories>
-    </profile>
-  </profiles>
-  <dependencies>
-    <!-- 
+            <id>checkCompability</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>clirr-maven-plugin</artifactId>
+                        <version>2.3</version>
+                        <configuration>
+                            <comparisonArtifacts>
+                                <comparisonArtifact>
+                                    <groupId>javax.faces</groupId>
+                                    <artifactId>jsf-api</artifactId>
+                                    <version>1.2_03</version>
+                                </comparisonArtifact>
+                            </comparisonArtifacts>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- check for Java 1.5 -->
+        <profile>
+            <id>checkJDK</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jvnet</groupId>
+                        <artifactId>animal-sniffer</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <signature>
+                                        <groupId>org.jvnet.animal-sniffer</groupId>
+                                        <artifactId>java1.5</artifactId>
+                                        <version>1.0</version>
+                                    </signature>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>            
+                </plugins>
+            </build>
+
+            <!-- mojarra is only available on java.net -->
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>java.net.repo</id>
+                    <name>java.net repository</name>
+                    <url>http://download.java.net/maven/2/</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
+    </profiles>
+
+    
+    <dependencies>
+        <!--
       - The file with config metadata for generating component classes. The contents
       - of this jarfile are processed using the maven-faces-plugin.
       -  This is no longer necessary because it is using myfaces-builder-plugin.
-    <dependency>
-       <groupId>org.apache.myfaces.core</groupId>
-       <artifactId>myfaces-build</artifactId>
-       <version>1.2.4-SNAPSHOT</version>
-       <scope>provided</scope>
-    </dependency> -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet.jsp</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <!-- version defined in parent -->
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>jsp-api</artifactId>
-          <groupId>javax.servlet</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.myfaces.buildtools</groupId>
-      <artifactId>myfaces-builder-annotations</artifactId> 
-      <version>1.0.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>1.8.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <classifier>jdk15</classifier>
-      <version>5.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.shale</groupId>
-      <artifactId>shale-test</artifactId>
-      <version>1.0.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>jmock</groupId>
-      <artifactId>jmock</artifactId>
-      <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>jmock</groupId>
-      <artifactId>jmock-cglib</artifactId>
-      <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymock</artifactId>
-      <version>2.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymockclassextension</artifactId>
-      <version>2.3</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.4</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-changelog-plugin</artifactId>
-        <version>2.1</version>
-        <reportSets>
-          <reportSet>
-            <id>dual-report</id>
-            <configuration>
-              <type>range</type>
-              <range>30</range>
-            </configuration>
-            <reports>
-              <report>changelog</report>
-              <report>file-activity</report>
-              <report>dev-activity</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.1</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.4.3</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <version>2.1</version>
-      </plugin>
-      <!-- override PMD settings to set targetJdk -->
-      <plugin>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
-          <rulesets>
-            <ruleset>/rulesets/basic.xml</ruleset>
-            <ruleset>/rulesets/unusedcode.xml</ruleset>
-          </rulesets>
-          <linkXref>true</linkXref>
-          <minimumTokens>100</minimumTokens>
-          <targetJdk>1.5</targetJdk>
-          <excludes>
-            <!-- these class make the PMD plugin crash (NullPointerException). -->
-            <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
-            <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
-          </excludes>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>pmd</report>
-              <report>cpd</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-build</artifactId>
+            <version>1.2.4-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency> -->
+        <!--
+            NOTE that all versions and scopes are defined in the parent dependencyManagement section
+            (except for optional=true due to a maven bug). 
+        -->
+
+        <!-- Servlet 2.5 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+
+        <!-- JSP 2.1 -->
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+        </dependency>
+
+        <!-- JSTL 1.2 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+
+        </dependency>
+
+        <!-- builder-annotations like @JSFWebConfigParam -->
+        <dependency>
+            <groupId>org.apache.myfaces.buildtools</groupId>
+            <artifactId>myfaces-builder-annotations</artifactId>
+        </dependency>
+        
+        
+        <!-- TEST DEPENDENCIES -->
+        
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.shale</groupId>
+            <artifactId>shale-test</artifactId>
+        </dependency>
+
+        <!-- easymock -->
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+        </dependency>
+
+        <!-- jmock -->
+        <dependency>
+            <groupId>jmock</groupId>
+            <artifactId>jmock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jmock</groupId>
+            <artifactId>jmock-cglib</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <scope>test</scope> <!-- normally scope=compile, but here only for tests needed - TODO jakobk really? -->
+        </dependency>
+        
+    </dependencies>
+
+    
+    <reporting>
+        
+        <plugins>
+            
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.2</version>
+                <reportSets>
+                    <reportSet>
+                        <id>dual-report</id>
+                        <configuration>
+                            <type>range</type>
+                            <range>30</range>
+                        </configuration>
+                        <reports>
+                            <report>changelog</report>
+                            <report>file-activity</report>
+                            <report>dev-activity</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+            
+            <!-- override PMD settings to set targetJdk -->
+            <plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>/rulesets/basic.xml</ruleset>
+                        <ruleset>/rulesets/unusedcode.xml</ruleset>
+                    </rulesets>
+                    <linkXRef>true</linkXRef>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.5</targetJdk>
+                    <excludes>
+                        <!-- these class make the PMD plugin crash (NullPointerException). -->
+                        <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
+                        <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
+                    </excludes>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>pmd</report>
+                            <report>cpd</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+        </plugins>
+        
+    </reporting>
 
 </project>
