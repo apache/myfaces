@@ -18,17 +18,18 @@
  */
 package org.apache.myfaces.resource;
 
+import java.io.InputStream;
+import java.net.URL;
+
+import javax.faces.context.FacesContext;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.resource.AliasResourceMetaImpl;
 import org.apache.myfaces.shared_impl.resource.ResourceLoader;
 import org.apache.myfaces.shared_impl.resource.ResourceMeta;
 import org.apache.myfaces.shared_impl.resource.ResourceMetaImpl;
-import org.apache.myfaces.shared_impl.util.MyFacesClassLoader;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
-
-import javax.faces.context.FacesContext;
-import java.io.InputStream;
-import java.net.URL;
 
 /**
  * A resource loader implementation which loads resources from the thread ClassLoader.
@@ -47,7 +48,6 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
     
     private final boolean _useMultipleJsFilesForJsfUncompressedJs;
-    private MyFacesClassLoader classLoader;
 
     public InternalClassLoaderResourceLoader(String prefix)
     {
@@ -65,26 +65,50 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     @Override
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
+        InputStream is = null;
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            return getClassLoader().getResourceAsStream(getPrefix() + '/' + resourceMeta.getResourceIdentifier());
+            String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
+            is = getClassLoader().getResourceAsStream(name);
+            if (is == null)
+            {
+                is = this.getClass().getClassLoader().getResourceAsStream(name);
+            }
+            return is;
         }
         else
         {
-            return getClassLoader().getResourceAsStream(resourceMeta.getResourceIdentifier());
+            is = getClassLoader().getResourceAsStream(resourceMeta.getResourceIdentifier());
+            if (is == null)
+            {
+                is = this.getClass().getClassLoader().getResourceAsStream(resourceMeta.getResourceIdentifier());
+            }
+            return is;
         }
     }
 
     @Override
     public URL getResourceURL(ResourceMeta resourceMeta)
     {
+        URL url = null;
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            return getClassLoader().getResource(getPrefix() + '/' + resourceMeta.getResourceIdentifier());
+            String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
+            url = getClassLoader().getResource(name);
+            if (url == null)
+            {
+                url = this.getClass().getClassLoader().getResource(name);
+            }
+            return url;
         }
         else
         {
-            return getClassLoader().getResource(resourceMeta.getResourceIdentifier());
+            url = getClassLoader().getResource(resourceMeta.getResourceIdentifier());
+            if (url == null)
+            {
+                url = this.getClass().getClassLoader().getResource(resourceMeta.getResourceIdentifier());
+            }
+            return url; 
         }
     }
 
@@ -138,11 +162,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
      */
     protected ClassLoader getClassLoader()
     {
-        if (classLoader == null)
-        {
-            classLoader = new MyFacesClassLoader();
-        }
-        return classLoader;
+        return ClassUtils.getContextClassLoader();
     }
 
     @Override
@@ -151,6 +171,10 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
             URL url = getClassLoader().getResource(getPrefix() + '/' + libraryName);
+            if (url == null)
+            {
+                url = this.getClass().getClassLoader().getResource(getPrefix() + '/' + libraryName);
+            }
             if (url != null)
             {
                 return true;
@@ -159,6 +183,10 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         else
         {
             URL url = getClassLoader().getResource(libraryName);
+            if (url == null)
+            {
+                url = this.getClass().getClassLoader().getResource(libraryName);
+            }
             if (url != null)
             {
                 return true;
