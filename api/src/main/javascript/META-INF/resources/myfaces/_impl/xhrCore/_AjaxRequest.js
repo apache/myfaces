@@ -96,7 +96,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
         this._xhr = myfaces._impl.core._Runtime.getXHRObject();
         this._postCreateXHR();
 
-        this._xhr.open(this._ajaxType, this._sourceForm.action+
+        var targetURL;
+        if (typeof this._sourceForm.elements["javax.faces.encodedURL"] == 'undefined') {
+              targetURL = this._sourceForm.action;
+        } else {
+              targetURL = this._sourceForm.elements["javax.faces.encodedURL"].value;
+        }
+        
+        this._xhr.open(this._ajaxType, targetURL +
                 ((this._ajaxType == "GET")? "?"+this._requestParameters.makeFinal():"")
                 , true);
 
