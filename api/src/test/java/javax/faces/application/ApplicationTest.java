@@ -20,12 +20,7 @@ package javax.faces.application;
 
 import javax.el.ValueExpression;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.NoOp;
-
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -45,7 +40,7 @@ public class ApplicationTest extends AbstractJsfTestCase
     public void setUp() throws Exception
     {
         super.setUp();
-        app = (Application) Enhancer.create(Application.class, NoOp.INSTANCE);
+        app = new MockApplication();
     }
     
     public void tearDown() throws Exception
