@@ -871,36 +871,6 @@ public class FaceletViewHandler extends ViewHandler
         return this.parent.getResourceURL(context, path);
     }
 
-    /**
-     * Try to guess if this is a postback request. In JSF 1.2, this method is not needed, since ResponseStateManager can
-     * identify postbacks. We use a simple heuristic: for HttpServletRequests, "POST" and "PUT" are postbacks. For
-     * anything that isn't an HttpServletRequest, just guess that if there's a request parameter, it's probably a
-     * postback.
-     */
-    static private boolean isPostback11(FacesContext context)
-    {
-        Object reqObject = context.getExternalContext().getRequest();
-        if (reqObject instanceof HttpServletRequest)
-        {
-            HttpServletRequest request = (HttpServletRequest) reqObject;
-
-            String method = request.getMethod();
-
-            // Is this a POST or PUT request?
-            if ("POST".equals(method) || "PUT".equals(method))
-            {
-                return true;
-            }
-
-            return false;
-        }
-        else
-        {
-            Map<String, String> paramMap = context.getExternalContext().getRequestParameterMap();
-            return !paramMap.isEmpty();
-        }
-    }
-
     protected static class NullWriter extends Writer
     {
 

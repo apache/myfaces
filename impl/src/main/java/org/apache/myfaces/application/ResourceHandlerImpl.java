@@ -459,35 +459,6 @@ public class ResourceHandlerImpl extends ResourceHandler
         }
         return localePrefix;
     }
-    
-    private static ResourceBundle getBundle(FacesContext facesContext, Locale locale, String bundleName)
-    {
-        try
-        {
-            // First we try the JSF implementation class loader
-            return ResourceBundle.getBundle(bundleName, locale, ResourceHandlerImpl.class.getClassLoader());
-        }
-        catch (MissingResourceException ignore1)
-        {
-            try
-            {
-                // Next we try the JSF API class loader
-                return ResourceBundle.getBundle(bundleName, locale, ResourceHandler.class.getClassLoader());
-            }
-            catch (MissingResourceException ignore2)
-            {
-                try
-                {
-                    // Last resort is the context class loader
-                    return ResourceBundle.getBundle(bundleName, locale, ClassUtils.getContextClassLoader());
-                }
-                catch (MissingResourceException damned)
-                {
-                    return null;
-                }
-            }
-        }
-    }
 
     protected boolean isResourceIdentifierExcluded(FacesContext context,
             String resourceIdentifier)

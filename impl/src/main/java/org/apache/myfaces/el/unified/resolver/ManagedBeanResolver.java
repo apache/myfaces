@@ -49,7 +49,6 @@ import org.apache.myfaces.config.element.ManagedBean;
  */
 public class ManagedBeanResolver extends ELResolver
 {
-    //private static final Log log = LogFactory.getLog(ManagedBeanResolver.class);
     private static final Logger log = Logger.getLogger(ManagedBeanResolver.class.getName());
     private static final String BEANS_UNDER_CONSTRUCTION =
             "org.apache.myfaces.el.unified.resolver.managedbean.beansUnderConstruction";
@@ -370,13 +369,6 @@ public class ManagedBeanResolver extends ELResolver
     private static FacesContext facesContext(final ELContext context)
     {
         return (FacesContext)context.getContext(FacesContext.class);
-    }
-
-    private static ExternalContext externalContext(final ELContext context)
-    {
-        final FacesContext facesContext = facesContext(context);
-
-        return facesContext != null ? facesContext.getExternalContext() : null;
     }
 
     @Override
