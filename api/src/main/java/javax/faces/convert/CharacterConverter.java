@@ -55,7 +55,7 @@ public class CharacterConverter
             if (value.length() > 0)
             {
                 try {
-                    return new Character(value.charAt(0));
+                    return Character.valueOf(value.charAt(0));
                 }catch(Exception e) {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                                                                                 CHARACTER_ID,

@@ -70,14 +70,14 @@ public class LongRangeValidator
 
     public LongRangeValidator(long maximum)
     {
-        _maximum = new Long(maximum);
+        _maximum = Long.valueOf(maximum);
     }
 
     public LongRangeValidator(long maximum,
                               long minimum)
     {
-        _maximum = new Long(maximum);
-        _minimum = new Long(minimum);
+        _maximum = Long.valueOf(maximum);
+        _minimum = Long.valueOf(minimum);
     }
 
     // VALIDATE
@@ -157,7 +157,7 @@ public class LongRangeValidator
 
     public void setMaximum(long maximum)
     {
-        _maximum = new Long(maximum);
+        _maximum = Long.valueOf(maximum);
         clearInitialState();
     }
 

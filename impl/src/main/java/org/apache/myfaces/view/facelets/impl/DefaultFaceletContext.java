@@ -281,13 +281,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             Integer cnt = _prefixes.get(prefixInt);
             if (cnt == null)
             {
-                _prefixes.put(prefixInt, new Integer(0));
+                _prefixes.put(prefixInt, Integer.valueOf(0));
                 _prefix = prefixInt.toString();
             }
             else
             {
                 int i = cnt.intValue() + 1;
-                _prefixes.put(prefixInt, new Integer(i));
+                _prefixes.put(prefixInt, Integer.valueOf(i));
                 _prefix = prefixInt + "_" + i;
             }
         }
@@ -295,7 +295,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         Integer cnt = _ids.get(base);
         if (cnt == null)
         {
-            _ids.put(base, new Integer(0));
+            _ids.put(base, Integer.valueOf(0));
             _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
             _uniqueIdBuilder.append(_prefix);
             _uniqueIdBuilder.append("_");
@@ -305,7 +305,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         else
         {
             int i = cnt.intValue() + 1;
-            _ids.put(base, new Integer(i));
+            _ids.put(base, Integer.valueOf(i));
             _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
             _uniqueIdBuilder.append(_prefix);
             _uniqueIdBuilder.append("_");

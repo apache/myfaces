@@ -169,9 +169,9 @@ public final class ForEachHandler extends TagHandler
         int s = this.getBegin(ctx);
         int e = this.getEnd(ctx);
         int m = this.getStep(ctx);
-        Integer sO = this.begin != null ? new Integer(s) : null;
-        Integer eO = this.end != null ? new Integer(e) : null;
-        Integer mO = this.step != null ? new Integer(m) : null;
+        Integer sO = this.begin != null ? Integer.valueOf(s) : null;
+        Integer eO = this.end != null ? Integer.valueOf(e) : null;
+        Integer mO = this.step != null ? Integer.valueOf(m) : null;
 
         boolean t = this.getTransient(ctx);
         Object src = null;

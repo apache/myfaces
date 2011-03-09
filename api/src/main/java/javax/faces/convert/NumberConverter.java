@@ -317,10 +317,10 @@ public class NumberConverter
             values[0] = _currencyCode;
             values[1] = _currencySymbol;
             values[2] = _locale;
-            values[3] = _maxFractionDigitsSet ? new Integer(_maxFractionDigits) : null;
-            values[4] = _maxIntegerDigitsSet ? new Integer(_maxIntegerDigits) : null;
-            values[5] = _minFractionDigitsSet ? new Integer(_minFractionDigits) : null;
-            values[6] = _minIntegerDigitsSet ? new Integer(_minIntegerDigits) : null;
+            values[3] = _maxFractionDigitsSet ? Integer.valueOf(_maxFractionDigits) : null;
+            values[4] = _maxIntegerDigitsSet ? Integer.valueOf(_maxIntegerDigits) : null;
+            values[5] = _minFractionDigitsSet ? Integer.valueOf(_minFractionDigits) : null;
+            values[6] = _minIntegerDigitsSet ? Integer.valueOf(_minIntegerDigits) : null;
             values[7] = _pattern;
             values[8] = _type;
             values[9] = _groupingUsed ? Boolean.TRUE : Boolean.FALSE;

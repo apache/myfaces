@@ -42,7 +42,7 @@ public final class IndexedValueExpression extends ValueExpression
      */
     public IndexedValueExpression(ValueExpression orig, int i)
     {
-        this.i = new Integer(i);
+        this.i = Integer.valueOf(i);
         this.orig = orig;
     }
 

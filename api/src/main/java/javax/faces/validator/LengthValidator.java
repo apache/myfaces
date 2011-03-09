@@ -70,14 +70,14 @@ public class LengthValidator
 
     public LengthValidator(int maximum)
     {
-        _maximum = new Integer(maximum);
+        _maximum = Integer.valueOf(maximum);
     }
 
     public LengthValidator(int maximum,
                            int minimum)
     {
-        _maximum = new Integer(maximum);
-        _minimum = new Integer(minimum);
+        _maximum = Integer.valueOf(maximum);
+        _minimum = Integer.valueOf(minimum);
     }
 
     // VALIDATE
@@ -130,7 +130,7 @@ public class LengthValidator
 
     public void setMaximum(int maximum)
     {
-        _maximum = new Integer(maximum);
+        _maximum = Integer.valueOf(maximum);
         clearInitialState();
     }
 
@@ -146,7 +146,7 @@ public class LengthValidator
 
     public void setMinimum(int minimum)
     {
-        _minimum = new Integer(minimum);
+        _minimum = Integer.valueOf(minimum);
         clearInitialState();
     }
 
