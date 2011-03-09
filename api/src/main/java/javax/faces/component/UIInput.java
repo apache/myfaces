@@ -941,10 +941,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void markInitialState()
     {
         super.markInitialState();
-        if (_validatorList != null && 
-            _validatorList instanceof PartialStateHolder)
+        if (_validatorList != null)
         {
-            ((PartialStateHolder)_validatorList).markInitialState();
+            _validatorList.markInitialState();
         }
     }
     
@@ -953,10 +952,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
         if (initialStateMarked())
         {
             super.clearInitialState();
-            if (_validatorList != null && 
-                _validatorList instanceof PartialStateHolder)
+            if (_validatorList != null)
             {
-                ((PartialStateHolder)_validatorList).clearInitialState();
+                _validatorList.clearInitialState();
             }
         }
     }    

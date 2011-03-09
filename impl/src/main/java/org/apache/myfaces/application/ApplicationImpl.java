@@ -268,12 +268,15 @@ public class ApplicationImpl extends Application
         {
             Object validatorClass = getObjectFromClassMap(validatorId, _validatorClassMap);
             String className;
-            if(validatorClass instanceof String)
-                className = (String)validatorClass;
-            
-            //otherwise validatorClass is an object of type Class<?>
-            className = ((Class<?>)validatorClass).getName();
-            
+
+            if (validatorClass instanceof Class)
+            {
+                className = ((Class<?>)validatorClass).getName();
+            }
+            else
+            {
+                className = validatorClass.toString();
+            }
             // Ensure atomicity between _defaultValidatorsIds and _cachedDefaultValidatorsIds
             synchronized(_defaultValidatorsIds)
             {
