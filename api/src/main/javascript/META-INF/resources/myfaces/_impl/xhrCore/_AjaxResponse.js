@@ -405,18 +405,23 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
         var _Impl = this._Impl;
 
-        var doc = this._Lang.parseXML(newData);
+        var isWebkit = this._RT.browser.isWebKit;
+
+        //we have to work around an xml parsing bug in Webkit
+        //see https://issues.apache.org/jira/browse/MYFACES-3061
+        var doc = (!isWebkit)? this._Lang.parseXML(newData) : null;
 
         var newHead = null;
-        if (this._Lang.isXMLParseError(doc)) {
+        if (!isWebkit  && this._Lang.isXMLParseError(doc)) {
             doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]*\/\/-->/g, "//-->"));
         }
 
-        if (this._Lang.isXMLParseError(doc)) {
+        if (isWebkit || this._Lang.isXMLParseError(doc) ) {
             //the standard xml parser failed we retry with the stripper
             var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
             var headData = parser.parse(newData, "head");
-
+            //We cannot avoid it here, but we have reduced the parsing now down to the bare minimum
+            //for further processing
             newHead = this._Lang.parseXML("<head>" + headData + "</head>");
             //last and slowest option create a new head element and let the browser
             //do its slow job
@@ -454,9 +459,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
      */
     _replaceBody : function(request, context, newData /*varargs*/) {
 
-        var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
         var oldBody = document.getElementsByTagName("body")[0];
         var placeHolder = document.createElement("div");
+        var isWebkit = this._RT.browser.isWebKit;
 
         placeHolder.id = "myfaces_bodyplaceholder";
 
@@ -469,13 +474,19 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
         var bodyData = null;
 
-        var doc = (arguments.length > 3) ? arguments[3] : this._Lang.parseXML(newData);
+        var doc = null;
 
-        if (this._Lang.isXMLParseError(doc)) {
+        //we have to work around an xml parsing bug in Webkit
+        //see https://issues.apache.org/jira/browse/MYFACES-3061
+        if(!isWebkit) {
+            doc = (arguments.length > 3) ? arguments[3] : this._Lang.parseXML(newData);
+        }
+
+        if (!isWebkit && this._Lang.isXMLParseError(doc)) {
             doc = this._Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]*\/\/-->/g, "//-->"));
         }
 
-        if (this._Lang.isXMLParseError(doc)) {
+        if (isWebkit || this._Lang.isXMLParseError(doc)) {
             //the standard xml parser failed we retry with the stripper
 
             var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
@@ -485,6 +496,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         } else {
             //parser worked we go on
             var newBodyData = doc.getElementsByTagName("body")[0];
+
+            //speedwise we serialize back into the code
+            //for code reduction, speedwise we will take a small hit
+            //there which we will clean up in the future, but for now
+            //this is ok, I guess, since replace body only is a small subcase
             bodyData = this._Lang.serializeChilds(newBodyData);
 
             if (!this._RT.browser.isIEMobile || this._RT.browser.isIEMobile >= 7) {
@@ -497,7 +513,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             }
         }
 
-       
+        //TODO eliminate the serialisation in case of already having a parsed tree
         var returnedElement = this.replaceHtmlItem(request, context, placeHolder, bodyData);
 
         if (returnedElement) {
