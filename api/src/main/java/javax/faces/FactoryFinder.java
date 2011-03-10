@@ -18,16 +18,6 @@
  */
 package javax.faces;
 
-import javax.faces.application.ApplicationFactory;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.context.ExceptionHandlerFactory;
-import javax.faces.context.ExternalContextFactory;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.context.PartialViewContextFactory;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.view.ViewDeclarationLanguageFactory;
-import javax.faces.view.facelets.TagHandlerDelegateFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
@@ -38,6 +28,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.faces.application.ApplicationFactory;
+import javax.faces.component.visit.VisitContextFactory;
+import javax.faces.context.ExceptionHandlerFactory;
+import javax.faces.context.ExternalContextFactory;
+import javax.faces.context.FacesContextFactory;
+import javax.faces.context.PartialViewContextFactory;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.view.ViewDeclarationLanguageFactory;
+import javax.faces.view.facelets.TagHandlerDelegateFactory;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -127,6 +128,23 @@ public final class FactoryFinder
         }
     }
 
+    // ~ Start FactoryFinderProvider Support ------------------------------------------------------------------------------------
+    
+    private static Object _factoryFinderProviderFactoryInstance;
+    
+    private static volatile boolean _initialized = false;
+    
+    private static void initializeFactoryFinderProviderFactory()
+    {
+        if (!_initialized)
+        {
+            _factoryFinderProviderFactoryInstance = _FactoryFinderProviderFactory.getInstance();
+            _initialized = true;
+        }
+    }
+
+    // ~ End FactoryFinderProvider Support ------------------------------------------------------------------------------------
+
     // avoid instantiation
     FactoryFinder()
     {
@@ -164,6 +182,34 @@ public final class FactoryFinder
      *             if <code>factoryname</code> is null
      */
     public static Object getFactory(String factoryName) throws FacesException
+    {
+        initializeFactoryFinderProviderFactory();
+        
+        if (_factoryFinderProviderFactoryInstance == null)
+        {
+            // Do the typical stuff
+            return _getFactory(factoryName);
+        }
+        else
+        {
+            try
+            {
+                //Obtain the FactoryFinderProvider instance for this context.
+                Object ffp = _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD.invoke(
+                            _factoryFinderProviderFactoryInstance, null);
+                
+                //Call getFactory method and pass the params
+                return _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_GET_FACTORY_METHOD.invoke(ffp, factoryName);
+            }
+            catch (Exception e)
+            {
+                //No Op
+                throw new FacesException(e);
+            }
+        }
+    }
+
+    private static Object _getFactory(String factoryName) throws FacesException
     {
         if (factoryName == null)
         {
@@ -317,6 +363,35 @@ public final class FactoryFinder
 
     public static void setFactory(String factoryName, String implName)
     {
+        initializeFactoryFinderProviderFactory();
+        
+        if (_factoryFinderProviderFactoryInstance == null)
+        {
+            // Do the typical stuff
+            _setFactory(factoryName, implName);
+        }
+        else
+        {
+            try
+            {
+                //Obtain the FactoryFinderProvider instance for this context.
+                Object ffp = _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD.invoke(
+                        _factoryFinderProviderFactoryInstance,null);
+                
+                //Call getFactory method and pass the params
+                _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_SET_FACTORY_METHOD.invoke(ffp, factoryName, implName);
+            }
+            catch (Exception e)
+            {
+                //No Op
+                throw new FacesException(e);
+            }
+            
+        }
+    }
+
+    private static void _setFactory(String factoryName, String implName)
+    {
         checkFactoryName(factoryName);
 
         ClassLoader classLoader = getClassLoader();
@@ -356,6 +431,35 @@ public final class FactoryFinder
     }
 
     public static void releaseFactories() throws FacesException
+    {
+        initializeFactoryFinderProviderFactory();
+        
+        if (_factoryFinderProviderFactoryInstance == null)
+        {
+            // Do the typical stuff
+            _releaseFactories();
+        }
+        else
+        {
+            try
+            {
+                //Obtain the FactoryFinderProvider instance for this context.
+                Object ffp = _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD.invoke(
+                        _factoryFinderProviderFactoryInstance, null);
+                
+                //Call getFactory method and pass the params
+                _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_RELEASE_FACTORIES_METHOD.invoke(ffp, null);
+            }
+            catch (Exception e)
+            {
+                //No Op
+                throw new FacesException(e);
+            }
+            
+        }
+    }
+
+    public static void _releaseFactories() throws FacesException
     {
         ClassLoader classLoader = getClassLoader();
 

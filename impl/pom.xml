@@ -330,8 +330,30 @@
                         <exclude>**/JspStateManagerImplTest*</exclude>
                         <exclude>**/DefaultViewHandlerSupportTest*</exclude>
                         <exclude>**/ApplicationImplTest*</exclude>
+                        <exclude>**/FactoryFinderProviderTest*</exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>isolateCLTests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <forkMode>always</forkMode>
+                            <testNGArtifactName>none:none</testNGArtifactName>
+                            <includes>
+                                <include>**/FactoryFinderProviderTest*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/JspStateManagerImplTest*</exclude>
+                                <exclude>**/DefaultViewHandlerSupportTest*</exclude>
+                                <exclude>**/ApplicationImplTest*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- include implee6 via maven-shade-plugin -->
