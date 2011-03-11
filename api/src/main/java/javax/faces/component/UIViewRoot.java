@@ -201,11 +201,9 @@ public class UIViewRoot extends UIComponentBase
      */
     public String createUniqueId()
     {
-        ExternalContext extCtx = getFacesContext()
-                .getExternalContext();
         StringBuilder bld = __getSharedStringBuilder();
-        return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(
-                _uniqueIdCounter++).toString());
+        return bld.append(UNIQUE_ID_PREFIX).append(
+                _uniqueIdCounter++).toString();
     }
 
     /**

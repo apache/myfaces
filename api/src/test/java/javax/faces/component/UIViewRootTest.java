@@ -124,6 +124,7 @@ public class UIViewRootTest
     @Test
     public void testCreateUniqueId()
     {
+        /*
         expect(_externalContext.encodeNamespace((String) anyObject())).andAnswer(new IAnswer<String>()
         {
             public String answer() throws Throwable
@@ -131,6 +132,7 @@ public class UIViewRootTest
                 return (String) getCurrentArguments()[0];
             }
         }).anyTimes();
+        */
         _mocksControl.replay();
         Collection createdIds = new HashSet();
         for (int i = 0; i < 10000; i++)
