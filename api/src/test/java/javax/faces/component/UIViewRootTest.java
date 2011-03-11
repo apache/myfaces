@@ -151,13 +151,14 @@ public class UIViewRootTest extends AbstractJsfTestCase
     @Test
     public void testCreateUniqueId()
     {
+        /*
         expect(_externalContext.encodeNamespace((String) anyObject())).andAnswer(new IAnswer<String>()
         {
             public String answer() throws Throwable
             {
                 return (String) getCurrentArguments()[0];
             }
-        }).anyTimes();
+        }).anyTimes();*/
         _mocksControl.replay();
         Collection<String> createdIds = new HashSet<String>();
         for (int i = 0; i < 10000; i++)

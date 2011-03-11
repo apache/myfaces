@@ -320,7 +320,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public String createUniqueId(FacesContext context, String seed)
     {
-        ExternalContext extCtx = context.getExternalContext();
         StringBuilder bld = __getSharedStringBuilder(context);
 
         Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
@@ -329,12 +328,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot. 
         if(seed==null)
         {
-            return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString());    
+            return bld.append(UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();    
         }
         // Optionally, a unique seed value can be supplied by component creators which should be included in the generated unique id.
         else
         {
-            return extCtx.encodeNamespace(bld.append(UNIQUE_ID_PREFIX).append(seed).toString());
+            return bld.append(UNIQUE_ID_PREFIX).append(seed).toString();
         }
     }
 
