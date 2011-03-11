@@ -115,7 +115,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
                             finalScripts = [];
                         }
-                    this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8");
+                    this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
                 } else {
                     // embedded script auto eval
                     var test = (!xmlData) ? item.text : this._Lang.serializeChilds(item);
