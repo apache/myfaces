@@ -225,7 +225,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {XmlHttpRequest} context - the ajax context
      */
     response : function(request, context) {
-        var ajaxObj =  new (this._getAjaxReqClass(context))({xhr: request, context: context});
+        var ajaxObj = (context._mfInternal && context._mfInternal._mfRequest) ||  new (this._getAjaxReqClass(context))({xhr: request, context: context});
+        if(context._mfInternal._mfRequest){
+            context._mfInternal._mfRequest = null;
+            delete context._mfInternal._mfRequest;
+        }
 
         ajaxObj._response.processResponse(request, context);
     },

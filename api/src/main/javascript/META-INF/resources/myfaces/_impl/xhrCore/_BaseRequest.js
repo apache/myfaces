@@ -170,7 +170,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", my
         var _Impl = this._getImpl();
 
         try {
-            this._response.processResponse(this._xhr, this._context);
+            //now we have to reroute into our official api
+            //because users might want to decorate it, we will split it apart afterwards
+            this._context._mfInternal = this._context._mfInternal || {};
+            this._context._mfInternal._mfRequest = this;
+
+            jsf.ajax.response(this._xhr, this._context);
 
             _Impl.sendEvent(this._xhr, this._context, _Impl.SUCCESS);
         } finally {
