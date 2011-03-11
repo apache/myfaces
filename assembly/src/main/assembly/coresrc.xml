@@ -1,0 +1,27 @@
+<assembly>
+  <id>coresrc</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>  
+  <fileSets>
+    <fileSet>
+    	<directory>src/main/resources</directory>
+    	<outputDirectory></outputDirectory>
+      <includes>
+        <include>README*</include>
+        <include>LICENSE*</include>
+        <include>NOTICE*</include>
+        <include>RELEASE*</include>
+      </includes>
+    </fileSet>   
+    <fileSet>
+      <directory>target/src</directory>
+      <outputDirectory>src</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
+ 

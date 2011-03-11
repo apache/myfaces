@@ -1,595 +1,582 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
+
+    <parent>
+        <groupId>org.apache.myfaces.core</groupId>
+        <artifactId>myfaces-core-project</artifactId>
+        <version>1.1.9-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    
     <groupId>org.apache.myfaces.core</groupId>
-    <artifactId>myfaces-core-project</artifactId>
-    <version>1.1.9-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.myfaces.core</groupId>
-  <artifactId>myfaces-impl</artifactId>
-  <name>Apache MyFaces JSF-1.1 Implementation</name>
-  <description>
-    The private implementation classes of the Apache MyFaces Core JSF-1.1 Implementation.
-  </description>
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/impl</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/impl</url>
-  </scm>
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <excludes>
-            <exclude>**/*.vm</exclude>
-        </excludes>
-      </resource>
-      <resource>
-        <directory>src/main/resources-facesconfig</directory>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.myfaces.buildtools</groupId>
-        <artifactId>myfaces-builder-plugin</artifactId>
-        <version>1.0.3</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build-metadata</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>maketags</id>
-            <configuration>
-                <packageContains>org.apache</packageContains>
-                <typePrefix>javax.faces</typePrefix>
-                <modelIds>
-                    <modelId>myfaces-api</modelId>
-                </modelIds>
-            </configuration>
-            <goals>
-                <goal>make-tags</goal>
-            </goals>
-          </execution>
-          <execution>
-          	<id>makefacesconfig</id>
-          	<configuration>
-          		<xmlFile>org/apache/myfaces/resource/standard-faces-config.xml</xmlFile>
-          		<modelIds>
-          		    <modelId>myfaces-api</modelId>
-          		    <modelId>myfaces-impl</modelId>
-          		</modelIds>
-          	</configuration>
-          	<goals>
-          		<goal>make-config</goal>
-          	</goals>
-          </execution>
-          <execution>
-            <id>makehtmltld</id>
-            <configuration>
-                <xmlFile>META-INF/myfaces_html.tld</xmlFile>
-                <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
-                <templateFile>myfaces_html.vm</templateFile>
-                <params>
-                   <shortname>h</shortname>
-                   <uri>http://java.sun.com/jsf/html</uri>
-                   <displayname>JSF HTML tag library.</displayname>
-                   <description>This tag library implements the standard JSF HTML tags.</description>
-                </params>
-                <modelIds>
-                    <modelId>myfaces-api</modelId>
-                </modelIds>
-            </configuration>
-            <goals>
-                <goal>make-config</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>makecoretld</id>
-            <configuration>
-                <xmlFile>META-INF/myfaces_core.tld</xmlFile>
-                <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
-                <templateFile>myfaces_core.vm</templateFile>
-                <modelIds>
-                    <modelId>myfaces-api</modelId>
-                    <modelId>myfaces-impl</modelId>
-                </modelIds>
-                <params>
-                    <shortname>f</shortname>
-                    <uri>http://java.sun.com/jsf/core</uri>
-                    <displayname>JSF core tag library.</displayname>
-                    <description>This tag library implements the standard JSF core tags.</description>
-                </params>
-            </configuration>
-            <goals>
-                <goal>make-config</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>        
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.0.4</version>
-        <executions>
-          <execution>
-            <id>attach-source</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
- 
-      <!-- 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>xslt-maven-plugin</artifactId>
-        <version>1.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>transform</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <xslFile>src/main/tld/misc/resolve_entities.xsl</xslFile>
-          <srcIncludes>**/*.tld</srcIncludes>
-          <srcDir>src/main/tld</srcDir>
-          <destDir>target/classes/META-INF</destDir>
-        </configuration>
-      </plugin>
-       -->
-    </plugins>
-  </build>
-  <profiles>
-    <profile>
-        <!-- This profile use a shared dependency rather than unpack the
-        code directly. The ideal is that this profile is active when the
-        version of this library is snapshot, but unfortunately there is
-        no way to activate it (see http://jira.codehaus.org/browse/MNG-3826).
-        Existing problems on maven 2.0.x architecture makes impossible do it.
-        For now the solution is trigger it manually using the property
-        -Ddev=true -->
-        <id>add-shared-dependency</id>
-        <activation>
-            <property>
-                <name>dev</name>
-                <value>true</value>
-            </property>
-        </activation>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.myfaces.shared</groupId>
-                <artifactId>myfaces-shared-impl</artifactId>
-                <version>${myfaces-shared.version}</version>
-                <scope>compile</scope>
-            </dependency>
-        </dependencies>
-    </profile>
-    <profile>
-        <id>unpack-shared</id>
-        <activation>
-            <property>
-                <name>!dev</name>
-            </property>
-        </activation>
-        <build>
-            <plugins>
-              <plugin>
-                <!--
-                  - The shared-impl project generates a modified version of the "shared" module
-                  - source and classes. The result is a jar full of files in the "shared_impl"
-                  - package that we can merge into the jar for this project.
-                  -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>dependency-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                  <execution>
-                    <id>unpack-shared-impl</id>
-                    <phase>process-classes</phase>
-                    <goals>
-                      <goal>unpack</goal>
-                    </goals>
-                    <configuration>
-                      <artifactItems>
-                        <artifactItem>
-                          <groupId>org.apache.myfaces.shared</groupId>
-                          <artifactId>myfaces-shared-impl</artifactId>
-                          <version>${myfaces-shared.version}</version>
-                        </artifactItem>
-                      </artifactItems>
-                      <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                    </configuration>
-                  </execution>
-                  <!-- unpack the shared sources into target/shared_sources-->
-                  <execution>
-                    <id>unpack-shared-impl-sources</id>
-                    <phase>process-sources</phase>
-                    <goals>
-                        <goal>unpack</goal>
-                    </goals>
-                    <configuration>
-                        <artifactItems>
-                            <artifactItem>
-                                <groupId>org.apache.myfaces.shared</groupId>
-                                <artifactId>myfaces-shared-impl</artifactId>
-                                <version>${myfaces-shared.version}</version>
-                                <classifier>sources</classifier>
-                            </artifactItem>
-                        </artifactItems>
-                        <outputDirectory>${project.build.directory}/shared_sources</outputDirectory>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
-              <plugin>
-                <!-- 
-                  - Add the unpacked shared sources directory as source directory into the pom datastructure,
-                  - so that the -source jar includes them too; every .class file in the jar should have its
-                  - source in the -source jar.
-                  -->  
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                  <execution>
-                    <id>add-source</id>
-                    <phase>process-sources</phase>
-                    <goals>
-                      <goal>add-source</goal>
-                    </goals>
-                    <configuration>
-                      <sources>
-                        <source>${project.build.directory}/shared_sources</source>
-                      </sources>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-        </build>
-    </profile>
-    <profile>
-      <!--
-        - Whenever the full website is generated, the command
-        -   mvn -Pgenerate-site site
-        - should be used. This will create the "tlddoc" directory containing
-        - nicely-formatted versions of the docs in the jsp taglib file, ie
-        - docs on all the available tags and their properties.
-        -->
-      <id>generate-site</id>
-      <build>
-        <plugins>
-          <!-- 
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>xslt-maven-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-              <execution>
-                <id>generate-tld-for-tlddoc</id>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <xslFile>src/main/tld/misc/resolve_entities-tlddoc.xsl</xslFile>
-                  <srcIncludes>**/*.tld</srcIncludes>
-                  <srcDir>src/main/tld</srcDir>
-                  <destDir>target/tlddoc-site</destDir>
-                </configuration>
-              </execution>
-              <execution>
-                <id>generate-tld-for-jar</id>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <xslFile>src/main/tld/misc/resolve_entities.xsl</xslFile>
-                  <srcIncludes>**/*.tld</srcIncludes>
-                  <srcDir>src/main/tld</srcDir>
-                  <destDir>target/classes/META-INF</destDir>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-           -->
-           <!-- 
-	      <plugin>
-	        <groupId>org.apache.myfaces.buildtools</groupId>
-	        <artifactId>myfaces-builder-plugin</artifactId>
-	        <version>1.0.1-SNAPSHOT</version>
-	        <executions>
-	          <execution>
-	            <goals>
-	              <goal>build-metadata</goal>
-	            </goals>
-	          </execution>
-	          <execution>
-	            <id>makehtmltld</id>
-	            <configuration>
-	                <xmlFile>classes/META-INF/myfaces_html.tld</xmlFile>
-	                <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
-	                <templateFile>myfaces_html.vm</templateFile>
-	                
-	                <modelIds>
-	                    <modelId>myfaces-api</modelId>
-	                </modelIds>
-	            </configuration>
-	            <goals>
-	                <goal>make-config</goal>
-	            </goals>
-	          </execution>          
-	        </executions>
-	      </plugin>
-	       -->           
-        </plugins>
-      </build>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>net.sourceforge.maven-taglib</groupId>
-            <artifactId>maven-taglib-plugin</artifactId>
-            <configuration>
-              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
-              <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
-            </configuration>
-          </plugin>
-        </plugins>
-      </reporting>
-    </profile>
+    <artifactId>myfaces-impl</artifactId>
+    <name>Apache MyFaces JSF-1.1 Implementation</name>
+    <description>
+        The private implementation classes of the Apache MyFaces Core JSF-1.1 Implementation.
+    </description>
+    <url>http://myfaces.apache.org/core11/myfaces-impl</url>
 
-    <profile>
-      <!--
-        - Whenever files are deployed to a snapshot or release repository,
-        -   mvn -Pgenerate-assembly deploy
-        - should be used. This will create additional artifacts that are
-        - useful but too time-consuming to create when just doing a local
-        - "mvn install" operation.
-        -->
-      <id>generate-assembly</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <build>
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x/impl</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x/impl</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x/impl</url>
+    </scm>
+    
+    <build>
+        
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/*.vm</exclude>
+                </excludes>
+            </resource>
+            <!--
+            <resource>
+                <directory>src/main/resources-facesconfig</directory>
+            </resource>
+            -->
+        </resources>
+        
         <plugins>
-          <!-- 
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>xslt-maven-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-              <execution>
-                <id>generate-tld-for-tlddoc</id>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <xslFile>src/main/tld/misc/resolve_entities-tlddoc.xsl</xslFile>
-                  <srcIncludes>**/*.tld</srcIncludes>
-                  <srcDir>src/main/tld</srcDir>
-                  <destDir>target/tlddoc-site</destDir>
-                </configuration>
-              </execution>
-              <execution>
-                <id>generate-tld-for-jar</id>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <xslFile>src/main/tld/misc/resolve_entities.xsl</xslFile>
-                  <srcIncludes>**/*.tld</srcIncludes>
-                  <srcDir>src/main/tld</srcDir>
-                  <destDir>target/classes/META-INF</destDir>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-           -->
-          <plugin>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.3</version>
-            <executions>
-              <execution>
-                <id>attach-javadoc</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>net.sourceforge.maven-taglib</groupId>
-            <artifactId>maven-taglib-plugin</artifactId>
-            <version>2.3.1</version>
-            <executions>
-              <execution>
-                <id>attach-tlddoc</id>
-                <goals>
-                  <goal>taglibdocjar</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
-              <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-        <id>checkJDK</id>
-        <activation>
-            <property>
-                <name>performRelease</name>
-                <value>true</value>
-            </property>
-        </activation>
-        <build>
-            <plugins>
-                <plugin>
-                  <groupId>org.jvnet</groupId>
-                  <artifactId>animal-sniffer</artifactId>
-                  <version>1.2</version>
-                  <executions>
+
+            <!-- myfaces-build-plugin - we generate a lot of stuff with this plugin (see executions) -->
+            <plugin>
+                <groupId>org.apache.myfaces.buildtools</groupId>
+                <artifactId>myfaces-builder-plugin</artifactId>
+                <executions>
+                    
                     <execution>
-                      <goals>
-                        <goal>check</goal>
-                      </goals>
-                      <configuration>
-                        <signature>
-                          <groupId>org.jvnet.animal-sniffer</groupId>
-                          <artifactId>java1.4</artifactId>
-                          <version>1.0</version>
-                        </signature>
-                      </configuration>
+                        <id>makemyfacesmetadata</id>
+                        <goals>
+                          <goal>build-metadata</goal>
+                        </goals>
                     </execution>
-                  </executions>
-                </plugin>
-            </plugins>
-        </build>
-        <pluginRepositories>
-            <pluginRepository>
-                <id>java.net.repo</id>
-                <name>java.net repository</name>
-                <url>http://download.java.net/maven/2</url>
-            </pluginRepository>
-        </pluginRepositories>
-        <repositories>
-            <repository>
-                <id>java.net.repo</id>
-                <name>java.net repository</name>
-                <url>http://download.java.net/maven/2</url>
-            </repository>
-        </repositories>
-    </profile>
-  </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.3</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.myfaces.core</groupId>
-      <artifactId>myfaces-api</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-el</groupId>
-      <artifactId>commons-el</artifactId>
-      <version>1.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>3.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.struts.shale</groupId>
-      <artifactId>shale-test</artifactId>
-      <version>1.0.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>cactus</groupId>
-      <artifactId>cactus</artifactId>
-      <version>13-1.7.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.myfaces.shared</groupId>
-      <artifactId>myfaces-shared-impl</artifactId>
-      <version>${myfaces-shared.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-digester</groupId>
-      <artifactId>commons-digester</artifactId>
-      <version>1.8</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>portlet-api</groupId>
-      <artifactId>portlet-api</artifactId>
-      <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.3</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>changelog-maven-plugin</artifactId>
-        <version>2.0-beta-1</version>
-        <reportSets>
-          <reportSet>
-            <id>dual-report</id>
-            <configuration>
-              <type>range</type>
-              <range>30</range>
-            </configuration>
-            <reports>
-              <report>changelog</report>
-              <report>file-activity</report>
-              <report>dev-activity</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jxr-maven-plugin</artifactId>
-        <version>2.0-beta-1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>surefire-report-maven-plugin</artifactId>
-        <version>2.0-beta-1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <version>2.1</version>
-      </plugin>
-    </plugins>
-  </reporting>
+                    
+                    <execution>
+                        <id>makefacesconfig</id>
+                        <configuration>
+                            <xmlFile>org/apache/myfaces/resource/standard-faces-config.xml</xmlFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                            </modelIds>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
+                    
+                    <execution>
+                        <id>make_tags</id>
+                        <configuration>
+                           <packageContains>org.apache</packageContains>
+                           <typePrefix>javax.faces</typePrefix>
+                           <modelIds>
+                               <modelId>myfaces-api</modelId>
+                           </modelIds>
+                        </configuration>
+                        <goals>
+                            <goal>make-tags</goal>
+                        </goals>
+                    </execution>
+                    
+                    <execution>
+                        <id>makecoretld</id>
+                        <configuration>
+                            <xmlFile>META-INF/myfaces_core.tld</xmlFile>
+                            <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
+                            <templateFile>myfaces_core.vm</templateFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                            </modelIds>
+                            <params>
+                                <shortname>f</shortname>
+                                <uri>http://java.sun.com/jsf/core</uri>
+                                <displayname>JSF core tag library.</displayname>
+                                <description>This tag library implements the standard JSF core tags.</description>
+                            </params>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
 
-  <properties>
-    <myfaces-shared.version>2.0.12-SNAPSHOT</myfaces-shared.version>
-  </properties>
+                    <execution>
+                        <id>makehtmltld</id>
+                        <configuration>
+                            <xmlFile>META-INF/myfaces_html.tld</xmlFile>
+                            <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
+                            <templateFile>myfaces_html.vm</templateFile>
+                            <params>
+                               <shortname>h</shortname>
+                               <uri>http://java.sun.com/jsf/html</uri>
+                               <displayname>JSF HTML tag library.</displayname>
+                               <description>This tag library implements the standard JSF HTML tags.</description>
+                            </params>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                            </modelIds>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
+                    
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+
+    <profiles>
+
+        <!--
+            This profile use a shared dependency rather than unpack the
+            code directly. The ideal is that this profile is active when the
+            version of this library is snapshot, but unfortunately there is
+            no way to activate it (see http://jira.codehaus.org/browse/MNG-3826).
+            Existing problems on maven 2.0.x architecture makes impossible do it.
+            For now the solution is trigger it manually using the property
+            -Ddev=true
+        -->
+        <profile>
+            <id>add-shared-dependency</id>
+            <activation>
+                <property>
+                    <name>dev</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.myfaces.shared</groupId>
+                    <artifactId>myfaces-shared-impl</artifactId>
+                    <scope>compile</scope>  <!-- otherwise it is scope=provided -->
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- standard unpacking of shared-impl -->
+        <profile>
+            <id>unpack-shared</id>
+            <activation>
+                <property>
+                    <name>!dev</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!--
+                          - The shared-impl project generates a modified version of the "shared" module
+                          - source and classes. The result is a jar full of files in the "shared_impl" 
+                          - package that we can merge into the jar for this project.
+                        -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.0</version>
+                        <executions>
+                            
+                            <execution>
+                                <id>unpack-shared-impl</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.myfaces.shared</groupId>
+                                            <artifactId>myfaces-shared-impl</artifactId>
+                                            <version>${myfaces-shared.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>unpack-shared-impl-sources</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.myfaces.shared</groupId>
+                                            <artifactId>myfaces-shared-impl</artifactId>
+                                            <version>${myfaces-shared.version}</version>
+                                            <classifier>sources</classifier>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}/shared_sources</outputDirectory>
+                                </configuration>
+                            </execution>
+                            
+                </executions>
+              </plugin>
+                    
+                    <plugin>
+                        <!--
+                            Add the unpacked shared sources directory as source directory into the pom datastructure,
+                            so that the -source jar includes them too; every .class file in the jar should have its
+                            source in the -source jar.
+                        -->
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-source-shared</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.build.directory}/shared_sources</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+        <!--
+          - Whenever the full website is generated, the command
+          -   mvn -Pgenerate-site -Pgenerate-tlddoc site
+          - should be used. This will create the "tlddoc" directory containing
+          - nicely-formatted versions of the docs in the jsp taglib file, ie
+          - docs on all the available tags and their properties.
+        -->
+        <profile>
+            <id>generate-site</id>
+            <build>
+                <plugins>
+
+                    <!-- Generate content for custom tagdoc report -->
+                    <plugin>
+                        <groupId>org.apache.myfaces.buildtools</groupId>
+                        <artifactId>myfaces-builder-plugin</artifactId>
+                        <executions>
+                            
+                            <execution>
+                                <id>site-tagdoc-content</id>
+                                <configuration>
+                                    <modelIds>
+                                        <modelId>myfaces-api</modelId>
+                                        <modelId>myfaces-impl</modelId>
+                                    </modelIds>
+                                    <taglibs>
+                                        <f>http://java.sun.com/jsf/core</f>
+                                        <h>http://java.sun.com/jsf/html</h>
+                                    </taglibs>
+                                </configuration>
+                                <goals>
+                                    <goal>tagdoc-content</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>site-web-config</id>
+                                <configuration>
+                                    <templateFile>xdoc-web-config.vm</templateFile>
+                                    <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>
+                                    <xmlFile>webconfig.xml</xmlFile>
+                                    <modelIds>
+                                        <modelId>myfaces-api</modelId>
+                                        <modelId>myfaces-impl</modelId>
+                                    </modelIds>
+                                </configuration>
+                                <goals>
+                                    <goal>make-config</goal>
+                                </goals>
+                            </execution>
+                            
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>net.sourceforge.maven-taglib</groupId>
+                        <artifactId>maven-taglib-plugin</artifactId>
+                        <version>2.4</version>
+                        <configuration>
+                            <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
+                            <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
+                        </configuration>
+                    </plugin>
+
+                    <!-- trigger tagdoc-index report -->
+                    <plugin>
+                        <groupId>org.apache.myfaces.buildtools</groupId>
+                        <artifactId>myfaces-builder-plugin</artifactId>
+                        <reportSets>
+                            <reportSet>
+                                <configuration>
+                                    <modelIds>
+                                        <modelId>myfaces-api</modelId>
+                                        <modelId>myfaces-impl</modelId>
+                                    </modelIds>
+                                    <taglibs>
+                                        <f>http://java.sun.com/jsf/core</f>
+                                        <h>http://java.sun.com/jsf/html</h>
+                                    </taglibs>
+                                </configuration>
+                                <reports>
+                                    <report>tagdoc-index</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+
+        <!--
+          - Whenever files are deployed to a snapshot or release repository,
+          -   mvn -Pgenerate-assembly deploy
+          - should be used. This will create additional artifacts that are
+          - useful but too time-consuming to create when just doing a local
+          - "mvn install" operation.
+        -->
+        <profile>
+            <id>generate-assembly</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.3</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadoc</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>net.sourceforge.maven-taglib</groupId>
+                        <artifactId>maven-taglib-plugin</artifactId>
+                        <version>2.4</version>
+                        <executions>
+                            
+                            <execution>
+                                <id>attach-tlddoc</id>
+                                <goals>
+                                    <goal>taglibdocjar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <taglib.src.dir>${basedir}/target/classes/META-INF</taglib.src.dir>
+                            <tldDocDir>${basedir}/target/tlddoc</tldDocDir>
+                        </configuration>
+                    </plugin>
+                    
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- check Java 1.4 -->
+        <profile>
+            <id>checkJDK</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jvnet</groupId>
+                        <artifactId>animal-sniffer</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <signature>
+                                        <groupId>org.jvnet.animal-sniffer</groupId>
+                                        <artifactId>java1.4</artifactId>
+                                        <version>1.0</version>
+                                    </signature>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <!-- TODO jakobk: update to codehaus animal-sniffer (is in maven-central)! -->
+            <!-- plugin is only in java.net -->
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>java.net.repo</id>
+                    <name>java.net repository</name>
+                    <url>http://download.java.net/maven/2</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
+    </profiles>
+
+    
+    <dependencies>
+        <!-- NOTE that all versions and scopes are defined in the parent dependencyManagement section -->
+
+        <!-- myfaces-api -->
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+        </dependency>
+
+        <!-- this dependency will be packed together with the main artifact of this pom -->
+        <dependency>
+            <groupId>org.apache.myfaces.shared</groupId>
+            <artifactId>myfaces-shared-impl</artifactId>
+        </dependency>
+
+        <!-- Servlet 2.3 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+
+        <!-- JSP 2.0 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+        </dependency>
+
+        <dependency>
+        <groupId>portlet-api</groupId>
+            <artifactId>portlet-api</artifactId>
+            <!-- version defined in parent -->
+            <scope>provided</scope>
+        </dependency>
+        
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+       
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-el</groupId>
+            <artifactId>commons-el</artifactId>
+        </dependency>
+
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>org.apache.struts.shale</groupId>
+            <artifactId>shale-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cactus</groupId>
+            <artifactId>cactus</artifactId>
+        </dependency>
+
+    </dependencies>
+    
+
+    <reporting>
+        <plugins>
+            
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.2</version>
+                <reportSets>
+                    <reportSet>
+                        <id>dual-report</id>
+                        <configuration>
+                            <type>range</type>
+                            <range>30</range>
+                        </configuration>
+                        <reports>
+                            <report>changelog</report>
+                            <report>file-activity</report>
+                            <report>dev-activity</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>

@@ -1,95 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.apache.myfaces</groupId>
-    <artifactId>myfaces</artifactId>
-    <version>9</version>
-  </parent>
+    <parent>
+        <groupId>org.apache.myfaces</groupId>
+        <artifactId>myfaces</artifactId>
+        <version>10</version>
+    </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.myfaces.core</groupId>
-  <artifactId>myfaces-core-project</artifactId>
-  <packaging>pom</packaging>
-  <name>Apache MyFaces JSF-1.1 Core Project</name>
-  <description>
-    This project is the home of the MyFaces implementation of the JavaServer Faces 1.1 specification, and
-    consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
-  </description>
-  <version>1.1.9-SNAPSHOT</version>
-  <url>http://myfaces.apache.org/core11</url>
+    <modelVersion>4.0.0</modelVersion>
 
-  <issueManagement>
-    <system>jira</system>
-    <url>http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10600</url>
-  </issueManagement>
+    <groupId>org.apache.myfaces.core</groupId>
+    <artifactId>myfaces-core-project</artifactId>
+    <packaging>pom</packaging>
+    <name>Apache MyFaces JSF-1.1 Core Project</name>
+    <description>
+        This project is the home of the MyFaces implementation of the JavaServer Faces 1.1 specification, and
+        consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
+    </description>
+    <version>1.1.9-SNAPSHOT</version>
+    <url>http://myfaces.apache.org/core11</url>
+    
+    <issueManagement>
+        <system>jira</system>
+        <url>https://issues.apache.org/jira/browse/MYFACES</url>
+    </issueManagement>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/myfaces/core/trunk</url>
-  </scm>
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x</url>
+    </scm>
 
-  <modules>
-    <module>api</module>
-    <module>impl</module>
-  </modules>
+    <modules>
+        <module>api</module>
+        <module>impl</module>
+    </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0.2</version>
-        <configuration>
-          <source>1.4</source>
-          <target>1.4</target>
-        </configuration>
-      </plugin>
-      <plugin>
+    <properties>
+        <!-- MyFaces shared-impl version to use -->
+        <myfaces-shared.version>2.0.12-SNAPSHOT</myfaces-shared.version>
+    </properties>
+
+    <build>
+        
+        <plugins>
+
+            <!-- JDK 1.4 -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.4</source>
+                    <target>1.4</target>
+                </configuration>
+            </plugin>
+
+            <!-- ceckstyle - TODO use myfaces wide checkstyle config from myfaces-parent? -->
+            <plugin>
+                <!--
+                  - Make a checkstyle violation a compile error. Note that if a compile error occurs,
+                  - further information can be found in target/site/checkstyle.html (present even when
+                  - just the compile goal and not the site goal has been run). Note also that child
+                  - projects may redeclare this plugin and provide different configuration settings
+                  - to use different checks (more or less strict than the default).
+                  -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>verify-style</id>
+                        <phase>verify</phase>
+                        <goals><goal>check</goal></goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>default/myfaces-checks-minimal.xml</configLocation>
+                    <headerLocation>default/myfaces-header.txt</headerLocation>
+                </configuration>
+            </plugin>
+
+            <!-- attach -sources.jar to all our modules -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.0.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+
+                <plugin>
+                    <groupId>org.apache.myfaces.buildtools</groupId>
+                    <artifactId>myfaces-builder-plugin</artifactId>
+                    <version>1.0.3</version>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-idea-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                        <jdkName>1.4</jdkName>
+                        <linkModules>true</linkModules>
+                        <downloadSources>true</downloadSources>
+                        <jdkLevel>1.4</jdkLevel>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                
+                <plugin>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+    
+    <profiles>
+
+        <!-- TODO jakobk: we could change this to -Papache-release -->
         <!--
-          - Make a checkstyle violation a compile error. Note that if a compile error occurs,
-          - further information can be found in target/site/checkstyle.html (present even when
-          - just the compile goal and not the site goal has been run). Note also that child
-          - projects may redeclare this plugin and provide different configuration settings
-          - to use different checks (more or less strict than the default).
-          -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.2</version>
-        <executions>
-          <execution>
-            <id>verify-style</id>
-            <phase>verify</phase>
-            <goals><goal>check</goal></goals>
-          </execution>
-        </executions>
-        <configuration>
-          <configLocation>default/myfaces-checks-minimal.xml</configLocation>
-          <headerLocation>default/myfaces-header.txt</headerLocation>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+            This profile is invoked by -DprepareRelease=true.
+            This allows mvn release:prepare to run successfully on the assembly projects.
+        -->
+        <profile>
+            <id>prepare-release</id>
+            <activation>
+                <property>
+                    <name>prepareRelease</name>
+                </property>
+            </activation>
+            <modules>
+                <module>assembly</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <configuration>
+                            <arguments>-DprepareRelease</arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>perform-release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>assembly</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <configuration>
+                            <arguments>-Papache-release -DperformRelease</arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
-  <distributionManagement>
-    <site>
-      <id>apache-site</id>
-      <name>Apache Website</name>
-      <url>scpexe://people.apache.org/www/myfaces.apache.org/core11/</url>
-    </site>
-  </distributionManagement>
+    </profiles>
 
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <configLocation>default/myfaces-checks-standard.xml</configLocation>
-          <headerLocation>default/myfaces-header.txt</headerLocation>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <!-- disable the plugin for this site project -->
+                <artifactId>maven-pmd-plugin</artifactId>
+                <reportSets>
+                    <reportSet />
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+    
+
+    <dependencyManagement>
+
+        <!--
+            Defines all dependencies used in this project.
+            All other project-modules reference the dependencies from here only by groupId and artifactId.
+        -->
+        <dependencies>
+
+            <!-- INTERNAL DEPENDENCIES -->
+
+            <!-- myfaces-api -->
+            <dependency>
+                <groupId>org.apache.myfaces.core</groupId>
+                <artifactId>myfaces-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- myfaces-impl -->
+            <dependency>
+                <groupId>org.apache.myfaces.core</groupId>
+                <artifactId>myfaces-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- myfaces-shared-impl (will be packed together with myfaces-impl) -->
+            <dependency>
+                <groupId>org.apache.myfaces.shared</groupId>
+                <artifactId>myfaces-shared-impl</artifactId>
+                <version>${myfaces-shared.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+
+            
+            <!-- SPEC DEPENDENCIES -->
+
+            <!-- Servlet 2.3 -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.3</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- JSP 2.0 -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>2.0</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- JSTL 1.1 -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>1.1.0</version>
+                <scope>compile</scope>
+                <exclusions>
+                    <!-- we already have a jsp-api -->
+                    <exclusion>
+                          <groupId>javax.servlet</groupId>
+                          <artifactId>jsp-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            
+
+            <!-- UTILITY DEPENDENCIES -->
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.1</version>
+                <scope>compile</scope>
+            </dependency>
+              
+            <dependency>
+                <groupId>commons-el</groupId>
+                <artifactId>commons-el</artifactId>
+                <version>1.0</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.1</version>
+                <scope>compile</scope>
+            </dependency>
+
+
+
+
+            <dependency>
+                <groupId>commons-digester</groupId>
+                <artifactId>commons-digester</artifactId>
+                <version>1.8</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.1.1</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- SPI DEPENDENCIES (compile + optional) -->
+
+            <!-- Portlet support -->
+            <dependency>
+                <groupId>portlet-api</groupId>
+                <artifactId>portlet-api</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
+            </dependency>
+
+
+            <!-- TEST DEPENDENCIES -->
+            <!-- test cases of myfaces-api -->
+
+
+            <dependency>
+                <groupId>org.apache.struts.shale</groupId>
+                <artifactId>shale-test</artifactId>
+                <version>1.0.2</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>cactus</groupId>
+                <artifactId>cactus</artifactId>
+                <version>13-1.7.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- easymock -->
+            <dependency>
+                <groupId>easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>1.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <version>1.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                  <groupId>aspectj</groupId>
+                  <artifactId>aspectjrt</artifactId>
+                  <version>1.2.1</version>
+                  <scope>test</scope>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+    
+
+    <repositories>
+        <repository>
+            <id>java.net</id>
+            <name>java.net Maven 1 Repository</name>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+
+        <!-- tomcat el-impl for test cases (see related tomcat-dependencies) -->
+        <repository>
+            <id>tomcat</id>
+            <url>http://tomcat.apache.org/dev/dist/m2-repository</url>
+        </repository>
+
+    </repositories>
+    
+
+
+    <distributionManagement>
+        <site>
+            <id>apache.website</id>
+            <name>Apache Website</name>
+            <url>scpexe://people.apache.org/www/myfaces.apache.org/core11/</url>
+        </site>
+    </distributionManagement>
 
 </project>
