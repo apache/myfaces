@@ -70,6 +70,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
     _Lang:  myfaces._impl._util._Lang,
     _Dom:   myfaces._impl._util._Dom,
 
+    /*error reporting threshold*/
+    _threshold: "ERROR",
+
     /*blockfilter for the passthrough filtering, the attributes given here
      * will not be transmitted from the options into the passthrough*/
     _BLOCKFILTER: {onerror: true, onevent: true, render: true, execute: true, myfaces: true},
@@ -407,6 +410,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      */
     sendError : function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage) {
         var _Lang = myfaces._impl._util._Lang;
+        var UNKNOWN = _Lang.getMessage("UNKNOWN");
 
         var eventData = {};
         //we keep this in a closure because we might reuse it for our serverErrorMessage
@@ -414,17 +418,21 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             return (name && name === myfaces._impl.core.Impl.MALFORMEDXML) ? _Lang.getMessage("ERR_MALFORMEDXML") : "";
         };
 
+
+
+        //by setting unknown values to unknown we can handle cases
+        //better where a simulated context is pushed into the system
         eventData.type = this.ERROR;
 
-        eventData.status            = name;
-        eventData.serverErrorName   = serverErrorName;
-        eventData.serverErrorMessage =  serverErrorMessage;
+        eventData.status            = name || UNKNOWN;
+        eventData.serverErrorName   = serverErrorName || UNKNOWN;
+        eventData.serverErrorMessage =  serverErrorMessage || UNKNOWN;
 
         try {
-            eventData.source        = context.source;
-            eventData.responseCode  = request.status;
-            eventData.responseText  = request.responseText;
-            eventData.responseXML   = request.responseXML;
+            eventData.source        = context.source || UNKNOWN;
+            eventData.responseCode  = request.status || UNKNOWN;
+            eventData.responseText  = request.responseText  || UNKNOWN;
+            eventData.responseXML   = request.responseXML || UNKNOWN;
         } catch (e) {
             // silently ignore: user can find out by examining the event data
         }
@@ -445,8 +453,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             finalMessage.push((serverErrorName) ? serverErrorName : "");
             finalMessage.push((serverErrorMessage) ? serverErrorMessage : "");
             finalMessage.push(malFormedMessage());
-
-            defaultErrorOutput(finalMessage.join("-") + _Lang.getMessage("MSG_DEV_MODE"));
+            finalMessage.push("\n\n");
+            finalMessage.push( _Lang.getMessage("MSG_DEV_MODE"));
+            defaultErrorOutput(finalMessage.join(""));
         }
     },
 
@@ -456,10 +465,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
     sendEvent : function sendEvent(/*Object*/request, /*Object*/ context, /*event name*/ name) {
         var _Lang = myfaces._impl._util._Lang;
         var eventData = {};
+        var UNKNOWN = _Lang.getMessage("UNKNOWN");
+
         eventData.type = this.EVENT;
 
         eventData.status = name;
         eventData.source = context.source;
+
 
         if (name !== this.BEGIN) {
 
@@ -469,7 +481,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
                     try {
                         return value[key]
                     } catch (e) {
-                        return "unkown";
+                        return UNKNOWN;
                     }
                 };
 
@@ -500,6 +512,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
 
     /**
      * processes the ajax response if the ajax request completes successfully
+     * this is the case for non queued outside calls which are triggered by calling response
+     * themselves and hence the case according to the spec
+     *
      * @param {Object} request (xhrRequest) the ajax request!
      * @param {Object} context (Map) context map keeping context data not being passed down over
      * the request boundary but kept on the client
@@ -622,5 +637,47 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
         return true;
 
+    },
+
+    /**
+     * error handler behavior called internally
+     * and only into the impl it takes care of the
+     * internal message transformation to a myfaces internal error
+     * and then uses the standard send error mechanisms
+     * also a double error logging prevention is done as well
+     *
+     * @param request the request currently being processed
+     * @param context the context affected by this error
+     * @param sourceClass the sourceclass throwing the error
+     * @param func the function throwing the error
+     * @param exception the exception being thrown
+     */
+     stdErrorHandler: function(request, context, sourceClass, func, exception) {
+
+        var _Lang = myfaces._impl._util._Lang;
+        var exProcessed = _Lang.isExceptionProcessed(exception);
+        try {
+            //newer browsers do not allow to hold additional values on native objects like exceptions
+            //we hence capsule it into the request, which is gced automatically
+            //on ie as well, since the stdErrorHandler usually is called between requests
+            //this is a valid approach
+
+            if (this._threshold == "ERROR" && !exProcessed) {
+                this.sendError(request, context, this.CLIENT_ERROR, exception.name,
+                        "MyFaces ERROR:" + this._Lang.createErrorMsg(sourceClass, func, exception));
+            }
+        } finally {
+
+            //we forward the exception, just in case so that the client
+            //will receive it in any way
+            try {
+                if (!exProcessed) {
+                    _Lang.setExceptionProcessed(exception);
+                }
+            } catch(e) {
+
+            }
+            throw exception;
+        }
     }
 });    

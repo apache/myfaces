@@ -41,7 +41,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
      */
     constructor_: function(arguments) {
 
-
         try {
             this._callSuper("constructor", arguments);
             /*namespace remapping for readability*/
@@ -57,7 +56,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
             this._ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(this._onException, this._onWarning);
         } catch (e) {
             //_onError
-            this._onException(this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
+            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
         }
     },
 
@@ -98,13 +97,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
 
         var targetURL;
         if (typeof this._sourceForm.elements["javax.faces.encodedURL"] == 'undefined') {
-              targetURL = this._sourceForm.action;
+            targetURL = this._sourceForm.action;
         } else {
-              targetURL = this._sourceForm.elements["javax.faces.encodedURL"].value;
+            targetURL = this._sourceForm.elements["javax.faces.encodedURL"].value;
         }
-        
+
         this._xhr.open(this._ajaxType, targetURL +
-                ((this._ajaxType == "GET")? "?"+this._requestParameters.makeFinal():"")
+                ((this._ajaxType == "GET") ? "?" + this._requestParameters.makeFinal() : "")
                 , true);
 
         var contentType = this._contentType;
@@ -116,13 +115,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
         this._xhr.setRequestHeader(this._HEAD_FACES_REQ, this._VAL_AJAX);
 
         this._xhr.onreadystatechange = this._Lang.hitch(this, this.callback);
-        var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
-        _Impl.sendEvent(this._xhr, this._context, myfaces._impl.core.Impl.BEGIN);
+        var _Impl = this._getImpl();
+        _Impl.sendEvent(this._xhr, _Impl.BEGIN);
 
         this._preSend();
 
         try {
-            this._xhr.send((this._ajaxType != "GET")? this._requestParameters.makeFinal():null);
+            this._xhr.send((this._ajaxType != "GET") ? this._requestParameters.makeFinal() : null);
         } finally {
             this._postSend();
         }
@@ -146,22 +145,22 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 //we unify the api, there must be always a request passed to the external function
                 //and always a context, no matter what
                     this._Lang.hitch(this,
-                                    function() {
-                                        //the hitch has to be done due to the setTimeout refocusing the scope of this
-                                        //to window
-                                        try {
-                                            _req.onreadystatechange = function() {
-                                            };
+                            function() {
+                                //the hitch has to be done due to the setTimeout refocusing the scope of this
+                                //to window
+                                try {
+                                    _req.onreadystatechange = function() {
+                                    };
 
-                                            //to avoid malformed whatever, we have
-                                            //the timeout covered already on the _onTimeout function
-                                            _req.abort();
-                                            this._onTimeout(_req, _context);
-                                        } catch (e) {
-                                            alert(e);
-                                        } finally {
-                                        }
-                                    })
+                                    //to avoid malformed whatever, we have
+                                    //the timeout covered already on the _onTimeout function
+                                    _req.abort();
+                                    this._onTimeout(_req, _context);
+                                } catch (e) {
+                                    alert(e);
+                                } finally {
+                                }
+                            })
                     , this._timeout);
         }
     },
@@ -171,9 +170,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
      * triggered by RequestQueue
      */
     callback : function() {
-        
+
         try {
-            var _Impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+            var _Impl = this._getImpl();
 
             if (this._xhr.readyState == this._READY_STATE_DONE) {
                 if (this._timeoutId) {
@@ -182,18 +181,15 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                     window.clearTimeout(this._timeoutId);
                     this._timeoutId = null;
                 }
-                this._onDone(this._xhr, this._context);
+                this._onDone(this);
                 if (this._xhr.status >= this._STATUS_OK_MINOR && this._xhr.status < this._STATUS_OK_MAJOR) {
-                    this._onSuccess(this._xhr, this._context);
+                    this._onSuccess();
                 } else {
-                    this._onError(this._xhr, this._context);
+                    this._onError();
                 }
             }
         } catch (e) {
-            if (this._onException)
-                this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
-            else
-                alert(e.toString());
+            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
         } finally {
             //final cleanup to terminate everything
             this._Lang.clearExceptionProcessed();
@@ -203,9 +199,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 this._callSuper("_finalize");
             }
 
-
         }
     },
+
+
+
+
 
     /*
      * various lifecycle callbacks which can be used by differing AjaxRequest impls

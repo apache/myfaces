@@ -85,6 +85,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_de", myface
     ERR_PPR_UNKNOWNCID:     "{0}: Unbekannte Html-Komponenten-ID: {1}",
     ERR_NO_VIEWROOTATTR:    "{0}: Änderung von ViewRoot Attributen ist nicht erlaubt",
     ERR_NO_HEADATTR:        "{0}: Änderung von Head Attributen ist nicht erlaubt",
-    ERR_RED_URL:            "{0}: Redirect ohne URL"
+    ERR_RED_URL:            "{0}: Redirect ohne URL",
+
+    ERR_REQ_FAILED_UNKNOWN: "Anfrage mit unbekanntem Status fehlgeschlagen",
+    ERR_REQU_FAILED: "Anfrage mit Status {0} and Ursache {1} fehlgeschlagen",
+    UNKNOWN: "Unbekannt"
 
 });

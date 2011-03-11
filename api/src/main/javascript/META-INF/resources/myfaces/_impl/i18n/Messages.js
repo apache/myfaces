@@ -72,6 +72,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages", Object, {
     ERR_PPR_UNKNOWNCID:     "{0}:  Unknown Html-Component-ID: {1}",
     ERR_NO_VIEWROOTATTR:    "{0}: Changing of ViewRoot attributes is not supported",
     ERR_NO_HEADATTR:        "{0}: Changing of Head attributes is not supported",
-    ERR_RED_URL:            "{0}: Redirect without url"
+    ERR_RED_URL:            "{0}: Redirect without url",
 
+    ERR_REQ_FAILED_UNKNOWN: "Request failed with unknown status",
+    ERR_REQU_FAILED: "Request failed with status {0} and reason {1}",
+    UNKNOWN: "UNKNOWN"
 });

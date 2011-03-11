@@ -22,6 +22,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
      */
     _curReq : null,
 
+
     /**
      * the standard constructur of our class
      */
@@ -34,6 +35,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue
      * @param {Object} request (myfaces._impl.xhrCore._AjaxRequest) request to send
      */
     enqueue : function(request) {
+
         if (typeof request._delay == "number") {
             this.clearDelayTimeout();
             var _Lang = myfaces._impl._util._Lang;

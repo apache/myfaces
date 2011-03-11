@@ -62,7 +62,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
      * request
      */
     send: function() {
-        var _Impl = this._RT.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+        var _Impl = this._getImpl();
         var _RT = myfaces._impl.core._Runtime;
 
         this._frame = this._createTransportFrame();
@@ -114,23 +114,26 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
             request.responseText = this._getFrameText();
             request.responseXML = this._getFrameXml();
             request.readyState = this._READY_STATE_DONE;
-
+            this._xhr = request;
             this._onDone(request, this._context);
 
             if (!this._Lang.isXMLParseError(request.responseXML)) {
                 request.status = 201;
-                this._onSuccess(request, this._context);
+                this._onSuccess();
             } else {
                 request.status = 0;
-                this._onError(request, this._context);
+                //we simulate the request for our xhr call
+                this._onError();
+
             }
         } catch (e) {
             //_onError
-            this._onException(null, this._context, this.CLS_NAME, "constructor", e);
+            this._onException(request, this._context, this.CLS_NAME, "constructor", e);
         } finally {
             //this closes any hanging or pending comm channel caused by the iframe
             this._clearFrame();
             this._frame = null;
+            this._xhr = null;
         }
     },
 
@@ -171,7 +174,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
 
 
     _initAjaxParams: function() {
-        var _Impl = myfaces._impl.core.Impl;
+        var _Impl = this._getImpl();
         //this._appendHiddenValue(_Impl.P_AJAX, "");
         var appendHiddenValue = this._Lang.hitch(this, this._appendHiddenValue);
         for (var key in this._passThrough) {
@@ -185,7 +188,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
     },
 
     _removeAjaxParams: function(oldTarget) {
-        var _Impl = myfaces._impl.core.Impl;
+        var _Impl = this._getImpl();
         this._sourceForm.target = oldTarget;
         //some browsers optimize this and loose their scope that way,
         //I am still not sure why, but probably because the function itself

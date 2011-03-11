@@ -57,6 +57,57 @@ if (!myfaces._impl.core._Runtime) {
          */
         _T._classReplacementCnt = 0;
 
+        /*cascaded eval methods depending upon the browser*/
+
+        /*legacy browser IE*/
+        _T._evalExecScript = function(code) {
+            //execScript definitely only for IE otherwise we might have a custom
+            //window extension with undefined behavior on our necks
+            //window.execScript does not return anything
+            //on htmlunit it return "null object"
+            var ret = window.execScript(code);
+            if ('undefined' != typeof ret && ret == "null" /*htmlunit bug*/) {
+                return null;
+            }
+            return ret;
+        };
+
+        /**
+         * flakey head appendix method which does not work in the correct
+         * order or at all for all modern browsers
+         * but seems to be the only method which works on blackberry correctly
+         * hence we are going to use it as fallback
+         *
+         * @param code the code part to be evaled
+         */
+        _T._evalBBOld = function(code) {
+            var location = document.getElementsByTagName("head")[0] || document.documentElement;
+            var placeHolder = document.createElement("script");
+            placeHolder.type = "text/javascript";
+            placeHolder.text = code;
+            location.insertBefore(placeHolder, location.firstChild);
+            location.removeChild(placeHolder);
+            return null;
+        };
+
+        _T._standardGlobalEval = function(code) {
+            //fix which works in a cross browser way
+            //we used to scope an anonymous function
+            //but I think this is better
+            //the reason is firefox applies a wrong scope
+            //if we call eval by not scoping
+
+            var gEval = function () {
+
+                var ret = window.eval.call(window, code);
+                if ('undefined' == typeof ret) return null;
+                return ret;
+            };
+            var ret = gEval();
+            if ('undefined' == typeof ret) return null;
+            return ret;
+        };
+
         /**
          * global eval on scripts
          *
@@ -73,63 +124,19 @@ if (!myfaces._impl.core._Runtime) {
         _T.globalEval = function(code) {
             //TODO add a config param which allows to evaluate global scripts even if the call
             //is embedded in an iframe
-            if (window.execScript) {
-                //execScript definitely only for IE otherwise we might have a custom
-                //window extension with undefined behavior on our necks
-                //window.execScript does not return anything
-                //on htmlunit it return "null object"
-                var ret = window.execScript(code);
-                if ('undefined' != typeof ret && ret == "null" /*htmlunit bug*/) {
-                    return null;
-                }
-                return ret;
-            } else if (window.eval) {
-
-                //fix which works in a cross browser way
-                //we used to scope an anonymous function
-                //but I think this is better
-                //the reason is firefox applies a wrong scope
-                //if we call eval by not scoping
-
-                if (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6) {
-                    var gEval = function () {
-
-                        var ret = window.eval.call(window, code);
-                        if ('undefined' == typeof ret) return null;
-                        return ret;
-                    };
-                    var ret = gEval();
-                    if ('undefined' == typeof ret) return null;
-                    return ret;
-                } else {
-                    //blackberry 5- only understands the flaky head method
-                    //which fails on literally all newer browsers one way or the other
-                    return _T._globalEvalHeadAppendixMethod(code);
-                }
-                //we scope the call in window
-
+            //We lazy init the eval type upon the browsers
+            //capabilities
+            if ('undefined' == typeof _T._evalType) {
+                _T._evalType = window.excScript ? "evalExecScript" : null;
+                _T._evalType = !_T._evalType && window.eval && (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6) ? "_standardGlobalEval" : null;
+                _T._evalType = (window.eval && !_T._evalType) ? _evalBBOld : null;
+            }
+            if (_T._evalType) {
+                return _T[_T._evalType](code);
             }
             //we probably have covered all browsers, but this is a safety net which might be triggered
             //by some foreign browser which is not covered by the above cases
             eval.call(window, code);
-            return null;
-        };
-
-        /**
-         * flakey head appendix method which does not work in the correct
-         * order or at all for all modern browsers
-         * but seems to be the only method which works on blackberry correctly
-         * hence we are going to use it as fallback
-         *
-         * @param code the code part to be evaled
-         */
-        _T._globalEvalHeadAppendixMethod = function(code) {
-            var location = document.getElementsByTagName("head")[0] || document.documentElement;
-            var placeHolder = document.createElement("script");
-            placeHolder.type = "text/javascript";
-            placeHolder.text = code;
-            location.insertBefore(placeHolder, location.firstChild);
-            location.removeChild(placeHolder);
             return null;
         };
 
@@ -435,39 +442,46 @@ if (!myfaces._impl.core._Runtime) {
          * @param {String} type the type of the script
          * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
          * @param {String} charSet the charset under which the script has to be loaded
+         * @param {Boolean} async tells whether the script can be asynchronously loaded or not, currently
+         * not used
          */
-        _T.loadScriptEval = function(src, type, defer, charSet) {
+        _T.loadScriptEval = function(src, type, defer, charSet, async) {
             var xhr = _T.getXHRObject();
-            xhr.open("GET", src, false);
+            xhr.open("GET", src, async);
 
             if (charSet) {
                 xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
             }
 
+
+            xhr.onreadystatechange = function() {
+                //since we are synchronous we do it after not with onReadyStateChange
+
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        //defer also means we have to process after the ajax response
+                        //has been processed
+                        //we can achieve that with a small timeout, the timeout
+                        //triggers after the processing is done!
+                        if (!defer) {
+                            _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//@ sourceURL=" + src);
+                        } else {
+                            //TODO not ideal we maybe ought to move to something else here
+                            //but since it is not in use yet, it is ok
+                            setTimeout(function() {
+                                _T.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
+                            }, 1);
+                        }
+                    } else {
+                        throw Error(xhr.responseText);
+                    }
+                }
+                /* else {
+                 throw Error("Loading of script " + src + " failed ");
+                 }*/
+            }
             xhr.send(null);
 
-            //since we are synchronous we do it after not with onReadyStateChange
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    //defer also means we have to process after the ajax response
-                    //has been processed
-                    //we can achieve that with a small timeout, the timeout
-                    //triggers after the processing is done!
-                    if (!defer) {
-                        _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//@ sourceURL=" + src);
-                    } else {
-                        //TODO not ideal we maybe ought to move to something else here
-                        //but since it is not in use yet, it is ok
-                        setTimeout(function() {
-                            _T.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
-                        }, 1);
-                    }
-                } else {
-                    throw Error(xhr.responseText);
-                }
-            } else {
-                throw Error("Loading of script " + src + " failed ");
-            }
         };
 
         /**
@@ -479,7 +493,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
          * @param {String} charSet the charset under which the script has to be loaded
          */
-        _T.loadScriptByBrowser = function(src, type, defer, charSet) {
+        _T.loadScriptByBrowser = function(src, type, defer, charSet, async) {
             //if a head is already present then it is safer to simply
             //use the body, some browsers prevent head alterations
             //after the first initial rendering
@@ -488,9 +502,6 @@ if (!myfaces._impl.core._Runtime) {
             //the rest can be finely served with body
             var d = _T.browser;
             var position = "head"
-            //if(!d.isIE || d.isIE >= 8) {
-            //    position = document.getElementsByTagName("body").length ? "body" : "head";
-            //}
 
             try {
                 var holder = document.getElementsByTagName(position)[0];
@@ -500,6 +511,7 @@ if (!myfaces._impl.core._Runtime) {
                     html.appendChild(holder);
                 }
                 var script = document.createElement("script");
+
                 script.type = type || "text/javascript";
                 script.src = src;
                 if (charSet) {
@@ -508,14 +520,12 @@ if (!myfaces._impl.core._Runtime) {
                 if (defer) {
                     script.defer = defer;
                 }
-
-                //fix for the white page issue
-                // if(_T.browser.isIE && _T.browser.isIE < 7) {
-                //   holder.insertBefore( script, holder.firstChild );
-                //   holder.removeChild( script );
-                // } else {
+                /*html5 capable browsers can deal with script.async for
+                 * proper head loading*/
+                if ('undefined' != typeof script.async) {
+                    script.async = async;
+                }
                 holder.appendChild(script);
-                // }
 
             } catch (e) {
                 //in case of a loading error we retry via eval    
@@ -525,16 +535,16 @@ if (!myfaces._impl.core._Runtime) {
             return true;
         };
 
-        _T.loadScript = function(src, type, defer, charSet) {
+        _T.loadScript = function(src, type, defer, charSet, async) {
             //the chrome engine has a nasty javascript bug which prevents
             //a correct order of scripts being loaded
             //if you use script source on the head, we  have to revert
             //to xhr+ globalEval for those
-            if (!_T.browser.isFF) {
+            if (!_T.browser.isFF && !_T.browser.isWebkit && !_T.browser.isOpera >= 10) {
                 _T.loadScriptEval(src, type, defer, charSet);
             } else {
                 //only firefox keeps the order, sorry ie...
-                _T.loadScriptByBrowser(src, type, defer, charSet)
+                _T.loadScriptByBrowser(src, type, defer, charSet, async);
             }
         };
 

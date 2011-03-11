@@ -25,7 +25,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_nl", myface
 
     /*Messages*/
     MSG_DEV_MODE:           "Opmerking, dit bericht is enkel gestuurd omdat het project stadium develoment is en er geen " +
-                            "andere listeners zijn geconfigureerd.",
+            "andere listeners zijn geconfigureerd.",
     MSG_AFFECTED_CLASS:     "Betrokken Klasse:",
     MSG_AFFECTED_METHOD:    "Betrokken Methode:",
 
@@ -38,7 +38,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_nl", myface
 
     /*Errors and messages*/
     ERR_FORM:               "De doel form kon niet bepaald worden, ofwel omdat het element niet tot een form behoort, ofwel omdat er verschillende forms zijn met 'named element' met dezelfde identifier of naam, ajax verwerking is gestopt.",
-	ERR_VIEWSTATE:          "jsf.viewState: param waarde is niet van het type form!",
+    ERR_VIEWSTATE:          "jsf.viewState: param waarde is niet van het type form!",
     ERR_TRANSPORT:          "Transport type {0} bestaat niet",
     ERR_EVT_PASS:           "een event moet opgegegevn worden (ofwel een event object null of undefined) ",
     ERR_CONSTRUCT:          "Delen van het antwoord konden niet opgehaald worden bij het aanmaken van de event data: {0} ",
@@ -70,6 +70,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_nl", myface
     ERR_PPR_UNKNOWNCID:     "{0}: Onbekende Html-Component-ID: {1}",
     ERR_NO_VIEWROOTATTR:    "{0}: Wijzigen van ViewRoot attributen is niet ondersteund",
     ERR_NO_HEADATTR:        "{0}: Wijzigen van Head attributen is niet ondersteund",
-    ERR_RED_URL:            "{0}: Redirect zonder url"
+    ERR_RED_URL:            "{0}: Redirect zonder url",
+
+    ERR_REQ_FAILED_UNKNOWN: "Request mislukt met onbekende status",
+    ERR_REQU_FAILED:        "Request mislukt met status {0} en reden {1}",
+    UNKNOWN:                "ONBEKEND"
 
 });

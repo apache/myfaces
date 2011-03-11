@@ -183,10 +183,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
      * @param theForm the form to which the element has to be set to
      * @param doNotChange if set to true no change is performed if the element is found already to be rendered
      */
-    _setVSTForm: function(theForm, doNotChange) {
+    _setVSTForm: function(theForm) {
+        theForm = this._Lang.byId(theForm);
+        if(!theForm) return;
+
         var viewStateField = (theForm.elements) ? theForm.elements[this.P_VIEWSTATE] : null;//this._Dom.findFormElement(elem, this.P_VIEWSTATE);
 
-        if (viewStateField && !doNotChange) {
+        if (viewStateField) {
             this._Dom.setAttribute(viewStateField, "value", this.appliedViewState);
         } else if (!viewStateField) {
             var element = this._Dom.getDummyPlaceHolder();
@@ -201,15 +204,16 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
     },
 
     _setVSTInnerForms: function(elem) {
+        elem = this._Lang.byId(elem);
         var replacedForms = this._Dom.findByTagName(elem, "form", false);
-        var applyWithoutChange = this._Lang.hitch(this, function(elem) {
-            this._setVSTForm(elem, true);
+        var applyVST = this._Lang.hitch(this, function(elem) {
+            this._setVSTForm(elem);
         });
 
         try {
-            this._Lang.arrForEach(replacedForms, applyWithoutChange, 0, this);
+            this._Lang.arrForEach(replacedForms, applyVST, 0, this);
         } finally {
-            applyWithoutChange = false;
+            delete applyVST;
         }
     },
 
@@ -325,7 +329,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
                 return true;
             }
 
-            this._setVSTForm(sourceForm);
+            this._updateForms.push(sourceForm.id)
+            //this._setVSTForm(sourceForm);
         }
         else {
             // response may contain several blocks
@@ -372,11 +377,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
     _pushOperationResult: function(resultNode) {
         var pushSubnode = this._Lang.hitch(this, function(currNode) {
             var parentForm = this._Dom.getParent(currNode, "form");
+            //if possible we work over the ids
+            //so that elements later replaced are referenced
+            //at the latest possibility
             if (null != parentForm) {
-                this._updateForms.push(parentForm);
+                this._updateForms.push(parentForm.id || parentForm);
             }
             else {
-                this._updateElems.push(currNode);
+                this._updateElems.push(currNode.id || currNode);
             }
         });
         var isArr = 'undefined' != typeof resultNode.length && 'undefined' == typeof resultNode.nodeType;

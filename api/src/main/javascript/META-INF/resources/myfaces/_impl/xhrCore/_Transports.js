@@ -61,7 +61,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      */
     _q: new myfaces._impl.xhrCore._AjaxRequestQueue(),
 
-    _threshold: "ERROR",
+
 
     _Lang :  myfaces._impl._util._Lang,
     _RT: myfaces._impl.core._Runtime,
@@ -78,7 +78,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {Object} passThrgh (Map) values to be passed through
      **/
     xhrPost : function(source, sourceForm, context, passThrgh) {
-        (new (this._getAjaxReqClass(context))(this._getArguments(source, sourceForm, context, passThrgh))).send();
+        var args = this._getArguments(source, sourceForm, context, passThrgh);
+         delete args.xhrQueue;
+        (new (this._getAjaxReqClass(context))(args)).send();
     },
 
     /**
@@ -112,6 +114,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         // since there are no cross browser ways to resolve a timeout on xhr level
         // we have to live with it
         args.ajaxType = "GET";
+        delete args.xhrQueue;
         (new (this._getAjaxReqClass(context))(args)).send();
     },
 
@@ -152,7 +155,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         // note in get the timeout is not working delay however is and queue size as well
         // since there are no cross browser ways to resolve a timeout on xhr level
         // we have to live with it
-
+        delete args.xhrQueue;
         (new (this._getMultipartReqClass(context))(args)).send();
     },
 
@@ -191,6 +194,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         // since there are no cross browser ways to resolve a timeout on xhr level
         // we have to live with it
         args.ajaxType = "GET";
+        delete args.xhrQueue;
         (new (this._getMultipartReqClass(context))(args)).send();
     },
 
@@ -221,7 +225,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      * @param {XmlHttpRequest} context - the ajax context
      */
     response : function(request, context) {
-        this._q._curReq._response.processResponse(request, context);
+        var ajaxObj =  new (this._getAjaxReqClass(context))({xhr: request, context: context});
+
+        ajaxObj._response.processResponse(request, context);
     },
 
     /**
@@ -244,25 +250,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
             "sourceForm": sourceForm,
             "context": context,
             "passThrough": passThrgh,
-            "xhrQueue": this._q,
-
-            //standard done callback
-            "onDone": this._Lang.hitch(this, this._stdOnDone),
-            //standard success callback
-            "onSuccess": this._Lang.hitch(this, this._stdOnSuccess),
-            //standard server side error callback
-            "onError": this._Lang.hitch(this, this._stdOnError),
-
-            //standard timeout callback
-            "onTimeout": this._Lang.hitch(this, this._stdOnTimeout),
-
-            //now to the internal error handlers which perform operations
-            //on the queue
-            //standard exception handling callback
-            "onException": this._Lang.hitch(this, this._stdErrorHandler),
-            //standard warning handling callback
-            "onWarn": this._Lang.hitch(this, this._stdErrorHandler)
-        };
+            "xhrQueue": this._q
+       };
 
         //we now mix in the config settings which might either be set globally
         //or pushed in under the context myfaces.<contextValue> into the current request 
@@ -297,136 +286,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
         }
     },
 
-    /**
-     * standard on done handler which routes to the
-     * event sending specified by the spec
-     *
-     * @param request the xhr request object
-     * @param context the context holding all values for further processing
-     */
-    _stdOnDone: function(request, context) {
-        this._loadImpl();
 
-        this._Impl.sendEvent(request, context, this._Impl.COMPLETE);
-    },
 
-    /**
-     * standard spec compliant success handler
-     *
-     * @param request the xhr request object
-     * @param context the context holding all values for further processing
-     */
-    _stdOnSuccess: function(request, context) {
-        //_onSuccess
-        this._loadImpl();
-        try {
-            this._Impl.response(request, context);
 
-            this._Impl.sendEvent(request, context, this._Impl.SUCCESS);
-        } finally {
-            this._q.processQueue();
-            //ie6 helper cleanup
-            delete context.source;
-        }
-    },
 
-    /**
-     * now to the error case handlers which by spec should
-     * route to our standard error queue
-     *
-     * @param request the xhr request object
-     * @param context the context holding all values for further processing
-     */
-    _stdOnError: function(request, context) {
-        this._loadImpl();
-
-        //_onError
-        var errorText;
-        try {
-            errorText = "Request failed";
-            if (request.status) {
-                errorText += "with status " + request.status;
-                if (request.statusText) {
-                    errorText += " and reason " + this._xhr.statusText;
-                }
-            }
-
-        } catch (e) {
-            errorText = "Request failed with unknown status";
-        } finally {
-            try {
-                this._Impl.sendError(request, context, this._Impl.HTTPERROR,
-                        this._Impl.HTTPERROR, errorText);
-            } finally {
-                this._q.processQueue();
-                //ie6 helper cleanup
-                delete context.source;
-                
-            }
-        }
-        //_onError
-
-    },
-
-    /**
-     * standard timeout handler
-     * the details on how to handle the timeout are
-     * handled by the calling request object
-     */
-    _stdOnTimeout: function(request, context) {
-        this._loadImpl();
-        try {
-            //we issue an event not an error here before killing the xhr process
-            this._Impl.sendEvent(request, context, this._Impl.TIMEOUT_EVENT,
-                    this._Impl.TIMEOUT_EVENT);
-            //timeout done we process the next in the queue
-        } finally {
-            //We trigger the next one in the queue
-            this._q.processQueue();
-        }
-        //ready state done should be called automatically
-    },
-
-    /**
-     * Client error handlers which also in the long run route into our error queue
-     * but also are able to deliver more meaningful messages
-     * note, in case of an error all subsequent xhr requests are dropped
-     * to get a clean state on things
-     *
-     * @param request the xhr request object
-     * @param context the context holding all values for further processing
-     * @param sourceClass (String) the issuing class for a more meaningful message
-     * @param func the issuing function
-     * @param exception the embedded exception
-     */
-    _stdErrorHandler: function(request, context, sourceClass, func, exception) {
-        this._loadImpl();
-        var _Lang =  myfaces._impl._util._Lang;
-        var exProcessed = _Lang.isExceptionProcessed(exception);
-        try {
-            //newer browsers do not allow to hold additional values on native objects like exceptions
-            //we hence capsule it into the request, which is gced automatically
-            //on ie as well, since the stdErrorHandler usually is called between requests
-            //this is a valid approach
-
-            if (this._threshold == "ERROR" && !exProcessed) {
-                this._Impl.sendError(request, context, this._Impl.CLIENT_ERROR, exception.name,
-                        "MyFaces ERROR:" + this._Lang.createErrorMsg(sourceClass, func, exception));
-            }
-        } finally {
-            this._q.cleanup();
-            //we forward the exception, just in case so that the client
-            //will receive it in any way
-            try {
-                if(!exProcessed) {
-                    _Lang.setExceptionProcessed(exception);
-                }
-            } catch(e) {
-
-            }
-            throw exception;
-        }
-    },
 
 
     _loadImpl: function() {

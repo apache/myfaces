@@ -323,8 +323,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     },
 
-    _buildNodesCompliant:
-    function(markup) {
+    _buildNodesCompliant: function(markup) {
         var dummyPlaceHolder = this.getDummyPlaceHolder(); //document.createElement("div");
         dummyPlaceHolder.innerHTML = markup;
         return this._Lang.objToArray(dummyPlaceHolder.childNodes);
