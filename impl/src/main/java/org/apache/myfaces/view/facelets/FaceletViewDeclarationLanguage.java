@@ -80,8 +80,6 @@ import javax.faces.view.ViewMetadata;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.ResourceResolver;
 import javax.faces.view.facelets.TagDecorator;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -1549,12 +1547,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             throw new IllegalStateException("No render kit was available for id \"" + id + "\"");
         }
 
-        ServletResponse response = (ServletResponse) extContext.getResponse();
-
         // set the buffer for content
         if (_bufferSize != -1)
         {
-            response.setBufferSize(_bufferSize);
+            extContext.setResponseBufferSize(_bufferSize);
         }
 
         // get our content type
@@ -1594,13 +1590,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         encoding = getResponseEncoding(context, writer.getCharacterEncoding());
 
         // apply them to the response
-        response.setContentType(contentType + "; charset=" + encoding);
+        extContext.setResponseContentType(contentType + "; charset=" + encoding);
 
         // removed 2005.8.23 to comply with J2EE 1.3
         // response.setCharacterEncoding(encoding);
 
         // Now, clone with the real writer
-        writer = writer.cloneWithWriter(response.getWriter());
+        writer = writer.cloneWithWriter(extContext.getResponseOutputWriter());
 
         return writer;
     }
@@ -1701,9 +1697,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         // 2. get it from request
         Object request = context.getExternalContext().getRequest();
-        if (encoding == null && request instanceof ServletRequest)
+        if (encoding == null)
         {
-            encoding = ((ServletRequest) request).getCharacterEncoding();
+            encoding = context.getExternalContext().getRequestCharacterEncoding();
         }
 
         // 3. get it from the session
@@ -1732,13 +1728,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     protected void handleFaceletNotFound(FacesContext context, String viewId) throws FacesException, IOException
     {
         String actualId = context.getApplication().getViewHandler().getActionURL(context, viewId);
-        Object respObj = context.getExternalContext().getResponse();
-        if (respObj instanceof HttpServletResponse)
-        {
-            HttpServletResponse respHttp = (HttpServletResponse) respObj;
-            respHttp.sendError(HttpServletResponse.SC_NOT_FOUND, actualId);
-            context.responseComplete();
-        }
+        context.getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, actualId);
+        context.responseComplete();
+
     }
 
     protected void handleRenderException(FacesContext context, Exception e) 
@@ -1893,12 +1885,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     protected void sendSourceNotFound(FacesContext context, String message)
     {
-        // This is incredibly lame, but I see no other option. -= SL =-
-        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         try
         {
             context.responseComplete();
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, message);
+            context.getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, message);
         }
         catch (IOException ioe)
         {
