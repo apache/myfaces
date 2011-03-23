@@ -187,7 +187,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
                 converterById.put(converter.getConverterId(),converter
                         .getConverterClass());
             }
-            else
+            if (converter.getForClass() != null)
             {
                 converterByClass.put(converter.getForClass(),converter
                         .getConverterClass());
