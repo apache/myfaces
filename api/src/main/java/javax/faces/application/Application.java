@@ -138,6 +138,7 @@ public abstract class Application
         if (application != null)
         {
             application.addBehavior(behaviorId, behaviorClass);
+            return;
         }
         throw new UnsupportedOperationException();
     }
