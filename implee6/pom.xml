@@ -35,9 +35,9 @@
     <url>http://myfaces.apache.org/core20/myfaces-implee6</url>
         
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/implee6</connection>
-        <developerConnection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/implee6</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/implee6</url>
+        <connection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/implee6</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/implee6</developerConnection>
+        <url>https://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/implee6</url>
     </scm>
 
 

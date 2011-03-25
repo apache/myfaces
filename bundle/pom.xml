@@ -30,9 +30,9 @@
     <packaging>bundle</packaging>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/bundle</connection>
-        <developerConnection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/bundle</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/bundle</url>
+        <connection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/bundle</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/bundle</developerConnection>
+        <url>https://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x/bundle</url>
     </scm>
     
     <build>
