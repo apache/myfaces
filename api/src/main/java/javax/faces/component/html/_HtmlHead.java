@@ -51,6 +51,13 @@ abstract class _HtmlHead extends UIOutput
   @JSFProperty
   public abstract String getLang();
   
+  /**
+   * 
+   * @return
+   */
+  @JSFProperty
+  public abstract String getXmlns();
+  
   @JSFExclude
   @JSFProperty(tagExcluded=true)
   @Override
