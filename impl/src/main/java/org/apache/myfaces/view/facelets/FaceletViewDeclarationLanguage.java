@@ -817,6 +817,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             List<AttachedObjectHandler> handlers = mctx.getAttachedObjectHandlers(component);
                             
                             retargetAttachedObjects(context, component, handlers);
+                            
+                            handlers.remove(currentHandler);
                         }
                         else
                         {
@@ -856,6 +858,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 List<AttachedObjectHandler> handlers = mctx.getAttachedObjectHandlers(component);
                                 
                                 retargetAttachedObjects(context, component, handlers);
+                                
+                                handlers.remove(currentHandler);
                             }
                             else
                             {
