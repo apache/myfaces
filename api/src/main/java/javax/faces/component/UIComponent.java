@@ -131,6 +131,8 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     
     public static final String ATTRS_WITH_DECLARED_DEFAULT_VALUES = "javax.faces.component.ATTR_NAMES_WITH_DEFAULT_VALUES";
     
+    public static final String HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME = "javax.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES";
+    
     /**
      * The key under which the component stack is stored in the FacesContext.
      * ATTENTION: this constant is duplicate in CompositeComponentExpressionUtils.
