@@ -141,7 +141,7 @@ import javax.faces.context.FacesContext;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Rev$ $Date$
  */
-class _DeltaStateHelper implements StateHelper
+class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientStateHolder
 {
 
     /**
@@ -162,6 +162,8 @@ class _DeltaStateHelper implements StateHelper
      */
     private Map<Serializable, Object> _deltas;
     
+    private Map<Object, Object> _transientState;
+    
     /**
      * This map keep track of StateHolder keys, to be saved when
      * saveState is called. 
@@ -176,6 +178,7 @@ class _DeltaStateHelper implements StateHelper
         this._component = component;
         _fullState = new HashMap<Serializable, Object>();
         _deltas = null;
+        _transientState = null;
         //_stateHolderKeys = new HashSet<Serializable>();
     }
 
@@ -819,5 +822,40 @@ class _DeltaStateHelper implements StateHelper
             }
             return values;
         }
+    }
+
+    public Object getTransient(Object key)
+    {
+        return (_transientState == null) ? null : _transientState.get(key);
+    }
+
+    public Object getTransient(Object key, Object defaultValue)
+    {
+        Object returnValue = (_transientState == null) ? null : _transientState.get(key);
+        if (returnValue != null)
+        {
+            return returnValue;
+        }
+        return defaultValue;
+    }
+
+    public Object putTransient(Object key, Object value)
+    {
+        if (_transientState == null)
+        {
+            _transientState = new HashMap<Object, Object>();
+        }
+        return _transientState.put(key, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void restoreTransientState(FacesContext context, Object state)
+    {
+        _transientState = (Map<Object, Object>) state;
+    }
+    
+    public Object saveTransientState(FacesContext context)
+    {
+        return _transientState;
     }
 }

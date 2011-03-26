@@ -43,7 +43,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 {
     // private static final Log log = LogFactory.getLog(UIForm.class);
 
-    private boolean _submitted;
+    //private boolean _submitted;
 
     /**
      * 
@@ -72,12 +72,14 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     public boolean isSubmitted()
     {
-        return _submitted;
+        //return _submitted;
+        return (Boolean) getTransientStateHelper().getTransient(PropertyKeys.submitted, false);
     }
 
     public void setSubmitted(boolean submitted)
     {
-        _submitted = submitted;
+        getTransientStateHelper().putTransient(PropertyKeys.submitted, submitted);
+        //_submitted = submitted;
     }
 
     @Override
@@ -200,7 +202,8 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     enum PropertyKeys
     {
          prependId,
-         uniqueIdCounter
+         uniqueIdCounter,
+         submitted,
     }
     
     @Override

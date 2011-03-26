@@ -21,7 +21,9 @@ package javax.faces.component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
+import javax.faces.application.StateManager;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
@@ -484,5 +486,105 @@ public class UIDataTest extends AbstractJsfTestCase
         
         control.verify();        
     }
-       
+
+    
+    public static class RowData
+    {
+        private String text;
+
+        public RowData(String text, String style)
+        {
+           super();
+            this.text = text;
+            this.style = style;
+        }
+
+        private String style;
+        
+        public String getText()
+        {
+            return text;
+        }
+
+        public void setText(String text)
+        {
+            this.text = text;
+        }
+
+        public String getStyle()
+        {
+            return style;
+        }
+
+        public void setStyle(String style)
+        {
+            this.style = style;
+        }
+    }
+    
+    public void testPreserveRowComponentState1() throws Exception
+    {
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text1","style2"));
+        model.add(new RowData("text1","style3"));
+        model.add(new RowData("text1","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        UIColumn column = new UIColumn();
+        UIOutput text = new UIOutput();
+        
+        //This is only required if markInitiaState fix is not used 
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        column.setId(root.createUniqueId());
+        text.setId(root.createUniqueId());
+        
+        table.setVar("row");
+        table.setRowStatePreserved(true);
+        table.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{list}",List.class));
+        
+        text.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{row.text}",String.class));
+        
+        root.getChildren().add(table);
+        table.getChildren().add(column);
+        column.getChildren().add(text);
+
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            assertEquals(rowData.getText(), text.getValue());
+            text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            table.setRowIndex(i);
+            assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+        
+    }
+
 }

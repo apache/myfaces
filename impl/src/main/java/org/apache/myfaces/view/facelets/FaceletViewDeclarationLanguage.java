@@ -200,6 +200,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @JSFWebConfigParam(since="2.0")
     private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
     
+    @JSFWebConfigParam(since="2.1", defaultValue="false", expectedValues="true, false")
+    private final static String PARAM_MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW = "org.apache.myfaces.MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW";
+    
     private final static String[] PARAMS_SKIP_COMMENTS = {PARAM_SKIP_COMMENTS, PARAM_SKIP_COMMENTS_DEPRECATED};
 
     //public final static String PARAM_VIEW_MAPPINGS = "javax.faces.FACELETS_VIEW_MAPPINGS";
@@ -255,6 +258,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private boolean _refreshTransientBuildOnPSSAuto;
         
     private Set<String> _viewIds;
+    
+    private boolean _markInitialStateWhenApplyBuildView;
 
     /**
      * 
@@ -301,9 +306,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             context.getAttributes().put(USING_PSS_ON_THIS_VIEW, Boolean.TRUE);
             //Add a key to indicate ComponentTagHandlerDelegate to 
             //call UIComponent.markInitialState after it is populated
-            if (!refreshTransientBuild)
+            if (!refreshTransientBuild && _markInitialStateWhenApplyBuildView)
             {
                 context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
+                context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
             }
             if (refreshTransientBuildOnPSS)
             {
@@ -381,15 +387,27 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // new instances are created programatically.
             if (!refreshTransientBuild)
             {
-                if (!refreshTransientBuildOnPSS || 
-                    !view.getAttributes().containsKey(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                if (_markInitialStateWhenApplyBuildView)
                 {
-                    view.markInitialState();
+                    if (!refreshTransientBuildOnPSS || 
+                        !view.getAttributes().containsKey(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW))
+                    {
+                        view.markInitialState();
+                    }
+                    
+                    //Remove the key that indicate we need to call UIComponent.markInitialState
+                    //on the current tree
+                    context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+                    context.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
                 }
-                
-                //Remove the key that indicate we need to call UIComponent.markInitialState
-                //on the current tree
-                context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+                else
+                {
+                    context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
+                    context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                    _markInitialStateOnView(view, refreshTransientBuildOnPSS);
+                    context.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+                    context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+                }
             }
             
             // We need to suscribe the listeners of changes in the component tree
@@ -411,6 +429,75 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         context.getAttributes().remove(AjaxHandler.STANDARD_JSF_AJAX_LIBRARY_LOADED);
     }
     
+    private void _markInitialStateOnView(final UIViewRoot view, final boolean refreshTransientBuildOnPSS)
+    {
+        if (!refreshTransientBuildOnPSS || 
+                !view.getAttributes().containsKey(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW))
+        {
+            if (!view.isTransient())
+            {
+                view.markInitialState();
+            }
+        }
+        
+        if (view.getChildCount() > 0)
+        {
+            for (UIComponent child : view.getChildren())
+            {
+                if (!child.isTransient())
+                {
+                    _markInitialState(child);
+                }
+            }
+        }
+        if (view.getFacetCount() > 0)
+        {
+            Map<String, UIComponent> facetMap = view.getFacets();
+            if (!facetMap.isEmpty())
+            {
+                for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
+                {
+                    UIComponent child = entry.getValue();
+                    if (!child.isTransient())
+                    {
+                        _markInitialState(child);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void _markInitialState(final UIComponent component)
+    {
+        component.markInitialState();
+        
+        if (component.getChildCount() > 0)
+        {
+            for (UIComponent child : component.getChildren())
+            {
+                if (!child.isTransient())
+                {
+                    _markInitialState(child);
+                }
+            }
+        }
+        if (component.getFacetCount() > 0)
+        {
+            Map<String, UIComponent> facetMap = component.getFacets();
+            if (!facetMap.isEmpty())
+            {
+                for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
+                {
+                    UIComponent child = entry.getValue();
+                    if (!child.isTransient())
+                    {
+                        _markInitialState(child);
+                    }
+                }
+            }
+        }
+    }
+
     private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
     {
         context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, UIComponent.class, component);
@@ -595,7 +682,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     public static boolean isMarkInitialState(FacesContext context)
     {
-        return context.getAttributes().containsKey(MARK_INITIAL_STATE_KEY);
+        //return context.getAttributes().containsKey(MARK_INITIAL_STATE_KEY);
+        return Boolean.TRUE.equals(context.getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE));
     }
     
     public static boolean isRefreshTransientBuildOnPSS(FacesContext context)
@@ -1974,6 +2062,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             _refreshTransientBuildOnPSS = MyfacesConfig.getCurrentInstance(context).isRefreshTransientBuildOnPSS();
             _refreshTransientBuildOnPSSAuto = MyfacesConfig.getCurrentInstance(context).isRefreshTransientBuildOnPSSAuto();
+            _markInitialStateWhenApplyBuildView = WebConfigParamUtils.getBooleanInitParameter(context, PARAM_MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW, false);
         }
     }
     

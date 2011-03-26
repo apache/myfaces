@@ -69,7 +69,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * @version $Revision$ $Date$
  */
 @JSFComponent(type = "javax.faces.Component", family = "javax.faces.Component", desc = "abstract base component", configExcluded = true)
-public abstract class UIComponent implements PartialStateHolder, SystemEventListenerHolder, ComponentSystemEventListener {
+public abstract class UIComponent implements PartialStateHolder, TransientStateHolder , SystemEventListenerHolder, ComponentSystemEventListener {
     // TODO: Reorder methods, this class is a mess
     /**
      * Constant used in component attribute map to retrieve the BeanInfo of a composite
@@ -150,7 +150,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
      */
     private transient Map<String, String> _resourceBundleMap = null;
     private boolean _inView = false;
-    private StateHelper _stateHelper = null;
+    private TransientStateHelper _stateHelper = null;
     
     /**
      * In JSF 2.0 bindings map was deprecated, and replaced with a map
@@ -855,6 +855,31 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             _stateHelper = new _DeltaStateHelper(this);
         }
         return _stateHelper;
+    }
+    
+    public TransientStateHelper getTransientStateHelper()
+    {
+        return getTransientStateHelper(true);
+    }
+    
+    public TransientStateHelper getTransientStateHelper(boolean create) {
+        if(_stateHelper != null) {
+            return _stateHelper;
+        }
+        if(create) {
+            _stateHelper = new _DeltaStateHelper(this);
+        }
+        return _stateHelper;
+    }
+
+    public void restoreTransientState(FacesContext context, Object state)
+    {
+        getTransientStateHelper().restoreTransientState(context, state);
+    }
+
+    public Object saveTransientState(FacesContext context)
+    {
+        return getTransientStateHelper().saveTransientState(context);
     }
 
     @SuppressWarnings("unchecked")
