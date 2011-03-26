@@ -40,6 +40,7 @@ import javax.faces.component.UIData;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
@@ -66,7 +67,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     public static final String COMPONENT_FAMILY = "facelets";
     
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    //private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
     private final static DataModel<?> EMPTY_MODEL = new ListDataModel<Object>(Collections.emptyList());
 
@@ -744,7 +745,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         // override the behavior from UIComponent to visit
         // all children once per "row"
         
-        Boolean skipIterationHint = (Boolean) context.getFacesContext().getAttributes().get(SKIP_ITERATION_HINT);
+        //(Boolean) context.getFacesContext().getAttributes().get(SKIP_ITERATION_HINT);
+        Boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
         if (skipIterationHint != null && skipIterationHint.booleanValue())
         {
             return super.visitTree(context, callback);
