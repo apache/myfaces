@@ -20,7 +20,10 @@ package javax.faces.view;
 
 import java.beans.BeanInfo;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
@@ -35,6 +38,16 @@ import javax.faces.context.FacesContext;
  */
 public abstract class ViewDeclarationLanguage
 {
+    /**
+     * @since 2.1
+     */
+    public static final String JSP_VIEW_DECLARATION_LANGUAGE_ID = "java.faces.JSP";
+
+    /**
+     * @since 2.1
+     */
+    public static final String FACELETS_VIEW_DECLARATION_LANGUAGE_ID = "java.faces.Facelets";
+    
     public abstract void buildView(FacesContext context, UIViewRoot view) throws IOException;
 
     public abstract UIViewRoot createView(FacesContext context, String viewId);
@@ -60,5 +73,38 @@ public abstract class ViewDeclarationLanguage
     {
         throw new UnsupportedOperationException(); 
     }
-              
+    
+    /**
+     * 
+     * @since 2.1
+     * @return
+     */
+    public String getId()
+    {
+        return this.getClass().getName();
+    }
+    
+    /**
+     * 
+     * @since 2.1
+     * @param facesContext
+     * @param viewId
+     * @return
+     */
+    public boolean viewExists(FacesContext facesContext, String viewId)
+    {
+        try
+        {
+            return facesContext.getExternalContext().getResource(viewId) != null;
+        }
+        catch (MalformedURLException e)
+        {
+            Logger log = Logger.getLogger(ViewDeclarationLanguage.class.getName());
+            if (log.isLoggable(Level.SEVERE))
+            {
+                log.log(Level.SEVERE, "Malformed URL viewId: "+viewId, e);
+            }
+        }
+        return false;
+    }
 }

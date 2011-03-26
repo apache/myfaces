@@ -49,7 +49,7 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
 
         _extension = loadFaceletExtension(eContext);
 
-        _language = new FaceletViewDeclarationLanguage(context);
+        _language = new FaceletViewDeclarationLanguage(context, this);
     }
 
     /**

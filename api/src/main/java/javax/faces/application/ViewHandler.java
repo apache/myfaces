@@ -71,7 +71,7 @@ public abstract class ViewHandler
 {
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
     public static final String DEFAULT_FACELETS_SUFFIX = ".xhtml";
-    public static final String DEFAULT_SUFFIX = ".xhtml .jsp";
+    public static final String DEFAULT_SUFFIX = ".xhtml .view.xml .jsp";
     
     /**
      * Indicate the default suffix to derive the file URI if extension mapping is used. 
@@ -173,6 +173,18 @@ public abstract class ViewHandler
     {
         //The default implementation of this method simply returns rawViewId unchanged.
         return input;
+    }
+    
+    /**
+     * 
+     * @param context
+     * @param rawViewId
+     * @return
+     * @since 2.1
+     */
+    public String deriveLogicalViewId(FacesContext context, String rawViewId)
+    {
+        return rawViewId;
     }
 
     /**

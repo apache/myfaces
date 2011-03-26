@@ -76,6 +76,7 @@ import javax.faces.view.EditableValueHolderAttachedObjectTarget;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ValueHolderAttachedObjectHandler;
 import javax.faces.view.ValueHolderAttachedObjectTarget;
+import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.ResourceResolver;
@@ -91,6 +92,7 @@ import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
 import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.view.ViewDeclarationLanguageBase;
+import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
@@ -260,6 +262,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private Set<String> _viewIds;
     
     private boolean _markInitialStateWhenApplyBuildView;
+    
+    private final ViewDeclarationLanguageStrategy _strategy;
+    
+    private ResourceResolver _resourceResolver;
 
     /**
      * 
@@ -267,6 +273,30 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public FaceletViewDeclarationLanguage(FacesContext context)
     {
         initialize(context);
+        _strategy = new FaceletViewDeclarationLanguageStrategy();
+    }
+    
+    public FaceletViewDeclarationLanguage(FacesContext context, ViewDeclarationLanguageStrategy strategy)
+    {
+        initialize(context);
+        _strategy = strategy;
+    }
+    
+
+    @Override
+    public String getId()
+    {
+        return ViewDeclarationLanguage.FACELETS_VIEW_DECLARATION_LANGUAGE_ID;
+    }
+
+    @Override
+    public boolean viewExists(FacesContext facesContext, String viewId)
+    {
+        if (_strategy.handles(viewId))
+        {
+            return _resourceResolver.resolveUrl(viewId) != null;
+        }
+        return false;
     }
 
     /**
@@ -1619,6 +1649,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             resolver = ClassUtils.buildApplicationObject(ResourceResolver.class, classNames, resolver);
         }
 
+        _resourceResolver = resolver;
+        
         return new DefaultFaceletFactory(compiler, resolver, refreshPeriod);
     }
     

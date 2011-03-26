@@ -102,6 +102,23 @@ public class ViewHandlerImpl extends ViewHandler
         }
         return input;   // If the argument input is null, return null.
     }
+    
+    @Override
+    public String deriveLogicalViewId(FacesContext context, String rawViewId)
+    {
+        if(rawViewId != null){
+            try
+            {
+                //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
+                return getViewHandlerSupport().calculateViewId(context, rawViewId);
+            }
+            catch (InvalidViewIdException e)
+            {
+                sendSourceNotFound(context, e.getMessage());
+            }
+        }
+        return rawViewId;   // If the argument input is null, return null.
+    }
 
     @Override
     public String getBookmarkableURL(FacesContext context, String viewId,

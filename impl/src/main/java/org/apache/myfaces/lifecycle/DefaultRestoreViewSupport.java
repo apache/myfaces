@@ -205,6 +205,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         }
     }
     
+    @Deprecated
     public String deriveViewId(FacesContext context, String viewId)
     {
         //If no viewId found, don't try to derive it, just continue.

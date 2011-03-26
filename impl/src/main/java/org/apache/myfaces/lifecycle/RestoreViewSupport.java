@@ -51,10 +51,12 @@ public interface RestoreViewSupport
      * to retrieve a VDL instance, but note there are some cases (TCK test) where
      * it is expected in Restore View algorithm a null or dummy viewId is passed. 
      * 
+     * @deprecated Use ViewHandler.deriveLogicalViewId
      * @param context
      * @param viewId
      * @return
      */
+    @Deprecated
     String deriveViewId(FacesContext context, String viewId);
 
     /**

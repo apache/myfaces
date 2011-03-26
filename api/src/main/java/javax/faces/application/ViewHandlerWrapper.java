@@ -108,6 +108,12 @@ public abstract class ViewHandlerWrapper extends ViewHandler
     }
 
     @Override
+    public String deriveLogicalViewId(FacesContext context, String rawViewId)
+    {
+        return getWrapped().deriveLogicalViewId(context, rawViewId);
+    }
+
+    @Override
     public String getBookmarkableURL(FacesContext context, String viewId,
             Map<String, List<String>> parameters, boolean includeViewParams)
     {
