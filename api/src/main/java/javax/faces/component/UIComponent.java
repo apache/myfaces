@@ -129,6 +129,8 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      */
     public static final String VIEW_LOCATION_KEY = "javax.faces.component.VIEW_LOCATION_KEY";
     
+    public static final String ATTRS_WITH_DECLARED_DEFAULT_VALUES = "javax.faces.component.ATTR_NAMES_WITH_DEFAULT_VALUES";
+    
     /**
      * The key under which the component stack is stored in the FacesContext.
      * ATTENTION: this constant is duplicate in CompositeComponentExpressionUtils.
