@@ -114,6 +114,12 @@ public abstract class FacesContextImplBase extends FacesContext
     }
     
     @Override
+    public boolean isReleased()
+    {
+        return _released;
+    }
+
+    @Override
     public final ExternalContext getExternalContext()
     {
         assertNotReleased();

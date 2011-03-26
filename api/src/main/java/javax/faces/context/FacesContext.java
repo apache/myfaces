@@ -414,4 +414,21 @@ public abstract class FacesContext
         }
         return false;
     }
+    
+    /**
+     * 
+     * @since 2.1
+     * @return
+     */
+    public boolean isReleased()
+    {
+        FacesContext ctx = _firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        return ctx.isReleased();
+    }
 }

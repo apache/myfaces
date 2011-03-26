@@ -245,4 +245,11 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
     {
         return getWrapped().isProjectStage(stage);
     }
+
+    @Override
+    public boolean isReleased()
+    {
+        return getWrapped().isReleased();
+    }
+
 }
