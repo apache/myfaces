@@ -28,13 +28,13 @@
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
     <packaging>pom</packaging>
-    <name>Apache MyFaces JSF-2.0 Core Project</name>
+    <name>Apache MyFaces JSF-2.1 Core Project</name>
     <description>
-        This project is the home of the MyFaces implementation of the JavaServer Faces 2.0 specification, and
+        This project is the home of the MyFaces implementation of the JavaServer Faces 2.1 specification, and
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
     <version>2.1.0-SNAPSHOT</version>
-    <url>http://myfaces.apache.org/core20</url>
+    <url>http://myfaces.apache.org/core21</url>
     
     <issueManagement>
         <system>jira</system>
@@ -56,7 +56,7 @@
 
     <properties>
         <!-- MyFaces shared-impl version to use -->
-        <myfaces-shared.version>4.0.6-SNAPSHOT</myfaces-shared.version>
+        <myfaces-shared.version>4.1.0-SNAPSHOT</myfaces-shared.version>
     </properties>
 
     <build>
