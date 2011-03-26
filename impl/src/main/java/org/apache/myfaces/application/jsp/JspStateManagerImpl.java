@@ -54,6 +54,7 @@ import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
 
 import javax.faces.FactoryFinder;
+import javax.faces.application.StateManager;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
@@ -436,28 +437,36 @@ public class JspStateManagerImpl extends MyfacesStateManager
         String viewId = uiViewRoot.getViewId();
         ViewDeclarationLanguage vdl = facesContext.getApplication().
             getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
-        if (vdl != null)
+        try
         {
-            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
-            
-            if (sms != null)
+            facesContext.getAttributes().put(StateManager.IS_SAVING_STATE, Boolean.TRUE);
+            if (vdl != null)
             {
-                if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy: "+sms.getClass().getName());
+                StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
                 
-                return sms.saveView(facesContext);
+                if (sms != null)
+                {
+                    if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy: "+sms.getClass().getName());
+                    
+                    return sms.saveView(facesContext);
+                }
             }
+    
+            // In StateManagementStrategy.saveView there is a check for transient at
+            // start, but the same applies for VDL without StateManagementStrategy,
+            // so this should be checked before call parent (note that parent method
+            // does not do this check).
+            if (uiViewRoot.isTransient())
+            {
+                return null;
+            }
+    
+            return super.saveView(facesContext);
         }
-
-        // In StateManagementStrategy.saveView there is a check for transient at
-        // start, but the same applies for VDL without StateManagementStrategy,
-        // so this should be checked before call parent (note that parent method
-        // does not do this check).
-        if (uiViewRoot.isTransient())
+        finally
         {
-            return null;
+            facesContext.getAttributes().remove(StateManager.IS_SAVING_STATE);
         }
-
-        return super.saveView(facesContext);
     }
     
     @Override
