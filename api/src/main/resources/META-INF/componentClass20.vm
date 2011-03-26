@@ -237,6 +237,9 @@ $innersource
 #if ($property.name == "for")
 ## To keep compatibility with RI, we should call it forVal
 #set ($field = "forVal")
+#elseif ($property.name == "public")
+## To keep compatibility with RI, we should call it publicVal
+#set ($field = "publicVal")
 #else
 #set ($field = $property.name)
 #end
@@ -284,6 +287,10 @@ $innersource
 #set ($addc = "true")
 ## To keep compatibility with RI, we should call it forVal
 #set ($field = "forVal")
+#elseif ($property.name == "public")
+#set ($addc = "true")
+## To keep compatibility with RI, we should call it publicVal
+#set ($field = "publicVal")
 #else
 #set ($field = $property.name)
 #end
@@ -295,6 +302,8 @@ $innersource
 #end
 #if ($property.name == "for")
         $comma $field("for")
+#elseif ($property.name == "public")
+        $comma $field("public")
 #else
 #if ($property.isPartialStateHolder())
         $comma ${field}Set
