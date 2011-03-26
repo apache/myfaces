@@ -996,7 +996,25 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
                 if (!mctx.isMethodExpressionAttributeApplied(topLevelComponent, attributeName))
                 {
-                    if (isKnownMethod)
+                    String targetAttributeName = null;
+                    ValueExpression targetAttributeNameVE = (ValueExpression)propertyDescriptor.getValue("targetAttributeName");
+                    if (targetAttributeNameVE != null)
+                    {
+                        targetAttributeName = (String) targetAttributeNameVE.getValue(context.getELContext());
+                        if (targetAttributeName == null)
+                        {
+                            targetAttributeName = attributeName;
+                        }
+                    }
+                    else
+                    {
+                        targetAttributeName = attributeName;
+                    }
+                    
+                    boolean isKnownTargetAttributeMethod = "action".equals(targetAttributeName) || "actionListener".equals(targetAttributeName)  
+                        || "validator".equals(targetAttributeName) || "valueChangeListener".equals(targetAttributeName);
+                    
+                    if (isKnownTargetAttributeMethod)
                     {
                         for (String target : targetsArray)
                         {
@@ -1009,17 +1027,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 continue;
                             }
                             
-                            if (isCompositeComponentRetarget(context, innerComponent, attributeName))
+                            if (isCompositeComponentRetarget(context, innerComponent, targetAttributeName))
                             {
-                                innerComponent.getAttributes().put(attributeName, attributeNameValueExpression);
+                                innerComponent.getAttributes().put(targetAttributeName, attributeNameValueExpression);
                                 
-                                mctx.clearMethodExpressionAttribute(innerComponent, attributeName);
+                                mctx.clearMethodExpressionAttribute(innerComponent, targetAttributeName);
                                 
                                 retargetMethodExpressions(context, innerComponent);
                             }
                             else
                             {
-                                if ("action".equals(attributeName))
+                                if ("action".equals(targetAttributeName))
                                 {
                                     // target is ActionSource2
                                     methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
@@ -1028,10 +1046,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                     
                                     ((ActionSource2)innerComponent).setActionExpression(methodExpression);
                                 }
-                                else if ("actionListener".equals(attributeName))
+                                else if ("actionListener".equals(targetAttributeName))
                                 {
                                     //First try to remove any prevous target if any
-                                    ActionListener o = (ActionListener) mctx.removeMethodExpressionTargeted(innerComponent, attributeName);
+                                    ActionListener o = (ActionListener) mctx.removeMethodExpressionTargeted(innerComponent, targetAttributeName);
                                     if (o != null)
                                     {
                                         ((ActionSource2)innerComponent).removeActionListener(o);
@@ -1048,12 +1066,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                     
                                     ActionListener actionListener = new MethodExpressionActionListener(methodExpression, methodExpression2);
                                     ((ActionSource2)innerComponent).addActionListener(actionListener);
-                                    mctx.addMethodExpressionTargeted(innerComponent, attributeName, actionListener);
+                                    mctx.addMethodExpressionTargeted(innerComponent, targetAttributeName, actionListener);
                                 }
-                                else if ("validator".equals(attributeName))
+                                else if ("validator".equals(targetAttributeName))
                                 {
                                    //First try to remove any prevous target if any
-                                    Validator o = (Validator) mctx.removeMethodExpressionTargeted(innerComponent, attributeName);
+                                    Validator o = (Validator) mctx.removeMethodExpressionTargeted(innerComponent, targetAttributeName);
                                     if (o != null)
                                     {
                                         ((EditableValueHolder)innerComponent).removeValidator(o);
@@ -1067,11 +1085,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         
                                     Validator validator = new MethodExpressionValidator(methodExpression); 
                                     ((EditableValueHolder)innerComponent).addValidator( validator );
-                                    mctx.addMethodExpressionTargeted(innerComponent, attributeName, validator);
+                                    mctx.addMethodExpressionTargeted(innerComponent, targetAttributeName, validator);
                                 }
-                                else if ("valueChangeListener".equals(attributeName))
+                                else if ("valueChangeListener".equals(targetAttributeName))
                                 {
-                                    ValueChangeListener o = (ValueChangeListener) mctx.removeMethodExpressionTargeted(innerComponent, attributeName);
+                                    ValueChangeListener o = (ValueChangeListener) mctx.removeMethodExpressionTargeted(innerComponent, targetAttributeName);
                                     if (o != null)
                                     {
                                         ((EditableValueHolder)innerComponent).removeValueChangeListener(o);
@@ -1090,7 +1108,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         
                                     ValueChangeListener valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression2); 
                                     ((EditableValueHolder)innerComponent).addValueChangeListener( valueChangeListener );
-                                    mctx.addMethodExpressionTargeted(innerComponent, attributeName, valueChangeListener);
+                                    mctx.addMethodExpressionTargeted(innerComponent, targetAttributeName, valueChangeListener);
                                 }
                             }
                         }
@@ -1122,18 +1140,18 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             
                             // If a component is found, that means the expression should be retarget to the
                             // components related
-                            if (isCompositeComponentRetarget(context, innerComponent, attributeName))
+                            if (isCompositeComponentRetarget(context, innerComponent, targetAttributeName))
                             {
-                                innerComponent.getAttributes().put(attributeName, attributeNameValueExpression);
+                                innerComponent.getAttributes().put(targetAttributeName, attributeNameValueExpression);
                                 
-                                mctx.clearMethodExpressionAttribute(innerComponent, attributeName);
+                                mctx.clearMethodExpressionAttribute(innerComponent, targetAttributeName);
                                 
                                 retargetMethodExpressions(context, innerComponent);
                             }
                             else
                             {
                                 //Put the retarget
-                                innerComponent.getAttributes().put(attributeName, methodExpression);
+                                innerComponent.getAttributes().put(targetAttributeName, methodExpression);
                             }
                         }
                         //Store the method expression to the topLevelComponent to allow reference it through EL

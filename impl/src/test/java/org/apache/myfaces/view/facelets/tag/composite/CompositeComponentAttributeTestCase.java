@@ -462,5 +462,140 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         Assert.assertEquals(booleanPropertiesValue, descriptor.isHidden());
         Assert.assertEquals(booleanPropertiesValue, descriptor.isPreferred());
     }
+    
+    @Test
+    public void testSimpleActionTargetAttributeName() throws Exception
+    {
+        MockAttributeBean bean = new MockAttributeBean();
+        
+        facesContext.getExternalContext().getRequestMap().put("bean",
+                bean);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testActionTargetAttributeName.xhtml");
 
+        UIComponent panelGroup1 = root.findComponent("mainForm:testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.findComponent("cc1");
+        Assert.assertNotNull(compositeComponent1);
+        UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(facet1);
+        HtmlCommandButton button1 = (HtmlCommandButton) facet1.findComponent("submitButton");
+        Assert.assertNotNull(button1);
+        HtmlCommandButton button2 = (HtmlCommandButton) facet1.findComponent("cancelAction");
+        Assert.assertNotNull(button2);
+        
+        compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
+        facet1.pushComponentToEL(facesContext, facet1);
+        button1.pushComponentToEL(facesContext,  button1);
+
+        MethodExpression method = button1.getActionExpression();
+        Assert.assertEquals("testActionMethodTypeSubmit", method.invoke(facesContext.getELContext(), null));
+        
+        Assert.assertEquals(1, button1.getActionListeners().length);
+        button1.getActionListeners()[0].processAction(new ActionEvent(button1));
+        Assert.assertTrue(bean.isSubmitActionListenerCalled());
+        
+        button1.popComponentFromEL(facesContext);
+        button2.pushComponentToEL(facesContext,  button2);
+        
+        method = button2.getActionExpression();
+        Assert.assertEquals(bean.cancelAction(), method.invoke(facesContext.getELContext(), null));
+        
+        Assert.assertEquals(1, button2.getActionListeners().length);
+        button2.getActionListeners()[0].processAction(new ActionEvent(button2));
+        Assert.assertTrue(bean.isCancelActionListenerCalled());
+        
+        button2.popComponentFromEL(facesContext);
+        facet1.popComponentFromEL(facesContext);
+        compositeComponent1.popComponentFromEL(facesContext);
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        compositeComponent1.encodeAll(facesContext);
+        sw.flush();
+        
+        /*
+        HtmlRenderedAttr[] attrs = new HtmlRenderedAttr[]{
+                new HtmlRenderedAttr("style")
+        };
+            
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+        */
+    }
+
+    @Test
+    public void testCompositeActionTargetAttributeName() throws Exception
+    {
+        MockAttributeBean bean = new MockAttributeBean();
+        
+        facesContext.getExternalContext().getRequestMap().put("bean",
+                bean);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testCompositeActionTargetAttributeName.xhtml");
+
+        UIComponent panelGroup1 = root.findComponent("mainForm:testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.findComponent("cc1");
+        Assert.assertNotNull(compositeComponent1);
+        UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(facet1);
+        UINamingContainer compositeComponent2 = (UINamingContainer) facet1.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent2);
+        UIComponent facet2 = compositeComponent2.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(facet2);
+        
+        
+        HtmlCommandButton button1 = (HtmlCommandButton) facet2.findComponent("submitButton");
+        Assert.assertNotNull(button1);
+        HtmlCommandButton button2 = (HtmlCommandButton) facet2.findComponent("cancelAction");
+        Assert.assertNotNull(button2);
+        
+        compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
+        facet1.pushComponentToEL(facesContext, facet1);
+        compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
+        facet2.pushComponentToEL(facesContext, facet1);
+        button1.pushComponentToEL(facesContext,  button1);
+
+        MethodExpression method = button1.getActionExpression();
+        Assert.assertEquals("testActionMethodTypeSubmit", method.invoke(facesContext.getELContext(), null));
+        
+        Assert.assertEquals(1, button1.getActionListeners().length);
+        button1.getActionListeners()[0].processAction(new ActionEvent(button1));
+        Assert.assertTrue(bean.isSubmitActionListenerCalled());
+        
+        button1.popComponentFromEL(facesContext);
+        button2.pushComponentToEL(facesContext,  button2);
+        
+        method = button2.getActionExpression();
+        Assert.assertEquals(bean.cancelAction(), method.invoke(facesContext.getELContext(), null));
+        
+        Assert.assertEquals(1, button2.getActionListeners().length);
+        button2.getActionListeners()[0].processAction(new ActionEvent(button2));
+        Assert.assertTrue(bean.isCancelActionListenerCalled());
+        
+        button2.popComponentFromEL(facesContext);
+        facet2.popComponentFromEL(facesContext);
+        compositeComponent2.popComponentFromEL(facesContext);
+        facet1.popComponentFromEL(facesContext);
+        compositeComponent1.popComponentFromEL(facesContext);
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        compositeComponent1.encodeAll(facesContext);
+        sw.flush();
+        
+        /*
+        HtmlRenderedAttr[] attrs = new HtmlRenderedAttr[]{
+                new HtmlRenderedAttr("style")
+        };
+            
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+        */
+    }
 }

@@ -66,6 +66,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         "preferred",
         "required",
         "shortDescription",
+        "targetAttributeName",
         "targets",
         "type"
     };
@@ -154,6 +155,11 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             deferredValueType="boolean")
     protected final TagAttribute _hidden;
     
+    @JSFFaceletAttribute(name="targetAttributeName",
+            className="javax.el.ValueExpression",
+            deferredValueType="java.lang.String")
+    private final TagAttribute _targetAttributeName;
+    
     /**
      * Check if the PropertyDescriptor instance created by this handler
      * can be cacheable or not. 
@@ -183,6 +189,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         _methodSignature = getAttribute("method-signature");
         _type = getAttribute("type");
         _hidden = getAttribute("hidden");
+        _targetAttributeName = getAttribute("targetAttributeName");
         
         // We can reuse the same PropertyDescriptor only if the properties
         // that requires to be evaluated when apply (build view time)
@@ -203,7 +210,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             // unspecified attributes. This prevents the racy single-check.
             _cacheable = true;
             if ( _targets == null && _default == null && _required == null &&
-                 _methodSignature == null && _type == null &&
+                 _methodSignature == null && _type == null && _targetAttributeName == null &&
                  !CompositeTagAttributeUtils.containsUnspecifiedAttributes(tag, 
                          STANDARD_ATTRIBUTES_SORTED))
             {
@@ -362,6 +369,10 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             if (_type != null)
             {
                 attributeDescriptor.setValue("type", _type.getValueExpression(ctx, String.class));
+            }
+            if (_targetAttributeName != null)
+            {
+                attributeDescriptor.setValue("targetAttributeName", _targetAttributeName.getValueExpression(ctx, String.class));
             }
             
             // If ProjectStage is Development, The "displayName", "shortDescription",
