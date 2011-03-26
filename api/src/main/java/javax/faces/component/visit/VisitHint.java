@@ -46,5 +46,11 @@ public enum VisitHint
      * lifecycle phase execution and as such phase-specific actions
      * (initialization) may be taken.
      */
-    EXECUTE_LIFECYCLE
+    EXECUTE_LIFECYCLE,
+    
+    /**
+     * Hint that indicates that the visit should traverse only full component
+     * instances and not "virtual" ones like UIData rows and so on.
+     */
+    SKIP_ITERATION,
 }

@@ -33,6 +33,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.StateManager;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -126,7 +127,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private static final int PROCESS_DECODES = 1;
     private static final int PROCESS_VALIDATORS = 2;
     private static final int PROCESS_UPDATES = 3;
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    //private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
     private int _rowIndex = -1;
 
@@ -1840,7 +1841,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                             }
                         }
                     }
-                    Boolean skipIterationHint = (Boolean) context.getFacesContext().getAttributes().get(SKIP_ITERATION_HINT);
+                    //(Boolean) context.getFacesContext().getAttributes().get(SKIP_ITERATION_HINT);
+                    Boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
                     if (skipIterationHint != null && skipIterationHint.booleanValue())
                     {
                         // If SKIP_ITERATION is enabled, do not take into account rows.
