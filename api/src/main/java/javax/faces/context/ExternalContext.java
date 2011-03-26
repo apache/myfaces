@@ -685,4 +685,55 @@ public abstract class ExternalContext
         
         ctx.setResponseStatus(statusCode);
     }
+    
+    /**
+     * 
+     * @since 2.1
+     * @return
+     */
+    public boolean isSecure()
+    {
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        return ctx.isSecure();
+    }
+    
+    /**
+     * 
+     * @since 2.1
+     * @return
+     */
+    public int getSessionMaxInactiveInterval()
+    {
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        return ctx.getSessionMaxInactiveInterval();
+    }
+    
+    /**
+     * 
+     * @since 2.1
+     * @param interval
+     */
+    public void setSessionMaxInactiveInterval(int interval)
+    {
+        ExternalContext ctx = _MyFacesExternalContextHelper._firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        ctx.setSessionMaxInactiveInterval(interval);
+    }
 }

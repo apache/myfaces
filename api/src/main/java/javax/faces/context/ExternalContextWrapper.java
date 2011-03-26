@@ -459,4 +459,22 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     {
         getWrapped().setResponseStatus(statusCode);
     }
+
+    @Override
+    public boolean isSecure()
+    {
+        return getWrapped().isSecure();
+    }
+
+    @Override
+    public int getSessionMaxInactiveInterval()
+    {
+        return getWrapped().getSessionMaxInactiveInterval();
+    }
+
+    @Override
+    public void setSessionMaxInactiveInterval(int interval)
+    {
+        getWrapped().setSessionMaxInactiveInterval(interval);
+    }
 }

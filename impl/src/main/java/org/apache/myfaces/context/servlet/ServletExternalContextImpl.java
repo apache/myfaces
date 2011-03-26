@@ -843,4 +843,22 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         return FlashImpl.getCurrentInstance(this);
     }
+
+    @Override
+    public boolean isSecure()
+    {
+        return _servletRequest.isSecure();
+    }
+
+    @Override
+    public int getSessionMaxInactiveInterval()
+    {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public void setSessionMaxInactiveInterval(int interval)
+    {
+        throw new UnsupportedOperationException();
+    }
 }
