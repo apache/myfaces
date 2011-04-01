@@ -27,17 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.faces.context.Flash;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.myfaces.util.EnumerationIterator;
 
 /**
  * An ExternalContext implementation for Servlet environments, which is used
@@ -430,4 +422,20 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
         return _startup ? "startup" : "shutdown";
     }
 
+    @Override
+    public boolean isSecure()
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
+    @Override
+    public int getSessionMaxInactiveInterval()
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());    }
+
+    @Override
+    public void setSessionMaxInactiveInterval(int interval)
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
 }
