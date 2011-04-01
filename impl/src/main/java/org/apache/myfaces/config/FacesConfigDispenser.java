@@ -113,4 +113,13 @@ public abstract class FacesConfigDispenser extends FacesConfigData
      */
     public abstract void feedVisitContextFactory(String factoryClassName);
 
+    /**
+     * Add another FaceletCacheFactory class name
+     * @since 2.1.0
+     * @param factoryClassName a class name
+     */
+    public void feedFaceletCacheFactory(String factoryClassName)
+    {
+    }
+
 }

@@ -66,6 +66,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<String> renderKitFactories = new ArrayList<String>();
     private List<String> tagHandlerDelegateFactories = new ArrayList<String>();
     private List<String> visitContextFactories = new ArrayList<String>();
+    private List<String> faceletCacheFactories = new ArrayList<String>();
     
     private String defaultRenderKitId;
     private String messageBundle;
@@ -126,6 +127,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
             renderKitFactories.addAll(factory.getRenderkitFactory());
             tagHandlerDelegateFactories.addAll(factory.getTagHandlerDelegateFactory());
             visitContextFactories.addAll(factory.getVisitContextFactory());
+            faceletCacheFactories.addAll(factory.getFaceletCacheFactory());
         }
 
         components.putAll(config.getComponents());
@@ -666,4 +668,17 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     {
         return faceletsProcessingByFileExtension.get(fileExtension);
     }
+
+    @Override
+    public void feedFaceletCacheFactory(String factoryClassName)
+    {
+        faceletCacheFactories.add(factoryClassName);
+    }
+
+    @Override
+    public Collection<String> getFaceletCacheFactoryIterator()
+    {
+        return faceletCacheFactories;
+    }
+
 }

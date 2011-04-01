@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,4 +46,14 @@ public abstract class Factory implements Serializable
     public abstract List<String> getTagHandlerDelegateFactory();
 
     public abstract List<String> getVisitContextFactory();
+    
+    /**
+     * 
+     * @since 2.1.0
+     * @return
+     */
+    public List<String> getFaceletCacheFactory()
+    {
+        return Collections.emptyList();
+    }
 }

@@ -119,6 +119,10 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/factory/tag-handler-delegate-factory", "addTagHandlerDelegateFactory", 0);
         digester.addCallMethod("faces-config/factory/visit-context-factory", "addVisitContextFactory", 0);
         // 2.0 specific end
+        
+        // 2.1 specific start
+        digester.addCallMethod("faces-config/factory/facelet-cache-factory", "addFaceletCacheFactory", 0);
+        // 2.1 specific end
 
         digester.addObjectCreate("faces-config/factory", Factory.class);
         digester.addSetNext("faces-config/factory", "addFactory");

@@ -57,6 +57,7 @@ import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
+import org.apache.myfaces.view.facelets.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
@@ -134,6 +135,7 @@ public class FacesConfigurator
     private static final String DEFAULT_VIEW_DECLARATION_LANGUAGE_FACTORY = ViewDeclarationLanguageFactoryImpl.class.getName();
     private static final String DEFAULT_EXCEPTION_HANDLER_FACTORY = ExceptionHandlerFactoryImpl.class.getName();
     private static final String DEFAULT_TAG_HANDLER_DELEGATE_FACTORY = TagHandlerDelegateFactoryImpl.class.getName();
+    private static final String DEFAULT_FACELET_CACHE_FACTORY = FaceletCacheFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private final ExternalContext _externalContext;
@@ -616,6 +618,8 @@ public class FacesConfigurator
                      DEFAULT_VISIT_CONTEXT_FACTORY);
         setFactories(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY, dispenser.getViewDeclarationLanguageFactoryIterator(),
                      DEFAULT_VIEW_DECLARATION_LANGUAGE_FACTORY);
+        setFactories(FactoryFinder.FACELET_CACHE_FACTORY, dispenser.getFaceletCacheFactoryIterator(),
+                DEFAULT_FACELET_CACHE_FACTORY);        
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)

@@ -37,6 +37,7 @@ public class Factory extends org.apache.myfaces.config.element.Factory implement
     private List<String> renderKitFactories = new ArrayList<String>();
     private List<String> tagHandlerDelegateFactories = new ArrayList<String>();
     private List<String> visitContextFactories = new ArrayList<String>();
+    private List<String> faceletCacheFactories = new ArrayList<String>();
 
     public void addApplicationFactory(String factory)
     {
@@ -86,6 +87,11 @@ public class Factory extends org.apache.myfaces.config.element.Factory implement
     public void addVisitContextFactory(String factory)
     {
         visitContextFactories.add(factory);
+    }
+    
+    public void addFaceletCacheFactory(String factory)
+    {
+        faceletCacheFactories.add(factory);
     }
 
     public List<String> getApplicationFactory()
@@ -137,4 +143,11 @@ public class Factory extends org.apache.myfaces.config.element.Factory implement
     {
         return visitContextFactories;
     }
+
+    @Override
+    public List<String> getFaceletCacheFactory()
+    {
+        return faceletCacheFactories;
+    }
+    
 }

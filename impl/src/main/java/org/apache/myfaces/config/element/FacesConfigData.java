@@ -67,6 +67,16 @@ public abstract class FacesConfigData implements Serializable
 
     /** @return Iterator over VisitContextFactory factory class names */
     public abstract Collection<String> getVisitContextFactoryIterator();
+    
+    /**
+     * @since 2.1.0 
+     * @return Iterator over FaceletCacheFactory factory class names
+     */
+    public Collection<String> getFaceletCacheFactoryIterator()
+    {
+        return Collections.emptyList();
+    }
+    
 
     /** @return Iterator over ActionListener class names (in reverse order!) */
     public abstract Collection<String> getActionListenerIterator();
