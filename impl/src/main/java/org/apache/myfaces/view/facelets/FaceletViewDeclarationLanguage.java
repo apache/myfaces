@@ -1605,6 +1605,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         return writer;
     }
 
+    /**
+     * @deprecated this code is not used anymore
+     */
+    @Deprecated
     protected String getDefaultSuffix(FacesContext context) throws FacesException
     {
         if (_defaultSuffix == null)
@@ -1619,25 +1623,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         return _defaultSuffix;
     }
 
+    /**
+     * @deprecated 
+     */
+    @Deprecated
     protected String getRenderedViewId(FacesContext context, String actionId)
     {
-        ExternalContext eContext = context.getExternalContext();
-        String viewId = actionId;
-        if (eContext.getRequestPathInfo() == null)
-        {
-            String viewSuffix = getDefaultSuffix(context);
-
-            StringBuilder builder = new StringBuilder(viewId);
-
-            viewId = builder.replace(viewId.lastIndexOf('.'), viewId.length(), viewSuffix).toString();
-        }
-
-        if (log.isLoggable(Level.FINEST))
-        {
-            log.finest("ActionId -> ViewId: " + actionId + " -> " + viewId);
-        }
-
-        return viewId;
+        return actionId;
     }
 
     /**
