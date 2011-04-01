@@ -20,6 +20,7 @@ package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.el.ELResolver;
 
@@ -208,5 +209,14 @@ public abstract class FacesConfigData implements Serializable
      * @return
      */
     public abstract Collection<NamedEvent> getNamedEvents();
+
+    /**
+     * 
+     * @since 2.1.0
+     */
+    public Collection<FaceletsProcessing> getFaceletsProcessing()
+    {
+        return Collections.emptyList();
+    }
 
 }

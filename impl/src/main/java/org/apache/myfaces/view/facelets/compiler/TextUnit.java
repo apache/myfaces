@@ -56,7 +56,14 @@ final class TextUnit extends CompilationUnit
 
     private final String id;
 
+    private final boolean escapeInlineText;
+
     public TextUnit(String alias, String id)
+    {
+        this(alias,id,true);
+    }
+    
+    public TextUnit(String alias, String id, boolean escapeInlineText)
     {
         this.alias = alias;
         this.id = id;
@@ -66,6 +73,7 @@ final class TextUnit extends CompilationUnit
         this.tags = new Stack<Tag>();
         this.children = new ArrayList<Object>();
         this.startTagOpen = false;
+        this.escapeInlineText = escapeInlineText;
     }
 
     public FaceletHandler createFaceletHandler()
@@ -121,7 +129,14 @@ final class TextUnit extends CompilationUnit
                 {
                     if (txt.isLiteral())
                     {
-                        this.instructionBuffer.add(new LiteralTextInstruction(txt.toString()));
+                        if (escapeInlineText)
+                        {
+                            this.instructionBuffer.add(new LiteralTextInstruction(txt.toString()));
+                        }
+                        else
+                        {
+                            this.instructionBuffer.add(new LiteralNonExcapedTextInstruction(txt.toString()));
+                        }
                     }
                     else
                     {

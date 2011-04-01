@@ -22,11 +22,13 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
@@ -37,6 +39,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
@@ -77,6 +81,8 @@ public final class SAXCompiler extends Compiler
         private Locator locator;
 
         private final CompilationManager unit;
+        
+        private boolean consumingCDATA = false;
 
         public CompilationHandler(CompilationManager unit, String alias)
         {
@@ -86,7 +92,7 @@ public final class SAXCompiler extends Compiler
 
         public void characters(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument)
+            if (this.inDocument && !consumingCDATA)
             {
                 this.unit.writeText(new String(ch, start, length));
             }
@@ -94,7 +100,7 @@ public final class SAXCompiler extends Compiler
 
         public void comment(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument)
+            if (this.inDocument && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
             {
                 this.unit.writeComment(new String(ch, start, length));
             }
@@ -121,7 +127,14 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument)
             {
-                this.unit.writeInstruction("]]>");
+                if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
+                {
+                    this.unit.writeInstruction("]]>");
+                }
+                else
+                {
+                    this.consumingCDATA = false;
+                }
             }
         }
 
@@ -189,7 +202,14 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument)
             {
-                this.unit.writeInstruction("<![CDATA[");
+                if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
+                {
+                    this.unit.writeInstruction("<![CDATA[");
+                }
+                else
+                {
+                    this.consumingCDATA = true;
+                }
             }
         }
 
@@ -200,7 +220,7 @@ public final class SAXCompiler extends Compiler
 
         public void startDTD(String name, String publicId, String systemId) throws SAXException
         {
-            if (this.inDocument)
+            if (this.inDocument && !unit.getFaceletsProcessingInstructions().isConsumeXmlDocType())
             {
                 StringBuffer sb = new StringBuffer(64);
                 sb.append("<!DOCTYPE ").append(name);
@@ -238,7 +258,7 @@ public final class SAXCompiler extends Compiler
 
         public void processingInstruction(String target, String data) throws SAXException
         {
-            if (this.inDocument)
+            if (this.inDocument && !this.unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
                 StringBuffer sb = new StringBuffer(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
@@ -264,6 +284,8 @@ public final class SAXCompiler extends Compiler
         private final CompilationManager unit;
         
         private boolean inMetadata = false;
+        
+        private boolean consumingCDATA = false;
 
         public ViewMetadataHandler(CompilationManager unit, String alias)
         {
@@ -273,7 +295,7 @@ public final class SAXCompiler extends Compiler
 
         public void characters(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && inMetadata)
+            if (this.inDocument && inMetadata && !consumingCDATA)
             {
                 this.unit.writeText(new String(ch, start, length));
             }
@@ -281,7 +303,7 @@ public final class SAXCompiler extends Compiler
 
         public void comment(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && inMetadata)
+            if (this.inDocument && inMetadata && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
             {
                 this.unit.writeComment(new String(ch, start, length));
             }
@@ -308,7 +330,14 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && inMetadata)
             {
-                this.unit.writeInstruction("]]>");
+                if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
+                {
+                    this.unit.writeInstruction("]]>");
+                }
+                else
+                {
+                    this.consumingCDATA = false;
+                }
             }
         }
 
@@ -383,7 +412,14 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && inMetadata)
             {
-                this.unit.writeInstruction("<![CDATA[");
+                if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
+                {
+                    this.unit.writeInstruction("<![CDATA[");
+                }
+                else
+                {
+                    this.consumingCDATA = true;
+                }
             }
         }
 
@@ -421,7 +457,7 @@ public final class SAXCompiler extends Compiler
 
         public void processingInstruction(String target, String data) throws SAXException
         {
-            if (this.inDocument && inMetadata)
+            if (this.inDocument && inMetadata && !this.unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
                 StringBuffer sb = new StringBuffer(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
@@ -453,6 +489,8 @@ public final class SAXCompiler extends Compiler
         
         private boolean inCompositeImplementation = false;
 
+        private boolean consumingCDATA = false;
+
         public CompositeComponentMetadataHandler(CompilationManager unit, String alias)
         {
             this.unit = unit;
@@ -461,7 +499,7 @@ public final class SAXCompiler extends Compiler
 
         public void characters(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && inCompositeInterface)
+            if (this.inDocument && inCompositeInterface && !consumingCDATA)
             {
                 this.unit.writeText(new String(ch, start, length));
             }
@@ -469,7 +507,7 @@ public final class SAXCompiler extends Compiler
 
         public void comment(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && inCompositeInterface)
+            if (this.inDocument && inCompositeInterface && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
             {
                 this.unit.writeComment(new String(ch, start, length));
             }
@@ -496,7 +534,14 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && inCompositeInterface)
             {
-                this.unit.writeInstruction("]]>");
+                if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
+                {
+                    this.unit.writeInstruction("]]>");
+                }
+                else
+                {
+                    this.consumingCDATA = false;
+                }
             }
         }
 
@@ -589,7 +634,14 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && inCompositeInterface)
             {
-                this.unit.writeInstruction("<![CDATA[");
+                if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
+                {
+                    this.unit.writeInstruction("<![CDATA[");
+                }
+                else
+                {
+                    this.consumingCDATA = true;
+                }
             }
         }
 
@@ -645,7 +697,7 @@ public final class SAXCompiler extends Compiler
 
         public void processingInstruction(String target, String data) throws SAXException
         {
-            if (this.inDocument && inCompositeInterface)
+            if (this.inDocument && inCompositeInterface && !this.unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
                 StringBuffer sb = new StringBuffer(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
@@ -668,7 +720,7 @@ public final class SAXCompiler extends Compiler
         try
         {
             is = new BufferedInputStream(src.openStream(), 1024);
-            mngr = new CompilationManager(alias, this);
+            mngr = new CompilationManager(alias, this, getFaceletsProcessingInstructions(src, alias));
             encoding = writeXmlDecl(is, mngr);
             CompilationHandler handler = new CompilationHandler(mngr, alias);
             SAXParser parser = this.createSAXParser(handler);
@@ -705,7 +757,7 @@ public final class SAXCompiler extends Compiler
         try
         {
             is = new BufferedInputStream(src.openStream(), 1024);
-            mngr = new CompilationManager(alias, this);
+            mngr = new CompilationManager(alias, this, getFaceletsProcessingInstructions(src, alias));
             encoding = getXmlDecl(is, mngr);
             ViewMetadataHandler handler = new ViewMetadataHandler(mngr, alias);
             SAXParser parser = this.createSAXParser(handler);
@@ -742,7 +794,7 @@ public final class SAXCompiler extends Compiler
         try
         {
             is = new BufferedInputStream(src.openStream(), 1024);
-            mngr = new CompilationManager(alias, this);
+            mngr = new CompilationManager(alias, this, getFaceletsProcessingInstructions(src, alias));
             encoding = getXmlDecl(is, mngr);
             CompositeComponentMetadataHandler handler = new CompositeComponentMetadataHandler(mngr, alias);
             SAXParser parser = this.createSAXParser(handler);
@@ -765,6 +817,20 @@ public final class SAXCompiler extends Compiler
         }
         return new EncodingHandler(mngr.createFaceletHandler(), encoding);
     }
+    
+    protected FaceletsProcessingInstructions getFaceletsProcessingInstructions(URL src, String alias)
+    {
+        String processAs = null;
+        for (FaceletsProcessing entry : getFaceletsProcessingConfigurations())
+        {
+            if (src.getPath().endsWith(entry.getFileExtension()))
+            {
+                processAs = entry.getProcessAs();
+                break;
+            }
+        }
+        return FaceletsProcessingInstructions.getProcessingInstructions(processAs);
+    }
 
     protected static final String writeXmlDecl(InputStream is, CompilationManager mngr) throws IOException
     {
@@ -779,7 +845,10 @@ public final class SAXCompiler extends Compiler
                 Matcher m = XmlDeclaration.matcher(r);
                 if (m.find())
                 {
-                    mngr.writeInstruction(m.group(0) + "\n");
+                    if (!mngr.getFaceletsProcessingInstructions().isConsumeXmlDeclaration())
+                    {
+                        mngr.writeInstruction(m.group(0) + "\n");
+                    }
                     if (m.group(3) != null)
                     {
                         encoding = m.group(3);

@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagDecorator;
 
+import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.view.facelets.tag.CompositeTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -73,6 +75,8 @@ public abstract class Compiler
     private final Map<String, String> features = new HashMap<String, String>();
 
     private boolean initialized = false;
+    
+    private Collection<FaceletsProcessing> faceletsProcessingConfigurations;
 
     /**
      * 
@@ -258,5 +262,26 @@ public abstract class Compiler
     public final void setValidating(boolean validating)
     {
         this.validating = validating;
+    }
+
+    /**
+     * 
+     * @since 2.1.0
+     * @return
+     */
+    public Collection<FaceletsProcessing> getFaceletsProcessingConfigurations()
+    {
+        return faceletsProcessingConfigurations;
+    }
+
+    /**
+     * 
+     * @since 2.1.0
+     * @return
+     */
+    public void setFaceletsProcessingConfigurations(
+            Collection<FaceletsProcessing> faceletsProcessingConfigurations)
+    {
+        this.faceletsProcessingConfigurations = faceletsProcessingConfigurations;
     }
 }

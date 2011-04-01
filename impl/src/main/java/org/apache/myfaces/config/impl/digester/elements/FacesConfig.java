@@ -41,6 +41,7 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
     private Map<String, String> validators = new HashMap<String, String>();
     private List<org.apache.myfaces.config.element.Behavior> behaviors = new ArrayList<org.apache.myfaces.config.element.Behavior>();
     private List<org.apache.myfaces.config.element.NamedEvent> namedEvents = new ArrayList<org.apache.myfaces.config.element.NamedEvent>();
+    private List<org.apache.myfaces.config.element.FacesConfigExtension> facesConfigExtensions = new ArrayList<org.apache.myfaces.config.element.FacesConfigExtension>();
     
     private String metadataComplete;
     private String version;
@@ -226,4 +227,16 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
     {
         this.version = version;
     }
+
+    @Override
+    public List<org.apache.myfaces.config.element.FacesConfigExtension> getFacesConfigExtensions()
+    {
+        return facesConfigExtensions;
+    }
+    
+    public void addFacesConfigExtension(org.apache.myfaces.config.element.FacesConfigExtension elem)
+    {
+        facesConfigExtensions.add(elem);
+    }
+    
 }

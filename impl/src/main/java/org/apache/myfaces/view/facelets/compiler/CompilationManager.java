@@ -71,8 +71,10 @@ final class CompilationManager
     private final String alias;
     
     private CompilationUnit interfaceCompilationUnit;
+    
+    private final FaceletsProcessingInstructions faceletsProcessingInstructions;
 
-    public CompilationManager(String alias, Compiler compiler)
+    public CompilationManager(String alias, Compiler compiler, FaceletsProcessingInstructions instructions)
     {
 
         // this is our alias
@@ -97,6 +99,7 @@ final class CompilationManager
         this.units.push(new CompilationUnit());
         
         this.interfaceCompilationUnit = null; 
+        this.faceletsProcessingInstructions = instructions;
     }
 
     public void writeInstruction(String value)
@@ -119,7 +122,7 @@ final class CompilationManager
         }
         else
         {
-            unit = new TextUnit(this.alias, this.nextTagId());
+            unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
             this.startUnit(unit);
         }
         unit.writeInstruction(value);
@@ -146,7 +149,7 @@ final class CompilationManager
         }
         else
         {
-            unit = new TextUnit(this.alias, this.nextTagId());
+            unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
             this.startUnit(unit);
         }
         unit.write(value);
@@ -175,7 +178,7 @@ final class CompilationManager
         }
         else
         {
-            unit = new TextUnit(this.alias, this.nextTagId());
+            unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
             this.startUnit(unit);
         }
 
@@ -285,7 +288,7 @@ final class CompilationManager
             }
             else
             {
-                unit = new TextUnit(this.alias, this.nextTagId());
+                unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
                 this.startUnit(unit);
             }
             unit.startTag(t);
@@ -521,5 +524,15 @@ final class CompilationManager
             return new Tag(tag.getLocation(), tag.getNamespace(), tag.getLocalName(), tag.getQName(),
                            new TagAttributesImpl(attr));
         }
+    }
+
+    /**
+     * 
+     * @since 2.1.0
+     * @return
+     */
+    public FaceletsProcessingInstructions getFaceletsProcessingInstructions()
+    {
+        return faceletsProcessingInstructions;
     }
 }

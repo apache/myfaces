@@ -31,6 +31,8 @@ import javax.faces.render.RenderKitFactory;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
+import org.apache.myfaces.config.element.FaceletsProcessing;
+import org.apache.myfaces.config.element.FacesConfigExtension;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -101,6 +103,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<SystemEventListener> systemEventListeners = new ArrayList<SystemEventListener>();
     
     private List<NamedEvent> namedEvents = new ArrayList<NamedEvent>();
+    
+    private Map<String, FaceletsProcessing> faceletsProcessingByFileExtension = new HashMap<String, FaceletsProcessing>();
     
     /**
      * Add another unmarshalled faces config object.
@@ -217,6 +221,17 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
             else
             {
                 existing.merge(renderKit);
+            }
+        }
+
+        for (FacesConfigExtension extension : config.getFacesConfigExtensions())
+        {
+            for (FaceletsProcessing faceletsProcessing : extension.getFaceletsProcessingList())
+            {
+                if (faceletsProcessing.getFileExtension() != null && faceletsProcessing.getFileExtension().length() > 0)
+                {
+                    faceletsProcessingByFileExtension.put(faceletsProcessing.getFileExtension(), faceletsProcessing);
+                }
             }
         }
 
@@ -640,5 +655,15 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     public Collection<NamedEvent> getNamedEvents()
     {
         return namedEvents;
+    }
+    
+    public Collection<FaceletsProcessing> getFaceletsProcessing()
+    {
+        return faceletsProcessingByFileExtension.values();
+    }
+
+    public FaceletsProcessing getFaceletsProcessingConfiguration(String fileExtension)
+    {
+        return faceletsProcessingByFileExtension.get(fileExtension);
     }
 }

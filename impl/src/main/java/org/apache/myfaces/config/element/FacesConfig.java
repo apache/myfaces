@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -60,4 +61,13 @@ public abstract class FacesConfig implements Serializable
     public abstract String getMetadataComplete();
 
     public abstract String getVersion ();
+    
+    /**
+     * 
+     * @since 2.1.0
+     */
+    public List<FacesConfigExtension> getFacesConfigExtensions()
+    {
+        return Collections.emptyList();
+    }
 }

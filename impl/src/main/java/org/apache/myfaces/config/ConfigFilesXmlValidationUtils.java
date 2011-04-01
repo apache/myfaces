@@ -53,6 +53,7 @@ public class ConfigFilesXmlValidationUtils
 
     private final static String FACES_CONFIG_SCHEMA_PATH_12 = "org/apache/myfaces/resource/web-facesconfig_1_2.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_20 = "org/apache/myfaces/resource/web-facesconfig_2_0.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_21 = "org/apache/myfaces/resource/web-facesconfig_2_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
 
     public static class LSInputImpl implements LSInput
@@ -225,7 +226,7 @@ public class ConfigFilesXmlValidationUtils
 
     private static Source getFacesConfigSchemaFileAsSource(ExternalContext externalContext, String version)
     {
-        String xmlSchema = "1.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_12 : FACES_CONFIG_SCHEMA_PATH_20; 
+        String xmlSchema = "1.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_12 : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 : FACES_CONFIG_SCHEMA_PATH_21) ; 
         
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
         
@@ -276,8 +277,8 @@ public class ConfigFilesXmlValidationUtils
                 // This is as a result of our aborted parse, so ignore.
             }
 
-            result = handler.isVersion20OrLater() ? "2.0" : (handler
-                    .isVersion12() ? "1.2" : "1.1");
+            result = handler.isVersion21OrLater() ? "2.1" : (handler.isVersion20() ? "2.0" : (handler
+                    .isVersion12() ? "1.2" : "1.1"));
         }
 
         catch (Throwable e)
@@ -306,16 +307,22 @@ public class ConfigFilesXmlValidationUtils
     private static class FacesConfigVersionCheckHandler extends DefaultHandler
     {
         private boolean version12;
-        private boolean version20OrLater;
+        private boolean version20;
+        private boolean version21OrLater;
 
         public boolean isVersion12()
         {
             return this.version12;
         }
 
-        public boolean isVersion20OrLater()
+        public boolean isVersion20()
         {
-            return this.version20OrLater;
+            return this.version20 || this.version21OrLater;
+        }
+        
+        public boolean isVersion21OrLater()
+        {
+            return version21OrLater;
         }
 
         @Override
@@ -337,11 +344,19 @@ public class ConfigFilesXmlValidationUtils
                         if (attributes.getValue(i).equals("1.2"))
                         {
                             this.version12 = true;
-                            this.version20OrLater = false;
+                            this.version20 = false;
+                            this.version21OrLater = false;
+                        }
+                        else if (attributes.getValue(i).equals("2.0"))
+                        {
+                            this.version21OrLater = false;
+                            this.version20 = true;
+                            this.version12 = false;
                         }
                         else
                         {
-                            this.version20OrLater = true;
+                            this.version21OrLater = true;
+                            this.version20 = false;
                             this.version12 = false;
                         }
                     }

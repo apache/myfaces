@@ -1636,6 +1636,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         loadLibraries(context, compiler);
         loadDecorators(context, compiler);
         loadOptions(context, compiler);
+        
+        compiler.setFaceletsProcessingConfigurations(
+                RuntimeConfig.getCurrentInstance(
+                        context.getExternalContext()).getFaceletProcessingConfigurations()); 
 
         return compiler;
     }
@@ -1767,6 +1771,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Deprecated
     protected String getRenderedViewId(FacesContext context, String actionId)
     {
+        // The previous code comes from Facelets 1.1.x but now it becomes invalid. In JSF 2.1, it is possible
+        // to have multiple file extensions, and to make work correctly viewExists(), it is necessary to return
+        // the viewId without changes
         return actionId;
     }
 

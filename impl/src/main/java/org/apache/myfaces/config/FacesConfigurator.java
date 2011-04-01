@@ -26,6 +26,7 @@ import org.apache.myfaces.config.annotation.LifecycleProvider;
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
+import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesConfigData;
 import org.apache.myfaces.config.element.ManagedBean;
@@ -898,6 +899,11 @@ public class FacesConfigurator
             } catch (ClassNotFoundException e) {
                 log.log(Level.SEVERE, "Named event could not be initialized, reason:",e);
             }
+        }
+        
+        for (FaceletsProcessing faceletsProcessing : dispenser.getFaceletsProcessing())
+        {
+            runtimeConfig.addFaceletProcessingConfiguration(faceletsProcessing.getFileExtension(), faceletsProcessing);
         }
     }
 

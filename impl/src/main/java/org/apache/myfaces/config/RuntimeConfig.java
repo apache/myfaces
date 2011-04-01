@@ -34,6 +34,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
+import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
@@ -78,6 +79,9 @@ public class RuntimeConfig
         new ConcurrentHashMap<String, org.apache.myfaces.config.element.Converter>();
     
     private NamedEventManager _namedEventManager;
+    
+    private final Map<String, FaceletsProcessing> _faceletsProcessingByFileExtension =
+        new HashMap<String, FaceletsProcessing>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -325,5 +329,24 @@ public class RuntimeConfig
     public void setNamedEventManager(NamedEventManager namedEventManager)
     {
         this._namedEventManager = namedEventManager;
+    }
+    
+    public void addFaceletProcessingConfiguration(String fileExtension, FaceletsProcessing configuration)
+    {
+        checkNull(fileExtension, "fileExtension");
+        checkEmpty(fileExtension, "fileExtension");
+        checkNull(configuration, "configuration");
+
+        this._faceletsProcessingByFileExtension.put(fileExtension, configuration);
+    }
+    
+    public FaceletsProcessing getFaceletProcessingConfiguration(String fileExtensions)
+    {
+        return _faceletsProcessingByFileExtension.get(fileExtensions);
+    }
+    
+    public Collection<FaceletsProcessing> getFaceletProcessingConfigurations()
+    {
+        return _faceletsProcessingByFileExtension.values();
     }
 }
