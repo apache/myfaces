@@ -53,6 +53,7 @@ abstract class _HtmlHead extends UIOutput
   
   /**
    * 
+   * @since 2.1.0
    * @return
    */
   @JSFProperty
