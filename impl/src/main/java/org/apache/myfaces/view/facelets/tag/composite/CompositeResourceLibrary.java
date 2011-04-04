@@ -20,10 +20,13 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
+import javax.faces.application.ViewHandler;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.FaceletHandler;
@@ -31,6 +34,8 @@ import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.apache.myfaces.shared_impl.util.StringUtils;
+import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 
 /**
@@ -45,7 +50,118 @@ public class CompositeResourceLibrary implements TagLibrary
 {
     public final static String NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
     
+    private Pattern _acceptPatterns;
+    private String _extension;
+    private String[] _defaultSuffixesArray;
     
+    public CompositeResourceLibrary()
+    {
+        super();
+
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        
+        _acceptPatterns = loadAcceptPattern(externalContext);
+
+        _extension = loadFaceletExtension(externalContext);
+        
+        String defaultSuffixes = WebConfigParamUtils.getStringInitParameter(externalContext, ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX );
+        
+        _defaultSuffixesArray = StringUtils.splitShortString(defaultSuffixes, ' ');
+    }
+    
+    /**
+     * Load and compile a regular expression pattern built from the Facelet view mapping parameters.
+     * 
+     * @param context
+     *            the application's external context
+     * 
+     * @return the compiled regular expression
+     */
+    private Pattern loadAcceptPattern(ExternalContext context)
+    {
+        assert context != null;
+
+        String mappings = context.getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
+        if (mappings == null)
+        {
+            return null;
+        }
+
+        // Make sure the mappings contain something
+        mappings = mappings.trim();
+        if (mappings.length() == 0)
+        {
+            return null;
+        }
+
+        return Pattern.compile(toRegex(mappings));
+    }
+
+    private String loadFaceletExtension(ExternalContext context)
+    {
+        assert context != null;
+
+        String suffix = context.getInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME);
+        if (suffix == null)
+        {
+            suffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
+        }
+        else
+        {
+            suffix = suffix.trim();
+            if (suffix.length() == 0)
+            {
+                suffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
+            }
+        }
+
+        return suffix;
+    }
+    
+    /**
+     * Convert the specified mapping string to an equivalent regular expression.
+     * 
+     * @param mappings
+     *            le mapping string
+     * 
+     * @return an uncompiled regular expression representing the mappings
+     */
+    private String toRegex(String mappings)
+    {
+        assert mappings != null;
+
+        // Get rid of spaces
+        mappings = mappings.replaceAll("\\s", "");
+
+        // Escape '.'
+        mappings = mappings.replaceAll("\\.", "\\\\.");
+
+        // Change '*' to '.*' to represent any match
+        mappings = mappings.replaceAll("\\*", ".*");
+
+        // Split the mappings by changing ';' to '|'
+        mappings = mappings.replaceAll(";", "|");
+
+        return mappings;
+    }
+    
+    public boolean handles(String resourceName)
+    {
+        if (resourceName == null)
+        {
+            return false;
+        }
+        // Check extension first as it's faster than mappings
+        if (resourceName.endsWith(_extension))
+        {
+            // If the extension matches, it's a Facelet viewId.
+            return true;
+        }
+
+        // Otherwise, try to match the view identifier with the facelet mappings
+        return _acceptPatterns != null && _acceptPatterns.matcher(resourceName).matches();
+    }
+
     public boolean containsFunction(String ns, String name)
     {
         // Composite component tag library does not suport functions
@@ -78,12 +194,19 @@ public class CompositeResourceLibrary implements TagLibrary
             if (ns.length() > NAMESPACE_PREFIX.length())
             {
                 String libraryName = ns.substring(NAMESPACE_PREFIX.length());
-                String resourceName = localName + ".xhtml";
-                Resource compositeComponentResource = resourceHandler.createResource(resourceName, libraryName);
-                if (compositeComponentResource != null)
+                
+                for (String defaultSuffix : _defaultSuffixesArray)
                 {
-                    URL url = compositeComponentResource.getURL();
-                    return (url != null);
+                    String resourceName = localName + defaultSuffix;
+                    if (handles(resourceName))
+                    {
+                        Resource compositeComponentResource = resourceHandler.createResource(resourceName, libraryName);
+                        if (compositeComponentResource != null)
+                        {
+                            URL url = compositeComponentResource.getURL();
+                            return (url != null);
+                        }
+                    }
                 }
             }
         }
@@ -107,15 +230,24 @@ public class CompositeResourceLibrary implements TagLibrary
             if (ns.length() > NAMESPACE_PREFIX.length())
             {
                 String libraryName = ns.substring(NAMESPACE_PREFIX.length());
-                String resourceName = localName + ".xhtml";
-                Resource compositeComponentResource = new CompositeResouceWrapper(
-                    resourceHandler.createResource(resourceName, libraryName));
-                if (compositeComponentResource != null)
+                for (String defaultSuffix : _defaultSuffixesArray)
                 {
-                    ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
-                            "javax.faces.NamingContainer", null);
-                    
-                    return new CompositeComponentResourceTagHandler(componentConfig, compositeComponentResource);
+                    String resourceName = localName + defaultSuffix;
+                    if (handles(resourceName))
+                    {
+                        Resource compositeComponentResourceWrapped = resourceHandler.createResource(resourceName, libraryName);
+                        if (compositeComponentResourceWrapped != null)
+                        {
+                            Resource compositeComponentResource = new CompositeResouceWrapper(compositeComponentResourceWrapped);
+                            if (compositeComponentResource != null)
+                            {
+                                ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
+                                        "javax.faces.NamingContainer", null);
+                                
+                                return new CompositeComponentResourceTagHandler(componentConfig, compositeComponentResource);
+                            }
+                        }
+                    }
                 }
             }
         }
