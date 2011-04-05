@@ -463,7 +463,7 @@ public final class FactoryFinder
         }
     }
 
-    public static void _releaseFactories() throws FacesException
+    private static void _releaseFactories() throws FacesException
     {
         ClassLoader classLoader = getClassLoader();
 
