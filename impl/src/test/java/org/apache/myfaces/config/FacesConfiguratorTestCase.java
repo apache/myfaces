@@ -18,14 +18,12 @@
  */
 package org.apache.myfaces.config;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.myfaces.config.FacesConfigurator.Version;
 import org.apache.shale.test.base.AbstractJsfTestCase;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FacesConfiguratorTestCase extends AbstractJsfTestCase
 {
@@ -35,57 +33,40 @@ public class FacesConfiguratorTestCase extends AbstractJsfTestCase
         super(name);
     }
 
-    @Override
-    protected void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-    
-    public static final String REGEX_LIBRARY = "((jar)?(besjar)?(wsjar)?(zip)?)?:(file:.*/(.+)-" +
-    "(\\d+)(\\.(\\d+)(\\.(\\d+)(\\.(\\d+))?)?)?(-SNAPSHOT)?" +
-    "\\.jar)!/META-INF/MANIFEST.MF";
-    
-        
     public void testVersionNumber() throws Exception
     {
-        Pattern pattern = Pattern.compile(REGEX_LIBRARY);
-        List<Version> l = new ArrayList<Version>();
-        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-collections-3.jar!/META-INF/MANIFEST.MF"));
-        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-codec-1.3.jar!/META-INF/MANIFEST.MF"));
-        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-beanutils-1.7.0.jar!/META-INF/MANIFEST.MF"));
-        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-beanutils-1.7.0.6.jar!/META-INF/MANIFEST.MF"));
-        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/commons-beanutils-1.7.0-SNAPSHOT.jar!/META-INF/MANIFEST.MF"));
-        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/tomahawk12-1.1.10-SNAPSHOT.jar!/META-INF/MANIFEST.MF"));
-        l.add(testJar(pattern, "jar:file:/C:/Program%20Files/Apache%20Software%20Foundation/Tomcat%206.0/webapps/ProjetBidonJSF/WEB-INF/lib/tomahawk-sandbox12-1.1.10.jar!/META-INF/MANIFEST.MF"));
-        
-        assertEquals(new Version("3", null, null, null, null), l.get(0) );
-        assertEquals(new Version("1", "3", null, null, null), l.get(1) );
-        assertEquals(new Version("1", "7", "0", null, null), l.get(2) );
-        assertEquals(new Version("1", "7", "0", "6", null), l.get(3) );
-        assertEquals(new Version("1", "7", "0", null, "SNAPSHOT"), l.get(4) );
-        assertEquals(new Version("1", "1", "10", null, "SNAPSHOT"), l.get(5) );
-        assertEquals(new Version("1", "1", "10", null, null), l.get(6) );
 
-        Collections.sort(l);
+        // tests single digits
+        // tests more digits
+        // tests alpha
+        // tests SNAPSHOT
+        // tests digits in artifact names
+
+        Map<String, List<FacesConfigurator.JarInfo>> libs = new HashMap<String, List<FacesConfigurator.JarInfo>>(30);
+        FacesConfigurator.addJarInfo(libs, new URL("jar:file:/C:/.../WEB-INF/lib/myfaces-api-1.2.11-SNAPSHOT.jar!/META-INF/MANIFEST.MF"));
+        FacesConfigurator.addJarInfo(libs, new URL("jar:file:/C:/.../WEB-INF/lib/myfaces-api-2.jar!/META-INF/MANIFEST.MF"));
+        FacesConfigurator.addJarInfo(libs, new URL("jar:file:/C:/.../WEB-INF/lib/tomahawk12-1.1.10-SNAPSHOT.jar!/META-INF/MANIFEST.MF"));
+        FacesConfigurator.addJarInfo(libs, new URL("jar:file:/G:/.../WEB-INF/lib/tomahawk-facelets-taglib-1.0.jar!/META-INF/MANIFEST.MF"));
+        FacesConfigurator.addJarInfo(libs, new URL("jar:file:/C:/.../WEB-INF/lib/tomahawk-sandbox12-1.1.10.jar!/META-INF/MANIFEST.MF"));
+        FacesConfigurator.addJarInfo(libs, new URL("jar:file:/home/.../tobago-core/1.5.0-alpha-3-SNAPSHOT/tobago-core-1.5.0-alpha-3-SNAPSHOT.jar!/META-INF/MANIFEST.MF"));
+        FacesConfigurator.addJarInfo(libs, new URL("jar:file:/home/.../tobago-core/1.0.35/tobago-core-1.0.35.jar!/META-INF/MANIFEST.MF"));
+
+        final List<FacesConfigurator.JarInfo> mf = libs.get(FacesConfigurator.MYFACES_API_PACKAGE_NAME);
+        assertEquals(2, mf.size());
+        assertEquals("1.2.11-SNAPSHOT", mf.get(0).getVersion());
+        assertEquals("2", mf.get(1).getVersion());
+
+        final List<FacesConfigurator.JarInfo> tk12 = libs.get(FacesConfigurator.MYFACES_TOMAHAWK12_PACKAGE_NAME);
+        assertEquals(1, tk12.size());
+        assertEquals("1.1.10-SNAPSHOT", tk12.get(0).getVersion());
+
+        final List<FacesConfigurator.JarInfo> tksb = libs.get(FacesConfigurator.MYFACES_TOMAHAWK_SANDBOX12_PACKAGE_NAME);
+        assertEquals(1, tksb.size());
+        assertEquals("1.1.10", tksb.get(0).getVersion());
+
+        final List<FacesConfigurator.JarInfo> tobago = libs.get(FacesConfigurator.MYFACES_TOBAGO_PACKAGE_NAME);
+        assertEquals(2, tobago.size());
+        assertEquals("1.5.0-alpha-3-SNAPSHOT", tobago.get(0).getVersion());
+        assertEquals("1.0.35", tobago.get(1).getVersion());
     }
-    
-    private static Version testJar(Pattern pattern, String libName)
-    {
-        Matcher matcher = pattern.matcher(libName);
-        
-        if (matcher.matches())
-        {
-            Version version = new Version(matcher.group(8), matcher.group(10), matcher.group(12), matcher.group(14), 
-                    matcher.group(15)); 
-            return version;
-        }
-        
-        return null;
-    }    
 }

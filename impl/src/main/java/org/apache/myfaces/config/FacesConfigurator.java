@@ -18,54 +18,9 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.el.ELResolver;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.webapp.FacesServlet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
-import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -85,6 +40,48 @@ import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.xml.sax.SAXException;
+
+import javax.el.ELResolver;
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
+import javax.faces.application.NavigationHandler;
+import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandler;
+import javax.faces.context.ExternalContext;
+import javax.faces.el.PropertyResolver;
+import javax.faces.el.VariableResolver;
+import javax.faces.event.ActionListener;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.webapp.FacesServlet;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
@@ -111,7 +108,8 @@ public class FacesConfigurator
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private static final Set<String> FACTORY_NAMES = new HashSet<String>();
-    {
+
+    static {
         FACTORY_NAMES.add(FactoryFinder.APPLICATION_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.FACES_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.LIFECYCLE_FACTORY);
@@ -137,7 +135,7 @@ public class FacesConfigurator
     public static final String MYFACES_ORCHESTRA12_PACKAGE_NAME = "myfaces-orchestra-core12";
     public static final String MYFACES_TRINIDAD_API_PACKAGE_NAME = "trinidad-api";
     public static final String MYFACES_TRINIDAD_IMPL_PACKAGE_NAME = "trinidad-impl";
-    public static final String MYFACES_TOBAGO_PACKAGE_NAME = "tobago";
+    public static final String MYFACES_TOBAGO_PACKAGE_NAME = "tobago-core";
     public static final String MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME = "tomahawk-sandbox";
     public static final String MYFACES_TOMAHAWK_SANDBOX12_PACKAGE_NAME = "tomahawk-sandbox12";
     public static final String MYFACES_TOMAHAWK_SANDBOX15_PACKAGE_NAME = "tomahawk-sandbox15";
@@ -161,26 +159,19 @@ public class FacesConfigurator
      * files present in the classpath.
      * <p>The groups found with the regular expression are:</p>
      * <ul>
-     *   <li>Group 6: file path (required)</li>
-     *   <li>Group 7: artifact id (required)</li>
-     *   <li>Group 8: major version (required)</li>
-     *   <li>Group 10: minor version (optional)</li>
-     *   <li>Group 12: maintenance version (optional)</li>
-     *   <li>Group 14: extra version (optional)</li>
-     *   <li>Group 15: SNAPSHOT marker (optional)</li>
+     *   <li>Group 2: file path</li>
+     *   <li>Group 3: artifact id</li>
+     *   <li>Group 4: version</li>
      * </ul>
+     * The regexp is searching in the file name to the first - followed by a digit to split artifact name and version.
      */
-    public static final String REGEX_LIBRARY = "((jar)?(besjar)?(wsjar)?(zip)?)?:(file:.*/(.+)-" +
-            "(\\d+)(\\.(\\d+)(\\.(\\d+)(\\.(\\d+))?)?)?(-SNAPSHOT)?" +
-            "\\.jar)!/META-INF/MANIFEST.MF";
+    public static final String REGEX_LIBRARY
+        = "(jar|besjar|wsjar|zip):(file:.*/(.+?)-(\\d+.*)\\.jar)!/META-INF/MANIFEST.MF";
     private static final Pattern REGEX_LIBRARY_PATTERN = Pattern.compile(REGEX_LIBRARY);
-    private static final int REGEX_LIBRARY_FILE_PATH = 6;
-    private static final int REGEX_LIBRARY_ARTIFACT_ID = 7;
-    private static final int REGEX_LIBRARY_MAJOR_VERSION = 8;
-    private static final int REGEX_LIBRARY_MINOR_VERSION = 10;
-    private static final int REGEX_LIBRARY_MAINTENANCE_VERSION = 12;
-    private static final int REGEX_LIBRARY_EXTRA_VERSION = 14;
-    private static final int REGEX_LIBRARY_SNAPSHOT_MARKER = 15;
+
+    private static final int REGEX_LIBRARY_FILE_PATH = 2;
+    private static final int REGEX_LIBRARY_ARTIFACT_ID = 3;
+    private static final int REGEX_LIBRARY_VERSION = 4;
 
     public FacesConfigurator(ExternalContext externalContext)
     {
@@ -457,73 +448,48 @@ public class FacesConfigurator
             while (it.hasNext())
             {
                 URL url = it.next();
-                Matcher matcher = REGEX_LIBRARY_PATTERN.matcher(url.toString());
-                if (matcher.matches())
+                addJarInfo(libs, url);
+            }
+
+            if (log.isWarnEnabled())
+            {
+                for (String artifactId : ARTIFACTS_IDS)
                 {
-                    // We have a valid JAR
-                    String artifactId = matcher.group(REGEX_LIBRARY_ARTIFACT_ID);
                     List<JarInfo> versions = libs.get(artifactId);
-                    if (versions == null)
+                    if (versions != null && versions.size() > 1)
                     {
-                        versions = new ArrayList<JarInfo>(2);
-                        libs.put(artifactId, versions);
-                    }
+                        StringBuilder builder = new StringBuilder(1024);
+                        builder.append("You are using the library: ");
+                        builder.append(artifactId);
+                        builder.append(" in different versions; first (and probably used) version is: ");
+                        builder.append(versions.get(0).getVersion());
+                        builder.append(" loaded from: ");
+                        builder.append(versions.get(0).getUrl());
+                        builder.append(", but also found the following versions: ");
 
-                    String path = matcher.group(REGEX_LIBRARY_FILE_PATH);
+                        boolean needComma = false;
+                        for (int i = 1; i < versions.size(); i++)
+                        {
+                            JarInfo info = versions.get(i);
+                            if (needComma)
+                            {
+                                builder.append(", ");
+                            }
 
-                    Version version = new Version(matcher.group(REGEX_LIBRARY_MAJOR_VERSION), 
-                            matcher.group(REGEX_LIBRARY_MINOR_VERSION), 
-                            matcher.group(REGEX_LIBRARY_MAINTENANCE_VERSION),
-                            matcher.group(REGEX_LIBRARY_EXTRA_VERSION), 
-                            matcher.group(REGEX_LIBRARY_SNAPSHOT_MARKER));
+                            builder.append(info.getVersion());
+                            builder.append(" loaded from: ");
+                            builder.append(info.getUrl());
 
-                    JarInfo newInfo = new JarInfo(path, version);
-                    if (!versions.contains(newInfo))
-                    {
-                        versions.add(newInfo);
+                            needComma = true;
+                        }
+
+                        log.warn(builder.toString());
                     }
                 }
             }
 
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled() )
             {
-                if (log.isWarnEnabled())
-                {
-                    for (String artifactId : ARTIFACTS_IDS)
-                    {
-                        List<JarInfo> versions = libs.get(artifactId);
-                        if (versions != null && versions.size() > 1)
-                        {
-                            StringBuilder builder = new StringBuilder(1024);
-                            builder.append("You are using the library: ");
-                            builder.append(artifactId);
-                            builder.append(" in different versions; first (and probably used) version is: ");
-                            builder.append(versions.get(0).getVersion());
-                            builder.append(" loaded from: ");
-                            builder.append(versions.get(0).getUrl());
-                            builder.append(", but also found the following versions: ");
-
-                            boolean needComma = false;
-                            for (int i = 1; i < versions.size(); i++)
-                            {
-                                JarInfo info = versions.get(i);
-                                if (needComma)
-                                {
-                                    builder.append(", ");
-                                }
-
-                                builder.append(info.getVersion());
-                                builder.append(" loaded from: ");
-                                builder.append(info.getUrl());
-
-                                needComma = true;
-                            }
-
-                            log.warn(builder.toString());
-                        }
-                    }
-                }
-
                 for (String artifactId : ARTIFACTS_IDS)
                 {
                     startLib(artifactId, libs);
@@ -536,7 +502,32 @@ public class FacesConfigurator
         }
     }
 
-    /**
+    protected static void addJarInfo(Map<String, List<JarInfo>> libs, URL url) {
+        Matcher matcher = REGEX_LIBRARY_PATTERN.matcher(url.toString());
+        if (matcher.matches())
+        {
+            // We have a valid JAR
+            String artifactId = matcher.group(REGEX_LIBRARY_ARTIFACT_ID);
+            List<JarInfo> versions = libs.get(artifactId);
+            if (versions == null)
+            {
+                versions = new ArrayList<JarInfo>(2);
+                libs.put(artifactId, versions);
+            }
+
+            String path = matcher.group(REGEX_LIBRARY_FILE_PATH);
+
+            String version = matcher.group(REGEX_LIBRARY_VERSION);
+
+            JarInfo newInfo = new JarInfo(path, version);
+            if (!versions.contains(newInfo))
+            {
+                versions.add(newInfo);
+            }
+        }
+    }
+
+  /**
      * This method performs part of the factory search outlined in section 10.2.6.1.
      */
     protected void feedMetaInfServicesFactories()
@@ -747,13 +738,13 @@ public class FacesConfigurator
         List<JarInfo> versions = libs.get(artifactId);
         if (versions == null)
         {
-            log.info("MyFaces-package : " + artifactId + " not found.");
+            log.info("Artifact '" + artifactId + "' was not found.");
         }
         else
         {
             JarInfo info = versions.get(0);
-            log.info("Starting up MyFaces-package : " + artifactId + " in version : "
-                     + info.getVersion() + " from path : " + info.getUrl());
+            log.info("Artifact '" + artifactId + "' was found in version '"
+                     + info.getVersion() + "' from path '" + info.getUrl() + "'");
         }
     }
 
@@ -1127,18 +1118,18 @@ public class FacesConfigurator
         }
     }
 */
-    private static class JarInfo implements Comparable<JarInfo>
+    protected static class JarInfo implements Comparable<JarInfo>
     {
         private String url;
-        private Version version;
+        private String version;
 
-        public JarInfo(String url, Version version)
+        public JarInfo(String url, String version)
         {
             this.url = url;
             this.version = version;
         }
 
-        public Version getVersion()
+        public String getVersion()
         {
             return version;
         }
@@ -1178,156 +1169,6 @@ public class FacesConfigurator
         }
     }
     
-    static class Version implements Comparable<Version>
-    {
-        // we have to use Long here, because the version number
-        // could be something like 20060714150240 and this value
-        // exceeds an Integer (see MYFACES-2686)
-        private Long[] parts;
-        
-        private boolean snapshot;
-        
-        public Version(String major, String minor, String maintenance,
-                       String extra, String snapshot)
-        {
-            parts = new Long[4];
-            parts[0] = Long.valueOf(major);
-            
-            if (minor != null)
-            {
-                parts[1] = Long.valueOf(minor);
-                
-                if (maintenance != null)
-                {
-                    parts[2] = Long.valueOf(maintenance);
-                    
-                    if (extra != null)
-                    {
-                        parts[3] = Long.valueOf(extra);
-                    }
-                }
-            }
-            
-            this.snapshot = snapshot != null;
-        }
-
-        public int compareTo(Version v)
-        {
-            for (int i = 0; i < parts.length; i++)
-            {
-                Long left = parts[i];
-                Long right = v.parts[i];
-                if (left == null)
-                {
-                    if (right == null)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        return -1;
-                    }
-                }
-                else
-                {
-                    if (right == null)
-                    {
-                        return 1;
-                    }
-                    else if (left < right)
-                    {
-                        return -1;
-                    }
-                    else if (left > right)
-                    {
-                        return 1;
-                    }
-                }
-            }
-            
-            if (snapshot)
-            {
-                return v.snapshot ? 0 : -1;
-            }
-            else
-            {
-                return v.snapshot ? 1 : 0;
-            }
-        }
-        
-        @Override
-        public boolean equals(Object o)
-        {
-            if (o == this)
-            {
-                return true;
-            }
-            else if (o instanceof Version)
-            {
-                Version other = (Version)o;
-                if (snapshot != other.snapshot)
-                {
-                    return false;
-                }
-                
-                for (int i = 0; i < parts.length; i++)
-                {
-                    Long thisPart = parts[i];
-                    Long otherPart = other.parts[i];
-                    if (thisPart == null ? otherPart != null : !thisPart.equals(otherPart))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        
-        @Override
-        public int hashCode()
-        {
-            int hash = 0;
-            for (int i = 0; i < parts.length; i++)
-            {
-                if (parts[i] != null)
-                {
-                    hash ^= parts[i].hashCode();
-                }
-            }
-            
-            hash ^= Boolean.valueOf(snapshot).hashCode();
-            
-            return hash;
-        }
-        
-        @Override
-        public String toString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.append(parts[0]);
-            for (int i = 1; i < parts.length; i++)
-            {
-                Long val = parts[i];
-                if (val != null)
-                {
-                    builder.append('.').append(val);
-                }
-            }
-            
-            if (snapshot)
-            {
-                builder.append("-SNAPSHOT");
-            }
-            
-            return builder.toString();
-        }
-    }
-
     private void handleSerialFactory()
     {
 
