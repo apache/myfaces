@@ -21,7 +21,6 @@ package org.apache.myfaces.config;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
-import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
@@ -109,6 +108,7 @@ public class FacesConfigurator
     public static final String MYFACES_IMPL_PACKAGE_NAME = "myfaces-impl";
     public static final String MYFACES_TOMAHAWK_PACKAGE_NAME = "tomahawk";
     public static final String MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME = "tomahawk-sandbox";
+    public static final String MYFACES_TOBAGO_PACKAGE_NAME = "tobago-core";
     public static final String COMMONS_EL_PACKAGE_NAME = "commons-el";
     public static final String JSP_API_PACKAGE_NAME = "jsp-api";
 
@@ -337,6 +337,7 @@ public class FacesConfigurator
             li.add(new VersionInfo(MYFACES_IMPL_PACKAGE_NAME));
             li.add(new VersionInfo(MYFACES_TOMAHAWK_SANDBOX_PACKAGE_NAME));
             li.add(new VersionInfo(MYFACES_TOMAHAWK_PACKAGE_NAME));
+            li.add(new VersionInfo(MYFACES_TOBAGO_PACKAGE_NAME));
 
             Iterator it = ClassUtils.getResources("META-INF/MANIFEST.MF",
                                                   this);
@@ -360,15 +361,16 @@ public class FacesConfigurator
                 {
                     if(log.isInfoEnabled())
                     {
-                        log.info("Starting up MyFaces-package : "+versionInfo.getPackageName()+" in version : "
-                                +versionInfo.getUsedVersion()+" from path : "+versionInfo.getUsedVersionPath());
+                        log.info("Artifact '" + versionInfo.getPackageName()
+                            + "' was found in version '" + versionInfo.getUsedVersion()
+                            + "' from path '" + versionInfo.getUsedVersionPath() + "'");
                     }
                 }
                 else
                 {
                     if(log.isInfoEnabled())
                     {
-                        log.info("MyFaces-package : "+versionInfo.getPackageName()+" not found.");
+                        log.info("Artifact '" + versionInfo.getPackageName() + "' was not found.");
                     }
                 }
             }
