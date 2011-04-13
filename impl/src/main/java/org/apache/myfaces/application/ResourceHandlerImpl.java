@@ -90,27 +90,31 @@ public class ResourceHandlerImpl extends ResourceHandler
             //Resolve contentType using ExternalContext.getMimeType
             contentType = FacesContext.getCurrentInstance().getExternalContext().getMimeType(resourceName);
         }
-        
-        if(getResourceLoaderCache().containsResource(resourceName, libraryName, contentType))
+
+        final String localePrefix = getLocalePrefixForLocateResource();
+
+        // check cache
+        if(getResourceLoaderCache().containsResource(resourceName, libraryName, contentType, localePrefix))
         {
-            ResourceValue resourceValue = getResourceLoaderCache().getResource(resourceName, libraryName, contentType);
+            ResourceValue resourceValue = getResourceLoaderCache().getResource(
+                    resourceName, libraryName, contentType, localePrefix);
+            
             resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
                     getResourceHandlerSupport(), contentType);
         }
         else
         {
-            for (ResourceLoader loader : getResourceHandlerSupport()
-                    .getResourceLoaders())
+            for (ResourceLoader loader : getResourceHandlerSupport().getResourceLoaders())
             {
-                ResourceMeta resourceMeta = deriveResourceMeta(loader,
-                        resourceName, libraryName);
+                ResourceMeta resourceMeta = deriveResourceMeta(loader, resourceName, libraryName, localePrefix);
     
                 if (resourceMeta != null)
                 {
-                    resource = new ResourceImpl(resourceMeta, loader,
-                            getResourceHandlerSupport(), contentType);
-                    
-                    getResourceLoaderCache().putResource(resourceName, libraryName, contentType, resourceMeta, loader);
+                    resource = new ResourceImpl(resourceMeta, loader, getResourceHandlerSupport(), contentType);
+
+                    // cache it
+                    getResourceLoaderCache().putResource(resourceName, libraryName, contentType,
+                            localePrefix, resourceMeta, loader);
                     break;
                 }
             }
@@ -126,9 +130,8 @@ public class ResourceHandlerImpl extends ResourceHandler
      * next registered ResourceLoader. 
      */
     protected ResourceMeta deriveResourceMeta(ResourceLoader resourceLoader,
-            String resourceName, String libraryName)
+            String resourceName, String libraryName, String localePrefix)
     {
-        String localePrefix = getLocalePrefixForLocateResource();
         String resourceVersion = null;
         String libraryVersion = null;
         ResourceMeta resourceId = null;
