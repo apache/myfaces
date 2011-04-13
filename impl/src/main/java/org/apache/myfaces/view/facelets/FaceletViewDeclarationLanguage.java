@@ -18,22 +18,39 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.StringUtils;
+import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
+import org.apache.myfaces.shared_impl.view.ViewDeclarationLanguageBase;
+import org.apache.myfaces.view.ViewMetadataBase;
+import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
+import org.apache.myfaces.view.facelets.compiler.Compiler;
+import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
+import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
+import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
+import org.apache.myfaces.view.facelets.el.LocationValueExpression;
+import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
+import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
+import org.apache.myfaces.view.facelets.tag.TagLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
+import org.apache.myfaces.view.facelets.tag.jstl.core.JstlCoreLibrary;
+import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
+import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
+import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
+import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -81,40 +98,22 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.ResourceResolver;
 import javax.faces.view.facelets.TagDecorator;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.shared_impl.util.StringUtils;
-import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
-import org.apache.myfaces.shared_impl.view.ViewDeclarationLanguageBase;
-import org.apache.myfaces.view.ViewMetadataBase;
-import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
-import org.apache.myfaces.view.facelets.compiler.Compiler;
-import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
-import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
-import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
-import org.apache.myfaces.view.facelets.el.LocationValueExpression;
-import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
-import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
-import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
-import org.apache.myfaces.view.facelets.tag.TagLibrary;
-import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
-import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
-import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
-import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
-import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
-import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
-import org.apache.myfaces.view.facelets.tag.jstl.core.JstlCoreLibrary;
-import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
-import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
-import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Array;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class represents the abstraction of Facelets as a ViewDeclarationLanguage.
@@ -413,7 +412,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
     {
-        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, UIComponent.class, component);
+        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, component.getClass(), component);
         
         if (component.getChildCount() > 0)
         {
@@ -433,7 +432,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     public static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
     {
-        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, UIComponent.class, component);
+        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, component.getClass(), component);
         
         if (component.getChildCount() > 0)
         {
