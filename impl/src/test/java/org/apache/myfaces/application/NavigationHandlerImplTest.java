@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.application;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -564,5 +567,38 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
                 + "set includeViewParams to true.", navigationCase.isIncludeViewParams());
         Assert.assertTrue("redirect=true in the query String must "
                 + "set redirect to true.", navigationCase.isRedirect());
+    }
+    
+    /**
+     * Test for MYFACES-3101
+     */
+    @Test
+    public void testHandleViewExpiredExpcetion() throws Exception {
+        NavigationHandlerImpl underTest = new NavigationHandlerImpl();
+        // simulate no available ViewRoot (in case of VEE)
+        facesContext.setViewRoot(null);
+        // test is based on:
+        // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
+        underTest.handleNavigation(facesContext, null, "viewExpired");
+
+        assertNotNull(facesContext.getViewRoot());
+        assertEquals("viewExpired", facesContext.getViewRoot().getViewId());
+        
+    }
+    
+    /**
+     * Test for MYFACES-3101 - partial request (without redirect)
+     */
+    @Test
+    public void testHandleViewExpiredExpcetionForPartial() throws Exception {
+        NavigationHandlerImpl underTest = new NavigationHandlerImpl();
+        // simulate no available ViewRoot (in case of VEE)
+        facesContext.setViewRoot(null);
+        facesContext.getPartialViewContext().setPartialRequest(true);
+        
+        underTest.handleNavigation(facesContext, null, "/viewExpired.xhtml");
+        
+        assertNotNull(facesContext.getViewRoot());
+        assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
     }
 }
