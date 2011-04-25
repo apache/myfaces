@@ -316,9 +316,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
             // may refer to an invalid document if an update of the entire body has occurred before this point.
             var viewStateValue = node.firstChild.nodeValue;
 
-            //TODO save the issuing form id in the context element
-            var elementId = context._mfInternal["_mfSourceControlId"];
-            var sourceForm = document.forms[context._mfInternal["_mfSourceFormId"]] || this._Dom.fuzzyFormDetection(elementId);
+            var elementId = (context._mfInternal)? context._mfInternal["_mfSourceControlId"] : context.source.id;
+            var sourceForm = (context._mfInternal)? (document.forms[context._mfInternal["_mfSourceFormId"]] || this._Dom.fuzzyFormDetection(elementId)) : this._Dom.fuzzyFormDetection(elementId);
             this.appliedViewState = viewStateValue;
             //source form could not be determined either over the form identifer or the element
             //we now skip this phase and just add everything we need for the fixup code
