@@ -116,7 +116,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
 
         this._xhr.onreadystatechange = this._Lang.hitch(this, this.callback);
         var _Impl = this._getImpl();
-        _Impl.sendEvent(this._xhr, _Impl.BEGIN);
+        _Impl.sendEvent(this._xhr, this._context, _Impl.BEGIN);
 
         this._preSend();
 
