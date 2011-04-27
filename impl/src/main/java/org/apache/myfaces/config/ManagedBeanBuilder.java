@@ -18,16 +18,19 @@
  */
 package org.apache.myfaces.config;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.myfaces.config.annotation.LifecycleProvider;
+import org.apache.myfaces.config.annotation.LifecycleProvider2;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
+import org.apache.myfaces.config.element.ListEntries;
+import org.apache.myfaces.config.element.ListEntry;
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.config.element.ManagedProperty;
+import org.apache.myfaces.config.element.MapEntries;
+import org.apache.myfaces.config.element.MapEntry;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.util.ContainerUtils;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -40,19 +43,16 @@ import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.naming.NamingException;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.myfaces.config.annotation.LifecycleProvider;
-import org.apache.myfaces.config.annotation.LifecycleProvider2;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
-import org.apache.myfaces.config.element.ListEntries;
-import org.apache.myfaces.config.element.ListEntry;
-import org.apache.myfaces.config.element.ManagedBean;
-import org.apache.myfaces.config.element.ManagedProperty;
-import org.apache.myfaces.config.element.MapEntries;
-import org.apache.myfaces.config.element.MapEntry;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.util.ContainerUtils;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -146,18 +146,11 @@ public class ManagedBeanBuilder
     @SuppressWarnings("unchecked")
     public Object buildManagedBean(FacesContext facesContext, ManagedBean beanConfiguration) throws FacesException
     {
-
-        /*final AnnotatedManagedBeanHandler handler = new AnnotatedManagedBeanHandler(bean,
-                  beanConfiguration.getManagedBeanScope(), beanConfiguration.getManagedBeanName());
-
-          final boolean threwUnchecked = handler.invokePostConstruct();
-
-          if(threwUnchecked)
-              return null;*/
         try
         {
-            LifecycleProvider lifecycleProvider =
-                    LifecycleProviderFactory.getLifecycleProviderFactory(facesContext.getExternalContext()).getLifecycleProvider(facesContext.getExternalContext());
+            ExternalContext externalContext = facesContext.getExternalContext();
+            LifecycleProvider lifecycleProvider = LifecycleProviderFactory
+                    .getLifecycleProviderFactory( externalContext).getLifecycleProvider(externalContext);
             
             final Object bean = lifecycleProvider.newInstance(beanConfiguration.getManagedBeanClassName());
 
@@ -537,13 +530,19 @@ public class ManagedBeanBuilder
         }
 
         // not found so far - check all scopes
-        if (externalContext.getRequestMap().get(beanName) != null)
+        final boolean startup = (externalContext instanceof StartupServletExternalContextImpl);
+        if (!startup)
         {
-            return REQUEST;
-        }
-        if (externalContext.getSessionMap().get(beanName) != null)
-        {
-            return SESSION;
+            // request and session maps are only available at runtime - not at startup
+            // (the following code would throw an UnsupportedOperationException).
+            if (externalContext.getRequestMap().get(beanName) != null)
+            {
+                return REQUEST;
+            }
+            if (externalContext.getSessionMap().get(beanName) != null)
+            {
+                return SESSION;
+            }
         }
         if (externalContext.getApplicationMap().get(beanName) != null)
         {
@@ -555,9 +554,7 @@ public class ManagedBeanBuilder
         }
 
         //not found - check mangaged bean config
-
         ManagedBean mbc = getRuntimeConfig(facesContext).getManagedBean(beanName);
-
         if (mbc != null)
         {
             // managed-bean-scope could be a EL ValueExpression (since 2.0)
@@ -573,9 +570,8 @@ public class ManagedBeanBuilder
                 }
                 else
                 {
-                    return getNarrowestScope(facesContext, 
-                                             mbc.getManagedBeanScopeValueExpression(facesContext)
-                                                 .getExpressionString());
+                    String scopeExpression = mbc.getManagedBeanScopeValueExpression(facesContext).getExpressionString();
+                    return getNarrowestScope(facesContext, scopeExpression);
                 }
             }
             else

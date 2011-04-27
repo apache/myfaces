@@ -18,14 +18,10 @@
  */
 package org.apache.myfaces.el.unified.resolver;
 
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.myfaces.config.ManagedBeanBuilder;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -37,10 +33,14 @@ import javax.faces.application.ProjectStage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-
-import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.element.ManagedBean;
+import java.beans.FeatureDescriptor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * See JSF 1.2 spec section 5.6.1.2
@@ -161,9 +161,11 @@ public class ManagedBeanResolver extends ELResolver
     public Object getValue(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-
+        // we only resolve ManagedBean instances, not properties of those  
         if (base != null)
+        {
             return null;
+        }
 
         if (property == null)
         {
@@ -172,31 +174,59 @@ public class ManagedBeanResolver extends ELResolver
 
         final FacesContext facesContext = facesContext(context);
         if (facesContext == null)
+        {
             return null;
-        
+        }
         final ExternalContext extContext = facesContext.getExternalContext();
         if (extContext == null)
+        {
             return null;
+        }
+
+        final boolean startup = (extContext instanceof StartupServletExternalContextImpl);
         
-        if (extContext.getRequestMap().containsKey(property))
-            return null;
-        
+        // request scope (not available at startup)
+        if (!startup)
+        {
+            if (extContext.getRequestMap().containsKey(property))
+            {
+                return null;
+            }
+        }
+
+        // view scope
         UIViewRoot root = facesContext.getViewRoot();
         if (root != null)
         {
             Map<String, Object> viewMap = root.getViewMap(false);
             if (viewMap != null && viewMap.containsKey(property))
+            {
                 return null;
+            }
         }
-        if (extContext.getSessionMap().containsKey(property))
-            return null;
+
+        // session scope (not available at startup)
+        if (!startup)
+        {
+            if (extContext.getSessionMap().containsKey(property))
+            {
+                return null;
+            }
+        }
+
+        // application scope
         if (extContext.getApplicationMap().containsKey(property))
+        {
             return null;
+        }
 
+        // not found in standard scopes - get ManagedBean metadata object
+        // In order to get the metadata object, we need property to be the managed bean name (--> String)
         if (!(property instanceof String))
+        {
             return null;
-
-        final String strProperty = (String)property;
+        }
+        final String strProperty = (String) property;
 
         final ManagedBean managedBean = runtimeConfig(context).getManagedBean(strProperty);
         Object beanInstance = null;
@@ -204,12 +234,11 @@ public class ManagedBeanResolver extends ELResolver
         {
             context.setPropertyResolved(true);
             
-            // managed-bean-scope could be a ValueExpression pointing to a Map (since 2.0)
+            // managed-bean-scope could be a ValueExpression pointing to a Map (since 2.0) --> custom scope
             if (managedBean.isManagedBeanScopeValueExpression())
             {
                 // check for cyclic references in custom scopes, if we are not in Production stage
-                boolean checkCyclicReferences = 
-                        facesContext.getApplication().getProjectStage() != ProjectStage.Production;
+                boolean checkCyclicReferences = !facesContext.isProjectStage(ProjectStage.Production);
                 List<String> cyclicReferences = null;
                 
                 if (checkCyclicReferences)
@@ -259,7 +288,8 @@ public class ManagedBeanResolver extends ELResolver
                     }
                 }
             }
-            
+
+            // not found in any scope - create instance!
             if (beanInstance == null)
             {
                 beanInstance = createManagedBean(managedBean, facesContext);
@@ -279,15 +309,15 @@ public class ManagedBeanResolver extends ELResolver
     {
 
         final ExternalContext extContext = facesContext.getExternalContext();
-        final Map<String, Object> requestMap = extContext.getRequestMap();
+        final Map<Object, Object> facesContextMap = facesContext.getAttributes();
         final String managedBeanName = managedBean.getManagedBeanName();
 
         // check for cyclic references
-        List<String> beansUnderConstruction = (List<String>)requestMap.get(BEANS_UNDER_CONSTRUCTION);
+        List<String> beansUnderConstruction = (List<String>) facesContextMap.get(BEANS_UNDER_CONSTRUCTION);
         if (beansUnderConstruction == null)
         {
             beansUnderConstruction = new ArrayList<String>();
-            requestMap.put(BEANS_UNDER_CONSTRUCTION, beansUnderConstruction);
+            facesContextMap.put(BEANS_UNDER_CONSTRUCTION, beansUnderConstruction);
         }
         else if (beansUnderConstruction.contains(managedBeanName))
         {
@@ -338,9 +368,9 @@ public class ManagedBeanResolver extends ELResolver
                 // managed-bean-scope could be a ValueExpression pointing to a Map (since 2.0)
                 // Optimisation: We do NOT check for cyclic references here, because when we reach this code,
                 // we have already checked for cyclic references in the custom scope
-                Object customScope = managedBean
-                                        .getManagedBeanScopeValueExpression(facesContext)
-                                            .getValue(facesContext.getELContext());
+                Object customScope = managedBean.getManagedBeanScopeValueExpression(facesContext)
+                        .getValue(facesContext.getELContext());
+                
                 if (customScope instanceof Map)
                 {
                     ((Map) customScope).put(managedBeanName, obj);
@@ -432,11 +462,12 @@ public class ManagedBeanResolver extends ELResolver
     @Override
     public Class<?> getCommonPropertyType(final ELContext context, final Object base)
     {
+        if (base == null)
+        {
+            return Object.class;
+        }
 
-        if (base != null)
-            return null;
-
-        return Object.class;
+        return null;
     }
 
     interface Scope
