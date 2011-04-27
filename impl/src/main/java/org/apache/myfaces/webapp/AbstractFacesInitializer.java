@@ -30,7 +30,6 @@ import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
-import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
@@ -217,9 +216,16 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             
             for (ManagedBean bean : eagerBeans)
             {
+                // check application scope for bean instance
+                if (applicationMap.containsKey(bean.getManagedBeanName()))
+                {
+                    // do not build bean, because it already exists
+                    // (e.g. @ManagedProperty from previous managed bean already created it)
+                    continue;
+                }
+
                 // create instance
-                Object beanInstance = managedBeanBuilder
-                        .buildManagedBean(facesContext, bean);
+                Object beanInstance = managedBeanBuilder.buildManagedBean(facesContext, bean);
                 
                 // put in application scope
                 applicationMap.put(bean.getManagedBeanName(), beanInstance);

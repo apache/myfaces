@@ -18,11 +18,7 @@
  */
 package org.apache.myfaces.el.unified.resolver;
 
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -32,6 +28,11 @@ import javax.el.PropertyNotWritableException;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import java.beans.FeatureDescriptor;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * See JSF 1.2 spec section 5.6.2.7
@@ -182,33 +183,58 @@ public final class ScopedAttributeResolver extends ELResolver
     private static Map<String, Object> findScopedMap(final FacesContext facesContext, final Object property)
     {
         if (facesContext == null)
+        {
             return null;
+        }
         
         final ExternalContext extContext = facesContext.getExternalContext();
         if (extContext == null)
+        {
             return null;
+        }
 
-        Map<String, Object> scopedMap = extContext.getRequestMap();
-        if (scopedMap.containsKey(property))
-            return scopedMap;
-        
+        final boolean startup = (extContext instanceof StartupServletExternalContextImpl);
+        Map<String, Object> scopedMap;
+
+        // request scope (not available at startup)
+        if (!startup)
+        {
+            scopedMap = extContext.getRequestMap();
+            if (scopedMap.containsKey(property))
+            {
+                return scopedMap;
+            }
+        }
+
         // jsf 2.0 view scope
         UIViewRoot root = facesContext.getViewRoot();
         if (root != null)
         {
             scopedMap = root.getViewMap(false);
             if (scopedMap != null && scopedMap.containsKey(property))
+            {
                 return scopedMap;
+            }
         }
 
-        scopedMap = extContext.getSessionMap();
-        if (scopedMap.containsKey(property))
-            return scopedMap;
+        // session scope (not available at startup)
+        if (!startup)
+        {
+            scopedMap = extContext.getSessionMap();
+            if (scopedMap.containsKey(property))
+            {
+                return scopedMap;
+            }
+        }
 
+        // application scope
         scopedMap = extContext.getApplicationMap();
         if (scopedMap.containsKey(property))
+        {
             return scopedMap;
+        }
 
+        // not found
         return null;
     }
 
