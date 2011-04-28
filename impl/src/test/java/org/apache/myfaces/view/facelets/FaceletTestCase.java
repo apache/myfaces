@@ -158,10 +158,13 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
     {
         super.setUpExternalContext();
         
-        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
-                new MockPropertyResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
-                new MockVariableResolver());
+        // Note if MyFaces ApplicationImpl instance is used (see on setFactories method),
+        // the ELResolver hierarchy will be set on ApplicationImpl.getELResolver() method
+        //RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
+        //        new MockPropertyResolver());
+        //RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
+        //        new MockVariableResolver());
+        
         RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
                 new MockExpressionFactory());
     }

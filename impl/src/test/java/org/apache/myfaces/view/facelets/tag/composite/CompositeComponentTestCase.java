@@ -23,6 +23,7 @@ import java.io.StringWriter;
 
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
+import javax.faces.application.Resource;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -30,6 +31,7 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandLink;
+import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.component.html.HtmlOutputText;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
@@ -636,4 +638,31 @@ public class CompositeComponentTestCase extends FaceletTestCase
         Assert.assertTrue(resp.contains("WORLD"));
         
     }
+    
+    @Test
+    public void testSimpleThisResourceReference() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testSimpleThisResourceReference.xhtml");
+
+        UINamingContainer compositeComponent = (UINamingContainer) root.findComponent("cc1");
+        Assert.assertNotNull(compositeComponent);
+        HtmlGraphicImage gi = (HtmlGraphicImage) compositeComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME).findComponent("gi");
+        Assert.assertNotNull(gi);
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        compositeComponent.encodeAll(facesContext);
+        sw.flush();
+
+        String result = sw.toString();
+        
+        Resource resource = facesContext.getApplication().getResourceHandler().createResource("logo_mini.jpg", "testComposite");
+        Assert.assertNotNull(resource);
+        
+        Assert.assertTrue(result.contains(resource.getRequestPath()));
+    }
+
 }

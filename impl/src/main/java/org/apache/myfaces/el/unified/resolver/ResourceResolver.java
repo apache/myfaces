@@ -26,6 +26,12 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.view.Location;
+
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
+import org.apache.myfaces.view.facelets.el.ResourceELUtils;
 
 /**
  * See JSF 2.0 spec section 5.6.1.3 and 5.6.2.4
@@ -36,6 +42,8 @@ import javax.faces.application.ResourceHandler;
 public final class ResourceResolver extends ELResolver
 {
 
+    private static final String CC_LIBRARY_THIS = "this";
+    
     /** Creates a new instance of ResourceBundleResolver */
     public ResourceResolver()
     {
@@ -89,8 +97,19 @@ public final class ResourceResolver extends ELResolver
                 else {
                     // Otherwise, portion before the ":" is the library name.
                     
+                    String libraryName = reference.substring (0, colonIndex);
+                    
+                    if (CC_LIBRARY_THIS.equals(libraryName))
+                    {
+                        FacesContext facesContext = facesContext(context);
+                        Location location = ResourceELUtils.getResourceLocationForResolver(facesContext);
+                        UIComponent cc = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location);
+                        Resource ccResource = (Resource) cc.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY); 
+                        libraryName = ccResource.getLibraryName();
+                    }
+                    
                     resource = ((ResourceHandler) base).createResource
-                        ( reference.substring(colonIndex + 1), reference.substring (0, colonIndex));
+                        ( reference.substring(colonIndex + 1), libraryName);
                 }
             }
             
@@ -101,6 +120,12 @@ public final class ResourceResolver extends ELResolver
             }
         }
         return null;
+    }
+    
+    // get the FacesContext from the ELContext
+    private static FacesContext facesContext(final ELContext context)
+    {
+        return (FacesContext)context.getContext(FacesContext.class);
     }
 
     @Override

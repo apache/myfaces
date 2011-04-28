@@ -33,6 +33,9 @@ import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpressionUEL;
+import org.apache.myfaces.view.facelets.el.ResourceELUtils;
+import org.apache.myfaces.view.facelets.el.ResourceLocationValueExpression;
+import org.apache.myfaces.view.facelets.el.ResourceLocationValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.TagMethodExpression;
 import org.apache.myfaces.view.facelets.el.TagValueExpression;
 import org.apache.myfaces.view.facelets.el.TagValueExpressionUEL;
@@ -53,6 +56,8 @@ public final class TagAttributeImpl extends TagAttribute
     
     private final static int EL_CC_ATTR_ME = 4;
     
+    private final static int EL_RESOURCE = 8;
+    
     private final int capabilities;
 
     private final String localName;
@@ -72,6 +77,7 @@ public final class TagAttributeImpl extends TagAttribute
         boolean literal;
         boolean compositeComponentExpression;
         boolean compositeComponentAttrMethodExpression;
+        boolean resourceExpression;
         this.location = location;
         this.namespace = ns;
         this.localName = localName;
@@ -93,8 +99,10 @@ public final class TagAttributeImpl extends TagAttribute
         compositeComponentAttrMethodExpression = compositeComponentExpression ? 
                 CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(this.value) : 
                     false;
+        resourceExpression = !literal ? ResourceELUtils.isResourceExpression(this.value) : false;
 
-        this.capabilities = (literal ? EL_LITERAL : 0) | (compositeComponentExpression ? EL_CC : 0) | (compositeComponentAttrMethodExpression ? EL_CC_ATTR_ME : 0); 
+        this.capabilities = (literal ? EL_LITERAL : 0) | (compositeComponentExpression ? EL_CC : 0) | 
+            (compositeComponentAttrMethodExpression ? EL_CC_ATTR_ME : 0) | ( resourceExpression ? EL_RESOURCE : 0); 
     }
 
     /**
@@ -380,6 +388,17 @@ public final class TagAttributeImpl extends TagAttribute
                 else
                 {
                     valueExpression = new LocationValueExpression(getLocation(), valueExpression);
+                }
+            }
+            else if ((this.capabilities & EL_RESOURCE) != 0)
+            {
+                if (ExternalSpecifications.isUnifiedELAvailable())
+                {
+                    valueExpression = new ResourceLocationValueExpressionUEL(getLocation(), valueExpression);
+                }
+                else
+                {
+                    valueExpression = new ResourceLocationValueExpression(getLocation(), valueExpression);
                 }
             }
             
