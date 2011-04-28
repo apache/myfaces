@@ -161,16 +161,56 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
     },
 
+
+    /**
+     * determines to fetch a node
+     * from its id or name, the name case
+     * only works if the element is unique in its name
+     * @param elem
+     */
+    byIdOrName: function(elem) {
+        if(!this._Lang.isString(elem)) return elem;
+        if(!elem) return null;
+        var ret = this.byId(elem);
+        if(ret) return ret;
+        //we try the unique name fallback
+        var items = document.getElementsByName(elem);
+        return ((items.length == 1)? items[0]: null);
+    },
+
+    /**
+     * node id or name, determines the valid form identifier of a node
+     * depending on its uniqueness
+     *
+     * Usually the id is chosen for an elem, but if the id does not
+     * exist we try a name fallback. If the passed element has a unique
+     * name we can use that one as subsequent identifier.
+     *
+     *
+     * @param {String} elem
+     */
     nodeIdOrName: function(elem) {
         if (elem) {
+            //just to make sure that the pas
+            var origElemIdentifier = elem;
             elem = this.byId(elem);
+            if(!elem) return null;
             //detached element handling, we also store the element name
             //to get a fallback option in case the identifier is not determinable
             // anymore, in case of a framework induced detachment the element.name should
             // be shared if the identifier is not determinable anymore
+            //the downside of this method is the element name must be unique
+            //which in case of jsf it is
             var elementId = elem.id || elem.name;
-            if ((elementId == null || elementId == '') && elem.name) {
+            if ((elem.id == null || elem.id == '') && elem.name) {
                 elementId = elem.name;
+
+                //last check for uniqueness
+                if(this.getElementsByName(elementId).length > 1) {
+                    //no unique element name so we need to perform
+                    //a return null to let the caller deal with this issue
+                    return null;
+                }
             }
             return elementId;
         }
@@ -643,6 +683,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param deepScan if set to true a deep scan is performed otherwise a shallow scan
      */
     findByTagNames: function(fragment, tagNames, deepScan) {
+        var nodeType = fragment.nodeType;
+        if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
 
         //shortcut for single components
@@ -695,6 +737,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      *
      */
     findByTagName : function(fragment, tagName, deepScan) {
+        var nodeType = fragment.nodeType;
+        if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
+
 
         //remapping to save a few bytes
         var _Lang = this._Lang;
@@ -731,6 +776,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     ,
 
     findByName : function(fragment, name, deepScan) {
+        var nodeType = fragment.nodeType;
+        if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
+
         var _Lang = this._Lang;
         var filter = function(node) {
             return  node.name && _Lang.equalsIgnoreCase(node.name, name);
@@ -743,7 +791,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 var ret = _Lang.objToArray(fragment.getElementsByName(name));
                 if (fragment.name == name) ret.unshift(fragment);
                 return ret;
-
             }
 
             if (deepScan && _Lang.exists(fragment, "querySelectorAll")) {
