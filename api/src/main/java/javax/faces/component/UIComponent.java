@@ -59,6 +59,7 @@ import javax.faces.render.Renderer;
 import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * 
@@ -131,6 +132,12 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     
     public static final String ATTRS_WITH_DECLARED_DEFAULT_VALUES = "javax.faces.component.ATTR_NAMES_WITH_DEFAULT_VALUES";
     
+    /**
+     * Indicate if the facesContext attribute values under the keys javax.faces.component.CURRENT_COMPONENT and
+     * javax.faces.component.CURRENT_COMPOSITE_COMPONENT should be valid or not. By default, those keys are
+     * deprecated since 2.1
+     */
+    @JSFWebConfigParam(since="2.1.0", expectedValues="true, false", defaultValue="false")
     public static final String HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME = "javax.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES";
     
     /**
@@ -138,6 +145,8 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * ATTENTION: this constant is duplicate in CompositeComponentExpressionUtils.
      */
     private static final String _COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
+    
+    private static final String _CURRENT_COMPOSITE_COMPONENT_KEY = "compositeComponent:" + UIComponent.class.getName();
     
     Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
     
@@ -397,7 +406,24 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @since 2.0
      */
     public static UIComponent getCurrentComponent(FacesContext context) {
-        return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPONENT);
+        String param = context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
+        
+        if (param != null && Boolean.valueOf(param).booleanValue())
+        {
+            return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPONENT);
+        }
+        else
+        {
+            LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) context.getAttributes().get(UIComponent._COMPONENT_STACK);
+            if(componentStack == null)
+            {
+                return null;
+            }
+            else
+            {
+                return componentStack.peek();
+            }
+        }
     }
 
     /**
@@ -408,7 +434,16 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @since 2.0
      */
     public static UIComponent getCurrentCompositeComponent(FacesContext context) {
-        return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
+        String param = context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
+        
+        if (param != null && Boolean.valueOf(param).booleanValue())
+        {
+            return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
+        }
+        else
+        {
+            return (UIComponent) context.getAttributes().get(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY);
+        }
     }
 
     public abstract String getFamily();
@@ -890,45 +925,78 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     public final void popComponentFromEL(FacesContext context) {
         Map<Object, Object> contextAttributes = context.getAttributes();        
         
-        // Pop the current UIComponent from the FacesContext attributes map so that the previous 
-        // UIComponent, if any, becomes the current component.
-        LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+        String param = context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
         
-        UIComponent newCurrent = null;
-        if (componentStack != null && !componentStack.isEmpty())
+        if (param != null && Boolean.valueOf(param).booleanValue())
         {
-            newCurrent = componentStack.removeFirst();
+            // Pop the current UIComponent from the FacesContext attributes map so that the previous 
+            // UIComponent, if any, becomes the current component.
+            LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            
+            UIComponent newCurrent = null;
+            if (componentStack != null && !componentStack.isEmpty())
+            {
+                newCurrent = componentStack.removeFirst();
+            }
+            else
+            {
+                //Reset the current composite component
+                contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, null);
+            }
+            UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
+            
+            if (oldCurrent != null && oldCurrent._isCompositeComponent())
+            {
+                // Recalculate the current composite component
+                if (newCurrent != null)
+                {
+                    if (newCurrent._isCompositeComponent())
+                    {
+                        contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, newCurrent);
+                    }
+                    else
+                    {
+                        UIComponent previousCompositeComponent = null;
+                        for (Iterator<UIComponent> it = componentStack.iterator(); it.hasNext();)
+                        {
+                            UIComponent component = it.next();
+                            if (component._isCompositeComponent())
+                            {
+                                previousCompositeComponent = component;
+                                break;
+                            }
+                        }
+                        contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, previousCompositeComponent);
+                    }
+                }
+            }
         }
         else
         {
-            //Reset the current composite component
-            contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, null);
-        }
-        UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
-        
-        if (oldCurrent != null && oldCurrent._isCompositeComponent())
-        {
-            // Recalculate the current composite component
-            if (newCurrent != null)
+            // Pop the current UIComponent from the FacesContext attributes map so that the previous 
+            // UIComponent, if any, becomes the current component.
+            LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            
+            UIComponent oldCurrent = null;
+            if (componentStack != null && !componentStack.isEmpty())
             {
-                if (newCurrent._isCompositeComponent())
+                oldCurrent = componentStack.removeFirst();
+            }
+            
+            if (oldCurrent != null && oldCurrent._isCompositeComponent())
+            {
+                // Recalculate the current composite component
+                UIComponent previousCompositeComponent = null;
+                for (Iterator<UIComponent> it = componentStack.iterator(); it.hasNext();)
                 {
-                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, newCurrent);
-                }
-                else
-                {
-                    UIComponent previousCompositeComponent = null;
-                    for (Iterator<UIComponent> it = componentStack.iterator(); it.hasNext();)
+                    UIComponent component = it.next();
+                    if (component._isCompositeComponent())
                     {
-                        UIComponent component = it.next();
-                        if (component._isCompositeComponent())
-                        {
-                            previousCompositeComponent = component;
-                            break;
-                        }
+                        previousCompositeComponent = component;
+                        break;
                     }
-                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, previousCompositeComponent);
                 }
+                contextAttributes.put(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY, previousCompositeComponent);
             }
         }
     }
@@ -939,10 +1007,37 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         {
             component = this;
         }
+
         Map<Object, Object> contextAttributes = context.getAttributes();        
-        UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
+        String param = context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
         
-        if(currentComponent != null)
+        if (param != null && Boolean.valueOf(param).booleanValue())
+        {
+            UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
+            
+            if(currentComponent != null)
+            {
+                LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+                if(componentStack == null)
+                {
+                    componentStack = new LinkedList<UIComponent>();
+                    contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
+                }
+                
+                componentStack.addFirst(currentComponent);
+            }
+            
+            // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
+            // saving the previous UIComponent associated with CURRENT_COMPONENT for a subsequent call to 
+            // popComponentFromEL(javax.faces.context.FacesContext).
+            contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
+     
+            if (component._isCompositeComponent())
+            {
+                contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
+            }
+        }
+        else
         {
             LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
             if(componentStack == null)
@@ -950,18 +1045,11 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
                 componentStack = new LinkedList<UIComponent>();
                 contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
             }
-            
-            componentStack.addFirst(currentComponent);
-        }
-        
-        // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
-        // saving the previous UIComponent associated with CURRENT_COMPONENT for a subsequent call to 
-        // popComponentFromEL(javax.faces.context.FacesContext).
-        contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
- 
-        if (component._isCompositeComponent())
-        {
-            contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, component);
+            componentStack.addFirst(component);
+            if (component._isCompositeComponent())
+            {
+                contextAttributes.put(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY, component);
+            }
         }
     }
 
