@@ -215,7 +215,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
             writer.writeAttribute(HTML.TYPE_ATTR, 
                     (resource.getContentType() == null ? HTML.STYLE_TYPE_TEXT_CSS
                             : resource.getContentType()) , null);
-            writer.writeURIAttribute(HTML.HREF_ATTR, resource.getRequestPath(), null);
+            writer.writeURIAttribute(HTML.HREF_ATTR, facesContext.getExternalContext().encodeResourceURL(resource.getRequestPath()), null);
             writer.endElement(HTML.LINK_ELEM);
         }
     }
