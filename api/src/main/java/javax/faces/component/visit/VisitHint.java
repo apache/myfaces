@@ -51,6 +51,8 @@ public enum VisitHint
     /**
      * Hint that indicates that the visit should traverse only full component
      * instances and not "virtual" ones like UIData rows and so on.
+     * 
+     * @since 2.1
      */
     SKIP_ITERATION,
 }

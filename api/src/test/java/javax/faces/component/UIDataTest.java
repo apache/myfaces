@@ -21,6 +21,7 @@ package javax.faces.component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.faces.application.StateManager;
@@ -38,6 +39,7 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.mock.visit.MockVisitContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
@@ -47,6 +49,7 @@ import org.easymock.classextension.IMocksControl;
  */
 public class UIDataTest extends AbstractJsfTestCase
 {
+
     public UIDataTest(String name)
     {
         super(name);
@@ -449,9 +452,11 @@ public class UIDataTest extends AbstractJsfTestCase
         uidata.setValue(value);
         // header facet
         UIComponent headerFacet = new HtmlPanelGroup();
+        headerFacet.setId("headerFacet");
         uidata.setHeader(headerFacet);
         // footer facet
         UIComponent footerFacet = new HtmlPanelGroup();
+        footerFacet.setId("footerFacet");
         uidata.setFooter(footerFacet);
         // first child
         UIComponent child1 = new UIColumn();
@@ -460,6 +465,7 @@ public class UIDataTest extends AbstractJsfTestCase
         child1.getFacets().put("someFacet", facetOfChild1);
         // child of first child
         UIOutput childOfChild1 = new UIOutput();
+        childOfChild1.setId("childOfColumn");
         child1.getChildren().add(childOfChild1);
         uidata.getChildren().add(child1);
         // second child (should not be processed --> != UIColumn)
@@ -484,7 +490,40 @@ public class UIDataTest extends AbstractJsfTestCase
         
         uidata.visitTree(visitContextMock, callback);
         
-        control.verify();        
+        control.verify();
+        
+        // VisitHint.SKIP_ITERATION test:
+        
+        // (1) uiData with two rows - should iterate over row twice
+        MockVisitContext mockVisitContext = new MockVisitContext(facesContext, null);
+        CountingVisitCallback countingVisitCallback = new CountingVisitCallback(2);
+        uidata.visitTree(mockVisitContext, countingVisitCallback);
+        countingVisitCallback.verify();
+        
+        // (2) uiData with two values - should iterate over row ones - SKIP_ITERATION is used
+        mockVisitContext = new MockVisitContext(facesContext, EnumSet.of(VisitHint.SKIP_ITERATION));
+        countingVisitCallback = new CountingVisitCallback(1);
+        uidata.visitTree(mockVisitContext, countingVisitCallback);
+        countingVisitCallback.verify();
+        
+        // (3) uiData with five values - should iterate over row five times
+        value = new ArrayList<String>();
+        value.add("1");
+        value.add("2");
+        value.add("3");
+        value.add("4");
+        value.add("5");
+        uidata.setValue(value);
+        mockVisitContext = new MockVisitContext(facesContext, null);
+        countingVisitCallback = new CountingVisitCallback(5);
+        uidata.visitTree(mockVisitContext, countingVisitCallback);
+        countingVisitCallback.verify();
+        
+        // (4) uiData with five values - should iterate over child ones - SKIP_ITERATION is used
+        mockVisitContext = new MockVisitContext(facesContext, EnumSet.of(VisitHint.SKIP_ITERATION));
+        countingVisitCallback = new CountingVisitCallback(1);
+        uidata.visitTree(mockVisitContext, countingVisitCallback);
+        countingVisitCallback.verify();
     }
 
     
@@ -587,4 +626,36 @@ public class UIDataTest extends AbstractJsfTestCase
         
     }
 
+    private final class CountingVisitCallback implements VisitCallback {
+        
+        public final int expectedVisits;
+        
+        public CountingVisitCallback(int expectedRowVisits) {
+            super();
+            this.expectedVisits = expectedRowVisits;
+        }
+
+        public int headerFacetVisits = 0;
+        public int footerFacetVisits = 0;
+        public int rowVisits = 0;
+        
+        public VisitResult visit(VisitContext context, UIComponent target) {
+            
+            if ("headerFacet".equals(target.getId())) {
+                headerFacetVisits++;
+            } else if ("footerFacet".equals(target.getId())) {
+                footerFacetVisits++;
+            } else if ("childOfColumn".equals(target.getId())) {
+                rowVisits++;
+            }
+            return VisitResult.ACCEPT;
+        }
+        
+        public void verify() {
+                assertEquals("header facet must be visited only ones", 1, headerFacetVisits);
+                assertEquals("footer facet must be visited only ones", 1, footerFacetVisits);
+                assertEquals("Expected row visit does not match", expectedVisits, rowVisits);
+        }
+    }
+       
 }
