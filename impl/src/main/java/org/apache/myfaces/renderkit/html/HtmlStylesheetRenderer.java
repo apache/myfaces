@@ -211,7 +211,8 @@ public class HtmlStylesheetRenderer extends Renderer implements
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.LINK_ELEM, component);
             writer.writeAttribute(HTML.REL_ATTR, HTML.STYLESHEET_VALUE,null );
-            writer.writeAttribute("media", "screen",null );            
+            String media = (String) component.getAttributes().get("media");
+            writer.writeAttribute("media", media == null ? "screen" : media ,null );
             writer.writeAttribute(HTML.TYPE_ATTR, 
                     (resource.getContentType() == null ? HTML.STYLE_TYPE_TEXT_CSS
                             : resource.getContentType()) , null);
