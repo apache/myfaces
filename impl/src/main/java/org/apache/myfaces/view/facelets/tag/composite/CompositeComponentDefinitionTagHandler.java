@@ -20,8 +20,11 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
@@ -46,6 +49,7 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * <li>Cache the BeanInfo instance for a composite component</li>
  * <li>Set a Location object to resolve #{cc} correctly</li>
  * <li>Push the current composite component on FaceletCompositionContext stack</li>
+ * <li>Set the attributes with declared default values</li>
  * </ul>
  * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
  * @version $Revision: 945454 $ $Date: 2010-05-17 20:40:21 -0500 (Lun, 17 May 2010) $
@@ -142,6 +146,25 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                             mctx.pushCompositeComponentToStack(compositeBaseParent);
 
                             _nextHandler.apply(ctx, parent);
+                            
+                            Collection<String> declaredDefaultValues = null;
+                            
+                            for (PropertyDescriptor pd : _cachedBeanInfo.getPropertyDescriptors())
+                            {
+                                if (pd.getValue("default") != null)
+                                {
+                                    if (declaredDefaultValues  == null)
+                                    {
+                                        declaredDefaultValues = new ArrayList<String>();
+                                    }
+                                    declaredDefaultValues.add(pd.getName());
+                                }
+                            }
+                            if (declaredDefaultValues == null)
+                            {
+                                declaredDefaultValues = Collections.emptyList();
+                            }
+                            _cachedBeanInfo.getBeanDescriptor().setValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES, declaredDefaultValues);
                         }
                         finally
                         {
@@ -168,6 +191,24 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                     
                         _nextHandler.apply(ctx, parent);
                         
+                        Collection<String> declaredDefaultValues = null;
+                        
+                        for (PropertyDescriptor pd : tempBeanInfo.getPropertyDescriptors())
+                        {
+                            if (pd.getValue("default") != null)
+                            {
+                                if (declaredDefaultValues  == null)
+                                {
+                                    declaredDefaultValues = new ArrayList<String>();
+                                }
+                                declaredDefaultValues.add(pd.getName());
+                            }
+                        }
+                        if (declaredDefaultValues == null)
+                        {
+                            declaredDefaultValues = Collections.emptyList();
+                        }
+                        tempBeanInfo.getBeanDescriptor().setValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES, declaredDefaultValues);
                     }
                     finally
                     {
