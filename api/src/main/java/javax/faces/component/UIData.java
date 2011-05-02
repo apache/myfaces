@@ -1944,7 +1944,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * 
      * @return
      */
-    @JSFProperty(literalOnly=true)
+    @JSFProperty(literalOnly=true, faceletsOnly=true)
     public boolean isRowStatePreserved()
     {
         Boolean b = (Boolean) getStateHelper().get(PropertyKeys.rowStatePreserved);

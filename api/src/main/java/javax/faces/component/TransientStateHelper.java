@@ -35,7 +35,7 @@ package javax.faces.component;
  * @author Leonardo Uribe (latest modification by $Author: slessard $)
  * @version $Revision: 696523 $ $Date: 2009-03-21 10:05:08 -0400 (mer., 17 sept. 2008) $
  */
-public interface TransientStateHelper extends StateHelper, TransientStateHolder
+public interface TransientStateHelper extends TransientStateHolder
 {
     /**
      * <p>Return the value currently

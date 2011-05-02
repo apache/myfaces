@@ -187,6 +187,11 @@ public final class FactoryFinder
      */
     public static Object getFactory(String factoryName) throws FacesException
     {
+        if (factoryName == null)
+        {
+            throw new NullPointerException("factoryName may not be null");
+        }
+        
         initializeFactoryFinderProviderFactory();
         
         if (_factoryFinderProviderFactoryInstance == null)
@@ -215,11 +220,6 @@ public final class FactoryFinder
 
     private static Object _getFactory(String factoryName) throws FacesException
     {
-        if (factoryName == null)
-        {
-            throw new NullPointerException("factoryName may not be null");
-        }
-
         ClassLoader classLoader = getClassLoader();
 
         // This code must be synchronized because this could cause a problem when
@@ -367,6 +367,11 @@ public final class FactoryFinder
 
     public static void setFactory(String factoryName, String implName)
     {
+        if (factoryName == null)
+        {
+            throw new NullPointerException("factoryName may not be null");
+        }
+        
         initializeFactoryFinderProviderFactory();
         
         if (_factoryFinderProviderFactoryInstance == null)

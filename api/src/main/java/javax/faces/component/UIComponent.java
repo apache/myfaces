@@ -163,7 +163,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      */
     private transient Map<String, String> _resourceBundleMap = null;
     private boolean _inView = false;
-    private TransientStateHelper _stateHelper = null;
+    private _DeltaStateHelper _stateHelper = null;
     
     /**
      * In JSF 2.0 bindings map was deprecated, and replaced with a map
@@ -896,7 +896,7 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         return _stateHelper;
     }
     
-    public TransientStateHelper getTransientStateHelper()
+    public final TransientStateHelper getTransientStateHelper()
     {
         return getTransientStateHelper(true);
     }
