@@ -18,7 +18,9 @@
  */
 package org.apache.myfaces.ee6;
 
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -37,14 +39,19 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.FacesComponent;
+import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.FacesBehavior;
+import javax.faces.context.ExternalContext;
+import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.event.ListenerFor;
 import javax.faces.event.ListenersFor;
 import javax.faces.event.NamedEvent;
 import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
+import javax.faces.render.Renderer;
 import javax.faces.validator.FacesValidator;
+import javax.faces.validator.Validator;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContainerInitializer;
@@ -53,7 +60,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.HandlesTypes;
 
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
+import org.apache.myfaces.spi.FacesConfigResourceProvider;
+import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.
@@ -86,7 +96,11 @@ import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
         ResourceDependencies.class,
         ResourceDependency.class,
         SessionScoped.class,
-        ViewScoped.class
+        ViewScoped.class,
+        UIComponent.class,
+        Converter.class,
+        Renderer.class,
+        Validator.class
     })
 public class MyFacesContainerInitializer implements ServletContainerInitializer
 {
@@ -113,11 +127,17 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         if (startDireclty)
         {
             // if the INITIALIZE_ALWAYS_STANDALONE param was set to true,
-            // we do not want to have the FacesServlet beeing added, we simply 
+            // we do not want to have the FacesServlet being added, we simply 
             // do no extra configuration in here.
             return;
         }
 
+        // Check for one or more of this conditions:
+        // 1. A faces-config.xml file is found in WEB-INF
+        // 2. A faces-config.xml file is found in the META-INF directory of a jar in the application's classpath.
+        // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in the application's classpath.
+        // 4. The javax.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
+        // 5. The Set of classes passed to the onStartup() method of the ServletContainerInitializer implementation is not empty.
         if ((clazzes != null && !clazzes.isEmpty()) || isFacesConfigPresent(servletContext))
         {
             // look for the FacesServlet
@@ -192,9 +212,11 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     {
         try
         {
+            // 1. A faces-config.xml file is found in WEB-INF
             if (servletContext.getResource(FACES_CONFIG_RESOURCE) != null)
                 return true;
 
+            // 4. The javax.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
             // check for alternate faces-config files specified by javax.faces.CONFIG_FILES
             String configFilesAttrValue = servletContext.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
             if (configFilesAttrValue != null)
@@ -207,6 +229,20 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 }
             }
 
+            // 2. A faces-config.xml file is found in the META-INF directory of a jar in the application's classpath.
+            // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in the application's classpath.
+            // To do this properly it is necessary to use some SPI interfaces MyFaces already has, to deal with OSGi and other
+            // environments properly.
+            ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, true);
+            FacesConfigResourceProviderFactory factory = FacesConfigResourceProviderFactory.getFacesConfigResourceProviderFactory(externalContext);
+            FacesConfigResourceProvider provider = factory.createFacesConfigResourceProvider(externalContext);
+            Collection<URL> metaInfFacesConfigUrls =  provider.getMetaInfConfigurationResources(externalContext);
+            
+            if (metaInfFacesConfigUrls != null && !metaInfFacesConfigUrls.isEmpty())
+            {
+                return true;
+            }
+            
             return false;
         }
         catch (Exception e)

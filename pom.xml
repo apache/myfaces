@@ -49,6 +49,7 @@
 
     <modules>
         <module>api</module>
+        <module>shaded-impl</module>
         <module>implee6</module>
         <module>impl</module>
         <module>bundle</module>
