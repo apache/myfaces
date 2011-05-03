@@ -226,6 +226,16 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      */
     response : function(request, context) {
         var internalContext = context._mfInternal;
+
+        //the normal usecase is that the request knows about its response
+        //which normally is temporary stored within the _mfRequest object
+        //(aka call from a finished request)
+        //if no _mfRequest object is given which means an external call we
+        //have a call from the outside
+
+        //TODO check if we cannot eliminate the _mfRequest object in the long run
+        //given we have to pass a request object anyway
+
         var ajaxObj = (internalContext && internalContext._mfRequest) ||  new (this._getAjaxReqClass(context))({xhr: request, context: context});
         //ie gc fix
         if(internalContext && internalContext._mfRequest){

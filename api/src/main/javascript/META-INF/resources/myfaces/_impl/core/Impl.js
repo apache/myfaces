@@ -157,7 +157,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             event = window.event || null;
         }
 
-        elem = _Lang.byId(elem);
+        elem = _Dom.byIdOrName(elem);
         var elementId = _Dom.nodeIdOrName(elem);
 
         /*

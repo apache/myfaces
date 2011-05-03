@@ -549,12 +549,14 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * @param scope (optional) the scope to apply the closure to
      */
     arrForEach: function(arr, func /*startPos, scope*/) {
+        if(!arr || !arr.length ) return;
         try {
             var startPos = Number(arguments[2]) || 0;
             var thisObj = arguments[3];
 
             //check for an existing foreach mapping on array prototypes
-            if (Array.prototype.forEach) {
+            //IE9 still does not pass array objects as result for dom ops
+            if (Array.prototype.forEach && arr.forEach) {
                 (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
             } else {
                 startPos = (startPos < 0) ? Math.ceil(startPos) : Math.floor(startPos);
@@ -589,6 +591,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      *
      */
     arrFilter: function(arr, func /*startPos, scope*/) {
+        if(!arr || !arr.length ) return [];
         try {
             var startPos = Number(arguments[2]) || 0;
             var thisObj = arguments[3];
@@ -629,7 +632,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
      * @param element the index to search for
      */
     arrIndexOf: function(arr, element /*fromIndex*/) {
-        if (!arr) return -1;
+        if (!arr || !arr.length) return -1;
         var pos = Number(arguments[2]) || 0;
 
         if (Array.prototype.indexOf) {
