@@ -57,7 +57,7 @@ import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
-import org.apache.myfaces.view.facelets.FaceletCacheFactoryImpl;
+import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;

@@ -44,6 +44,7 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.resource.MockResource;
 import org.apache.myfaces.test.mock.resource.MockSimpleResource;
 import org.apache.myfaces.view.facelets.MockFaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -136,6 +137,8 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         // create and configure our ApplicationImpl instance
         FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
                 MockViewDeclarationLanguageFactory.class.getName());
+        FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
+                FaceletCacheFactoryImpl.class.getName());
         RuntimeConfig runtimeConfig = new RuntimeConfig();
         _testApplication = new TestApplicationWrapper(new ApplicationImpl(runtimeConfig));
         facesContext.setApplication(_testApplication);

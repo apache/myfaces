@@ -55,6 +55,7 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockPropertyResolver;
 import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
+import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 
@@ -151,6 +152,8 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
                 PartialViewContextFactoryImpl.class.getName());
         FactoryFinder.setFactory(FactoryFinder.VISIT_CONTEXT_FACTORY, 
                 MockVisitContextFactory.class.getName());
+        FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
+                FaceletCacheFactoryImpl.class.getName());
     }
     
     @Override

@@ -39,6 +39,7 @@ import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,6 +67,9 @@ public class ViewHandlerImplTest extends AbstractJsfTestCase
         // configure VDL factory
         FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
                 ViewDeclarationLanguageFactoryImpl.class.getName());
+        
+        FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
+                FaceletCacheFactoryImpl.class.getName());
         
         // configure the ViewHandler
         _viewHandler = new TestViewHandlerImpl();
