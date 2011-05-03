@@ -20,6 +20,7 @@ package org.apache.myfaces.lifecycle;
 
 import java.net.MalformedURLException;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -31,6 +32,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -84,12 +86,24 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         // JSF 2.0: Old hack related to t:aliasBean was fixed defining a event that traverse
         // whole tree and let components to override UIComponent.processEvent() method to include it.
         
-        // TODO: Remove this hack and use VisitHints.SKIP_ITERATION in JSF 2.1
-        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+        // Remove this hack SKIP_ITERATION_HINT and use VisitHints.SKIP_ITERATION in JSF 2.1 only
+        // is not possible, because jsf 2.0 API-based libraries can use the String
+        // hint, JSF21-based libraries can use both.
+        try
+        {
+            facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+
+            EnumSet<VisitHint> visitHints = EnumSet.of(VisitHint.SKIP_ITERATION);
+            VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, visitHints);
+            component.visitTree(visitContext, new RestoreStateCallback());
+        }
+        finally
+        {
+            // We must remove hint in finally, because an exception can break this phase,
+            // but lifecycle can continue, if custom exception handler swallows the exception
+            facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+        }
         
-        component.visitTree(VisitContext.createVisitContext(facesContext), new RestoreStateCallback());
-        
-        facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
         
         /*
         ValueExpression binding = component.getValueExpression("binding");
