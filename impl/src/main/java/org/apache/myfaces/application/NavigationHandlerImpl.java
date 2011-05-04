@@ -114,9 +114,10 @@ public class NavigationHandlerImpl
                 // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
                 // are included on navigation.
                 PartialViewContext partialViewContext = facesContext.getPartialViewContext();
+                String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
                 if ( partialViewContext.isPartialRequest() && 
                      !partialViewContext.isRenderAll() && 
-                     !facesContext.getViewRoot().getViewId().equals(toViewId))
+                     !toViewId.equals(viewId))
                 {
                     partialViewContext.setRenderAll(true);
                 }
@@ -143,9 +144,10 @@ public class NavigationHandlerImpl
                 // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
                 // are included on navigation.
                 PartialViewContext partialViewContext = facesContext.getPartialViewContext();
+                String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
                 if ( partialViewContext.isPartialRequest() && 
                      !partialViewContext.isRenderAll() && 
-                     !facesContext.getViewRoot().getViewId().equals(newViewId))
+                     !newViewId.equals(viewId))
                 {
                     partialViewContext.setRenderAll(true);
                 }
@@ -200,15 +202,20 @@ public class NavigationHandlerImpl
      */
     public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
-        String viewId = facesContext.getViewRoot().getViewId();
+        String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
+        
         Map<String, Set<NavigationCase>> casesMap = getNavigationCases();
         NavigationCase navigationCase = null;
-
-        Set<? extends NavigationCase> casesSet = casesMap.get(viewId);
-        if (casesSet != null)
+        
+        Set<? extends NavigationCase> casesSet;
+        if (viewId != null)
         {
-            // Exact match?
-            navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
+            casesSet = casesMap.get(viewId);
+            if (casesSet != null)
+            {
+                // Exact match?
+                navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
+            }
         }
 
         if (navigationCase == null)
@@ -273,7 +280,7 @@ public class NavigationHandlerImpl
         boolean isRedirect = false;
         String queryString = null;
         NavigationCase result = null;
-        String viewId = facesContext.getViewRoot().getViewId();
+        String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
         String viewIdToTest = outcome;
         
         // If viewIdToTest contains a query string, remove it and set queryString with that value.
@@ -300,7 +307,7 @@ public class NavigationHandlerImpl
         
         // If viewIdToTest does not have a "file extension", use the one from the current viewId.
         index = viewIdToTest.indexOf (".");
-        if (index == -1)
+        if (index == -1 && viewId != null)
         {
             index = viewId.lastIndexOf(".");
             
@@ -313,7 +320,7 @@ public class NavigationHandlerImpl
         // If viewIdToTest does not start with "/", look for the last "/" in viewId.  If not found, simply prepend "/".
         // Otherwise, prepend everything before and including the last "/" in viewId.
         
-        if (!viewIdToTest.startsWith ("/"))
+        if (!viewIdToTest.startsWith ("/") && viewId != null)
         {
             index = viewId.lastIndexOf ("/");
             
