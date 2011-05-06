@@ -193,9 +193,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // grab our component
         UIComponent c = null;
         //boolean componentFoundInserted = false;
-        // MYFACES-2924 This optimization does not work as expected when component bindings are used.
-        //if (mctx.isRefreshingTransientBuild())
-        //{
+        
+        if (mctx.isRefreshingTransientBuild())
+        {
             if (_relocatableResourceHandler != null)
             {
                 c = _relocatableResourceHandler.findChildByTagId(ctx, parent, id);
@@ -246,7 +246,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
             */
-        //}
+        }
         boolean componentFound = false;
         if (c != null)
         {
@@ -513,6 +513,12 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             if (c != null)
             {
                 c.setValueExpression("binding", ve);
+                
+                if (!ve.isReadOnly(faces.getELContext()))
+                {
+                    ComponentSupport.getViewRoot(ctx, c).getAttributes().put("oam.CALL_PRE_DISPOSE_VIEW", Boolean.TRUE);
+                    c.subscribeToEvent(PreDisposeViewEvent.class, new ClearBindingValueExpressionListener());
+                }
             }
         }
         else
