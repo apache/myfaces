@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -331,9 +332,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
     
             // Now Look throught facets on this UIComponent
-            for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
+            if (this.getFacetCount() > 0)
             {
-                returnValue = it.next().invokeOnComponent(context, clientId, callback);
+                for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
+                {
+                    returnValue = it.next().invokeOnComponent(context, clientId, callback);
+                }
             }
     
             if (returnValue)
@@ -634,12 +638,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                                                boolean saveChildFacets)
     {
         Collection<Object[]> childStates = null;
+        boolean hasChildren = childIterator.hasNext();
+        
         while (childIterator.hasNext())
         {
-            if (childStates == null)
-            {
-                childStates = new ArrayList<Object[]>();
-            }
             
             UIComponent child = childIterator.next();
             if (!child.isTransient())
@@ -648,25 +650,38 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 // elements. The first element is the state of the children
                 // of this component; the second is the state of the current
                 // child itself.
+                Object descendantState = null;
+                if (child.getChildCount() > 0)
+                {
+                    Iterator<UIComponent> childsIterator;
+                    if (saveChildFacets)
+                    {
+                        childsIterator = child.getFacetsAndChildren();
+                    }
+                    else
+                    {
+                        childsIterator = child.getChildren().iterator();
+                    }
 
-                Iterator<UIComponent> childsIterator;
-                if (saveChildFacets)
-                {
-                    childsIterator = child.getFacetsAndChildren();
+                    descendantState = saveDescendantComponentStates(childsIterator, true);
                 }
-                else
-                {
-                    childsIterator = child.getChildren().iterator();
-                }
-                Object descendantState = saveDescendantComponentStates(childsIterator, true);
                 Object state = null;
                 if (child instanceof EditableValueHolder)
                 {
                     state = new EditableValueHolderState((EditableValueHolder) child);
                 }
+                if (childStates == null)
+                {
+                    childStates = new ArrayList<Object[]>();
+                }
                 childStates.add(new Object[] { state, descendantState });
             }
         }
+        
+        if (hasChildren == true && childStates == null) {
+            childStates = Collections.emptyList();
+        }
+        
         return childStates;
     }
 
@@ -960,9 +975,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     private void processFacets(FacesContext context, int processAction)
     {
-        for (UIComponent facet : getFacets().values())
+        if (this.getFacetCount() > 0)
         {
-            process(context, facet, processAction);
+            for (UIComponent facet : getFacets().values())
+            {
+                process(context, facet, processAction);
+            }
         }
     }
 
@@ -987,9 +1005,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     continue;
                 }
                 
-                for (UIComponent facet : child.getFacets().values())
+                if (child.getFacetCount() > 0)
                 {
-                    process(context, facet, processAction);
+                    for (UIComponent facet : child.getFacets().values())
+                    {
+                        process(context, facet, processAction);
+                    }
                 }
             }
         }
