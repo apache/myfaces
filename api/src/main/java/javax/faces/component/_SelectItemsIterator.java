@@ -46,6 +46,8 @@ class _SelectItemsIterator implements Iterator<SelectItem>
     
     private static final Logger log = Logger.getLogger(_SelectItemsIterator.class.getName());
     
+    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = new _EmptyIterator<UIComponent>();
+    
     // org.apache.myfaces.shared.util.SelectItemsIterator uses JSFAttr
     private static final String VAR_ATTR = "var";
     private static final String ITEM_VALUE_ATTR = "itemValue";
@@ -63,7 +65,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
 
     public _SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
     {
-        _children = selectItemsParent.getChildren().iterator();
+        _children = selectItemsParent.getChildCount() > 0 ? selectItemsParent.getChildren().iterator() : _EMPTY_UICOMPONENT_ITERATOR;
         _facesContext = facesContext;
     }
 

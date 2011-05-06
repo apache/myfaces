@@ -51,11 +51,14 @@ public class HtmlOutputStylesheetHandler extends HtmlComponentHandler implements
     {
         UIComponent c = null;
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-        Iterator<UIComponent> itr = root.getFacets().values().iterator();
-        while (itr.hasNext() && c == null)
+        if (root.getFacetCount() > 0)
         {
-            UIComponent facet = itr.next();
-            c = ComponentSupport.findChildByTagId(facet, id);
+            Iterator<UIComponent> itr = root.getFacets().values().iterator();
+            while (itr.hasNext() && c == null)
+            {
+                UIComponent facet = itr.next();
+                c = ComponentSupport.findChildByTagId(facet, id);
+            }
         }
         return c;
     }

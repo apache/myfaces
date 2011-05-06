@@ -90,16 +90,30 @@ public class HtmlFormatRenderer extends HtmlRenderer
         }
         else
         {
-            List<Object> argsList = new ArrayList<Object>();
+            List<Object> argsList = null;
             
-            List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                    facesContext, htmlOutputFormat.getChildren(), false, false, false);
-            for (UIParameter param : validParams)
+            if (htmlOutputFormat.getChildCount() > 0)
             {
-                argsList.add(param.getValue());
+                List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
+                        facesContext, htmlOutputFormat.getChildren(), false, false, false);
+                for (UIParameter param : validParams)
+                {
+                    if (argsList == null)
+                    {
+                        argsList = new ArrayList<Object>();
+                    }
+                    argsList.add(param.getValue());
+                }
             }
             
-            args = argsList.toArray(new Object[argsList.size()]);
+            if (argsList != null)
+            {
+                args = argsList.toArray(new Object[argsList.size()]);
+            }
+            else
+            {
+                args = EMPTY_ARGS;
+            }
         }
 
         MessageFormat format = new MessageFormat(pattern, facesContext.getViewRoot().getLocale());

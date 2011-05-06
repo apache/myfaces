@@ -251,12 +251,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                                                 if (!target.getParent().getChildren().remove(target))
                                                 {
                                                     String key = null;
-                                                    for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
+                                                    if (target.getParent().getFacetCount() > 0)
                                                     {
-                                                        if (entry.getValue()==target)
+                                                        for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
                                                         {
-                                                            key = entry.getKey();
-                                                            break;
+                                                            if (entry.getValue()==target)
+                                                            {
+                                                                key = entry.getKey();
+                                                                break;
+                                                            }
                                                         }
                                                     }
                                                     if (key != null)
