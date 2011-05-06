@@ -32,6 +32,7 @@ import javax.el.ResourceBundleELResolver;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.FlashELResolver;
 import org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceResolver;
@@ -74,10 +75,13 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         list.add(new BeanELResolver());
         
         // give the user a chance to sort the resolvers
-        sortELResolvers(list);
+        sortELResolvers(list, Scope.Faces);
+        
+        // give the user a chance to filter the resolvers
+        Iterable<ELResolver> filteredELResolvers = filterELResolvers(list, Scope.Faces);
         
         // add the resolvers from the list to the CompositeELResolver
-        for (ELResolver resolver : list)
+        for (ELResolver resolver : filteredELResolvers)
         {
             compositeElResolver.add(resolver);
         }

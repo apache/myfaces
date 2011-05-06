@@ -31,10 +31,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
 import org.apache.myfaces.el.convert.VariableResolverToELResolver;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
@@ -50,6 +53,12 @@ public class ResolverBuilderBase
     @JSFWebConfigParam(since = "1.2.10, 2.0.2",
             desc = "The Class of an Comparator<ELResolver> implementation.")
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
+    
+    @JSFWebConfigParam(since = "2.1.0",
+            desc="The Class of an org.apache.commons.collections.Predicate<ELResolver> implementation." +
+            "If used and returns true for a ELResolver instance, such resolver will not be installed in ELResolvers chain." +
+            "Use with caution - can break functionality defined in JSF specification 'ELResolver Instances Provided by Faces'")
+    public static final String EL_RESOLVER_PREDICATE = "org.apache.myfaces.EL_RESOLVER_PREDICATE";
     
     private final RuntimeConfig _config;
 
@@ -105,43 +114,25 @@ public class ResolverBuilderBase
     /**
      * Sort the ELResolvers with a custom Comparator provided by the user.
      * @param resolvers
+     * @param scope scope of ELResolvers (Faces,JSP)  
      * @since 1.2.10, 2.0.2
      */
     @SuppressWarnings("unchecked")
-    protected void sortELResolvers(List<ELResolver> resolvers)
+    protected void sortELResolvers(List<ELResolver> resolvers, Scope scope)
     {
-        ExternalContext externalContext 
-                = FacesContext.getCurrentInstance().getExternalContext();
-        
-        String comparatorClass = externalContext
-                .getInitParameter(EL_RESOLVER_COMPARATOR);
-        
-        if (comparatorClass != null && !"".equals(comparatorClass))
+        Comparator<ELResolver> comparator = (Comparator<ELResolver>) getAplicationScopedObject(
+                FacesContext.getCurrentInstance(), EL_RESOLVER_COMPARATOR);
+        if (comparator != null)
         {
-            // the user provided the parameter.
-            
-            // if we already have a cached instance, use it
-            Comparator<ELResolver> comparator 
-                    = (Comparator<ELResolver>) externalContext.
-                        getApplicationMap().get(EL_RESOLVER_COMPARATOR);
             try
             {
-                if (comparator == null)
-                {
-                    // get the comparator class
-                    Class<Comparator<ELResolver>> clazz 
-                             = ClassUtils.classForName(comparatorClass);
-                    
-                    // create the instance
-                    comparator = clazz.newInstance();
-                    
-                    // cache the instance, because it will be used at least two times
-                    externalContext.getApplicationMap()
-                            .put(EL_RESOLVER_COMPARATOR, comparator);
-                }
-                
                 // sort the resolvers
                 Collections.sort(resolvers, comparator);
+                
+                if (log.isLoggable(Level.INFO)) {
+                    log.log(Level.INFO, "Chain of EL resolvers for {0} sorted with: {1} and the result order is {2}", 
+                            new Object [] {scope, comparator, resolvers});
+                }
             }
             catch (Exception e)
             {
@@ -149,6 +140,73 @@ public class ResolverBuilderBase
                         "Could not sort ELResolvers with custom Comparator", e);
             }
         }
+    }
+    
+    /**
+     * Filters the ELResolvers  with a custom Predicate provided by the user.
+     * @param resolvers list of ELResolvers
+     * @param scope scope of ELResolvers (Faces,JSP)
+     * @return Iterable instance of Iterable containing filtered ELResolvers 
+     */
+    protected Iterable<ELResolver> filterELResolvers(List<ELResolver> resolvers, Scope scope)
+    {
+        
+        Predicate predicate = (Predicate) getAplicationScopedObject(
+                FacesContext.getCurrentInstance(), EL_RESOLVER_PREDICATE);
+        if (predicate != null) {
+            try
+            {
+                // filter the resolvers
+                CollectionUtils.filter(resolvers, predicate);
+                
+                if (log.isLoggable(Level.INFO)) {
+                    log.log(Level.INFO, "Chain of EL resolvers for {0} filtered with: {1} and the result is {2}", 
+                            new Object [] {scope, predicate, resolvers});
+                }
+            }
+            catch (Exception e)
+            {
+                log.log(Level.WARNING, 
+                        "Could not filter ELResolvers with custom Predicate", e);
+            }
+        }
+        return resolvers;
+    }
+    
+    // TODO this is very common logic, move to Utils? 
+    protected Object getAplicationScopedObject(FacesContext facesContext, String initParameterName)
+    {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        String className = externalContext.getInitParameter(initParameterName);
+
+        Object applicationScopedObject = null;
+        if (className != null && !"".equals(className))
+        {
+            // if we already have a cached instance, use it
+            applicationScopedObject = externalContext. getApplicationMap().get(initParameterName);
+            try
+            {
+                if (applicationScopedObject == null)
+                {
+                    // get the  class
+                    Class<?> clazz = ClassUtils.classForName(className);
+
+                    // create the instance
+                    applicationScopedObject = clazz.newInstance();
+
+                    // cache the instance, because it will be used at least two times
+                    externalContext.getApplicationMap()
+                    .put(initParameterName, applicationScopedObject);
+                }
+            }
+            catch (Exception e)
+            {
+                log.log(Level.WARNING, 
+                        "Could not create instance of " + className + " for context-param " + initParameterName, e);
+            }
+        }    
+
+        return applicationScopedObject;
     }
 
     protected ELResolver createELResolver(VariableResolver resolver)

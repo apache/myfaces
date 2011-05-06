@@ -26,6 +26,7 @@ import javax.el.ELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.FlashELResolver;
+import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceResolver;
@@ -60,10 +61,13 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
         addFromRuntimeConfig(list);
         
         // give the user a chance to sort the resolvers
-        sortELResolvers(list);
+        sortELResolvers(list, Scope.JSP);
+        
+        // give the user a chance to filter the resolvers
+        Iterable<ELResolver> filteredELResolvers = filterELResolvers(list, Scope.JSP);
         
         // add the resolvers from the list to the CompositeELResolver
-        for (ELResolver resolver : list)
+        for (ELResolver resolver : filteredELResolvers)
         {
             compositeElResolver.add(resolver);
         }
