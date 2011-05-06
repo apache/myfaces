@@ -989,11 +989,14 @@ public final class ErrorPageWriter
         UIComponent parent = component.getParent();
         if (parent != null)
         {
-            for (Map.Entry<String, UIComponent> entry : parent.getFacets().entrySet())
+            if (parent.getFacetCount() > 0)
             {
-                if (entry.getValue() == component)
+                for (Map.Entry<String, UIComponent> entry : parent.getFacets().entrySet())
                 {
-                    return entry.getKey();
+                    if (entry.getValue() == component)
+                    {
+                        return entry.getKey();
+                    }
                 }
             }
         }

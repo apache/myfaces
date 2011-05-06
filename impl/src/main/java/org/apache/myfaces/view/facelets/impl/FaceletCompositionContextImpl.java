@@ -521,13 +521,16 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                 else if (Boolean.TRUE.equals(fc.getAttributes().get(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
                 {
                     //Mark its children, but do not mark itself.
-                    for (Iterator<UIComponent> fciter = fc.getChildren().iterator(); fciter.hasNext();)
+                    if (fc.getChildCount() > 0)
                     {
-                        UIComponent child = fciter.next();
-                        id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
-                        if (id != null)
+                        for (Iterator<UIComponent> fciter = fc.getChildren().iterator(); fciter.hasNext();)
                         {
-                            markComponentForDeletion(id, child);
+                            UIComponent child = fciter.next();
+                            id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
+                            if (id != null)
+                            {
+                                markComponentForDeletion(id, child);
+                            }
                         }
                     }
                 }
@@ -583,13 +586,16 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                 }
                 else if ( id == null && Boolean.TRUE.equals(fc.getAttributes().get(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
                 {
-                    for (Iterator<UIComponent> fciter = fc.getChildren().iterator(); fciter.hasNext();)
+                    if (fc.getChildCount() > 0)
                     {
-                        UIComponent child = fciter.next();
-                        id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
-                        if (id != null && removeComponentForDeletion(id) != null)
+                        for (Iterator<UIComponent> fciter = fc.getChildren().iterator(); fciter.hasNext();)
                         {
-                            fciter.remove();
+                            UIComponent child = fciter.next();
+                            id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
+                            if (id != null && removeComponentForDeletion(id) != null)
+                            {
+                                fciter.remove();
+                            }
                         }
                     }
                     if (fc.getChildCount() == 0)

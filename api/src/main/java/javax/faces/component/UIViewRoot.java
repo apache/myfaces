@@ -528,8 +528,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         */
         if (facet != null)
         {
-            List<UIComponent> children = facet.getChildren();
-            return ( children == null ? Collections.<UIComponent>emptyList() : Collections.unmodifiableList(children) );
+            if (facet.getChildCount() > 0)
+            {
+                return Collections.unmodifiableList(facet.getChildren());
+            }
+            else
+            {
+                return Collections.<UIComponent>emptyList();
+            }
         }
         return Collections.<UIComponent>emptyList();
     }
@@ -1116,9 +1122,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             //Only if the facet is found it is possible to remove the resource,
             //otherwise nothing should happen (call to getComponentResource trigger
             //creation of facet)
-            List<UIComponent> componentResources = facet.getChildren();
             // Remove the component resource from the child list
-            componentResources.remove(componentResource);
+            facet.getChildren().remove(componentResource);
         }
     }
 
