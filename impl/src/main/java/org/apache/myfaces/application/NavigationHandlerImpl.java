@@ -37,8 +37,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationCase;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
@@ -49,6 +53,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.shared_impl.util.HashMapUtils;
 import org.apache.myfaces.shared_impl.util.StringUtils;
+import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
@@ -61,6 +66,8 @@ public class NavigationHandlerImpl
     //private static final Log log = LogFactory.getLog(NavigationHandlerImpl.class);
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
+    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    
     private static final String ASTERISK = "*";
 
     private Map<String, Set<NavigationCase>> _navigationCases = null;
@@ -152,6 +159,13 @@ public class NavigationHandlerImpl
                     partialViewContext.setRenderAll(true);
                 }
 
+                if (facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
+                {
+                    facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+                    facesContext.getViewRoot().visitTree(VisitContext.createVisitContext(facesContext), new PreDisposeViewCallback());
+                    facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                }
+
                 // create UIViewRoot for new view
                 UIViewRoot viewRoot = null;
                 
@@ -196,6 +210,16 @@ public class NavigationHandlerImpl
         }
     }
 
+    private static class PreDisposeViewCallback implements VisitCallback
+    {
+
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            context.getFacesContext().getApplication().publishEvent(context.getFacesContext(), PreDisposeViewEvent.class, target);
+            
+            return VisitResult.ACCEPT;
+        }
+    }
 
     /**
      * Returns the navigation case that applies for the given action and outcome
