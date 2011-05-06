@@ -159,11 +159,14 @@ public class NavigationHandlerImpl
                     partialViewContext.setRenderAll(true);
                 }
 
-                if (facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
+                if (facesContext.getViewRoot() != null)
                 {
-                    facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
-                    facesContext.getViewRoot().visitTree(VisitContext.createVisitContext(facesContext), new PreDisposeViewCallback());
-                    facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                    if (facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
+                    {
+                        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+                        facesContext.getViewRoot().visitTree(VisitContext.createVisitContext(facesContext), new PreDisposeViewCallback());
+                        facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                    }
                 }
 
                 // create UIViewRoot for new view
