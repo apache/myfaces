@@ -87,12 +87,6 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
-        // Apply only if we are creating a new component
-        if (!ComponentHandler.isNew(parent))
-        {
-            return;
-        }
-
         // we need methods from AbstractFaceletContext
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
 
@@ -120,14 +114,20 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             {
                 // the validator is disabled --> add its id to the exclusion stack
                 boolean validatorIdAvailable = validatorId != null && !"".equals(validatorId);
-                if (validatorIdAvailable)
+                try
                 {
-                    mctx.pushExcludedValidatorIdToStack(validatorId);
+                    if (validatorIdAvailable)
+                    {
+                        mctx.pushExcludedValidatorIdToStack(validatorId);
+                    }
+                    _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
                 }
-                _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
-                if (validatorIdAvailable)
+                finally
                 {
-                    mctx.popExcludedValidatorIdToStack();
+                    if (validatorIdAvailable)
+                    {
+                        mctx.popExcludedValidatorIdToStack();
+                    }
                 }
             }
             else
@@ -138,21 +138,39 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                 // spec: don't save the validation groups string if it is null or empty string
                 boolean groupsAvailable = groups != null 
                         && !groups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN);
-                if (groupsAvailable)
+                try
                 {
-                    mctx.pushValidationGroupsToStack(groups);
+                    if (groupsAvailable)
+                    {
+                        mctx.pushValidationGroupsToStack(groups);
+                    }
+                    try
+                    {
+                        mctx.pushEnclosingValidatorIdToStack(validatorId);
+                        _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                    }
+                    finally
+                    {
+                        mctx.popEnclosingValidatorIdToStack();
+                    }
                 }
-                mctx.pushEnclosingValidatorIdToStack(validatorId);
-                _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
-                mctx.popEnclosingValidatorIdToStack();
-                if (groupsAvailable)
+                finally
                 {
-                    mctx.popValidationGroupsToStack();
+                    if (groupsAvailable)
+                    {
+                        mctx.popValidationGroupsToStack();
+                    }
                 }
             }
         }
         else
         {
+            // Apply only if we are creating a new component
+            if (!ComponentHandler.isNew(parent))
+            {
+                return;
+            }
+
             // the tag is a leave --> attach validator to parent
             if (parent instanceof EditableValueHolder)
             {
