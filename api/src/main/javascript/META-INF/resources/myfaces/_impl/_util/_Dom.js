@@ -59,6 +59,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         "onmouseup": true
     },
 
+    /*table elements which are used in various parts */
+    TABLE_ELEMS:  {
+            "thead": true,
+            "tbody": true,
+            "tr": true,
+            "th": true,
+            "td": true,
+            "tfoot" : true
+    },
+
     _Lang:  myfaces._impl._util._Lang,
     _RT:    myfaces._impl.core._Runtime,
     _dummyPlaceHolder:null,
@@ -296,24 +306,20 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
     },
 
+    _isTable: function(item) {
+        var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
+        return itemNodeName == "table";
+    },
+
     /**
-     * checks if the provided element is a table element
+     * checks if the provided element is a subelement of a table element
      * @param itemNodeName
-     * @param innerOnly
      */
     _isTableElement: function(item) {
-        var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
-
-        return this._isTableStructureElement(item) || itemNodeName == "td";
+      var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
+      return !!this.TABLE_ELEMS[itemNodeName];
     },
 
-    _isTableStructureElement: function(item) {
-        var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
-
-        return itemNodeName == "table" || itemNodeName == "thead" ||
-                itemNodeName == "tbody" || itemNodeName == "tfoot" ||
-                itemNodeName == "th" || itemNodeName == "tr";
-    },
 
     /**
      * now to the evil browsers
@@ -334,9 +340,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var evalNodes = null;
 
         try {
+            //check for a subtable rendering case
+
             if (this._isTableElement(item)) {
                 evalNodes = this._buildTableNodes(item, markup);
             } else {
+                //if no subtable element is given we simply work on our
+                //normal markup
                 evalNodes = this._buildNodesNonCompliant(markup);
             }
 
@@ -363,6 +373,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     },
 
+    /**
+     * non ie browsers do not have problems with embedded scripts or any other construct
+     * we simply can use an innerHTML in a placeholder
+     *
+     * @param markup the markup to be used
+     */
     _buildNodesCompliant: function(markup) {
         var dummyPlaceHolder = this.getDummyPlaceHolder(); //document.createElement("div");
         dummyPlaceHolder.innerHTML = markup;
@@ -373,6 +389,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     /**
      * builds up a correct dom subtree
      * if the markup is part of table nodes
+     * The usecase for this is to allow subtable rendering
+     * like single rows thead or tbody
+     *
      * @param item
      * @param markup
      */
@@ -448,6 +467,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //so we are save here
             evalNodes = dummyPlaceHolder.childNodes[0].childNodes;
         }
+
+
+        this._removeChildNodes(dummyPlaceHolder, false);
+        //ie fix any version, ie does not return true javascript arrays so we have to perform
+        //a cross conversion
         return this._Lang.objToArray(evalNodes);
 
     }
@@ -491,7 +515,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         try {
             //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
             //again to speed things up we precheck first
-            if(!this._isTableStructureElement(childNode)) {
+            if(!this._isTableElement(childNode)) {
                 //we do not do a table structure innnerhtml on table elements except td
                 //htmlunit rightfully complains that we should not do it
                 node.innerHTML = "";
@@ -536,12 +560,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (!node) return;
 
         //node types which cannot be cleared up by normal means
-        var disallowedNodes = {
-            "thead": true,
-            "tbody": true,
-            "tr": true,
-            "td": true
-        };
+        var disallowedNodes = this.TABLE_ELEMS;
 
         //for now we do not enable it due to speed reasons
         //normally the framework has to do some event detection
@@ -569,7 +588,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 if (!disallowedNodes[nodeName]) {
                     //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
                     //again to speed things up we precheck first
-                    if(!this._isTableStructureElement(childNode)) {    //table elements cannot be deleted
+                    if(!this._isTableElement(childNode)) {    //table elements cannot be deleted
                         childNode.innerHTML = "";
                     }
                     if (b.isIE && b.isIE < 8 && 'undefined' != childNode.outerHTML)
