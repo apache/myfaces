@@ -33,7 +33,6 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
-import javax.faces.event.PostAddToViewEvent;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
@@ -42,6 +41,7 @@ import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
+import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
@@ -51,8 +51,6 @@ import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.google.inject.cglib.proxy.Factory;
 
 public class DefaultFaceletsStateManagementStrategyTest extends
         AbstractJsfConfigurableMockTestCase
@@ -423,7 +421,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     public UIViewRoot saveAndRestore(StateManagementStrategy stateManagement, UIViewRoot viewRoot)
     {
         externalContext.getRequestMap()
-        .remove(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR);        
+            .remove(StateManagerImpl.class.getName() + ".SERIALIZED_VIEW");        
         Object state1 = stateManagement.saveView(facesContext);
         stateToRestore = state1;
         facesContext.setViewRoot(null);

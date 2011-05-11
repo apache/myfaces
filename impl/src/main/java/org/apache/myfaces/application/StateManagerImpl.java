@@ -1,0 +1,342 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.myfaces.application;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.faces.FactoryFinder;
+import javax.faces.application.StateManager;
+import javax.faces.component.NamingContainer;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.render.ResponseStateManager;
+import javax.faces.view.StateManagementStrategy;
+import javax.faces.view.ViewDeclarationLanguage;
+
+import org.apache.myfaces.application.jsp.JspStateManagerImpl;
+
+public class StateManagerImpl extends StateManager
+{
+    private static final Logger log = Logger.getLogger(StateManagerImpl.class.getName());
+    
+    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
+        StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
+    
+    private RenderKitFactory _renderKitFactory = null;
+    
+    private StateCache _stateCache;
+    
+    public StateManagerImpl()
+    {
+        _stateCache = new StateCacheImpl();
+    }
+
+    @Override
+    protected Object getComponentStateToSave(FacesContext facesContext)
+    {
+        if (log.isLoggable(Level.FINEST)) log.finest("Entering getComponentStateToSave");
+
+        UIViewRoot viewRoot = facesContext.getViewRoot();
+        if (viewRoot.isTransient())
+        {
+            return null;
+        }
+
+        Object serializedComponentStates = viewRoot.processSaveState(facesContext);
+        //Locale is a state attribute of UIViewRoot and need not be saved explicitly
+        if (log.isLoggable(Level.FINEST)) log.finest("Exiting getComponentStateToSave");
+        return serializedComponentStates;
+    }
+
+    /**
+     * Return an object which contains info about the UIComponent type
+     * of each node in the view tree. This allows an identical UIComponent
+     * tree to be recreated later, though all the components will have
+     * just default values for their members.
+     */
+    @Override
+    protected Object getTreeStructureToSave(FacesContext facesContext)
+    {
+        if (log.isLoggable(Level.FINEST)) log.finest("Entering getTreeStructureToSave");
+        UIViewRoot viewRoot = facesContext.getViewRoot();
+        if (viewRoot.isTransient())
+        {
+            return null;
+        }
+        TreeStructureManager tsm = new TreeStructureManager();
+        Object retVal = tsm.buildTreeStructureToSave(viewRoot);
+        if (log.isLoggable(Level.FINEST)) log.finest("Exiting getTreeStructureToSave");
+        return retVal;
+    }
+
+    @Override
+    public UIViewRoot restoreView(FacesContext facesContext, String viewId, String renderKitId)
+    {
+        if (log.isLoggable(Level.FINEST)) log.finest("Entering restoreView - viewId: "+viewId+" ; renderKitId: "+renderKitId);
+
+        UIViewRoot uiViewRoot = null;
+        
+        ViewDeclarationLanguage vdl = facesContext.getApplication().
+            getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
+        StateManagementStrategy sms = null; 
+        if (vdl != null)
+        {
+            sms = vdl.getStateManagementStrategy(facesContext, viewId);
+        }
+        
+        if (sms != null)
+        {
+            if (log.isLoggable(Level.FINEST)) log.finest("Redirect to StateManagementStrategy: "+sms.getClass().getName());
+            
+            uiViewRoot = sms.restoreView(facesContext, viewId, renderKitId);
+        }
+        else
+        {
+            RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
+            ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
+
+            Object state = getStateCache().restoreSerializedView(facesContext, viewId, responseStateManager.getState(facesContext, viewId));
+
+            if (state != null) {
+                Object[] stateArray = (Object[])state;
+                TreeStructureManager tsm = new TreeStructureManager();
+                uiViewRoot = tsm.restoreTreeStructure(stateArray[0]);
+
+                if (uiViewRoot != null) {
+                    facesContext.setViewRoot (uiViewRoot);
+                    uiViewRoot.processRestoreState(facesContext, stateArray[1]);
+                }
+            }            
+        }
+        if (log.isLoggable(Level.FINEST)) log.finest("Exiting restoreView - "+viewId);
+
+        return uiViewRoot;
+    }
+
+    /**
+     * Wrap the original method and redirect to VDL StateManagementStrategy when
+     * necessary
+     */
+    @Override
+    public Object saveView(FacesContext facesContext)
+    {
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        
+        String viewId = uiViewRoot.getViewId();
+        ViewDeclarationLanguage vdl = facesContext.getApplication().
+            getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
+        if (vdl != null)
+        {
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            if (sms != null)
+            {
+                if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy: "+sms.getClass().getName());
+                
+                return sms.saveView(facesContext);
+            }
+        }
+
+        // In StateManagementStrategy.saveView there is a check for transient at
+        // start, but the same applies for VDL without StateManagementStrategy,
+        // so this should be checked before call parent (note that parent method
+        // does not do this check).
+        if (uiViewRoot.isTransient())
+        {
+            return null;
+        }
+
+        if (log.isLoggable(Level.FINEST)) log.finest("Entering saveSerializedView");
+
+        checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<String>());
+
+        if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - Checked for duplicate Ids");
+
+        ExternalContext externalContext = facesContext.getExternalContext();
+
+        // SerializedView already created before within this request?
+        Object serializedView = externalContext.getRequestMap()
+                                                            .get(SERIALIZED_VIEW_REQUEST_ATTR);
+        if (serializedView == null)
+        {
+            if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - create new serialized view");
+
+            // first call to saveSerializedView --> create SerializedView
+            Object treeStruct = getTreeStructureToSave(facesContext);
+            Object compStates = getComponentStateToSave(facesContext);
+            serializedView = new Object[] {treeStruct, compStates};
+            externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
+                                                serializedView);
+
+            if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - new serialized view created");
+        }
+
+        
+        getStateCache().saveSerializedView(facesContext, serializedView);
+        
+        if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveView");
+
+        return serializedView;
+    }
+
+    private static void checkForDuplicateIds(FacesContext context,
+                                             UIComponent component,
+                                             Set<String> ids)
+    {
+        String id = component.getId();
+        if (id != null && !ids.add(id))
+        {
+            throw new IllegalStateException("Client-id : " + id +
+                                            " is duplicated in the faces tree. Component : " + 
+                                            component.getClientId(context)+", path: " +
+                                            getPathToComponent(component));
+        }
+        
+        if (component instanceof NamingContainer)
+        {
+            ids = new HashSet<String>();
+        }
+        
+        Iterator<UIComponent> it = component.getFacetsAndChildren();
+        while (it.hasNext())
+        {
+            UIComponent kid = it.next();
+            checkForDuplicateIds(context, kid, ids);
+        }
+    }
+
+    private static String getPathToComponent(UIComponent component)
+    {
+        StringBuffer buf = new StringBuffer();
+
+        if(component == null)
+        {
+            buf.append("{Component-Path : ");
+            buf.append("[null]}");
+            return buf.toString();
+        }
+
+        getPathToComponent(component,buf);
+
+        buf.insert(0,"{Component-Path : ");
+        buf.append("}");
+
+        return buf.toString();
+    }
+
+    private static void getPathToComponent(UIComponent component, StringBuffer buf)
+    {
+        if(component == null)
+            return;
+
+        StringBuffer intBuf = new StringBuffer();
+
+        intBuf.append("[Class: ");
+        intBuf.append(component.getClass().getName());
+        if(component instanceof UIViewRoot)
+        {
+            intBuf.append(",ViewId: ");
+            intBuf.append(((UIViewRoot) component).getViewId());
+        }
+        else
+        {
+            intBuf.append(",Id: ");
+            intBuf.append(component.getId());
+        }
+        intBuf.append("]");
+
+        buf.insert(0,intBuf.toString());
+
+        getPathToComponent(component.getParent(),buf);
+    }
+
+    @Override
+    public void writeState(FacesContext facesContext,
+                           Object state) throws IOException
+    {
+        if (log.isLoggable(Level.FINEST)) log.finest("Entering writeState");
+
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        //save state in response (client)
+        RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());
+        ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
+
+        responseStateManager.writeState(facesContext, 
+                getStateCache().encodeSerializedState(facesContext, state));
+
+        if (log.isLoggable(Level.FINEST)) log.finest("Exiting writeState");
+
+    }
+
+    @Override
+    public String getViewState(FacesContext facesContext)
+    {
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        String viewId = uiViewRoot.getViewId();
+        ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
+        if (vdl != null)
+        {
+            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+            
+            if (sms != null)
+            {
+                if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy from getViewState: "+sms.getClass().getName());
+                
+                return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext, saveView(facesContext));
+            }
+        }
+        Object[] savedState = (Object[]) saveView(facesContext);
+        
+        return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext,
+                getStateCache().encodeSerializedState(facesContext, savedState));
+    }
+
+    //helpers
+
+    protected RenderKitFactory getRenderKitFactory()
+    {
+        if (_renderKitFactory == null)
+        {
+            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        }
+        return _renderKitFactory;
+    }
+
+
+    
+    protected StateCache getStateCache()
+    {
+        return _stateCache;
+    }
+
+    protected void setStateCache(StateCache stateCache)
+    {
+        this._stateCache = stateCache;
+    }
+
+}

@@ -34,13 +34,9 @@ import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
@@ -50,6 +46,9 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 
+import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.StateCacheImpl;
+import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.HashMapUtils;
@@ -113,14 +112,19 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
      */
     public  static final String COMPONENT_ADDED_AFTER_BUILD_VIEW = "oam.COMPONENT_ADDED_AFTER_BUILD_VIEW"; 
     
+    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
+        StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
+    
     private ViewDeclarationLanguageFactory _vdlFactory;
     
-    private DefaultFaceletsStateManagementHelper helper;
+    private StateCache stateCache;
     
     public DefaultFaceletsStateManagementStrategy ()
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
-        this.helper = new DefaultFaceletsStateManagementHelper();
+        //TODO: This object should be application scoped and shared
+        //between jsp and facelets
+        this.stateCache = new StateCacheImpl();
     }
     
     @SuppressWarnings("unchecked")
@@ -138,17 +142,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         final boolean oldContextEventState = context.isProcessingEvents();
         // Get previous state from ResponseStateManager.
         manager = RendererUtils.getResponseStateManager (context, renderKitId);
-
-        if (context.getApplication().getStateManager().isSavingStateInClient(context))
-        {
-            state = (Object[]) manager.getState (context, viewId);
-        }
-        else
-        {
-            Integer serverStateId = helper.getServerStateId((Object[]) manager.getState(context, viewId));
-
-            state = (Object[]) ((serverStateId == null) ? null : helper.getSerializedViewFromServletSession(context, viewId, serverStateId));
-        }
+        
+        state = (Object[]) getStateCache().restoreSerializedView(context, viewId, manager.getState(context, viewId));
         
         if (state == null)
         {
@@ -429,7 +424,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         ExternalContext externalContext = context.getExternalContext();
         
         Object serializedView = externalContext.getRequestMap()
-            .get(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR);
+            .get(SERIALIZED_VIEW_REQUEST_ATTR);
         
         //Note on ajax case the method saveState could be called twice: once before start
         //document rendering and the other one when it is called StateManager.getViewState method.
@@ -468,6 +463,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             // As required by ResponseStateManager, the return value is an Object array.  First
             // element is the structure object, second is the state map.
         
+            serializedView = new Object[] { null, states };
+            
+            externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
+                    getStateCache().encodeSerializedState(context, serializedView));
+
+            /*
             if (context.getApplication().getStateManager().isSavingStateInClient(context))
             {
                 serializedView = new Object[] { null, states };
@@ -482,12 +483,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
             externalContext.getRequestMap().put(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR,
                     serializedView);
+            */
         }
         
-        if (!context.getApplication().getStateManager().isSavingStateInClient(context))
-        {
-            helper.saveSerializedViewInServletSession(context, serializedView);
-        }
+        //if (!context.getApplication().getStateManager().isSavingStateInClient(context))
+        //{
+        getStateCache().saveSerializedView(context, serializedView);
+        //}
         
         return serializedView;
     }
@@ -874,6 +876,16 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     }
     */
     
+    public StateCache getStateCache()
+    {
+        return stateCache;
+    }
+
+    public void setStateCache(StateCache stateCache)
+    {
+        this.stateCache = stateCache;
+    }
+
     public static class PostAddPreRemoveFromViewListener implements SystemEventListener
     {
 
