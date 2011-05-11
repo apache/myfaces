@@ -50,7 +50,7 @@ import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerIm
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.test.base.junit4.AbstractMultipleRequestsJSFTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
@@ -61,7 +61,7 @@ import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 
-public abstract class FaceletMultipleRequestsTestCase extends AbstractMultipleRequestsJSFTestCase
+public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigurableMultipleRequestsTestCase
 {
     private final String filePath = this.getDirectory();
     protected FacesConfigDispenser dispenser = null;

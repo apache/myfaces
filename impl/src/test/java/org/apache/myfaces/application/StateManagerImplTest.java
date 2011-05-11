@@ -30,7 +30,7 @@ import javax.faces.render.ResponseStateManager;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared_impl.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
-import org.apache.myfaces.test.base.junit4.AbstractMultipleRequestsJSFTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 import org.testng.Assert;
 
 @RunWith(JUnit4.class)
-public class StateManagerImplTest extends AbstractMultipleRequestsJSFTestCase
+public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequestsTestCase
 {
 
     public StateManagerImplTest()
