@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets;
+package org.apache.myfaces.application;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,38 +43,26 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections.map.AbstractReferenceMap;
 import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
 
-/**
- * This helper class contains methods used by DefaultFaceletsStateManagementStrategy that comes
- * from JspStateManagerImpl, but are used by our default StateManagementStrategy
- *  
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 793245 $ $Date: 2009-07-11 18:50:53 -0500 (Sat, 11 Jul 2009) $
- * @since 2.0
- * @deprecated replaced by org.apache.myfaces.application.StateCache
- *
- */
-@Deprecated
-class DefaultFaceletsStateManagementHelper
+public class StateCacheImpl extends StateCache
 {
-    //private static final Log log = LogFactory.getLog(DefaultFaceletsStateManagementHelper.class);
-    private static final Logger log = Logger.getLogger(DefaultFaceletsStateManagementHelper.class.getName());    
+
+    private static final Logger log = Logger.getLogger(StateCacheImpl.class.getName());
     
     private static final String SERIALIZED_VIEW_SESSION_ATTR= 
-        DefaultFaceletsStateManagementHelper.class.getName() + ".SERIALIZED_VIEW";
-    
-    public static final String SERIALIZED_VIEW_REQUEST_ATTR = 
-        DefaultFaceletsStateManagementHelper.class.getName() + ".SERIALIZED_VIEW";
+        StateCacheImpl.class.getName() + ".SERIALIZED_VIEW";
     
     private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR = 
-        DefaultFaceletsStateManagementHelper.class.getName() + ".RESTORED_SERIALIZED_VIEW";
+        StateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
 
     /**
      * Only applicable if state saving method is "server" (= default).
      * Defines the amount (default = 20) of the latest views are stored in session.
      */
+    @JSFWebConfigParam(defaultValue="20",since="1.1")
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
 
     /**
@@ -87,6 +75,7 @@ class DefaultFaceletsStateManagementHelper
      * If <code>true</code> (default) the state will be serialized to a byte stream before it is written to the session.
      * If <code>false</code> the state will not be serialized to a byte stream.
      */
+    @JSFWebConfigParam(defaultValue="true",since="1.1")
     private static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
     /**
@@ -94,6 +83,7 @@ class DefaultFaceletsStateManagementHelper
      * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
      * If <code>false</code> the state will not be compressed.
      */
+    @JSFWebConfigParam(defaultValue="true",since="1.1")
     private static final String COMPRESS_SERVER_STATE_PARAM = "org.apache.myfaces.COMPRESS_STATE_IN_SESSION";
 
     /**
@@ -129,6 +119,7 @@ class DefaultFaceletsStateManagementHelper
      * </ul>
      * 
      */
+    @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak", since="1.2.5")
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
     
     /**
@@ -150,18 +141,20 @@ class DefaultFaceletsStateManagementHelper
     private static final int COMPRESSED_FLAG = 1;
 
     private static final int JSF_SEQUENCE_INDEX = 0;
-    
+
+    //------------------------------------- METHODS COPIED FROM JspStateManagerImpl--------------------------------
+
     protected Integer getServerStateId(Object[] state)
     {
-        if (state != null)
-        {
-            Object serverStateId = state[JSF_SEQUENCE_INDEX];
-            if (serverStateId != null)
-            {
-                return Integer.valueOf((String) serverStateId, Character.MAX_RADIX);
-            }
-        }
-        return null;
+      if (state != null)
+      {
+          Object serverStateId = state[JSF_SEQUENCE_INDEX];
+          if (serverStateId != null)
+          {
+              return Integer.valueOf((String) serverStateId, Character.MAX_RADIX);
+          }
+      }
+      return null;
     }
 
     protected void saveSerializedViewInServletSession(FacesContext context,
@@ -428,7 +421,7 @@ class DefaultFaceletsStateManagementHelper
             return null;
         }
     }
-    
+
     protected static class SerializedViewCollection implements Serializable
     {
         private static final long serialVersionUID = -3734849062185115847L;
@@ -637,4 +630,58 @@ class DefaultFaceletsStateManagementHelper
         }
 
     }
+    
+    //------------------------------------- METHOD FROM StateCache ------------------------------------------------
+
+    @Override
+    public void saveSerializedView(FacesContext facesContext, Object serializedView)
+    {
+        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+        {
+            //On client side the state is written completely on the page.
+        }
+        else
+        {
+            if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - server-side state saving - save state");
+            //save state in server session
+            saveSerializedViewInServletSession(facesContext, serializedView);
+            
+            if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveSerializedView - server-side state saving - saved state");
+        }
+    }
+
+    @Override
+    public Object restoreSerializedView(FacesContext facesContext, String viewId, Object viewState)
+    {
+        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+        {
+            //On client side the state was already restored by ResponseStateManager
+            return viewState;
+        }
+        else
+        {
+            if (log.isLoggable(Level.FINEST)) log.finest("Restoring view from session");
+
+            Integer serverStateId = getServerStateId((Object[]) viewState);
+
+            return (serverStateId == null) ? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
+        }
+    }
+
+    @Override
+    public Object encodeSerializedState(FacesContext facesContext, Object serializedView)
+    {
+        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+        {
+            return serializedView;
+        }
+        else
+        {
+            Object[] identifier = new Object[2];
+            identifier[JSF_SEQUENCE_INDEX] = Integer.toString(getNextViewSequence(facesContext), Character.MAX_RADIX);
+            return identifier;
+        }
+    }
+    
+    
 }
