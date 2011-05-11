@@ -26,7 +26,7 @@ import javax.faces.context.FacesContext;
  * @author Leonardo Uribe
  *
  */
-public abstract class StateCache
+public abstract class StateCache<K, V>
 {
 
     /**
@@ -35,7 +35,7 @@ public abstract class StateCache
      * @param facesContext
      * @param serializedView
      */
-    public abstract void saveSerializedView(FacesContext facesContext, Object serializedView);
+    public abstract K saveSerializedView(FacesContext facesContext, V serializedView);
     
     /**
      * 
@@ -45,7 +45,7 @@ public abstract class StateCache
      *                  used to identify or restore the state.
      * @return
      */
-    public abstract Object restoreSerializedView(FacesContext facesContext, String viewId, Object viewState);
+    public abstract V restoreSerializedView(FacesContext facesContext, String viewId, K viewState);
 
     /**
      * 
@@ -55,5 +55,5 @@ public abstract class StateCache
      *         ResponseStateManager.writeState or ResponseStateManager.getViewState to be 
      *         output to the client.
      */
-    public abstract Object encodeSerializedState(FacesContext facesContext, Object serializedView);
+    //public abstract K encodeSerializedState(FacesContext facesContext, Object serializedView);
 }

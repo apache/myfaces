@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application;
+package org.apache.myfaces.renderkit.html;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,13 +43,14 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections.map.AbstractReferenceMap;
 import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.StateCacheImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
 
-public class StateCacheImpl extends StateCache
+class ServerSideStateCacheImpl extends StateCache<Object, Object>
 {
-
     private static final Logger log = Logger.getLogger(StateCacheImpl.class.getName());
     
     private static final String SERIALIZED_VIEW_SESSION_ATTR= 
@@ -636,53 +637,30 @@ public class StateCacheImpl extends StateCache
     @Override
     public Object saveSerializedView(FacesContext facesContext, Object serializedView)
     {
-        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
-        {
-            //On client side the state is written completely on the page.
-            return serializedView;
-        }
-        else
-        {
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - server-side state saving - save state");
-            //save state in server session
-            saveSerializedViewInServletSession(facesContext, serializedView);
-            
-            if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveSerializedView - server-side state saving - saved state");
-            
-            return encodeSerializedState(facesContext, serializedView);
-        }
+        if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - server-side state saving - save state");
+        //save state in server session
+        saveSerializedViewInServletSession(facesContext, serializedView);
+        
+        if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveSerializedView - server-side state saving - saved state");
+        
+        return encodeSerializedState(facesContext, serializedView);
     }
 
     @Override
     public Object restoreSerializedView(FacesContext facesContext, String viewId, Object viewState)
     {
-        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
-        {
-            //On client side the state was already restored by ResponseStateManager
-            return viewState;
-        }
-        else
-        {
-            if (log.isLoggable(Level.FINEST)) log.finest("Restoring view from session");
+        if (log.isLoggable(Level.FINEST)) log.finest("Restoring view from session");
 
-            Integer serverStateId = getServerStateId((Object[]) viewState);
+        Integer serverStateId = getServerStateId((Object[]) viewState);
 
-            return (serverStateId == null) ? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
-        }
+        return (serverStateId == null) ? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
     }
 
     protected Object encodeSerializedState(FacesContext facesContext, Object serializedView)
     {
-        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
-        {
-            return serializedView;
-        }
-        else
-        {
-            Object[] identifier = new Object[2];
-            identifier[JSF_SEQUENCE_INDEX] = Integer.toString(getNextViewSequence(facesContext), Character.MAX_RADIX);
-            return identifier;
-        }
+        Object[] identifier = new Object[2];
+        identifier[JSF_SEQUENCE_INDEX] = Integer.toString(getNextViewSequence(facesContext), Character.MAX_RADIX);
+        return identifier;
     }
     
     
