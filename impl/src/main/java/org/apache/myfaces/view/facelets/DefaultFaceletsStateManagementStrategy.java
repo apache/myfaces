@@ -117,14 +117,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     private ViewDeclarationLanguageFactory _vdlFactory;
     
-    private StateCache stateCache;
-    
     public DefaultFaceletsStateManagementStrategy ()
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
         //TODO: This object should be application scoped and shared
         //between jsp and facelets
-        this.stateCache = new StateCacheImpl();
     }
     
     @SuppressWarnings("unchecked")
@@ -143,7 +140,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         // Get previous state from ResponseStateManager.
         manager = RendererUtils.getResponseStateManager (context, renderKitId);
         
-        state = (Object[]) getStateCache().restoreSerializedView(context, viewId, manager.getState(context, viewId));
+        //state = (Object[]) getStateCache().restoreSerializedView(context, viewId, manager.getState(context, viewId));
+        state = (Object[]) manager.getState(context, viewId);
         
         if (state == null)
         {
@@ -465,8 +463,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         
             serializedView = new Object[] { null, states };
             
-            externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
-                    getStateCache().encodeSerializedState(context, serializedView));
+            //externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
+            //        getStateCache().encodeSerializedState(context, serializedView));
+
+            externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
 
             /*
             if (context.getApplication().getStateManager().isSavingStateInClient(context))
@@ -488,7 +488,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         
         //if (!context.getApplication().getStateManager().isSavingStateInClient(context))
         //{
-        getStateCache().saveSerializedView(context, serializedView);
+        //getStateCache().saveSerializedView(context, serializedView);
         //}
         
         return serializedView;
@@ -876,16 +876,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     }
     */
     
-    public StateCache getStateCache()
-    {
-        return stateCache;
-    }
-
-    public void setStateCache(StateCache stateCache)
-    {
-        this.stateCache = stateCache;
-    }
-
     public static class PostAddPreRemoveFromViewListener implements SystemEventListener
     {
 

@@ -38,8 +38,6 @@ import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.myfaces.application.jsp.JspStateManagerImpl;
-
 public class StateManagerImpl extends StateManager
 {
     private static final Logger log = Logger.getLogger(StateManagerImpl.class.getName());
@@ -49,11 +47,8 @@ public class StateManagerImpl extends StateManager
     
     private RenderKitFactory _renderKitFactory = null;
     
-    private StateCache _stateCache;
-    
     public StateManagerImpl()
     {
-        _stateCache = new StateCacheImpl();
     }
 
     @Override
@@ -120,7 +115,7 @@ public class StateManagerImpl extends StateManager
             RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
             ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
 
-            Object state = getStateCache().restoreSerializedView(facesContext, viewId, responseStateManager.getState(facesContext, viewId));
+            Object state = responseStateManager.getState(facesContext, viewId);
 
             if (state != null) {
                 Object[] stateArray = (Object[])state;
@@ -196,9 +191,6 @@ public class StateManagerImpl extends StateManager
             if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - new serialized view created");
         }
 
-        
-        getStateCache().saveSerializedView(facesContext, serializedView);
-        
         if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveView");
 
         return serializedView;
@@ -286,13 +278,15 @@ public class StateManagerImpl extends StateManager
         RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());
         ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
 
-        responseStateManager.writeState(facesContext, 
-                getStateCache().encodeSerializedState(facesContext, state));
+        responseStateManager.writeState(facesContext, state);
 
         if (log.isLoggable(Level.FINEST)) log.finest("Exiting writeState");
 
     }
 
+    /*
+     * NOTE: This is not required anymore, because all logic related to state storing or caching on session has
+     * been moved to ResponseStateManager
     @Override
     public String getViewState(FacesContext facesContext)
     {
@@ -312,9 +306,9 @@ public class StateManagerImpl extends StateManager
         }
         Object[] savedState = (Object[]) saveView(facesContext);
         
-        return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext,
-                getStateCache().encodeSerializedState(facesContext, savedState));
-    }
+        return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext, savedState);
+
+    }*/
 
     //helpers
 
@@ -325,18 +319,6 @@ public class StateManagerImpl extends StateManager
             _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         }
         return _renderKitFactory;
-    }
-
-
-    
-    protected StateCache getStateCache()
-    {
-        return _stateCache;
-    }
-
-    protected void setStateCache(StateCache stateCache)
-    {
-        this._stateCache = stateCache;
     }
 
 }
