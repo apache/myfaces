@@ -56,6 +56,7 @@ public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequest
         //renderKit.setResponseStateManager(new HtmlResponseStateManager());
         //StateUtils.initSecret(servletContext);
         //servletContext.setAttribute(StateUtils.SERIAL_FACTORY, new DefaultSerialFactory());
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
         
         try
         {
