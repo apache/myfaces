@@ -60,7 +60,7 @@ import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent
 @ListenerFor(systemEventClass = PostBuildComponentTreeOnRestoreViewEvent.class)
 })
 public class HtmlStylesheetRenderer extends Renderer implements
-    ComponentSystemEventListener, PartialStateHolder
+    ComponentSystemEventListener
 {
     //private static final Log log = LogFactory.getLog(HtmlStylesheetRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlStylesheetRenderer.class.getName());
@@ -220,7 +220,8 @@ public class HtmlStylesheetRenderer extends Renderer implements
             writer.endElement(HTML.LINK_ELEM);
         }
     }
-    
+
+    /*
     private boolean _initialStateMarked;
     
     public void clearInitialState()
@@ -254,5 +255,5 @@ public class HtmlStylesheetRenderer extends Renderer implements
 
     public void setTransient(boolean newTransientValue)
     {
-    }
+    }*/
 }

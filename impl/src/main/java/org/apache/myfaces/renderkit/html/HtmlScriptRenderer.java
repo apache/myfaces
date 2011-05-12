@@ -52,7 +52,7 @@ import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent
 @ListenerFor(systemEventClass = PostAddToViewEvent.class),
 @ListenerFor(systemEventClass = PostBuildComponentTreeOnRestoreViewEvent.class)
 })
-public class HtmlScriptRenderer extends Renderer implements PartialStateHolder, ComponentSystemEventListener {
+public class HtmlScriptRenderer extends Renderer implements ComponentSystemEventListener {
     //private static final Log log = LogFactory.getLog(HtmlScriptRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlScriptRenderer.class.getName());
 
@@ -212,6 +212,7 @@ public class HtmlScriptRenderer extends Renderer implements PartialStateHolder, 
         }
     }
 
+    /*
     private boolean _initialStateMarked;
 
     public void clearInitialState() {
@@ -239,4 +240,5 @@ public class HtmlScriptRenderer extends Renderer implements PartialStateHolder, 
 
     public void setTransient(boolean newTransientValue) {
     }
+    */
 }
