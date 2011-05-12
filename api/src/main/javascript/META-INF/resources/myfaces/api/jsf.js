@@ -50,7 +50,7 @@ if (!window.jsf) {
          * non jsf.&lt;namespace&gt; references outside of functions in the api
          * we have to set the version here instead of the impl.
          */
-        this.implversion = 2;
+        this.implversion = 6;
 
         /**
          * @return the current project state emitted by the server side method:
