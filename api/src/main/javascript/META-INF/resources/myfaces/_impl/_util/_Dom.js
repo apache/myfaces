@@ -26,7 +26,9 @@
  * A jquery like query API would be nice
  * but this would blow up our codebase significantly
  *
- * TODO selector shortcuts bei chrome abdrehen da knallt es
+ * TODO we have to split this class and make it more oo
+ * with a node and nodelist class which then can be utilized
+ * by the other parts of the system
  *
  */
 /** @namespace myfaces._impl._util._Dom */
@@ -126,6 +128,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                             finalScripts = [];
                         }
                     this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
+                    //TODO handle embedded scripts
                 } else {
                     // embedded script auto eval
                     var test = (!xmlData) ? item.text : this._Lang.serializeChilds(item);
@@ -239,6 +242,33 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         this._removeNode(item, false);
     },
 
+
+    /**
+     * Checks whether the browser is dom compliant.
+     * Dom compliant means that it performs the basic dom operations safely
+     * without leaking and also is able to perform a native setAttribute
+     * operation without freaking out
+     *
+     *
+     * Not dom compliant browsers are all microsoft browsers in quirks mode
+     * and ie6 and ie7 to some degree in standards mode
+     * and pretty much every browser who cannot create ranges
+     * (older mobile browsers etc...)
+     *
+     * We dont do a full browser detection here because it probably is safer
+     * to test for existing features to make an assumption about the
+     * browsers capabilities
+     */
+    isDomCompliant: function() {
+        if('undefined' == typeof this._isCompliantBrowser) {
+            this._isCompliantBrowser = !! ((window.Range
+                    && typeof Range.prototype.createContextualFragment == 'function') //createContextualFragment hints to a no quirks browser but we need more fallbacks
+                    || document.querySelectoryAll  //query selector all hints to html5 capabilities
+                    || document.createTreeWalker);   //treewalker is either firefox 3.5+ or ie9 standards mode
+        }
+        return this._isCompliantBrowser;
+    },
+
     /**
      * outerHTML replacement which works cross browserlike
      * but still is speed optimized
@@ -260,8 +290,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
             //w3c compliant browsers with proper contextual fragments
             var parentNode;
-            if (window.Range
-                    && typeof Range.prototype.createContextualFragment == 'function') {
+            // we try to determine the browsers compatibility
+            // level to standards dom level 2 via various methods
+            if (this.isDomCompliant()) {
                 ret = this._outerHTMLCompliant(item, markup);
             } else {
 
@@ -285,6 +316,25 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         // and remove the old item, in case of an empty newtag and do nothing else
         this._removeNode(item, false);
         return null;
+    },
+
+     detach: function(items) {
+        var ret = [];
+        if('undefined' != typeof items.nodeType) {
+            if(items.parentNode) {
+                ret.push(items.parentNode.removeChild(items));
+            } else {
+                ret.push(items);
+            }
+            return ret;
+        }
+
+
+        var items = this._Lang.objToArray(items);
+        for(var cnt = 0; cnt < items.length; cnt++) {
+            ret.push(items[cnt].parentNode.removeChild(items[cnt]));
+        }
+        return ret;
     },
 
     _outerHTMLCompliant: function(item, markup) {
@@ -383,8 +433,10 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var dummyPlaceHolder = this.getDummyPlaceHolder(); //document.createElement("div");
         dummyPlaceHolder.innerHTML = markup;
         return this._Lang.objToArray(dummyPlaceHolder.childNodes);
-    }
-    ,
+    },
+
+
+
 
     /**
      * builds up a correct dom subtree
@@ -420,7 +472,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             evalNodes = evalNodes.childNodes[0];
         }
         evalNodes = (evalNodes.parentNode) ? evalNodes.parentNode.childNodes : null;
-        return this._Lang.objToArray(evalNodes);
+        return this.detach(evalNodes);
     }
     ,
 
@@ -457,7 +509,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         for (var cnt = 0; cnt < depth; cnt++) {
             evalNodes = evalNodes.childNodes[0];
         }
-        evalNodes = (evalNodes.parentNode) ? evalNodes.parentNode.childNodes : null;
+        var ret = (evalNodes.parentNode) ? this.detach( evalNodes.parentNode.childNodes) : null;
 
         if ('undefined' == typeof evalNodes || null == evalNodes) {
             //fallback for htmlunit which should be good enough
@@ -465,29 +517,27 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             dummyPlaceHolder.innerHTML = "<div>" + markup + "</div>";
             //note this is triggered only in htmlunit no other browser
             //so we are save here
-            evalNodes = dummyPlaceHolder.childNodes[0].childNodes;
+            evalNodes = this.detach(dummyPlaceHolder.childNodes[0].childNodes);
         }
-
 
         this._removeChildNodes(dummyPlaceHolder, false);
         //ie fix any version, ie does not return true javascript arrays so we have to perform
         //a cross conversion
-        return this._Lang.objToArray(evalNodes);
+        return ret;
 
-    }
-    ,
+    },
 
     _determineDepth: function(probe) {
         var depth = 0;
         var newProbe = probe;
-        while (newProbe) {
+        for (;newProbe &&
+                newProbe.childNodes &&
+                newProbe.childNodes.length &&
+                newProbe.nodeType == 1; depth++) {
             newProbe = newProbe.childNodes[0];
-            depth++;
         }
-        depth--;
         return depth;
-    }
-    ,
+    },
 
 
     //now to another nasty issue:
@@ -500,7 +550,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     _removeNode: function(node, breakEventsOpen) {
         if (!node) return;
         var b = this._RT.browser;
-        if (!b.isIE || b.isIE >= 8) {
+        if (this.isDomCompliant()) {
             //recursive descension only needed for old ie versions
             //all newer browsers cleanup the garbage just fine without it
             //thank you
@@ -523,7 +573,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (b.isIE && 'undefined' != typeof node.outerHTML) {//ie8+ check done earlier we skip it here
                 node.outerHTML = '';
             } else {
-                this._removeFromParent(node);
+                node = this.detach(node)[0];
             }
             if (!b.isIEMobile) {
                 delete node;
@@ -534,17 +584,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             try {
                 // both innerHTML and outerHTML fails when <tr> is the node, but in that case 
                 // we need to force node removal, otherwise it will be on the tree (IE 7 IE 6)
-                this._removeFromParent(node);
+                this.detach(node);
             } catch (e1) {
             }
         }
     }
     ,
 
-    _removeFromParent: function(node) {
-        if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
-                    node.parentNode.removeChild(node);
-    },
+
 
     /**
      * recursive delete child nodes
@@ -949,7 +996,8 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //quirks mode and ie7 mode has the attributes problems ie8 standards mode behaves like
         //a good citizen
         var _Browser = this._RT.browser;
-        if (!_Browser.isIE || _Browser.isIE > 7) {
+        //in case of ie > ie7 we have to check for a quirks mode setting
+        if (!_Browser.isIE || _Browser.isIE > 7 && this.isDomCompliant()) {
             if (!node.setAttribute) {
                 return;
             }
@@ -1498,8 +1546,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         return this._dummyPlaceHolder;
     }
-}
-        )
-        ;
+});
 
 

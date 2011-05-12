@@ -351,17 +351,17 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return either the config entry or if none is given the default value
          */
-                _T.getGlobalConfig = function(configName, defaultValue) {
-                    /**
-                     * note we could use exists but this is an heavy operation, since the config name usually
-                     * given this function here is called very often
-                     * is a single entry without . in between we can do the lighter shortcut
-                     */
-                    return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
-                            myfaces.config[configName]
-                            :
-                            defaultValue;
-                };
+        _T.getGlobalConfig = function(configName, defaultValue) {
+            /**
+             * note we could use exists but this is an heavy operation, since the config name usually
+             * given this function here is called very often
+             * is a single entry without . in between we can do the lighter shortcut
+             */
+            return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
+                    myfaces.config[configName]
+                    :
+                    defaultValue;
+        };
 
         /**
          * gets the local or global options with local ones having higher priority
