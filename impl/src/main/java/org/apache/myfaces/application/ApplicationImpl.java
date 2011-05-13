@@ -1515,7 +1515,7 @@ public class ApplicationImpl extends Application
             }
         }
 
-        if (converterConfig != null)
+        if (converterConfig != null && converterConfig.getProperties().size() > 0)
         {
             for (Property property : converterConfig.getProperties())
             {
