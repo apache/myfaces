@@ -16,27 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html;
+package org.apache.myfaces.renderkit;
 
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.StateCacheFactory;
 
-class ClientSideStateCacheImpl extends StateCache<Object, Object>
+public class StateCacheFactoryImpl extends StateCacheFactory
 {
 
-    @Override
-    public Object saveSerializedView(FacesContext facesContext,
-            Object serializedView)
+    private StateCache _clientSideStateCache;
+    private StateCache _serverSideStateCache;
+    
+    public StateCacheFactoryImpl()
     {
-        return serializedView;
+        _clientSideStateCache = new ClientSideStateCacheImpl();
+        _serverSideStateCache = new ServerSideStateCacheImpl();
     }
 
     @Override
-    public Object restoreSerializedView(FacesContext facesContext,
-            String viewId, Object viewState)
+    public StateCache getStateCache(FacesContext facesContext)
     {
-        return viewState;
+        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+        {
+            return _clientSideStateCache;
+        }
+        else
+        {
+            return _serverSideStateCache;
+        }
     }
-
 }

@@ -18,39 +18,22 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.shared_impl.util.StringUtils;
-import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
-import org.apache.myfaces.shared_impl.view.ViewDeclarationLanguageBase;
-import org.apache.myfaces.view.ViewMetadataBase;
-import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
-import org.apache.myfaces.view.facelets.compiler.Compiler;
-import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
-import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
-import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
-import org.apache.myfaces.view.facelets.el.LocationValueExpression;
-import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
-import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
-import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
-import org.apache.myfaces.view.facelets.tag.TagLibrary;
-import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
-import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
-import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
-import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
-import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
-import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
-import org.apache.myfaces.view.facelets.tag.jstl.core.JstlCoreLibrary;
-import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
-import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
-import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Array;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -98,22 +81,40 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.ResourceResolver;
 import javax.faces.view.facelets.TagDecorator;
 import javax.servlet.http.HttpServletResponse;
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.StringUtils;
+import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
+import org.apache.myfaces.shared_impl.view.ViewDeclarationLanguageBase;
+import org.apache.myfaces.view.ViewMetadataBase;
+import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
+import org.apache.myfaces.view.facelets.compiler.Compiler;
+import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
+import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
+import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
+import org.apache.myfaces.view.facelets.el.LocationValueExpression;
+import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
+import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
+import org.apache.myfaces.view.facelets.tag.TagLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
+import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
+import org.apache.myfaces.view.facelets.tag.jstl.core.JstlCoreLibrary;
+import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
+import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
+import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
+import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * This class represents the abstraction of Facelets as a ViewDeclarationLanguage.
@@ -1308,12 +1309,19 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 {
                     context.setResponseWriter(writer);
 
-                    // force creation of session if saving state there
                     StateManager stateMgr = context.getApplication().getStateManager();
-                    if (!stateMgr.isSavingStateInClient(context))
-                    {
-                        extContext.getSession(true);
-                    }
+                    // force creation of session if saving state there
+                    // -= Leonardo Uribe =- Do this does not have any sense!. The only reference
+                    // about these lines are on http://java.net/projects/facelets/sources/svn/revision/376
+                    // and it says: "fixed lazy session instantiation with eager response commit"
+                    // This code is obviously to prevent this exception:
+                    // java.lang.IllegalStateException: Cannot create a session after the response has been committed
+                    // But in theory if that so, StateManager.saveState must happen before writer.close() is called,
+                    // which can be done very easily.
+                    //if (!stateMgr.isSavingStateInClient(context))
+                    //{
+                    //    extContext.getSession(true);
+                    //}
                     
                     // render the view to the response
                     writer.startDocument();
@@ -1323,12 +1331,23 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     writer.endDocument();
 
                     // finish writing
-                    writer.close();
+                    // -= Leonardo Uribe =- This does not has sense too, because that's the reason
+                    // of the try/finally block. In practice, it only forces the close of the tag 
+                    // in HtmlResponseWriter if necessary, but according to the spec, this should
+                    // be done using writer.flush() instead.
+                    // writer.close();
 
-                    boolean writtenState = stateWriter.isStateWritten();
                     // flush to origWriter
-                    if (writtenState)
+                    if (stateWriter.isStateWritten())
                     {
+                        // Call this method to force close the tag if necessary.
+                        // The spec javadoc says this: 
+                        // "... Flush any ouput buffered by the output method to the underlying 
+                        // Writer or OutputStream. This method will not flush the underlying 
+                        // Writer or OutputStream; it simply clears any values buffered by this 
+                        // ResponseWriter. ..."
+                        writer.flush();
+                        
                         // =-= markoc: STATE_KEY is in output ONLY if 
                         // stateManager.isSavingStateInClient(context)is true - see
                         // org.apache.myfaces.application.ViewHandlerImpl.writeState(FacesContext)
@@ -1373,6 +1392,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         {
                             origWriter.write(content);
                         }
+                    }
+                    else if (stateWriter.isStateWrittenWithoutWrapper())
+                    {
+                        // The state token has been written but the state has not been
+                        // saved yet.
+                        stateMgr.saveView(context);
                     }
                 }
                 finally

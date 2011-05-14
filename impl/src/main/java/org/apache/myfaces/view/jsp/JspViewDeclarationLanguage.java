@@ -27,12 +27,14 @@ import javax.faces.FacesException;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.render.ResponseStateManager;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.jstl.core.Config;
 
 import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
+import org.apache.myfaces.renderkit.StateCacheUtils;
 import org.apache.myfaces.shared_impl.view.JspViewDeclarationLanguageBase;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
@@ -182,6 +184,30 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         {
             // store the wrapped response in the request, so it is thread-safe
             setAfterViewTagResponseWrapper(externalContext, wrappedResponse);
+        }
+    }
+
+    /**
+     * 
+     */
+    @Override
+    protected boolean isViewStateAlreadyEncoded(FacesContext context)
+    {
+        ResponseStateManager responseStateManager = context.getRenderKit().getResponseStateManager();
+        if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
+        {
+            if (StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).isWriteStateAfterRenderViewRequired(context))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 
