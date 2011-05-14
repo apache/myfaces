@@ -32,6 +32,7 @@ import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.application.StateCacheFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
+import org.apache.myfaces.renderkit.StateCacheFactoryImpl;
 import org.apache.myfaces.shared_impl.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.renderkit.html.HTML;
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
@@ -84,7 +85,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         
         if (isHandlingStateCachingMechanics(facesContext))
         {
-            token = getStateCache(facesContext).saveSerializedView(facesContext, state);
+            //token = getStateCache(facesContext).saveSerializedView(facesContext, state);
+            token = getStateCache(facesContext).encodeSerializedState(facesContext, state);
         }
         else
         {
@@ -115,6 +117,19 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         // renderKitId field
         writeRenderKitIdField(facesContext, responseWriter);
+    }
+    
+    @Override
+    public void saveState(FacesContext facesContext, Object state)
+    {
+        if (isHandlingStateCachingMechanics(facesContext))
+        {
+            getStateCache(facesContext).saveSerializedView(facesContext, state);
+        }
+        else
+        {
+            //This is done outside
+        }
     }
 
     private void writeViewStateField(FacesContext facesContext, ResponseWriter responseWriter, Object savedState)
@@ -285,6 +300,12 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         return StateUtils.construct(savedState, facesContext.getExternalContext());
     }
     
+    @Override
+    public boolean isWriteStateAfterRenderViewRequired(FacesContext facesContext)
+    {
+        return getStateCache(facesContext).isWriteStateAfterRenderViewRequired(facesContext);
+    }
+
     protected StateCache getStateCache(FacesContext facesContext)
     {
         return _stateCacheFactory.getStateCache(facesContext);

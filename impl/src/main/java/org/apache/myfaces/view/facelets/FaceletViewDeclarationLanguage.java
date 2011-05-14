@@ -1460,12 +1460,19 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 {
                     context.setResponseWriter(writer);
 
-                    // force creation of session if saving state there
                     StateManager stateMgr = context.getApplication().getStateManager();
-                    if (!stateMgr.isSavingStateInClient(context))
-                    {
-                        extContext.getSession(true);
-                    }
+                    // force creation of session if saving state there
+                    // -= Leonardo Uribe =- Do this does not have any sense!. The only reference
+                    // about these lines are on http://java.net/projects/facelets/sources/svn/revision/376
+                    // and it says: "fixed lazy session instantiation with eager response commit"
+                    // This code is obviously to prevent this exception:
+                    // java.lang.IllegalStateException: Cannot create a session after the response has been committed
+                    // But in theory if that so, StateManager.saveState must happen before writer.close() is called,
+                    // which can be done very easily.
+                    //if (!stateMgr.isSavingStateInClient(context))
+                    //{
+                    //    extContext.getSession(true);
+                    //}
                     
                     // render the view to the response
                     writer.startDocument();
@@ -1475,12 +1482,23 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     writer.endDocument();
 
                     // finish writing
-                    writer.close();
+                    // -= Leonardo Uribe =- This does not has sense too, because that's the reason
+                    // of the try/finally block. In practice, it only forces the close of the tag 
+                    // in HtmlResponseWriter if necessary, but according to the spec, this should
+                    // be done using writer.flush() instead.
+                    // writer.close();
 
-                    boolean writtenState = stateWriter.isStateWritten();
                     // flush to origWriter
-                    if (writtenState)
+                    if (stateWriter.isStateWritten())
                     {
+                        // Call this method to force close the tag if necessary.
+                        // The spec javadoc says this: 
+                        // "... Flush any ouput buffered by the output method to the underlying 
+                        // Writer or OutputStream. This method will not flush the underlying 
+                        // Writer or OutputStream; it simply clears any values buffered by this 
+                        // ResponseWriter. ..."
+                        writer.flush();
+                        
                         // =-= markoc: STATE_KEY is in output ONLY if 
                         // stateManager.isSavingStateInClient(context)is true - see
                         // org.apache.myfaces.application.ViewHandlerImpl.writeState(FacesContext)
@@ -1525,6 +1543,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         {
                             origWriter.write(content);
                         }
+                    }
+                    else if (stateWriter.isStateWrittenWithoutWrapper())
+                    {
+                        // The state token has been written but the state has not been
+                        // saved yet.
+                        stateMgr.saveView(context);
                     }
                 }
                 finally

@@ -53,6 +53,7 @@ public final class StateWriter extends Writer
     private Writer out;
     private FastWriter fast;
     private boolean writtenState;
+    private boolean writtenStateWithoutWrapper;
 
     static public StateWriter getCurrentInstance()
     {
@@ -99,13 +100,27 @@ public final class StateWriter extends Writer
         if (!this.writtenState)
         {
             this.writtenState = true;
+            this.writtenStateWithoutWrapper = false;
             this.out = this.fast = new FastWriter(this.initialSize);
         }
     }
-
+    
     public boolean isStateWritten()
     {
         return this.writtenState;
+    }
+
+    public void writingStateWithoutWrapper()
+    {
+        if (!this.writtenState && !this.writtenStateWithoutWrapper)
+        {
+            this.writtenStateWithoutWrapper = true;
+        }
+    }    
+
+    public boolean isStateWrittenWithoutWrapper()
+    {
+        return this.writtenStateWithoutWrapper;
     }
 
     public void close() throws IOException

@@ -41,4 +41,26 @@ public abstract class MyfacesResponseStateManager extends ResponseStateManager
     {
         throw new UnsupportedOperationException("long been deprecated...");
     }
+
+    /**
+     * Execute additional operations like save the state on a cache when server
+     * side state saving is used.
+     */
+    public void saveState(FacesContext facesContext, Object state)
+    {
+    }
+    
+    /**
+     * Indicates if the call to ResponseStateManager.writeState should be done after the view is fully rendered.
+     * Usually this is required for client side state saving, but it is not for server side state saving, because
+     * ResponseStateManager.writeState could render a just a marker and then StateManager.saveState could be called,
+     * preventing use an additional buffer. 
+     * 
+     * @param facesContext
+     * @return
+     */
+    public boolean isWriteStateAfterRenderViewRequired(FacesContext facesContext)
+    {
+        return true;
+    }
 }

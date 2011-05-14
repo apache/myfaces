@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html;
+package org.apache.myfaces.renderkit;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,21 +44,24 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.collections.map.AbstractReferenceMap;
 import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.application.StateCacheImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
+import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
 
 class ServerSideStateCacheImpl extends StateCache<Object, Object>
 {
-    private static final Logger log = Logger.getLogger(StateCacheImpl.class.getName());
+    private static final Logger log = Logger.getLogger(ServerSideStateCacheImpl.class.getName());
     
     private static final String SERIALIZED_VIEW_SESSION_ATTR= 
-        StateCacheImpl.class.getName() + ".SERIALIZED_VIEW";
+        ServerSideStateCacheImpl.class.getName() + ".SERIALIZED_VIEW";
     
     private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR = 
-        StateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
+        ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
 
+    private static final String RESTORED_VIEW_KEY_REQUEST_ATTR = 
+        ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
+    
     /**
      * Only applicable if state saving method is "server" (= default).
      * Defines the amount (default = 20) of the latest views are stored in session.
@@ -66,6 +69,18 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     @JSFWebConfigParam(defaultValue="20",since="1.1")
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
 
+    /**
+     * Only applicable if state saving method is "server" (= default).
+     * Indicates the amount of views (default is not active) that should be stored in session between sequential
+     * POST or POST-REDIRECT-GET if org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION is true. 
+     * <p>For example, if this param has value = 2 and in your custom webapp there is a form that is clicked 3 times, only 2 views
+     * will be stored and the third one (the one stored the first time) will be removed from session, even if the view can
+     * store more sessions org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION. This feature becomes useful for multi-window applications.
+     * where without this feature a window can swallow all view slots so the other ones will throw ViewExpiredException.</p>
+     */
+    @JSFWebConfigParam(since="2.0.6")
+    private static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
+    
     /**
      * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
      */
@@ -138,10 +153,24 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF = "off";
 
+    /**
+     * Only applicable if state saving method is "server" (= default).
+     * Allow use flash scope to keep track of the views used in session and the previous ones,
+     * so server side state saving can delete old views even if POST-REDIRECT-GET pattern is used. 
+     * The default value is false.
+     */
+    @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false")
+    private static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
+
     private static final int UNCOMPRESSED_FLAG = 0;
     private static final int COMPRESSED_FLAG = 1;
 
     private static final int JSF_SEQUENCE_INDEX = 0;
+    
+    private Boolean _useFlashScopePurgeViewsInSession = null;
+    
+    private Integer _numberOfSequentialViewsInSession = null;
+    private boolean _numberOfSequentialViewsInSessionSet = false;
 
     //------------------------------------- METHODS COPIED FROM JspStateManagerImpl--------------------------------
 
@@ -169,7 +198,35 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             viewCollection = new SerializedViewCollection();
             sessionMap.put(SERIALIZED_VIEW_SESSION_ATTR, viewCollection);
         }
-        viewCollection.add(context, serializeView(context, serializedView));
+
+        Map<Object,Object> attributeMap = context.getAttributes();
+        
+        SerializedViewKey key = null;
+        if (getNumberOfSequentialViewsInSession(context.getExternalContext()) != null &&
+            getNumberOfSequentialViewsInSession(context.getExternalContext()) > 0)
+        {
+            key = (SerializedViewKey) attributeMap.get(RESTORED_VIEW_KEY_REQUEST_ATTR);
+            
+            if (key == null )
+            {
+                if (isUseFlashScopePurgeViewsInSession(context.getExternalContext()) && 
+                    Boolean.TRUE.equals(context.getExternalContext().getRequestMap().get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
+                {
+                    key = (SerializedViewKey) context.getExternalContext().getFlash().get(RESTORED_VIEW_KEY_REQUEST_ATTR);
+                }
+            }
+        }
+        
+        viewCollection.add(context, serializeView(context, serializedView), getNextViewSequence(context), key);
+
+        /*
+        if (isUseFlashScopePurgeViewsInSession(context.getExternalContext()) && 
+            context.getExternalContext().getFlash().isRedirect())
+        {
+            context.getExternalContext().getFlash().put(RESTORED_VIEW_KEY_REQUEST_ATTR, new SerializedViewKey(context));
+            context.getExternalContext().getFlash().keep(RESTORED_VIEW_KEY_REQUEST_ATTR);
+        }*/
+        
         // replace the value to notify the container about the change
         sessionMap.put(SERIALIZED_VIEW_SESSION_ATTR, viewCollection);
     }
@@ -177,11 +234,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     protected Object getSerializedViewFromServletSession(FacesContext context, String viewId, Integer sequence)
     {
         ExternalContext externalContext = context.getExternalContext();
-        Map<String, Object> requestMap = externalContext.getRequestMap();
+        Map<Object, Object> attributeMap = context.getAttributes();
         Object serializedView = null;
-        if (requestMap.containsKey(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR))
+        if (attributeMap.containsKey(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR))
         {
-            serializedView = requestMap.get(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR);
+            serializedView = attributeMap.get(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR);
         }
         else
         {
@@ -213,13 +270,26 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     }
                 }
             }
-            requestMap.put(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
+            attributeMap.put(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
+            
+            if (getNumberOfSequentialViewsInSession(externalContext) != null && getNumberOfSequentialViewsInSession(externalContext) > 0)
+            {
+                SerializedViewKey key = new SerializedViewKey(viewId, sequence);
+                attributeMap.put(RESTORED_VIEW_KEY_REQUEST_ATTR, key);
+                
+                if (isUseFlashScopePurgeViewsInSession(externalContext))
+                {
+                    externalContext.getFlash().put(RESTORED_VIEW_KEY_REQUEST_ATTR, key);
+                    externalContext.getFlash().keep(RESTORED_VIEW_KEY_REQUEST_ATTR);
+                }
+            }
+
             nextViewSequence(context);
         }
         return serializedView;
     }
 
-    protected int getNextViewSequence(FacesContext context)
+    public int getNextViewSequence(FacesContext context)
     {
         ExternalContext externalContext = context.getExternalContext();
 
@@ -232,7 +302,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         return sequence.intValue();
     }
 
-    protected void nextViewSequence(FacesContext facescontext)
+    public void nextViewSequence(FacesContext facescontext)
     {
         ExternalContext externalContext = facescontext.getExternalContext();
         Object sessionObj = externalContext.getSession(true);
@@ -280,11 +350,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     os.write(UNCOMPRESSED_FLAG);
                 }
 
-                Object[] stateArray = (Object[]) serializedView;
+                //Object[] stateArray = (Object[]) serializedView;
 
                 ObjectOutputStream out = new ObjectOutputStream(os);
-                out.writeObject(stateArray[0]);
-                out.writeObject(stateArray[1]);
+                
+                out.writeObject(serializedView);
+                //out.writeObject(stateArray[0]);
+                //out.writeObject(stateArray[1]);
                 out.close();
                 baos.close();
 
@@ -366,17 +438,19 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     Object object = null;
                     if (System.getSecurityManager() != null) 
                     {
-                        object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object []>() 
+                        object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() 
                         {
-                            public Object[] run() throws PrivilegedActionException, IOException, ClassNotFoundException
+                            public Object run() throws PrivilegedActionException, IOException, ClassNotFoundException
                             {
-                                return new Object[] {in.readObject(), in.readObject()};                                    
+                                //return new Object[] {in.readObject(), in.readObject()};
+                                return in.readObject();
                             }
                         });
                     }
                     else
                     {
-                        object = new Object[] {in.readObject(), in.readObject()};
+                        //object = new Object[] {in.readObject(), in.readObject()};
+                        object = in.readObject();
                     }
                     return object;
                 }
@@ -422,30 +496,105 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             return null;
         }
     }
+    
+    /*
+    public static Integer getViewSequence(FacesContext facescontext)
+    {
+        Map map = facescontext.getExternalContext().getRequestMap();
+        Integer sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
+        if (sequence == null)
+        {
+            sequence = new Integer(1);
+            map.put(RendererUtils.SEQUENCE_PARAM, sequence);
+
+            synchronized (facescontext.getExternalContext().getSession(true))
+            {
+                facescontext.getExternalContext().getSessionMap().put(RendererUtils.SEQUENCE_PARAM, sequence);
+            }
+        }
+        return sequence;
+    }*/    
 
     protected static class SerializedViewCollection implements Serializable
     {
         private static final long serialVersionUID = -3734849062185115847L;
 
-        private final List<Object> _keys = new ArrayList<Object>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
-        private final Map<Object, Object> _serializedViews = new HashMap<Object, Object>();
+        private final List<SerializedViewKey> _keys = new ArrayList<SerializedViewKey>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
+        private final Map<SerializedViewKey, Object> _serializedViews = new HashMap<SerializedViewKey, Object>();
+        
+        private final Map<SerializedViewKey, SerializedViewKey> _precedence = 
+            new HashMap<SerializedViewKey, SerializedViewKey>();
 
         // old views will be hold as soft references which will be removed by
         // the garbage collector if free memory is low
         private transient Map<Object, Object> _oldSerializedViews = null;
 
-        public synchronized void add(FacesContext context, Object state)
+        public synchronized void add(FacesContext context, Object state, Integer nextSequence, SerializedViewKey previousRestoredKey)
         {
-            Object key = new SerializedViewKey(context);
+            SerializedViewKey key = new SerializedViewKey(context.getViewRoot().getViewId(), nextSequence);
             _serializedViews.put(key, state);
+
+            Integer maxCount = getNumberOfSequentialViewsInSession(context);
+            if (maxCount != null)
+            {
+                if (previousRestoredKey != null)
+                {
+                    _precedence.put((SerializedViewKey) key, previousRestoredKey);
+                }
+            }
 
             while (_keys.remove(key));
             _keys.add(key);
+
+            if (previousRestoredKey != null && maxCount != null && maxCount > 0)
+            {
+                int count = 0;
+                SerializedViewKey previousKey = (SerializedViewKey) key;
+                do
+                {
+                  previousKey = _precedence.get(previousKey);
+                  count++;
+                } while (previousKey != null && count < maxCount);
+                
+                if (previousKey != null)
+                {
+                    SerializedViewKey keyToRemove = (SerializedViewKey) previousKey;
+                    // In theory it should be only one key but just to be sure
+                    // do it in a loop, but in this case if cache old views is on,
+                    // put on that map.
+                    do
+                    {
+                        while (_keys.remove(keyToRemove));
+
+                        Object oldView = _serializedViews.remove(keyToRemove);
+                        if (oldView != null && 
+                                !CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.equals(getCacheOldViewsInSessionMode(context))) 
+                        {
+                            getOldSerializedViewsMap().put(keyToRemove, oldView);
+                        }
+                    
+                        keyToRemove = _precedence.remove(keyToRemove);
+                    }  while(keyToRemove != null);
+                }
+            }
 
             int views = getNumberOfViewsInSession(context);
             while (_keys.size() > views)
             {
                 key = _keys.remove(0);
+                
+                if (maxCount != null && maxCount > 0)
+                {
+                    SerializedViewKey keyToRemove = (SerializedViewKey) key;
+                    // Note in this case the key to delete is the oldest one, 
+                    // so it could be at least one precedence, but to be safe
+                    // do it with a loop.
+                    do
+                    {
+                        keyToRemove = _precedence.remove(keyToRemove);
+                    } while (keyToRemove != null);
+                }
+                
                 Object oldView = _serializedViews.remove(key);
                 if (oldView != null && 
                     !CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.equals(getCacheOldViewsInSessionMode(context))) 
@@ -455,6 +604,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             }
         }
 
+        protected Integer getNumberOfSequentialViewsInSession(FacesContext context)
+        {
+            return WebConfigParamUtils.getIntegerInitParameter(context.getExternalContext(), 
+                    NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM);
+        }
+        
         /**
          * Reads the amount (default = 20) of views to be stored in session.
          * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
@@ -587,11 +742,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             _viewId = viewId;
         }
 
+        /*
         public SerializedViewKey(FacesContext context)
         {
-            _sequenceId = RendererUtils.getViewSequence(context);
+            _sequenceId = getNextViewSequence(context);
             _viewId = context.getViewRoot().getViewId();
-        }
+        }*/
 
         @Override
         public int hashCode()
@@ -656,12 +812,40 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         return (serverStateId == null) ? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
     }
 
-    protected Object encodeSerializedState(FacesContext facesContext, Object serializedView)
+    public Object encodeSerializedState(FacesContext facesContext, Object serializedView)
     {
         Object[] identifier = new Object[2];
         identifier[JSF_SEQUENCE_INDEX] = Integer.toString(getNextViewSequence(facesContext), Character.MAX_RADIX);
         return identifier;
     }
     
+    @Override
+    public boolean isWriteStateAfterRenderViewRequired(FacesContext facesContext)
+    {
+        return false;
+    }
+
+    //------------------------------------- Custom methods -----------------------------------------------------
     
+    private boolean isUseFlashScopePurgeViewsInSession(ExternalContext externalContext)
+    {
+        if (_useFlashScopePurgeViewsInSession == null)
+        {
+            _useFlashScopePurgeViewsInSession = WebConfigParamUtils.getBooleanInitParameter(
+                    externalContext, USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION, false);
+        }
+        return _useFlashScopePurgeViewsInSession;
+    }
+    
+    private Integer getNumberOfSequentialViewsInSession(ExternalContext externalContext)
+    {
+        if (!_numberOfSequentialViewsInSessionSet)
+        {
+            _numberOfSequentialViewsInSession = WebConfigParamUtils.getIntegerInitParameter(
+                    externalContext, 
+                    NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM);
+            _numberOfSequentialViewsInSessionSet = true;
+        }
+        return _numberOfSequentialViewsInSession;
+    }
 }

@@ -38,6 +38,8 @@ import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 
+import org.apache.myfaces.renderkit.StateCacheUtils;
+
 public class StateManagerImpl extends StateManager
 {
     private static final Logger log = Logger.getLogger(StateManagerImpl.class.getName());
@@ -140,7 +142,9 @@ public class StateManagerImpl extends StateManager
     @Override
     public Object saveView(FacesContext facesContext)
     {
+        Object serializedView = null;
         UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        ResponseStateManager responseStateManager = facesContext.getRenderKit().getResponseStateManager();
         
         String viewId = uiViewRoot.getViewId();
         ViewDeclarationLanguage vdl = facesContext.getApplication().
@@ -153,7 +157,16 @@ public class StateManagerImpl extends StateManager
             {
                 if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy: "+sms.getClass().getName());
                 
-                return sms.saveView(facesContext);
+                serializedView = sms.saveView(facesContext);
+                
+                // If MyfacesResponseStateManager is used, give the option to do
+                // additional operations for save the state if is necessary.
+                if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
+                {
+                    StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
+                }
+                
+                return serializedView; 
             }
         }
 
@@ -175,7 +188,7 @@ public class StateManagerImpl extends StateManager
         ExternalContext externalContext = facesContext.getExternalContext();
 
         // SerializedView already created before within this request?
-        Object serializedView = externalContext.getRequestMap()
+        serializedView = externalContext.getRequestMap()
                                                             .get(SERIALIZED_VIEW_REQUEST_ATTR);
         if (serializedView == null)
         {
@@ -189,6 +202,13 @@ public class StateManagerImpl extends StateManager
                                                 serializedView);
 
             if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - new serialized view created");
+        }
+        
+        // If MyfacesResponseStateManager is used, give the option to do
+        // additional operations for save the state if is necessary.
+        if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
+        {
+            StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
         }
 
         if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveView");
@@ -283,32 +303,6 @@ public class StateManagerImpl extends StateManager
         if (log.isLoggable(Level.FINEST)) log.finest("Exiting writeState");
 
     }
-
-    /*
-     * NOTE: This is not required anymore, because all logic related to state storing or caching on session has
-     * been moved to ResponseStateManager
-    @Override
-    public String getViewState(FacesContext facesContext)
-    {
-        UIViewRoot uiViewRoot = facesContext.getViewRoot();
-        String viewId = uiViewRoot.getViewId();
-        ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
-        if (vdl != null)
-        {
-            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
-            
-            if (sms != null)
-            {
-                if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy from getViewState: "+sms.getClass().getName());
-                
-                return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext, saveView(facesContext));
-            }
-        }
-        Object[] savedState = (Object[]) saveView(facesContext);
-        
-        return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext, savedState);
-
-    }*/
 
     //helpers
 

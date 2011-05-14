@@ -46,8 +46,6 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 
-import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.application.StateCacheImpl;
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.ClassUtils;

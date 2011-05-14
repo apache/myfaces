@@ -21,7 +21,8 @@ package org.apache.myfaces.application;
 import javax.faces.context.FacesContext;
 
 /**
- *  
+ * This class provides and interface to separate the state caching operations (saving/restoring)
+ * from the renderkit specific stuff that HtmlResponseStateManager should do.
  * 
  * @author Leonardo Uribe
  *
@@ -38,6 +39,8 @@ public abstract class StateCache<K, V>
     public abstract K saveSerializedView(FacesContext facesContext, V serializedView);
     
     /**
+     * Get the state from the cache is server side state saving is used,
+     * or decode it from the passed viewState param if client side is used.
      * 
      * @param facesContext
      * @param viewId The viewId of the view to be restored
@@ -48,6 +51,8 @@ public abstract class StateCache<K, V>
     public abstract V restoreSerializedView(FacesContext facesContext, String viewId, K viewState);
 
     /**
+     * Calculate the token to be used if server side state saving, or encode the view and return the
+     * viewState that can be used by the underlying ResponseStateManager to write the state.
      * 
      * @param facesContext
      * @param state The state that will be used to derive the token returned.
@@ -55,5 +60,16 @@ public abstract class StateCache<K, V>
      *         ResponseStateManager.writeState or ResponseStateManager.getViewState to be 
      *         output to the client.
      */
-    //public abstract K encodeSerializedState(FacesContext facesContext, Object serializedView);
+    public abstract K encodeSerializedState(FacesContext facesContext, Object serializedView);
+    
+    /**
+     * Indicates if the call to ResponseStateManager.writeState should be done after the view is fully rendered.
+     * Usually this is required for client side state saving, but it is not for server side state saving, because
+     * ResponseStateManager.writeState could render a just a marker and then StateManager.saveState could be called,
+     * preventing use an additional buffer. 
+     * 
+     * @param facesContext
+     * @return
+     */
+    public abstract boolean isWriteStateAfterRenderViewRequired(FacesContext facesContext);
 }
