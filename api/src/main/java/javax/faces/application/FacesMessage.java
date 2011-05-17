@@ -18,6 +18,9 @@
  */
 package javax.faces.application;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -101,7 +104,7 @@ public class FacesMessage implements Serializable
         VALUES = Collections.unmodifiableList(severityList);
     }
 
-    private FacesMessage.Severity _severity;
+    private transient FacesMessage.Severity _severity;  // transient, b/c FacesMessage.Severity is not Serializable
     private String _summary;
     private String _detail;
     private boolean _rendered;
@@ -226,6 +229,31 @@ public class FacesMessage implements Serializable
         _detail = detail;
     }
 
+    public boolean isRendered()
+    {
+        return _rendered;
+    }
+
+    public void rendered()
+    {
+        this._rendered = true;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();  // write summary, detail, rendered
+        out.writeInt(_severity._ordinal);  // FacesMessage.Severity is not Serializable, write ordinal only
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();  // read summary, detail, rendered
+
+        // FacesMessage.Severity is not Serializable, read ordinal and get related FacesMessage.Severity
+        int severityOrdinal = in.readInt();
+        _severity = (Severity) VALUES.get(severityOrdinal - 1);
+    }
+
     public static class Severity implements Comparable
     {
         private String _name;
@@ -252,16 +280,6 @@ public class FacesMessage implements Serializable
         {
             return getOrdinal() - ((Severity)o).getOrdinal();
         }
-    }
-
-    public boolean isRendered()
-    {
-        return _rendered;
-    }
-
-    public void rendered()
-    {
-        this._rendered = true;
     }
 
 }

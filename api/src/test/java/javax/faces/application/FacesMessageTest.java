@@ -22,6 +22,10 @@ package javax.faces.application;
 import junit.framework.TestCase;
 
 import javax.faces.application.FacesMessage.Severity;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
 public class FacesMessageTest extends TestCase
@@ -206,6 +210,35 @@ public class FacesMessageTest extends TestCase
         {
             assertEquals(e.getKey(), e.getValue().toString());
         }
+    }
+
+    public void testSerialization() throws Exception
+    {
+        final String summary = "summary";
+        final String detail = "detail";
+        FacesMessage msg = new FacesMessage(summary, detail);
+
+        // check if properties are set correctly
+        assertEquals(msg.getSeverity(), FacesMessage.SEVERITY_INFO);
+        assertEquals(msg.getSummary(), summary);
+        assertEquals(msg.getDetail(), detail);
+        assertEquals(msg.isRendered(), false);
+
+        // serialize instance
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(msg);
+        out.close();
+
+        // deserialize instance
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        FacesMessage deserialized = (FacesMessage) in.readObject();
+
+        // FacesMessage properties must equal!
+        assertSame(msg.getSeverity(), deserialized.getSeverity());
+        assertEquals(msg.getSummary(), deserialized.getSummary());
+        assertEquals(msg.getDetail(), deserialized.getDetail());
+        assertEquals(msg.isRendered(), deserialized.isRendered());
     }
 
 }
