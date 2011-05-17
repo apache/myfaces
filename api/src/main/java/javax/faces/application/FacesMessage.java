@@ -47,8 +47,11 @@ public class FacesMessage
         map.put(SEVERITY_WARN.toString(), SEVERITY_WARN);
         map.put(SEVERITY_ERROR.toString(), SEVERITY_ERROR);
         map.put(SEVERITY_FATAL.toString(), SEVERITY_FATAL);
-        VALUES = Collections.unmodifiableList(new ArrayList<FacesMessage.Severity>(map.values()));
         VALUES_MAP = Collections.unmodifiableMap(map);
+
+        List<FacesMessage.Severity> severityList = new ArrayList<FacesMessage.Severity>(map.values());
+        Collections.sort(severityList); // the JSF spec requires it to be sorted
+        VALUES = Collections.unmodifiableList(severityList);
     }
 
     private FacesMessage.Severity _severity;
