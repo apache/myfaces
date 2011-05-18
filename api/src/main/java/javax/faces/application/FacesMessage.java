@@ -18,6 +18,9 @@
  */
 package javax.faces.application;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -62,7 +65,7 @@ public class FacesMessage
         VALUES = Collections.unmodifiableList(severityList);
     }
 
-    private FacesMessage.Severity _severity;
+    private transient FacesMessage.Severity _severity;  // transient, b/c FacesMessage.Severity is not Serializable
     private String _summary;
     private String _detail;
 
@@ -129,6 +132,21 @@ public class FacesMessage
     public void setDetail(String detail)
     {
         _detail = detail;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();  // write summary, detail
+        out.writeInt(_severity._ordinal);  // FacesMessage.Severity is not Serializable, write ordinal only
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();  // read summary, detail
+
+        // FacesMessage.Severity is not Serializable, read ordinal and get related FacesMessage.Severity
+        int severityOrdinal = in.readInt();
+        _severity = (Severity) VALUES.get(severityOrdinal - 1);
     }
 
 
