@@ -21,6 +21,10 @@ package javax.faces.application;
 
 import junit.framework.TestCase;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 public class FacesMessageTest extends TestCase {
 
     public static void main(String[] args) {
@@ -168,4 +172,28 @@ public class FacesMessageTest extends TestCase {
         assertEquals(0, FacesMessage.SEVERITY_ERROR.compareTo(FacesMessage.SEVERITY_ERROR));
         assertEquals(0, FacesMessage.SEVERITY_FATAL.compareTo(FacesMessage.SEVERITY_FATAL));
     }
+
+    public void testSeverityValues()
+    {
+        // JSF spec requires this list to be sorted by ordinal
+        for (int i = 0, sz = FacesMessage.VALUES.size(); i < sz; i++)
+        {
+            FacesMessage.Severity severity = (FacesMessage.Severity) FacesMessage.VALUES.get(i);
+            assertEquals(i + 1, severity.getOrdinal());
+        }
+    }
+
+    public void testSeverityValuesMap()
+    {
+        Map severityMap = FacesMessage.VALUES_MAP;
+        Set entrySet = severityMap.entrySet();
+
+        for (Iterator it = entrySet.iterator(); it.hasNext(); )
+        {
+            Map.Entry e = (Map.Entry) it.next();
+
+            assertEquals(e.getKey(), e.getValue().toString());
+        }
+    }
+
 }
