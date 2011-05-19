@@ -897,7 +897,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public String getRendererType()
     {
-        return (String) getStateHelper().eval(PropertyKeys.rendererType);
+        // rendererType is literal-only, no ValueExpression - MYFACES-3136:
+        return (String) getStateHelper().get(PropertyKeys.rendererType);
     }
 
     /**
