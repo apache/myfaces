@@ -617,8 +617,10 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                 this.encodeChildren(context);
             } // let children render itself
             else {
-                if (this.getChildCount() > 0) {
-                    for (UIComponent comp : this.getChildren()) {
+                int childCount = this.getChildCount();
+                if (childCount > 0) {
+                    for (int i =0; i < childCount; i++) {
+                        UIComponent comp = this.getChildren().get(i);
                         comp.encodeAll(context);
                     }
                 }
@@ -788,8 +790,10 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                         }
                     }
                 }
-                if (getChildCount() > 0) {
-                    for (UIComponent child : getChildren()) {
+                int childCount = getChildCount();
+                if (childCount > 0) {
+                    for (int i =0; i < childCount; i++) {
+                        UIComponent child = getChildren().get(i);
                         if (child.visitTree(context, callback)) {
                             return true;
                         }

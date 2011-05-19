@@ -1047,19 +1047,29 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 break;
             }
-
-            for (UIComponent child : getChildren())
+            
+            int childCount = getChildCount();
+            if (childCount > 0)
             {
-                if (child instanceof UIColumn)
+                for (int i = 0; i < childCount; i++)
                 {
-                    if (!child.isRendered())
+                    UIComponent child = getChildren().get(i);
+                    if (child instanceof UIColumn)
                     {
-                        // Column is not visible
-                        continue;
-                    }
-                    for (UIComponent columnChild : child.getChildren())
-                    {
-                        process(context, columnChild, processAction);
+                        if (!child.isRendered())
+                        {
+                            // Column is not visible
+                            continue;
+                        }
+                        int columnChildCount = child.getChildCount();
+                        if (columnChildCount > 0)
+                        {
+                            for (int j = 0; j < columnChildCount; j++)
+                            {
+                                UIComponent columnChild = child.getChildren().get(j);
+                                process(context, columnChild, processAction);
+                            }
+                        }
                     }
                 }
             }

@@ -340,8 +340,10 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
         _initialStateMarked = true;
         if (_delegate != null)
         {
-            for (T value : _delegate)
+            int size = _delegate.size();
+            for (int i = 0; i < size; i++)
             {
+                T value = _delegate.get(i);
                 if (value instanceof PartialStateHolder)
                 {
                     ((PartialStateHolder)value).markInitialState();
