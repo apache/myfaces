@@ -98,6 +98,16 @@ public abstract class StateManager
      */
     public StateManager.SerializedView saveSerializedView(FacesContext context)
     {
+        Object savedView = saveView(context);
+        if (savedView != null && savedView instanceof Object[])
+        {
+            Object[] structureAndState = (Object[]) savedView;
+            if (structureAndState.length == 2)
+            {
+                return new StateManager.SerializedView(structureAndState[0], structureAndState[1]);
+            }
+        }
+        
         return null;
     }
 
@@ -171,7 +181,10 @@ public abstract class StateManager
     public void writeState(FacesContext context, StateManager.SerializedView state)
         throws IOException
     {
-        // default impl does nothing as per JSF 1.2 javadoc
+        if (state != null)
+        {
+            writeState(context, new Object[]{state.getStructure(), state.getState()});
+        }
     }
 
     /**
