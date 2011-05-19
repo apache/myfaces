@@ -198,7 +198,7 @@ public abstract class UIComponentBase extends UIComponent
     private static void _publishPostAddToViewEvent(FacesContext context, UIComponent component)
     {
         component.setInView(true);
-        context.getApplication().publishEvent(context, PostAddToViewEvent.class, UIComponent.class, component);
+        context.getApplication().publishEvent(context, PostAddToViewEvent.class, component.getClass(), component);
         
         if (component.getChildCount() > 0)
         {
@@ -244,7 +244,7 @@ public abstract class UIComponentBase extends UIComponent
     private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
     {
         component.setInView(false);
-        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, UIComponent.class, component);
+        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, component.getClass(), component);
         
         if (component.getChildCount() > 0)
         {

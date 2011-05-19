@@ -18,19 +18,17 @@
  */
 package javax.faces.component;
 
-import java.util.Collection;
-import java.util.Iterator;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostValidateEvent;
 import javax.faces.event.PreValidateEvent;
-
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -141,7 +139,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     return;
 
                 //Pre validation event dispatch for component
-                context.getApplication().publishEvent(context,  PreValidateEvent.class, UIComponent.class, this);
+                context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
                 
                 for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
                 {
@@ -150,7 +148,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
             }
             finally
             {
-                context.getApplication().publishEvent(context,  PostValidateEvent.class, UIComponent.class, this);
+                context.getApplication().publishEvent(context,  PostValidateEvent.class, getClass(), this);
                 popComponentFromEL(context);
             }
         }

@@ -534,7 +534,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
     {
-        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, UIComponent.class, component);
+        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, component.getClass(), component);
         
         if (component.getChildCount() > 0)
         {
@@ -554,7 +554,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     public static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
     {
-        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, UIComponent.class, component);
+        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, component.getClass(), component);
         
         if (component.getChildCount() > 0)
         {

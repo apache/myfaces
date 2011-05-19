@@ -108,7 +108,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         orderAndFeedArtifacts(dispenser, appConfigResources, webAppFacesConfig);
 
         LogMetaInfUtils.logMetaInf();
-      
+
         return dispenser;
     }
 

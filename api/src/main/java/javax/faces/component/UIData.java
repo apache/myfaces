@@ -338,9 +338,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
     
             // Now Look throught facets on this UIComponent
-            for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
+            if (this.getFacetCount() > 0)
             {
-                returnValue = it.next().invokeOnComponent(context, clientId, callback);
+                for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
+                {
+                    returnValue = it.next().invokeOnComponent(context, clientId, callback);
+                }
             }
     
             if (returnValue)
@@ -1521,9 +1524,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     private void processFacets(FacesContext context, int processAction)
     {
-        for (UIComponent facet : getFacets().values())
+        if (this.getFacetCount() > 0)
         {
-            process(context, facet, processAction);
+            for (UIComponent facet : getFacets().values())
+            {
+                process(context, facet, processAction);
+            }
         }
     }
 
@@ -1548,9 +1554,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     continue;
                 }
                 
-                for (UIComponent facet : child.getFacets().values())
+                if (child.getFacetCount() > 0)
                 {
-                    process(context, facet, processAction);
+                    for (UIComponent facet : child.getFacets().values())
+                    {
+                        process(context, facet, processAction);
+                    }
                 }
             }
         }
