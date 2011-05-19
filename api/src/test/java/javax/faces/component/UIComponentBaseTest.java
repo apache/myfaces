@@ -405,7 +405,7 @@ public class UIComponentBaseTest
                     {
                         return getMocksControl().createMock(UIComponentBase.class, new Method[0]);
                     }
-                }, new AbstractUIComponentPropertyTest<String>("rendererType", null, new String[] { "xyz", "abc" })
+                }, new AbstractUIComponentPropertyTest<String>("rendererType", null, new String[] { null, null })
                 {
                     @Override
                     protected UIComponent createComponent()
