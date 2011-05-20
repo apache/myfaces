@@ -1544,8 +1544,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     private void processColumnFacets(FacesContext context, int processAction)
     {
-        for (UIComponent child : getChildren())
+        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
         {
+            UIComponent child = getChildren().get(i);
             if (child instanceof UIColumn)
             {
                 if (!child.isRendered())
@@ -1597,28 +1598,20 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 break;
             }
             
-            int childCount = getChildCount();
-            if (childCount > 0)
+            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
             {
-                for (int i = 0; i < childCount; i++)
+                UIComponent child = getChildren().get(i);
+                if (child instanceof UIColumn)
                 {
-                    UIComponent child = getChildren().get(i);
-                    if (child instanceof UIColumn)
+                    if (!child.isRendered())
                     {
-                        if (!child.isRendered())
-                        {
-                            // Column is not visible
-                            continue;
-                        }
-                        int columnChildCount = child.getChildCount();
-                        if (columnChildCount > 0)
-                        {
-                            for (int j = 0; j < columnChildCount; j++)
-                            {
-                                UIComponent columnChild = child.getChildren().get(j);
-                                process(context, columnChild, processAction);
-                            }
-                        }
+                        // Column is not visible
+                        continue;
+                    }
+                    for (int j = 0, columnChildCount = child.getChildCount(); j < columnChildCount; j++)
+                    {
+                        UIComponent columnChild = child.getChildren().get(j);
+                        process(context, columnChild, processAction);
                     }
                 }
             }
@@ -1877,11 +1870,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     if (skipIterationHint != null && skipIterationHint.booleanValue())
                     {
                         // If SKIP_ITERATION is enabled, do not take into account rows.
-                        if (getChildCount() > 0) {
-                            for (UIComponent child : getChildren()) {
-                                if (child.visitTree(context, callback)) {
-                                    return true;
-                                }
+                        for (int i = 0, childCount = getChildCount(); i < childCount; i++ ) {
+                            UIComponent child = getChildren().get(i);
+                            if (child.visitTree(context, callback)) {
+                                return true;
                             }
                         }
                     }
@@ -1890,8 +1882,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         // visit every column directly without visiting its children 
                         // (the children of every UIColumn will be visited later for 
                         // every row) and also visit the column's facets
-                        for (UIComponent child : getChildren())
+                        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                         {
+                            UIComponent child = getChildren().get(i);
                             if (child instanceof UIColumn)
                             {
                                 VisitResult columnResult = context.invokeVisitCallback(child, callback);
@@ -1924,13 +1917,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                 return false;
                             }
                             // visit the children of every child of the UIData that is an instance of UIColumn
-                            for (UIComponent child : getChildren())
+                            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                             {
+                                UIComponent child = getChildren().get(i);
                                 if (child instanceof UIColumn)
                                 {
-                                    for (UIComponent grandchild : child
-                                            .getChildren())
+                                    for (int j = 0, grandChildCount = child.getChildCount(); j < grandChildCount; j++)
                                     {
+                                        UIComponent grandchild = child.getChildren().get(j);
                                         if (grandchild.visitTree(context, callback))
                                         {
                                             return true;
