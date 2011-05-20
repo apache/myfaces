@@ -264,11 +264,10 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                                     }
                                 }
                             }
-                            if (getChildCount() > 0) {
-                                for (UIComponent child : getChildren()) {
-                                    if (child.visitTree(context, callback)) {
-                                        return true;
-                                    }
+                            for (int i = 0, childCount = getChildCount(); i < childCount; i++) {
+                                UIComponent child = getChildren().get(i);
+                                if (child.visitTree(context, callback)) {
+                                    return true;
                                 }
                             }
                         }
