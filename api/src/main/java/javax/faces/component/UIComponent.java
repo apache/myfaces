@@ -171,6 +171,9 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * to be implemented from here and internally it depends from this property.
      */
     private boolean _initialStateMarked = false;
+    
+    /** Value of the {@link UIComponent#HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME} parameter */ 
+    private Boolean _honorCurrentComponentAttributes;
 
     public UIComponent() {
     }
@@ -406,9 +409,10 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @since 2.0
      */
     public static UIComponent getCurrentComponent(FacesContext context) {
-        String param = context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
         
-        if (param != null && Boolean.valueOf(param).booleanValue())
+        Boolean honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+        
+        if (honorCurrentComponentAttributes == Boolean.TRUE)
         {
             return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPONENT);
         }
@@ -434,9 +438,10 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @since 2.0
      */
     public static UIComponent getCurrentCompositeComponent(FacesContext context) {
-        String param = context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
         
-        if (param != null && Boolean.valueOf(param).booleanValue())
+        Boolean honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+        
+        if (honorCurrentComponentAttributes == Boolean.TRUE)
         {
             return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
         }
@@ -929,9 +934,12 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     public final void popComponentFromEL(FacesContext context) {
         Map<Object, Object> contextAttributes = context.getAttributes();        
         
-        String param = context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
+        if (_honorCurrentComponentAttributes == null)
+        {
+            _honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+        }
         
-        if (param != null && Boolean.valueOf(param).booleanValue())
+        if (_honorCurrentComponentAttributes == Boolean.TRUE)
         {
             // Pop the current UIComponent from the FacesContext attributes map so that the previous 
             // UIComponent, if any, becomes the current component.
@@ -1012,10 +1020,14 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             component = this;
         }
 
-        Map<Object, Object> contextAttributes = context.getAttributes();        
-        String param = context.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
+        Map<Object, Object> contextAttributes = context.getAttributes();
         
-        if (param != null && Boolean.valueOf(param).booleanValue())
+        if (_honorCurrentComponentAttributes == null)
+        {
+            _honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+        }
+        
+        if (_honorCurrentComponentAttributes == Boolean.TRUE)
         {
             UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
             
@@ -1070,6 +1082,29 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
     private boolean _isCompositeComponent() {
         //moved to the static method
         return UIComponent.isCompositeComponent(this);
+    }
+    
+    /**
+     * Gets value of "javax.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES" parameter cached in facesContext.attributes 
+     * or resolves that param and caches its value in facesContext.attributes.    
+     * 
+     * @return canonical Boolean value for parameter "javax.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES"
+     */
+    private static Boolean _getHonorCurrentComponentAttributes(FacesContext facesContext) {
+        // performance note: we cache value in facesContext.attributes because
+        // 1) methods pushComponentToEL, popComponentFromEl, getCurrentComponent a getCurrentCompositeComponent
+        // can use that value
+        // 2) getExternalContext().getInitParameter has undetermined performance. In typical JSF app, there
+        // are one or two wrappers around external context; servletContext.getInitParameter has also unknown 
+        // implementation and performance
+        Map<Object, Object> attributes = facesContext.getAttributes();
+        Boolean paramValue = (Boolean) attributes.get(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
+        if (paramValue == null) {
+            String param = facesContext.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
+            paramValue = Boolean.valueOf((param != null && Boolean.valueOf(param).booleanValue()));
+            attributes.put(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME, paramValue);
+        }
+        return paramValue;
     }
     
     private static class BundleMap implements Map<String, String> {

@@ -61,6 +61,8 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     @Override
     protected void setFactories() throws Exception
     {
+        ((MockServletContext)servletContext).addInitParameter(
+                "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE", "true");
         super.setFactories();
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
                 ApplicationFactoryImpl.class.getName());
@@ -345,8 +347,6 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     @Test
     public void testDatetimeconverterDefaultTimezoneIsSystemTimezoneInitParameter()
     {
-        ((MockServletContext)servletContext).addInitParameter(
-                "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE", "true");
         application.addConverter(java.util.Date.class, "javax.faces.convert.DateTimeConverter");
         Converter converter = application.createConverter(java.util.Date.class);
         Assert.assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());

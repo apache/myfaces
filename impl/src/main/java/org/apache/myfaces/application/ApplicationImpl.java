@@ -196,6 +196,9 @@ public class ApplicationImpl extends Application
     private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
             = new ArrayList<Class<? extends Converter>>();
     
+    /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
+    private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
+    
     /**
      * Represents semantic null in _componentClassMap. 
      */
@@ -242,6 +245,12 @@ public class ApplicationImpl extends Application
 
         if (log.isLoggable(Level.FINEST))
             log.finest("New Application instance created");
+        
+        String configParam = getFaceContext().getExternalContext().getInitParameter(DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
+        if (configParam != null && configParam.toLowerCase().equals("true"))
+        {
+            _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
+        }
     }
 
     // ~ Methods
@@ -507,7 +516,7 @@ public class ApplicationImpl extends Application
         {
             return;
         }
-
+        
         // spec: If this argument is null the return from source.getClass() must be used as the sourceBaseType. 
         if (sourceBaseType == null)
         {
@@ -1511,14 +1520,9 @@ public class ApplicationImpl extends Application
                 .getConverterConfiguration(converterClass.getName());
         
         // if the converter is a DataTimeConverter, check the init param for the default timezone (since 2.0)
-        if (converter instanceof DateTimeConverter)
+        if (converter instanceof DateTimeConverter && _dateTimeConverterDefaultTimeZoneIsSystemTimeZone)
         {    
-            String configParam = getFaceContext().getExternalContext()
-                    .getInitParameter(DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
-            if (configParam != null && configParam.toLowerCase().equals("true"))
-            {
-                ((DateTimeConverter) converter).setTimeZone(TimeZone.getDefault());
-            }
+            ((DateTimeConverter) converter).setTimeZone(TimeZone.getDefault());
         }
 
         if (converterConfig != null && converterConfig.getProperties().size() > 0)
