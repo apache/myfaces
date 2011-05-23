@@ -225,7 +225,9 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         retVal.append("{");
 
         boolean first = true;
-        for (String option : options) {
+        
+        for (int i = 0, size = options.size(); i < size; i++) {
+            String option = options.get(i);
             if (option != null && !option.trim().equals(EMPTY)) {
                 if (!first) {
                     retVal.append(COMMA);

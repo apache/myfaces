@@ -784,8 +784,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             return;
         }
         
-        for (AttachedObjectHandler currentHandler : handlerList)
+        for (int i = 0, size = handlerList.size(); i < size; i++)
         {
+            AttachedObjectHandler currentHandler = handlerList.get(i);
             // In the spec javadoc this variable is referred as forAttributeValue, but
             // note it is also called curTargetName
             String forValue = currentHandler.getFor();
@@ -845,8 +846,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     if ( (eventName != null && eventName.equals(currentTarget.getName()) ) || 
                          (eventName == null && isDefaultEvent) )
                     {
-                        for (UIComponent component : currentTarget.getTargets(topLevelComponent))
+                        List<UIComponent> targets = currentTarget.getTargets(topLevelComponent);
+                        for (int j = 0, targetssize = targets.size(); j < targetssize; j++)
                         {
+                            UIComponent component = targets.get(j);
                             // If we found composite components when traverse the tree
                             // we have to call this one recursively, because each composite component
                             // should have its own AttachedObjectHandler list, filled earlier when
