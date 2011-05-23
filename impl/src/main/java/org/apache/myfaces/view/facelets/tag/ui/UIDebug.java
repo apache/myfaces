@@ -111,7 +111,16 @@ public final class UIDebug extends UIComponentBase
         sb.append("var faceletsOrigKeyup = document.onkeyup; document.onkeyup = function(e) { if (window.event) e = window.event; if (String.fromCharCode(e.keyCode) == '"
                 + this.getHotkey() + "' & e.shiftKey & e.ctrlKey) faceletsDebug('");
         sb.append(actionId);
-        sb.append('?');
+        
+        int index = actionId.indexOf ("?");
+        if (index != -1)
+        {
+            sb.append("&amp;");
+        }
+        else
+        {
+            sb.append('?');
+        }
         sb.append(KEY);
         sb.append('=');
         sb.append(writeDebugOutput(faces));
