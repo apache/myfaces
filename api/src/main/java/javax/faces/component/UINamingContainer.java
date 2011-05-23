@@ -172,11 +172,10 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
                                 }
                             }
                         }
-                        if (getChildCount() > 0) {
-                            for (UIComponent child : getChildren()) {
-                                if (child.visitTree(context, callback)) {
-                                    return true;
-                                }
+                        for (int i = 0, childCount = getChildCount(); i < childCount; i++) {
+                            UIComponent child = getChildren().get(i);
+                            if (child.visitTree(context, callback)) {
+                                return true;
                             }
                         }
                     }
