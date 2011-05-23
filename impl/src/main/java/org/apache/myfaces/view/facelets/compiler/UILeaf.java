@@ -39,6 +39,8 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
+import org.apache.commons.collections.iterators.EmptyIterator;
+
 class UILeaf extends UIComponentBase
 {
 
@@ -170,12 +172,14 @@ class UILeaf extends UIComponentBase
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Iterator<UIComponent> getFacetsAndChildren()
     {
-        List<UIComponent> childrenAndFacets = Collections.emptyList();
-        
-        return childrenAndFacets.iterator();
+        // Performance: Collections.emptyList() is Singleton,
+        // but .iterator() creates new instance of AbstractList$Itr every invocation, because
+        // emptyList() extends AbstractList.  Therefore we cannot use Collections.emptyList() here. 
+        return EmptyIterator.INSTANCE;
     }
 
     @Override
