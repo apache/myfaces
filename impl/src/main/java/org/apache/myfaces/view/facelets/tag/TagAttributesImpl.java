@@ -81,8 +81,9 @@ public final class TagAttributesImpl extends TagAttributes
         }
         
         _nsattrs = new ArrayList<TagAttribute[]>(size);
-        for (List<TagAttribute> l : temp)
+        for (int i = 0; i < size; i++)
         {
+            List<TagAttribute> l = temp.get(i);
             _nsattrs.add(l.toArray(new TagAttribute[l.size()]));
         }
     }
