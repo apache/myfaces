@@ -65,6 +65,9 @@
               <item name="API"          href="http://myfaces.apache.org/core20/myfaces-api/index.html"/>
               <item name="Impl"         href="http://myfaces.apache.org/core20/myfaces-impl/index.html"/>
             </item>
+            <item name="Core JSF-2.1"   href="http://myfaces.apache.org/core21/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
             <item name="Trinidad"       href="http://myfaces.apache.org/trinidad/index.html"/>
             <item name="Tobago"         href="http://myfaces.apache.org/tobago/index.html"/>
             <item name="Tomahawk"       href="http://myfaces.apache.org/tomahawk/index.html" collapse="true">
@@ -78,6 +81,7 @@
             <item name="ExtVal"         href="http://myfaces.apache.org/extensions/validator/index.html"/>
             <item name="Commons"        href="http://myfaces.apache.org/commons/index.html"/>
             <item name="Test"           href="http://myfaces.apache.org/test/index.html"/>
+            <item name="HTML5"           href="http://myfaces.apache.org/html5/index.html"/>
             <item name="Others"         href="http://myfaces.apache.org/otherProjects.html"/>
         </menu>
         
