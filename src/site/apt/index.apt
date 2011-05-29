@@ -20,9 +20,9 @@
  ~~ under the License.
  
 
-MyFaces Core 2.0 Project
+MyFaces Core 2.1 Project
 
-  This project provides an implementation of the JavaServer Faces 2.0 (JSF 2.0) specification.
+  This project provides an implementation of the JavaServer Faces 2.1 (JSF 2.1) specification.
 
     * The API submodule implements all of the classes that are defined in the specification. 
       If you are looking for API documentation about the classes that your JSF application
@@ -40,7 +40,7 @@ MyFaces Core 2.0 Project
 
 Requirements
 
-  JSF 2.0 requires java 1.5 or later, JSP 2.1, JSTL 1.2 and a Java Servlet 2.5 implementation.
+  JSF 2.1 requires java 1.5 or later, JSP 2.1, JSTL 1.2 and a Java Servlet 2.5 implementation.
 
 Specifications
 
