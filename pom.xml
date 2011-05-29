@@ -569,7 +569,7 @@
         <site>
             <id>apache.website</id>
             <name>Apache Website</name>
-            <url>scpexe://people.apache.org/www/myfaces.apache.org/core20/</url>
+            <url>scpexe://people.apache.org/www/myfaces.apache.org/core21/</url>
         </site>
     </distributionManagement>
 
