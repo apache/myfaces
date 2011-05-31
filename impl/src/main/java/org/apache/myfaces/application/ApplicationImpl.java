@@ -1853,8 +1853,9 @@ public class ApplicationImpl extends Application
  
         if (listenerForList != null) //listeners were found through inspection or from cache, handle them
         {
-            for (ListenerFor listenerFor : listenerForList)
+            for (int i = 0, size = listenerForList.size(); i < size; i++)
             {
+                ListenerFor listenerFor = listenerForList.get(i);
                 _handleListenerFor(context, inspected, component, listenerFor);
             }
         }
@@ -1973,8 +1974,9 @@ public class ApplicationImpl extends Application
  
         if (dependencyList != null) //resource dependencies were found through inspection or from cache, handle them
         {
-            for (ResourceDependency dependency : dependencyList)
+            for (int i = 0, size = dependencyList.size(); i < size; i++)
             {
+                ResourceDependency dependency = dependencyList.get(i);
                 if (!rvc.isResourceDependencyAlreadyProcessed(dependency))
                 {
                     _handleResourceDependency(context, component, dependency);
