@@ -287,6 +287,10 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         {
             state = getStateCache(facesContext).saveSerializedView(facesContext, baseState);
         }
+        else
+        {
+            state = baseState;
+        }
         
         Object[] savedState = new Object[2];
         
