@@ -713,7 +713,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     childState = object[0];
                     descendantState = object[1];
                 }
-                if (component instanceof EditableValueHolder)
+                if (childState != null && component instanceof EditableValueHolder)
                 {
                     ((EditableValueHolderState) childState).restoreState((EditableValueHolder) component);
                 }
