@@ -1166,9 +1166,18 @@ public abstract class UIComponentBase extends UIComponent
                 {
                     // Call the processDecodes() method of all facets and children of this UIComponent, in the order
                     // determined by a call to getFacetsAndChildren().
-                    for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                    int facetCount = getFacetCount();
+                    if (facetCount > 0)
                     {
-                        it.next().processDecodes(context);
+                        for (UIComponent facet : getFacets().values())
+                        {
+                            facet.processDecodes(context);
+                        }
+                    }
+                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                    {
+                        UIComponent child = getChildren().get(i);
+                        child.processDecodes(context);
                     }
     
                     try
@@ -1214,9 +1223,19 @@ public abstract class UIComponentBase extends UIComponent
                 {
                     // Call the processValidators() method of all facets and children of this UIComponent, in the order
                     // determined by a call to getFacetsAndChildren().
-                    for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                    int facetCount = getFacetCount();
+                    if (facetCount > 0)
                     {
-                        it.next().processValidators(context);
+                        for (UIComponent facet : getFacets().values())
+                        {
+                            facet.processValidators(context);
+                        }
+                    }
+
+                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                    {
+                        UIComponent child = getChildren().get(i);
+                        child.processValidators(context);
                     }
                 }
                 finally
@@ -1254,9 +1273,19 @@ public abstract class UIComponentBase extends UIComponent
                 {
                     // Call the processUpdates() method of all facets and children of this UIComponent, in the order
                     // determined by a call to getFacetsAndChildren().
-                    for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                    int facetCount = getFacetCount();
+                    if (facetCount > 0)
                     {
-                        it.next().processUpdates(context);
+                        for (UIComponent facet : getFacets().values())
+                        {
+                            facet.processUpdates(context);
+                        }
+                    }
+
+                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                    {
+                        UIComponent child = getChildren().get(i);
+                        child.processUpdates(context);
                     }
                 }
                 finally

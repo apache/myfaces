@@ -115,18 +115,36 @@ class _ComponentUtils
             return findBase;
         }
 
-        for (Iterator<UIComponent> it = findBase.getFacetsAndChildren(); it.hasNext();)
+        int facetCount = findBase.getFacetCount();
+        if (facetCount > 0)
         {
-            UIComponent childOrFacet = it.next();
-            if (!(childOrFacet instanceof NamingContainer))
+            for (UIComponent facet : findBase.getFacets().values())
             {
-                UIComponent find = findComponent(childOrFacet, id, separatorChar);
+                if (!(facet instanceof NamingContainer))
+                {
+                    UIComponent find = findComponent(facet, id, separatorChar);
+                    if (find != null)
+                        return find;
+                }
+                else if (idsAreEqual(id, facet, separatorChar))
+                {
+                    return facet;
+                }
+            }
+        }
+        
+        for (int i = 0, childCount = findBase.getChildCount(); i < childCount; i++)
+        {
+            UIComponent child = findBase.getChildren().get(i);
+            if (!(child instanceof NamingContainer))
+            {
+                UIComponent find = findComponent(child, id, separatorChar);
                 if (find != null)
                     return find;
             }
-            else if (idsAreEqual(id, childOrFacet, separatorChar))
+            else if (idsAreEqual(id, child, separatorChar))
             {
-                return childOrFacet;
+                return child;
             }
         }
 

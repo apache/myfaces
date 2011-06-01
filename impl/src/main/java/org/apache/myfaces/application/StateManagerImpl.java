@@ -234,11 +234,18 @@ public class StateManagerImpl extends StateManager
             ids = new HashSet<String>();
         }
         
-        Iterator<UIComponent> it = component.getFacetsAndChildren();
-        while (it.hasNext())
+        int facetCount = component.getFacetCount();
+        if (facetCount > 0)
         {
-            UIComponent kid = it.next();
-            checkForDuplicateIds(context, kid, ids);
+            for (UIComponent facet : component.getFacets().values())
+            {
+                checkForDuplicateIds (context, facet, ids);
+            }
+        }
+        for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+        {
+            UIComponent child = component.getChildren().get(i);
+            checkForDuplicateIds (context, child, ids);
         }
     }
 

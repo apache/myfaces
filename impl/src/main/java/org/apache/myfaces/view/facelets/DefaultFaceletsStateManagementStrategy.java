@@ -786,10 +786,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         
         existingIds.add (id);
         
-        children = component.getFacetsAndChildren();
-        
-        while (children.hasNext()) {
-            checkIds (context, children.next(), existingIds);
+        int facetCount = component.getFacetCount();
+        if (facetCount > 0)
+        {
+            for (UIComponent facet : component.getFacets().values())
+            {
+                checkIds (context, facet, existingIds);
+            }
+        }
+        for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+        {
+            UIComponent child = component.getChildren().get(i);
+            checkIds (context, child, existingIds);
         }
     }
     
