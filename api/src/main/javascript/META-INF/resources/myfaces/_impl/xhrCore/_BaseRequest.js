@@ -201,7 +201,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", my
         var errorText;
         try {
             var UNKNOWN = this._Lang.getMessage("UNKNOWN");
-            var errorText = this.Lang.getMessage("ERR_REQU_FAILED", null,
+            var errorText = this._Lang.getMessage("ERR_REQU_FAILED", null,
                     (this._xhr.status || UNKNOWN),
                     (this._xhr.statusText || UNKNOWN));
 
