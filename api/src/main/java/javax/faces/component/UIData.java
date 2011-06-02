@@ -768,8 +768,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             int eventRowIndex = ((FacesEventWrapper) event).getRowIndex();
             final int currentRowIndex = getRowIndex();
             UIComponent source = originalEvent.getComponent();
-            
+            UIComponent compositeParent = UIComponent.getCompositeComponentParent(source);
+
             setRowIndex(eventRowIndex);
+            if (compositeParent != null)
+            {
+                pushComponentToEL(getFacesContext(), compositeParent);
+            }
             pushComponentToEL(getFacesContext(), source);
             try
             {
@@ -778,6 +783,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             finally
             {
                 popComponentFromEL(getFacesContext());
+                if (compositeParent != null)
+                {
+                    popComponentFromEL(getFacesContext());
+                }
                 setRowIndex(currentRowIndex);
             }
         }
