@@ -1059,6 +1059,16 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         private Class<?> componentClass;
         private ComponentSystemEventListener listener;
         
+        private boolean _initialStateMarked;
+
+        private int listenerCapability;
+
+        private static final int LISTENER_SAVE_STATE_HOLDER = 1;
+        private static final int LISTENER_SAVE_PARTIAL_STATE_HOLDER = 2;
+        private static final int LISTENER_TYPE_COMPONENT = 4;
+        private static final int LISTENER_TYPE_RENDERER = 8;
+        private static final int LISTENER_TYPE_OTHER = 16;
+        
         public EventListenerWrapper()
         {
             //need a no-arg constructor for state saving purposes
@@ -1072,7 +1082,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
          *    it because we need to point to the real component, but we can assume the instance
          *    is the same because UIComponent.subscribeToEvent says so. Also take into account
          *    this case is the reason why we need a wrapper for UIComponent.subscribeToEvent
-         * 2. listener is an instance of ComponentSystemEventListener but not from UIComponent.
+         * 2. listener is an instance of Renderer. In this case we can assume the same renderer
+         *    used by the source component is the one used by the listener (ListenerFor). 
+         * 3. listener is an instance of ComponentSystemEventListener but not from UIComponent.
          *    In this case, the instance could implement StateHolder, PartialStateHolder or do
          *    implement anything, so we have to deal with that case as usual.
          * 
@@ -1085,6 +1097,36 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
             this.componentClass = component.getClass();
             this.listener = listener;
+
+            initListenerCapability();
+        }
+        
+        private void initListenerCapability()
+        {
+            this.listenerCapability = 0;
+            if (this.listener instanceof UIComponent)
+            {
+                this.listenerCapability = LISTENER_TYPE_COMPONENT;
+            }
+            else if (this.listener instanceof Renderer)
+            {
+                this.listenerCapability = LISTENER_TYPE_RENDERER;
+            }
+            else
+            {
+                if (this.listener instanceof PartialStateHolder)
+                {
+                    this.listenerCapability = LISTENER_TYPE_OTHER | LISTENER_SAVE_PARTIAL_STATE_HOLDER; 
+                }
+                else if (this.listener instanceof StateHolder)
+                {
+                    this.listenerCapability = LISTENER_TYPE_OTHER | LISTENER_SAVE_STATE_HOLDER;
+                }
+                else
+                {
+                    this.listenerCapability = LISTENER_TYPE_OTHER;
+                }
+            }
         }
 
         @Override
@@ -1132,32 +1174,40 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
 
         public void clearInitialState()
         {
-            if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
+            //if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
+            if ( (listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
             {
                 ((PartialStateHolder)listener).clearInitialState();
             }
+            _initialStateMarked = false;
         }
 
         public boolean initialStateMarked()
         {
-            if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
+            //if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
+            if ( (listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
             {
                 return ((PartialStateHolder)listener).initialStateMarked();
             }
-            return false;
+            //return false;
+            return _initialStateMarked;
         }
 
         public void markInitialState()
         {
-            if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
+            //if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
+            if ( (listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
             {
                 ((PartialStateHolder)listener).markInitialState();
             }
+            _initialStateMarked = true;
         }
 
         public boolean isTransient()
         {
-            if (listener instanceof StateHolder)
+            //if ( listener instanceof StateHolder)
+            if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0 || 
+                (listenerCapability & LISTENER_SAVE_STATE_HOLDER) != 0 )
             {
                 return ((StateHolder)listener).isTransient();
             }            
@@ -1178,9 +1228,26 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             }
             else
             {
+                //Full restore
+                listenerCapability = (Integer) values[2];
+                
+                if ( (listenerCapability & LISTENER_TYPE_COMPONENT) != 0 )
+                {
+                    listener = UIComponent.getCurrentComponent(context);
+                }
+                else if ( (listenerCapability & LISTENER_TYPE_RENDERER) != 0)
+                {
+                    listener = (ComponentSystemEventListener) UIComponent.getCurrentComponent(context).getRenderer(context);
+                }
+                else
+                {
+                    listener = (ComponentSystemEventListener) UIComponentBase.restoreAttachedState(context, values[1]);
+                }
+                /*
                 listener = values[1] == null ? 
                         UIComponent.getCurrentComponent(context) : 
                             (ComponentSystemEventListener) UIComponentBase.restoreAttachedState(context, values[1]);
+                            */
             }
         }
 
@@ -1188,6 +1255,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         {
             if (!initialStateMarked())
             {
+                /*
                 Object[] state = new Object[2];
                 state[0] = componentClass;
                 if (!(listener instanceof UIComponent))
@@ -1195,21 +1263,67 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                     state[1] = UIComponentBase.saveAttachedState(context, listener);
                 }
                 return state;
+                */
+                Object[] state = new Object[3];
+                state[0] = componentClass;
+                //If this is not a component or a renderer, save it calling UIComponent.saveAttachedState
+                if (!( (listenerCapability & LISTENER_TYPE_COMPONENT) != 0 ||
+                       (listenerCapability & LISTENER_TYPE_RENDERER) != 0    ) )
+                {
+                    state[1] = UIComponentBase.saveAttachedState(context, listener);
+                }
+                else
+                {
+                    state[1] = null;
+                }
+                state[2] = (Integer) listenerCapability;
+                return state;
             }
             else
             {
+                // If initialStateMarked() == true means two things:
+                // 1. PSS is being used
+                if ( (listenerCapability & LISTENER_TYPE_COMPONENT) != 0)
+                {
+                    return null;
+                }
+                else if ( (listenerCapability & LISTENER_TYPE_RENDERER) != 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if ( (listenerCapability & LISTENER_SAVE_STATE_HOLDER) != 0 ||
+                         (listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
+                    {
+                        Object listenerSaved = ((StateHolder) listener).saveState(context);
+                        if (listenerSaved == null)
+                        {
+                            return null;
+                        }
+                        return new Object[]{componentClass, new _AttachedDeltaWrapper(listener.getClass(), listenerSaved)};
+                    }
+                    else
+                    {
+                        //This is not necessary, because the instance is considered serializable!
+                        return null;
+                    }
+                }
+                /*
                 Object listenerSaved = ((StateHolder) listener).saveState(context);
                 if (listenerSaved == null)
                 {
                     return null;
                 }
                 return new Object[]{componentClass, new _AttachedDeltaWrapper(listener.getClass(), listenerSaved)};
+                */
             }
         }
 
         public void setTransient(boolean newTransientValue)
         {
-            if (listener instanceof StateHolder)
+            if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0 || 
+                    (listenerCapability & LISTENER_SAVE_STATE_HOLDER) != 0 )
             {
                 ((StateHolder)listener).setTransient(newTransientValue);
             }            
