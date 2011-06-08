@@ -399,8 +399,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (getChildCount() > 0)
         {
             FacesContext context = getFacesContext();
-            for (UIComponent child : getChildren())
+            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
             {
+                UIComponent child = getChildren().get(i);
                 _restoreChildState(context, child);
             }
         }
@@ -441,8 +442,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (getChildCount() > 0)
         {
             FacesContext context = getFacesContext();
-            for (UIComponent child : getChildren())
+            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
             {
+                UIComponent child = getChildren().get(i);
                 _saveChildState(context, child);
             }
         }
@@ -617,8 +619,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     }
                     else
                     {
-                        for (UIComponent child : getChildren())
+                        for (int j = 0, childCount = getChildCount(); j < childCount; j++)
                         {
+                            UIComponent child = getChildren().get(j);
                             if (PhaseId.APPLY_REQUEST_VALUES.equals(phase))
                             {
                                 child.processDecodes(faces);
@@ -819,8 +822,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         _setIndex(i);
                         while (i <= end && _isIndexAvailable())
                         {
-                            for (UIComponent child : getChildren()) 
+                            for (int j = 0, childCount = getChildCount(); j < childCount; j++)
                             {
+                                UIComponent child = getChildren().get(j);
                                 if (child.visitTree(context, callback)) 
                                 {
                                     return true;

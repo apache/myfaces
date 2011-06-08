@@ -486,8 +486,9 @@ public class PartialViewContextImpl extends PartialViewContext {
                 //comp.encodeAll (_facesContext);
             //}
         //}
-        for (UIComponent comp : viewRoot.getChildren())
+        for (int i = 0, childCount = viewRoot.getChildCount(); i < childCount; i++)
         {
+            UIComponent comp = viewRoot.getChildren().get(i);
             comp.encodeAll (_facesContext);
         }
         writer.endUpdate();

@@ -229,8 +229,9 @@ public class DebugPhaseListener implements PhaseListener
             // check if there are already debugInfos from UIInput
             List<Object[]> fieldDebugInfos = getFieldDebugInfos(field, clientId);
             boolean found = false;
-            for (Object[] debugInfo : fieldDebugInfos)
+            for (int i = 0, size = fieldDebugInfos.size(); i < size; i++)
             {
+                Object[] debugInfo = fieldDebugInfos.get(i);
                 if (debugInfo[0].equals(_currentPhase))
                 {
                     found = true;

@@ -538,8 +538,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         
         if (component.getChildCount() > 0)
         {
-            for (UIComponent child : component.getChildren())
+            for (int j = 0, childCount = component.getChildCount(); j < childCount; j++)
             {
+                UIComponent child = component.getChildren().get(j);
                 _publishPreRemoveFromViewEvent(context, child);
             }
         }

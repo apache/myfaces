@@ -72,8 +72,9 @@ public class RepeatRenderer extends Renderer
                 }
             }
             
-            for (UIComponent child : component.getChildren())
+            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
             {
+                UIComponent child = component.getChildren().get(i);
                 child.encodeAll(context);
             }
 

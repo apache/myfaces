@@ -678,8 +678,9 @@ public final class ErrorPageWriter
             }
             if (c.getChildCount() > 0)
             {
-                for (UIComponent child : c.getChildren())
+                for (int i = 0, childCount = c.getChildCount(); i < childCount; i++)
                 {
+                    UIComponent child = c.getChildren().get(i);
                     writer.write("<dd>");
                     _writeComponent(faces, writer, child, highlightId);
                     writer.write("</dd>");
@@ -974,8 +975,9 @@ public final class ErrorPageWriter
     
     private static boolean _isFirstUIColumn(UIComponent uidata, UIColumn uicolumn)
     {
-        for (UIComponent child : uidata.getChildren())
+        for (int i = 0, childCount = uidata.getChildCount(); i < childCount; i++)
         {
+            UIComponent child = uidata.getChildren().get(i);
             if (child instanceof UIColumn)
             {
                 return (child == uicolumn);

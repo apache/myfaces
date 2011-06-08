@@ -310,8 +310,9 @@ public class DebugUtils
 
                 if (childCount > 0)
                 {
-                    for (UIComponent child : comp.getChildren())
+                    for (int i = 0; i < childCount; i++)
                     {
+                        UIComponent child = comp.getChildren().get(i);
                         printComponent(child, stream, indent + 1, true, null);
                     }
                 }

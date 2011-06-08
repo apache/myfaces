@@ -109,10 +109,12 @@ public final class ComponentSupport
      */
     public static UIComponent findChild(UIComponent parent, String id)
     {
-        if (parent.getChildCount() > 0)
+        int childCount = parent.getChildCount();
+        if (childCount > 0)
         {
-            for (UIComponent child : parent.getChildren())
+            for (int i = 0; i < childCount; i++)
             {
+                UIComponent child = parent.getChildren().get(i);
                 if (id.equals(child.getId()))
                 {
                     return child;
@@ -286,8 +288,9 @@ public final class ComponentSupport
             }
             else if (toRender.getChildCount() > 0)
             {
-                for (UIComponent child : toRender.getChildren())
+                for (int i = 0, childCount = toRender.getChildCount(); i < childCount; i++)
                 {
+                    UIComponent child = toRender.getChildren().get(i);
                     encodeRecursive(context, child);
                 }
             }

@@ -248,8 +248,9 @@ public abstract class UIComponentBase extends UIComponent
         
         if (component.getChildCount() > 0)
         {
-            for (UIComponent child : component.getChildren())
+            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
             {
+                UIComponent child = component.getChildren().get(i);
                 _publishPreRemoveFromViewEvent(context, child);
             }
         }
@@ -475,8 +476,9 @@ public abstract class UIComponentBase extends UIComponent
                     // component and call UIComponent.encodeAll(javax.faces.context.FacesContext).
                     if (getChildCount() > 0)
                     {
-                        for (UIComponent child : getChildren())
+                        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                         {
+                            UIComponent child = getChildren().get(i);
                             child.encodeAll(context);
                         }
                     }
@@ -1362,8 +1364,9 @@ public abstract class UIComponentBase extends UIComponent
 
                 // To improve speed and robustness, the facets and children processing is splited to maintain the
                 // facet --> state coherence based on the facet's name
-                for (UIComponent child : getChildren())
+                for (int i = 0; i < childCount; i++)
                 {
+                    UIComponent child = getChildren().get(i);
                     if (!child.isTransient())
                     {
                         if (childrenList == null)
@@ -1448,8 +1451,9 @@ public abstract class UIComponentBase extends UIComponent
                 // To improve speed and robustness, the facets and children processing is splited to maintain the
                 // facet --> state coherence based on the facet's name
                 int idx = 0;
-                for (UIComponent child : getChildren())
+                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                 {
+                    UIComponent child = getChildren().get(i);
                     if (!child.isTransient())
                     {
                         Object childState = childrenList.get(idx++);

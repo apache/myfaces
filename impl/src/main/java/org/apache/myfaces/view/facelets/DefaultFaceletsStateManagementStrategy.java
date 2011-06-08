@@ -746,8 +746,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         c.clearInitialState();
         if (c.getChildCount() > 0)
         {
-            for (UIComponent child : c.getChildren())
+            for (int i = 0, childCount = c.getChildCount(); i < childCount; i++)
             {
+                UIComponent child = c.getChildren().get(i);
                 ensureClearInitialState(child);
             }
         }
@@ -947,8 +948,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         if (component.getChildCount() > 0)
         {
             List<TreeStructComponent> structChildList = new ArrayList<TreeStructComponent>();
-            for (UIComponent child : component.getChildren())
+            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
             {
+                UIComponent child = component.getChildren().get(i);     
                 if (!child.isTransient())
                 {
                     TreeStructComponent structChild = internalBuildTreeStructureToSave(child);
