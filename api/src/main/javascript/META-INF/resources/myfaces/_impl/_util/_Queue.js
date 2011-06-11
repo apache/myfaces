@@ -135,7 +135,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
     },
 
     indexOf: function(element) {
-        return this._Lang.indexOf(this._q, element);
+        return this._Lang.arrIndexOf(this._q, element);
     },
 
     cleanup: function() {
