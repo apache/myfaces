@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.faces.component.UINamingContainer;
+import javax.faces.event.ComponentSystemEvent;
 
 public class CompositeTestComponent extends UINamingContainer
 {
@@ -31,6 +32,11 @@ public class CompositeTestComponent extends UINamingContainer
     public void setJavaProperty(String javaProperty)
     {
         getStateHelper().put(PropertyKeys.javaProperty, javaProperty);
+    }
+    
+    public void postAddToViewCallback(ComponentSystemEvent event)
+    {
+        getAttributes().put("postAddToViewCallback", true);
     }
     
     protected enum PropertyKeys
