@@ -218,7 +218,15 @@ public abstract class UIComponentBase extends UIComponent
                 // This prevents skip components when processing
                 do 
                 {
-                    _publishPostAddToViewEvent(context, child);
+                    child.pushComponentToEL(context, child);
+                    try
+                    {
+                        _publishPostAddToViewEvent(context, child);
+                    }
+                    finally
+                    {
+                        child.popComponentFromEL(context);
+                    }
                     currentChild = child;
                 }
                 while ((i < children.size()) &&
@@ -230,7 +238,15 @@ public abstract class UIComponentBase extends UIComponent
         {
             for (UIComponent child : component.getFacets().values())
             {
-                _publishPostAddToViewEvent(context, child);
+                child.pushComponentToEL(context, child);
+                try
+                {
+                    _publishPostAddToViewEvent(context, child);
+                }
+                finally
+                {
+                    child.popComponentFromEL(context);
+                }
             }
         }        
     }

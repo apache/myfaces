@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 import javax.faces.component.UIComponent;
@@ -38,7 +37,7 @@ public final class CompositeComponentELUtils
      * The key under which the component stack is stored in the FacesContext.
      * ATTENTION: this constant is duplicate in UIComponent.
      */
-    public static final String COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
+    //public static final String COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
     
     /**
      * The key under which the current composite component is stored in the attribute
@@ -85,62 +84,118 @@ public final class CompositeComponentELUtils
     }
     
     /**
-     * Trys to find a composite component on the composite component stack
+     * Try to find a composite component on the composite component stack
      * and using UIComponent.getCurrentCompositeComponent() based on the 
      * location of the facelet page that generated the composite component.
      * @param facesContext
      * @param location
      * @return
      */
-    public static UIComponent getCompositeComponentBasedOnLocation(FacesContext facesContext, 
-            Location location)
+    public static UIComponent getCompositeComponentBasedOnLocation(final FacesContext facesContext, 
+            final Location location)
     {
-        // look on the component stack
-        LinkedList<UIComponent> componentStack = getComponentStack(facesContext);
-        if (componentStack != null && !componentStack.isEmpty())
+        //1 Use getCurrentComponent and getCurrentCompositeComponent to look on the component stack
+        UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
+        
+        if (currentComponent == null)
         {
-            // try to find the right composite component
-            for (UIComponent component : componentStack)
+            // Cannot found any component, because we don't have any reference!
+            return null;
+        }
+        
+        UIComponent currentCompositeComponent = UIComponent.getCurrentCompositeComponent(facesContext);
+        
+        //1.1 Use getCurrentCompositeComponent first!
+        if (currentCompositeComponent != null)
+        {
+            Location componentLocation = (Location) currentCompositeComponent.getAttributes().get(LOCATION_KEY);
+            if (componentLocation != null 
+                    && componentLocation.getPath().equals(location.getPath()))
             {
-                if (UIComponent.isCompositeComponent(component))
+                return currentCompositeComponent;
+            }
+        }
+        
+        //2. Look on the stack using a recursive algorithm.
+        UIComponent matchingCompositeComponent = lookForCompositeComponentOnStack(facesContext, location, currentComponent);
+        
+        if (matchingCompositeComponent != null)
+        {
+            return matchingCompositeComponent;
+        }
+        
+        //2. Try to find it using UIComponent.getCurrentCompositeComponent(). 
+        // This one will look the direct parent hierarchy of the component,
+        // to see if the composite component can be found.
+        if (currentCompositeComponent != null)
+        {
+            currentComponent = currentCompositeComponent;
+        }
+        else
+        {
+            //Try to find the composite component looking directly the parent
+            //ancestor of the current component
+            //currentComponent = UIComponent.getCurrentComponent(facesContext);
+            boolean found = false;
+            while (currentComponent != null && !found)
+            {
+                if (UIComponent.isCompositeComponent(currentComponent))
                 {
-                    Location componentLocation = (Location) component.getAttributes().get(LOCATION_KEY);
-                    if (componentLocation != null 
-                            && componentLocation.getPath().equals(location.getPath()))
-                    {
-                        return component;
-                    }
+                    found = true;
+                }
+                else
+                {
+                    currentComponent = currentComponent.getParent();
                 }
             }
         }
         
-        // try to find it using UIComponent.getCurrentCompositeComponent()
-        UIComponent component = UIComponent.getCurrentCompositeComponent(facesContext);
-        while (component != null)
+        //if currentComponent != null means we have a composite component that we can check
+        //Use UIComponent.getCompositeComponentParent() to traverse here.
+        while (currentComponent != null)
         {
-            Location componentLocation = (Location) component.getAttributes().get(LOCATION_KEY);
+            Location componentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
             if (componentLocation != null 
                     && componentLocation.getPath().equals(location.getPath()))
             {
-                return component;
+                return currentComponent;
             }
             // get the composite component's parent
-            component = UIComponent.getCompositeComponentParent(component);
+            currentComponent = UIComponent.getCompositeComponentParent(currentComponent);
         }
         
         // not found
         return null;
     }
     
-    /**
-     * Gets the current component stack from the FacesContext.
-     * @param facesContext
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public static LinkedList<UIComponent> getComponentStack(FacesContext facesContext)
+    private static UIComponent lookForCompositeComponentOnStack(final FacesContext facesContext, final Location location, UIComponent currentComponent)
     {
-        return (LinkedList<UIComponent>) facesContext.getAttributes().get(COMPONENT_STACK);
+        if (UIComponent.isCompositeComponent(currentComponent))
+        {
+            Location componentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
+            if (componentLocation != null 
+                    && componentLocation.getPath().equals(location.getPath()))
+            {
+                return currentComponent;
+            }
+        }
+        currentComponent.popComponentFromEL(facesContext);
+        try
+        {
+            UIComponent c = UIComponent.getCurrentComponent(facesContext);
+            if (c != null)
+            {
+                return lookForCompositeComponentOnStack( facesContext, location, c);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        finally
+        {
+            currentComponent.pushComponentToEL(facesContext, currentComponent);
+        }
     }
     
     /**

@@ -32,6 +32,8 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandLink;
 import javax.faces.component.html.HtmlOutputText;
 
+import org.apache.myfaces.config.NamedEventManager;
+import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
@@ -42,6 +44,22 @@ import org.junit.Test;
 
 public class CompositeComponentTestCase extends FaceletTestCase
 {
+
+    @Override
+    protected void setupComponents() throws Exception
+    {
+        super.setupComponents();
+        application.addComponent(CompositeTestComponent.class.getName(), 
+                CompositeTestComponent.class.getName());
+    }
+    
+    @Override
+    protected void setUpExternalContext() throws Exception
+    {
+        super.setUpExternalContext();
+        
+        RuntimeConfig.getCurrentInstance(externalContext).setNamedEventManager(new NamedEventManager());
+    }
 
     /**
      * Test if a child component inside composite component template is
@@ -634,6 +652,41 @@ public class CompositeComponentTestCase extends FaceletTestCase
 
         Assert.assertTrue(resp.contains("HELLO"));
         Assert.assertTrue(resp.contains("WORLD"));
+        
+    }
+    
+    @Test
+    public void testSimpleFEvent() throws Exception
+    {
+        HelloWorld helloWorld = new HelloWorld(); 
+        
+        facesContext.getExternalContext().getRequestMap().put("helloWorldBean",
+                helloWorld);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testSimpleFEvent.xhtml");
+        
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        CompositeTestComponent compositeComponent1 = (CompositeTestComponent) panelGroup1.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent1);
+        
+        Assert.assertTrue("postAddToViewCallback should be called", (Boolean) compositeComponent1.getAttributes().get("postAddToViewCallback"));
+        
+        /*
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+
+        compositeComponent1.encodeAll(facesContext);
+
+        sw.flush();
+        
+        String resp = sw.toString();
+
+        Assert.assertTrue(resp.contains("HELLO"));
+        Assert.assertTrue(resp.contains("WORLD"));
+        */
         
     }
 }
