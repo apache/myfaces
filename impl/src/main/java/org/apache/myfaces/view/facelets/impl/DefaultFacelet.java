@@ -48,7 +48,6 @@ import javax.faces.view.facelets.FaceletHandler;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 
 /**
@@ -127,6 +126,8 @@ final class DefaultFacelet extends AbstractFacelet
         }
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, myFaceletContext);
         
+        ctx.pushPageContext(new PageContextImpl());
+        
         try
         {
             // push the parent as a UniqueIdVendor to the stack here,
@@ -152,6 +153,8 @@ final class DefaultFacelet extends AbstractFacelet
         }
         finally
         {
+            ctx.popPageContext();
+            
             if (faceletCompositionContextInitialized)
             {
                 myFaceletContext.release(facesContext);
@@ -318,9 +321,17 @@ final class DefaultFacelet extends AbstractFacelet
     private void include(AbstractFaceletContext ctx, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
     {
-        this.refresh(parent);
-        _root.apply(new DefaultFaceletContext((DefaultFaceletContext)ctx, this, false), parent);
-        this.markApplied(parent);
+        ctx.pushPageContext(new PageContextImpl());
+        try
+        {
+            this.refresh(parent);
+            _root.apply(new DefaultFaceletContext((DefaultFaceletContext)ctx, this, false), parent);
+            this.markApplied(parent);
+        }
+        finally
+        {
+            ctx.popPageContext();
+        }
     }
 
     /**
@@ -380,26 +391,34 @@ final class DefaultFacelet extends AbstractFacelet
         //f.apply(ctx.getFacesContext(), parent);
         DefaultFacelet f = (DefaultFacelet) _factory.getFacelet(resource.getURL());
         
-        // push the parent as a UniqueIdVendor to the stack here,
-        // if there is no UniqueIdVendor on the stack yet
-        boolean pushedUniqueIdVendor = false;
-        FaceletCompositionContext mctx = ctx.getFaceletCompositionContext();
-        if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+        ctx.pushPageContext(new PageContextImpl());
+        try
         {
-            mctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
-            pushedUniqueIdVendor = true;
+            // push the parent as a UniqueIdVendor to the stack here,
+            // if there is no UniqueIdVendor on the stack yet
+            boolean pushedUniqueIdVendor = false;
+            FaceletCompositionContext mctx = ctx.getFaceletCompositionContext();
+            if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+            {
+                mctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+                pushedUniqueIdVendor = true;
+            }
+            
+            this.refresh(parent);
+            mctx.markForDeletion(parent);
+            f._root.apply(new DefaultFaceletContext( (DefaultFaceletContext)ctx, f, true), parent);
+            mctx.finalizeForDeletion(parent);
+            this.markApplied(parent);
+            
+            // remove the UniqueIdVendor from the stack again
+            if (pushedUniqueIdVendor)
+            {
+                ctx.getFaceletCompositionContext().popUniqueIdVendorToStack();
+            }
         }
-        
-        this.refresh(parent);
-        mctx.markForDeletion(parent);
-        f._root.apply(new DefaultFaceletContext( (DefaultFaceletContext)ctx, f, true), parent);
-        mctx.finalizeForDeletion(parent);
-        this.markApplied(parent);
-        
-        // remove the UniqueIdVendor from the stack again
-        if (pushedUniqueIdVendor)
+        finally
         {
-            ctx.getFaceletCompositionContext().popUniqueIdVendorToStack();
+            ctx.popPageContext();
         }
     }
 

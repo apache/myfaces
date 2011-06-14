@@ -19,14 +19,16 @@
 
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
+import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.PropertyResolverImpl;
-import org.apache.myfaces.el.VariableResolverImpl;
+import org.apache.myfaces.renderkit.html.HtmlCompositeComponentRenderer;
+import org.apache.myfaces.renderkit.html.HtmlCompositeFacetRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
@@ -45,6 +47,10 @@ public class IncludeParamTestCase extends FaceletTestCase
                 .getName());
         application.addComponent(HtmlOutputText.COMPONENT_TYPE,
                 HtmlOutputText.class.getName());
+        application.addComponent(UINamingContainer.COMPONENT_TYPE, 
+                UINamingContainer.class.getName());
+        application.addComponent(UIPanel.COMPONENT_TYPE, 
+                UIPanel.class.getName());
     }
 
     @Override
@@ -57,6 +63,10 @@ public class IncludeParamTestCase extends FaceletTestCase
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "javax.faces.Text",
                 new HtmlTextRenderer());
+        renderKit.addRenderer(UINamingContainer.COMPONENT_TYPE,
+                "javax.faces.Composite", new HtmlCompositeComponentRenderer());
+        renderKit.addRenderer(UIOutput.COMPONENT_TYPE, 
+                "javax.faces.CompositeFacet", new HtmlCompositeFacetRenderer());
     }
 
     @Override
@@ -65,10 +75,10 @@ public class IncludeParamTestCase extends FaceletTestCase
         externalContext =
             new MockExternalContext(servletContext, request, response);
         
-        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
-                new PropertyResolverImpl());
-        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
-                new VariableResolverImpl());
+        //RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
+        //        new PropertyResolverImpl());
+        //RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
+        //        new VariableResolverImpl());
         // For this test we need the a real one, because the Mock does not
         // handle VariableMapper stuff properly and ui:param logic will not work
         RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
@@ -164,5 +174,179 @@ public class IncludeParamTestCase extends FaceletTestCase
         
         String result = fw.toString();
         Assert.assertTrue("Output:" + result, result.contains("value1"));
+    }
+
+    /**
+     * ui:param inside ui:decorate applies only to the content of the tag and the
+     * referenced template.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUIParamTemplateScope1() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "uiparamtemplatescope1.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+        
+        String result = fw.toString();
+        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
+        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+    }
+    
+    /**
+     * ui:param defined outside should not pass through ui:include, because it occurs
+     * on another template context.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUIParamTemplateScope2() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "uiparamtemplatescope2.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+        
+        String result = fw.toString();
+        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+    }
+    
+    /**
+     * ui:param inside ui:include applies only to the content of the tag and the
+     * referenced template.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUIParamTemplateScope3() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "uiparamtemplatescope3.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+        
+        String result = fw.toString();
+        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
+        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+    }
+    
+    /**
+     * ui:param inside ui:composition applies only to the content of the tag and the
+     * referenced template.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUIParamTemplateScope4() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "uiparamtemplatescope4.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+        
+        String result = fw.toString();
+        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
+        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+    }
+    
+    /**
+     * ui:param defined outside should only pass through ui:include if the param is declared.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUIParamTemplateScope5() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "uiparamtemplatescope5.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+        
+        String result = fw.toString();
+        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
+        Assert.assertTrue("Output should contain 'right2Value'", result.contains("right2Value"));
+        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+    }
+    
+    /**
+     * ui:param defined outside should not pass through composite components, to do
+     * that the composite component provide a clean attribute interface.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUIParamTemplateScope6() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "uiparamtemplatescope6.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+        
+        String result = fw.toString();
+        Assert.assertTrue("Output should contain 'rightValue'", result.contains("rightValue"));
+        Assert.assertFalse("Output should not contain 'doNotPrintValue'", result.contains("doNotPrintValue"));
+    }
+    
+    /**
+     * ui:param should pass through nested ui:decorate or ui:composition constructions, because it is the
+     * same template context. Additionally, ui:param declarations should follow the same ordering rules
+     * for ui:decorate or ui:composition
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUIParamTemplateScope7() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "uiparamtemplatescope7.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        rw.flush();
+        
+        String result = fw.toString();
+        Assert.assertTrue("Output should contain 'value1'", result.contains("value1"));
+        Assert.assertTrue("Output should contain 'value2'", result.contains("value2"));
+        Assert.assertTrue("Output should contain 'value3'", result.contains("value3"));
+        Assert.assertTrue("Output should contain 'value4'", result.contains("value4"));
+        Assert.assertTrue("Output should contain 'value5'", result.contains("value5"));
+        Assert.assertTrue("Output should contain 'valu1e5'", result.contains("valu1e5"));
+        Assert.assertTrue("Output should contain 'valu1e6'", result.contains("valu1e6"));
+        Assert.assertFalse("Output should not contain 'value6'", result.contains("value6"));
     }
 }

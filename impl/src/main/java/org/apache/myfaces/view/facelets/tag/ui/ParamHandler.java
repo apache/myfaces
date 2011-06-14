@@ -32,6 +32,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 
 /**
  * @author Jacob Hookom
@@ -77,9 +78,26 @@ public class ParamHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-        String nameStr = this.name.getValue(ctx);
-        ValueExpression valueVE = this.value.getValueExpression(ctx, Object.class);
-        ctx.getVariableMapper().setVariable(nameStr, valueVE);
+        String nameStr = getName(ctx);
+        ValueExpression valueVE = getValue(ctx);
+        //ctx.getVariableMapper().setVariable(nameStr, valueVE);
+        apply(ctx, parent, nameStr, valueVE);
     }
-
+    
+    public void apply(FaceletContext ctx, UIComponent parent, String nameStr, ValueExpression valueVE) throws IOException, FacesException, FaceletException,
+            ELException
+    {
+        //((AbstractFaceletContext) ctx).getTemplateContext().getAttributes().put(nameStr, valueVE);
+        ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(nameStr, valueVE);
+    }
+    
+    public String getName(FaceletContext ctx)
+    {
+        return this.name.getValue(ctx);
+    }
+    
+    public ValueExpression getValue(FaceletContext ctx)
+    {
+        return this.value.getValueExpression(ctx, Object.class);
+    }
 }
