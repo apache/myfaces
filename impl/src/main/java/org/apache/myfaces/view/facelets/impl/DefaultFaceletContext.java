@@ -46,6 +46,7 @@ import javax.faces.view.facelets.FaceletException;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.PageContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.TemplateManager;
@@ -72,6 +73,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     private final List<AbstractFacelet> _faceletHierarchy;
 
     private VariableMapper _varMapper;
+    private final DefaultVariableMapper _defaultVarMapper;
 
     private FunctionMapper _fnMapper;
 
@@ -91,6 +93,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     
     private int _currentTemplateContext;
 
+    private final List<PageContext> _isolatedPageContext;
+    
     public DefaultFaceletContext(DefaultFaceletContext ctx,
             AbstractFacelet facelet, boolean ccWrap)
     {
@@ -101,6 +105,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _faces = ctx._faces;
         _fnMapper = ctx._fnMapper;
         _varMapper = ctx._varMapper;
+        _defaultVarMapper = ctx._defaultVarMapper;
         _faceletHierarchy = new ArrayList<AbstractFacelet>(ctx._faceletHierarchy
                 .size() + 1);
         _faceletHierarchy.addAll(ctx._faceletHierarchy);
@@ -133,6 +138,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         //}
         _isolatedTemplateContext = ctx._isolatedTemplateContext;
         _currentTemplateContext = ctx._currentTemplateContext;
+        
+        _isolatedPageContext = ctx._isolatedPageContext;
 
         //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -151,8 +158,15 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _varMapper = _ctx.getVariableMapper();
         if (_varMapper == null)
         {
-            _varMapper = new DefaultVariableMapper();
-        }        
+            _defaultVarMapper = new DefaultVariableMapper();
+            _varMapper = _defaultVarMapper;
+        }
+        else
+        {
+            _defaultVarMapper = new DefaultVariableMapper(_varMapper);
+            _varMapper = _defaultVarMapper;
+        }
+        
         _faceletHierarchy = new ArrayList<AbstractFacelet>(1);
         _faceletHierarchy.add(facelet);
         _facelet = facelet;
@@ -161,6 +175,9 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _isolatedTemplateContext = new ArrayList<TemplateContext>(1);
         _isolatedTemplateContext.add(new TemplateContextImpl());
         _currentTemplateContext = 0;
+        _defaultVarMapper.setTemplateContext(_isolatedTemplateContext.get(_currentTemplateContext));
+        
+        _isolatedPageContext = new ArrayList<PageContext>(8);
 
         //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -391,7 +408,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         //}
         //throw new IllegalStateException(client + " not found");
         //return _clients.removeFirst();
-        return _isolatedTemplateContext.get(_currentTemplateContext).popClient();
+        return _isolatedTemplateContext.get(_currentTemplateContext).popClient(this);
     }
 
     @Override
@@ -399,13 +416,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         //this._clients.add(0, new TemplateManager(this._facelet, client, true));
         //_clients.addFirst(new TemplateManagerImpl(this._facelet, client, true));
-        _isolatedTemplateContext.get(_currentTemplateContext).pushClient(this._facelet, client);
+        _isolatedTemplateContext.get(_currentTemplateContext).pushClient(this, this._facelet, client);
     }
 
     public TemplateManager popExtendedClient(TemplateClient client)
     {
         //return _clients.removeLast();
-        return _isolatedTemplateContext.get(_currentTemplateContext).popExtendedClient();
+        return _isolatedTemplateContext.get(_currentTemplateContext).popExtendedClient(this);
     }
     
     @Override
@@ -413,7 +430,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         //this._clients.add(new TemplateManager(this._facelet, client, false));
         //_clients.addLast(new TemplateManagerImpl(this._facelet, client, false));
-        _isolatedTemplateContext.get(_currentTemplateContext).extendClient(this._facelet, client);
+        _isolatedTemplateContext.get(_currentTemplateContext).extendClient(this, this._facelet, client);
     }
 
     @Override
@@ -552,9 +569,10 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public void pushCompositeComponentClient(final TemplateClient client)
     {
         TemplateContext itc = new TemplateContextImpl();
-        itc.setCompositeComponentClient(new CompositeComponentTemplateManager(this._facelet, client));
+        itc.setCompositeComponentClient(new CompositeComponentTemplateManager(this._facelet, client, getPageContext()));
         _isolatedTemplateContext.add(itc);
         _currentTemplateContext++;
+        _defaultVarMapper.setTemplateContext(itc);
     }
     
     @Override
@@ -564,6 +582,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         {
             _isolatedTemplateContext.remove(_currentTemplateContext);
             _currentTemplateContext--;
+            _defaultVarMapper.setTemplateContext(_isolatedTemplateContext.get(_currentTemplateContext));
         }
     }
     
@@ -572,6 +591,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         _isolatedTemplateContext.add(client);
         _currentTemplateContext++;
+        _defaultVarMapper.setTemplateContext(client);
     }    
 
     
@@ -583,9 +603,16 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             TemplateContext itc = _isolatedTemplateContext.get(_currentTemplateContext);
             _isolatedTemplateContext.remove(_currentTemplateContext);
             _currentTemplateContext--;
+            _defaultVarMapper.setTemplateContext(_isolatedTemplateContext.get(_currentTemplateContext));
             return itc;
         }
         return null;
+    }
+    
+    @Override
+    public TemplateContext getTemplateContext()
+    {
+        return _isolatedTemplateContext.get(_currentTemplateContext);
     }
 
     @Override
@@ -619,11 +646,14 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         protected final TemplateClient _target;
 
         private final Set<String> _names = new HashSet<String>();
+        
+        private final PageContext _pageContext;
 
-        public CompositeComponentTemplateManager(AbstractFacelet owner, TemplateClient target)
+        public CompositeComponentTemplateManager(AbstractFacelet owner, TemplateClient target, PageContext pageContext)
         {
             this._owner = owner;
             this._target = target;
+            this._pageContext = pageContext;
         }
 
         public boolean apply(FaceletContext ctx, UIComponent parent, String name)
@@ -639,10 +669,19 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             {
                 this._names.add(testName);
                 boolean found = false;
-                found = this._target
-                        .apply(new DefaultFaceletContext(
-                                (DefaultFaceletContext) ctx, this._owner, false),
-                                parent, name);
+                AbstractFaceletContext actx = new DefaultFaceletContext(
+                        (DefaultFaceletContext) ctx, this._owner, false);
+                try
+                {
+                    actx.pushPageContext(this._pageContext);
+                    found = this._target
+                            .apply(actx,
+                                    parent, name);
+                }
+                finally
+                {
+                    actx.popPageContext();
+                }
                 this._names.remove(testName);
                 return found;
             }
@@ -655,6 +694,40 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             return this._owner == o || this._target == o;
         }
 
+    }
+    
+    @Override
+    public void pushPageContext(PageContext client)
+    {
+        _isolatedPageContext.add(client);
+        _defaultVarMapper.setPageContext(client);
+    }    
+
+    @Override
+    public PageContext popPageContext()
+    {
+        if (!_isolatedPageContext.isEmpty())
+        {
+            int currentPageContext = _isolatedPageContext.size()-1;
+            PageContext itc = _isolatedPageContext.get(currentPageContext);
+            _isolatedPageContext.remove(currentPageContext);
+            if (!_isolatedPageContext.isEmpty())
+            {
+                _defaultVarMapper.setPageContext(getPageContext());
+            }
+            else
+            {
+                _defaultVarMapper.setPageContext(null);
+            }
+            return itc;
+        }
+        return null;
+    }
+    
+    @Override
+    public PageContext getPageContext()
+    {
+        return _isolatedPageContext.get(_isolatedPageContext.size()-1);
     }
     
     //End methods from AbstractFaceletContext

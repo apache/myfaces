@@ -24,6 +24,9 @@ import java.util.Map;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 
+import org.apache.myfaces.view.facelets.PageContext;
+import org.apache.myfaces.view.facelets.TemplateContext;
+
 /**
  * Default instance of a VariableMapper backed by a Map
  * 
@@ -37,23 +40,58 @@ import javax.el.VariableMapper;
 public final class DefaultVariableMapper extends VariableMapper
 {
     private Map<String, ValueExpression> _vars;
+    
+    private PageContext _pageContext;
+    
+    private TemplateContext _templateContext;
+    
+    private VariableMapper _delegate;
 
     public DefaultVariableMapper()
     {
         super();
     }
 
+    public DefaultVariableMapper(VariableMapper delegate)
+    {
+        super();
+        this._delegate = delegate;
+    }
+    
     /**
      * @see javax.el.VariableMapper#resolveVariable(java.lang.String)
      */
     public ValueExpression resolveVariable(String name)
     {
+        ValueExpression returnValue = null;
+        
         if (_vars != null)
         {
-            return _vars.get(name);
+            returnValue = _vars.get(name);
         }
         
-        return null;
+        if (returnValue == null && _pageContext != null)
+        {
+            if (returnValue == null && _pageContext.getAttributeCount() > 0)
+            {
+                returnValue = _pageContext.getAttributes().get(name);
+            }
+        }
+        
+        if (returnValue == null && _templateContext != null)
+        {
+            if (returnValue == null && !_templateContext.isParameterEmpty())
+            {
+                returnValue = _templateContext.getParameter(name);
+            }
+        }        
+        
+        if (returnValue == null && _delegate != null)
+        {
+            returnValue = _delegate.resolveVariable(name);
+        }
+        
+        return returnValue;
     }
 
     /**
@@ -67,5 +105,25 @@ public final class DefaultVariableMapper extends VariableMapper
         }
         
         return _vars.put(name, expression);
+    }
+    
+    /**
+     * Set the current page context this variable mapper should resolve against.
+     * 
+     * @param pageContext
+     */
+    public void setPageContext(PageContext pageContext)
+    {
+        this._pageContext = pageContext;
+    }
+    
+    /**
+     * Set the current template context this variable mapper should resolve against.
+     * 
+     * @param templateContext
+     */
+    public void setTemplateContext(TemplateContext templateContext)
+    {
+        this._templateContext = templateContext;
     }
 }

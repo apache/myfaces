@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.ELException;
+import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
@@ -94,24 +95,35 @@ final class UserTagHandler extends TagHandler implements TemplateClient
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-        VariableMapper orig = ctx.getVariableMapper();
+        //VariableMapper orig = ctx.getVariableMapper();
 
         // setup a variable map
-        if (this._vars.length > 0)
-        {
-            VariableMapper varMapper = new VariableMapperWrapper(orig);
-            for (int i = 0; i < this._vars.length; i++)
-            {
-                varMapper.setVariable(this._vars[i].getLocalName(), this._vars[i].getValueExpression(ctx, Object.class));
-            }
-            ctx.setVariableMapper(varMapper);
-        }
+        //if (this._vars.length > 0)
+        //{
+            //VariableMapper varMapper = new VariableMapperWrapper(orig);
+            //for (int i = 0; i < this._vars.length; i++)
+            //{
+            //    varMapper.setVariable(this._vars[i].getLocalName(), this._vars[i].getValueExpression(ctx, Object.class));
+            //}
+            //ctx.setVariableMapper(varMapper);
+        //}
 
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         // eval include
         try
         {
+            String[] names = new String[_vars.length];
+            ValueExpression[] values = new ValueExpression[_vars.length];
+            for (int i = 0; i < _vars.length; i++)
+            {
+                names[i] = _vars[i].getLocalName();
+                values[i] = _vars[i].getValueExpression(ctx, Object.class);
+            }
             actx.pushTemplateContext(new TemplateContextImpl());
+            for (int i = 0; i < this._vars.length; i++)
+            {
+                ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
+            }
             actx.pushClient(this);
             ctx.includeFacelet(parent, this._location);
         }
@@ -125,7 +137,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient
             // make sure we undo our changes
             actx.popClient(this);
             actx.popTemplateContext();
-            ctx.setVariableMapper(orig);
+            //ctx.setVariableMapper(orig);
         }
     }
 

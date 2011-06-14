@@ -20,8 +20,10 @@ package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 
 import javax.el.ELException;
+import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.application.ProjectStage;
@@ -39,6 +41,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
+import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -69,6 +72,8 @@ public final class IncludeHandler extends TagHandler
             deferredValueType="java.lang.String",
             required=true)
     private final TagAttribute src;
+    
+    private final ParamHandler[] _params;
 
     /**
      * @param config
@@ -77,6 +82,21 @@ public final class IncludeHandler extends TagHandler
     {
         super(config);
         this.src = this.getRequiredAttribute("src");
+        
+        Collection<ParamHandler> params = TagHandlerUtils.findNextByType(nextHandler, ParamHandler.class);
+        if (!params.isEmpty())
+        {
+            int i = 0;
+            _params = new ParamHandler[params.size()];
+            for (ParamHandler handler : params)
+            {
+                _params[i++] = handler;
+            }
+        }
+        else
+        {
+            _params = null;
+        }
     }
 
     /*
@@ -97,35 +117,60 @@ public final class IncludeHandler extends TagHandler
         ctx.setVariableMapper(new VariableMapperWrapper(orig));
         try
         {
-            this.nextHandler.apply(ctx, null);
+            //Only ui:param could be inside ui:include.
+            //this.nextHandler.apply(ctx, null);
+            
+            URL url = null;
             // if we are in ProjectStage Development and the path equals "javax.faces.error.xhtml"
             // we should include the default error page
             if (ctx.getFacesContext().isProjectStage(ProjectStage.Development) 
                     && ERROR_PAGE_INCLUDE_PATH.equals(path))
             {
-                URL url = ClassUtils.getResource(ERROR_FACELET);
-
-                try
-                {
-                    actx.pushTemplateContext(new TemplateContextImpl());
-                    ctx.includeFacelet(parent, url);
-                }
-                finally
-                {
-                    actx.popTemplateContext();
-                }
+                url =ClassUtils.getResource(ERROR_FACELET);
+                
             }
-            else
+            try
             {
-                try
+                if (_params != null)
+                {
+                    // ui:include defines a new TemplateContext, but ui:param EL expressions
+                    // defined inside should be built before the new context is setup, to
+                    // apply then after. The final effect is EL expressions will be resolved
+                    // correctly when nested ui:params with the same name or based on other
+                    // ui:params are used.
+                    
+                    String[] names = new String[_params.length];
+                    ValueExpression[] values = new ValueExpression[_params.length];
+                    
+                    for (int i = 0; i < _params.length; i++)
+                    {
+                        names[i] = _params[i].getName(ctx);
+                        values[i] = _params[i].getValue(ctx);
+                    }
+                    
+                    actx.pushTemplateContext(new TemplateContextImpl());
+                    
+                    for (int i = 0; i < _params.length; i++)
+                    {
+                        _params[i].apply(ctx, parent, names[i], values[i]);
+                    }
+                }
+                else
                 {
                     actx.pushTemplateContext(new TemplateContextImpl());
+                }
+                if (url == null)
+                {
                     ctx.includeFacelet(parent, path);
                 }
-                finally
+                else
                 {
-                    actx.popTemplateContext();
+                    ctx.includeFacelet(parent, url);
                 }
+            }
+            finally
+            {
+                actx.popTemplateContext();
             }
         }
         finally

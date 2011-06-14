@@ -123,18 +123,28 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
     {
         if (_template != null)
         {
-            VariableMapper orig = ctx.getVariableMapper();
+            //VariableMapper orig = ctx.getVariableMapper();
+            //if (_params != null)
+            //{
+            //    VariableMapper vm = new VariableMapperWrapper(orig);
+            //    ctx.setVariableMapper(vm);
+            //    for (int i = 0; i < _params.length; i++)
+            //    {
+            //        _params[i].apply(ctx, parent);
+            //    }
+            //}
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            actx.extendClient(this);
             if (_params != null)
             {
-                VariableMapper vm = new VariableMapperWrapper(orig);
-                ctx.setVariableMapper(vm);
+                //VariableMapper vm = new VariableMapperWrapper(orig);
+                //ctx.setVariableMapper(vm);
                 for (int i = 0; i < _params.length; i++)
                 {
                     _params[i].apply(ctx, parent);
                 }
             }
-            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            actx.extendClient(this);
+
             try
             {
                 ctx.includeFacelet(parent, _template.getValue(ctx));
@@ -142,7 +152,7 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
             finally
             {
                 actx.popExtendedClient(this);
-                ctx.setVariableMapper(orig);
+                //ctx.setVariableMapper(orig);
             }
         }
         else
