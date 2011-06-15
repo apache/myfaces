@@ -23,33 +23,40 @@ import javax.el.ELContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class ApplicationImplicitObject extends ImplicitObject {
-    
+public class ApplicationImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "application".intern();
-    
+
     /** Creates a new instance of ApplicationImplicitObject */
-    public ApplicationImplicitObject() {
+    public ApplicationImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    @Override
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getContext();
     }
 
-    public String getName() {
+    @Override
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    @Override
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Represents the application environment", 
-                             Object.class);
+    @Override
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Represents the application environment", Object.class);
     }
-    
 }

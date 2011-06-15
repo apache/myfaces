@@ -35,40 +35,48 @@ public final class NullPropertyResolver extends PropertyResolver {
     public NullPropertyResolver() {
     }
 
+    @Override
     public boolean isReadOnly(Object base, int index) throws EvaluationException, PropertyNotFoundException {
         elContext().setPropertyResolved(false);
         return false;
     }
     
+    @Override
     public boolean isReadOnly(Object base, Object property) throws EvaluationException, PropertyNotFoundException {
         elContext().setPropertyResolved(false);
         return false;
     }
 
+    @Override
     public Object getValue(Object base, int index) throws EvaluationException, PropertyNotFoundException {
         elContext().setPropertyResolved(false);
         return null;
     }
     
+    @Override
     public Object getValue(Object base, Object property) throws EvaluationException, PropertyNotFoundException {
         elContext().setPropertyResolved(false);
         return null;
     }
 
+    @Override
     public Class getType(Object base, int index) throws EvaluationException, PropertyNotFoundException {
         elContext().setPropertyResolved(false);
         return null;
     }
     
-     public Class getType(Object base, Object property) throws EvaluationException, PropertyNotFoundException {
+     @Override
+    public Class getType(Object base, Object property) throws EvaluationException, PropertyNotFoundException {
         elContext().setPropertyResolved(false);
         return null;
     }
 
+    @Override
     public void setValue(Object base, Object property, Object value) throws EvaluationException, PropertyNotFoundException {
         elContext().setPropertyResolved(false);
     }
 
+    @Override
     public void setValue(Object base, int index, Object value) throws EvaluationException, PropertyNotFoundException {
         elContext().setPropertyResolved(false);
     }

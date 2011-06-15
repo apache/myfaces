@@ -175,7 +175,8 @@ public class ApplicationImpl extends Application
     @Override
     public final ELResolver getELResolver()
     {
-        // we don't need synchronization here since it is ok to have multiple instances of the elresolver
+        // we don't need synchronization here since it is ok to have multiple
+        // instances of the elresolver
         if (elResolver == null)
         {
             elResolver = createFacesResolver();

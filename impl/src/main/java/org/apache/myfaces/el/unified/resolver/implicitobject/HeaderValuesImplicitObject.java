@@ -27,30 +27,40 @@ import javax.el.ELContext;
  *
  * @author Stan Silvert
  */
-public class HeaderValuesImplicitObject extends ImplicitObject {
-    
+public class HeaderValuesImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "headerValues".intern();
-    
+
     /** Creates a new instance of HeaderValuesImplicitObject */
-    public HeaderValuesImplicitObject() {
+    public HeaderValuesImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    @Override
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getRequestHeaderValuesMap();
     }
 
-    public String getName() {
+    @Override
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    @Override
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Map whose keys are a set of request header names and whose values are all of the values (of type String[]) for each header name.", 
-                             Map.class);
+    @Override
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME,
+                              "Map whose keys are a set of request header names and whose values are all of the values (of type String[]) for each header name.",
+                              Map.class);
     }
-    
+
 }

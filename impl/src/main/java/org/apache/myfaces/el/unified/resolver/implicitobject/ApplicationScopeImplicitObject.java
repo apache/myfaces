@@ -24,33 +24,41 @@ import java.util.Map;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
-public class ApplicationScopeImplicitObject extends ImplicitObject {
-    
+public class ApplicationScopeImplicitObject extends ImplicitObject
+{
+
     private static final String NAME = "applicationScope".intern();
-    
+
     /** Creates a new instance of ApplicationScopeImplicitObject */
-    public ApplicationScopeImplicitObject() {
+    public ApplicationScopeImplicitObject()
+    {
     }
 
-    public Object getValue(ELContext context) {
+    @Override
+    public Object getValue(ELContext context)
+    {
         return externalContext(context).getApplicationMap();
     }
 
-    public String getName() {
+    @Override
+    public String getName()
+    {
         return NAME;
     }
-    
-    public Class getType() {
+
+    @Override
+    public Class<?> getType()
+    {
         return null;
     }
 
-    public FeatureDescriptor getDescriptor() {
-        return makeDescriptor(NAME, 
-                             "Application scope attributes", 
-                             Map.class);
+    @Override
+    public FeatureDescriptor getDescriptor()
+    {
+        return makeDescriptor(NAME, "Application scope attributes", Map.class);
     }
-    
+
 }

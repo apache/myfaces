@@ -55,7 +55,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     }
     
     public static final String SCOPE = "org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope";
-
+    
     public FacesCompositeELResolver(final Scope scope)
     {
         if (scope == null)

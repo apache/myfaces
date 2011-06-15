@@ -44,7 +44,7 @@ public class CustomFirstELResolverComparator implements Comparator<ELResolver>
     public int compare(ELResolver r1, ELResolver r2)
     {
         List<ELResolver> facesConfigResolvers = _getFacesConfigElResolvers();
-
+        
         if (facesConfigResolvers == null)
         {
             // no el-resolvers in faces-config

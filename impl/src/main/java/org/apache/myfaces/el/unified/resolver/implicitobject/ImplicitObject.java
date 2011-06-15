@@ -25,31 +25,29 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 /**
- * Implementors of this class encapsulate the information needed to resolve
- * the implicit object.
- *
+ * Implementors of this class encapsulate the information needed to resolve the implicit object.
+ * 
  * @author Stan Silvert
  */
-public abstract class ImplicitObject {
-    
+public abstract class ImplicitObject
+{
+
     public abstract Object getValue(ELContext context);
-    
+
     public abstract FeatureDescriptor getDescriptor();
-    
+
     /**
-     * Returns an interned String representing the name of the 
-     * implicit object.
+     * Returns an interned String representing the name of the implicit object.
      */
     public abstract String getName();
-    
+
     /**
      * Returns the most general type allowed for a future call to setValue()
      */
-    public abstract Class getType();
-    
-    protected FeatureDescriptor makeDescriptor(String name, 
-                                               String description, 
-                                               Class elResolverType) {
+    public abstract Class<?> getType();
+
+    protected FeatureDescriptor makeDescriptor(String name, String description, Class<?> elResolverType)
+    {
         FeatureDescriptor fd = new FeatureDescriptor();
         fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
         fd.setValue(ELResolver.TYPE, elResolverType);
@@ -61,14 +59,16 @@ public abstract class ImplicitObject {
         fd.setPreferred(true);
         return fd;
     }
-    
+
     // get the FacesContext from the ELContext
-    protected FacesContext facesContext(ELContext context) {
-        return (FacesContext)context.getContext(FacesContext.class);
+    protected FacesContext facesContext(ELContext context)
+    {
+        return (FacesContext) context.getContext(FacesContext.class);
     }
-    
-    protected ExternalContext externalContext(ELContext context) {
+
+    protected ExternalContext externalContext(ELContext context)
+    {
         return facesContext(context).getExternalContext();
     }
-    
+
 }

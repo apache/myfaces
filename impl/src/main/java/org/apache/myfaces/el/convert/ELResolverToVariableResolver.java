@@ -26,32 +26,41 @@ import javax.faces.el.EvaluationException;
 import javax.faces.el.VariableResolver;
 
 /**
- * Provides ELResolver wrapper so that legacy apps which rely on a 
- * VariableResolver can still work.
- *
+ * Provides ELResolver wrapper so that legacy apps which rely on a VariableResolver can still work.
+ * 
  * @author Stan Silvert
  */
-public final class ELResolverToVariableResolver extends VariableResolver {
-    
+public final class ELResolverToVariableResolver extends VariableResolver
+{
+
     private final ELResolver elResolver;
-    
+
     /**
      * Creates a new instance of ELResolverToVariableResolver
      */
-    public ELResolverToVariableResolver(final ELResolver elResolver) {
-        if (elResolver == null) throw new NullPointerException();
+    public ELResolverToVariableResolver(final ELResolver elResolver)
+    {
+        if (elResolver == null)
+            throw new NullPointerException();
         this.elResolver = elResolver;
     }
 
-    public Object resolveVariable(final FacesContext facesContext, final String name) throws EvaluationException {
-        
-        try {
+    @Override
+    public Object resolveVariable(final FacesContext facesContext, final String name) throws EvaluationException
+    {
+
+        try
+        {
             return elResolver.getValue(facesContext.getELContext(), null, name);
-        } catch (PropertyNotFoundException e) {
+        }
+        catch (PropertyNotFoundException e)
+        {
             throw new EvaluationException(e);
-        } catch (ELException e) {
+        }
+        catch (ELException e)
+        {
             throw new EvaluationException(e);
         }
     }
-    
+
 }

@@ -26,7 +26,6 @@ import javax.el.PropertyNotWritableException;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.VariableResolver;
-
 import java.beans.FeatureDescriptor;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,13 +43,32 @@ public final class VariableResolverToELResolver extends ELResolver
 {
 
     // holds a flag to check if this instance is already called in current thread 
-    private static final ThreadLocal<Collection<String>> propertyGuard = new ThreadLocal<Collection<String>>() {
-        @Override
-        protected Collection<String> initialValue()
+    private static final ThreadLocal<Collection<String>> propertyGuardThreadLocal
+            = new ThreadLocal<Collection<String>>();
+
+    /**
+     * Gets the Collection<String> value of the propertyGuardThreadLocal.
+     * If the value from the ThreadLocal ist null, a new Collection<String>
+     * will be created.
+     *
+     * NOTE that we should not accomplish this by setting an initialValue on the
+     * ThreadLocal, because this will automatically be set on the ThreadLocalMap
+     * and thus can propably cause a memory leak.
+     *
+     * @return
+     */
+    private static Collection<String> getPropertyGuard()
+    {
+        Collection<String> propertyGuard = propertyGuardThreadLocal.get();
+
+        if (propertyGuard == null)
         {
-            return new HashSet<String>();
+            propertyGuard = new HashSet<String>();
+            propertyGuardThreadLocal.set(propertyGuard);
         }
-    };
+
+        return propertyGuard;
+    }
     
     private VariableResolver variableResolver;
 
@@ -70,6 +88,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return variableResolver;
     }
 
+    @Override
     public Object getValue(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
@@ -86,12 +105,14 @@ public final class VariableResolverToELResolver extends ELResolver
 
         final String strProperty = (String) property;
 
+        Collection<String> propertyGuard = getPropertyGuard();
+
         Object result = null;
         try
         {
             // only call the resolver if we haven't done it in current stack
-            if(!propertyGuard.get().contains(strProperty)) {
-                propertyGuard.get().add(strProperty);
+            if(!propertyGuard.contains(strProperty)) {
+                propertyGuard.add(strProperty);
                 result = variableResolver.resolveVariable(facesContext(context), strProperty);
             }
         }
@@ -112,7 +133,15 @@ public final class VariableResolverToELResolver extends ELResolver
         }
         finally
         {
-            propertyGuard.get().remove(strProperty);
+            propertyGuard.remove(strProperty);
+
+            // if the propertyGuard is empty, remove the ThreadLocal
+            // in order to prevent a memory leak
+            if (propertyGuard.isEmpty())
+            {
+                propertyGuardThreadLocal.remove();
+            }
+
             // set property resolved to false in any case if result is null
             context.setPropertyResolved(result != null);
         }
@@ -126,6 +155,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return (FacesContext) context.getContext(FacesContext.class);
     }
 
+    @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
         if (base != null)
@@ -134,6 +164,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return String.class;
     }
 
+    @Override
     public void setValue(ELContext context, Object base, Object property, Object value) throws NullPointerException,
             PropertyNotFoundException, PropertyNotWritableException, ELException
     {
@@ -142,6 +173,7 @@ public final class VariableResolverToELResolver extends ELResolver
             throw new PropertyNotFoundException();
     }
 
+    @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
@@ -152,6 +184,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return false;
     }
 
+    @Override
     public Class<?> getType(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
@@ -162,6 +195,7 @@ public final class VariableResolverToELResolver extends ELResolver
         return null;
     }
 
+    @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         return null;

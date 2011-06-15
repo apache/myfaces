@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.el.unified;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
-import org.apache.myfaces.el.convert.VariableResolverToELResolver;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
@@ -31,11 +31,12 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
+import org.apache.myfaces.el.convert.VariableResolverToELResolver;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -46,11 +47,11 @@ public class ResolverBuilderBase
 {
     
     private static final Logger log = Logger.getLogger(ResolverBuilderBase.class.getName());
-
+    
     @JSFWebConfigParam(since = "1.2.10, 2.0.2",
             desc = "The Class of an Comparator<ELResolver> implementation.")
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
-
+    
     private final RuntimeConfig _config;
 
     public ResolverBuilderBase(RuntimeConfig config)
@@ -102,7 +103,7 @@ public class ResolverBuilderBase
             }
         }
     }
-
+    
     /**
      * Sort the ELResolvers with a custom Comparator provided by the user.
      * @param resolvers
@@ -111,18 +112,18 @@ public class ResolverBuilderBase
     @SuppressWarnings("unchecked")
     protected void sortELResolvers(List<ELResolver> resolvers)
     {
-        ExternalContext externalContext
+        ExternalContext externalContext 
                 = FacesContext.getCurrentInstance().getExternalContext();
-
+        
         String comparatorClass = externalContext
                 .getInitParameter(EL_RESOLVER_COMPARATOR);
-
+        
         if (comparatorClass != null && !"".equals(comparatorClass))
         {
             // the user provided the parameter.
-
+            
             // if we already have a cached instance, use it
-            Comparator<ELResolver> comparator
+            Comparator<ELResolver> comparator 
                     = (Comparator<ELResolver>) externalContext.
                         getApplicationMap().get(EL_RESOLVER_COMPARATOR);
             try
@@ -130,23 +131,23 @@ public class ResolverBuilderBase
                 if (comparator == null)
                 {
                     // get the comparator class
-                    Class<Comparator<ELResolver>> clazz
+                    Class<Comparator<ELResolver>> clazz 
                              = ClassUtils.classForName(comparatorClass);
-
+                    
                     // create the instance
                     comparator = clazz.newInstance();
-
+                    
                     // cache the instance, because it will be used at least two times
                     externalContext.getApplicationMap()
                             .put(EL_RESOLVER_COMPARATOR, comparator);
                 }
-
+                
                 // sort the resolvers
                 Collections.sort(resolvers, comparator);
             }
             catch (Exception e)
             {
-                log.log(Level.WARNING,
+                log.log(Level.WARNING, 
                         "Could not sort ELResolvers with custom Comparator", e);
             }
         }
