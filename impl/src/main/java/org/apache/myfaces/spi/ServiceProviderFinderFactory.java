@@ -66,7 +66,7 @@ public class ServiceProviderFinderFactory
 
     
     /**
-     * Set a ServiceLoaderFinder to the current application, to locate 
+     * Set a ServiceProviderFinder to the current application, to locate 
      * SPI service providers used by MyFaces.  
      * 
      * This method should be called before the web application is initialized,
@@ -87,7 +87,7 @@ public class ServiceProviderFinderFactory
     }
 
     /**
-     * Gets a ServiceLoaderFinder from the web.xml config param.
+     * Gets a ServiceProviderFinder from the web.xml config param.
      * @param context
      * @return
      */
