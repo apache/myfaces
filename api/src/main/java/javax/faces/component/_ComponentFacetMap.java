@@ -103,10 +103,19 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
 
     public V put(String key, V value)
     {
-        checkKey(key);
-        checkValue(value);
+        //checkKey(key);
+        if (key == null)
+            throw new NullPointerException("key");
+        //checkValue(value);
+        if (value == null)
+            throw new NullPointerException("value");
         setNewParent(key, value);
-        return _map.put(key, value);
+        V previousValue = _map.put(key, value);
+        if (previousValue != null)
+        {
+            previousValue.setParent(null);
+        }
+        return previousValue; 
     }
 
     private void setNewParent(String facetName, UIComponent facet)
@@ -114,7 +123,24 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         UIComponent oldParent = facet.getParent();
         if (oldParent != null)
         {
-            oldParent.getFacets().remove(facetName);
+            if (!oldParent.getChildren().remove(facet))
+            {
+                // Check if the component is inside a facet and remove from there
+                if (oldParent.getFacetCount() > 0)
+                {
+                    for (Iterator< Map.Entry<String, UIComponent > > it = 
+                        oldParent.getFacets().entrySet().iterator() ; it.hasNext() ; )
+                    {
+                        Map.Entry<String, UIComponent > entry = it.next();
+                        
+                        if (entry.getValue().equals(facet))
+                        {
+                            it.remove();
+                            break;
+                        }
+                    }
+                }
+            }
         }
         facet.setParent(_component);
     }
