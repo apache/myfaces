@@ -34,4 +34,9 @@ public abstract class PageContext
     public abstract Map<String, ValueExpression> getAttributes();
     
     public abstract int getAttributeCount();
+    
+    public abstract boolean isAllowCacheELExpressions();
+
+    public abstract void setAllowCacheELExpressions(boolean cacheELExpressions);
+
 }

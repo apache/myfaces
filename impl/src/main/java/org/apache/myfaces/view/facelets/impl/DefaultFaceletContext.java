@@ -45,12 +45,14 @@ import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.TemplateManager;
 import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
+import org.apache.myfaces.view.facelets.el.VariableMapperBase;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 
 /**
@@ -74,6 +76,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     private VariableMapper _varMapper;
     private final DefaultVariableMapper _defaultVarMapper;
+    private VariableMapperBase _varMapperBase;
 
     private FunctionMapper _fnMapper;
 
@@ -92,6 +95,10 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     private final List<TemplateContext> _isolatedTemplateContext;
     
     private int _currentTemplateContext;
+    
+    private ELExpressionCacheMode _elExpressionCacheMode;
+    
+    private boolean _isCacheELExpressions;
 
     private final List<PageContext> _isolatedPageContext;
     
@@ -106,6 +113,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _fnMapper = ctx._fnMapper;
         _varMapper = ctx._varMapper;
         _defaultVarMapper = ctx._defaultVarMapper;
+        _varMapperBase = ctx._varMapperBase;
         _faceletHierarchy = new ArrayList<AbstractFacelet>(ctx._faceletHierarchy
                 .size() + 1);
         _faceletHierarchy.addAll(ctx._faceletHierarchy);
@@ -140,6 +148,9 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _currentTemplateContext = ctx._currentTemplateContext;
         
         _isolatedPageContext = ctx._isolatedPageContext;
+        
+        _elExpressionCacheMode = ctx._elExpressionCacheMode;
+        _isCacheELExpressions = ctx._isCacheELExpressions;
 
         //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -160,11 +171,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         {
             _defaultVarMapper = new DefaultVariableMapper();
             _varMapper = _defaultVarMapper;
+            _varMapperBase = _defaultVarMapper;
         }
         else
         {
             _defaultVarMapper = new DefaultVariableMapper(_varMapper);
             _varMapper = _defaultVarMapper;
+            _varMapperBase = _defaultVarMapper;
         }
         
         _faceletHierarchy = new ArrayList<AbstractFacelet>(1);
@@ -178,6 +191,9 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _defaultVarMapper.setTemplateContext(_isolatedTemplateContext.get(_currentTemplateContext));
         
         _isolatedPageContext = new ArrayList<PageContext>(8);
+        
+        _elExpressionCacheMode = mctx.getELExpressionCacheMode();
+        _isCacheELExpressions = !ELExpressionCacheMode.noCache.equals(_elExpressionCacheMode);
 
         //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
@@ -210,6 +226,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         // Assert.param("varMapper", varMapper);
         _varMapper = varMapper;
+        _varMapperBase = (_varMapper instanceof VariableMapperBase) ? (VariableMapperBase) varMapper : null;
     }
 
     /**
@@ -798,4 +815,43 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         return _mctx;
     }
+    
+    public boolean isAnyFaceletsVariableResolved()
+    {
+        //if (isAllowCacheELExpressions() && _varMapperBase != null)
+        if (_varMapperBase != null)
+        {
+            return _varMapperBase.isAnyFaceletsVariableResolved();
+        }
+        return true;
+    }
+    
+    public boolean isAllowCacheELExpressions()
+    {
+        return _isCacheELExpressions && getTemplateContext().isAllowCacheELExpressions() && getPageContext().isAllowCacheELExpressions();
+    }
+    
+    public void beforeConstructELExpression()
+    {
+        //if (isAllowCacheELExpressions() && _varMapperBase != null)
+        if (_varMapperBase != null)
+        {
+            _varMapperBase.beforeConstructELExpression();
+        }
+    }
+    
+    public void afterConstructELExpression()
+    {
+        //if (isAllowCacheELExpressions() && _varMapperBase != null)
+        if (_varMapperBase != null)
+        {
+            _varMapperBase.afterConstructELExpression();
+        }
+    }
+    
+    public ELExpressionCacheMode getELExpressionCacheMode()
+    {
+        return _elExpressionCacheMode;
+    }
+    
 }

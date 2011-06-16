@@ -126,4 +126,18 @@ public abstract class TemplateContext
      * @return
      */
     public abstract Map<String, ValueExpression> getParameterMap();
+
+    /**
+     * 
+     * @since 2.0.8
+     * @return
+     */
+    public abstract boolean isAllowCacheELExpressions();
+
+    /**
+     * 
+     * @since 2.0.8
+     * @return
+     */
+    public abstract void setAllowCacheELExpressions(boolean cacheELExpressions);
 }

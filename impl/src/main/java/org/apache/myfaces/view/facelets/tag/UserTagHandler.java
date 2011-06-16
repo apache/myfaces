@@ -112,18 +112,28 @@ final class UserTagHandler extends TagHandler implements TemplateClient
         // eval include
         try
         {
-            String[] names = new String[_vars.length];
-            ValueExpression[] values = new ValueExpression[_vars.length];
-            for (int i = 0; i < _vars.length; i++)
+            String[] names = null;
+            ValueExpression[] values = null;
+            if (this._vars.length > 0)
             {
-                names[i] = _vars[i].getLocalName();
-                values[i] = _vars[i].getValueExpression(ctx, Object.class);
+                names = new String[_vars.length];
+                values = new ValueExpression[_vars.length];
+                for (int i = 0; i < _vars.length; i++)
+                {
+                    names[i] = _vars[i].getLocalName();
+                    values[i] = _vars[i].getValueExpression(ctx, Object.class);
+                }
             }
             actx.pushTemplateContext(new TemplateContextImpl());
-            for (int i = 0; i < this._vars.length; i++)
+            if (this._vars.length > 0)
             {
-                ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
+                for (int i = 0; i < this._vars.length; i++)
+                {
+                    ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
+                }
             }
+            //Disable caching always, even in 'always' mode
+            actx.getTemplateContext().setAllowCacheELExpressions(false);
             actx.pushClient(this);
             ctx.includeFacelet(parent, this._location);
         }

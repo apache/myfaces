@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
+import javax.faces.FacesWrapper;
 
 /**
  * Utility class for wrapping another VariableMapper with a new context, represented by a {@link java.util.Map Map}.
@@ -33,12 +34,20 @@ import javax.el.VariableMapper;
  * @author Jacob Hookom
  * @version $Id: VariableMapperWrapper.java,v 1.7 2008/07/13 19:01:43 rlubke Exp $
  */
-public final class VariableMapperWrapper extends VariableMapper
+public final class VariableMapperWrapper extends VariableMapperBase implements FacesWrapper<VariableMapper>
 {
 
     private final VariableMapper _target;
+    
+    private final VariableMapperBase _targetBase;
 
     private Map<String, ValueExpression> _vars;
+    
+    //private final boolean _checkTargetBase;
+    
+    public boolean _trackResolveVariables;
+    
+    public boolean _variableResolved;
 
     /**
      * 
@@ -47,6 +56,10 @@ public final class VariableMapperWrapper extends VariableMapper
     {
         super();
         _target = orig;
+        _targetBase = (orig instanceof VariableMapperBase) ? (VariableMapperBase) orig : null;
+        //_checkTargetBase = true;
+        _trackResolveVariables = false;
+        _variableResolved = false;
     }
 
     /**
@@ -62,6 +75,13 @@ public final class VariableMapperWrapper extends VariableMapper
             if (_vars != null)
             {
                 ve = (ValueExpression) _vars.get(variable);
+
+                // Is this code in a block that wants to cache 
+                // the resulting expression(s) and variable has been resolved?
+                if (_trackResolveVariables && ve != null)
+                {
+                    _variableResolved = true;
+                }
             }
             
             if (ve == null)
@@ -90,5 +110,78 @@ public final class VariableMapperWrapper extends VariableMapper
         }
         
         return _vars.put(variable, expression);
+    }
+
+    @Override
+    public boolean isAnyFaceletsVariableResolved()
+    {
+        if (_trackResolveVariables)
+        {
+            if (_variableResolved)
+            {
+                //Force EL creation!
+                return true;
+            }
+            else
+            {
+                //Otherwise check parent variable mapper 
+                //if (_checkTargetBase)
+                //{
+                    if (_targetBase != null)
+                    {
+                        return _targetBase.isAnyFaceletsVariableResolved();
+                    }
+                    else
+                    {
+                        // Another VariableMapper not extending from the base one was used. 
+                        // (that's the reason why _targetBase is null).
+                        // It is not possible to be sure the EL expression could use that mapper, 
+                        // so return true to force EL expression creation.
+                        return true;
+                    }
+                //}
+                //else
+                //{
+                    // If no check for targetBase is required, we are in a context that suppose there will not
+                    // be variables resolved that could affect the expressions. So return false, indicating
+                    // the resulting expression can be cached.
+                    //return false;
+                //}
+            }
+        }
+        else
+        {
+            // Force expression creation, because the call is outside caching block.
+            return true;
+        }
+    }
+
+    public VariableMapper getWrapped()
+    {
+        return _target;
+    }
+
+    @Override
+    public void beforeConstructELExpression()
+    {
+        _trackResolveVariables = true;
+        _variableResolved = false;
+        //if (_checkTargetBase && _targetBase != null)
+        if (_targetBase != null)
+        {
+            _targetBase.beforeConstructELExpression();
+        }
+    }
+
+    @Override
+    public void afterConstructELExpression()
+    {
+        //if (_checkTargetBase && _targetBase != null)
+        if (_targetBase != null)
+        {
+            _targetBase.afterConstructELExpression();
+        }
+        _trackResolveVariables = false;
+        _variableResolved = false;
     }
 }

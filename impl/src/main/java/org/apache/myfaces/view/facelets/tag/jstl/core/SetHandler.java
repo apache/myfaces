@@ -35,6 +35,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 
 /**
  * Simplified implementation of c:set
@@ -132,7 +133,15 @@ public class SetHandler extends TagHandler
                 expr.setValue(elCtx, veObj.getValue(elCtx));
             } else {
                 //ctx.getVariableMapper().setVariable(varStr, veObj);
-                ((AbstractFaceletContext) ctx).getPageContext().getAttributes().put(varStr, veObj);
+                AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
+                actx.getPageContext().getAttributes().put(varStr, veObj);
+                if (actx.getPageContext().isAllowCacheELExpressions())
+                {
+                    if (ELExpressionCacheMode.strict.equals(actx.getELExpressionCacheMode()))
+                    {
+                        actx.getPageContext().setAllowCacheELExpressions(false);
+                    }
+                }
             }
         }
         else

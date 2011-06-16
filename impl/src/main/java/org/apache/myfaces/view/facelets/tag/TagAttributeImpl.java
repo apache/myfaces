@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
+import java.util.Arrays;
+
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
@@ -28,6 +30,7 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
@@ -66,6 +69,14 @@ public final class TagAttributeImpl extends TagAttribute
     private final String value;
 
     private String string;
+
+    /**
+     * This variable is used to cache created expressions using
+     * getValueExpression or getMethodExpression methods. It uses
+     * a racy single check strategy, because if the expression can be
+     * cached the same instance will be built.
+     */
+    private volatile Object[] cachedExpression;
 
     public TagAttributeImpl(Location location, String ns, String localName, String qName, String value)
     {
@@ -177,6 +188,26 @@ public final class TagAttributeImpl extends TagAttribute
      */
     public MethodExpression getMethodExpression(FaceletContext ctx, Class type, Class[] paramTypes)
     {
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        
+        //volatile reads are atomic, so take the tuple to later comparison.
+        Object[] localCachedExpression = cachedExpression; 
+        
+        if (actx.isAllowCacheELExpressions() && localCachedExpression != null && (localCachedExpression.length % 3 == 0))
+        {
+            //If the expected type and paramTypes are the same return the cached one
+            for (int i = 0; i < (localCachedExpression.length/3); i++)
+            {
+                if ( ((type == null && localCachedExpression[(i*3)] == null ) ||
+                     (type != null && type.equals(localCachedExpression[(i*3)])) ) &&
+                     (Arrays.equals(paramTypes, (Class[]) localCachedExpression[(i*3)+1])) )
+                {
+                    return (MethodExpression) localCachedExpression[(i*3)+2];
+                }
+            }
+        }
+        
+        actx.beforeConstructELExpression();
         try
         {
             MethodExpression methodExpression = null;
@@ -221,11 +252,39 @@ public final class TagAttributeImpl extends TagAttribute
                 }
             }
             
-            return new TagMethodExpression(this, methodExpression);
+            methodExpression = new TagMethodExpression(this, methodExpression);
+                
+            if (actx.isAllowCacheELExpressions() && !actx.isAnyFaceletsVariableResolved())
+            {
+                if (localCachedExpression != null && (localCachedExpression.length % 3 == 0))
+                {
+                    // If you use a racy single check, assign
+                    // the volatile variable at the end.
+                    Object[] array = new Object[localCachedExpression.length+3];
+                    array[0] = type;
+                    array[1] = paramTypes;
+                    array[2] = methodExpression;
+                    for (int i = 0; i < localCachedExpression.length; i++)
+                    {
+                        array[i+3] = localCachedExpression[i];
+                    }
+                    cachedExpression = array;
+                }
+                else
+                {
+                    cachedExpression = new Object[]{type, paramTypes, methodExpression};
+                }
+            }
+
+            return methodExpression; 
         }
         catch (Exception e)
         {
             throw new TagAttributeException(this, e);
+        }
+        finally
+        {
+            actx.afterConstructELExpression();
         }
     }
     
@@ -352,6 +411,24 @@ public final class TagAttributeImpl extends TagAttribute
      */
     public ValueExpression getValueExpression(FaceletContext ctx, Class type)
     {
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        
+        //volatile reads are atomic, so take the tuple to later comparison.
+        Object[] localCachedExpression = cachedExpression;
+        if (actx.isAllowCacheELExpressions() && localCachedExpression != null && localCachedExpression.length == 2)
+        {
+            //If the expected type is the same return the cached one
+            if (localCachedExpression[0] == null && type == null)
+            {
+                return (ValueExpression) localCachedExpression[1];
+            }
+            else if (localCachedExpression[0] != null && localCachedExpression[0].equals(type))
+            {
+                return (ValueExpression) localCachedExpression[1];
+            }
+        }
+
+        actx.beforeConstructELExpression();
         try
         {
             ExpressionFactory f = ctx.getExpressionFactory();
@@ -383,11 +460,19 @@ public final class TagAttributeImpl extends TagAttribute
                 }
             }
             
+            if (actx.isAllowCacheELExpressions() && !actx.isAnyFaceletsVariableResolved())
+            {
+                cachedExpression = new Object[]{type, valueExpression};
+            }
             return valueExpression;
         }
         catch (Exception e)
         {
             throw new TagAttributeException(this, e);
+        }
+        finally
+        {
+            actx.afterConstructELExpression();
         }
     }
 
