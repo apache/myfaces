@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
@@ -283,7 +284,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         UIComponent contextComponent = context.getComponent();
         UIComponent target = contextComponent.findComponent(id);
         if (target == null) {
-            target = contextComponent.findComponent(COLON + id);
+            target = contextComponent.findComponent(UINamingContainer.getSeparatorChar(context.getFacesContext()) + id);
         }
         if (target != null) {
             return target.getClientId();
