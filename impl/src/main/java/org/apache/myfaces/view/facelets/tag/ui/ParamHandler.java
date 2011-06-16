@@ -33,6 +33,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 
 /**
  * @author Jacob Hookom
@@ -88,7 +89,17 @@ public class ParamHandler extends TagHandler
             ELException
     {
         //((AbstractFaceletContext) ctx).getTemplateContext().getAttributes().put(nameStr, valueVE);
-        ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(nameStr, valueVE);
+        AbstractFaceletContext actx = ((AbstractFaceletContext) ctx); 
+        actx.getTemplateContext().setParameter(nameStr, valueVE);
+        
+        if (actx.getTemplateContext().isAllowCacheELExpressions())
+        {
+            if (ELExpressionCacheMode.strict.equals(actx.getELExpressionCacheMode()) ||
+                ELExpressionCacheMode.allowCset.equals(actx.getELExpressionCacheMode()))
+            {
+                actx.getTemplateContext().setAllowCacheELExpressions(false);
+            }
+        }
     }
     
     public String getName(FaceletContext ctx)

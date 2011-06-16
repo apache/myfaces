@@ -68,6 +68,8 @@ public class TemplateContextImpl extends TemplateContext
     private TemplateManager _compositeComponentClient;
     
     private TemplateManagerImpl _lastClient;
+    
+    private boolean _isCacheELExpressions;
 
     public TemplateContextImpl()
     {
@@ -81,6 +83,7 @@ public class TemplateContextImpl extends TemplateContext
         // to this manager. 
         _clients.add(new TemplateManagerImpl(null, INITIAL_TEMPLATE_CLIENT, true, INITIAL_PAGE_CONTEXT));
         _lastClient = _clients.getFirst();
+        _isCacheELExpressions = true;
     }
 
     @Override
@@ -369,6 +372,13 @@ public class TemplateContextImpl extends TemplateContext
     
     public static final class InitialPageContext extends PageContext
     {
+        private boolean _isCacheELExpressions;
+        
+        public InitialPageContext()
+        {
+            _isCacheELExpressions = true;
+        }
+        
         @Override
         public Map<String, ValueExpression> getAttributes()
         {
@@ -380,5 +390,32 @@ public class TemplateContextImpl extends TemplateContext
         {
             return 0;
         }
+
+        @Override
+        public boolean isAllowCacheELExpressions()
+        {
+            return _isCacheELExpressions;
+        }
+
+        @Override
+        public void setAllowCacheELExpressions(boolean cacheELExpressions)
+        {
+            _isCacheELExpressions = cacheELExpressions;
+        }
     }
+
+
+    @Override
+    public boolean isAllowCacheELExpressions()
+    {
+        return _isCacheELExpressions;
+    }
+
+    @Override
+    public void setAllowCacheELExpressions(boolean cacheELExpressions)
+    {
+        _isCacheELExpressions = cacheELExpressions;
+    }
+    
+    
 }

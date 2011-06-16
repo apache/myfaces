@@ -29,8 +29,11 @@ public class PageContextImpl extends PageContext {
     
     private Map<String, ValueExpression> _attributes = null;
     
+    private boolean _isCacheELExpressions;
+
     public PageContextImpl()
     {
+        _isCacheELExpressions = true;
     }
 
     @Override
@@ -47,5 +50,17 @@ public class PageContextImpl extends PageContext {
     public int getAttributeCount()
     {
         return _attributes == null ? 0 : _attributes.size();
+    }
+
+    @Override
+    public boolean isAllowCacheELExpressions()
+    {
+        return _isCacheELExpressions;
+    }
+
+    @Override
+    public void setAllowCacheELExpressions(boolean cacheELExpressions)
+    {
+        _isCacheELExpressions = cacheELExpressions;
     }
 }

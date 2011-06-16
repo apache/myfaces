@@ -37,7 +37,7 @@ import org.apache.myfaces.view.facelets.TemplateContext;
  * @author Jacob Hookom
  * @version $Id: DefaultVariableMapper.java,v 1.3 2008/07/13 19:01:43 rlubke Exp $
  */
-public final class DefaultVariableMapper extends VariableMapper
+public final class DefaultVariableMapper extends VariableMapperBase
 {
     private Map<String, ValueExpression> _vars;
     
@@ -46,10 +46,16 @@ public final class DefaultVariableMapper extends VariableMapper
     private TemplateContext _templateContext;
     
     private VariableMapper _delegate;
+    
+    public boolean _trackResolveVariables;
+    
+    public boolean _variableResolved;
 
     public DefaultVariableMapper()
     {
         super();
+        _trackResolveVariables = false;
+        _variableResolved = false;
     }
 
     public DefaultVariableMapper(VariableMapper delegate)
@@ -69,26 +75,47 @@ public final class DefaultVariableMapper extends VariableMapper
         {
             returnValue = _vars.get(name);
         }
-        
-        if (returnValue == null && _pageContext != null)
+
+        //If the variable is not on the VariableMapper
+        if (returnValue == null)
         {
-            if (returnValue == null && _pageContext.getAttributeCount() > 0)
+            //Check on page and template context
+            if (_pageContext != null && _pageContext.getAttributeCount() > 0)
             {
-                returnValue = _pageContext.getAttributes().get(name);
+                if (_pageContext.getAttributes().containsKey(name))
+                {
+                    returnValue = _pageContext.getAttributes().get(name);
+                    if (_trackResolveVariables)
+                    {
+                        _variableResolved = true;
+                    }
+                    return returnValue;
+                }
+            }
+            
+            if (_templateContext != null && !_templateContext.isParameterEmpty())
+            {
+                if (_templateContext.getParameterMap().containsKey(name))
+                {
+                    returnValue = _templateContext.getParameter(name);
+                    if (_trackResolveVariables)
+                    {
+                        _variableResolved = true;
+                    }
+                    return returnValue;
+                }
+            }
+            
+            if (_delegate != null)
+            {
+                returnValue = _delegate.resolveVariable(name);
             }
         }
-        
-        if (returnValue == null && _templateContext != null)
+        else if (_trackResolveVariables)
         {
-            if (returnValue == null && !_templateContext.isParameterEmpty())
-            {
-                returnValue = _templateContext.getParameter(name);
-            }
-        }        
-        
-        if (returnValue == null && _delegate != null)
-        {
-            returnValue = _delegate.resolveVariable(name);
+            // Is this code in a block that wants to cache 
+            // the resulting expression(s) and variable has been resolved?
+            _variableResolved = true;
         }
         
         return returnValue;
@@ -125,5 +152,33 @@ public final class DefaultVariableMapper extends VariableMapper
     public void setTemplateContext(TemplateContext templateContext)
     {
         this._templateContext = templateContext;
+    }
+
+    @Override
+    public boolean isAnyFaceletsVariableResolved()
+    {
+        if (_trackResolveVariables)
+        {
+            return _variableResolved;
+        }
+        else
+        {
+            //Force expression creation
+            return true;
+        }
+    }
+
+    @Override
+    public void beforeConstructELExpression()
+    {
+        _trackResolveVariables = true;
+        _variableResolved = false;
+    }
+
+    @Override
+    public void afterConstructELExpression()
+    {
+        _trackResolveVariables = false;
+        _variableResolved = false;
     }
 }

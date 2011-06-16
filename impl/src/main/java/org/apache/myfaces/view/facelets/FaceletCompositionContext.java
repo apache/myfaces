@@ -18,10 +18,8 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
@@ -333,5 +331,15 @@ abstract public class FaceletCompositionContext
      * @return A value that could be useful to revert its effects.
      */
     public abstract Object removeMethodExpressionTargeted(UIComponent targetedComponent, String attributeName);
-
+    
+    /**
+     * Indicates if a EL Expression can be or not cached by facelets vdl.
+     * 
+     * @since 2.0.8
+     * @return
+     */
+    public ELExpressionCacheMode getELExpressionCacheMode()
+    {
+        return ELExpressionCacheMode.noCache;
+    }
 }
