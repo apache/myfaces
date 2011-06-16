@@ -86,4 +86,106 @@ public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase
         panel.getChildren().remove(input);
         assertNull(input.getParent());
     }
+    
+    /** Whenever a new child component is added, the parent property 
+     * of the child must be set to this component instance. 
+     * If the parent property of the child was already non-null, 
+     * the child must first be removed from its previous parent 
+     * (where it may have been either a child or a facet).
+     */
+    public void testSetChild1()
+    {
+        UIInput input = new UIInput();
+        input.setId("input0");
+
+        UIInput input1 = new UIInput();
+        input.setId("input1");
+        
+        UIPanel panel = new UIPanel();
+        panel.getChildren().add(input);
+        assertEquals(panel, input.getParent());
+        
+        panel.getChildren().set(0, input1);
+        
+        assertEquals(panel, input1.getParent());
+        assertNull(input.getParent());
+    }
+    
+    public void testSetChild2()
+    {
+        UIInput input = new UIInput();
+        input.setId("input0");
+
+        UIInput input1 = new UIInput();
+        input.setId("input1");
+        
+        UIPanel panel = new UIPanel();
+        panel.getChildren().add(input);
+        assertEquals(panel, input.getParent());
+        
+        UIViewRoot root = new UIViewRoot();
+        root.getChildren().add(panel);
+        root.getFacets().put("customFacet", input1);
+        
+        panel.getChildren().set(0, input1);
+        
+        assertEquals(panel, input1.getParent());
+        assertNull(input.getParent());
+        
+        assertTrue(root.getFacets().isEmpty());
+    }
+    
+    
+    
+    /** Whenever an existing child component is removed, the parent 
+     * property of the child must be set to null.
+     */
+    public void testSetFacetClearChild()
+    {
+        UIInput input = new UIInput();
+        input.setId("input0");
+
+        UIInput input1 = new UIInput();
+        input.setId("input1");
+        
+        UIPanel panel = new UIPanel();
+        panel.getChildren().add(input);
+        assertEquals(panel, input.getParent());
+
+        UIViewRoot root = new UIViewRoot();
+        root.getChildren().add(panel);
+        root.getFacets().put("customFacet", input1);
+
+        root.getFacets().put("customFacet", input);
+        assertEquals(root, input.getParent());
+        assertNull(input1.getParent());
+        
+        assertFalse(root.getFacets().isEmpty());
+        assertTrue(panel.getChildCount() == 0);
+    }
+
+    
+    public void testSetFacetClearFacet()
+    {
+        UIInput input = new UIInput();
+        input.setId("input0");
+
+        UIInput input1 = new UIInput();
+        input.setId("input1");
+        
+        UIPanel panel = new UIPanel();
+        panel.getFacets().put("header", input);
+        assertEquals(panel, input.getParent());
+
+        UIViewRoot root = new UIViewRoot();
+        root.getChildren().add(panel);
+        root.getFacets().put("customFacet", input1);
+
+        root.getFacets().put("customFacet", input);
+        assertEquals(root, input.getParent());
+        assertNull(input1.getParent());
+        
+        assertFalse(root.getFacets().isEmpty());
+        assertTrue(panel.getChildCount() == 0);
+    }
 }
