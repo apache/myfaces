@@ -74,14 +74,23 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
             return null;
         }
         final Map<Object, Object> requestMap = facesContext.getAttributes();
+        Scope prevScope = null;
         try
         {
+            prevScope = getScope(requestMap);
             setScope(requestMap);
             return super.getCommonPropertyType(context, base);
         }
         finally
         {
-            unsetScope(requestMap);
+            if(prevScope != null)
+            {
+                setScope(requestMap, prevScope);
+            }
+            else
+            {
+                unsetScope(requestMap);
+            }
         }
 
     }
@@ -95,15 +104,24 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
             return null;
         }
         final Map<Object, Object> requestMap = facesContext.getAttributes();
+        Scope prevScope = null;
         try
         {
+            prevScope = getScope(requestMap);
             setScope(requestMap);
             return super.getFeatureDescriptors(context, base);
 
         }
         finally
         {
-            unsetScope(requestMap);
+            if(prevScope != null)
+            {
+                setScope(requestMap, prevScope);
+            }
+            else
+            {
+                unsetScope(requestMap);
+            }
         }
     }
 
@@ -116,14 +134,23 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
             return null;
         }
         final Map<Object, Object> requestMap = facesContext.getAttributes();
+        Scope prevScope = null;
         try
         {
+            prevScope = getScope(requestMap);
             setScope(requestMap);
             return super.getType(context, base, property);
         }
         finally
         {
-            unsetScope(requestMap);
+            if(prevScope != null)
+            {
+                setScope(requestMap, prevScope);
+            }
+            else
+            {
+                unsetScope(requestMap);
+            }
         }
     }
 
@@ -136,14 +163,23 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
             return null;
         }
         final Map<Object, Object> requestMap = facesContext.getAttributes();
+        Scope prevScope = null;
         try
         {
+            prevScope = getScope(requestMap);
             setScope(requestMap);
             return super.getValue(context, base, property);
         }
         finally
         {
-            unsetScope(requestMap);
+            if(prevScope != null)
+            {
+                setScope(requestMap, prevScope);
+            }
+            else
+            {
+                unsetScope(requestMap);
+            }
         }
     }
 
@@ -156,14 +192,23 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
             return false;
         }
         final Map<Object, Object> requestMap = facesContext.getAttributes();
+        Scope prevScope = null;
         try
         {
+            prevScope = getScope(requestMap);
             setScope(requestMap);
             return super.isReadOnly(context, base, property);
         }
         finally
         {
-            unsetScope(requestMap);
+            if(prevScope != null)
+            {
+                setScope(requestMap, prevScope);
+            }
+            else
+            {
+                unsetScope(requestMap);
+            }
         }
     }
 
@@ -176,21 +221,40 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
             return;
         }
         final Map<Object, Object> requestMap = facesContext.getAttributes();
+        Scope prevScope = null;
         try
         {
+            prevScope = getScope(requestMap);
             setScope(requestMap);
             super.setValue(context, base, property, val);
 
         }
         finally
         {
-            unsetScope(requestMap);
+            if(prevScope != null)
+            {
+                setScope(requestMap, prevScope);
+            }
+            else
+            {
+                unsetScope(requestMap);
+            }
         }
     }
 
     private void setScope(final Map<Object, Object> attributes)
     {
         attributes.put(SCOPE, _scope);
+    }
+    
+    private Scope getScope(final Map<Object, Object> attributes)
+    {
+        return (Scope) attributes.get(Scope.class.getName());
+    }
+
+    private void setScope(final Map<Object, Object> attributes, Scope prevScope)
+    {
+        attributes.put(Scope.class.getName(), prevScope);
     }
 
     private static void unsetScope(final Map<Object, Object> attributes)
