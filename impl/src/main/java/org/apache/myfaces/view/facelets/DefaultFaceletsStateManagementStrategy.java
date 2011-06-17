@@ -40,6 +40,8 @@ import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -115,6 +117,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     private ViewDeclarationLanguageFactory _vdlFactory;
     
+    private RenderKitFactory _renderKitFactory = null;
+    
     public DefaultFaceletsStateManagementStrategy ()
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
@@ -129,14 +133,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         ResponseStateManager manager;
         Object state[];
         Map<String, Object> states;
-        
         UIViewRoot view = null;
-        
+ 
         // The value returned here is expected to be false (set by RestoreViewExecutor), but
         //we don't know if some ViewHandler wrapper could change it, so it is better to save the value.
         final boolean oldContextEventState = context.isProcessingEvents();
         // Get previous state from ResponseStateManager.
-        manager = RendererUtils.getResponseStateManager (context, renderKitId);
+        manager = getRenderKitFactory().getRenderKit(context, renderKitId).getResponseStateManager();
         
         //state = (Object[]) getStateCache().restoreSerializedView(context, viewId, manager.getState(context, viewId));
         state = (Object[]) manager.getState(context, viewId);
@@ -791,6 +794,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         while (children.hasNext()) {
             checkIds (context, children.next(), existingIds);
         }
+    }
+    
+    protected RenderKitFactory getRenderKitFactory()
+    {
+        if (_renderKitFactory == null)
+        {
+            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        }
+        return _renderKitFactory;
     }
     
     /*

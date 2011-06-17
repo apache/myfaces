@@ -293,9 +293,9 @@ public class StateManagerImpl extends StateManager
     {
         if (log.isLoggable(Level.FINEST)) log.finest("Entering writeState");
 
-        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        //UIViewRoot uiViewRoot = facesContext.getViewRoot();
         //save state in response (client)
-        RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, uiViewRoot.getRenderKitId());
+        RenderKit renderKit = facesContext.getRenderKit();
         ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
 
         responseStateManager.writeState(facesContext, state);
