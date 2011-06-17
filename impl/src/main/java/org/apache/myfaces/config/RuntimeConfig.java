@@ -21,6 +21,7 @@ package org.apache.myfaces.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
+import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
@@ -74,6 +76,10 @@ public class RuntimeConfig
     private PropertyResolver _propertyResolverChainHead;
 
     private VariableResolver _variableResolverChainHead;
+    
+    private Comparator<ELResolver> _elResolverComparator;
+    
+    private Predicate _elResolverPredicate;
 
     private final Map<String, org.apache.myfaces.config.element.Converter> _converterClassNameToConfigurationMap =
         new ConcurrentHashMap<String, org.apache.myfaces.config.element.Converter>();
@@ -329,6 +335,26 @@ public class RuntimeConfig
     public void setNamedEventManager(NamedEventManager namedEventManager)
     {
         this._namedEventManager = namedEventManager;
+    }
+
+    public Comparator<ELResolver> getELResolverComparator()
+    {
+        return _elResolverComparator;
+    }
+    
+    public void setELResolverComparator(Comparator<ELResolver> elResolverComparator)
+    {
+        _elResolverComparator = elResolverComparator;
+    }
+    
+    public Predicate getELResolverPredicate()
+    {
+        return _elResolverPredicate;
+    }
+    
+    public void setELResolverPredicate(Predicate elResolverPredicate)
+    {
+        _elResolverPredicate = elResolverPredicate;
     }
     
     public void addFaceletProcessingConfiguration(String fileExtension, FaceletsProcessing configuration)

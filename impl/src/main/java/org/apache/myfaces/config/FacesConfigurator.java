@@ -18,49 +18,23 @@
  */
 package org.apache.myfaces.config;
 
-import org.apache.myfaces.application.ApplicationFactoryImpl;
-import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
-import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
-import org.apache.myfaces.config.annotation.AnnotationConfigurator;
-import org.apache.myfaces.config.annotation.LifecycleProvider;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
-import org.apache.myfaces.config.element.Behavior;
-import org.apache.myfaces.config.element.ClientBehaviorRenderer;
-import org.apache.myfaces.config.element.FaceletsProcessing;
-import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.element.FacesConfigData;
-import org.apache.myfaces.config.element.ManagedBean;
-import org.apache.myfaces.config.element.NamedEvent;
-import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.config.element.Renderer;
-import org.apache.myfaces.config.element.ResourceBundle;
-import org.apache.myfaces.config.element.SystemEventListener;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.context.ExceptionHandlerFactoryImpl;
-import org.apache.myfaces.context.ExternalContextFactoryImpl;
-import org.apache.myfaces.context.FacesContextFactoryImpl;
-import org.apache.myfaces.context.PartialViewContextFactoryImpl;
-import org.apache.myfaces.el.DefaultPropertyResolver;
-import org.apache.myfaces.el.VariableResolverImpl;
-import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
-import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
-import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.shared_impl.util.LocaleUtils;
-import org.apache.myfaces.shared_impl.util.StateUtils;
-import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
-import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
-import org.apache.myfaces.spi.FacesConfigurationMerger;
-import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
-import org.apache.myfaces.util.ContainerUtils;
-import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
-import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
-import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
-import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
-import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELResolver;
 import javax.faces.FacesException;
@@ -90,22 +64,52 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.validator.BeanValidator;
 import javax.faces.webapp.FacesServlet;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.commons.collections.Predicate;
+import org.apache.myfaces.application.ApplicationFactoryImpl;
+import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
+import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
+import org.apache.myfaces.config.annotation.AnnotationConfigurator;
+import org.apache.myfaces.config.annotation.LifecycleProvider;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
+import org.apache.myfaces.config.element.Behavior;
+import org.apache.myfaces.config.element.ClientBehaviorRenderer;
+import org.apache.myfaces.config.element.FaceletsProcessing;
+import org.apache.myfaces.config.element.FacesConfig;
+import org.apache.myfaces.config.element.FacesConfigData;
+import org.apache.myfaces.config.element.ManagedBean;
+import org.apache.myfaces.config.element.NamedEvent;
+import org.apache.myfaces.config.element.NavigationRule;
+import org.apache.myfaces.config.element.Renderer;
+import org.apache.myfaces.config.element.ResourceBundle;
+import org.apache.myfaces.config.element.SystemEventListener;
+import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
+import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.context.ExceptionHandlerFactoryImpl;
+import org.apache.myfaces.context.ExternalContextFactoryImpl;
+import org.apache.myfaces.context.FacesContextFactoryImpl;
+import org.apache.myfaces.context.PartialViewContextFactoryImpl;
+import org.apache.myfaces.el.DefaultPropertyResolver;
+import org.apache.myfaces.el.VariableResolverImpl;
+import org.apache.myfaces.el.unified.ResolverBuilderBase;
+import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
+import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
+import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
+import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
+import org.apache.myfaces.spi.FacesConfigurationMerger;
+import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
+import org.apache.myfaces.util.ContainerUtils;
+import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
+import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
+import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
+import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
+import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
 
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
@@ -739,7 +743,59 @@ public class FacesConfigurator
                 log.log(Level.SEVERE, "Named event could not be initialized, reason:",e);
             }
         }
+
+        String comparatorClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_COMPARATOR);
         
+        if (comparatorClass != null && !"".equals(comparatorClass))
+        {
+            // get the comparator class
+            Class<Comparator<ELResolver>> clazz;
+            try {
+                clazz = (Class<Comparator<ELResolver>>) ClassUtils.classForName(comparatorClass);
+                // create the instance
+                Comparator<ELResolver> comparator = ClassUtils.newInstance(clazz);
+                
+                runtimeConfig.setELResolverComparator(comparator);
+            } catch (Exception e)
+            {
+                if (log.isLoggable(Level.SEVERE))
+                {
+                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator "+ comparatorClass+
+                            " . Check org.apache.myfaces.EL_RESOLVER_COMPARATOR web config param. Initialization continues with no comparator used.", e);
+                }
+            } 
+        }
+        else
+        {
+            runtimeConfig.setELResolverComparator(null);
+        }
+        
+        String elResolverPredicateClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_PREDICATE);
+        
+        if (elResolverPredicateClass != null && !"".equals(elResolverPredicateClass))
+        {
+            // get the comparator class
+            Class<Predicate> clazz;
+            try {
+                clazz = (Class<Predicate>) ClassUtils.classForName(elResolverPredicateClass);
+                // create the instance
+                Predicate elResolverPredicate = ClassUtils.newInstance(clazz);
+                
+                runtimeConfig.setELResolverPredicate(elResolverPredicate);
+            } catch (Exception e)
+            {
+                if (log.isLoggable(Level.SEVERE))
+                {
+                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator "+ comparatorClass+
+                            " . Check org.apache.myfaces.EL_RESOLVER_COMPARATOR web config param. Initialization continues with no comparator used.", e);
+                }
+            } 
+        }
+        else
+        {
+            runtimeConfig.setELResolverPredicate(null);
+        }
+
         for (FaceletsProcessing faceletsProcessing : dispenser.getFaceletsProcessing())
         {
             runtimeConfig.addFaceletProcessingConfiguration(faceletsProcessing.getFileExtension(), faceletsProcessing);

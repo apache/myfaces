@@ -19,15 +19,12 @@
 package org.apache.myfaces.el.unified;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELResolver;
 import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
@@ -38,7 +35,6 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
 import org.apache.myfaces.el.convert.VariableResolverToELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -120,18 +116,16 @@ public class ResolverBuilderBase
     @SuppressWarnings("unchecked")
     protected void sortELResolvers(List<ELResolver> resolvers, Scope scope)
     {
-        Comparator<ELResolver> comparator = (Comparator<ELResolver>) getAplicationScopedObject(
-                FacesContext.getCurrentInstance(), EL_RESOLVER_COMPARATOR);
-        if (comparator != null)
+        if (_config.getELResolverComparator() != null)
         {
             try
             {
                 // sort the resolvers
-                Collections.sort(resolvers, comparator);
+                Collections.sort(resolvers, _config.getELResolverComparator());
                 
                 if (log.isLoggable(Level.INFO)) {
                     log.log(Level.INFO, "Chain of EL resolvers for {0} sorted with: {1} and the result order is {2}", 
-                            new Object [] {scope, comparator, resolvers});
+                            new Object [] {scope, _config.getELResolverComparator(), resolvers});
                 }
             }
             catch (Exception e)
@@ -151,8 +145,7 @@ public class ResolverBuilderBase
     protected Iterable<ELResolver> filterELResolvers(List<ELResolver> resolvers, Scope scope)
     {
         
-        Predicate predicate = (Predicate) getAplicationScopedObject(
-                FacesContext.getCurrentInstance(), EL_RESOLVER_PREDICATE);
+        Predicate predicate = _config.getELResolverPredicate();
         if (predicate != null) {
             try
             {
@@ -173,42 +166,6 @@ public class ResolverBuilderBase
         return resolvers;
     }
     
-    // TODO this is very common logic, move to Utils? 
-    protected Object getAplicationScopedObject(FacesContext facesContext, String initParameterName)
-    {
-        ExternalContext externalContext = facesContext.getExternalContext();
-        String className = externalContext.getInitParameter(initParameterName);
-
-        Object applicationScopedObject = null;
-        if (className != null && !"".equals(className))
-        {
-            // if we already have a cached instance, use it
-            applicationScopedObject = externalContext. getApplicationMap().get(initParameterName);
-            try
-            {
-                if (applicationScopedObject == null)
-                {
-                    // get the  class
-                    Class<?> clazz = ClassUtils.classForName(className);
-
-                    // create the instance
-                    applicationScopedObject = clazz.newInstance();
-
-                    // cache the instance, because it will be used at least two times
-                    externalContext.getApplicationMap()
-                    .put(initParameterName, applicationScopedObject);
-                }
-            }
-            catch (Exception e)
-            {
-                log.log(Level.WARNING, 
-                        "Could not create instance of " + className + " for context-param " + initParameterName, e);
-            }
-        }    
-
-        return applicationScopedObject;
-    }
-
     protected ELResolver createELResolver(VariableResolver resolver)
     {
         return new VariableResolverToELResolver(resolver);
