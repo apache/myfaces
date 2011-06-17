@@ -21,6 +21,7 @@ package org.apache.myfaces.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,8 @@ public class RuntimeConfig
     private PropertyResolver _propertyResolverChainHead;
 
     private VariableResolver _variableResolverChainHead;
+    
+    private Comparator<ELResolver> _elResolverComparator;
 
     private final Map<String, org.apache.myfaces.config.impl.digester.elements.Converter> _converterClassNameToConfigurationMap =
         new ConcurrentHashMap<String, org.apache.myfaces.config.impl.digester.elements.Converter>();
@@ -300,5 +303,15 @@ public class RuntimeConfig
     public void resetManagedBeansNotReaddedAfterPurge()
     {
         _oldManagedBeans.clear();
+    }
+    
+    public Comparator<ELResolver> getELResolverComparator()
+    {
+        return _elResolverComparator;
+    }
+    
+    public void setELResolverComparator(Comparator<ELResolver> elResolverComparator)
+    {
+        _elResolverComparator = elResolverComparator;
     }
 }

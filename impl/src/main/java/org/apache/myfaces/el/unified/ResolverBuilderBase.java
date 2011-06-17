@@ -19,16 +19,12 @@
 package org.apache.myfaces.el.unified;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
 import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
@@ -36,7 +32,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
 import org.apache.myfaces.el.convert.VariableResolverToELResolver;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -112,38 +107,12 @@ public class ResolverBuilderBase
     @SuppressWarnings("unchecked")
     protected void sortELResolvers(List<ELResolver> resolvers)
     {
-        ExternalContext externalContext 
-                = FacesContext.getCurrentInstance().getExternalContext();
-        
-        String comparatorClass = externalContext
-                .getInitParameter(EL_RESOLVER_COMPARATOR);
-        
-        if (comparatorClass != null && !"".equals(comparatorClass))
+        if (_config.getELResolverComparator() != null)
         {
-            // the user provided the parameter.
-            
-            // if we already have a cached instance, use it
-            Comparator<ELResolver> comparator 
-                    = (Comparator<ELResolver>) externalContext.
-                        getApplicationMap().get(EL_RESOLVER_COMPARATOR);
             try
             {
-                if (comparator == null)
-                {
-                    // get the comparator class
-                    Class<Comparator<ELResolver>> clazz 
-                             = ClassUtils.classForName(comparatorClass);
-                    
-                    // create the instance
-                    comparator = clazz.newInstance();
-                    
-                    // cache the instance, because it will be used at least two times
-                    externalContext.getApplicationMap()
-                            .put(EL_RESOLVER_COMPARATOR, comparator);
-                }
-                
                 // sort the resolvers
-                Collections.sort(resolvers, comparator);
+                Collections.sort(resolvers, _config.getELResolverComparator());
             }
             catch (Exception e)
             {

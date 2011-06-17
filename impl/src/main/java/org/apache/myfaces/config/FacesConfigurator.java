@@ -30,6 +30,7 @@ import org.apache.myfaces.config.impl.digester.elements.ResourceBundle;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.el.DefaultPropertyResolver;
 import org.apache.myfaces.el.VariableResolverImpl;
+import org.apache.myfaces.el.unified.ResolverBuilderBase;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
@@ -71,6 +72,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -944,6 +946,31 @@ public class FacesConfigurator
             runtimeConfig.addFacesConfigElResolver((ELResolver) ClassUtils.newInstance(iter.next(), ELResolver.class));
         }
 
+        String comparatorClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_COMPARATOR);
+        
+        if (comparatorClass != null && !"".equals(comparatorClass))
+        {
+            // get the comparator class
+            Class<Comparator<ELResolver>> clazz;
+            try {
+                clazz = ClassUtils.classForName(comparatorClass);
+                // create the instance
+                Comparator<ELResolver> comparator = clazz.newInstance();
+                
+                runtimeConfig.setELResolverComparator(comparator);
+            } catch (Exception e)
+            {
+                if (log.isErrorEnabled())
+                {
+                    log.error("Cannot instantiate EL Resolver Comparator "+ comparatorClass+
+                            " . Check org.apache.myfaces.EL_RESOLVER_COMPARATOR web config param. Initialization continues with no comparator used.", e);
+                }
+            } 
+        }
+        else
+        {
+            runtimeConfig.setELResolverComparator(null);
+        }
     }
 
     private void removePurgedBeansFromSessionAndApplication(RuntimeConfig runtimeConfig)
