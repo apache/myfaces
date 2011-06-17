@@ -42,6 +42,7 @@ import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.el.DefaultPropertyResolver;
 import org.apache.myfaces.el.VariableResolverImpl;
+import org.apache.myfaces.el.unified.ResolverBuilderBase;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
@@ -98,6 +99,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -733,6 +735,32 @@ public class FacesConfigurator
             } catch (ClassNotFoundException e) {
                 log.log(Level.SEVERE, "Named event could not be initialized, reason:",e);
             }
+        }
+
+        String comparatorClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_COMPARATOR);
+        
+        if (comparatorClass != null && !"".equals(comparatorClass))
+        {
+            // get the comparator class
+            Class<Comparator<ELResolver>> clazz;
+            try {
+                clazz = ClassUtils.classForName(comparatorClass);
+                // create the instance
+                Comparator<ELResolver> comparator = clazz.newInstance();
+                
+                runtimeConfig.setELResolverComparator(comparator);
+            } catch (Exception e)
+            {
+                if (log.isLoggable(Level.SEVERE))
+                {
+                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator "+ comparatorClass+
+                            " . Check org.apache.myfaces.EL_RESOLVER_COMPARATOR web config param. Initialization continues with no comparator used.", e);
+                }
+            } 
+        }
+        else
+        {
+            runtimeConfig.setELResolverComparator(null);
         }
     }
 
