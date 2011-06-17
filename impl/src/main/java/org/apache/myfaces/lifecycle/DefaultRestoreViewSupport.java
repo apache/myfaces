@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
@@ -37,12 +38,12 @@ import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostRestoreStateEvent;
+import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared_impl.application.FacesServletMapping;
 import org.apache.myfaces.shared_impl.application.InvalidViewIdException;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
 import org.apache.myfaces.shared_impl.util.Assert;
 
 /**
@@ -80,6 +81,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
     private Map<String, Boolean> _checkedViewIdMap = null;
     private Boolean _checkedViewIdCacheEnabled = null;
+    
+    private RenderKitFactory _renderKitFactory = null;
 
     public void processComponentBinding(FacesContext facesContext, UIComponent component)
     {
@@ -191,8 +194,17 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
         String renderkitId = viewHandler.calculateRenderKitId(facesContext);
-        ResponseStateManager rsm = RendererUtils.getResponseStateManager(facesContext, renderkitId);
+        ResponseStateManager rsm = getRenderKitFactory().getRenderKit(facesContext, renderkitId).getResponseStateManager();
         return rsm.isPostback(facesContext);
+    }
+    
+    protected RenderKitFactory getRenderKitFactory()
+    {
+        if (_renderKitFactory == null)
+        {
+            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        }
+        return _renderKitFactory;
     }
         
     private static class RestoreStateCallback implements VisitCallback
