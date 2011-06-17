@@ -158,6 +158,10 @@ public class TemplateContextImpl extends TemplateContext
                 ELException
         {
             String testName = (name != null) ? name : "facelets._NULL_DEF_";
+            if (this._owner == null)
+            {
+                return false;
+            }
             if (this._names.contains(testName))
             {
                 return false;
@@ -202,7 +206,14 @@ public class TemplateContextImpl extends TemplateContext
         {
             // System.out.println(this.owner.getAlias() + " == " +
             // ((DefaultFacelet) o).getAlias());
-            return this._owner == o || this._target == o;
+            if (this._owner != null)
+            {
+                return this._owner == o || this._target == o;
+            }
+            else
+            {
+                return this._target == o;
+            }
         }
 
         public boolean isRoot()
