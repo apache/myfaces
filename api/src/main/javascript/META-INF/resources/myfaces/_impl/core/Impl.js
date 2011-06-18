@@ -103,7 +103,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         var ajaxUtils = new myfaces._impl.xhrCore._AjaxUtils(0);
 
         var ret = this._Lang.createFormDataDecorator([]);
-        ajaxUtils.encodeSubmittableFields(ret, null, null, form, null);
+        ajaxUtils.encodeSubmittableFields(ret, null, null, null, form, null);
         return ret.makeFinal();
     },
 
