@@ -605,7 +605,13 @@ public final class ErrorPageWriter
                     writer.write("<tr><td>");
                     writer.write(key.replaceAll("<", TS));
                     writer.write("</td><td>");
-                    writer.write(entry.getValue().toString().replaceAll("<", TS));
+                    Object value = entry.getValue();
+                    // in some (very rare) situations value can be null or not null but with null toString() representation
+                    if (value != null && value.toString() != null) {
+                        writer.write(value.toString().replaceAll("<", TS));
+                    } else {
+                        writer.write("null");
+                    }
                     writer.write("</td></tr>");
                     written = true;
                 }
