@@ -545,10 +545,23 @@ public class FacesConfigurator
                 // that cannot work because all system events need to have the source being passed in the constructor
                 //instead we now  rely on the standard system event types and map them to their appropriate constructor types
                 Class eventClass = ClassUtils.classForName((systemEventListener.getSystemEventClass() != null) ? systemEventListener.getSystemEventClass():SystemEvent.class.getName());
-                application.subscribeToEvent(
-                    (Class<? extends SystemEvent>)eventClass ,
-                        (Class<?>)ClassUtils.classForName((systemEventListener.getSourceClass() != null) ? systemEventListener.getSourceClass(): getDefaultSourcClassForSystemEvent(eventClass) ), //Application.class???
-                        (javax.faces.event.SystemEventListener)ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass()));
+                //application.subscribeToEvent(
+                //    (Class<? extends SystemEvent>)eventClass ,
+                //        (Class<?>)ClassUtils.classForName((systemEventListener.getSourceClass() != null) ? systemEventListener.getSourceClass(): getDefaultSourcClassForSystemEvent(eventClass) ), //Application.class???
+                //        (javax.faces.event.SystemEventListener)ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass()));
+                
+                if (systemEventListener.getSourceClass() != null && systemEventListener.getSourceClass().length() > 0)
+                {
+                    application.subscribeToEvent(
+                            (Class<? extends SystemEvent>)eventClass , ClassUtils.classForName(systemEventListener.getSourceClass()), 
+                                (javax.faces.event.SystemEventListener)ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass()));
+                }
+                else
+                {
+                    application.subscribeToEvent(
+                            (Class<? extends SystemEvent>)eventClass ,
+                                (javax.faces.event.SystemEventListener)ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass()));
+                }
             } catch (ClassNotFoundException e) {
                 log.log(Level.SEVERE, "System event listener could not be initialized, reason:",e);
             }
