@@ -33,6 +33,7 @@ import java.util.WeakHashMap;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 
 /**
@@ -77,6 +78,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     // Cache for component property descriptors
     private static Map<Class<?>, Map<String, PropertyDescriptor>> _propertyDescriptorCache = 
         new WeakHashMap<Class<?>, Map<String, PropertyDescriptor>>();
+    
+    private boolean _isCompositeComponent;
 
     /**
      * Create a map backed by the specified component.
@@ -161,6 +164,15 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     {
         checkKey(key);
 
+        // The most common call to this method comes from UIComponent.isCompositeComponent()
+        // to reduce the impact. This is better than two lookups, once over property descriptor map
+        // and the other one from the underlying map.
+        if (Resource.COMPONENT_RESOURCE_KEY.length() == ((String)key).length() &&
+            Resource.COMPONENT_RESOURCE_KEY.equals(key))
+        {
+            return _isCompositeComponent;
+        }
+ 
         return getPropertyDescriptor((String) key) == null ? getUnderlyingMap().containsKey(key) : false;
     }
 
@@ -247,8 +259,30 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 }
                 else
                 {
+                    if (_isCompositeComponent)
+                    {
+                        BeanInfo ccBeanInfo = (BeanInfo) getUnderlyingMap().get(UIComponent.BEANINFO_KEY);
+                        if (ccBeanInfo != null)
+                        {
+                            for (PropertyDescriptor attribute : ccBeanInfo.getPropertyDescriptors())
+                            {
+                                if (attribute.getName().equals(key))
+                                {
+                                    value = attribute.getValue("default");
+                                    break;
+                                }
+                            }
+                            // We have to check for a ValueExpression and also evaluate it
+                            // here, because in the PropertyDescriptor the default values are
+                            // always stored as (Tag-)ValueExpressions.
+                            if (value != null && value instanceof ValueExpression)
+                            {
+                                return ((ValueExpression) value).getValue(_component.getFacesContext().getELContext());
+                            }
+                        }
+                    }
                     // no value found
-                    return null;
+                    //return null;
                 }
             }
         }
@@ -306,7 +340,10 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Object put(String key, Object value)
     {
-        checkKey(key);
+        if (key == null)
+        {
+            throw new NullPointerException("key");
+        }
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(key);
         if (propertyDescriptor == null)
@@ -326,6 +363,13 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             }
             setComponentProperty(propertyDescriptor, value);
             return null;
+        }
+        // To keep this code in good shape, The fastest way to compare is look if the length first here
+        // because we avoid an unnecessary cast later on equals().
+        if ( Resource.COMPONENT_RESOURCE_KEY.length() == key.length() 
+             && Resource.COMPONENT_RESOURCE_KEY.equals(key))
+        {
+            _isCompositeComponent = true;
         }
         return _component.getStateHelper().put(UIComponentBase.PropertyKeys.attributesMap, key, value);
     }
