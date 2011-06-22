@@ -541,13 +541,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     "than zero");
             }
             
-            else if (size > end) {
+            else if ((begin + size) > end) {
                 throw new FacesException ("iteration size cannot be greater " +
                     "than collection size");
             }
         }
         
-        if ((size > -1) && (begin > size)) {
+        if ((size > -1) && (begin > end)) {
             throw new FacesException ("iteration offset cannot be greater " +
                 "than collection size");
         }
