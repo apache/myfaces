@@ -100,6 +100,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private transient Object _origValue;
     private transient Object _origVarStatus;
 
+    private transient FacesContext _facesContext;
+    
     public UIRepeat()
     {
         setRendererType("facelets.ui.Repeat");
@@ -657,87 +659,154 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     }
 
     @Override
-    public boolean invokeOnComponent(FacesContext faces, String clientId,
+    public boolean invokeOnComponent(FacesContext context, String clientId,
             ContextCallback callback) throws FacesException
     {
+        if (context == null || clientId == null || callback == null)
+        {
+            throw new NullPointerException();
+        }
         
-        // get the index-less clientId
-        pushComponentToEL(faces, this);
+        final String baseClientId = getClientId(context);
+
+        // searching for this component?
+        boolean returnValue = baseClientId.equals(clientId);
+
+        boolean isCachedFacesContext = isTemporalFacesContext();
+        if (!isCachedFacesContext)
+        {
+            setTemporalFacesContext(context);
+        }
+
+        pushComponentToEL(context, this);
         try
         {
-            String indexLessId = getClientId(faces);
-            if (clientId.startsWith(indexLessId))
+            if (returnValue)
             {
-                // the index for which the component should be invoked
-                int invokeIndex = -1;
-                
-                // try to get the invokeIndex out of the given clientId.
-                // Note that the clientId of UIRepeat contains the current index,
-                // if the index is >= 0 (see getContainerClientId()).
-                int idxStart = clientId.indexOf(UINamingContainer.getSeparatorChar(faces),
-                        indexLessId.length());
-                if (idxStart != -1 && Character.isDigit(clientId.charAt(idxStart + 1)))
-                {
-                    int idxEnd = clientId.indexOf(UINamingContainer.getSeparatorChar(faces), idxStart + 1);
-                    if (idxEnd != -1)
-                    {
-                        invokeIndex = Integer.parseInt(clientId.substring(idxStart + 1, idxEnd));
-                    }
-                }
-                
-                // safe the current index, count aside
-                final int prevIndex = _index;
-                final int prevCount = _count;
-                
                 try
                 {
-                    // save the current scope values and set the right index
-                    _captureScopeValues();
-                    if (invokeIndex != -1)
-                    {
-                        // calculate count for RepeatStatus
-                        _count = _calculateCountForIndex(invokeIndex);
-                    }
-                    _setIndex(invokeIndex);
-                    
-                    if (_isIndexAvailable())
-                    {
-                        return super.invokeOnComponent(faces, clientId, callback);
-                    }
-                    else if (clientId.equals(indexLessId))
-                    {
-                        // the only proper case for invokeIndex == -1 (Note that for 
-                        // a invokeIndex of -1 we must not invoke our children or facets)
-                        callback.invokeContextCallback(faces, this);
-                        return true;
-                    }
-                    else
-                    {
-                        // most likely no valid clientId
-                        return false;
-                    }
+                    callback.invokeContextCallback(context, this);
+                    return true;
                 }
-                finally
+                catch (Exception e)
                 {
-                    // restore the previous count, index and scope values
-                    _count = prevCount;
-                    _setIndex(prevIndex);
-                    _restoreScopeValues();
+                    throw new FacesException(e);
                 }
             }
-            else
+    
+            // Now Look throught facets on this UIComponent
+            if (this.getFacetCount() > 0)
             {
-                // the clientId does not match to this component or one of its children
-                return false;
+                for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
+                {
+                    returnValue = it.next().invokeOnComponent(context, clientId, callback);
+                }
+            }
+    
+            if (returnValue)
+            {
+                return returnValue;
+            }
+            
+            // is the component an inner component?
+            if (clientId.startsWith(baseClientId))
+            {
+                // Check if the clientId for the component, which we 
+                // are looking for, has a rowIndex attached
+                char separator = UINamingContainer.getSeparatorChar(context);
+                String subId = clientId.substring(baseClientId.length() + 1);
+                //If the char next to baseClientId is the separator one and
+                //the subId matches the regular expression
+                if (clientId.charAt(baseClientId.length()) == separator && 
+                        subId.matches("[0-9]+"+separator+".*"))
+                {
+                    String clientRow = subId.substring(0, subId.indexOf(separator));
+        
+                    // safe the current index, count aside
+                    final int prevIndex = _index;
+                    final int prevCount = _count;
+                    
+                    try
+                    {
+                        int invokeIndex = Integer.parseInt(clientRow);
+                        // save the current scope values and set the right index
+                        _captureScopeValues();
+                        if (invokeIndex != -1)
+                        {
+                            // calculate count for RepeatStatus
+                            _count = _calculateCountForIndex(invokeIndex);
+                        }
+                        _setIndex(invokeIndex);
+                        
+                        if (!_isIndexAvailable())
+                        {
+                            return false;
+                        }
+                        
+                        for (Iterator<UIComponent> it1 = getChildren().iterator(); 
+                            !returnValue && it1.hasNext();)
+                        {
+                            //recursive call to find the component
+                            returnValue = it1.next().invokeOnComponent(context, clientId, callback);
+                        }
+                    }
+                    finally
+                    {
+                        // restore the previous count, index and scope values
+                        _count = prevCount;
+                        _setIndex(prevIndex);
+                        _restoreScopeValues();
+                    }
+                }
+                else
+                {
+                    // Searching for this component's children
+                    if (this.getChildCount() > 0)
+                    {
+                        // Searching for this component's children/facets
+                        for (Iterator<UIComponent> it = this.getChildren().iterator(); !returnValue && it.hasNext();) {
+                            returnValue = it.next().invokeOnComponent(context, clientId, callback);
+                        }
+                    }
+                }
             }
         }
         finally
         {
             //all components must call popComponentFromEl after visiting is finished
-            popComponentFromEL(faces);
+            popComponentFromEL(context);
+            if (!isCachedFacesContext)
+            {
+                setTemporalFacesContext(null);
+            }
+        }
+
+        return returnValue;
+    }
+    
+    @Override
+    protected FacesContext getFacesContext()
+    {
+        if (_facesContext == null)
+        {
+            return super.getFacesContext();
+        }
+        else
+        {
+            return _facesContext;
         }
     }
     
+    private boolean isTemporalFacesContext()
+    {
+        return _facesContext != null;
+    }
+    
+    private void setTemporalFacesContext(FacesContext facesContext)
+    {
+        _facesContext = facesContext;
+    }
+
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {

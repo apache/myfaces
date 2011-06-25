@@ -139,7 +139,7 @@ public class RepeatTestCase extends FaceletTestCase
         
         // invokeOnComponent on a child of UIRepeat with invalid row (-1)
         invokeId = "form:repeat:outputText";
-        Assert.assertFalse(root.invokeOnComponent(facesContext, invokeId, callback));
+        Assert.assertTrue(root.invokeOnComponent(facesContext, invokeId, callback));
         
         // after all these calls to invokeOnComponent, row and status still
         // have to be the same like before
