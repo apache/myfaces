@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
@@ -40,6 +41,8 @@ import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
@@ -298,7 +301,18 @@ public class PartialViewContextImpl extends PartialViewContext {
                 // ResponseWriter from the RenderKit and then wrap if necessary. 
                 try
                 {
-                    responseWriter = _facesContext.getRenderKit().createResponseWriter(
+                    RenderKit renderKit = _facesContext.getRenderKit();
+                    if (renderKit == null)
+                    {
+                        // If the viewRoot was set to null by some reason, or there is no 
+                        // renderKitId on that view, this could be still an ajax redirect,
+                        // so we have to try to calculate the renderKitId and return a 
+                        // RenderKit instance, to send the response.
+                        String renderKitId = _facesContext.getApplication().getViewHandler().calculateRenderKitId(_facesContext);
+                        RenderKitFactory rkf = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+                        renderKit = rkf.getRenderKit(_facesContext, renderKitId);
+                    }
+                    responseWriter = renderKit.createResponseWriter(
                             _facesContext.getExternalContext().getResponseOutputWriter(), "text/xml",
                             _facesContext.getExternalContext().getRequestCharacterEncoding());
                 }
