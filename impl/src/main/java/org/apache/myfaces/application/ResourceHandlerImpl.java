@@ -259,8 +259,8 @@ public class ResourceHandlerImpl extends ResourceHandler
     @Override
     public void handleResourceRequest(FacesContext facesContext) throws IOException
     {
-        try
-        {
+        //try
+        //{
             String resourceBasePath = getResourceHandlerSupport()
                     .calculateResourceBasePath(facesContext);
     
@@ -373,14 +373,14 @@ public class ResourceHandlerImpl extends ResourceHandler
                             + e.getMessage());
                 httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
-        }
-        catch (Throwable ex)
-        {
+        //}
+        //catch (Throwable ex)
+        //{
             // handle the Throwable accordingly. Maybe generate an error page.
             // FIXME we are creating a html error page for a non html request here
             // shouln't we do something better? -=Jakob Korherr=-
-            ErrorPageWriter.handleThrowable(facesContext, ex);
-        }
+            //ErrorPageWriter.handleThrowable(facesContext, ex);
+        //}
     }
 
     /**

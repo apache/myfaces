@@ -72,7 +72,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
 import org.apache.myfaces.shared_impl.util.StateUtils;
-import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
@@ -115,7 +114,7 @@ public final class ErrorPageWriter
             UIViewRoot view = (UIViewRoot) requestMap.get(VIEW_KEY);
             
             StringWriter writer = new StringWriter();
-            ErrorPageWriter.debugHtml(writer, facesContext, t, view);
+            ErrorPageWriter.debugHtml(writer, facesContext, view, t);
             String html = writer.toString();
             
             // change the HTML in the buffer to be included in an existing html page
@@ -187,7 +186,7 @@ public final class ErrorPageWriter
     public static final String ERROR_PAGE_BEAN_KEY = "__myFacesErrorPageBean";
     
     private static final String EXCEPTION_KEY = "javax.servlet.error.exception";
-    private static final String VIEW_KEY = "org.apache.myfaces.error.UIViewRoot";
+    public static final String VIEW_KEY = "org.apache.myfaces.error.UIViewRoot";
 
     private static final Logger log = Logger.getLogger(ErrorPageWriter.class.getName());
 
@@ -229,9 +228,9 @@ public final class ErrorPageWriter
 
     /**
      * Indicate if myfaces is responsible to handle errors. 
-     * See http://wiki.apache.org/myfaces/Handling_Server_Errors for details. 
+     * See http://wiki.apache.org/myfaces/Handling_Server_Errors for details.
      */
-    @JSFWebConfigParam(defaultValue="true",expectedValues="true,false", since="1.2.4")
+    @JSFWebConfigParam(defaultValue="false, on Development Project stage: true",expectedValues="true,false", since="1.2.4")
     public static final String ERROR_HANDLING_PARAMETER = "org.apache.myfaces.ERROR_HANDLING";
 
     public ErrorPageWriter()
@@ -249,9 +248,10 @@ public final class ErrorPageWriter
      */
     public static void debugHtml(Writer writer, FacesContext faces, Throwable e) throws IOException
     {
-        debugHtml(writer, faces, e, faces.getViewRoot());
+        debugHtml(writer, faces, faces.getViewRoot(), e);
     }
     
+    /*
     private static void debugHtml(Writer writer, FacesContext faces, Throwable e, UIViewRoot view) throws IOException
     {
         _init(faces);
@@ -292,6 +292,81 @@ public final class ErrorPageWriter
             else if ("cause".equals(ERROR_PARTS[i]))
             {
                 _writeCause(writer, e);
+            }
+            else
+            {
+                writer.write(ERROR_PARTS[i]);
+            }
+        }
+    }*/
+    
+    private static void debugHtml(Writer writer, FacesContext faces, UIViewRoot view,  Throwable... exs) throws IOException
+    {
+        _init(faces);
+        Date now = new Date();
+        for (int i = 0; i < ERROR_PARTS.length; i++)
+        {
+            if ("message".equals(ERROR_PARTS[i]))
+            {
+                boolean printed = false;
+                for (Throwable e : exs)
+                {
+                    String msg = e.getMessage();
+                    if (printed)
+                    {
+                        writer.write("<br/>");
+                    }
+                    if (msg != null)
+                    {
+                        writer.write(msg.replaceAll("<", TS));
+                    }
+                    else
+                    {
+                        writer.write(e.getClass().getName());
+                    }
+                    printed = true;
+                }
+            }
+            else if ("trace".equals(ERROR_PARTS[i]))
+            {
+                boolean printed = false;
+                for (Throwable e : exs)
+                {
+                    if (printed)
+                    {
+                        writer.write("\n");
+                    }
+                    _writeException(writer, e);
+                    printed = true;
+                }
+            }
+            else if ("now".equals(ERROR_PARTS[i]))
+            {
+                writer.write(DateFormat.getDateTimeInstance().format(now));
+            }
+            else if ("tree".equals(ERROR_PARTS[i]))
+            {
+                if (view != null)
+                {
+                    _writeComponent(faces, writer, view, _getErrorId(exs));
+                }
+            }
+            else if ("vars".equals(ERROR_PARTS[i]))
+            {
+                _writeVariables(writer, faces, view);
+            }
+            else if ("cause".equals(ERROR_PARTS[i]))
+            {
+                boolean printed = false;
+                for (Throwable e : exs)
+                {
+                    if (printed)
+                    {
+                        writer.write("<br/>");
+                    }
+                    _writeCause(writer, e);
+                    printed = true;
+                }
             }
             else
             {
@@ -339,6 +414,37 @@ public final class ErrorPageWriter
             }
         }
     }
+    
+    public static void handle(FacesContext facesContext, Throwable... exs) throws FacesException
+    {
+        for (Throwable ex : exs)
+        {
+            _prepareExceptionStack(ex);
+        }
+        
+        if (!facesContext.getExternalContext().isResponseCommitted())
+        {
+            facesContext.getExternalContext().responseReset();
+        }
+
+        // normal request --> html error page
+        facesContext.getExternalContext().setResponseContentType("text/html");
+        facesContext.getExternalContext().setResponseCharacterEncoding("UTF-8");
+        try
+        {
+            // We need the real one, because the one returned from FacesContext.getResponseWriter()
+            // is configured with the encoding of the view.
+            Writer writer = facesContext.getExternalContext().getResponseOutputWriter();
+            debugHtml(writer, facesContext, facesContext.getViewRoot(), exs);
+        }
+        catch(IOException ioe)
+        {
+            throw new FacesException("Could not write the error page", ioe);
+        }
+
+        // mark the response as complete
+        facesContext.responseComplete();
+    }
 
     /**
      * Handles the given Throwbale in the following way:
@@ -350,7 +456,9 @@ public final class ErrorPageWriter
      * @param facesContext
      * @param ex
      * @throws FacesException
+     * @deprecated Use MyFacesExceptionHandlerWrapperImpl and handle() method
      */
+    @Deprecated
     public static void handleThrowable(FacesContext facesContext, Throwable ex) throws FacesException
     {
         _prepareExceptionStack(ex);
@@ -520,23 +628,32 @@ public final class ErrorPageWriter
         return str.split("@@");
     }
     
-    private static List<String> _getErrorId(Throwable e)
+    private static List<String> _getErrorId(Throwable... exs)
     {
-        String message = e.getMessage();
-
-        if (message == null)
-            return null;
-
-        List<String> list = new ArrayList<String>();
-        Pattern pattern = Pattern.compile(REGEX_PATTERN);
-        Matcher matcher = pattern.matcher(message);
-
-        while (matcher.find())
+        List<String> list = null;
+        for (Throwable e : exs)
         {
-            list.add(matcher.group(1));
+            String message = e.getMessage();
+    
+            if (message == null)
+                continue;
+    
+            Pattern pattern = Pattern.compile(REGEX_PATTERN);
+            Matcher matcher = pattern.matcher(message);
+    
+            while (matcher.find())
+            {
+                if (list == null)
+                {
+                    list = new ArrayList<String>(); 
+                }
+                list.add(matcher.group(1));
+            }
         }
-        if (list.size() > 0)
+        if (list != null && list.size() > 0)
+        {
             return list;
+        }
         return null;
     }
 
