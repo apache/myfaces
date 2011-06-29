@@ -535,9 +535,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         int end = getDataModel().getRowCount();
         int size = getSize();
         int step = getStep();
+        boolean sizeIsEnd = false;
         
         if (size == -1) {
             size = end;
+            sizeIsEnd = true;
         }
         
         if (end >= 0) {
@@ -546,7 +548,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     "than zero");
             }
             
-            else if ((begin + size) > end) {
+            else if (!sizeIsEnd && (begin + size) > end) {
                 throw new FacesException ("iteration size cannot be greater " +
                     "than collection size");
             }
