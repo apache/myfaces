@@ -229,14 +229,14 @@ public class LifecycleImpl extends Lifecycle
                 // let the PhaseExecutor do some pre-phase actions
                 renderExecutor.doPrePhaseActions(facesContext);
                 
-                boolean renderResponse = phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
+                phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
                 // also possible that one of the listeners completed the response
                 if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
                 {
                     return;
                 }
-                if(renderResponse || facesContext.getExceptionHandler().getClass().equals(ClassUtils.classForName("javax.faces.webapp.PreJsf2ExceptionHandlerFactory$PreJsf2ExceptionHandlerImpl")))
-                    renderExecutor.execute(facesContext);
+                
+                renderExecutor.execute(facesContext);
             }
             
             catch (Throwable e) {
