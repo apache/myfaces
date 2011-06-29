@@ -51,6 +51,11 @@ class RenderResponseExecutor extends PhaseExecutor
         String viewId;
         String newViewId;
         
+        if (facesContext.getViewRoot() == null)
+        {
+            throw new ViewNotFoundException("A view is required to execute "+facesContext.getCurrentPhaseId());
+        }
+        
         try
         {
             // do-while, because the view might change in PreRenderViewEvent-listeners

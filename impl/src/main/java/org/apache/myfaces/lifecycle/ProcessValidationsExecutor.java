@@ -31,6 +31,10 @@ class ProcessValidationsExecutor extends PhaseExecutor
 {
     public boolean execute(FacesContext facesContext)
     {
+        if (facesContext.getViewRoot() == null)
+        {
+            throw new ViewNotFoundException("A view is required to execute "+facesContext.getCurrentPhaseId());
+        }
         facesContext.getViewRoot().processValidators(facesContext);
         return false;
     }
