@@ -102,8 +102,8 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void execute(FacesContext facesContext) throws FacesException
     {
-        try
-        {
+        //try
+        //{
             // check for updates of web.xml and faces-config descriptors 
             // only if project state is not production
             if(!facesContext.isProjectStage(ProjectStage.Production))
@@ -120,12 +120,12 @@ public class LifecycleImpl extends Lifecycle
                     return;
                 }
             }
-        }
-        catch (Throwable ex)
-        {
+        //}
+        //catch (Throwable ex)
+        //{
             // handle the Throwable accordingly. Maybe generate an error page.
-            ErrorPageWriter.handleThrowable(facesContext, ex);
-        }
+            //ErrorPageWriter.handleThrowable(facesContext, ex);
+        //}
     }
 
     private boolean executePhase(FacesContext context, PhaseExecutor executor, PhaseListenerManager phaseListenerMgr)
@@ -207,8 +207,8 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void render(FacesContext facesContext) throws FacesException
     {
-        try
-        {
+        //try
+        //{
             // if the response is complete we should not be invoking the phase listeners
             if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
             {
@@ -267,12 +267,12 @@ public class LifecycleImpl extends Lifecycle
             {
                 log.finest("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
             }
-        }
-        catch (Throwable ex)
-        {
+        //}
+        //catch (Throwable ex)
+        //{
             // handle the Throwable accordingly. Maybe generate an error page.
-            ErrorPageWriter.handleThrowable(facesContext, ex);
-        }
+            //ErrorPageWriter.handleThrowable(facesContext, ex);
+        //}
     }
 
     private boolean isResponseComplete(FacesContext facesContext, PhaseId phase, boolean before)

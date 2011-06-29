@@ -21,7 +21,9 @@ package org.apache.myfaces.context;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerFactory;
 
+import org.apache.myfaces.shared_impl.context.AjaxExceptionHandlerImpl;
 import org.apache.myfaces.shared_impl.context.ExceptionHandlerImpl;
+import org.apache.myfaces.shared_impl.context.SwitchAjaxExceptionHandlerWrapperImpl;
 
 /**
  * DOCUMENT ME!
@@ -37,6 +39,8 @@ public class ExceptionHandlerFactoryImpl extends ExceptionHandlerFactory
     @Override
     public ExceptionHandler getExceptionHandler()
     {
-        return new ExceptionHandlerImpl();
+        return new SwitchAjaxExceptionHandlerWrapperImpl(
+                new MyFacesExceptionHandlerWrapperImpl(new ExceptionHandlerImpl()) , 
+                new AjaxExceptionHandlerImpl());
     }
 }
