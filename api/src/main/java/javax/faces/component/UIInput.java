@@ -383,7 +383,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         catch (Exception e)
         {
             // Enqueue an error message
-            context.getExternalContext().log(e.getMessage(), e);
+            //context.getExternalContext().log(e.getMessage(), e);
             
             // Create a FacesMessage with the id UPDATE_MESSAGE_ID
             FacesMessage facesMessage = _MessageUtils.getMessage(context,
