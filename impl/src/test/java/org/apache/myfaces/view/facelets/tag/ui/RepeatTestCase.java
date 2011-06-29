@@ -340,4 +340,21 @@ public class RepeatTestCase extends FaceletTestCase
         root.encodeAll(facesContext);
         //System.out.println(fw);
     }
+    
+    @Test
+    public void testRepeatOffset2() throws Exception 
+    {
+        final String[] repeatValues = new String[] {"B1", "B2", "B3", "B4", "B5", "B6", "B7"};
+        facesContext.getExternalContext().getRequestMap().put("repeatValues", repeatValues);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_offset2.xhtml");
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        root.encodeAll(facesContext);
+        //System.out.println(fw);
+    }
 }
