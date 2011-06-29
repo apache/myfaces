@@ -1922,6 +1922,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     protected void handleRenderException(FacesContext context, Exception e) 
             throws IOException, ELException, FacesException
     {
+        /*
         UIViewRoot root = context.getViewRoot();
         StringBuffer sb = new StringBuffer(64);
         sb.append("Error Rendering View");
@@ -1933,6 +1934,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
         
         log.log(Level.SEVERE, sb.toString(), e);
+        */
         
         // rethrow the Exception to be handled by the ExceptionHandler
         if (e instanceof RuntimeException)
