@@ -278,7 +278,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                 {
                     ErrorPageWriter.handle(facesContext, throwableList.get(0));
                 }
-                else
+                else if (throwableList.size() > 1)
                 {
                     ErrorPageWriter.handle(facesContext, throwableList.toArray(new Throwable[throwableList.size()]));
                 }
