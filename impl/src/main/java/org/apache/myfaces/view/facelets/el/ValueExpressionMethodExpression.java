@@ -18,6 +18,11 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
@@ -34,7 +39,8 @@ import javax.faces.context.FacesContext;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ValueExpressionMethodExpression extends MethodExpression implements FacesWrapper<ValueExpression>
+public class ValueExpressionMethodExpression extends MethodExpression 
+    implements FacesWrapper<ValueExpression>, Externalizable
 {
     
     private static final long serialVersionUID = -2847633717581167765L;
@@ -95,5 +101,14 @@ public class ValueExpressionMethodExpression extends MethodExpression implements
     public ValueExpression getWrapped()
     {
         return valueExpression;
+    }
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+        this.valueExpression = (ValueExpression) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        out.writeObject(this.valueExpression);
     }
 }

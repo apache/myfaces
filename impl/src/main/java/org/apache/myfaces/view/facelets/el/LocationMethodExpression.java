@@ -18,9 +18,15 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
+import javax.el.ValueExpression;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
@@ -40,7 +46,8 @@ import javax.faces.view.Location;
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class LocationMethodExpression extends MethodExpression implements FacesWrapper<MethodExpression>
+public class LocationMethodExpression extends MethodExpression 
+    implements FacesWrapper<MethodExpression>, Externalizable
 {
 
     private static final long serialVersionUID = 1634644578979226893L;
@@ -117,4 +124,17 @@ public class LocationMethodExpression extends MethodExpression implements FacesW
     {
         return delegate;
     }
+    
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+        this.delegate = (MethodExpression) in.readObject();
+        this.location = (Location) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
+        out.writeObject(this.delegate);
+        out.writeObject(this.location);
+    }
+
 }
