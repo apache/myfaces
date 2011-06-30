@@ -35,11 +35,9 @@ import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.FacesEvent;
@@ -267,18 +265,20 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         int loops = 0;
         int maxLoops = 15;
+        boolean continueProcessing = true;
         do
         {
             // First broadcast events that have been queued for PhaseId.ANY_PHASE.
-            if (_broadcastAll(context, events.getAnyPhase()))
+            continueProcessing = _broadcastAll(context, events.getAnyPhase());
+            if (continueProcessing)
             {
-                _broadcastAll(context, events.getOnPhase());
+                continueProcessing = _broadcastAll(context, events.getOnPhase());
             }
 
             events = _getEvents(phaseId);
             loops++;
             
-        } while (events.hasMoreEvents() && loops < maxLoops);
+        } while (events.hasMoreEvents() && loops < maxLoops && continueProcessing);
         
         if (loops == maxLoops && events.hasMoreEvents()) {
             // broadcast reach maxLoops - probably a infinitive recursion:
