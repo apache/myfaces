@@ -33,6 +33,11 @@ public class ResourceLocationValueExpression extends LocationValueExpression imp
     
     private static final long serialVersionUID = -5636849184764526288L;
     
+    public ResourceLocationValueExpression()
+    {
+        super();
+    }
+    
     public ResourceLocationValueExpression(Location location, ValueExpression delegate)
     {
         super(location, delegate);

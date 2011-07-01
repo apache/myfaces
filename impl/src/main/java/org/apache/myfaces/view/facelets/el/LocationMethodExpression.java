@@ -55,6 +55,11 @@ public class LocationMethodExpression extends MethodExpression
     private Location location;
     private MethodExpression delegate;
     
+    public LocationMethodExpression()
+    {
+        super();
+    }
+    
     public LocationMethodExpression(Location location, MethodExpression delegate)
     {
         this.location = location;

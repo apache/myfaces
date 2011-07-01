@@ -35,6 +35,11 @@ public class ResourceLocationValueExpressionUEL extends ResourceLocationValueExp
 
     private static final long serialVersionUID = 1824869909994211424L;
 
+    public ResourceLocationValueExpressionUEL()
+    {
+        super();
+    }
+    
     public ResourceLocationValueExpressionUEL(Location location, ValueExpression delegate)
     {
         super(location, delegate);

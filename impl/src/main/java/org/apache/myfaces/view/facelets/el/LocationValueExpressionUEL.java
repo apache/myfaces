@@ -35,6 +35,11 @@ public class LocationValueExpressionUEL extends LocationValueExpression
 
     private static final long serialVersionUID = 1824869909994211424L;
 
+    public LocationValueExpressionUEL()
+    {
+        super();
+    }
+    
     public LocationValueExpressionUEL(Location location, ValueExpression delegate)
     {
         super(location, delegate);
