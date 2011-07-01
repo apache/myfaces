@@ -54,6 +54,11 @@ public class LocationValueExpression extends ValueExpression
     Location location;
     ValueExpression delegate;
     
+    public LocationValueExpression()
+    {
+        super();
+    }
+    
     public LocationValueExpression(Location location, ValueExpression delegate)
     {
         this.location = location;

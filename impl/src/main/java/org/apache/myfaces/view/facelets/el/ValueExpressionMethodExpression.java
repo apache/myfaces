@@ -47,6 +47,10 @@ public class ValueExpressionMethodExpression extends MethodExpression
     
     private ValueExpression valueExpression;
     
+    public ValueExpressionMethodExpression()
+    {
+    }
+    
     public ValueExpressionMethodExpression(ValueExpression valueExpression)
     {
         this.valueExpression = valueExpression;   
