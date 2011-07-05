@@ -1199,18 +1199,20 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         _size = ((Integer) state[3]).intValue();
         _var = (String) state[4];
         _value = state[5];
+        _varStatus = (String) state[6];
     }
 
     @Override
     public Object saveState(FacesContext faces)
     {
-        Object[] state = new Object[6];
+        Object[] state = new Object[7];
         state[0] = super.saveState(faces);
         state[1] = _childState;
         state[2] = Integer.valueOf(_offset);
         state[3] = Integer.valueOf(_size);
         state[4] = _var;
         state[5] = _value;
+        state[6] = _varStatus;
         return state;
     }
 
