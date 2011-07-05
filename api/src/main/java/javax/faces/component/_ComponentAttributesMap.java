@@ -80,6 +80,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         new WeakHashMap<Class<?>, Map<String, PropertyDescriptor>>();
     
     private boolean _isCompositeComponent;
+    private boolean _isCompositeComponentSet;
 
     /**
      * Create a map backed by the specified component.
@@ -170,6 +171,15 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         if (Resource.COMPONENT_RESOURCE_KEY.length() == ((String)key).length() &&
             Resource.COMPONENT_RESOURCE_KEY.equals(key))
         {
+            if (!_isCompositeComponentSet)
+            {
+                // Note we are not setting _isCompositeComponentSet, because when the component tree is built
+                // using JSF 1.2 state saving, PostAddToViewEvent is propagated and the component is check 
+                // if is a composite component, but the state is not restored, so the check return always
+                // false. A check for processing events was added to prevent that scenario, but anyway that 
+                // makes invalid set _isCompositeComponentSet to true on this location.
+                _isCompositeComponent = getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY);
+            }
             return _isCompositeComponent;
         }
  
@@ -259,6 +269,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 }
                 else
                 {
+                    if (!_isCompositeComponentSet)
+                    {
+                        _isCompositeComponent = getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY);
+                        _isCompositeComponentSet = true;
+                    }
                     if (_isCompositeComponent)
                     {
                         BeanInfo ccBeanInfo = (BeanInfo) getUnderlyingMap().get(UIComponent.BEANINFO_KEY);
@@ -370,6 +385,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
              && Resource.COMPONENT_RESOURCE_KEY.equals(key))
         {
             _isCompositeComponent = true;
+            _isCompositeComponentSet = true;
         }
         return _component.getStateHelper().put(UIComponentBase.PropertyKeys.attributesMap, key, value);
     }

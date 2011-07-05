@@ -171,7 +171,11 @@ public abstract class UIComponentBase extends UIComponent
                 // trigger the "remove event" lifecycle
                 // and call setInView(false) for all children/facets
                 // doing this => recursive
-                _publishPreRemoveFromViewEvent(getFacesContext(), this);
+                FacesContext facesContext = getFacesContext();
+                if (facesContext.isProcessingEvents())
+                {
+                    _publishPreRemoveFromViewEvent(facesContext, this);
+                }
             }
             _parent = parent;
         } else {
@@ -183,7 +187,11 @@ public abstract class UIComponentBase extends UIComponent
                 // Application.publishEvent(java.lang.Class, java.lang.Object)  must be called, passing 
                 // PostAddToViewEvent.class as the first argument and the newly added component as the second 
                 // argument.
-                _publishPostAddToViewEvent(getFacesContext(), this);
+                FacesContext facesContext = getFacesContext();
+                if (facesContext.isProcessingEvents())
+                {
+                    _publishPostAddToViewEvent(facesContext, this);
+                }
             }
         }
     }
