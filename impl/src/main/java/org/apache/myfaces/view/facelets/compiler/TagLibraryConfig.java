@@ -89,7 +89,7 @@ public final class TagLibraryConfig
         {
             boolean result = super.containsTagHandler(ns, localName);
             
-            if (!result && _compositeLibraryName != null)
+            if (!result && _compositeLibraryName != null && containsNamespace(ns))
             {
                 ResourceHandler resourceHandler = 
                     FacesContext.getCurrentInstance().getApplication().getResourceHandler();
@@ -112,7 +112,7 @@ public final class TagLibraryConfig
         {
             TagHandler tagHandler = super.createTagHandler(ns, localName, tag);
             
-            if (tagHandler == null && containsNamespace(ns) && _compositeLibraryName != null)
+            if (tagHandler == null && _compositeLibraryName != null && containsNamespace(ns))
             {
                 ResourceHandler resourceHandler = 
                     FacesContext.getCurrentInstance().getApplication().getResourceHandler();
