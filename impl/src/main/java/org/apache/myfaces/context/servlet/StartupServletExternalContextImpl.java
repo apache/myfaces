@@ -411,17 +411,6 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
         throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
-    // ~ private Methods ------------------------------------------------------
-    
-    /**
-     * Returns startup or shutdown as String according to the field _startup.
-     * @return
-     */
-    private String _getTime()
-    {
-        return _startup ? "startup" : "shutdown";
-    }
-
     @Override
     public boolean isSecure()
     {
@@ -438,4 +427,16 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     {
         throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
+
+    // ~ private Methods ------------------------------------------------------
+    
+    /**
+     * Returns startup or shutdown as String according to the field _startup.
+     * @return
+     */
+    private String _getTime()
+    {
+        return _startup ? "startup" : "shutdown";
+    }
+
 }
