@@ -25,7 +25,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>org.apache.myfaces.core</groupId>
+    <groupId>org.apache.myfaces.core.internal</groupId>
     <artifactId>myfaces-shaded-impl</artifactId>
     <name>Apache MyFaces JSF-2.1 Core Shaded Impl</name>
     <description>
@@ -48,6 +48,8 @@
         </resources>
         
         <plugins>
+
+           <!-- TODO jakobk: execution-ids are wrong + this always unpacks myfaces-impl 2.0.5 !! -->
            <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-dependency-plugin</artifactId>
