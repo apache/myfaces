@@ -27,7 +27,7 @@
 
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-api</artifactId>
-    <name>Apache MyFaces JSF Core-2.0 API</name>
+    <name>Apache MyFaces JSF-2.0 Core API</name>
     <description>
         The public API classes of the Apache MyFaces CORE JSF-2.0 project
     </description>

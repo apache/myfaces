@@ -374,12 +374,12 @@
                     <createSourcesJar>true</createSourcesJar>
                     <artifactSet>
                         <includes>
-                            <include>org.apache.myfaces.core:myfaces-impl-ee6</include>
+                            <include>org.apache.myfaces.core.internal:myfaces-impl-ee6</include>
                         </includes>
                     </artifactSet>
                     <filters>
                         <filter>
-                            <artifact>org.apache.myfaces.core:myfaces-impl-ee6</artifact>
+                            <artifact>org.apache.myfaces.core.internal:myfaces-impl-ee6</artifact>
                             <includes>
                                 <include>META-INF/services/**</include>
                                 <include>org/apache/myfaces/**</include>
@@ -562,7 +562,7 @@
                                 <configuration>
                                   <artifactItems>
                                     <artifactItem>
-                                      <groupId>org.apache.myfaces.core</groupId>
+                                      <groupId>org.apache.myfaces.core.internal</groupId>
                                       <artifactId>myfaces-impl-ee6</artifactId>
                                       <version>${project.version}</version>
                                     </artifactItem>
@@ -933,7 +933,7 @@
 
         <!-- maven-shade-plugin will exclude this dependency automatically -->
         <dependency>
-            <groupId>org.apache.myfaces.core</groupId>
+            <groupId>org.apache.myfaces.core.internal</groupId>
             <artifactId>myfaces-impl-ee6</artifactId>
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
