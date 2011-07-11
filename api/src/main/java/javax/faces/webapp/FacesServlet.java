@@ -160,7 +160,7 @@ public final class FacesServlet implements Servlet
         }
         
         // If none of the cases described above in the specification for this method apply to the servicing of this 
-        // request, the following action must be taken to service the request.
+        // request, the following action must be taken to service the request:
         if (log.isLoggable(Level.FINEST))
             log.finest("service begin");
 
@@ -171,7 +171,7 @@ public final class FacesServlet implements Servlet
         {
             // jsf 2.0 : get the current ResourceHandler and
             // check if it is a resource request, if true
-            // delegate to ResourceHandler, if continue with
+            // delegate to ResourceHandler, else continue with
             // the lifecycle.
             // Acquire the ResourceHandler for this request by calling Application.getResourceHandler(). 
             ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
@@ -184,7 +184,7 @@ public final class FacesServlet implements Servlet
             }
             else
             {
-                // If this returns false, handle as follow
+                // If this returns false, handle as follows:
                 // call Lifecycle.execute(javax.faces.context.FacesContext)
                 _lifecycle.execute(facesContext);
                 // followed by Lifecycle.render(javax.faces.context.FacesContext).
@@ -199,7 +199,7 @@ public final class FacesServlet implements Servlet
             Throwable cause = e.getCause();
             if (cause == null)
             {
-                // If the cause is null extract the message from the FacesException put it inside of a new 
+                // If the cause is null extract the message from the FacesException, put it inside of a new 
                 // ServletException instance, and pass the FacesException instance as the root cause, then 
                 // rethrow the ServletException instance.
                 throw new ServletException(e.getLocalizedMessage(), e);
