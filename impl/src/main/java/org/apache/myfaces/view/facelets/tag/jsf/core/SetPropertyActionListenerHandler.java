@@ -23,6 +23,7 @@ import java.io.Serializable;
 
 import javax.el.ELContext;
 import javax.el.ELException;
+import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.ActionSource;
@@ -101,13 +102,33 @@ public class SetPropertyActionListenerHandler extends TagHandler
 
         public void processAction(ActionEvent evt) throws AbortProcessingException
         {
-            FacesContext faces = FacesContext.getCurrentInstance();
+            FacesContext facesContext = FacesContext.getCurrentInstance();
             
-            ELContext el = faces.getELContext();
+            ELContext elContext = facesContext.getELContext();
             
-            Object valueObj = _value.getValue(el);
+            // Spec f:setPropertyActionListener: 
             
-            _target.setValue(el, valueObj);
+            // Call getValue() on the "value" ValueExpression.
+            Object value = _value.getValue(elContext);
+            
+            // If value of the "value" expression is null, call setValue() on the "target" ValueExpression with the null
+            
+            // If the value of the "value" expression is not null, call getType()on the "value" and "target"
+            // ValueExpressions to determine their property types.
+            if (value != null)
+            {
+                Class<?> targetType = _target.getType(elContext);
+                // Spec says: "all getType() on the "value" to determine  property type" but it is not necessary
+                // beacuse type we have objValue already
+
+                //   Coerce the value of the "value" expression to the "target" expression value type following the Expression
+                // Language coercion rules. 
+                ExpressionFactory expressionFactory = facesContext.getApplication().getExpressionFactory();
+                value = expressionFactory.coerceToType(value, targetType);
+            }
+
+            // Call setValue()on the "target" ValueExpression with the resulting value.
+            _target.setValue(elContext, value);
         }
     }
 
