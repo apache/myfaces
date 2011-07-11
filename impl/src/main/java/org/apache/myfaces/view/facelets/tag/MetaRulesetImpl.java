@@ -72,13 +72,24 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     private static Map<String, MetadataTarget> getMetaData()
     {
+        ClassLoader cl = ClassUtils.getContextClassLoader();
+        
         Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>)
-                _metadata.get(ClassUtils.getContextClassLoader());
+                _metadata.get(cl);
 
         if (metadata == null)
         {
-            metadata = new HashMap<String, MetadataTarget>();
-            _metadata.put(ClassUtils.getContextClassLoader(), metadata);
+            // Ensure thread-safe put over _metadata, and only create one map
+            // per classloader to hold metadata.
+            synchronized (_metadata)
+            {
+                metadata = (Map<String, MetadataTarget>) _metadata.get(cl);
+                if (metadata == null)
+                {
+                    metadata = new HashMap<String, MetadataTarget>();
+                    _metadata.put(cl, metadata);
+                }
+            }
         }
 
         return metadata;
@@ -228,7 +239,15 @@ public final class MetaRulesetImpl extends MetaRuleset
                 throw new TagException(_tag, "Error Creating TargetMetadata", e);
             }
 
-            metadata.put(metaKey, meta);
+            synchronized(metadata)
+            {
+                // Use a synchronized block to ensure proper operation on concurrent use cases.
+                // This is a racy single check, because initialization over the same class could happen
+                // multiple times, but the same result is always calculated. The synchronized block 
+                // just ensure thread-safety, because only one thread will modify the cache map
+                // at the same time.
+                metadata.put(metaKey, meta);
+            }
         }
 
         return meta;

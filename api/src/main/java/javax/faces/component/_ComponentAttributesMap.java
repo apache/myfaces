@@ -433,7 +433,15 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                     }
                 }
                 // ... and put it in cache
-                _propertyDescriptorCache.put(_component.getClass(), _propertyDescriptorMap);
+                synchronized(_propertyDescriptorCache)
+                {
+                    // Use a synchronized block to ensure proper operation on concurrent use cases.
+                    // This is a racy single check, because initialization over the same class could happen
+                    // multiple times, but the same result is always calculated. The synchronized block 
+                    // just ensure thread-safety, because only one thread will modify the cache map
+                    // at the same time.
+                    _propertyDescriptorCache.put(_component.getClass(), _propertyDescriptorMap);
+                }
             }
         }
         return _propertyDescriptorMap.get(key);
