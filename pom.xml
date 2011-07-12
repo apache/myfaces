@@ -208,6 +208,14 @@
             </build>
         </profile>
 
+        <!-- run MyFaces core integration tests with mvn clean install -Pintegration-tests -->
+        <profile>
+            <id>integration-tests</id>
+            <modules>
+                <module>integration-tests</module>
+            </modules>
+        </profile>
+
     </profiles>
 
 
@@ -331,6 +339,14 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-el_2.2_spec</artifactId>
                 <version>1.0.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- el 1.0 (javax.el.*) -->
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-el_1.0_spec</artifactId>
+                <version>1.0.2</version>
                 <scope>provided</scope>
             </dependency>
 

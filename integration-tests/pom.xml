@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.apache.myfaces.core</groupId>
+        <artifactId>myfaces-core-project</artifactId>
+        <version>2.0.8-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.apache.myfaces.core.integrationtest</groupId>
+    <artifactId>myfaces-integration-tests</artifactId>
+    <packaging>pom</packaging>
+    <name>Apache MyFaces JSF-2.0 Core Integration Tests Parent</name>
+    <url>http://myfaces.apache.org/core20/integration-tests</url>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x/integration-tests</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x/integration-tests</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x/integration-tests</url>
+    </scm>
+
+    <modules>
+        <module>integration-test-support</module>
+
+        <!-- integration-test modules -->
+        <module>servlet25-el10-basic-tests</module>
+        <module>servlet25-el22-basic-tests</module>
+        <module>servlet30-el22-basic-tests</module>
+        <!-- add new modules here! -->
+    </modules>
+
+    <properties>
+        <cargo.context>cargo-test</cargo.context>
+        <cargo.port>9090</cargo.port> <!-- use port 9090 in order to prevent port-already-in-use problems -->
+    </properties>
+
+    <build>
+        <!-- configure cargo and failsafe plugin versions to use for all integration tests -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.cargo</groupId>
+                    <artifactId>cargo-maven2-plugin</artifactId>
+                    <version>1.1.1</version>
+                </plugin>
+
+                <plugin>
+                   <groupId>org.apache.maven.plugins</groupId>
+                   <artifactId>maven-failsafe-plugin</artifactId>
+                   <version>2.9</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <!-- we do not use surefire for our integration-tests -->
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- configure htmlUnit and myfaces-integration-test-support versions to use for all integration tests -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.myfaces.core.integrationtest</groupId>
+                <artifactId>myfaces-integration-test-support</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sourceforge.htmlunit</groupId>
+                <artifactId>htmlunit</artifactId>
+                <version>2.8</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- common dependencies for all integration tests -->
+    <dependencies>
+
+        <!-- myfaces-api and -impl -->
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-impl</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            all other dependencies must be added by the concrete integration-test module, because
+            it could use servlet 2.5 or 3.0, el 1.0 or 2.2, or ... and we cannot make assumptions for that
+        -->
+
+    </dependencies>
+
+</project>
