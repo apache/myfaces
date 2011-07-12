@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.application.ProjectStage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
@@ -211,6 +212,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                 }
                 
                 List<Throwable> throwableList = new ArrayList<Throwable>();
+                List<UIComponent> components = new ArrayList<UIComponent>();
                 FacesContext facesContext = null;
                 
                 do
@@ -242,6 +244,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                             Throwable rootCause = getRootCause(exception);
                             
                             throwableList.add(rootCause == null ? exception : rootCause);
+                            components.add(event.getContext().getComponent());
                             
                             //break;
                         }
@@ -276,11 +279,11 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                 }
                 if (throwableList.size() == 1)
                 {
-                    ErrorPageWriter.handle(facesContext, throwableList.get(0));
+                    ErrorPageWriter.handle(facesContext, components, throwableList.get(0));
                 }
                 else if (throwableList.size() > 1)
                 {
-                    ErrorPageWriter.handle(facesContext, throwableList.toArray(new Throwable[throwableList.size()]));
+                    ErrorPageWriter.handle(facesContext, components, throwableList.toArray(new Throwable[throwableList.size()]));
                 }
             }
         }

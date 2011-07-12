@@ -114,7 +114,7 @@ public final class ErrorPageWriter
             UIViewRoot view = (UIViewRoot) requestMap.get(VIEW_KEY);
             
             StringWriter writer = new StringWriter();
-            ErrorPageWriter.debugHtml(writer, facesContext, view, t);
+            ErrorPageWriter.debugHtml(writer, facesContext, view, null, t);
             String html = writer.toString();
             
             // change the HTML in the buffer to be included in an existing html page
@@ -210,6 +210,8 @@ public final class ErrorPageWriter
     
     private final static String[] IGNORE = new String[] { "parent", "rendererType" };
     
+    private final static String[] ALWAYS_WRITE = new String[] { "class", "clientId" };
+    
     /**
      * Extended debug info is stored under this key in the request
      * map for every UIInput component when in Development mode.
@@ -248,7 +250,7 @@ public final class ErrorPageWriter
      */
     public static void debugHtml(Writer writer, FacesContext faces, Throwable e) throws IOException
     {
-        debugHtml(writer, faces, faces.getViewRoot(), e);
+        debugHtml(writer, faces, faces.getViewRoot(), null,  e);
     }
     
     /*
@@ -300,15 +302,34 @@ public final class ErrorPageWriter
         }
     }*/
     
-    private static void debugHtml(Writer writer, FacesContext faces, UIViewRoot view,  Throwable... exs) throws IOException
+    private static void debugHtml(Writer writer, FacesContext faces, UIViewRoot view, Collection<UIComponent> components, Throwable... exs) throws IOException
     {
         _init(faces);
         Date now = new Date();
+
         for (int i = 0; i < ERROR_PARTS.length; i++)
         {
-            if ("message".equals(ERROR_PARTS[i]))
+            if ("view".equals((ERROR_PARTS[i]))) {
+                if (faces.getViewRoot() != null)
+                {
+                    String viewId = faces.getViewRoot().getViewId();
+                    writer.write("viewId=" + viewId);
+                    writer.write("<br/>");
+                    writer.write("location=" + faces.getExternalContext().getRealPath(viewId));
+                    writer.write("<br/>");
+                    writer.write("phaseId=" + faces.getCurrentPhaseId());
+                    writer.write("<br/>");
+                    writer.write("<br/>");
+                }    
+            }
+            else if ("message".equals(ERROR_PARTS[i]))
             {
                 boolean printed = false;
+                //Iterator<UIComponent> iterator = null;
+                //if (components != null)
+                //{ 
+                //    iterator = components.iterator();
+                //}
                 for (Throwable e : exs)
                 {
                     String msg = e.getMessage();
@@ -316,6 +337,13 @@ public final class ErrorPageWriter
                     {
                         writer.write("<br/>");
                     }
+                    //if (iterator != null)
+                    //{
+                    //    UIComponent uiComponent = iterator.next();
+                    //    if (uiComponent != null) {
+                    //        _writeComponent(faces, writer, uiComponent, null, /* writeChildren */false);
+                    //    }
+                    //}
                     if (msg != null)
                     {
                         writer.write(msg.replaceAll("<", TS));
@@ -348,7 +376,8 @@ public final class ErrorPageWriter
             {
                 if (view != null)
                 {
-                    _writeComponent(faces, writer, view, _getErrorId(exs));
+                    List<String> errorIds = _getErrorId(components, exs);
+                    _writeComponent(faces, writer, view, errorIds, true);
                 }
             }
             else if ("vars".equals(ERROR_PARTS[i]))
@@ -358,6 +387,11 @@ public final class ErrorPageWriter
             else if ("cause".equals(ERROR_PARTS[i]))
             {
                 boolean printed = false;
+                Iterator<UIComponent> iterator = null;
+                if (components != null)
+                { 
+                    iterator = components.iterator();
+                }
                 for (Throwable e : exs)
                 {
                     if (printed)
@@ -365,6 +399,16 @@ public final class ErrorPageWriter
                         writer.write("<br/>");
                     }
                     _writeCause(writer, e);
+                    if (iterator != null)
+                    {
+                        UIComponent uiComponent = iterator.next();
+                        if (uiComponent != null) {
+                            _writeComponent(faces, writer, uiComponent, null, /* writeChildren */false);
+                            //writer.write("<br/>");
+                            //writer.write(RendererUtils.getPathToComponent(uiComponent));
+                            //writer.write("<br/>");
+                        }
+                    }
                     printed = true;
                 }
             }
@@ -398,7 +442,7 @@ public final class ErrorPageWriter
             }
             else if ("tree".equals(DEBUG_PARTS[i]))
             {
-                _writeComponent(faces, writer, faces.getViewRoot(), null);
+                _writeComponent(faces, writer, faces.getViewRoot(), null, true);
             }
             else if ("extendedtree".equals(DEBUG_PARTS[i]))
             {
@@ -415,7 +459,7 @@ public final class ErrorPageWriter
         }
     }
     
-    public static void handle(FacesContext facesContext, Throwable... exs) throws FacesException
+    public static void handle(FacesContext facesContext, Collection<UIComponent> components, Throwable... exs) throws FacesException
     {
         for (Throwable ex : exs)
         {
@@ -435,7 +479,7 @@ public final class ErrorPageWriter
             // We need the real one, because the one returned from FacesContext.getResponseWriter()
             // is configured with the encoding of the view.
             Writer writer = facesContext.getExternalContext().getResponseOutputWriter();
-            debugHtml(writer, facesContext, facesContext.getViewRoot(), exs);
+            debugHtml(writer, facesContext, facesContext.getViewRoot(), components, exs);
         }
         catch(IOException ioe)
         {
@@ -628,7 +672,7 @@ public final class ErrorPageWriter
         return str.split("@@");
     }
     
-    private static List<String> _getErrorId(Throwable... exs)
+    private static List<String> _getErrorId(Collection<UIComponent> components, Throwable... exs)
     {
         List<String> list = null;
         for (Throwable e : exs)
@@ -652,6 +696,17 @@ public final class ErrorPageWriter
         }
         if (list != null && list.size() > 0)
         {
+            return list;
+        }
+        else if (components != null)
+        {
+            list = new ArrayList<String>();
+            for (UIComponent uiComponent : components) {
+                if (uiComponent  != null)
+                {
+                    list.add(uiComponent.getId());
+                }
+            }
             return list;
         }
         return null;
@@ -685,6 +740,8 @@ public final class ErrorPageWriter
         {
             writer.write(ex.getClass().getName());
         }
+        StackTraceElement stackTraceElement = ex.getStackTrace()[0];
+        writer.write("<br/> at " + stackTraceElement.toString());
     }
 
     private static void _writeVariables(Writer writer, FacesContext faces, UIViewRoot view) throws IOException
@@ -741,7 +798,7 @@ public final class ErrorPageWriter
         writer.write("</tbody></table>");
     }
 
-    private static void _writeComponent(FacesContext faces, Writer writer, UIComponent c, List<String> highlightId) throws IOException
+    private static void _writeComponent(FacesContext faces, Writer writer, UIComponent c, List<String> highlightId, boolean writeChildren) throws IOException
     {
         writer.write("<dl><dt");
         if (_isText(c))
@@ -750,10 +807,10 @@ public final class ErrorPageWriter
         }
         if (highlightId != null)
         {
-            if ((highlightId.size() > 0) && (highlightId.get(0).equals(c.getId())))
+            if ((highlightId.size() > 0))
             {
-                highlightId.remove(0);
-                if (highlightId.size() == 0)
+                String id = c.getId();
+                if (highlightId.contains(id))
                 {
                     writer.write(" class=\"highlightComponent\"");
                 }
@@ -761,7 +818,7 @@ public final class ErrorPageWriter
         }
         writer.write(">");
 
-        boolean hasChildren = c.getChildCount() > 0 || c.getFacets().size() > 0;
+        boolean hasChildren = (c.getChildCount() > 0 || c.getFacets().size() > 0) && writeChildren;
 
         int stateSize = 0;
 
@@ -795,7 +852,7 @@ public final class ErrorPageWriter
                     writer.write("<span>");
                     writer.write(entry.getKey());
                     writer.write("</span>");
-                    _writeComponent(faces, writer, entry.getValue(), highlightId);
+                    _writeComponent(faces, writer, entry.getValue(), highlightId, true);
                     writer.write("</dd>");
                 }
             }
@@ -805,7 +862,7 @@ public final class ErrorPageWriter
                 {
                     UIComponent child = c.getChildren().get(i);
                     writer.write("<dd>");
-                    _writeComponent(faces, writer, child, highlightId);
+                    _writeComponent(faces, writer, child, highlightId, writeChildren);
                     writer.write("</dd>");
                 }
             }
@@ -1171,7 +1228,7 @@ public final class ErrorPageWriter
             String str = null;
             for (int i = 0; i < pd.length; i++)
             {
-                if (pd[i].getWriteMethod() != null && Arrays.binarySearch(IGNORE, pd[i].getName()) < 0)
+                if ((pd[i].getWriteMethod() != null || Arrays.binarySearch(ALWAYS_WRITE, pd[i].getName()) > -1) && Arrays.binarySearch(IGNORE, pd[i].getName()) < 0)
                 {
                     m = pd[i].getReadMethod();
                     try
