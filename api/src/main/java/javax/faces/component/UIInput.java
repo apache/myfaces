@@ -530,72 +530,63 @@ public class UIInput extends UIOutput implements EditableValueHolder
         if (context == null)
             throw new NullPointerException("context");
 
+        Object submittedValue = getSubmittedValue();
+        if (submittedValue == null)
+        {
+            return;
+        }
 
+        // Begin new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
+        if (shouldInterpretEmptyStringSubmittedValuesAsNull(context) && isEmptyString(submittedValue))
+        {   
+            // -= matzew = setSubmittedValue(null) is wrong, see:
+            // https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=671
+            setSubmittedValue(null);
+            submittedValue = null;
+        }
+        // End new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
+
+        Object convertedValue;
         try
         {
-            Object submittedValue = getSubmittedValue();
-            if (submittedValue == null)
+            convertedValue = getConvertedValue(context, submittedValue);
+        }
+        catch (ConverterException e)
+        {
+            String converterMessage = getConverterMessage();
+            if (converterMessage != null)
             {
-                return;
-            }
-
-            // Begin new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
-            if (shouldInterpretEmptyStringSubmittedValuesAsNull(context) && isEmptyString(submittedValue))
-            {   
-                // -= matzew = setSubmittedValue(null) is wrong, see:
-                // https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=671
-                setSubmittedValue(null);
-                submittedValue = null;
-            }
-            // End new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
-
-            Object convertedValue;
-            try
-            {
-                convertedValue = getConvertedValue(context, submittedValue);
-            }
-            catch (ConverterException e)
-            {
-                String converterMessage = getConverterMessage();
-                if (converterMessage != null)
-                {
-                    context.addMessage(getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                context.addMessage(getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         converterMessage, converterMessage));
+            }
+            else
+            {
+                FacesMessage facesMessage = e.getFacesMessage();
+                if (facesMessage != null)
+                {
+                    context.addMessage(getClientId(context), facesMessage);
                 }
                 else
                 {
-                    FacesMessage facesMessage = e.getFacesMessage();
-                    if (facesMessage != null)
-                    {
-                        context.addMessage(getClientId(context), facesMessage);
-                    }
-                    else
-                    {
-                        _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,
+                    _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,
                             new Object[] { _MessageUtils.getLabel(context, this) });
-                    }
                 }
-                setValid(false);
-                return;
             }
-
-            validateValue(context, convertedValue);
-
-            if (!isValid())
-                return;
-
-            Object previousValue = getValue();
-            setValue(convertedValue);
-            setSubmittedValue(null);
-            if (compareValues(previousValue, convertedValue))
-            {
-                queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
-            }
+            setValid(false);
+            return;
         }
-        catch (Exception ex)
+
+        validateValue(context, convertedValue);
+
+        if (!isValid())
+            return;
+
+        Object previousValue = getValue();
+        setValue(convertedValue);
+        setSubmittedValue(null);
+        if (compareValues(previousValue, convertedValue))
         {
-            throw new FacesException("Exception while validating component with path : "
-                    + _ComponentUtils.getPathToComponent(this), ex);
+            queueEvent(new ValueChangeEvent(this, previousValue, convertedValue));
         }
     }
 
