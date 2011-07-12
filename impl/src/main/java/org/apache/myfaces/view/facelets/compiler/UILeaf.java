@@ -19,11 +19,14 @@
 package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -35,6 +38,7 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
@@ -61,6 +65,52 @@ class UILeaf extends UIComponentBase
     };
 
     private UIComponent parent;
+    
+    private _ComponentAttributesMap attributesMap;
+
+    @Override
+    public Map<String, Object> getAttributes()
+    {
+        // Since all components extending UILeaf are only transient references
+        // to text or instructions, we can do the following simplifications:  
+        // 1. Don't use reflection to retrieve properties, because it will never
+        // be done
+        // 2. Since the only key that will be saved here is MARK_ID, we can create
+        // a small map of size 2. In practice, this will prevent create a lot of
+        // maps, like the ones used on state helper
+        if (attributesMap == null)
+        {
+            attributesMap = new _ComponentAttributesMap();
+        }
+        return attributesMap;
+    }
+
+    @Override
+    public void clearInitialState()
+    {
+       //this component is transient, so it can be marked, because it does not have state!
+    }
+
+    @Override
+    public boolean initialStateMarked()
+    {
+        //this component is transient, so it can be marked, because it does not have state!
+        return false;
+    }
+
+    @Override
+    public void markInitialState()
+    {
+        //this component is transient, so no need to do anything
+    }
+
+    
+    @Override
+    public void processEvent(ComponentSystemEvent event)
+            throws AbortProcessingException
+    {
+        //Do nothing, because UILeaf will not need to handle "binding" property
+    }
 
     @Override
     @SuppressWarnings("deprecation")
@@ -324,4 +374,128 @@ class UILeaf extends UIComponentBase
         return false;
     }
 
+    private static class _ComponentAttributesMap implements Map<String, Object>, Serializable
+    {
+        private static final long serialVersionUID = -4459484500489059515L;
+        
+        private Map<String, Object> _attributes = null;
+        
+        _ComponentAttributesMap()
+        {
+        }
+        
+        public int size()
+        {
+            return _attributes == null ? 0 : _attributes.size();
+        }
+        
+        public void clear()
+        {
+            if (_attributes != null)
+            {
+                _attributes.clear();
+            }
+        }
+        
+        public boolean isEmpty()
+        {
+            return _attributes == null ? false : _attributes.isEmpty();
+        }
+        
+        public boolean containsKey(Object key)
+        {
+            checkKey(key);
+        
+            return (_attributes == null ? false :_attributes.containsKey(key));
+        }
+        
+        public boolean containsValue(Object value)
+        {
+            return (_attributes == null) ? false : _attributes.containsValue(value);
+        }
+        
+        public Collection<Object> values()
+        {
+            return getUnderlyingMap().values();
+        }
+        
+        public void putAll(Map<? extends String, ? extends Object> t)
+        {
+            for (Map.Entry<? extends String, ? extends Object> entry : t.entrySet())
+            {
+                put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        public Set<Entry<String, Object>> entrySet()
+        {
+            return getUnderlyingMap().entrySet();
+        }
+
+        public Set<String> keySet()
+        {
+            return getUnderlyingMap().keySet();
+        }
+        
+        public Object get(Object key)
+        {
+            checkKey(key);
+
+            if ("rendered".equals(key))
+            {
+                return true;
+            }
+            if ("transient".equals(key))
+            {
+                return true;
+            }
+
+            return (_attributes == null) ? null : _attributes.get(key);
+        }
+        
+        public Object remove(Object key)
+        {
+            checkKey(key);
+
+            return (_attributes == null) ? null : _attributes.remove(key);
+        }
+        
+        public Object put(String key, Object value)
+        {
+            checkKey(key);
+
+            return getUnderlyingMap().put(key, value);
+        }
+        
+        private void checkKey(Object key)
+        {
+            if (key == null)
+            {
+                throw new NullPointerException("key");
+            }
+            if (!(key instanceof String))
+            {
+                throw new ClassCastException("key is not a String");
+            }
+        }
+        
+        Map<String, Object> getUnderlyingMap()
+        {
+            if (_attributes == null)
+            {
+                _attributes = new HashMap<String, Object>(2,1);
+            }
+            return _attributes;
+        }
+        
+        public boolean equals(Object obj)
+        {
+            return getUnderlyingMap().equals(obj);
+        }
+        
+        public int hashCode()
+        {
+            return getUnderlyingMap().hashCode();
+        }
+    }
 }
