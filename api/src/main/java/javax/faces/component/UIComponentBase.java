@@ -415,21 +415,13 @@ public abstract class UIComponentBase extends UIComponent
     {
         if (context == null)
             throw new NullPointerException("context");
-        try
+        
+        Renderer renderer = getRenderer(context);
+        if (renderer != null)
         {
-            Renderer renderer = getRenderer(context);
-            if (renderer != null)
-            {
-                renderer.decode(context, this);
-            }
+            renderer.decode(context, this);
         }
-        catch (Exception ex)
-        {
-            String location = getComponentLocation(this);
-            throw new FacesException("Exception while decoding component : " 
-                    + getPathToComponent(this) 
-                    + (location != null ? " created from: " + location : ""), ex);
-        }
+
     }
 
     @Override
