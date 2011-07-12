@@ -62,7 +62,7 @@ function toggle(id) {
 </head>
 <body>
 <h1>An Error Occurred:</h1>
-<div id="error" class="grayBox" style="border: 1px solid #900;">@@message@@<br/><br/>Caused by:<br/>@@cause@@</div>
+<div id="error" class="grayBox" style="border: 1px solid #900;">@@message@@<br/><br/>@@view@@Caused by:<br/>@@cause@@</div>
 <h2><a href="#" onclick="toggle('trace'); return false;"><span id="traceOff">+</span><span id="traceOn" style="display: none;">-</span> Stack Trace</a></h2>
 <div id="trace" class="grayBox"><pre><code>@@trace@@</code></pre></div>
 <h2><a href="#" onclick="toggle('tree'); return false;"><span id="treeOff">+</span><span id="treeOn" style="display: none;">-</span> Component Tree</a></h2>
