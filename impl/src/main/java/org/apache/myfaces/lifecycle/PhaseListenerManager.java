@@ -20,7 +20,6 @@
 package org.apache.myfaces.lifecycle;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
@@ -65,7 +64,9 @@ class PhaseListenerManager
     {
         boolean[] beforePhaseSuccess = new boolean[phaseListeners.length];
         listenerSuccessMap.put(phaseId, beforePhaseSuccess);
-        
+
+        PhaseEvent event = new PhaseEvent(facesContext, phaseId, lifecycle);
+
         for (int i = 0; i < phaseListeners.length; i++)
         {
             PhaseListener phaseListener = phaseListeners[i];
@@ -73,7 +74,7 @@ class PhaseListenerManager
             {
                 try
                 {
-                    phaseListener.beforePhase(new PhaseEvent(facesContext, phaseId, lifecycle));
+                    phaseListener.beforePhase(event);
                     beforePhaseSuccess[i] = true;
                 }
                 catch (Throwable e)
@@ -94,14 +95,19 @@ class PhaseListenerManager
     {
         boolean[] beforePhaseSuccess = listenerSuccessMap.get(phaseId);
 
+        PhaseEvent event = null;
+
         for (int i = phaseListeners.length - 1; i >= 0; i--)
         {
             PhaseListener phaseListener = phaseListeners[i];
             if (isListenerForThisPhase(phaseListener, phaseId) && beforePhaseSuccess[i])
             {
+                if (event == null) {
+                    event = new PhaseEvent(facesContext, phaseId, lifecycle);
+                }
                 try
                 {
-                    phaseListener.afterPhase(new PhaseEvent(facesContext, phaseId, lifecycle));
+                    phaseListener.afterPhase(event);
                 }
                 catch (Throwable e)
                 {
