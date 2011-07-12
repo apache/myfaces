@@ -413,6 +413,14 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             if (handler != null)
             {
                 AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+                // Pop the current composite component on stack, so #{cc} references
+                // can be resolved correctly, because they are relative to the page 
+                // that define it.
+                FaceletCompositionContext fcc = actx.getFaceletCompositionContext(); 
+                UIComponent innerCompositeComponent = fcc.getCompositeComponentFromStack(); 
+                fcc.popCompositeComponentToStack();
+                // Pop the template context, so ui:xx tags and nested composite component
+                // cases could work correctly 
                 TemplateContext itc = actx.popTemplateContext();
                 try
                 {
@@ -421,6 +429,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 finally
                 {
                     actx.pushTemplateContext(itc);
+                    fcc.pushCompositeComponentToStack(innerCompositeComponent);
                 }
                 return true;
                 
@@ -433,6 +442,14 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         else
         {
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            // Pop the current composite component on stack, so #{cc} references
+            // can be resolved correctly, because they are relative to the page 
+            // that define it.
+            FaceletCompositionContext fcc = actx.getFaceletCompositionContext(); 
+            UIComponent innerCompositeComponent = fcc.getCompositeComponentFromStack(); 
+            fcc.popCompositeComponentToStack();
+            // Pop the template context, so ui:xx tags and nested composite component
+            // cases could work correctly 
             TemplateContext itc = actx.popTemplateContext();
             try
             {
@@ -444,6 +461,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             finally
             {
                 actx.pushTemplateContext(itc);
+                fcc.pushCompositeComponentToStack(innerCompositeComponent);
             }
             return true;
         }

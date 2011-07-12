@@ -37,8 +37,10 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
+import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -688,5 +690,32 @@ public class CompositeComponentTestCase extends FaceletTestCase
         Assert.assertTrue(resp.contains("WORLD"));
         */
         
+    }
+    
+    @Test
+    public void testsCompositeRefVE() throws Exception {
+        
+        servletContext.addInitParameter(
+                FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+                "always");
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testCompositeRefVE.xhtml");
+
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent1);
+        UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(facet1);
+
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        compositeComponent1.encodeAll(facesContext);
+        sw.flush();
+        
+        Assert.assertTrue("Error when rendering" + sw.toString(), sw.toString().contains("success"));
     }
 }
