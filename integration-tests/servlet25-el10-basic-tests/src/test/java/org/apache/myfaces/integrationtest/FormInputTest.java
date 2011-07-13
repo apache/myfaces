@@ -47,7 +47,6 @@ public class FormInputTest extends MyFacesIntegrationTest
         // values
         final String name = "John Doe";
         final String dateOfBirth = "1976-07-12";
-        final String dateOfBirthFormatted = "Jul 12, 1976";
         final String siblings = "2";
 
         // enter values
@@ -66,7 +65,7 @@ public class FormInputTest extends MyFacesIntegrationTest
         HtmlElement nameElement = page.getElementById("name");
         Assert.assertEquals(name, nameElement.getTextContent());
         HtmlElement dateOfBirthElement = page.getElementById("dateOfBirth");
-        Assert.assertEquals(dateOfBirthFormatted, dateOfBirthElement.getTextContent());
+        Assert.assertEquals(dateOfBirth, dateOfBirthElement.getTextContent());
         HtmlElement siblingsElement = page.getElementById("siblings");
         Assert.assertEquals(siblings, siblingsElement.getTextContent());
     }

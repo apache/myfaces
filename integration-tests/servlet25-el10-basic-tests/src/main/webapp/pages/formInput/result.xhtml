@@ -36,7 +36,9 @@
         <h:outputText id="name" value="#{formInputBean.name}" />
 
         <h:outputLabel for="dateOfBirth" value="Date of birth" />
-        <h:outputText id="dateOfBirth" value="#{formInputBean.formattedDateOfBirth}" />
+        <h:outputText id="dateOfBirth" value="#{formInputBean.dateOfBirth}">
+            <f:convertDateTime pattern="yyyy-MM-dd" />
+        </h:outputText>
 
         <h:outputLabel for="siblings" value="Number of siblings" />
         <h:outputText id="siblings" value="#{formInputBean.siblings}" />

@@ -21,9 +21,7 @@ package org.apache.myfaces.integrationtest;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Managed Bean for FormInputTest.
@@ -35,8 +33,6 @@ import java.util.Locale;
 public class FormInputBean implements Serializable
 {
 
-    private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
-
     private String name;
     private Date dateOfBirth;
     private int siblings;
@@ -44,15 +40,6 @@ public class FormInputBean implements Serializable
     public String submit()
     {
         return "result.xhtml";
-    }
-
-    public String getFormattedDateOfBirth()
-    {
-        if (dateOfBirth != null)
-        {
-            return DATE_FORMAT.format(dateOfBirth);
-        }
-        return "";
     }
 
     public String getName()
