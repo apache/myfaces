@@ -40,7 +40,7 @@
 
             <h:outputLabel for="dateOfBirth" value="Date of birth (e.g. 1989-03-18)" />
             <h:inputText id="dateOfBirth" value="#{formInputBean.dateOfBirth}">
-                <f:convertDateTime pattern="yyyy-MM-dd" />
+                <f:convertDateTime pattern="yyyy-MM-dd" locale="us" />
             </h:inputText>
 
             <h:outputLabel for="siblings" value="Number of siblings" />
