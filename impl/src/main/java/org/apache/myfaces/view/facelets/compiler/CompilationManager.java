@@ -24,6 +24,8 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
@@ -291,6 +293,39 @@ final class CompilationManager
                 unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
                 this.startUnit(unit);
             }
+            
+            if (this.compiler.isDevelopmentProjectStage())
+            {
+                String qName = null;
+                boolean isPrefixed = false;
+                TagAttribute jsfc = t.getAttributes().get("jsfc");
+                if (jsfc != null)
+                {
+                    qName = jsfc.getValue();
+                    if (jsfc.getValue().indexOf(':') > 0)
+                    {
+                        isPrefixed = true;
+                    }
+                }
+                else if (t.getQName().indexOf(':') > 0 )
+                {
+                    qName = t.getQName();
+                    isPrefixed = true;
+                }
+                if (isPrefixed)
+                {
+                    unit.addMessage(FacesMessage.SEVERITY_WARN,
+                            "Warning: The page "+alias+" declares namespace "+qname[0]+ 
+                            " and uses the tag " + qName + " , but no TagLibrary associated to namespace.", 
+                            "Warning: The page "+alias+" declares namespace "+qname[0]+ 
+                            " and uses the tag " + qName + " , but no TagLibrary associated to namespace. "+
+                            "Please check the namespace name and if it is correct, it is probably that your " +
+                            "library .taglib.xml cannot be found on the current classpath, or if you are " +
+                            "referencing a composite component library check your library folder match with the namespace and " +
+                            "can be located by the installed ResourceHandler.");
+                }
+            }
+            
             unit.startTag(t);
         }
     }

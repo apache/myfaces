@@ -76,6 +76,8 @@ public abstract class Compiler
 
     private boolean initialized = false;
     
+    private boolean developmentProjectStage = false;
+
     private Collection<FaceletsProcessing> faceletsProcessingConfigurations;
 
     /**
@@ -262,6 +264,16 @@ public abstract class Compiler
     public final void setValidating(boolean validating)
     {
         this.validating = validating;
+    }
+    
+    public final boolean isDevelopmentProjectStage()
+    {
+        return this.developmentProjectStage;
+    }
+    
+    public final void setDevelopmentProjectStage(boolean developmentProjectStage)
+    {
+        this.developmentProjectStage = developmentProjectStage;
     }
 
     /**
