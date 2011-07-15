@@ -123,7 +123,7 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         return url;
     }
 
-    private String getDirectory()
+    protected String getDirectory()
     {
         return this.getClass().getName().substring(0,
                 this.getClass().getName().lastIndexOf('.')).replace('.', '/')
