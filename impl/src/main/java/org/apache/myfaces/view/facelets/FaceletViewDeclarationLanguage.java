@@ -1520,6 +1520,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     protected Compiler createCompiler(FacesContext context)
     {
         Compiler compiler = new SAXCompiler();
+        
+        compiler.setDevelopmentProjectStage(context.isProjectStage(ProjectStage.Development));
 
         loadLibraries(context, compiler);
         loadDecorators(context, compiler);

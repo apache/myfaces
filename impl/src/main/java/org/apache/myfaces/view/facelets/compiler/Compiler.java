@@ -73,6 +73,8 @@ public abstract class Compiler
     private final Map<String, String> features = new HashMap<String, String>();
 
     private boolean initialized = false;
+    
+    private boolean developmentProjectStage = false;
 
     /**
      * 
@@ -258,5 +260,15 @@ public abstract class Compiler
     public final void setValidating(boolean validating)
     {
         this.validating = validating;
+    }
+    
+    public final boolean isDevelopmentProjectStage()
+    {
+        return this.developmentProjectStage;
+    }
+    
+    public final void setDevelopmentProjectStage(boolean developmentProjectStage)
+    {
+        this.developmentProjectStage = developmentProjectStage;
     }
 }

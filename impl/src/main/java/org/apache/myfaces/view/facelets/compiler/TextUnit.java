@@ -19,10 +19,12 @@
 package org.apache.myfaces.view.facelets.compiler;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
 import javax.el.ELException;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.facelets.CompositeFaceletHandler;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.Tag;
@@ -55,6 +57,8 @@ final class TextUnit extends CompilationUnit
     private final String alias;
 
     private final String id;
+    
+    private final List<Object> messages;
 
     public TextUnit(String alias, String id)
     {
@@ -66,6 +70,7 @@ final class TextUnit extends CompilationUnit
         this.tags = new Stack<Tag>();
         this.children = new ArrayList<Object>();
         this.startTagOpen = false;
+        this.messages = new ArrayList<Object>(4);
     }
 
     public FaceletHandler createFaceletHandler()
@@ -209,6 +214,16 @@ final class TextUnit extends CompilationUnit
                         this.addInstruction(new AttributeInstruction(this.alias, qname, txt));
                     }
                 }
+            }
+        }
+        
+        if (!messages.isEmpty())
+        {
+            for (Iterator<Object> it = messages.iterator(); it.hasNext();)
+            {
+                Object[] message = (Object[])it.next();
+                this.addInstruction(new AddFacesMessageInstruction((FacesMessage.Severity) message[0], (String)message[1], (String)message[2]));
+                it.remove();
             }
         }
 
@@ -370,5 +385,10 @@ final class TextUnit extends CompilationUnit
     public String toString()
     {
         return "TextUnit[" + this.children.size() + "]";
+    }
+    
+    public void addMessage(FacesMessage.Severity severity, String summary, String detail)
+    {
+        this.messages.add(new Object[]{severity, summary, detail});
     }
 }
