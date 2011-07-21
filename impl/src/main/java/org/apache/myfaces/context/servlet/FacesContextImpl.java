@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.faces.FactoryFinder;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.context.PartialViewContextFactory;
 import javax.faces.context.ResponseStream;
@@ -270,7 +271,8 @@ public class FacesContextImpl extends FacesContextImplBase
             //Get through factory finder
             PartialViewContextFactory factory = (PartialViewContextFactory)
                 FactoryFinder.getFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
-            _partialViewContext = factory.getPartialViewContext(this);
+            // Put actual facesContext as param, not this - this can be wrapped
+            _partialViewContext = factory.getPartialViewContext(FacesContext.getCurrentInstance());
         }
         return _partialViewContext;
     }
