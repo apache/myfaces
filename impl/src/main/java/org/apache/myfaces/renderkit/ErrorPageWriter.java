@@ -315,8 +315,21 @@ public final class ErrorPageWriter
                     String viewId = faces.getViewRoot().getViewId();
                     writer.write("viewId=" + viewId);
                     writer.write("<br/>");
-                    writer.write("location=" + faces.getExternalContext().getRealPath(viewId));
-                    writer.write("<br/>");
+                    String realPath = null;
+                    try
+                    {
+                        //Could not work on tomcat 7 running by cargo
+                        realPath = faces.getExternalContext().getRealPath(viewId);
+                    }
+                    catch(Throwable e)
+                    {
+                        //swallow it
+                    }
+                    if (realPath != null)
+                    {
+                        writer.write("location=" + realPath);
+                        writer.write("<br/>");
+                    }
                     writer.write("phaseId=" + faces.getCurrentPhaseId());
                     writer.write("<br/>");
                     writer.write("<br/>");
