@@ -51,8 +51,11 @@ import java.util.NoSuchElementException;
 */
 public abstract class DataModel<E> implements Iterable<E>
 {
+    private final static DataModelListener[] EMPTY_DATA_MODEL_LISTENER = new DataModelListener[]{};
     // FIELDS
     private List<DataModelListener> _listeners;
+    
+    private DataModelListener[] _cachedListenersArray = null;
 
     // METHODS
     public void addDataModelListener(DataModelListener listener)
@@ -63,15 +66,20 @@ public abstract class DataModel<E> implements Iterable<E>
             _listeners = new ArrayList<DataModelListener>();
         }
         _listeners.add(listener);
+        _cachedListenersArray = null;
     }
 
     public DataModelListener[] getDataModelListeners()
     {
         if (_listeners == null)
         {
-            return new DataModelListener[0];
+            return EMPTY_DATA_MODEL_LISTENER;
         }
-        return _listeners.toArray(new DataModelListener[_listeners.size()]);
+        if (_cachedListenersArray == null)
+        {
+            _cachedListenersArray = _listeners.toArray(new DataModelListener[_listeners.size()]);
+        }
+        return _cachedListenersArray;
     }
 
     /**
@@ -141,6 +149,7 @@ public abstract class DataModel<E> implements Iterable<E>
         {
             _listeners.remove(listener);
         }
+        _cachedListenersArray = null;
     }
 
     /**
