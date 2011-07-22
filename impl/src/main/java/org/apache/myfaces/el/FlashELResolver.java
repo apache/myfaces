@@ -39,11 +39,11 @@ import java.util.Iterator;
 public class FlashELResolver extends ELResolver
 {
 
-    private final static String FLASH = "flash".intern();
+    private final static String FLASH = "flash";
 
-    private final static String KEEP = "keep".intern();
+    private final static String KEEP = "keep";
 
-    private final static String NOW = "now".intern();
+    private final static String NOW = "now";
 
     public FlashELResolver()
     {
@@ -61,7 +61,7 @@ public class FlashELResolver extends ELResolver
         if (!(property instanceof String))
             return;
 
-        String strProperty = castAndIntern(property);
+        String strProperty = property.toString();
 
         if (FLASH.equals(strProperty))
         {
@@ -91,7 +91,7 @@ public class FlashELResolver extends ELResolver
         if (!(property instanceof String))
             return false;
 
-        String strProperty = castAndIntern(property);
+        String strProperty = property.toString();
 
         if (FLASH.equals(strProperty))
         {
@@ -115,7 +115,7 @@ public class FlashELResolver extends ELResolver
         if (!(property instanceof String))
             return null;
 
-        String strProperty = castAndIntern(property);
+        String strProperty = property.toString();
 
         FacesContext facesContext = facesContext(elContext);
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -237,7 +237,7 @@ public class FlashELResolver extends ELResolver
         if (!(property instanceof String))
             return null;
 
-        String strProperty = castAndIntern(property);
+        String strProperty = property.toString();
 
         if (FLASH.equals(strProperty))
         {
@@ -306,12 +306,6 @@ public class FlashELResolver extends ELResolver
         }
 
         return null;
-    }
-
-    protected String castAndIntern(Object o)
-    {
-        String s = (String) o;
-        return s.intern();
     }
 
 }

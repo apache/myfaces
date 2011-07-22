@@ -29,7 +29,7 @@ import javax.el.ELContext;
 public class ResourceImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "resource".intern();
+    private static final String NAME = "resource";
 
     /** Creates a new instance of ApplicationImplicitObject */
     public ResourceImplicitObject()

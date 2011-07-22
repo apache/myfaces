@@ -30,7 +30,7 @@ import java.util.Map;
 public class ApplicationScopeImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "applicationScope".intern();
+    private static final String NAME = "applicationScope";
 
     /** Creates a new instance of ApplicationScopeImplicitObject */
     public ApplicationScopeImplicitObject()

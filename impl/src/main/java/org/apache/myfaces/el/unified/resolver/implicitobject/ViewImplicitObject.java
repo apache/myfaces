@@ -30,7 +30,7 @@ import javax.faces.component.UIViewRoot;
 public class ViewImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "view".intern();
+    private static final String NAME = "view";
 
     /** Creates a new instance of ViewImplicitObject */
     public ViewImplicitObject()

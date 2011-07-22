@@ -32,7 +32,7 @@ import javax.faces.component.UIComponent;
 public class ComponentImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "component".intern();
+    private static final String NAME = "component";
 
     /** Creates a new instance of ComponentImplicitObject */
     public ComponentImplicitObject()

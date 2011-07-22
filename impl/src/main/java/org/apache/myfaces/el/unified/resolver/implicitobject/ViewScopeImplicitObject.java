@@ -30,7 +30,7 @@ import java.util.Map;
 public class ViewScopeImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "viewScope".intern();
+    private static final String NAME = "viewScope";
 
     /** Creates a new instance of ViewScopeImplicitObject */
     public ViewScopeImplicitObject()

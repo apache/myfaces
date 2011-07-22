@@ -29,7 +29,7 @@ import javax.el.ELContext;
 public class SessionImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "session".intern();
+    private static final String NAME = "session";
 
     /** Creates a new instance of SessionImplicitObject */
     public SessionImplicitObject()
