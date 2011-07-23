@@ -49,8 +49,11 @@ import java.util.List;
 */
 public abstract class DataModel
 {
+    private final static DataModelListener[] EMPTY_DATA_MODEL_LISTENER = new DataModelListener[]{};
     // FIELDS
     private List<DataModelListener> _listeners;
+    
+    private DataModelListener[] _cachedListenersArray = null;
 
     // METHODS
     public void addDataModelListener(DataModelListener listener)
@@ -61,15 +64,20 @@ public abstract class DataModel
             _listeners = new ArrayList<DataModelListener>();
         }
         _listeners.add(listener);
+        _cachedListenersArray = null;
     }
 
     public DataModelListener[] getDataModelListeners()
     {
         if (_listeners == null)
         {
-            return new DataModelListener[0];
+            return EMPTY_DATA_MODEL_LISTENER;
         }
-        return _listeners.toArray(new DataModelListener[_listeners.size()]);
+        if (_cachedListenersArray == null)
+        {
+            _cachedListenersArray = _listeners.toArray(new DataModelListener[_listeners.size()]);
+        }
+        return _cachedListenersArray;
     }
 
     /**

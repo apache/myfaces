@@ -114,6 +114,8 @@ public class UIData extends UIComponentBase
     private static final int PROCESS_VALIDATORS = 2;
     private static final int PROCESS_UPDATES = 3;
 
+    private static final Object[] LEAF_NO_STATE = new Object[]{null,null};
+
     private int _rowIndex = -1;
     private String _var;
 
@@ -464,6 +466,7 @@ public class UIData extends UIComponentBase
      * <p>
      * Param rowIndex can be -1, meaning "no row".
      * <p>
+     * 
      * @param rowIndex
      */
     public void setRowIndex(int rowIndex)
@@ -488,19 +491,26 @@ public class UIData extends UIComponentBase
                 // that we haven't visited before, ie a "saved state" that can
                 // be pushed to the "restoreState" method of all the child
                 // components to set them up to represent a clean row.
-                _initialDescendantComponentState = saveDescendantComponentStates(
-                        getChildren().iterator(), false);
+                _initialDescendantComponentState = saveDescendantComponentStates(this, false, false);
             }
         }
         else
         {
-            // We are currently positioned on some row, and are about to
-            // move off it, so save the (partial) state of the components
-            // representing the current row. Later if this row is revisited
-            // then we can restore this state.
-            _rowStates.put(getClientId(facesContext),
-                    saveDescendantComponentStates(getChildren().iterator(),
-                            false));
+            // If no initial component state, there are no EditableValueHolder instances,
+            // and that means there is no state to be saved for the current row, so we can
+            // skip row state saving code safely.
+            if (_initialDescendantComponentState != null)
+            {
+                // We are currently positioned on some row, and are about to
+                // move off it, so save the (partial) state of the components
+                // representing the current row. Later if this row is revisited
+                // then we can restore this state.
+                Collection<Object[]> savedRowState = saveDescendantComponentStates(this, false, false);
+                if (savedRowState != null)
+                {
+                    _rowStates.put(getClientId(facesContext), savedRowState);
+                }
+            }
         }
 
         _rowIndex = rowIndex;
@@ -537,8 +547,15 @@ public class UIData extends UIComponentBase
         if (_rowIndex == -1)
         {
             // reset components to initial state
-            restoreDescendantComponentStates(getChildren().iterator(),
-                    _initialDescendantComponentState, false);
+            // If no initial state, skip row restore state code
+            if (_initialDescendantComponentState != null)
+            {
+                restoreDescendantComponentStates(this, false, _initialDescendantComponentState, false);
+            }
+            else
+            {
+                restoreDescendantComponentWithoutRestoreState(this, false, false);
+            }
         }
         else
         {
@@ -548,8 +565,15 @@ public class UIData extends UIComponentBase
                 // We haven't been positioned on this row before, so just
                 // configure the child components of this component with
                 // the standard "initial" state
-                restoreDescendantComponentStates(getChildren().iterator(),
-                        _initialDescendantComponentState, false);
+                // If no initial state, skip row restore state code
+                if (_initialDescendantComponentState != null)
+                {
+                    restoreDescendantComponentStates(this, false, _initialDescendantComponentState, false);
+                }
+                else
+                {
+                    restoreDescendantComponentWithoutRestoreState(this, false, false);
+                }
             }
             else
             {
@@ -557,122 +581,345 @@ public class UIData extends UIComponentBase
                 // the child components of this component with the (partial)
                 // state that was previously saved. Fields not in the
                 // partial saved state are left with their original values.
-                restoreDescendantComponentStates(getChildren().iterator(),
-                        rowState, false);
+                restoreDescendantComponentStates(this, false, rowState, false);
             }
         }
     }
 
     /**
-     * Overwrite the state of the child components of this component
-     * with data previously saved by method saveDescendantComponentStates.
+     * Overwrite the state of the child components of this component with data previously saved by method
+     * saveDescendantComponentStates.
      * <p>
-     * The saved state info only covers those fields that are expected to
-     * vary between rows of a table. Other fields are not modified.
+     * The saved state info only covers those fields that are expected to vary between rows of a table. Other fields are
+     * not modified.
      */
-    private void restoreDescendantComponentStates(Iterator childIterator,
-            Object state, boolean restoreChildFacets)
+    @SuppressWarnings("unchecked")
+    private void restoreDescendantComponentStates(UIComponent parent, boolean iterateFacets, Object state,
+                                                  boolean restoreChildFacets)
     {
-        Iterator descendantStateIterator = null;
-        while (childIterator.hasNext())
+        int descendantStateIndex = -1;
+        List<? extends Object[]> stateCollection = null;
+        
+        if (iterateFacets && parent.getFacetCount() > 0)
         {
-            if (descendantStateIterator == null && state != null)
+            Iterator<UIComponent> childIterator = parent.getFacets().values().iterator();
+            
+            while (childIterator.hasNext())
             {
-                descendantStateIterator = ((Collection) state).iterator();
-            }
-            UIComponent component = (UIComponent) childIterator.next();
+                UIComponent component = childIterator.next();
 
-            // reset the client id (see spec 3.1.6)
-            component.setId(component.getId());
-            if(!component.isTransient())
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
+                {
+                    if (descendantStateIndex == -1)
+                    {
+                        stateCollection = ((List<? extends Object[]>) state);
+                        descendantStateIndex = stateCollection.isEmpty() ? -1 : 0;
+                    }
+                    
+                    if (descendantStateIndex != -1 && descendantStateIndex < stateCollection.size())
+                    {
+                        Object[] object = stateCollection.get(descendantStateIndex);
+                        if (object[0] != null && component instanceof EditableValueHolder)
+                        {
+                            ((EditableValueHolderState) object[0]).restoreState((EditableValueHolder) component);
+                        }
+                        // If there is descendant state to restore, call it recursively, otherwise
+                        // it is safe to skip iteration.
+                        if (object[1] != null)
+                        {
+                            restoreDescendantComponentStates(component, restoreChildFacets, object[1], true);
+                        }
+                        else
+                        {
+                            restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                        }
+                    }
+                    else
+                    {
+                        restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                    }
+                    descendantStateIndex++;
+                }
+            }
+        }
+        
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0; i < parent.getChildCount(); i++)
             {
-                Object childState = null;
-                Object descendantState = null;
-                if (descendantStateIterator != null
-                        && descendantStateIterator.hasNext())
+                UIComponent component = parent.getChildren().get(i);
+
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
                 {
-                    Object[] object = (Object[]) descendantStateIterator.next();
-                    childState = object[0];
-                    descendantState = object[1];
+                    if (descendantStateIndex == -1)
+                    {
+                        stateCollection = ((List<? extends Object[]>) state);
+                        descendantStateIndex = stateCollection.isEmpty() ? -1 : 0;
+                    }
+                    
+                    if (descendantStateIndex != -1 && descendantStateIndex < stateCollection.size())
+                    {
+                        Object[] object = stateCollection.get(descendantStateIndex);
+                        if (object[0] != null && component instanceof EditableValueHolder)
+                        {
+                            ((EditableValueHolderState) object[0]).restoreState((EditableValueHolder) component);
+                        }
+                        // If there is descendant state to restore, call it recursively, otherwise
+                        // it is safe to skip iteration.
+                        if (object[1] != null)
+                        {
+                            restoreDescendantComponentStates(component, restoreChildFacets, object[1], true);
+                        }
+                        else
+                        {
+                            restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                        }
+                    }
+                    else
+                    {
+                        restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                    }
+                    descendantStateIndex++;
                 }
-                if (component instanceof EditableValueHolder)
-                {
-                    ((EditableValueHolderState) childState)
-                            .restoreState((EditableValueHolder) component);
-                }
-                Iterator childsIterator;
-                if (restoreChildFacets)
-                {
-                    childsIterator = component.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = component.getChildren().iterator();
-                }
-                restoreDescendantComponentStates(childsIterator, descendantState,
-                        true);
             }
         }
     }
 
     /**
-     * Walk the tree of child components of this UIData, saving the parts of
-     * their state that can vary between rows.
-     * <p>
-     * This is very similar to the process that occurs for normal components
-     * when the view is serialized. Transient components are skipped (no
-     * state is saved for them).
-     * <p>
-     * If there are no children then null is returned. If there are one or
-     * more children, and all children are transient then an empty collection
-     * is returned; this will happen whenever a table contains only read-only
-     * components.
-     * <p>
-     * Otherwise a collection is returned which contains an object for every
-     * non-transient child component; that object may itself contain a collection
-     * of the state of that child's child components.
+     * Just call component.setId(component.getId()) to reset all client ids and 
+     * ensure they will be calculated for the current row, but do not waste time
+     * dealing with row state code.
+     * 
+     * @param parent
+     * @param iterateFacets
+     * @param restoreChildFacets 
      */
-    private Object saveDescendantComponentStates(Iterator childIterator,
-            boolean saveChildFacets)
+    private void restoreDescendantComponentWithoutRestoreState(UIComponent parent, boolean iterateFacets, boolean restoreChildFacets)
     {
-        Collection childStates = null;
-        while (childIterator.hasNext())
+        if (iterateFacets && parent.getFacetCount() > 0)
         {
-            if (childStates == null)
+            Iterator<UIComponent> childIterator = parent.getFacets().values().iterator();
+            
+            while (childIterator.hasNext())
             {
-                childStates = new ArrayList();
-            }
-            UIComponent child = (UIComponent) childIterator.next();
-            if(!child.isTransient())
-            {
-                // Add an entry to the collection, being an array of two
-                // elements. The first element is the state of the children
-                // of this component; the second is the state of the current
-                // child itself.
+                UIComponent component = childIterator.next();
 
-                Iterator childsIterator;
-                if (saveChildFacets)
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
                 {
-                    childsIterator = child.getFacetsAndChildren();
+                    restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
                 }
-                else
-                {
-                    childsIterator = child.getChildren().iterator();
-                }
-                Object descendantState = saveDescendantComponentStates(
-                        childsIterator, true);
-                Object state = null;
-                if (child instanceof EditableValueHolder)
-                {
-                    state = new EditableValueHolderState(
-                            (EditableValueHolder) child);
-                }
-                childStates.add(new Object[] { state, descendantState });
             }
         }
+        
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0; i < parent.getChildCount(); i++)
+            {
+                UIComponent component = parent.getChildren().get(i);
+
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
+                {
+                    restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                }
+            }
+        }
+    }
+
+    /**
+     * Walk the tree of child components of this UIData, saving the parts of their state that can vary between rows.
+     * <p>
+     * This is very similar to the process that occurs for normal components when the view is serialized. Transient
+     * components are skipped (no state is saved for them).
+     * <p>
+     * If there are no children then null is returned. If there are one or more children, and all children are transient
+     * then an empty collection is returned; this will happen whenever a table contains only read-only components.
+     * <p>
+     * Otherwise a collection is returned which contains an object for every non-transient child component; that object
+     * may itself contain a collection of the state of that child's child components.
+     */
+    private Collection<Object[]> saveDescendantComponentStates(UIComponent parent, boolean iterateFacets,
+                                                               boolean saveChildFacets)
+    {
+        Collection<Object[]> childStates = null;
+        // Index to indicate how many components has been passed without state to save.
+        int childEmptyIndex = 0;
+        int totalChildCount = 0;
+                
+        if (iterateFacets && parent.getFacetCount() > 0)
+        {
+            Iterator<UIComponent> childIterator = parent.getFacets().values().iterator();
+
+            while (childIterator.hasNext())
+            {
+                UIComponent child = childIterator.next();
+                if (!child.isTransient())
+                {
+                    // Add an entry to the collection, being an array of two
+                    // elements. The first element is the state of the children
+                    // of this component; the second is the state of the current
+                    // child itself.
+
+                    if (child instanceof EditableValueHolder)
+                    {
+                        if (childStates == null)
+                        {
+                            childStates = new ArrayList<Object[]>(
+                                    parent.getFacetCount()
+                                    + parent.getChildCount()
+                                    - totalChildCount
+                                    + childEmptyIndex);
+                            for (int ci = 0; ci < childEmptyIndex; ci++)
+                            {
+                                childStates.add(LEAF_NO_STATE);
+                            }
+                        }
+                    
+                        childStates.add(child.getChildCount() > 0 ? 
+                                new Object[]{new EditableValueHolderState((EditableValueHolder) child),
+                                    saveDescendantComponentStates(child, saveChildFacets, true)} :
+                                new Object[]{new EditableValueHolderState((EditableValueHolder) child),
+                                    null});
+                    }
+                    else if (child.getChildCount() > 0)
+                    {
+                        Object descendantSavedState = saveDescendantComponentStates(child, saveChildFacets, true);
+                        
+                        if (descendantSavedState == null)
+                        {
+                            if (childStates == null)
+                            {
+                                childEmptyIndex++;
+                            }
+                            else
+                            {
+                                childStates.add(LEAF_NO_STATE);
+                            }
+                        }
+                        else
+                        {
+                            if (childStates == null)
+                            {
+                                childStates = new ArrayList<Object[]>(
+                                        parent.getFacetCount()
+                                        + parent.getChildCount()
+                                        - totalChildCount
+                                        + childEmptyIndex);
+                                for (int ci = 0; ci < childEmptyIndex; ci++)
+                                {
+                                    childStates.add(LEAF_NO_STATE);
+                                }
+                            }
+                            childStates.add(new Object[]{null, descendantSavedState});
+                        }
+                    }
+                    else
+                    {
+                        if (childStates == null)
+                        {
+                            childEmptyIndex++;
+                        }
+                        else
+                        {
+                            childStates.add(LEAF_NO_STATE);
+                        }
+                    }
+                }
+                totalChildCount++;
+            }
+        }
+        
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0; i < parent.getChildCount(); i++)
+            {
+                UIComponent child = parent.getChildren().get(i);
+                if (!child.isTransient())
+                {
+                    // Add an entry to the collection, being an array of two
+                    // elements. The first element is the state of the children
+                    // of this component; the second is the state of the current
+                    // child itself.
+
+                    if (child instanceof EditableValueHolder)
+                    {
+                        if (childStates == null)
+                        {
+                            childStates = new ArrayList<Object[]>(
+                                    parent.getFacetCount()
+                                    + parent.getChildCount()
+                                    - totalChildCount
+                                    + childEmptyIndex);
+                            for (int ci = 0; ci < childEmptyIndex; ci++)
+                            {
+                                childStates.add(LEAF_NO_STATE);
+                            }
+                        }
+                    
+                        childStates.add(child.getChildCount() > 0 ? 
+                                new Object[]{new EditableValueHolderState((EditableValueHolder) child),
+                                    saveDescendantComponentStates(child, saveChildFacets, true)} :
+                                new Object[]{new EditableValueHolderState((EditableValueHolder) child),
+                                    null});
+                    }
+                    else if (child.getChildCount() > 0)
+                    {
+                        Object descendantSavedState = saveDescendantComponentStates(child, saveChildFacets, true);
+                        
+                        if (descendantSavedState == null)
+                        {
+                            if (childStates == null)
+                            {
+                                childEmptyIndex++;
+                            }
+                            else
+                            {
+                                childStates.add(LEAF_NO_STATE);
+                            }
+                        }
+                        else
+                        {
+                            if (childStates == null)
+                            {
+                                childStates = new ArrayList<Object[]>(
+                                        parent.getFacetCount()
+                                        + parent.getChildCount()
+                                        - totalChildCount
+                                        + childEmptyIndex);
+                                for (int ci = 0; ci < childEmptyIndex; ci++)
+                                {
+                                    childStates.add(LEAF_NO_STATE);
+                                }
+                            }
+                            childStates.add(new Object[]{null, descendantSavedState});
+                        }
+                    }
+                    else
+                    {
+                        if (childStates == null)
+                        {
+                            childEmptyIndex++;
+                        }
+                        else
+                        {
+                            childStates.add(LEAF_NO_STATE);
+                        }
+                    }
+                }
+                totalChildCount++;
+            }
+        }
+        
         return childStates;
     }
-
+    
     @Override
     public void setValueExpression(String name, ValueExpression binding) {
         if (name == null)
