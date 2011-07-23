@@ -166,8 +166,8 @@ public class ApplicationImpl extends Application
     // synchronize, uses ConcurrentHashMap to allow concurrent read of map
     private final Map<String, Object> _converterIdToClassMap = new ConcurrentHashMap<String, Object>();
 
-    private final Map<Class<?>, String> _converterClassNameToClassMap = new ConcurrentHashMap<Class<?>, String>();
-
+    private final Map<Class<?>, Object> _converterTargetClassToConverterClassMap = new ConcurrentHashMap<Class<?>, Object>();
+    
     private final Map<String, Object> _componentClassMap = new ConcurrentHashMap<String, Object>();
 
     private final Map<String, Object> _validatorClassMap = new ConcurrentHashMap<String, Object>();
@@ -613,7 +613,7 @@ public class ApplicationImpl extends Application
     @Override
     public final Iterator<Class<?>> getConverterTypes()
     {
-        return _converterClassNameToClassMap.keySet().iterator();
+        return _converterTargetClassToConverterClassMap.keySet().iterator();
     }
 
     @Override
@@ -1022,7 +1022,11 @@ public class ApplicationImpl extends Application
 
         try
         {
-            _converterClassNameToClassMap.put(targetClass, converterClass);
+            if(isLazyLoadConfigObjects())
+                _converterTargetClassToConverterClassMap.put(targetClass, converterClass);
+            else
+                _converterTargetClassToConverterClassMap.put(targetClass, ClassUtils.simpleClassForName(converterClass));
+
             if (log.isLoggable(Level.FINEST))
                 log.finest("add Converter for class = " + targetClass + " converterClass = " + converterClass);
         }
@@ -1383,14 +1387,17 @@ public class ApplicationImpl extends Application
         return internalCreateConverter(targetClass);
     }
 
+    @SuppressWarnings("unchecked")
     private Converter internalCreateConverter(final Class<?> targetClass)
     {
         // Locate a Converter registered for the target class itself.
-        String converterClassName = _converterClassNameToClassMap.get(targetClass);
-
+        Object converterClassOrClassName = _converterTargetClassToConverterClassMap.get(targetClass);
+        
         // Locate a Converter registered for interfaces that are
         // implemented by the target class (directly or indirectly).
-        if (converterClassName == null)
+        // Skip if class is String, for performance reasons 
+        // (save 3 additional lookups over a concurrent map per request). 
+        if (converterClassOrClassName == null && !String.class.equals(targetClass))
         {
             final Class<?> interfaces[] = targetClass.getInterfaces();
             if (interfaces != null)
@@ -1410,15 +1417,30 @@ public class ApplicationImpl extends Application
 
         // Get EnumConverter for enum classes with no special converter, check
         // here as recursive call with java.lang.Enum will not work
-        if (converterClassName == null && targetClass.isEnum()) {
-            converterClassName = _converterClassNameToClassMap.get(Enum.class);
+        if (converterClassOrClassName == null && targetClass.isEnum()) {
+            converterClassOrClassName = _converterTargetClassToConverterClassMap.get(Enum.class);
         }
 
-        if (converterClassName != null)
+        if (converterClassOrClassName != null)
         {
             try
             {
-                Class<? extends Converter> converterClass = ClassUtils.simpleClassForName(converterClassName);
+                Class<? extends Converter> converterClass = null;
+                if (converterClassOrClassName instanceof Class<?>)
+                {
+                    converterClass = (Class<? extends Converter>) converterClassOrClassName;
+                }
+                else if (converterClassOrClassName instanceof String)
+                {
+                    converterClass = ClassUtils.simpleClassForName((String) converterClassOrClassName);
+                    _converterTargetClassToConverterClassMap.put(targetClass, converterClass);
+                }
+                else
+                {
+                    //object stored in the map for this id is an invalid type.  remove it and return null
+                    _converterTargetClassToConverterClassMap.remove(targetClass);
+                }
+                
                 Converter converter = null;
                 
                 // check cached constructor information
@@ -1457,8 +1479,8 @@ public class ApplicationImpl extends Application
             }
             catch (Exception e)
             {
-                log.log(Level.SEVERE, "Could not instantiate converter " + converterClassName, e);
-                throw new FacesException("Could not instantiate converter: " + converterClassName, e);
+                log.log(Level.SEVERE, "Could not instantiate converter " + converterClassOrClassName.toString(), e);
+                throw new FacesException("Could not instantiate converter: " + converterClassOrClassName.toString(), e);
             }
         }
 
