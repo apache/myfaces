@@ -30,7 +30,7 @@ import javax.el.ELContext;
 public class CookieImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "cookie".intern();
+    private static final String NAME = "cookie";
 
     /** Creates a new instance of CookieImplicitObject */
     public CookieImplicitObject()

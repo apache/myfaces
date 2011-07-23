@@ -30,7 +30,7 @@ import javax.el.ELContext;
 public class ParamImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "param".intern();
+    private static final String NAME = "param";
 
     /** Creates a new instance of InitParamImplicitObject */
     public ParamImplicitObject()

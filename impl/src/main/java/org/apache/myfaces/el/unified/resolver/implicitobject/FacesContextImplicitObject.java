@@ -30,7 +30,7 @@ import javax.faces.context.FacesContext;
 public class FacesContextImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "facesContext".intern();
+    private static final String NAME = "facesContext";
 
     /** Creates a new instance of FacesContextImplicitObject */
     public FacesContextImplicitObject()

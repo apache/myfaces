@@ -35,7 +35,7 @@ import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 public class CompositeComponentImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "cc".intern();
+    private static final String NAME = "cc";
 
     /** Creates a new instance of CompositeComponentImplicitObjectImplicitObject */
     public CompositeComponentImplicitObject()

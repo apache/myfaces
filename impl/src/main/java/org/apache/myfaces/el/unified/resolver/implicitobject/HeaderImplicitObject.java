@@ -30,7 +30,7 @@ import javax.el.ELContext;
 public class HeaderImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "header".intern();
+    private static final String NAME = "header";
 
     /** Creates a new instance of HeaderImplicitObject */
     public HeaderImplicitObject()

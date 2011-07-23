@@ -41,9 +41,9 @@ import javax.faces.el.CompositeComponentExpressionHolder;
 
 public final class CompositeComponentELResolver extends ELResolver
 {
-    private static final String ATTRIBUTES_MAP = "attrs".intern();
+    private static final String ATTRIBUTES_MAP = "attrs";
     
-    private static final String PARENT_COMPOSITE_COMPONENT = "parent".intern();
+    private static final String PARENT_COMPOSITE_COMPONENT = "parent";
     
     private static final String COMPOSITE_COMPONENT_ATTRIBUTES_MAPS = 
         "org.apache.myfaces.COMPOSITE_COMPONENT_ATTRIBUTES_MAPS";
