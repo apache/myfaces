@@ -29,6 +29,8 @@ import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 import javax.el.MethodNotFoundException;
 import javax.el.PropertyNotFoundException;
+import javax.faces.FacesWrapper;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.TagAttribute;
 
 /**
@@ -37,42 +39,50 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id: TagMethodExpression.java,v 1.7 2008/07/13 19:01:43 rlubke Exp $
  */
-public final class TagMethodExpression extends MethodExpression implements Externalizable
+public final class TagMethodExpression extends MethodExpression implements Externalizable, FacesWrapper<MethodExpression>, ContextAware
 {
 
     private static final long serialVersionUID = 1L;
 
-    private String attr;
-    private MethodExpression orig;
+    private MethodExpression _wrapped;
+
+    private Location _location;
+    
+    private String _qName;
 
     public TagMethodExpression()
     {
         super();
     }
 
-    public TagMethodExpression(TagAttribute attr, MethodExpression orig)
+    public TagMethodExpression(TagAttribute tagAttribute, MethodExpression methodExpression)
     {
-        this.attr = attr.toString();
-        this.orig = orig;
+        _location = tagAttribute.getLocation();
+        _qName = tagAttribute.getQName();
+        _wrapped = methodExpression;
     }
 
     public MethodInfo getMethodInfo(ELContext context)
     {
         try
         {
-            return this.orig.getMethodInfo(context);
+            return _wrapped.getMethodInfo(context);
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
         }
         catch (MethodNotFoundException mnfe)
         {
-            throw new MethodNotFoundException(this.attr + ": " + mnfe.getMessage(), mnfe.getCause());
+            throw new ContextAwareMethodNotFoundException(getLocation(), getExpressionString(), getQName(), mnfe);
         }
         catch (ELException e)
         {
-            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+        } 
+        catch (Exception e)
+        {
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
         }
     }
 
@@ -80,56 +90,74 @@ public final class TagMethodExpression extends MethodExpression implements Exter
     {
         try
         {
-            return this.orig.invoke(context, params);
+            return _wrapped.invoke(context, params);
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
         }
         catch (MethodNotFoundException mnfe)
         {
-            throw new MethodNotFoundException(this.attr + ": " + mnfe.getMessage(), mnfe.getCause());
+            throw new ContextAwareMethodNotFoundException(getLocation(), getExpressionString(), getQName(), mnfe);
         }
         catch (ELException e)
         {
-            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+        }
+        catch (Exception e)
+        {
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
         }
     }
 
     public String getExpressionString()
     {
-        return this.orig.getExpressionString();
+        return _wrapped.getExpressionString();
     }
 
     public boolean equals(Object obj)
     {
-        return this.orig.equals(obj);
+        return _wrapped.equals(obj);
     }
 
     public int hashCode()
     {
-        return this.orig.hashCode();
+        return _wrapped.hashCode();
     }
 
     public boolean isLiteralText()
     {
-        return this.orig.isLiteralText();
+        return _wrapped.isLiteralText();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        out.writeObject(this.orig);
-        out.writeUTF(this.attr);
+        out.writeObject(_wrapped);
+        out.writeObject(_location);
+        out.writeUTF(_qName);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
-        this.orig = (MethodExpression) in.readObject();
-        this.attr = in.readUTF();
+        _wrapped = (MethodExpression) in.readObject();
+        _location = (Location) in.readObject();
+        _qName = in.readUTF();
     }
 
     public String toString()
     {
-        return this.attr + ": " + this.orig;
+        return _location + ": " + _wrapped;
+    }
+    
+    public Location getLocation() {
+        return _location;
+    }
+    
+    public String getQName() {
+        return _qName;
+    }
+    
+    public MethodExpression getWrapped() {
+        return _wrapped;
     }
 }
