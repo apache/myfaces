@@ -29,6 +29,7 @@ import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
 import javax.faces.FacesWrapper;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.TagAttribute;
 
 /**
@@ -37,44 +38,51 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id: TagValueExpression.java,v 1.7 2008/07/13 19:01:42 rlubke Exp $
  */
-public class TagValueExpression extends ValueExpression implements Externalizable, FacesWrapper<ValueExpression>
+public class TagValueExpression extends ValueExpression implements Externalizable, FacesWrapper<ValueExpression>, ContextAware
 {
 
     private static final long serialVersionUID = 1L;
 
-    // orig and attr need to be available in TagValueExpressionUEL
-    ValueExpression orig; 
-    String attr; 
+    private ValueExpression _wrapped; 
+
+    private Location _location;
+    
+    private String _qName;
 
     public TagValueExpression()
     {
         super();
     }
 
-    public TagValueExpression(TagAttribute attr, ValueExpression orig)
+    public TagValueExpression(TagAttribute tagAttribute, ValueExpression valueExpression)
     {
-        this.attr = attr.toString();
-        this.orig = orig;
+        _location = tagAttribute.getLocation();
+        _qName = tagAttribute.getQName();
+        _wrapped = valueExpression;
     }
 
     public Class<?> getExpectedType()
     {
-        return this.orig.getExpectedType();
+        return _wrapped.getExpectedType();
     }
 
     public Class<?> getType(ELContext context)
     {
         try
         {
-            return this.orig.getType(context);
+            return _wrapped.getType(context);
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
         }
         catch (ELException e)
         {
-            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+        }
+        catch (Exception e)
+        {
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e); 
         }
     }
 
@@ -82,15 +90,19 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
     {
         try
         {
-            return this.orig.getValue(context);
+            return _wrapped.getValue(context);
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
         }
         catch (ELException e)
         {
-            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+        }
+        catch (Exception e)
+        {
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
         }
     }
 
@@ -98,77 +110,96 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
     {
         try
         {
-            return this.orig.isReadOnly(context);
+            return _wrapped.isReadOnly(context);
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
         }
         catch (ELException e)
         {
-            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
         }
+        catch (Exception e)
+        {
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+        }
+        
     }
 
     public void setValue(ELContext context, Object value)
     {
         try
         {
-            this.orig.setValue(context, value);
+            _wrapped.setValue(context, value);
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
         }
         catch (PropertyNotWritableException pnwe)
         {
-            throw new PropertyNotWritableException(this.attr + ": " + pnwe.getMessage(), pnwe.getCause());
+            throw new ContextAwarePropertyNotWritableException(getLocation(), getExpressionString(), getQName(), pnwe);
         }
         catch (ELException e)
         {
-            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+        }
+        catch (Exception e)
+        {
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
         }
     }
     
     public boolean equals(Object obj)
     {
-        return this.orig.equals(obj);
+        return _wrapped.equals(obj);
     }
 
     public String getExpressionString()
     {
-        return this.orig.getExpressionString();
+        return _wrapped.getExpressionString();
     }
 
     public int hashCode()
     {
-        return this.orig.hashCode();
+        return _wrapped.hashCode();
     }
 
     public boolean isLiteralText()
     {
-        return this.orig.isLiteralText();
+        return _wrapped.isLiteralText();
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
-        this.orig = (ValueExpression) in.readObject();
-        this.attr = in.readUTF();
+        _wrapped = (ValueExpression) in.readObject();
+        _location = (Location) in.readObject();
+        _qName = in.readUTF();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        out.writeObject(this.orig);
-        out.writeUTF(this.attr);
+        out.writeObject(_wrapped);
+        out.writeObject(_location);
+        out.writeUTF(_qName);
     }
 
     public String toString()
     {
-        return this.attr + ": " + this.orig;
+        return _location + ": " + _wrapped;
     }
 
     public ValueExpression getWrapped()
     {
-        return orig;
+        return _wrapped;
+    }
+
+    public Location getLocation() {
+        return _location;
+    }
+    
+    public String getQName() {
+        return _qName;
     }
 }

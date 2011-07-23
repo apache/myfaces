@@ -47,7 +47,7 @@ import javax.faces.view.Location;
  * @version $Revision$ $Date$
  */
 public class LocationMethodExpression extends MethodExpression 
-    implements FacesWrapper<MethodExpression>, Externalizable
+    implements FacesWrapper<MethodExpression>, Externalizable, LocationAware
 {
 
     private static final long serialVersionUID = 1634644578979226893L;
