@@ -29,7 +29,7 @@ import javax.el.ELContext;
 public class ApplicationImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "application".intern();
+    private static final String NAME = "application";
 
     /** Creates a new instance of ApplicationImplicitObject */
     public ApplicationImplicitObject()

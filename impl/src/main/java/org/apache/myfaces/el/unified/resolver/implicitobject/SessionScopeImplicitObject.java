@@ -30,7 +30,7 @@ import java.util.Map;
 public class SessionScopeImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "sessionScope".intern();
+    private static final String NAME = "sessionScope";
 
     /** Creates a new instance of SessionScopeImplicitObject */
     public SessionScopeImplicitObject()

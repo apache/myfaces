@@ -24,13 +24,13 @@ import javax.el.ELContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver
- *
+ * 
  * @author Stan Silvert
  */
 public class HeaderValuesImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "headerValues".intern();
+    private static final String NAME = "headerValues";
 
     /** Creates a new instance of HeaderValuesImplicitObject */
     public HeaderValuesImplicitObject()

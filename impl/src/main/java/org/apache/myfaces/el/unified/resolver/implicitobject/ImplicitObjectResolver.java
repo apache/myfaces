@@ -110,7 +110,7 @@ public class ImplicitObjectResolver extends ELResolver
         if (!(property instanceof String))
             return;
 
-        String strProperty = castAndIntern(property);
+        String strProperty = property.toString();
 
         if (implicitObjects.containsKey(strProperty))
         {
@@ -130,7 +130,7 @@ public class ImplicitObjectResolver extends ELResolver
         if (!(property instanceof String))
             return false;
 
-        String strProperty = castAndIntern(property);
+        String strProperty = property.toString();
 
         if (implicitObjects.containsKey(strProperty))
         {
@@ -153,7 +153,7 @@ public class ImplicitObjectResolver extends ELResolver
         if (!(property instanceof String))
             return null;
 
-        String strProperty = castAndIntern(property);
+        String strProperty = property.toString();
 
         ImplicitObject obj = implicitObjects.get(strProperty);
         if (obj != null)
@@ -177,7 +177,7 @@ public class ImplicitObjectResolver extends ELResolver
         if (!(property instanceof String))
             return null;
 
-        String strProperty = castAndIntern(property);
+        String strProperty = property.toString();
 
         if (implicitObjects.containsKey(strProperty))
         {
@@ -210,12 +210,6 @@ public class ImplicitObjectResolver extends ELResolver
             return null;
 
         return String.class;
-    }
-
-    protected String castAndIntern(Object o)
-    {
-        String s = (String)o;
-        return s.intern();
     }
 
 }

@@ -30,7 +30,7 @@ import java.util.Map;
 public class RequestScopeImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "requestScope".intern();
+    private static final String NAME = "requestScope";
 
     /** Creates a new instance of RequestScopeImplicitObject */
     public RequestScopeImplicitObject()

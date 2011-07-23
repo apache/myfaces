@@ -29,7 +29,7 @@ import javax.el.ELContext;
 public class RequestImplicitObject extends ImplicitObject
 {
 
-    private static final String NAME = "request".intern();
+    private static final String NAME = "request";
 
     /** Creates a new instance of ParamValueRequestImplicitObject */
     public RequestImplicitObject()
