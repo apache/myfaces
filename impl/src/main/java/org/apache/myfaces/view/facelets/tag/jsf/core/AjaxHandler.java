@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.el.MethodExpression;
-import javax.faces.component.StateHolder;
+import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.behavior.AjaxBehavior;
@@ -458,10 +458,11 @@ public class AjaxHandler extends TagHandler implements
      * Wraps a method expression in a AjaxBehaviorListener
      */
     public final static class AjaxBehaviorListenerImpl implements
-            AjaxBehaviorListener, StateHolder
+            AjaxBehaviorListener, PartialStateHolder
     {
         private MethodExpression _expr;
         private boolean _transient;
+        private boolean _initialStateMarked;
         
         public AjaxBehaviorListenerImpl ()
         {
@@ -486,16 +487,39 @@ public class AjaxHandler extends TagHandler implements
 
         public void restoreState(FacesContext context, Object state)
         {
+            if (state == null)
+            {
+                return;
+            }
             _expr = (MethodExpression) state;
         }
 
         public Object saveState(FacesContext context) {
+            if (initialStateMarked())
+            {
+                return null;
+            }
             return _expr;
         }
 
         public void setTransient(boolean newTransientValue)
         {
             _transient = newTransientValue;
+        }
+        
+        public void clearInitialState()
+        {
+            _initialStateMarked = false;
+        }
+
+        public boolean initialStateMarked()
+        {
+            return _initialStateMarked;
+        }
+
+        public void markInitialState()
+        {
+            _initialStateMarked = true;
         }
     }
 }
