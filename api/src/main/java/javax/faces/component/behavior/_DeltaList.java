@@ -165,6 +165,7 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
 
     public boolean retainAll(Collection<?> c)
     {
+        clearInitialState();
         return _delegate.retainAll(c);
     }
 
