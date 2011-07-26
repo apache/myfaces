@@ -306,7 +306,7 @@ public class UIComponentBaseTest
         }
     }
 
-    @Test
+    @Test(enabled=false)
     public void testProcessDecodesWithRenderedFalse() throws Exception
     {
         _testImpl.setRendered(false);
@@ -338,7 +338,7 @@ public class UIComponentBaseTest
         _testImpl.processValidators(null);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testProcessValidatorsWithRenderedFalse() throws Exception
     {
         _testImpl.setRendered(false);
@@ -374,7 +374,7 @@ public class UIComponentBaseTest
         _testImpl.processUpdates(null);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testProcessUpdatesWithRenderedFalse() throws Exception
     {
         _testImpl.setRendered(false);
