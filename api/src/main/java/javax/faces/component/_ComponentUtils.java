@@ -312,6 +312,25 @@ class _ComponentUtils
 
         return buf.toString();
     }
+    
+    /**
+     * Call {@link #pushComponentToEL(javax.faces.context.FacesContext,javax.faces.component.UIComponent)}, 
+     * reads the isRendered property, call {@link
+     * UIComponent#popComponentFromEL} and returns the value of isRendered.
+     */
+    static boolean isRendered(FacesContext facesContext, UIComponent uiComponent) {
+        // We must call pushComponentToEL here because ValueExpression may have 
+        // implicit object "component" used. 
+        try
+        {
+            uiComponent.pushComponentToEL(facesContext, uiComponent);
+            return uiComponent.isRendered();
+        }
+        finally
+        {       
+            uiComponent.popComponentFromEL(facesContext);
+        }
+    }
 
     private static void getPathToComponent(UIComponent component, StringBuffer buf)
     {

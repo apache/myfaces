@@ -24,12 +24,16 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.io.IOException;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
@@ -43,9 +47,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.myfaces.mock.MockRenderedValueExpression;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockMethodExpression;
 import org.apache.myfaces.test.el.MockValueExpression;
+import org.apache.myfaces.test.mock.visit.MockVisitCallback;
 
 public class UIInputTest extends AbstractJsfTestCase
 {
@@ -388,5 +394,103 @@ public class UIInputTest extends AbstractJsfTestCase
             return initParameters;
         }
     }
-
+    
+    public void testProcessDecodesRenderedFalse() throws Exception {
+        input = new VerifyNoLifecycleMethodComponent();
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, false);
+        
+        input.processDecodes(facesContext);
+        
+        assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        
+    }
+    
+    public void testProcessDecodesRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
+        _setUpValueExpressionForImmediate();
+        
+        input.processDecodes(facesContext);
+        
+        assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+    }
+    
+    public void testProcessValidatorsRenderedFalse() throws Exception {
+        input = new VerifyNoLifecycleMethodComponent();
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, false);
+        
+        input.processValidators(facesContext);
+        
+        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        
+    }
+    
+    public void testProcessValidatorsRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
+        _setUpValueExpressionForImmediate();
+        
+        input.processValidators(facesContext);
+        
+        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+    }
+    
+    
+    public void testProcessUpdatesRenderedFalse() throws Exception {
+        input = new VerifyNoLifecycleMethodComponent();    
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,input, false);
+        
+        input.processUpdates(facesContext);
+        
+        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        
+    }
+    
+    public void testProcessUpdatesRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
+        _setUpValueExpressionForImmediate();
+        
+        input.processUpdates(facesContext);
+        
+        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+    }
+    
+    public void testVisitTree() throws Exception {
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, input, true);
+        
+        VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, EnumSet.of(VisitHint.SKIP_UNRENDERED));
+        MockVisitCallback mockVisitCallback = new MockVisitCallback();
+        input.visitTree(visitContext, mockVisitCallback);
+        
+        assertEquals("visitTree must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+    }
+    
+    /** Verifies no call to encode* and process* methods */
+    public class VerifyNoLifecycleMethodComponent extends UIInput
+    {
+        public void decode(FacesContext context) {
+            fail();
+        }
+        public void validate(FacesContext context) {
+            fail();
+        }
+        public void updateModel(FacesContext context) {
+            fail();
+        }
+        public void encodeBegin(FacesContext context) throws IOException {
+            fail();
+        }
+        public void encodeChildren(FacesContext context) throws IOException {
+            fail();
+        }
+        public void encodeEnd(FacesContext context) throws IOException {
+            fail();
+        }
+    }
+    
+    private void _setUpValueExpressionForImmediate() {
+        ValueExpression ve = new MockRenderedValueExpression("#{component.id eq 'testId'}", Boolean.class, input, true);
+        input.setValueExpression("immediate", ve);
+    }
 }

@@ -165,6 +165,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             if (!isRendered())
             {
                 return;
@@ -173,16 +174,17 @@ public class UIInput extends UIOutput implements EditableValueHolder
         finally
         {
             setCachedFacesContext(null);
+            popComponentFromEL(context);
         }
         super.processDecodes(context);
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             if (isImmediate())
             {
                 try
                 {
-                    pushComponentToEL(context, this);
                     //Pre validation event dispatch for component
                     context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
     
@@ -196,7 +198,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 finally
                 {
                     context.getApplication().publishEvent(context,  PostValidateEvent.class, getClass(), this);
-                    popComponentFromEL(context);
                 }
                 if (!isValid())
                 {
@@ -207,6 +208,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         finally
         {
             setCachedFacesContext(null);
+            popComponentFromEL(context);
         }
     }
 
@@ -220,6 +222,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             if (!isRendered())
             {
                 return;
@@ -228,6 +231,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         finally
         {
             setCachedFacesContext(null);
+            popComponentFromEL(context);
         }
 
         super.processValidators(context);
@@ -235,11 +239,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             if (!isImmediate())
             {
                 try
                 {
-                    pushComponentToEL(context, this);
                     //Pre validation event dispatch for component
                     context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
     
@@ -253,7 +257,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 finally
                 {
                     context.getApplication().publishEvent(context,  PostValidateEvent.class, getClass(), this);
-                    popComponentFromEL(context);
                 }
                 if (!isValid())
                 {
@@ -265,6 +268,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         finally
         {
             setCachedFacesContext(null);
+            popComponentFromEL(context);
         }
     }
 
@@ -278,6 +282,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             if (!isRendered())
             {
                 return;
@@ -286,25 +291,22 @@ public class UIInput extends UIOutput implements EditableValueHolder
         finally
         {
             setCachedFacesContext(null);
+            popComponentFromEL(context);
         }
         super.processUpdates(context);
 
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             try
             {
-                pushComponentToEL(context, this);
                 updateModel(context);
             }
             catch (RuntimeException e)
             {
                 context.renderResponse();
                 throw e;
-            }
-            finally
-            {
-                popComponentFromEL(context);
             }
             if (!isValid())
             {
@@ -314,6 +316,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         finally
         {
             setCachedFacesContext(null);
+            popComponentFromEL(context);
         }
     }
 

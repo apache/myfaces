@@ -1684,11 +1684,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             if (!isRendered())
             {
                 return;
             }
-            pushComponentToEL(context, this);
             setRowIndex(-1);
             processFacets(context, PROCESS_DECODES);
             processColumnFacets(context, PROCESS_DECODES);
@@ -1722,12 +1722,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         try
         {
             setCachedFacesContext(context);
+            pushComponentToEL(context, this);
             if (!isRendered())
             {
                 return;
             }
-    
-            pushComponentToEL(context, this);
             setRowIndex(-1);
             processFacets(context, PROCESS_VALIDATORS);
             processColumnFacets(context, PROCESS_VALIDATORS);
@@ -1807,7 +1806,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             UIComponent child = getChildren().get(i);
             if (child instanceof UIColumn)
             {
-                if (!child.isRendered())
+                if (! _ComponentUtils.isRendered(context, child))
                 {
                     // Column is not visible
                     continue;
@@ -1861,7 +1860,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 UIComponent child = getChildren().get(i);
                 if (child instanceof UIColumn)
                 {
-                    if (!child.isRendered())
+                    if (! _ComponentUtils.isRendered(context, child))
                     {
                         // Column is not visible
                         continue;

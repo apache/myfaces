@@ -810,12 +810,13 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
      * @since 2.0
      */
     public boolean visitTree(VisitContext context, VisitCallback callback) {
-        if (!isVisitable(context)) {
-            return false;
-        }
-
-        pushComponentToEL(context.getFacesContext(), this);
         try {
+            pushComponentToEL(context.getFacesContext(), this);
+            
+            if (!isVisitable(context)) {
+                return false;
+            }
+        
             VisitResult res = context.invokeVisitCallback(this, callback);
             switch (res) {
             //we are done nothing has to be processed anymore

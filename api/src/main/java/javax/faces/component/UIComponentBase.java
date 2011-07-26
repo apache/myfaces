@@ -1175,53 +1175,46 @@ public abstract class UIComponentBase extends UIComponent
         try
         {
             setCachedFacesContext(context);
+            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
-                // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
-                pushComponentToEL(context, this);
-    
-                try
+                // Call the processDecodes() method of all facets and children of this UIComponent, in the order
+                // determined by a call to getFacetsAndChildren().
+                int facetCount = getFacetCount();
+                if (facetCount > 0)
                 {
-                    // Call the processDecodes() method of all facets and children of this UIComponent, in the order
-                    // determined by a call to getFacetsAndChildren().
-                    int facetCount = getFacetCount();
-                    if (facetCount > 0)
+                    for (UIComponent facet : getFacets().values())
                     {
-                        for (UIComponent facet : getFacets().values())
-                        {
-                            facet.processDecodes(context);
-                        }
-                    }
-                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-                    {
-                        UIComponent child = getChildren().get(i);
-                        child.processDecodes(context);
-                    }
-    
-                    try
-                    {
-                        // Call the decode() method of this component.
-                        decode(context);
-                    }
-                    catch (RuntimeException e)
-                    {
-                        // If a RuntimeException is thrown during decode processing, call FacesContext.renderResponse()
-                        // and re-throw the exception.
-                        context.renderResponse();
-                        throw e;
+                        facet.processDecodes(context);
                     }
                 }
-                finally
+                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                 {
-                    // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext) from inside of a finally
-                    // block, just before returning.
-    
-                    popComponentFromEL(context);
+                    UIComponent child = getChildren().get(i);
+                    child.processDecodes(context);
+                }
+
+                try
+                {
+                    // Call the decode() method of this component.
+                    decode(context);
+                }
+                catch (RuntimeException e)
+                {
+                    // If a RuntimeException is thrown during decode processing, call FacesContext.renderResponse()
+                    // and re-throw the exception.
+                    context.renderResponse();
+                    throw e;
                 }
             }
         }
         finally
         {
+            // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext) from inside of a finally
+            // block, just before returning.
+
+            popComponentFromEL(context);
             setCachedFacesContext(null);
         }
     }
@@ -1232,38 +1225,31 @@ public abstract class UIComponentBase extends UIComponent
         try
         {
             setCachedFacesContext(context);
+            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
-                // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
-                pushComponentToEL(context, this);
-    
-                try
+                // Call the processValidators() method of all facets and children of this UIComponent, in the order
+                // determined by a call to getFacetsAndChildren().
+                int facetCount = getFacetCount();
+                if (facetCount > 0)
                 {
-                    // Call the processValidators() method of all facets and children of this UIComponent, in the order
-                    // determined by a call to getFacetsAndChildren().
-                    int facetCount = getFacetCount();
-                    if (facetCount > 0)
+                    for (UIComponent facet : getFacets().values())
                     {
-                        for (UIComponent facet : getFacets().values())
-                        {
-                            facet.processValidators(context);
-                        }
-                    }
-
-                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-                    {
-                        UIComponent child = getChildren().get(i);
-                        child.processValidators(context);
+                        facet.processValidators(context);
                     }
                 }
-                finally
+
+                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                 {
-                    popComponentFromEL(context);
+                    UIComponent child = getChildren().get(i);
+                    child.processValidators(context);
                 }
             }
         }
         finally
         {
+            popComponentFromEL(context);
             setCachedFacesContext(null);
         }
     }
@@ -1282,40 +1268,33 @@ public abstract class UIComponentBase extends UIComponent
         try
         {
             setCachedFacesContext(context);
+            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
-                // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
-                pushComponentToEL(context, this);
-    
-                try
+                // Call the processUpdates() method of all facets and children of this UIComponent, in the order
+                // determined by a call to getFacetsAndChildren().
+                int facetCount = getFacetCount();
+                if (facetCount > 0)
                 {
-                    // Call the processUpdates() method of all facets and children of this UIComponent, in the order
-                    // determined by a call to getFacetsAndChildren().
-                    int facetCount = getFacetCount();
-                    if (facetCount > 0)
+                    for (UIComponent facet : getFacets().values())
                     {
-                        for (UIComponent facet : getFacets().values())
-                        {
-                            facet.processUpdates(context);
-                        }
+                        facet.processUpdates(context);
                     }
+                }
 
-                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-                    {
-                        UIComponent child = getChildren().get(i);
-                        child.processUpdates(context);
-                    }
-                }
-                finally
+                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                 {
-                    // After returning from the processUpdates() method on a child or facet, call
-                    // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
-                    popComponentFromEL(context);
+                    UIComponent child = getChildren().get(i);
+                    child.processUpdates(context);
                 }
+                popComponentFromEL(context);
             }
         }
         finally
         {
+            // After returning from the processUpdates() method on a child or facet, call
+            // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
             setCachedFacesContext(null);
         }
     }

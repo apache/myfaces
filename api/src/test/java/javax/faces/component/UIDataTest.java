@@ -18,6 +18,7 @@
  */
 package javax.faces.component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,6 +39,7 @@ import javax.faces.render.Renderer;
 
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.mock.MockRenderedValueExpression;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.visit.MockVisitContext;
 import org.easymock.classextension.EasyMock;
@@ -657,5 +659,100 @@ public class UIDataTest extends AbstractJsfTestCase
                 assertEquals("Expected row visit does not match", expectedVisits, rowVisits);
         }
     }
-       
+    
+    public void testProcessDecodesRenderedFalse() throws Exception {
+        UIData uiData = new VerifyNoLifecycleMethodComponent();
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
+        
+        uiData.processDecodes(facesContext);
+        
+        assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        
+    }
+    
+    public void testProcessDecodesRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
+        _addColumn();
+        
+        _testImpl.processDecodes(facesContext);
+        
+        assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+    }
+    
+    
+    public void testProcessValidatorsRenderedFalse() throws Exception {
+        UIData uiData = new VerifyNoLifecycleMethodComponent();
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
+        
+        uiData.processValidators(facesContext);
+        
+        assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        
+    }
+    
+    public void testProcessValidatorsRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
+        _addColumn();
+        
+        _testImpl.processValidators(facesContext);
+        
+        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+    }
+    
+    public void testProcessUpdatesRenderedFalse() throws Exception {
+        UIData uiData = new VerifyNoLifecycleMethodComponent();
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
+        
+        uiData.processUpdates(facesContext);
+        
+        assertEquals("processUpdates must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        
+    }
+    
+    public void testProcessUpdatesRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
+        _addColumn();
+        
+        _testImpl.processUpdates(facesContext);
+        
+        assertEquals("processUpdates must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+    }
+
+    private void _addColumn() {
+        UIColumn uiColumn = new UIColumn();
+        uiColumn.setId("testId");
+        _testImpl.getChildren().add(uiColumn);
+        MockRenderedValueExpression ve = new MockRenderedValueExpression("#{component.is eq 'testId'}", Boolean.class, uiColumn, true);
+        uiColumn.setValueExpression("rendered", ve);
+    }
+    
+
+    /** Verifies no call to encode* and process* methods */
+    public class VerifyNoLifecycleMethodComponent extends UIData
+    {
+        public void setRowIndex(int rowIndex) {
+            fail();
+        }
+        public void decode(FacesContext context) {
+            fail();
+        }
+        public void validate(FacesContext context) {
+            fail();
+        }
+        public void updateModel(FacesContext context) {
+            fail();
+        }
+        public void encodeBegin(FacesContext context) throws IOException {
+            fail();
+        }
+        public void encodeChildren(FacesContext context) throws IOException {
+            fail();
+        }
+        public void encodeEnd(FacesContext context) throws IOException {
+            fail();
+        }
+    }   
 }
