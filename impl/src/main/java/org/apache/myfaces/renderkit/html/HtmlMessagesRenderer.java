@@ -29,8 +29,8 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlMessagesRendererBase;
-import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.renderkit.html.HtmlMessagesRendererBase;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class HtmlMessagesRenderer extends HtmlMessagesRendererBase
     @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
-        super.encodeEnd(facesContext, component); // check for NPç
+        super.encodeEnd(facesContext, component); // check for NPï¿½
         
         Map<String, List<ClientBehavior>> behaviors = null;
         if (component instanceof ClientBehaviorHolder)

@@ -42,7 +42,7 @@ import javax.servlet.ServletResponse;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.ReleaseableFacesContextFactory;
-import org.apache.myfaces.shared_impl.util.NullIterator;
+import org.apache.myfaces.shared.util.NullIterator;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

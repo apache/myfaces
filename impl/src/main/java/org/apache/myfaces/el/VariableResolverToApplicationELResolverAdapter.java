@@ -23,7 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.VariableResolver;
 
-import org.apache.myfaces.shared_impl.util.Assert;
+import org.apache.myfaces.shared.util.Assert;
 
 /**
  * This class is used to delegate {@link #resolveVariable(FacesContext, String)} to the el resolver of the application.

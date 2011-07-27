@@ -24,7 +24,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlOutcomeTargetButtonRendererBase;
+import org.apache.myfaces.shared.renderkit.html.HtmlOutcomeTargetButtonRendererBase;
 
 /**
  * @since 2.0

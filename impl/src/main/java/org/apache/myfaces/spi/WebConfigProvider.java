@@ -38,7 +38,7 @@ public abstract class WebConfigProvider
      * </p>
      * <ol>
      *   <li>Mappings related to registered servlet class javax.faces.webapp.FacesServlet.</li>
-     *   <li>Mappings related to registered servlet class implementing org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet interface.</li>
+     *   <li>Mappings related to registered servlet class implementing org.apache.myfaces.shared.webapp.webxml.DelegatedFacesServlet interface.</li>
      *   <li>Mappings related to registered servlet class registered using org.apache.myfaces.DELEGATE_FACES_SERVLET web config param.</li>
      * </ol>
      * 

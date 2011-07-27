@@ -24,7 +24,7 @@ import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
 import org.junit.Assert;

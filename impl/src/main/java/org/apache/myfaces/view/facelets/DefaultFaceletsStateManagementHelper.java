@@ -43,8 +43,8 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections.map.AbstractReferenceMap;
 import org.apache.commons.collections.map.ReferenceMap;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
 
 /**
  * This helper class contains methods used by DefaultFaceletsStateManagementStrategy that comes

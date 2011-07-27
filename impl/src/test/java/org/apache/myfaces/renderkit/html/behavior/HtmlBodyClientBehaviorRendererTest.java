@@ -23,8 +23,8 @@ import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlBody;
 
-import org.apache.myfaces.shared_impl.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
+import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.junit.Assert;
 
@@ -41,7 +41,7 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
     {
         super.setUp();
         attrs = (HtmlRenderedClientEventAttr[]) 
-            org.apache.myfaces.shared_impl.util.ArrayUtils.concat( 
+            org.apache.myfaces.shared.util.ArrayUtils.concat( 
                     HtmlClientEventAttributesUtil.generateClientBehaviorEventAttrs(),
                 new HtmlRenderedClientEventAttr[]{
                     new HtmlRenderedClientEventAttr(HTML.ONLOAD_ATTR, ClientBehaviorEvents.LOAD),

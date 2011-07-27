@@ -29,7 +29,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.shared_impl.util.StringUtils;
+import org.apache.myfaces.shared.util.StringUtils;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
@@ -125,7 +125,7 @@ public class ClientBehaviorAttachedObjectTargetImpl
         {
             return StringUtils.splitShortString((String) _targets.getValue(context.getELContext()), ' ');
         }
-        return org.apache.myfaces.shared_impl.util.ArrayUtils.EMPTY_STRING_ARRAY;
+        return org.apache.myfaces.shared.util.ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
     public void setName(ValueExpression name)

@@ -33,7 +33,7 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  * DOCUMENT ME!

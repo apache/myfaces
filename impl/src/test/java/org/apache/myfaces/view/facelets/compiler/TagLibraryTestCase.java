@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.junit.Assert;

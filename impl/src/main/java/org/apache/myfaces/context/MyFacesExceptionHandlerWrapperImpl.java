@@ -38,7 +38,7 @@ import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.SystemEvent;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
 

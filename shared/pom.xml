@@ -18,13 +18,15 @@
  under the License.
 -->
   <parent>
-    <artifactId>myfaces-shared-project</artifactId>
-    <groupId>org.apache.myfaces.shared</groupId>
-    <version>4.1.1-SNAPSHOT</version>
+      <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-core-project</artifactId>
+      <version>2.1.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>myfaces-shared-core</artifactId>
+  
+  <groupId>org.apache.myfaces.core.internal</groupId>
+  <artifactId>myfaces-impl-shared</artifactId>
   <packaging>jar</packaging>
   <name>Apache MyFaces Shared For JSF 2.1 - Core</name>
   <description>The MyFaces Shared Core Subproject build the sources artifact
@@ -35,9 +37,81 @@
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/shared/trunk/core</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/myfaces/shared/trunk/core</url>
   </scm>
+  
+  <dependencies>
+        <!-- myfaces-api -->
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+        </dependency>
+
+        <!-- Servlet 2.5 -->
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-servlet_2.5_spec</artifactId>
+        </dependency>
+
+        <!-- JSP 2.1 -->
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jsp_2.1_spec</artifactId>
+        </dependency>
+        
+        <!-- el 2.2 (javax.el.*) -->
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-el_2.2_spec</artifactId>
+        </dependency>
+        
+        <!-- builder-annotations like @JSFWebConfigParam -->
+        <dependency>
+            <groupId>org.apache.myfaces.buildtools</groupId>
+            <artifactId>myfaces-builder-annotations</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.test</groupId>
+            <artifactId>myfaces-test20</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- easymock -->
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+        </dependency>
+  
+  </dependencies>
 
   <build>
     <plugins>
+     <plugin>
+         <groupId>org.apache.myfaces.buildtools</groupId>
+         <artifactId>myfaces-builder-plugin</artifactId>
+         <executions>
+           <execution>
+               <id>makemyfacesmetadata</id>
+               <goals>
+                 <goal>build-metadata</goal>
+               </goals>
+           </execution>
+         </executions>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>

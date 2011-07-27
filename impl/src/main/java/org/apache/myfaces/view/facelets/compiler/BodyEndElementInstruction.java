@@ -25,7 +25,7 @@ import javax.el.ExpressionFactory;
 import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
+import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 
 final class BodyEndElementInstruction implements Instruction
 {

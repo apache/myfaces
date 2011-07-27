@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared_impl.taglib.core.SelectItemTagBase;
+import org.apache.myfaces.shared.taglib.core.SelectItemTagBase;
 
 
 /**

@@ -61,8 +61,8 @@ import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.myfaces.application.MyfacesStateManager;
 import org.apache.myfaces.application.TreeStructureManager;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.util.MyFacesObjectInputStream;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
 
 /**
  * Default StateManager implementation for use when views are defined

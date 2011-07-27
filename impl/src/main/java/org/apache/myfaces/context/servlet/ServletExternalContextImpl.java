@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.myfaces.shared_impl.context.flash.FlashImpl;
+import org.apache.myfaces.shared.context.flash.FlashImpl;
 import org.apache.myfaces.util.EnumerationIterator;
 
 /**

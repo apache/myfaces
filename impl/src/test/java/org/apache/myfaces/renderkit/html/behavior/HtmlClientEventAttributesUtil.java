@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import org.apache.myfaces.shared_impl.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.shared_impl.renderkit.html.HTML;
+import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
+import org.apache.myfaces.shared.renderkit.html.HTML;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author: jankeesvanandel $)
@@ -48,7 +48,7 @@ public class HtmlClientEventAttributesUtil
     public static HtmlRenderedClientEventAttr[] generateClientBehaviorInputEventAttrs()
     {
         return (HtmlRenderedClientEventAttr[]) 
-            org.apache.myfaces.shared_impl.util.ArrayUtils.concat( 
+            org.apache.myfaces.shared.util.ArrayUtils.concat( 
                 generateClientBehaviorEventAttrs(),
                 new HtmlRenderedClientEventAttr[]{
                     new HtmlRenderedClientEventAttr(HTML.ONBLUR_ATTR, ClientBehaviorEvents.BLUR),

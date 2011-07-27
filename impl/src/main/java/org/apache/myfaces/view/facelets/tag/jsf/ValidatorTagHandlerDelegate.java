@@ -37,7 +37,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
-import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;

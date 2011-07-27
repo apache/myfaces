@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
-import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import org.apache.myfaces.shared.taglib.UIComponentELTagUtils;
+import org.apache.myfaces.shared.util.LocaleUtils;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;

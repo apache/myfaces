@@ -47,11 +47,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.renderkit.StateCacheUtils;
-import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.shared_impl.application.InvalidViewIdException;
-import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.shared.application.InvalidViewIdException;
+import org.apache.myfaces.shared.application.ViewHandlerSupport;
+import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 /**

@@ -80,6 +80,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                         </configuration>
                         <goals>
@@ -112,6 +113,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>f</shortname>
@@ -162,6 +164,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>f</shortname>
@@ -185,6 +188,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>h</shortname>
@@ -208,6 +212,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>c</shortname>
@@ -231,6 +236,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>ui</shortname>
@@ -254,6 +260,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>composite</shortname>
@@ -277,6 +284,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>f</shortname>
@@ -299,6 +307,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>h</shortname>
@@ -320,6 +329,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>c</shortname>
@@ -341,6 +351,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>ui</shortname>
@@ -362,6 +373,7 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>composite</shortname>
@@ -485,6 +497,7 @@
                     <artifactSet>
                         <includes>
                             <include>org.apache.myfaces.core.internal:myfaces-impl-ee6</include>
+                            <include>org.apache.myfaces.core.internal:myfaces-impl-shared</include>
                         </includes>
                     </artifactSet>
                     <filters>
@@ -575,16 +588,7 @@
 
 
     <profiles>
-
-        <!--
-            This profile use a shared dependency rather than unpack the
-            code directly. The ideal is that this profile is active when the
-            version of this library is snapshot, but unfortunately there is
-            no way to activate it (see http://jira.codehaus.org/browse/MNG-3826).
-            Existing problems on maven 2.0.x architecture makes impossible do it.
-            For now the solution is trigger it manually using the property
-            -Ddev=true
-        -->
+        <!-- 
         <profile>
             <id>add-shared-dependency</id>
             <activation>
@@ -597,12 +601,11 @@
                 <dependency>
                     <groupId>org.apache.myfaces.shared</groupId>
                     <artifactId>myfaces-shared-impl</artifactId>
-                    <scope>compile</scope>  <!-- otherwise it is scope=provided -->
+                    <scope>compile</scope>
                 </dependency>
             </dependencies>
         </profile>
 
-        <!-- standard unpacking of shared-impl -->
         <profile>
             <id>unpack-shared</id>
             <activation>
@@ -613,11 +616,6 @@
             <build>
                 <plugins>
                     <plugin>
-                        <!--
-                          - The shared-impl project generates a modified version of the "shared" module
-                          - source and classes. The result is a jar full of files in the "shared_impl"
-                          - package that we can merge into the jar for this project.
-                        -->
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <version>2.0</version>
@@ -635,7 +633,6 @@
                                             <groupId>org.apache.myfaces.shared</groupId>
                                             <artifactId>myfaces-shared-impl</artifactId>
                                             <version>${myfaces-shared.version}</version>
-                                            <!-- we need to include META-INF/resources and META-INF/internal-resources -->
                                             <excludes>META-INF/DEPENDENCIES,META-INF/LICENSE,META-INF/NOTICE,META-INF/MANIFEST.MF</excludes>
                                         </artifactItem>
                                     </artifactItems>
@@ -677,10 +674,6 @@
                                       <version>${project.version}</version>
                                     </artifactItem>
                                   </artifactItems>
-                                  <!-- Just include the .class files in org/** and the META-INF/services directory -->
-                                  <!-- <includes>org/**,META-INF/services/**</includes> -->
-                                  <!-- Only need copy .class, because maven shade plugin will do it at package
-                                       and maven-bundle-plugin requires it to include this entry on the manifest -->
                                   <includes>org/**</includes>
                                   <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                 </configuration>
@@ -690,11 +683,6 @@
                     </plugin>
                     
                     <plugin>
-                        <!--
-                            Add the unpacked shared sources directory as source directory into the pom datastructure,
-                            so that the -source jar includes them too; every .class file in the jar should have its
-                            source in the -source jar.
-                        -->
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
                         <version>1.0</version>
@@ -717,6 +705,7 @@
                 </plugins>
             </build>
         </profile>
+        -->
 
         <!--
           - Whenever the full website is generated, the command
@@ -742,6 +731,7 @@
                                     <modelIds>
                                         <modelId>myfaces-api</modelId>
                                         <modelId>myfaces-impl</modelId>
+                                        <modelId>myfaces-impl-shared</modelId>
                                     </modelIds>
                                     <taglibs>
                                         <f>http://java.sun.com/jsf/core</f>
@@ -762,6 +752,7 @@
                                     <modelIds>
                                         <modelId>myfaces-api</modelId>
                                         <modelId>myfaces-impl</modelId>
+                                        <modelId>myfaces-impl-shared</modelId>
                                     </modelIds>
                                 </configuration>
                                 <goals>
@@ -837,6 +828,7 @@
                                     <modelIds>
                                         <modelId>myfaces-api</modelId>
                                         <modelId>myfaces-impl</modelId>
+                                        <modelId>myfaces-impl-shared</modelId>
                                     </modelIds>
                                     <taglibs>
                                         <f>http://java.sun.com/jsf/core</f>
@@ -1036,9 +1028,15 @@
         </dependency>
 
         <!-- this dependency will be packed together with the main artifact of this pom -->
+        <!-- 
         <dependency>
             <groupId>org.apache.myfaces.shared</groupId>
             <artifactId>myfaces-shared-impl</artifactId>
+        </dependency>
+         -->
+        <dependency>
+            <groupId>org.apache.myfaces.core.internal</groupId>
+            <artifactId>myfaces-impl-shared</artifactId>
         </dependency>
 
         <!-- maven-shade-plugin will exclude this dependency automatically -->

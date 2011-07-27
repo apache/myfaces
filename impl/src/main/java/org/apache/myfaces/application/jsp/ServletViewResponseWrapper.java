@@ -22,7 +22,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.apache.myfaces.shared_impl.view.ViewResponseWrapper;
+import org.apache.myfaces.shared.view.ViewResponseWrapper;
 
 import java.io.*;
 import java.nio.ByteBuffer;

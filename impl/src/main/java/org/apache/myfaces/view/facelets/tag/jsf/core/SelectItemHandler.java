@@ -22,7 +22,7 @@ import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.MetaRuleset;
 
-import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.JSFAttr;
 
 public class SelectItemHandler extends ComponentHandler
 {

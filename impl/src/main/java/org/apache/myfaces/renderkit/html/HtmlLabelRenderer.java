@@ -33,14 +33,14 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared_impl.component.EscapeCapable;
-import org.apache.myfaces.shared_impl.renderkit.JSFAttr;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.renderkit.html.HTML;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRenderer;
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
-import org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.component.EscapeCapable;
+import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
+import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
+import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  * 
@@ -133,12 +133,12 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(uiComponent, org.apache.myfaces.shared_impl.renderkit.JSFAttr.ESCAPE_ATTR,
+                    escape = RendererUtils.getBooleanAttribute(uiComponent, org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
                                                                true); //default is to escape
                 }                
                 if (escape)
                 {
-                    writer.writeText(text, org.apache.myfaces.shared_impl.renderkit.JSFAttr.VALUE_ATTR);
+                    writer.writeText(text, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
                 }
                 else
                 {
