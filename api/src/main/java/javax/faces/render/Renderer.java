@@ -70,8 +70,9 @@ public abstract class Renderer
 
         if (component.getChildCount() > 0)
         {
-            for (UIComponent child : component.getChildren())
+            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
             {
+                UIComponent child = component.getChildren().get(i);
                 if (!child.isRendered())
                 {
                     continue;

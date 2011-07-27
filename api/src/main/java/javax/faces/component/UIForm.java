@@ -96,10 +96,22 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 
                 if (!isSubmitted())
                     return;
-                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+
+                int facetCount = getFacetCount();
+                if (facetCount > 0)
                 {
-                    it.next().processDecodes(context);
+                    for (UIComponent facet : getFacets().values())
+                    {
+                        facet.processDecodes(context);
+                    }
                 }
+                
+                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                {
+                    UIComponent child = getChildren().get(i);
+                    child.processDecodes(context);
+                }
+                
             }
             finally
             {
@@ -139,10 +151,21 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 //Pre validation event dispatch for component
                 context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
                 
-                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                int facetCount = getFacetCount();
+                if (facetCount > 0)
                 {
-                    it.next().processValidators(context);
+                    for (UIComponent facet : getFacets().values())
+                    {
+                        facet.processValidators(context);
+                    }
                 }
+                
+                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                {
+                    UIComponent child = getChildren().get(i);
+                    child.processValidators(context);
+                }
+                
             }
             finally
             {
@@ -179,10 +202,21 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 }
                 if (!isSubmitted())
                     return;
-                for (Iterator<UIComponent> it = getFacetsAndChildren(); it.hasNext();)
+                
+                int facetCount = getFacetCount();
+                if (facetCount > 0)
                 {
-                    it.next().processUpdates(context);
+                    for (UIComponent facet : getFacets().values()) {
+                        facet.processUpdates(context);
+                    }
                 }
+                
+                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                {
+                    UIComponent child = getChildren().get(i);
+                    child.processUpdates(context);
+                }
+
             }
             finally
             {
@@ -261,11 +295,10 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                                     }
                                 }
                             }
-                            if (getChildCount() > 0) {
-                                for (UIComponent child : getChildren()) {
-                                    if (child.visitTree(context, callback)) {
-                                        return true;
-                                    }
+                            for (int i = 0, childCount = getChildCount(); i < childCount; i++) {
+                                UIComponent child = getChildren().get(i);
+                                if (child.visitTree(context, callback)) {
+                                    return true;
                                 }
                             }
                         }
