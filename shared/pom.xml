@@ -1,0 +1,205 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+  <parent>
+    <artifactId>myfaces-shared-project</artifactId>
+    <groupId>org.apache.myfaces.shared</groupId>
+    <version>4.1.1-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>myfaces-shared-core</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache MyFaces Shared For JSF 2.1 - Core</name>
+  <description>The MyFaces Shared Core Subproject build the sources artifact
+    needed by the shared-* modules</description>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/shared/trunk/core</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/shared/trunk/core</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/shared/trunk/core</url>
+  </scm>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>add-resource</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>add-resource</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/generated-resources/myfaces-javascript-plugin/</directory>
+               </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>    
+      <plugin>
+          <artifactId>myfaces-javascript-plugin</artifactId>
+          <groupId>org.apache.myfaces.buildtools</groupId>
+          <version>1.0.1</version>
+          <extensions>true</extensions>
+          <executions>
+               <execution>
+                  <id>compile-myfacesscripts</id>
+                  <goals>
+                      <goal>compile</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                      <descriptor>${basedir}/src/assembler/myfacesscripts-compiler.xml</descriptor>
+                      <outputDirectory>${project.build.directory}/generated-resources/myfaces-javascript-plugin/META-INF/resources/org.apache.myfaces/</outputDirectory>
+                  </configuration>
+              </execution>
+              <execution>
+                  <id>compile-myfacesscripts-uncompressed</id>
+                  <goals>
+                      <goal>compile</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                      <descriptor>${basedir}/src/assembler/myfacesscripts-uncompressed-compiler.xml</descriptor>
+                      <outputDirectory>${project.build.directory}/generated-resources/myfaces-javascript-plugin/META-INF/internal-resources/org.apache.myfaces/</outputDirectory>
+                  </configuration>
+              </execution>
+              <execution>
+                  <id>compress-myfacesscripts</id>
+                  <goals>
+                      <goal>compress</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                      <scripts>target/generated-resources/myfaces-javascript-plugin/META-INF/resources/org.apache.myfaces/</scripts>
+                      <excludes>
+                          <exclude>oamSubmit-uncompressed.js</exclude>
+                      </excludes>
+                      <compressor>yahooUI</compressor>
+                  </configuration>
+              </execution>
+          </executions>
+          <configuration>
+              <optimizationLevel>0</optimizationLevel>
+              <sourceDirectory>src/main/javascript</sourceDirectory>
+              <webappDirectory>${basedir}</webappDirectory>
+              <outputDirectory>${project.build.directory}/generated-resources/myfaces-javascript-plugin/META-INF/resources/org.apache.myfaces/</outputDirectory>
+          </configuration>
+      </plugin>
+      
+      <!-- 
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.1.2</version>
+        <configuration>
+          <excludes>
+            <exclude>**/*StateUtilsAES_CBCTest*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+       -->
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-source</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>changelog-maven-plugin</artifactId>
+        <version>2.0-beta-1</version>
+        <reportSets>
+          <reportSet>
+            <id>dual-report</id>
+            <configuration>
+              <type>range</type>
+              <range>30</range>
+            </configuration>
+            <reports>
+              <report>changelog</report>
+              <report>file-activity</report>
+              <report>dev-activity</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jxr-maven-plugin</artifactId>
+      </plugin>
+      <!-- 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>surefire-report-maven-plugin</artifactId>
+      </plugin>
+       -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>2.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <rulesets>
+            <ruleset>/rulesets/basic.xml</ruleset>
+            <ruleset>/rulesets/unusedcode.xml</ruleset>
+          </rulesets>
+          <linkXref>true</linkXref>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>1.5</targetJdk>
+          <excludes>
+            <!-- these class make the PMD plugin crash (NullPointerException). -->
+            <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
+            <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
+          </excludes>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>pmd</report>
+              <report>cpd</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
