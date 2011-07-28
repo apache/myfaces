@@ -916,7 +916,11 @@ public abstract class UIComponentBase extends UIComponent
     public String getRendererType()
     {
         // rendererType is literal-only, no ValueExpression - MYFACES-3136:
-        return (String) getStateHelper().get(PropertyKeys.rendererType);
+        // Even if this is true, according to JSF spec section 8 Rendering Model,
+        // this part is essential to implement "delegated implementation" pattern,
+        // so we can't do this optimization here. Instead, JSF developers could prevent
+        // this evaluation overriding this method directly.
+        return (String) getStateHelper().eval(PropertyKeys.rendererType);
     }
 
     /**
