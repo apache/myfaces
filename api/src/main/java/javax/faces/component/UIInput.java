@@ -183,11 +183,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
             pushComponentToEL(context, this);
             if (isImmediate())
             {
+                //Pre validation event dispatch for component
+                context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
                 try
                 {
-                    //Pre validation event dispatch for component
-                    context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
-    
                     validate(context);
                 }
                 catch (RuntimeException e)
@@ -234,7 +233,24 @@ public class UIInput extends UIOutput implements EditableValueHolder
             popComponentFromEL(context);
         }
 
-        super.processValidators(context);
+        //super.processValidators(context);
+        
+        // Call the processValidators() method of all facets and children of this UIComponent, in the order
+        // determined by a call to getFacetsAndChildren().
+        int facetCount = getFacetCount();
+        if (facetCount > 0)
+        {
+            for (UIComponent facet : getFacets().values())
+            {
+                facet.processValidators(context);
+            }
+        }
+
+        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+        {
+            UIComponent child = getChildren().get(i);
+            child.processValidators(context);
+        }
 
         try
         {
@@ -242,11 +258,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
             pushComponentToEL(context, this);
             if (!isImmediate())
             {
+                //Pre validation event dispatch for component
+                context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
                 try
                 {
-                    //Pre validation event dispatch for component
-                    context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
-    
                     validate(context);
                 }
                 catch (RuntimeException e)

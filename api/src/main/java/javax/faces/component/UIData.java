@@ -40,6 +40,8 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PostValidateEvent;
+import javax.faces.event.PreValidateEvent;
 import javax.faces.model.ArrayDataModel;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
@@ -1178,12 +1180,23 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 return;
             }
-            setRowIndex(-1);
-            processFacets(context, PROCESS_VALIDATORS);
-            processColumnFacets(context, PROCESS_VALIDATORS);
-            processColumnChildren(context, PROCESS_VALIDATORS);
-            setRowIndex(-1);
-    
+            
+            //Pre validation event dispatch for component
+            context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
+            
+            try
+            {
+                setRowIndex(-1);
+                processFacets(context, PROCESS_VALIDATORS);
+                processColumnFacets(context, PROCESS_VALIDATORS);
+                processColumnChildren(context, PROCESS_VALIDATORS);
+                setRowIndex(-1);
+            }
+            finally
+            {
+                context.getApplication().publishEvent(context,  PostValidateEvent.class, getClass(), this);
+            }
+            
             // check if an validation error forces the render response for our data
             if (context.getRenderResponse())
             {
