@@ -35,8 +35,10 @@ import javax.faces.event.BehaviorEvent;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.event.PostValidateEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.PreRenderComponentEvent;
+import javax.faces.event.PreValidateEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.render.RenderKit;
@@ -1233,21 +1235,31 @@ public abstract class UIComponentBase extends UIComponent
             pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
-                // Call the processValidators() method of all facets and children of this UIComponent, in the order
-                // determined by a call to getFacetsAndChildren().
-                int facetCount = getFacetCount();
-                if (facetCount > 0)
+                //Pre validation event dispatch for component
+                context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
+                
+                try
                 {
-                    for (UIComponent facet : getFacets().values())
+                    // Call the processValidators() method of all facets and children of this UIComponent, in the order
+                    // determined by a call to getFacetsAndChildren().
+                    int facetCount = getFacetCount();
+                    if (facetCount > 0)
                     {
-                        facet.processValidators(context);
+                        for (UIComponent facet : getFacets().values())
+                        {
+                            facet.processValidators(context);
+                        }
+                    }
+    
+                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                    {
+                        UIComponent child = getChildren().get(i);
+                        child.processValidators(context);
                     }
                 }
-
-                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                finally
                 {
-                    UIComponent child = getChildren().get(i);
-                    child.processValidators(context);
+                    context.getApplication().publishEvent(context,  PostValidateEvent.class, getClass(), this);
                 }
             }
         }
