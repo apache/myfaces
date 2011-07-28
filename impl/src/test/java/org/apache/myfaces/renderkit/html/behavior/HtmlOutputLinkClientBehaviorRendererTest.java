@@ -21,9 +21,9 @@ package org.apache.myfaces.renderkit.html.behavior;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputLink;
 
-import org.apache.myfaces.shared_impl.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.shared_impl.renderkit.html.HTML;
-import org.apache.myfaces.shared_impl.util.ArrayUtils;
+import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
+import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.util.ArrayUtils;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author: jankeesvanandel $)

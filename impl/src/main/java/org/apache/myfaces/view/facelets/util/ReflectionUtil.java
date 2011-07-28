@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets.util;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-import org.apache.myfaces.shared_impl.util.ClassLoaderUtils;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared.util.ClassLoaderUtils;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 public class ReflectionUtil
 {

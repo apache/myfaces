@@ -25,7 +25,7 @@ import javax.faces.context.ExternalContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 public class TomcatAnnotationLifecycleProvider implements 
     DiscoverableLifecycleProvider, LifecycleProvider2

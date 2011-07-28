@@ -26,7 +26,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.myfaces.shared_impl.test.ClassElementHandler;
+import org.apache.myfaces.shared.test.ClassElementHandler;
 
 /**
  * This test makes sure all of our components, tags, renderers, validators, converters, action listeners, phase

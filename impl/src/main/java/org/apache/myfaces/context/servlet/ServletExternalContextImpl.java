@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.shared_impl.context.flash.FlashImpl;
+import org.apache.myfaces.shared.context.flash.FlashImpl;
 import org.apache.myfaces.util.EnumerationIterator;
 
 import javax.faces.FacesException;

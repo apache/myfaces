@@ -45,11 +45,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
 
-import org.apache.myfaces.shared_impl.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.shared_impl.application.InvalidViewIdException;
-import org.apache.myfaces.shared_impl.application.ViewHandlerSupport;
-import org.apache.myfaces.shared_impl.config.MyfacesConfig;
-import org.apache.myfaces.shared_impl.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.shared.application.InvalidViewIdException;
+import org.apache.myfaces.shared.application.ViewHandlerSupport;
+import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 
 /**
  * Implementation of the ViewHandler interface that knows how to use JSP pages

@@ -23,8 +23,8 @@ import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.shared_impl.util.FastWriter;
+import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.shared.util.FastWriter;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.config.ConfigParser;
 import org.junit.Assert;

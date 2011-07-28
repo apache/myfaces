@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
+import org.apache.myfaces.shared.taglib.UIComponentELTagUtils;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;

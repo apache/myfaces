@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.context;
 
-import org.apache.myfaces.shared_impl.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import javax.faces.context.PartialResponseWriter;

@@ -26,7 +26,7 @@ import java.util.List;
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.el.ELText;
 
 

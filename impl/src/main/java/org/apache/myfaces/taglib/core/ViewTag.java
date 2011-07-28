@@ -36,7 +36,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
 
 import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
-import org.apache.myfaces.shared_impl.util.LocaleUtils;
+import org.apache.myfaces.shared.util.LocaleUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

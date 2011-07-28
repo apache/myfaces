@@ -49,9 +49,9 @@ import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.application.StateManagerImpl;
-import org.apache.myfaces.shared_impl.renderkit.RendererUtils;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.shared_impl.util.HashMapUtils;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.shared.util.HashMapUtils;
 
 /**
  * This class implements partial state saving feature when facelets

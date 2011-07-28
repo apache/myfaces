@@ -24,12 +24,12 @@ import java.net.URL;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared_impl.resource.AliasResourceMetaImpl;
-import org.apache.myfaces.shared_impl.resource.ResourceLoader;
-import org.apache.myfaces.shared_impl.resource.ResourceMeta;
-import org.apache.myfaces.shared_impl.resource.ResourceMetaImpl;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.myfaces.shared_impl.util.WebConfigParamUtils;
+import org.apache.myfaces.shared.resource.AliasResourceMetaImpl;
+import org.apache.myfaces.shared.resource.ResourceLoader;
+import org.apache.myfaces.shared.resource.ResourceMeta;
+import org.apache.myfaces.shared.resource.ResourceMetaImpl;
+import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * A resource loader implementation which loads resources from the thread ClassLoader.
@@ -124,13 +124,13 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     {
         //handle jsf.js
         if (libraryName != null && 
-                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
-                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName))
+                org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
+                org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName))
         {
             if (_useMultipleJsFilesForJsfUncompressedJs)
             {
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
-                    resourceName, resourceVersion, org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME, true);
+                    resourceName, resourceVersion, org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME, true);
             }
             else
             {
@@ -139,11 +139,11 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         }
         //handle the oamSubmit.js
         else if (libraryName != null &&
-                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
-                org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName))
+                org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
+                org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName))
         {
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
-                    resourceName, resourceVersion, org.apache.myfaces.shared_impl.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED, true);
+                    resourceName, resourceVersion, org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED, true);
         } else if (libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);

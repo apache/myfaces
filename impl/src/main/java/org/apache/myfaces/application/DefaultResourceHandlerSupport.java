@@ -22,10 +22,10 @@ import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
-import org.apache.myfaces.shared_impl.resource.BaseResourceHandlerSupport;
-import org.apache.myfaces.shared_impl.resource.ClassLoaderResourceLoader;
-import org.apache.myfaces.shared_impl.resource.ExternalContextResourceLoader;
-import org.apache.myfaces.shared_impl.resource.ResourceLoader;
+import org.apache.myfaces.shared.resource.BaseResourceHandlerSupport;
+import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
+import org.apache.myfaces.shared.resource.ExternalContextResourceLoader;
+import org.apache.myfaces.shared.resource.ResourceLoader;
 
 /**
  * A ResourceHandlerSupport implementation for use with standard Java Servlet engines,

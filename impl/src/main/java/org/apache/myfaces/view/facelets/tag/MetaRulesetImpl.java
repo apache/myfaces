@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
 import javax.faces.view.facelets.FaceletContext;

@@ -50,6 +50,7 @@
     <modules>
         <module>api</module>
         <module>implee6</module>
+        <module>shared</module>
         <module>impl</module>
         <module>bundle</module>
     </modules>
@@ -253,6 +254,12 @@
             <dependency>
                 <groupId>org.apache.myfaces.core</groupId>
                 <artifactId>myfaces-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.myfaces.core.internal</groupId>
+                <artifactId>myfaces-impl-shared</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

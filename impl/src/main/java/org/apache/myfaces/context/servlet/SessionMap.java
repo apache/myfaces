@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.myfaces.shared_impl.util.NullEnumeration;
+import org.apache.myfaces.shared.util.NullEnumeration;
 import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
 
 

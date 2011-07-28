@@ -28,7 +28,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
 
-import org.apache.myfaces.shared_impl.util.StringUtils;
+import org.apache.myfaces.shared.util.StringUtils;
 
 /**
  * 
@@ -105,7 +105,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         {
             return StringUtils.splitShortString((String) _targets.getValue(context.getELContext()), ' ');
         }
-        return org.apache.myfaces.shared_impl.util.ArrayUtils.EMPTY_STRING_ARRAY;
+        return org.apache.myfaces.shared.util.ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
     public void setName(ValueExpression ve)

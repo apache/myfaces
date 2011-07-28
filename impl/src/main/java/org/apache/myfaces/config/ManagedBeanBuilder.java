@@ -29,7 +29,7 @@ import org.apache.myfaces.config.element.ManagedProperty;
 import org.apache.myfaces.config.element.MapEntries;
 import org.apache.myfaces.config.element.MapEntry;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.util.ContainerUtils;
 
 import javax.el.ELContext;

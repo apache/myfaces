@@ -28,7 +28,7 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
-import org.apache.myfaces.shared_impl.util.StateUtils;
+import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.apache.myfaces.test.mock.MockRenderKit;

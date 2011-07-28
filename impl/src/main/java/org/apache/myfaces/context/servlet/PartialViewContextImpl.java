@@ -46,7 +46,7 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
-import org.apache.myfaces.shared_impl.util.StringUtils;
+import org.apache.myfaces.shared.util.StringUtils;
 
 public class PartialViewContextImpl extends PartialViewContext {
 
