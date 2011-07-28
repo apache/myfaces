@@ -194,10 +194,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         
         _elExpressionCacheMode = mctx.getELExpressionCacheMode();
         _isCacheELExpressions = !ELExpressionCacheMode.noCache.equals(_elExpressionCacheMode);
-
-        //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
-        //reflect the current facelet context instance
-        faces.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
     /**
@@ -688,6 +684,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
                 boolean found = false;
                 AbstractFaceletContext actx = new DefaultFaceletContext(
                         (DefaultFaceletContext) ctx, this._owner, false);
+                ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, actx);
                 try
                 {
                     actx.pushPageContext(this._pageContext);
@@ -699,6 +696,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
                 {
                     actx.popPageContext();
                 }
+                ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
                 this._names.remove(testName);
                 return found;
             }

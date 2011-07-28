@@ -172,6 +172,7 @@ public class TemplateContextImpl extends TemplateContext
                 boolean found = false;
                 AbstractFaceletContext actx = new DefaultFaceletContext(
                         (DefaultFaceletContext) ctx, this._owner, false);
+                ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, actx);
                 try
                 {
                     actx.pushPageContext(this._pageContext);
@@ -183,6 +184,7 @@ public class TemplateContextImpl extends TemplateContext
                 {
                     actx.popPageContext();
                 }
+                ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
                 this._names.remove(testName);
                 return found;
             }

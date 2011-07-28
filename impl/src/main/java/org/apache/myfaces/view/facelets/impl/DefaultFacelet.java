@@ -126,6 +126,10 @@ final class DefaultFacelet extends AbstractFacelet
         }
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, myFaceletContext);
         
+        //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
+        //reflect the current facelet context instance
+        facesContext.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
+        
         ctx.pushPageContext(new PageContextImpl());
         
         try
@@ -325,7 +329,10 @@ final class DefaultFacelet extends AbstractFacelet
         try
         {
             this.refresh(parent);
-            _root.apply(new DefaultFaceletContext((DefaultFaceletContext)ctx, this, false), parent);
+            DefaultFaceletContext ctxWrapper = new DefaultFaceletContext((DefaultFaceletContext)ctx, this, false);
+            ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctxWrapper);
+            _root.apply(ctxWrapper, parent);
+            ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
             this.markApplied(parent);
         }
         finally
@@ -406,7 +413,12 @@ final class DefaultFacelet extends AbstractFacelet
             
             this.refresh(parent);
             mctx.markForDeletion(parent);
-            f._root.apply(new DefaultFaceletContext( (DefaultFaceletContext)ctx, f, true), parent);
+            DefaultFaceletContext ctxWrapper = new DefaultFaceletContext( (DefaultFaceletContext)ctx, f, true);
+            //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
+            //reflect the current facelet context instance
+            ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctxWrapper);
+            f._root.apply(ctxWrapper, parent);
+            ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
             mctx.finalizeForDeletion(parent);
             this.markApplied(parent);
             
