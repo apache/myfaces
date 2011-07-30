@@ -241,7 +241,7 @@ public final class TagAttributeImpl extends TagAttribute
                             + "pointing to cc.attrs");
                 }
                 
-                ValueExpression valueExpr = this.getValueExpression(ctx, MethodExpression.class);
+                ValueExpression valueExpr = this.getValueExpression(ctx, Object.class);
                 methodExpression = new ValueExpressionMethodExpression(valueExpr);
             }
             else

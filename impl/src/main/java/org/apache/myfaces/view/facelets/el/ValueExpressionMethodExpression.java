@@ -77,7 +77,8 @@ public class ValueExpressionMethodExpression extends MethodExpression
     @Override
     public String getExpressionString()
     {
-        return getMethodExpression().getExpressionString();
+        //getMethodExpression().getExpressionString()
+        return valueExpression.getExpressionString();
     }
 
     @Override
@@ -99,7 +100,23 @@ public class ValueExpressionMethodExpression extends MethodExpression
     
     private MethodExpression getMethodExpression(ELContext context)
     {
-        return (MethodExpression) valueExpression.getValue(context);
+        Object meOrVe = valueExpression.getValue(context);
+        if (meOrVe instanceof MethodExpression)
+        {
+            return (MethodExpression) meOrVe;
+        }
+        else if (meOrVe instanceof ValueExpression)
+        {
+            while (meOrVe != null && meOrVe instanceof ValueExpression)
+            {
+                meOrVe = ((ValueExpression)meOrVe).getValue(context);
+            }
+            return (MethodExpression) meOrVe;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public ValueExpression getWrapped()

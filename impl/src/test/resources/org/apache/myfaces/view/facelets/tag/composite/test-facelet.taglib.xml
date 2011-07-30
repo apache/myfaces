@@ -28,6 +28,7 @@
         <tag-name>testComponent</tag-name>
         <component>
             <component-type>org.apache.myfaces.view.facelets.tag.composite.SimpleComponent</component-type>
+            <handler-class>org.apache.myfaces.view.facelets.tag.composite.SimpleComponentTagHandler</handler-class>
         </component>
     </tag>
 
