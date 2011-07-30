@@ -96,8 +96,14 @@ import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
 import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpression;
+import org.apache.myfaces.view.facelets.el.MethodExpressionMethodExpression;
+import org.apache.myfaces.view.facelets.el.RedirectMethodExpressionValueExpressionActionListener;
+import org.apache.myfaces.view.facelets.el.RedirectMethodExpressionValueExpressionValidator;
+import org.apache.myfaces.view.facelets.el.RedirectMethodExpressionValueExpressionValueChangeListener;
+import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
@@ -831,63 +837,151 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // evaluated value of the targets attribute..."
                     targets = attributeName; 
                 }
-                
-                ValueExpression attributeNameValueExpression = 
-                    (ValueExpression) topLevelComponent.getAttributes().get(attributeName);
-                
-                if (attributeNameValueExpression == null)
-                {
-                    // composite:attribute has a default property, so if we can't found on the
-                    // component attribute map, we should get the default as CompositeComponentELResolver
-                    // does.
-                    attributeNameValueExpression = (ValueExpression) propertyDescriptor.getValue("default");
-                    if (attributeNameValueExpression == null)
-                    {
-                        // It is only valid to log an error if the attribute is required
-                        ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("required");
-                        if (ve != null)
-                        {
-                            Object requiredValue = ve.getValue (elContext);
-                            Boolean required = null;
-                            if (requiredValue instanceof Boolean)
-                            {
-                                required = (Boolean) requiredValue;
-                            }
-                            else
-                            {
-                                required = Boolean.getBoolean(requiredValue.toString());
-                            }
 
-                            if (required != null && required.booleanValue())
-                            {
-                                if (log.isLoggable(Level.SEVERE))
-                                    log.severe("attributeValueExpression not found under the key \""+attributeName+
-                                            "\". Looking for the next attribute");
-                            }
-                        }
-                        continue;
-                    }
-                }
-                
-                String [] targetsArray = StringUtils.splitShortString(targets, ' ');
-                String attributeExpressionString = attributeNameValueExpression.getExpressionString();
-                MethodExpression methodExpression = null;
-                MethodExpression methodExpression2 = null;
-                
                 FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance();
 
+                // If the MethodExpression attribute has been already applied, there is no need to
+                // handle it and it is probably a MethodExpression instance is on attribute map, so the
+                // inner code will cause a ClassCastException.
                 if (!mctx.isMethodExpressionAttributeApplied(topLevelComponent, attributeName))
                 {
+
+                    ValueExpression attributeNameValueExpression = 
+                        (ValueExpression) topLevelComponent.getAttributes().get(attributeName);
+                    
+                    if (attributeNameValueExpression == null)
+                    {
+                        // composite:attribute has a default property, so if we can't found on the
+                        // component attribute map, we should get the default as CompositeComponentELResolver
+                        // does.
+                        attributeNameValueExpression = (ValueExpression) propertyDescriptor.getValue("default");
+                        if (attributeNameValueExpression == null)
+                        {
+                            // It is only valid to log an error if the attribute is required
+                            ValueExpression ve = (ValueExpression) propertyDescriptor.getValue("required");
+                            if (ve != null)
+                            {
+                                Object requiredValue = ve.getValue (elContext);
+                                Boolean required = null;
+                                if (requiredValue instanceof Boolean)
+                                {
+                                    required = (Boolean) requiredValue;
+                                }
+                                else
+                                {
+                                    required = Boolean.getBoolean(requiredValue.toString());
+                                }
+    
+                                if (required != null && required.booleanValue())
+                                {
+                                    if (log.isLoggable(Level.SEVERE))
+                                        log.severe("attributeValueExpression not found under the key \""+attributeName+
+                                                "\". Looking for the next attribute");
+                                }
+                            }
+                            continue;
+                        }
+                    }
+                    
+                    String [] targetsArray = StringUtils.splitShortString(targets, ' ');
+                    String attributeExpressionString = attributeNameValueExpression.getExpressionString();
+                    MethodExpression methodExpression = null;
+                    MethodExpression methodExpression2 = null;
+
+                    //Check if the stored valueExpression is a ccRedirection, to handle it properly later.
+                    boolean ccAttrMeRedirection = 
+                            attributeNameValueExpression instanceof LocationValueExpression &&
+                                CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
+                                attributeNameValueExpression.getExpressionString());
+
                     if (isKnownMethod)
                     {
+                        // To add support to #{cc.attrs.action}, #{cc.attrs.actionListener}, #{cc.attrs.validator} or
+                        // #{cc.attrs.valueChangeListener} it is necessary to put a MethodExpression or a 
+                        // ValueExpression pointing to the associated java method in the component attribute map.
+                        // org.apache.myfaces.view.facelets.tag.composite.RetargetMethodExpressionRule already put
+                        // a ValueExpression, so we only need to put a MethodExpression when a non redirecting
+                        // expression is used (for example when a nested #{cc.attrs.xxx} is used).
+                        if ("action".equals(attributeName))
+                        {
+                            // target is ActionSource2
+                            methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(elContext,
+                                            attributeExpressionString, null, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
+
+                            //Store the method expression to the topLevelComponent to allow reference it through EL
+                            if (!ccAttrMeRedirection)
+                            {
+                                //Replace it with a method expression
+                                topLevelComponent.getAttributes().put(attributeName, methodExpression);
+                            }
+                            // Otherwise keep the current ValueExpression, because it will be used chain other value expressions
+                        }
+                        else if ("actionListener".equals(attributeName))
+                        {
+                            // target is ActionSource2
+                            methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(elContext,
+                                            attributeExpressionString, Void.TYPE, ACTION_LISTENER_SIGNATURE), attributeNameValueExpression);
+                            
+                            methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                createMethodExpression(elContext,
+                                        attributeExpressionString, Void.TYPE, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
+                            
+                            //Store the method expression to the topLevelComponent to allow reference it through EL
+                            if (!ccAttrMeRedirection)
+                            {
+                                //Replace it with a method expression
+                                topLevelComponent.getAttributes().put(attributeName, new MethodExpressionMethodExpression(methodExpression, methodExpression2));
+                            }
+                            // Otherwise keep the current ValueExpression, because it will be used chain other value expressions
+                        }
+                        else if ("validator".equals(attributeName))
+                        {
+                            // target is EditableValueHolder
+                            methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(elContext,
+                                        attributeExpressionString, Void.TYPE, 
+                                        VALIDATOR_SIGNATURE), attributeNameValueExpression);
+                            
+                            //Store the method expression to the topLevelComponent to allow reference it through EL
+                            if (!ccAttrMeRedirection)
+                            {
+                                //Replace it with a method expression
+                                topLevelComponent.getAttributes().put(attributeName, methodExpression);
+                            }
+                            // Otherwise keep the current ValueExpression, because it will be used chain other value expressions
+                        }
+                        else if ("valueChangeListener".equals(attributeName))
+                        {
+                            // target is EditableValueHolder
+                            methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(elContext,
+                                            attributeExpressionString, Void.TYPE, 
+                                            VALUE_CHANGE_LISTENER_SIGNATURE), attributeNameValueExpression);
+
+                            methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    createMethodExpression(elContext,
+                                            attributeExpressionString, Void.TYPE, 
+                                            EMPTY_CLASS_ARRAY), attributeNameValueExpression);
+
+                            //Store the method expression to the topLevelComponent to allow reference it through EL
+                            if (!ccAttrMeRedirection)
+                            {
+                                //Replace it with a method expression
+                                topLevelComponent.getAttributes().put(attributeName, new MethodExpressionMethodExpression(methodExpression, methodExpression2));
+                            }
+                            // Otherwise keep the current ValueExpression, because it will be used chain other value expressions
+                        }
+
                         for (String target : targetsArray)
                         {
                             UIComponent innerComponent = topLevelComponent.findComponent(target);
                             
                             if (innerComponent == null)
                             {
-                                if (log.isLoggable(Level.SEVERE))
-                                    log.severe("Inner component " + target + " not found when retargetMethodExpressions");
+                                //if (log.isLoggable(Level.SEVERE))
+                                //    log.severe("Inner component " + target + " not found when retargetMethodExpressions");
                                 continue;
                             }
                             
@@ -908,7 +1002,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                             createMethodExpression(elContext,
                                                     attributeExpressionString, null, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
                                     
-                                    ((ActionSource2)innerComponent).setActionExpression(methodExpression);
+                                    // If it is a redirection, a wrapper is used to locate the right instance and call it properly. 
+                                    if (ccAttrMeRedirection)
+                                    {
+                                        ((ActionSource2)innerComponent).setActionExpression(new ValueExpressionMethodExpression(attributeNameValueExpression));
+                                    }
+                                    else
+                                    {
+                                        ((ActionSource2)innerComponent).setActionExpression(methodExpression);
+                                    }
                                 }
                                 else if ("actionListener".equals(attributeName))
                                 {
@@ -920,15 +1022,24 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                     }
                                     
                                     // target is ActionSource2
-                                    methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                    ActionListener actionListener = null;
+                                    // If it is a redirection, a wrapper is used to locate the right instance and call it properly.
+                                    if (ccAttrMeRedirection)
+                                    {
+                                        actionListener = new RedirectMethodExpressionValueExpressionActionListener(attributeNameValueExpression);
+                                    }
+                                    else
+                                    {
+                                        methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                                createMethodExpression(elContext,
+                                                        attributeExpressionString, Void.TYPE, ACTION_LISTENER_SIGNATURE), attributeNameValueExpression);
+
+                                        methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
                                             createMethodExpression(elContext,
-                                                    attributeExpressionString, Void.TYPE, ACTION_LISTENER_SIGNATURE), attributeNameValueExpression);
-                                    
-                                    methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                        createMethodExpression(elContext,
-                                                attributeExpressionString, Void.TYPE, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
-                                    
-                                    ActionListener actionListener = new MethodExpressionActionListener(methodExpression, methodExpression2);
+                                                    attributeExpressionString, Void.TYPE, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
+
+                                        actionListener = new MethodExpressionActionListener(methodExpression, methodExpression2);
+                                    }
                                     ((ActionSource2)innerComponent).addActionListener(actionListener);
                                     mctx.addMethodExpressionTargeted(innerComponent, attributeName, actionListener);
                                 }
@@ -942,12 +1053,21 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                     }
                                     
                                     // target is EditableValueHolder
-                                    methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                            createMethodExpression(elContext,
-                                                attributeExpressionString, Void.TYPE, 
-                                                VALIDATOR_SIGNATURE), attributeNameValueExpression);
-        
-                                    Validator validator = new MethodExpressionValidator(methodExpression); 
+                                    Validator validator = null;
+                                    // If it is a redirection, a wrapper is used to locate the right instance and call it properly.
+                                    if (ccAttrMeRedirection)
+                                    {
+                                        validator = new RedirectMethodExpressionValueExpressionValidator(attributeNameValueExpression);
+                                    }
+                                    else
+                                    {
+                                        methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                                createMethodExpression(elContext,
+                                                    attributeExpressionString, Void.TYPE, 
+                                                    VALIDATOR_SIGNATURE), attributeNameValueExpression);
+            
+                                        validator = new MethodExpressionValidator(methodExpression); 
+                                    }
                                     ((EditableValueHolder)innerComponent).addValidator( validator );
                                     mctx.addMethodExpressionTargeted(innerComponent, attributeName, validator);
                                 }
@@ -960,17 +1080,26 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                     }
                                     
                                     // target is EditableValueHolder
-                                    methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                            createMethodExpression(elContext,
-                                                    attributeExpressionString, Void.TYPE, 
-                                                    VALUE_CHANGE_LISTENER_SIGNATURE), attributeNameValueExpression);
-        
-                                    methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
-                                            createMethodExpression(elContext,
-                                                    attributeExpressionString, Void.TYPE, 
-                                                    EMPTY_CLASS_ARRAY), attributeNameValueExpression);
-        
-                                    ValueChangeListener valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression2); 
+                                    ValueChangeListener valueChangeListener = null;
+                                    // If it is a redirection, a wrapper is used to locate the right instance and call it properly.
+                                    if (ccAttrMeRedirection)
+                                    {
+                                        valueChangeListener = new RedirectMethodExpressionValueExpressionValueChangeListener(attributeNameValueExpression);
+                                    }
+                                    else
+                                    {
+                                        methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                                createMethodExpression(elContext,
+                                                        attributeExpressionString, Void.TYPE, 
+                                                        VALUE_CHANGE_LISTENER_SIGNATURE), attributeNameValueExpression);
+            
+                                        methodExpression2 = reWrapMethodExpression(context.getApplication().getExpressionFactory().
+                                                createMethodExpression(elContext,
+                                                        attributeExpressionString, Void.TYPE, 
+                                                        EMPTY_CLASS_ARRAY), attributeNameValueExpression);
+            
+                                        valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression2);
+                                    }
                                     ((EditableValueHolder)innerComponent).addValueChangeListener( valueChangeListener );
                                     mctx.addMethodExpressionTargeted(innerComponent, attributeName, valueChangeListener);
                                 }
@@ -982,7 +1111,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         // composite:attribute targets property only has sense for action, actionListener,
                         // validator or valueChangeListener. This means we have to retarget the method expression
                         // to the topLevelComponent.
-                        
+
                         // Since a MethodExpression has no state, we can use it multiple times without problem, so
                         // first create it here.
                         methodSignature = methodSignature.trim();
@@ -1015,11 +1144,25 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             else
                             {
                                 //Put the retarget
-                                innerComponent.getAttributes().put(attributeName, methodExpression);
+                                if (ccAttrMeRedirection)
+                                {
+                                    // Since we require here a method expression, it is necessary to wrap the ValueExpression
+                                    // into a MethodExpression that handles redirection.
+                                    innerComponent.getAttributes().put(attributeName, new ValueExpressionMethodExpression(attributeNameValueExpression));
+                                }
+                                else
+                                {
+                                    innerComponent.getAttributes().put(attributeName, methodExpression);
+                                }
                             }
                         }
                         //Store the method expression to the topLevelComponent to allow reference it through EL
-                        topLevelComponent.getAttributes().put(attributeName, methodExpression);
+                        if (!ccAttrMeRedirection)
+                        {
+                            //Replace it with a method expression
+                            topLevelComponent.getAttributes().put(attributeName, methodExpression);
+                        }
+                        // Othewise keep the current ValueExpression, because it will be used chain other value expressions
                     }
                     mctx.markMethodExpressionAttribute(topLevelComponent, attributeName);
                 }

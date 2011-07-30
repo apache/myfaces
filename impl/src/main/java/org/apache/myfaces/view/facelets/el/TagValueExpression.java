@@ -74,15 +74,15 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
         }
         catch (ELException e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+            throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
         catch (Exception e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e); 
+            throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e); 
         }
     }
 
@@ -94,16 +94,30 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
         }
         catch (ELException e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+            throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
         catch (Exception e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+            throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
+    }
+    
+    private String getLocalExpressionString()
+    {
+        String expressionString = null;
+        try
+        {
+            expressionString = getExpressionString();
+        }
+        catch (Throwable t)
+        {
+            //swallo it because it is not important
+        }
+        return expressionString;
     }
 
     public boolean isReadOnly(ELContext context)
@@ -114,15 +128,15 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
         }
         catch (ELException e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+            throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
         catch (Exception e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+            throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
         
     }
@@ -135,19 +149,19 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
         }
         catch (PropertyNotWritableException pnwe)
         {
-            throw new ContextAwarePropertyNotWritableException(getLocation(), getExpressionString(), getQName(), pnwe);
+            throw new ContextAwarePropertyNotWritableException(getLocation(), getLocalExpressionString(), getQName(), pnwe);
         }
         catch (ELException e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+            throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
         catch (Exception e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+            throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
     }
     

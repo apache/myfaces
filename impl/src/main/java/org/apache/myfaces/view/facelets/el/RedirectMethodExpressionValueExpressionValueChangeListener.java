@@ -25,74 +25,36 @@ import java.io.ObjectOutput;
 
 import javax.el.ELContext;
 import javax.el.MethodExpression;
-import javax.el.MethodInfo;
 import javax.el.ValueExpression;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.ValueChangeListener;
 
 /**
- * This MethodExpression contains a ValueExpression which resolves to 
- * the "real" MethodExpression that should be invoked. This is needed 
- * when the MethodExpression is on the parent composite component attribute map.
- * See FaceletViewDeclarationLanguage.retargetMethodExpressions() for details.
- * 
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
+ *
+ * @author Leonardo Uribe
  */
-public class ValueExpressionMethodExpression extends MethodExpression 
-    implements FacesWrapper<ValueExpression>, Externalizable
+public class RedirectMethodExpressionValueExpressionValueChangeListener
+       implements ValueChangeListener, FacesWrapper<ValueExpression>, Externalizable
 {
-    
-    private static final long serialVersionUID = -2847633717581167765L;
-    
     private ValueExpression valueExpression;
-    
-    public ValueExpressionMethodExpression()
-    {
-    }
-    
-    public ValueExpressionMethodExpression(ValueExpression valueExpression)
-    {
-        this.valueExpression = valueExpression;   
-    }
 
-    @Override
-    public MethodInfo getMethodInfo(ELContext context)
+    public RedirectMethodExpressionValueExpressionValueChangeListener()
     {
-        return getMethodExpression(context).getMethodInfo(context);
-    }
-
-    @Override
-    public Object invoke(ELContext context, Object[] params)
-    {
-        return getMethodExpression(context).invoke(context, params);
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        return getMethodExpression().equals(obj);
-    }
-
-    @Override
-    public String getExpressionString()
-    {
-        //getMethodExpression().getExpressionString()
-        return valueExpression.getExpressionString();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return getMethodExpression().hashCode();
-    }
-
-    @Override
-    public boolean isLiteralText()
-    {
-        return getMethodExpression().isLiteralText();
     }
     
+    public RedirectMethodExpressionValueExpressionValueChangeListener(ValueExpression valueExpression)
+    {
+        this.valueExpression = valueExpression;
+    }
+
+    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
+    {
+        getMethodExpression().invoke(FacesContext.getCurrentInstance().getELContext(), new Object[]{event});
+    }
+
     private MethodExpression getMethodExpression()
     {
         return getMethodExpression(FacesContext.getCurrentInstance().getELContext());
@@ -132,4 +94,5 @@ public class ValueExpressionMethodExpression extends MethodExpression
     {
         out.writeObject(this.valueExpression);
     }
+
 }
