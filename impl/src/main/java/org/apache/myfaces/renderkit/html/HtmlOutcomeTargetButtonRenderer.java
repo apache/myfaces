@@ -18,9 +18,6 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.io.IOException;
-
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
@@ -36,5 +33,9 @@ import org.apache.myfaces.shared.renderkit.html.HtmlOutcomeTargetButtonRendererB
         type="javax.faces.Button")
 public class HtmlOutcomeTargetButtonRenderer extends HtmlOutcomeTargetButtonRendererBase
 {
-    
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
 }

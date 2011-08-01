@@ -101,36 +101,54 @@ public class HtmlTextRendererBase
             escape = RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
                                                        true); //default is to escape
         }
-        renderOutputText(facesContext, component, text, escape);
-    }
-
-
-    public static void renderOutputText(FacesContext facesContext,
-                                        UIComponent component,
-                                        String text,
-                                        boolean escape)
-        throws IOException
-    {
         if (text != null)
         {
             ResponseWriter writer = facesContext.getResponseWriter();
             boolean span = false;
 
-            if(component.getId()!=null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                span = true;
-
-                writer.startElement(HTML.SPAN_ELEM, component);
-
-                HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-
+                long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                
+                if (commonPropertiesMarked > 0)
+                {
+                    span = true;
+                    writer.startElement(HTML.SPAN_ELEM, component);
+                    HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+                }
+                else if (CommonPropertyUtils.isIdRenderingNecessary(component))
+                {
+                    span = true;
+                    writer.startElement(HTML.SPAN_ELEM, component);
+                    writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext), null);
+                }
+                
+                CommonPropertyUtils.renderUniversalProperties(writer, commonPropertiesMarked, component);
+                CommonPropertyUtils.renderStyleProperties(writer, commonPropertiesMarked, component);
+                
+                if (isRenderOutputEventAttributes())
+                {
+                    HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.EVENT_HANDLER_ATTRIBUTES);
+                }
             }
             else
             {
-                span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,component,
-                        HTML.SPAN_ELEM,HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+                if(component.getId()!=null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+                {
+                    span = true;
+    
+                    writer.startElement(HTML.SPAN_ELEM, component);
+    
+                    HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+    
+                    HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+    
+                }
+                else
+                {
+                    span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,component,
+                            HTML.SPAN_ELEM,HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+                }
             }
 
             if (escape)
@@ -150,6 +168,10 @@ public class HtmlTextRendererBase
         }
     }
 
+    protected boolean isRenderOutputEventAttributes()
+    {
+        return true;
+    }
 
     protected void renderInput(FacesContext facesContext, UIComponent component)
         throws IOException
@@ -189,11 +211,27 @@ public class HtmlTextRendererBase
             HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
             HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, component, behaviors);
-            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+            }
         }
         else
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabled(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+            }
         }
 
         if (isDisabled(facesContext, component))
@@ -284,5 +322,55 @@ public class HtmlTextRendererBase
         //subclasses may act on properties of the component
         return HTML.INPUT_TYPE_TEXT;
     }
-    
+
+    public static void renderOutputText(FacesContext facesContext,
+            UIComponent component, String text, boolean escape)
+            throws IOException
+    {
+        if (text != null)
+        {
+            ResponseWriter writer = facesContext.getResponseWriter();
+            boolean span = false;
+
+            if (component.getId() != null
+                    && !component.getId().startsWith(
+                            UIViewRoot.UNIQUE_ID_PREFIX))
+            {
+                span = true;
+
+                writer.startElement(HTML.SPAN_ELEM, component);
+
+                HtmlRendererUtils.writeIdIfNecessary(writer, component,
+                        facesContext);
+
+                HtmlRendererUtils.renderHTMLAttributes(writer, component,
+                        HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+
+            }
+            else
+            {
+                span = HtmlRendererUtils
+                        .renderHTMLAttributesWithOptionalStartElement(writer,
+                                component, HTML.SPAN_ELEM,
+                                HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+            }
+
+            if (escape)
+            {
+                if (log.isLoggable(Level.FINE))
+                    log.fine("renderOutputText writing '" + text + "'");
+                writer.writeText(text,
+                        org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+            }
+            else
+            {
+                writer.write(text);
+            }
+
+            if (span)
+            {
+                writer.endElement(org.apache.myfaces.shared.renderkit.html.HTML.SPAN_ELEM);
+            }
+        }
+    }
 }

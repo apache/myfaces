@@ -79,14 +79,37 @@ public class HtmlGroupRendererBase
 
             HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
 
-            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+            if (isCommonPropertiesOptimizationEnabled(context))
+            {
+                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+            }
         }
         else
         {
-            span=HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
-                                                                             component,
-                                                                             layoutElement,
-                                                                             HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+            if (isCommonPropertiesOptimizationEnabled(context))
+            {
+                long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                if (commonPropertiesMarked > 0)
+                {
+                    span = true;
+                    writer.startElement(layoutElement, component);
+                    HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
+
+                    CommonPropertyUtils.renderCommonPassthroughProperties(writer, commonPropertiesMarked, component);
+                }
+            }
+            else
+            {
+                span=HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
+                                                                                 component,
+                                                                                 layoutElement,
+                                                                                 HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+            }
         }
 
         RendererUtils.renderChildren(context, component);

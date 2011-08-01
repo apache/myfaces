@@ -86,7 +86,11 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
     
     public void testHtmlPropertyPassTru() throws Exception
     { 
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();        
+        HtmlRenderedAttr[] attrs = {
+                new HtmlRenderedAttr("style"), 
+                new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\"")
+                }; 
+            //HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
 
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGroup, facesContext, writer, attrs);

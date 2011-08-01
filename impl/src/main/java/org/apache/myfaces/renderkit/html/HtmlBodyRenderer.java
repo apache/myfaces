@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import javax.faces.context.FacesContext;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlBodyRendererBase;
 
@@ -31,5 +33,9 @@ import org.apache.myfaces.shared.renderkit.html.HtmlBodyRendererBase;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Body")
 public class HtmlBodyRenderer extends HtmlBodyRendererBase
 {
-    
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
 }

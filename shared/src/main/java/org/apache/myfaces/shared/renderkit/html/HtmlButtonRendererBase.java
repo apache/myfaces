@@ -141,7 +141,9 @@ public class HtmlButtonRendererBase
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 facesContext, getChildren(uiComponent), false, false);
         
-        if (formInfo != null && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext())
+        boolean javascriptAllowed = JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext());
+        
+        if (formInfo != null && javascriptAllowed
                 && (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll() ||
                         (validParams != null && !validParams.isEmpty() )))
         {        
@@ -184,7 +186,7 @@ public class HtmlButtonRendererBase
             }
         }
         
-        if (JavascriptUtils.isJavascriptAllowed(externalContext) &&
+        if (javascriptAllowed &&
             (HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors, facesContext) ||
              HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.ACTION, behaviors, facesContext)))
         {
@@ -215,11 +217,8 @@ public class HtmlButtonRendererBase
             HtmlRendererUtils.buildBehaviorChain(
                     facesContext, uiComponent, ClientBehaviorEvents.DBLCLICK, null, behaviors,   
                         (String) attributes.get(HTML.ONDBLCLICK_ATTR), "");
-            
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                                                   HTML.BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);            
         }
-        else if (JavascriptUtils.isJavascriptAllowed(externalContext))
+        else if (javascriptAllowed)
         {
             //fallback into the pre 2.0 code to keep backwards compatibility with libraries which rely on internals
             if (!reset && !button)
@@ -234,14 +233,22 @@ public class HtmlButtonRendererBase
             {
                 HtmlRendererUtils.renderHTMLAttribute(writer, uiComponent, HTML.ONCLICK_ATTR, HTML.ONCLICK_ATTR);
             }
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                                                   HTML.BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
         }
-        else
+        
+        if (javascriptAllowed)
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                                                   HTML.BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderButtonPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                                                       HTML.BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+            }
         }
+
         
         if (behaviors != null && !behaviors.isEmpty())
         {
@@ -250,10 +257,19 @@ public class HtmlButtonRendererBase
         }
         else
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                    HTML.EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                    HTML.COMMON_FIELD_EVENT_ATTRIBUTES);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer, commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderCommonFieldEventProperties(writer, commonPropertiesMarked, uiComponent);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                        HTML.EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                        HTML.COMMON_FIELD_EVENT_ATTRIBUTES);
+            }
         }
 
         if (isDisabled(facesContext, uiComponent))

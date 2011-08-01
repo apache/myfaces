@@ -36,6 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
@@ -54,6 +55,12 @@ public class HtmlLabelRenderer extends HtmlRenderer
 {
     //private static final Log log = LogFactory.getLog(HtmlLabelRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlLabelRenderer.class.getName());
+
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
 
     @Override
     public void decode(FacesContext context, UIComponent component)
@@ -96,12 +103,28 @@ public class HtmlLabelRenderer extends HtmlRenderer
             }
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
             HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderLabelPassthroughPropertiesWithoutEvents(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+            }
         }
         else
         {
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.LABEL_PASSTHROUGH_ATTRIBUTES);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderLabelPassthroughProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.LABEL_PASSTHROUGH_ATTRIBUTES);
+            }
         }
 
         String forAttr = getFor(uiComponent);

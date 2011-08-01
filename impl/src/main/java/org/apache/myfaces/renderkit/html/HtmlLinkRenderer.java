@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import javax.faces.context.FacesContext;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.shared.renderkit.html.HtmlLinkRendererBase;
@@ -46,4 +48,10 @@ public class HtmlLinkRenderer
     extends HtmlLinkRendererBase
 {
     //private static final Log log = LogFactory.getLog(HtmlLinkRenderer.class);
+    
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
 }

@@ -66,4 +66,10 @@ public class HtmlFormRenderer
             writer.endElement(HTML.INPUT_ELEM);
         }
     }
+    
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
 }

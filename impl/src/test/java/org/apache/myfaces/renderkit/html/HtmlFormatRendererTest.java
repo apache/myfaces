@@ -67,7 +67,15 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
     
     public void testHtmlPropertyPassTru() throws Exception
     {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicReadOnlyAttrs();
+        HtmlRenderedAttr[] attrs = {
+                //_UniversalProperties
+                new HtmlRenderedAttr("dir"), 
+                new HtmlRenderedAttr("lang"), 
+                new HtmlRenderedAttr("title"),
+                //_StyleProperties
+                new HtmlRenderedAttr("style"), 
+                new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+            };
         
         outputFormat.setValue("outputdata");
         HtmlCheckAttributesUtil.checkRenderedAttributes(

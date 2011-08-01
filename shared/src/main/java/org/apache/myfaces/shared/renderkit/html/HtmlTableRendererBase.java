@@ -150,12 +150,30 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
             }
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_ATTRIBUTES);
+                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+            }
         }
         else
         {
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_PASSTHROUGH_ATTRIBUTES);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_ATTRIBUTES);
+                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_PASSTHROUGH_ATTRIBUTES);
+            }
         }
     }
 

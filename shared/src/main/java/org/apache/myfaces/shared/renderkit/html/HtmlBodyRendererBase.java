@@ -84,8 +84,18 @@ public class HtmlBodyRendererBase extends HtmlRenderer
                     ClientBehaviorEvents.LOAD, behaviors, HTML.ONLOAD_ATTR);
             HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONUNLOAD_ATTR, component,
                     ClientBehaviorEvents.UNLOAD, behaviors, HTML.ONUNLOAD_ATTR);
-            HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                    HTML.BODY_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, component,
+                        HTML.BODY_ATTRIBUTES);
+                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, component,
+                        HTML.BODY_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+            }
             HtmlRendererUtils.renderHTMLAttribute(writer, component, HTML.XMLNS_ATTR , HTML.XMLNS_ATTR);
             
         }
@@ -93,8 +103,18 @@ public class HtmlBodyRendererBase extends HtmlRenderer
         {
             writer.startElement(HTML.BODY_ELEM, component);
             HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-            HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                    HTML.BODY_PASSTHROUGH_ATTRIBUTES);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, component,
+                        HTML.BODY_ATTRIBUTES);
+                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, component,
+                        HTML.BODY_PASSTHROUGH_ATTRIBUTES);
+            }
             HtmlRendererUtils.renderHTMLAttribute(writer, component, HTML.XMLNS_ATTR , HTML.XMLNS_ATTR);
         }
     }
