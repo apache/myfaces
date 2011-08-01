@@ -132,26 +132,62 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
             }
         }
 
-        if (uiComponent instanceof ClientBehaviorHolder
-                && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (isCommonPropertiesOptimizationEnabled(facesContext))
         {
-            HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
-                    facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                    facesContext, writer, uiComponent, behaviors);
+            long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+            
+            if (JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            {
+                if (behaviors != null && !behaviors.isEmpty() && uiComponent instanceof ClientBehaviorHolder)
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
+                            facesContext, writer, uiComponent, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                            facesContext, writer, uiComponent, behaviors);
+                }
+                else
+                {
+                    CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer, commonPropertiesMarked, uiComponent);
+                    CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, uiComponent);
+                }
+            }
+            else
+            {
+                CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer, commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, uiComponent);
+            }
+            
+            CommonPropertyUtils.renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(
+                    writer, commonPropertiesMarked, uiComponent);
+            if ((commonPropertiesMarked & CommonPropertyConstants.ALT_PROP) != 0)
+            {
+                CommonPropertyUtils.renderHTMLStringAttribute(writer, uiComponent,
+                        HTML.ALT_ATTR, HTML.ALT_ATTR);
+            }
         }
         else
         {
+            if (uiComponent instanceof ClientBehaviorHolder
+                    && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            {
+                HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
+                        facesContext, writer, uiComponent, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, uiComponent, behaviors);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                        HTML.EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                        HTML.COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
+    
+            }
             HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                    HTML.EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                    HTML.COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
-
+                    HTML.COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+            HtmlRendererUtils.renderHTMLAttribute(writer, uiComponent,
+                    HTML.ALT_ATTR, HTML.ALT_ATTR);
         }
-        HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                HTML.COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
-        HtmlRendererUtils.renderHTMLAttribute(writer, uiComponent,
-                HTML.ALT_ATTR, HTML.ALT_ATTR);
 
         writer.flush();
     }

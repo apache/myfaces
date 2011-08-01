@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import javax.faces.context.FacesContext;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlSecretRendererBase;
 
@@ -34,4 +36,10 @@ import org.apache.myfaces.shared.renderkit.html.HtmlSecretRendererBase;
 public class HtmlSecretRenderer
         extends HtmlSecretRendererBase
 {
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import javax.faces.context.FacesContext;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.shared.renderkit.html.HtmlTextRendererBase;
@@ -42,4 +44,16 @@ public class HtmlTextRenderer
         extends HtmlTextRendererBase
 {
     //private static final Log log = LogFactory.getLog(HtmlTextRenderer.class);
+    
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+    
+    @Override
+    protected boolean isRenderOutputEventAttributes()
+    {
+        return false;
+    }
 }

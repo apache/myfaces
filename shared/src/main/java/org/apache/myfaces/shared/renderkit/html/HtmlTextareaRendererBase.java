@@ -98,13 +98,31 @@ public class HtmlTextareaRendererBase
             HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
             HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_ATTRIBUTES);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+            }
         }
         else
         {
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
             writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderCommonFieldPassthroughPropertiesWithoutDisabled(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_ATTRIBUTES);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+            }
         }
 
         if (isDisabled(facesContext, uiComponent))

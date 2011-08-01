@@ -149,4 +149,9 @@ public abstract class HtmlRenderer
 
       return uri;
     }
+    
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return false;
+    }
 }

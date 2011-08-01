@@ -97,11 +97,29 @@ public class HtmlFormRendererBase
         {
             behaviors = ((ClientBehaviorHolder) htmlForm).getClientBehaviors();
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, htmlForm, behaviors);
-            HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+            }
         }
         else
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_PASSTHROUGH_ATTRIBUTES);
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_ATTRIBUTES);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_PASSTHROUGH_ATTRIBUTES);
+            }
         }
 
         writer.write(""); // force start element tag to be closed

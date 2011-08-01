@@ -33,6 +33,9 @@
  */
 package ${component.packageName};
 
+#if ($component.className.startsWith("javax.faces.component.html"))
+import javax.faces.el.ValueBinding;
+#end
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 $utils.importTagClasses($component)
@@ -266,8 +269,65 @@ $innersource
     public void $utils.getPrefixedPropertyName("set", $property.name)($type $utils.getVariableFromName($property.name))
     {
         getStateHelper().put(PropertyKeys.$field, $utils.getVariableFromName($property.name) ); 
-    }    
+#if ($property.name == "style" ||
+     $property.name == "styleClass" ||
+     $property.name == "dir" ||
+     $property.name == "lang" ||
+     $property.name == "title" ||
+     $property.name == "escape" ||
+     $property.name == "disabled" ||
+     $property.name == "enabled" ||
+     $property.name == "readOnly" ||
+     $property.name == "accesskey" ||
+     $property.name == "alt" ||
+     $property.name == "onchange" ||
+     $property.name == "onselect" ||
+     $property.name == "onclick" ||
+     $property.name == "ondblclick" ||
+     $property.name == "onmousedown" ||
+     $property.name == "onmouseup" ||
+     $property.name == "onmouseover" ||
+     $property.name == "onmousemove" ||
+     $property.name == "onmouseout" ||
+     $property.name == "onkeypress" ||
+     $property.name == "onkeydown" ||
+     $property.name == "onkeyup" ||
+     $property.name == "onfocus" ||
+     $property.name == "onblur" ||
+     $property.name == "label" ||
+     $property.name == "charset" ||
+     $property.name == "coords" ||
+     $property.name == "hreflang" ||
+     $property.name == "rel" ||
+     $property.name == "rev" ||
+     $property.name == "shape" ||
+     $property.name == "target" ||
+     $property.name == "type" ||
+     $property.name == "tabindex" ||
+     $property.name == "align" ||
+     $property.name == "checked" ||
+     $property.name == "maxlength" ||
+     $property.name == "size"
+      )
+#set($overrideSetValueExpression = true)
+        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.${property.name.toUpperCase()}_PROP);
 #end
+    }
+#end
+#end
+
+#if ($component.className.startsWith("javax.faces.component.html") && $overrideSetValueExpression)
+    public void setValueBinding(String name, ValueBinding binding)
+    {
+        super.setValueBinding(name, binding);
+        _CommonPropertyConstants.markProperty(this, name);
+    }
+
+    public void setValueExpression(String name, ValueExpression expression)
+    {
+        super.setValueExpression(name, expression);
+        _CommonPropertyConstants.markProperty(this, name);
+    }
 #end
 
 #if ($component.className.startsWith("javax.faces.component.html"))
