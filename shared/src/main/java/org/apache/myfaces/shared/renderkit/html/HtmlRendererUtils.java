@@ -1751,15 +1751,20 @@ public final class HtmlRendererUtils {
         if (sourceId == null || !sourceId.equals(clientId)) {
             return false;
         }
+        boolean partialOrBehaviorSubmit = false;
         String behaviorEvent = params.get("javax.faces.behavior.event");
         if (behaviorEvent != null) {
-            return ClientBehaviorEvents.ACTION.equals(behaviorEvent);
+            partialOrBehaviorSubmit = ClientBehaviorEvents.ACTION.equals(behaviorEvent);
+            if (partialOrBehaviorSubmit)
+            {
+                return partialOrBehaviorSubmit;
+            }
         }
         String partialEvent = params.get("javax.faces.partial.event");
         if (partialEvent != null) {
-            return ClientBehaviorEvents.CLICK.equals(partialEvent);
+            partialOrBehaviorSubmit = ClientBehaviorEvents.CLICK.equals(partialEvent);
         }
-        return false;
+        return partialOrBehaviorSubmit;
     }
 
     /**
@@ -2406,7 +2411,8 @@ public final class HtmlRendererUtils {
                                                                 List<UIComponent> children, boolean skipNullValue, boolean skipUnrendered, boolean skipNullName) {
         List<UIParameter> params = null;
 
-        for (UIComponent child : children) {
+        for (int i = 0, size = children.size(); i < size; i++) {
+            UIComponent child = children.get(i);
             if (child instanceof UIParameter) {
                 UIParameter param = (UIParameter) child;
 
