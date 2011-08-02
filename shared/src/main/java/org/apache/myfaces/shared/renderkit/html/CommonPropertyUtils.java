@@ -239,7 +239,7 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ALIGN_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.ALIGN_ATTR, HTML.ALIGN_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ALT_PROP) != 0)
@@ -249,22 +249,22 @@ public final class CommonPropertyUtils
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.CHECKED_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.CHECKED_ATTR, HTML.CHECKED_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.MAXLENGTH_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.MAXLENGTH_ATTR, HTML.MAXLENGTH_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.READONLY_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.READONLY_ATTR, HTML.READONLY_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.SIZE_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLAttribute(writer, component,
                     HTML.SIZE_ATTR, HTML.SIZE_ATTR);
         }        
     }
