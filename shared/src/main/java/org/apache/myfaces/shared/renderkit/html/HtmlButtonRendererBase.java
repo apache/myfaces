@@ -72,12 +72,12 @@ public class HtmlButtonRendererBase
             uiComponent.queueEvent(new ActionEvent(uiComponent));
 
             org.apache.myfaces.shared.renderkit.RendererUtils.initPartialValidationAndModelUpdate(uiComponent, facesContext);
-            
-            if (uiComponent instanceof ClientBehaviorHolder &&
-                    !HtmlRendererUtils.isDisabled(uiComponent))
-            {
-                HtmlRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
-            }
+        }
+        
+        if (uiComponent instanceof ClientBehaviorHolder &&
+                !HtmlRendererUtils.isDisabled(uiComponent))
+        {
+            HtmlRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
         }
     }
 

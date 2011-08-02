@@ -1751,15 +1751,20 @@ public final class HtmlRendererUtils {
         if (sourceId == null || !sourceId.equals(clientId)) {
             return false;
         }
+        boolean partialOrBehaviorSubmit = false;
         String behaviorEvent = params.get("javax.faces.behavior.event");
         if (behaviorEvent != null) {
-            return ClientBehaviorEvents.ACTION.equals(behaviorEvent);
+            partialOrBehaviorSubmit = ClientBehaviorEvents.ACTION.equals(behaviorEvent);
+            if (partialOrBehaviorSubmit)
+            {
+                return partialOrBehaviorSubmit;
+            }
         }
         String partialEvent = params.get("javax.faces.partial.event");
         if (partialEvent != null) {
-            return ClientBehaviorEvents.CLICK.equals(partialEvent);
+            partialOrBehaviorSubmit = ClientBehaviorEvents.CLICK.equals(partialEvent);
         }
-        return false;
+        return partialOrBehaviorSubmit;
     }
 
     /**
