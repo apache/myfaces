@@ -946,17 +946,39 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             // UIComponent, if any, becomes the current component.
             LinkedList<UIComponent> componentStack = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
             
+            UIComponent oldCurrent = (UIComponent)contextAttributes.get(UIComponent.CURRENT_COMPONENT);
+            
             UIComponent newCurrent = null;
             if (componentStack != null && !componentStack.isEmpty())
             {
-                newCurrent = componentStack.removeFirst();
+                if (!this.equals(oldCurrent))
+                {
+                    //Check on the componentStack if it can be found
+                    int componentIndex = componentStack.indexOf(this);
+                    if (componentIndex >= 0)
+                    {
+                        for (int i = 0; i < (componentIndex+1); i++)
+                        {
+                            newCurrent = componentStack.removeFirst();
+                        }
+                    }
+                    else
+                    {
+                        //Component not found on the stack. Do not pop.
+                        return;
+                    }
+                }
+                else
+                {
+                    newCurrent = componentStack.removeFirst();
+                }
             }
             else
             {
                 //Reset the current composite component
                 contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, null);
             }
-            UIComponent oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
+            oldCurrent = (UIComponent)contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
             
             if (oldCurrent != null && oldCurrent._isCompositeComponent())
             {
@@ -993,7 +1015,18 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
             UIComponent oldCurrent = null;
             if (componentStack != null && !componentStack.isEmpty())
             {
-                oldCurrent = componentStack.removeFirst();
+                int componentIndex = componentStack.indexOf(this);
+                if (componentIndex >= 0)
+                {
+                    for (int i = 0; i < (componentIndex+1); i++)
+                    {
+                        oldCurrent = componentStack.removeFirst();
+                    }
+                }
+                else
+                {
+                    return;
+                }
             }
             
             if (oldCurrent != null && oldCurrent._isCompositeComponent())
