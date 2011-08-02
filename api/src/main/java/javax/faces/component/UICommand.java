@@ -127,13 +127,17 @@ public class UICommand extends UIComponentBase implements ActionSource2
     {
         if (event != null && event instanceof ActionEvent)
         {
-            if (isImmediate())
+            UIComponent component = event.getComponent();
+            if (component instanceof ActionSource)
             {
-                event.setPhaseId(PhaseId.APPLY_REQUEST_VALUES);
-            }
-            else
-            {
-                event.setPhaseId(PhaseId.INVOKE_APPLICATION);
+                if (((ActionSource)component).isImmediate())
+                {
+                    event.setPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+                }
+                else
+                {
+                    event.setPhaseId(PhaseId.INVOKE_APPLICATION);
+                }
             }
         }
         super.queueEvent(event);
