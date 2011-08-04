@@ -280,7 +280,7 @@ $innersource
      $property.name == "escape" ||
      $property.name == "disabled" ||
      $property.name == "enabled" ||
-     $property.name == "readOnly" ||
+     $property.name == "readonly" ||
      $property.name == "accesskey" ||
      $property.name == "alt" ||
      $property.name == "onchange" ||
