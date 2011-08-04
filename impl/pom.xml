@@ -922,6 +922,7 @@
         <dependency>
             <groupId>org.apache.myfaces.core.internal</groupId>
             <artifactId>myfaces-impl-shared</artifactId>
+            <optional>true</optional> 
         </dependency>
 
         <!-- maven-shade-plugin will exclude this dependency automatically -->
