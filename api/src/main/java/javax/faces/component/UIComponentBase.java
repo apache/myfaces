@@ -1594,19 +1594,33 @@ public abstract class UIComponentBase extends UIComponent
             }
 
             return new _AttachedStateWrapper(attachedObject.getClass(), holder.saveState(context));
-        }        
-        else if (attachedObject instanceof List)
+        }
+        else if (attachedObject instanceof Collection)
         {
-            List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
-            for (Object item : (List<?>) attachedObject)
+            if (ArrayList.class.equals(attachedObject.getClass()))
             {
-                if (item != null)
+                List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
+                for (Object item : (List<?>) attachedObject)
                 {
-                    lst.add(saveAttachedState(context, item));
+                    if (item != null)
+                    {
+                        lst.add(saveAttachedState(context, item));
+                    }
                 }
+                return new _AttachedListStateWrapper(lst);
             }
-
-            return new _AttachedListStateWrapper(lst);
+            else
+            {
+                List<Object> lst = new ArrayList<Object>(((Collection<?>) attachedObject).size());
+                for (Object item : (Collection<?>) attachedObject)
+                {
+                    if (item != null)
+                    {
+                        lst.add(saveAttachedState(context, item));
+                    }
+                }
+                return new _AttachedCollectionStateWrapper(attachedObject.getClass(), lst);
+            }
         }
         else if (attachedObject instanceof Serializable)
         {
@@ -1633,6 +1647,33 @@ public abstract class UIComponentBase extends UIComponent
                 restoredList.add(restoreAttachedState(context, item));
             }
             return restoredList;
+        }
+        else if (stateObj instanceof _AttachedCollectionStateWrapper)
+        {
+            _AttachedCollectionStateWrapper wrappedState = (_AttachedCollectionStateWrapper) stateObj; 
+            Class<?> clazz = wrappedState.getClazz();
+            List<Object> lst = wrappedState.getWrappedStateList();
+            Collection restoredList;
+            try
+            {
+                restoredList = (Collection) clazz.newInstance();
+            }
+            catch (InstantiationException e)
+            {
+                throw new RuntimeException("Could not restore StateHolder of type " + clazz.getName()
+                        + " (missing no-args constructor?)", e);
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new RuntimeException(e);
+            }
+
+            for (Object item : lst)
+            {
+                restoredList.add(restoreAttachedState(context, item));
+            }
+            return restoredList;
+
         }
         else if (stateObj instanceof _AttachedStateWrapper)
         {
