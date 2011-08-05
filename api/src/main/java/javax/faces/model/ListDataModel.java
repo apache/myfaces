@@ -113,9 +113,17 @@ public class ListDataModel<E> extends DataModel<E>
     @Override
     public void setWrappedData(Object data)
     {
-        _data = (List<E>)data;
-        int rowIndex = _data != null ? 0 : -1;
-        setRowIndex(rowIndex);
+        if (data == null)
+        {
+            setRowIndex(-1);
+            _data = null;
+        }
+        else
+        {
+            _data = (List<E>)data;
+            _rowIndex = -1;
+            setRowIndex(0);
+        }
     }
 
 }
