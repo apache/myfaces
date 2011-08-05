@@ -101,9 +101,17 @@ public class ScalarDataModel extends DataModel
     
     public void setWrappedData(Object data)
     {
-        _data = data;
-        int rowIndex = _data != null ? 0 : -1;
-        setRowIndex(rowIndex);
+        if (data == null)
+        {
+            setRowIndex(-1);
+            _data = null;
+        }
+        else
+        {
+            _data = data;
+            _rowIndex = -1;
+            setRowIndex(0);
+        }
     }
 
 }

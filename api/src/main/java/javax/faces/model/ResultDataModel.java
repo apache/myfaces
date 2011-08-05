@@ -122,10 +122,12 @@ public class ResultDataModel extends DataModel
         if (data == null)
         {
             setRowIndex(-1);
+            _data = null;
         }
         else
         {
             _data = ((Result)data);
+            _rowIndex = -1;
             setRowIndex(0);
         }
     }
