@@ -127,9 +127,9 @@ if (!myfaces._impl.core._Runtime) {
             //We lazy init the eval type upon the browsers
             //capabilities
             if ('undefined' == typeof _T._evalType) {
-                _T._evalType = window.excScript ? "evalExecScript" : null;
+                _T._evalType = window.execScript ? "_evalExecScript" : null;
                 _T._evalType = !_T._evalType && window.eval && (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6) ? "_standardGlobalEval" : null;
-                _T._evalType = (window.eval && !_T._evalType) ? _evalBBOld : null;
+                _T._evalType = (window.eval && !_T._evalType) ? "_evalBBOld" : null;
             }
             if (_T._evalType) {
                 return _T[_T._evalType](code);
@@ -139,6 +139,7 @@ if (!myfaces._impl.core._Runtime) {
             eval.call(window, code);
             return null;
         };
+
 
         /**
          * applies an object to a namespace
