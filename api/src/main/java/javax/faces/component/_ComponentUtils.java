@@ -160,6 +160,8 @@ class _ComponentUtils
         if (id.equals(cmp.getId()))
             return true;
 
+        /* By the spec, findComponent algorithm does not take into account UIData.rowIndex() property,
+         * because it just scan over nested plain ids. 
         if (cmp instanceof UIData)
         {
             UIData uiData = ((UIData)cmp);
@@ -170,6 +172,7 @@ class _ComponentUtils
             }
             return id.equals(cmp.getId() + separatorChar + uiData.getRowIndex());
         }
+        */
 
         return false;
     }
