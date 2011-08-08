@@ -124,6 +124,10 @@ public final class RendererUtils
         getPathToComponent(component,buf);
 
         buf.insert(0,"{Component-Path : ");
+        Object location = component.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
+        if (location != null) {
+            buf.append(" Location: ").append(location);
+        }
         buf.append("}");
 
         return buf.toString();
