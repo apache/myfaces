@@ -611,7 +611,15 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         ValueExpression expression = getValueExpression(PropertyKeys.locale.toString());
         if (expression != null)
         {
-            return (Locale)expression.getValue(getFacesContext().getELContext());
+            Object veLocale = expression.getValue(getFacesContext().getELContext());
+            if (veLocale instanceof Locale)
+            {
+                return (Locale) veLocale;
+            }
+            else
+            {
+                return (Locale) _LocaleUtils.toLocale(veLocale.toString());
+            }
         }
         else
         {
@@ -623,7 +631,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
             else if (locale instanceof String)
             {
-                return stringToLocale((String)locale);
+                return _LocaleUtils.toLocale((String)locale);
             }
         }
 
@@ -1015,31 +1023,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             throw new NullPointerException(valueLabel + " is null");
         }
-    }
-
-    private Locale stringToLocale(String localeStr)
-    {
-        // locale expr: \[a-z]{2}((-|_)[A-Z]{2})?
-
-        if (localeStr.contains("_") || localeStr.contains("-"))
-        {
-            if (localeStr.length() == 2)
-            {
-                // localeStr is the lang
-                return new Locale(localeStr);
-            }
-        }
-        else
-        {
-            if (localeStr.length() == 5)
-            {
-                String lang = localeStr.substring(0, 1);
-                String country = localeStr.substring(3, 4);
-                return new Locale(lang, country);
-            }
-        }
-
-        return Locale.getDefault();
     }
 
     public void setRenderKitId(String renderKitId)
