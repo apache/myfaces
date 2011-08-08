@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -744,7 +745,15 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 String[] currentPair = nameValuePairs[i].split(URL_NAME_VALUE_PAIR_SEPERATOR);
 
                 ArrayList<String> value = new ArrayList<String>(1);
-                value.add(currentPair.length > 1 ? currentPair[1] : "");
+                try
+                {
+                    value.add(currentPair.length > 1 ? URLDecoder.decode(currentPair[1], getResponseCharacterEncoding()) : "");
+                }
+                catch (UnsupportedEncodingException e)
+                {
+                    //shouldn't ever get here
+                    throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding() + " not supported", e);
+                }
                 paramMap.put(currentPair[0], value);
             }
         }

@@ -111,5 +111,32 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
 
     }
 
+    @Test
+    public void testEncodedSpaceInExistingQueryParameter()
+    {
+        // the base URL with an existing encoded query parameter 
+        String baseUrl = "/test?p1=a+b";
+        
+        // encode that URL without adding further parameters
+        final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
+        
+        // the URL should not change
+        Assert.assertEquals(baseUrl, redirectUrl);
+
+    }
+    
+    @Test
+    public void testEncodedAmpersandInExistingQueryParameter()
+    {
+        // the base URL with an existing encoded query parameter 
+        String baseUrl = "/test?p1=a%26b";
+        
+        // encode that URL without adding further parameters
+        final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
+        
+        // the URL should not change
+        Assert.assertEquals(baseUrl, redirectUrl);
+        
+    }
     
 }
