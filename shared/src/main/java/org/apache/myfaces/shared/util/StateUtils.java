@@ -382,9 +382,9 @@ public final class StateUtils {
         }
         catch (Throwable e)
         {
-            if (log.isLoggable(Level.SEVERE))
+            if (log.isLoggable(Level.FINE))
             {
-                log.log(Level.SEVERE, "View State cannot be reconstructed", e);
+                log.log(Level.FINE, "View State cannot be reconstructed", e);
             }
             return null;
         }
