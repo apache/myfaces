@@ -18,8 +18,20 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.shared.context.flash.FlashImpl;
-import org.apache.myfaces.util.EnumerationIterator;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
@@ -35,19 +47,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.net.URLEncoder;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.logging.Logger;
+
+import org.apache.myfaces.shared.context.flash.FlashImpl;
+import org.apache.myfaces.util.EnumerationIterator;
 
 /**
  * Implements the external context for servlet request. JSF 1.2, 6.1.3
@@ -743,7 +745,15 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 String[] currentPair = nameValuePairs[i].split(URL_NAME_VALUE_PAIR_SEPERATOR);
 
                 ArrayList<String> value = new ArrayList<String>(1);
-                value.add(currentPair.length > 1 ? currentPair[1] : "");
+                try
+                {
+                    value.add(currentPair.length > 1 ? URLDecoder.decode(currentPair[1], getResponseCharacterEncoding()) : "");
+                }
+                catch (UnsupportedEncodingException e)
+                {
+                    //shouldn't ever get here
+                    throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding() + " not supported", e);
+                }
                 paramMap.put(currentPair[0], value);
             }
         }
