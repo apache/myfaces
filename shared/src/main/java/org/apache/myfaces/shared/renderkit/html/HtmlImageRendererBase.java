@@ -95,7 +95,8 @@ public class HtmlImageRendererBase
         }
         else
         {
-          if (log.isLoggable(Level.WARNING)) log.warning("Graphic with id " + uiComponent.getClientId(facesContext) + " has no value (url or name).");
+          if (facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING)) 
+              log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) + " has no attribute url, value, name or attribute resolves to null. Path to component " + RendererUtils.getPathToComponent(uiComponent));
         }
 
         /* 
@@ -103,10 +104,8 @@ public class HtmlImageRendererBase
          */                
         if (uiComponent.getAttributes().get(HTML.ALT_ATTR) == null) 
         {
-            //we don't want to flood logs with warnings in production and system test environments
-            ProjectStage projectStage = facesContext.getApplication().getProjectStage();
-            if(projectStage.equals(ProjectStage.Development) || projectStage.equals(ProjectStage.UnitTest))
-                log.warning("ALT attribute is missing for : " + uiComponent.getId());
+            if(!facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
+                log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) + " has no attribute alt or attribute resolves to null. Path to component " + RendererUtils.getPathToComponent(uiComponent));
         }
 
         if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
