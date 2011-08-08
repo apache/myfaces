@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -265,20 +266,23 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         int loops = 0;
         int maxLoops = 15;
-        boolean continueProcessing = true;
+        Collection<FacesEvent> eventsAborted = new LinkedList<FacesEvent>(); 
         do
         {
             // First broadcast events that have been queued for PhaseId.ANY_PHASE.
-            continueProcessing = _broadcastAll(context, events.getAnyPhase());
-            if (continueProcessing)
+            _broadcastAll(context, events.getAnyPhase(), eventsAborted);
+            Collection<FacesEvent> eventsOnPhase = events.getOnPhase();
+            if (!eventsAborted.isEmpty())
             {
-                continueProcessing = _broadcastAll(context, events.getOnPhase());
+                eventsOnPhase.removeAll(eventsAborted);
+                eventsAborted.clear();
             }
+            _broadcastAll(context, eventsOnPhase, eventsAborted);
 
             events = _getEvents(phaseId);
             loops++;
             
-        } while (events.hasMoreEvents() && loops < maxLoops && continueProcessing);
+        } while (events.hasMoreEvents() && loops < maxLoops);
         
         if (loops == maxLoops && events.hasMoreEvents()) {
             // broadcast reach maxLoops - probably a infinitive recursion:
@@ -957,7 +961,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      *
      * @return <code>true</code> if the broadcast was completed without abortion, <code>false</code> otherwise
      */
-    private boolean _broadcastAll(FacesContext context, Collection<? extends FacesEvent> events)
+    private void _broadcastAll(FacesContext context, Collection<? extends FacesEvent> events, Collection<FacesEvent> eventsAborted)
     {
         assert events != null;
 
@@ -985,7 +989,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, exceptionContext);
                 
                 // Abortion
-                return false;
+                eventsAborted.add(event);
             }
             finally
             {
@@ -998,7 +1002,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
         }
 
-        return true;
     }
 
     private void clearEvents()
