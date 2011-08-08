@@ -174,9 +174,15 @@ public abstract class DataModel<E> implements Iterable<E>
     {
         private int nextRowIndex = 0;
         
+        public DataModelIterator()
+        {
+            setRowIndex(nextRowIndex);
+        }
+        
         public boolean hasNext()
         {
-            return nextRowIndex < getRowCount();
+            //row count could be unknown, like in ResultSetDataModel
+            return isRowAvailable();
         }
 
         public E next()
@@ -185,18 +191,12 @@ public abstract class DataModel<E> implements Iterable<E>
             //       Or the spec needs to specify that the iterator alters the selected row explicitely
             if (hasNext())
             {
-                setRowIndex(nextRowIndex);
+                // TODO: Double-check if this cast is safe. It should be...
+                E data = (E) getRowData();
                 nextRowIndex++;
+                setRowIndex(nextRowIndex);
+                return data; 
                 
-                if (isRowAvailable())
-                {
-                    // TODO: Double-check if this cast is safe. It should be...
-                    return (E) getRowData();
-                }
-                else
-                {
-                    nextRowIndex--;
-                }
             }
             
             throw new NoSuchElementException("Couldn't find any element in DataModel at index " + nextRowIndex);

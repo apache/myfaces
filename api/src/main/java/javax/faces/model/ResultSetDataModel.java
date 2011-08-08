@@ -269,14 +269,15 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
         @Override
         public boolean containsValue(Object value)
         {
-            for (String key : keySet())
+            //Iterate over entry set is better, because an entry
+            //key could have null value.
+            for (Map.Entry<String, Object> entry : entrySet())
             {
-                Object object = get(key);
-                if (object == null)
+                if (value != null && value.equals(entry.getValue()))
                 {
-                    return value == null;
+                    return true;
                 }
-                else if (object.equals(value))
+                else if (value == null && entry.getValue() == null)
                 {
                     return true;
                 }
