@@ -1177,11 +1177,6 @@
             <artifactId>myfaces-test20</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>cactus</groupId>
-            <artifactId>cactus</artifactId>
-        </dependency>
-
         <!-- easymock -->
         <dependency>
             <groupId>org.easymock</groupId>
