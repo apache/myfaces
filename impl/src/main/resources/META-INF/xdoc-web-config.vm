@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document>
+ <properties>
+  <title>Web Context Parameters</title>
+ </properties>
+ <body>
+  <section name="Web Context Parameters">
+  <p>
+  MyFaces core behavior can be customized, adding some web config params into your 
+  WEB-INF/web.xml file for your custom project in this way:
+  </p>
+  <div class="source"><pre>
+      &lt;context-param&gt;
+        &lt;param-name&gt;org.apache.myfaces.SOME_USEFUL_PARAM&lt;/param-name&gt;
+        &lt;param-value&gt;someValue&lt;/param-value&gt;
+      &lt;/context-param&gt;
+  </pre></div>
+  <p>
+  Below is the list of available web context parameters supported: 
+  </p>
+  </section>
+#if ($baseContent)
+$baseContent
+#end
+  <section name="Summary">
+  <p>Click on the name of each param to find detailed information about each one of them.</p>
+  <p>The "since" column means the version since the param was added. Note this param is not "lineal",
+  so please check the release dates on myfaces issue tracker to know if an specified version
+  has or not the selected param. For example, if a param was added on 2.0.7, it means that 2.1.1
+  has the parameter because it was released on the same time, but 2.1.0 will not have it, because
+  it was released before that date.
+  </p>
+#set ($webConfigList = ${model.getWebConfigs()})
+  <p><b>State Saving Configuration Params</b></p>
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Since</th>
+  <th>Default Value</th>
+  <th>Short Description</th>
+ </tr>
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+#if ($webConfigParam.sourceClassName == "javax.faces.application.StateManager"
+     || $webConfigParam.sourceClassName == "org.apache.myfaces.shared.util.StateUtils"
+     || $webConfigParam.sourceClassName == "org.apache.myfaces.renderkit.ServerSideStateCacheImpl"
+     || $webConfigParam.sourceClassName == "org.apache.myfaces.renderkit.html.HtmlResponseStateManager"
+     || $webConfigParam.name == "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"
+     || $webConfigParam.name == "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE")
+ <tr>
+  <td><a href="#$webConfigParam.name.replace('.','_')">$webConfigParam.name</a></td>
+#if ($webConfigParam.since)
+  <td>$webConfigParam.since</td>
+#else
+  <td></td>
+#end
+#if ($webConfigParam.defaultValue)
+  <td>$webConfigParam.defaultValue</td>
+#else
+  <td></td>
+#end
+#if ($webConfigParam.description)
+  <td>$webConfigParam.description</td>
+#else
+  <td></td>
+#end
+ </tr>
+#end
+#end
+#end
+#end
+</table>
+
+  <p><b>Other Configuration Params</b></p>
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Since</th>
+  <th>Default Value</th>
+  <th>Short Description</th>
+ </tr>
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+#if ($webConfigParam.sourceClassName != "javax.faces.application.StateManager"
+     && $webConfigParam.sourceClassName != "org.apache.myfaces.shared.util.StateUtils"
+     && $webConfigParam.sourceClassName != "org.apache.myfaces.renderkit.ServerSideStateCacheImpl"
+     && $webConfigParam.sourceClassName != "org.apache.myfaces.renderkit.html.HtmlResponseStateManager"
+     && $webConfigParam.name != "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"
+     && $webConfigParam.name != "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE")
+ <tr>
+  <td><a href="#$webConfigParam.name.replace('.','_')">$webConfigParam.name</a></td>
+#if ($webConfigParam.since)
+  <td>$webConfigParam.since</td>
+#else
+  <td></td>
+#end
+#if ($webConfigParam.defaultValue)
+  <td>$webConfigParam.defaultValue</td>
+#else
+  <td></td>
+#end
+#if ($webConfigParam.description)
+  <td>$webConfigParam.description</td>
+#else
+  <td></td>
+#end
+ </tr>
+#end
+#end
+#end
+#end
+</table>
+
+  </section>
+  <section name="Detailed Information">
+
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+<p>Artifact Id: $webConfig.modelId</p>
+<table>
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+  <tr><td>
+  <p>
+    <b>Param Name:</b> <a name="$webConfigParam.name.replace('.','_')">$webConfigParam.name</a>
+    <br/>
+#if ($webConfigParam.defaultValue)
+    <b>Default Value:</b> $webConfigParam.defaultValue
+    <br/>
+#end
+#if ($webConfigParam.expectedValues)
+    <b>Expected Values:</b> $webConfigParam.expectedValues
+    <br/>
+#end
+#if ($webConfigParam.since)
+    <b>Since:</b> $webConfigParam.since
+    <br/>
+#end
+#if ($webConfigParam.sourceClassName.startsWith("javax.faces."))
+#set ($javadocPath = "../../myfaces-api/apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#elseif ($webConfigParam.sourceClassName.startsWith("org.apache.myfaces.shared."))
+#set ($javadocPath = "../../myfaces-impl-shared/apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#else
+#set ($javadocPath = "../apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#end
+    <b>Source Class:</b> <a href="${javadocPath}.html">$webConfigParam.sourceClassName</a>
+    <br/>
+#if ($webConfigParam.longDescription)
+    <b>Description:</b> 
+    <br/>
+    $webConfigParam.longDescription
+#else
+    <b>Description:</b> no description available yet.
+    <br/>
+#end
+  </p>
+  </td></tr>
+#end
+</table>
+#end
+#end
+
+  </section>
+ </body> 
+</document>
