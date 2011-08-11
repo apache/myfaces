@@ -102,7 +102,7 @@ public class MyfacesConfig
      * StreamingAddResource instead of DefaultAddResource if you want to
      * gain performance.
      */
-    @JSFWebConfigParam(defaultValue="org.apache.myfaces.renderkit.html.util.DefaultAddResource",since="1.1")
+    @JSFWebConfigParam(defaultValue="org.apache.myfaces. renderkit.html.util. DefaultAddResource",since="1.1")
     private static final String INIT_PARAM_ADD_RESOURCE_CLASS = "org.apache.myfaces.ADD_RESOURCE_CLASS";
     private static final String INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT = "org.apache.myfaces.renderkit.html.util.DefaultAddResource";
 
@@ -192,26 +192,34 @@ public class MyfacesConfig
     private static final String INIT_PARAM_DELEGATE_FACES_SERVLET = "org.apache.myfaces.DELEGATE_FACES_SERVLET";
 
     /**
-     * This param is only valid when partial state saving is on.
-     * If this is set as true, the tag-handlers are reapplied like in facelets 1.1.x, allowing
+     * Indicate if the facelet associated to the view should be reapplied when the view is refreshed. Default mode is "auto".
+     * 
+     * <p>This param is only valid when partial state saving is on.
+     * If this is set as true, the tag-handlers are always reapplied before render view, like in facelets 1.1.x, allowing
      * c:if work correctly to "toggle" components based on a value changed on invoke application phase. 
+     * If the param is set as "auto", the implementation check if c:if, c:forEach, 
+     * c:choose and ui:include with src=ELExpression is used on the page and if that so, mark the view
+     * to be refreshed.</p> 
      */
     @JSFWebConfigParam(since="2.0", defaultValue="auto", expectedValues="true,false,auto")
     public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"; 
     public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT = "auto";
 
     /**
-     * This param is only valid when partial state saving is on.
+     * Enable or disable a special mode that enable full state for parent components containing c:if, c:forEach, 
+     * c:choose and ui:include with src=ELExpression. By default is disabled(false).
+     * 
+     * <p>This param is only valid when partial state saving is on.
      * If this is set as true, parent components containing  c:if, c:forEach, 
-     * c:choose and ui:insert with src=ELExpression are marked to be restored fully, so state
-     * is preserved between request.
+     * c:choose and ui:include with src=ELExpression are marked to be restored fully, so state
+     * is preserved between request.</p>
      */
     @JSFWebConfigParam(since="2.0", defaultValue="false")
     public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE";
     public final static boolean INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT = false;
     
     /**
-     * if set to <code>true</code>, tag library XML files and faces config XML files using schema 
+     * If set to <code>true</code>, tag library XML files and faces config XML files using schema 
      * will be validated during application start up
      */
     @JSFWebConfigParam(since="2.0", expectedValues="true,false")

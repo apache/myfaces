@@ -55,6 +55,14 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
     public static final String STANDARD_STATE_SAVING_PARAM = "javax.faces.ViewState";
     
+    /**
+     * Define if the state caching code should be handled by the ResponseStateManager or by the StateManager used.
+     * <p>
+     * This param is used to keep compatibility with previous state managers implementations depending from old myfaces
+     * way to deal with this. For example, JspStateManagerImpl requires this param set to false, but by default 
+     * it is set to true, to keep aligned with the Reference Implementation (RI).
+     * </p> 
+     */
     @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true")
     public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
     

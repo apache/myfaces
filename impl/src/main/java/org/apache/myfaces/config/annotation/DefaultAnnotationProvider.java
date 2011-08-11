@@ -65,8 +65,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     private static final Logger log = Logger.getLogger(DefaultAnnotationProvider.class.getName());
     
     /**
-     * <p> Servlet context init parameter which defines which packages to scan
-     * for beans, separated by commas.</p>
+     * Servlet context init parameter which defines which packages to scan
+     * for beans, separated by commas.
      */
     @JSFWebConfigParam(since="2.0")
     public static final String SCAN_PACKAGES = "org.apache.myfaces.annotation.SCAN_PACKAGES";

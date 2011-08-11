@@ -63,17 +63,21 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
     
     /**
-     * Only applicable if state saving method is "server" (= default).
      * Defines the amount (default = 20) of the latest views are stored in session.
+     * 
+     * <p>Only applicable if state saving method is "server" (= default).
+     * </p>
+     * 
      */
     @JSFWebConfigParam(defaultValue="20",since="1.1")
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
 
     /**
-     * Only applicable if state saving method is "server" (= default).
      * Indicates the amount of views (default is not active) that should be stored in session between sequential
-     * POST or POST-REDIRECT-GET if org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION is true. 
-     * <p>For example, if this param has value = 2 and in your custom webapp there is a form that is clicked 3 times, only 2 views
+     * POST or POST-REDIRECT-GET if org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION is true.
+     * 
+     * <p>Only applicable if state saving method is "server" (= default). For example, if this param has value = 2 and 
+     * in your custom webapp there is a form that is clicked 3 times, only 2 views
      * will be stored and the third one (the one stored the first time) will be removed from session, even if the view can
      * store more sessions org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION. This feature becomes useful for multi-window applications.
      * where without this feature a window can swallow all view slots so the other ones will throw ViewExpiredException.</p>
@@ -87,14 +91,19 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     private static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 20;
 
     /**
+     * Indicate if the state should be serialized before save it on the session. 
+     * <p>
      * Only applicable if state saving method is "server" (= default).
      * If <code>true</code> (default) the state will be serialized to a byte stream before it is written to the session.
      * If <code>false</code> the state will not be serialized to a byte stream.
+     * </p>
      */
     @JSFWebConfigParam(defaultValue="true",since="1.1")
     private static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
     /**
+     * Indicates that the serialized state will be compressed before it is written to the session. By default true.
+     * 
      * Only applicable if state saving method is "server" (= default) and if <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
      * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
      * If <code>false</code> the state will not be compressed.
@@ -154,10 +163,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF = "off";
 
     /**
-     * Only applicable if state saving method is "server" (= default).
      * Allow use flash scope to keep track of the views used in session and the previous ones,
-     * so server side state saving can delete old views even if POST-REDIRECT-GET pattern is used. 
-     * The default value is false.
+     * so server side state saving can delete old views even if POST-REDIRECT-GET pattern is used.
+     * 
+     * <p>
+     * Only applicable if state saving method is "server" (= default).
+     * The default value is false.</p>
      */
     @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false")
     private static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";

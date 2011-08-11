@@ -76,15 +76,27 @@ public abstract class StateManager
      * token is embedded in the data rendered to the user.
      * </p>
      */
-    @JSFWebConfigParam(defaultValue="server", expectedValues="server,client", since="1.1")
+    @JSFWebConfigParam(defaultValue="server", expectedValues="server,client", since="1.1",
+        desc="Define the state method to be used. There are two different options defined by the specification: 'client' and 'server' state.")
     public static final String STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.STATE_SAVING_METHOD";
     public static final String STATE_SAVING_METHOD_CLIENT = "client";
     public static final String STATE_SAVING_METHOD_SERVER = "server";
     
+    /**
+     * Indicate the viewId(s) separated by commas that should be saved and restored fully, without use Partial State Saving (PSS). 
+     */
     @JSFWebConfigParam(since="2.0")
     public static final String FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME = "javax.faces.FULL_STATE_SAVING_VIEW_IDS";
     
-    @JSFWebConfigParam(expectedValues="true,false", since="2.0")
+    /**
+     * Enable or disable partial state saving algorithm.
+     *  
+     * <p>Partial State Saving algorithm allows to reduce the size of the state required to save a view, 
+     * keeping track of the "delta" or differences between the view build by first time and the current 
+     * state of the view.</p>
+     * <p>If the webapp faces-config file version is 2.0 or upper the default value is true, otherwise is false.</p>   
+     */
+    @JSFWebConfigParam(expectedValues="true,false", since="2.0", defaultValue="true (false with 1.2 webapps)")
     public static final String PARTIAL_STATE_SAVING_PARAM_NAME = "javax.faces.PARTIAL_STATE_SAVING";
     private Boolean _savingStateInClient = null;
 

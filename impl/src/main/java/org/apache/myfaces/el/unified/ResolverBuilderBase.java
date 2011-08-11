@@ -47,7 +47,7 @@ public class ResolverBuilderBase
     private static final Logger log = Logger.getLogger(ResolverBuilderBase.class.getName());
     
     @JSFWebConfigParam(since = "1.2.10, 2.0.2",
-            desc = "The Class of an Comparator<ELResolver> implementation.")
+            desc = "The Class of an Comparator&lt;ELResolver&gt; implementation.")
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
     
     @JSFWebConfigParam(since = "2.1.0",

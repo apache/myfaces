@@ -35,6 +35,9 @@ public abstract class ResourceHandler
     public static final String LOCALE_PREFIX = "javax.faces.resource.localePrefix";
     public static final String RESOURCE_EXCLUDES_DEFAULT_VALUE = ".class .jsp .jspx .properties .xhtml .groovy";
     
+    /**
+     * Space separated file extensions that will not be served by the default ResourceHandler implementation.
+     */
     @JSFWebConfigParam(defaultValue=".class .jsp .jspx .properties .xhtml .groovy",since="2.0")
     public static final String RESOURCE_EXCLUDES_PARAM_NAME = "javax.faces.RESOURCE_EXCLUDES";
     public static final String RESOURCE_IDENTIFIER = "/javax.faces.resource";

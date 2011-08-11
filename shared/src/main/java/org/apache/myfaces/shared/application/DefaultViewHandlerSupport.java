@@ -52,10 +52,17 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     //private static final Log log = LogFactory.getLog(DefaultViewHandlerSupport.class);
     private static final Logger log = Logger.getLogger(DefaultViewHandlerSupport.class.getName());
 
+    /**
+     * Controls the size of the cache used to "remember" if a view exists or not.
+     */
     @JSFWebConfigParam(defaultValue = "500", since = "2.0.2")
     private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
     private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
 
+    /**
+     * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
+     * sucesive calls to ExternalContext.getResource().
+     */
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.2")
     private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;

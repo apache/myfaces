@@ -74,14 +74,21 @@ public abstract class ViewHandler
     public static final String DEFAULT_SUFFIX = ".xhtml .view.xml .jsp";
     
     /**
-     * Indicate the default suffix to derive the file URI if extension mapping is used. 
+     * Indicate the default suffixes, separated by spaces to derive the default file URI 
+     * used by JSF to create views and render pages. 
      */
-    @JSFWebConfigParam(defaultValue=".xhtml .jsp", since="1.1")
+    @JSFWebConfigParam(defaultValue=".xhtml .view.xml .jsp", since="1.1")
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
     
+    /**
+     * The default extension used to handle facelets pages.
+     */
     @JSFWebConfigParam(defaultValue=".xhtml", since="2.0")
     public static final String FACELETS_SUFFIX_PARAM_NAME = "javax.faces.FACELETS_SUFFIX";
     
+    /**
+     * Set of extensions handled by facelets, separated by ';'.
+     */
     @JSFWebConfigParam(since="2.0")
     public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "javax.faces.FACELETS_VIEW_MAPPINGS";
     // TODO: Notify EG on that last constant. Using the Facelets' param as well for backward compatiblity is 
