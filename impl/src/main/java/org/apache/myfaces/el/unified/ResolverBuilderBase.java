@@ -51,7 +51,7 @@ public class ResolverBuilderBase
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
     
     @JSFWebConfigParam(since = "2.1.0",
-            desc="The Class of an org.apache.commons.collections.Predicate<ELResolver> implementation." +
+            desc="The Class of an org.apache.commons.collections.Predicate&lt;ELResolver&gt; implementation." +
             "If used and returns true for a ELResolver instance, such resolver will not be installed in ELResolvers chain." +
             "Use with caution - can break functionality defined in JSF specification 'ELResolver Instances Provided by Faces'")
     public static final String EL_RESOLVER_PREDICATE = "org.apache.myfaces.EL_RESOLVER_PREDICATE";
