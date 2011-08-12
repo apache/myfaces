@@ -865,7 +865,6 @@
 
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.3</version>
                         <configuration>
                             <excludePackageNames>org.apache.myfaces.ee6</excludePackageNames>
                         </configuration>
@@ -1211,10 +1210,8 @@
                     <excludePackageNames>org.apache.myfaces.ee6</excludePackageNames>
                 </configuration>
             </plugin>
-
             <plugin>
                 <artifactId>maven-changelog-plugin</artifactId>
-                <version>2.2</version>
                 <reportSets>
                     <reportSet>
                         <id>dual-report</id>
@@ -1233,18 +1230,15 @@
             
             <plugin>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.2</version>
             </plugin>
             
             <plugin>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.5</version>
             </plugin>
             
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
-                <version>2.4</version>
             </plugin>
             
             <!-- override PMD settings to set targetJdk -->

@@ -28,9 +28,9 @@
   <groupId>org.apache.myfaces.core.internal</groupId>
   <artifactId>myfaces-impl-shared</artifactId>
   <packaging>jar</packaging>
-  <name>Apache MyFaces Shared For JSF 2.1 - Core</name>
-  <description>The MyFaces Shared Core Subproject build the sources artifact
-    needed by the shared-* modules</description>
+  <name>Apache MyFaces Core For JSF 2.1 - Shared</name>
+  <description>The MyFaces Impl Shared module contains utility classes shared by other
+  projects like Tomahawk, Orchestra and Portlet-Bridge through shared project.</description>
 
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/shared</connection>
@@ -216,7 +216,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.4</version>
                     <executions>
                         <execution>
                             <id>attach-javadoc</id>
@@ -234,30 +233,26 @@
     <plugins>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.4</version>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>changelog-maven-plugin</artifactId>
-        <version>2.0-beta-1</version>
-        <reportSets>
-          <reportSet>
-            <id>dual-report</id>
-            <configuration>
-              <type>range</type>
-              <range>30</range>
-            </configuration>
-            <reports>
-              <report>changelog</report>
-              <report>file-activity</report>
-              <report>dev-activity</report>
-            </reports>
-          </reportSet>
-        </reportSets>
+          <artifactId>maven-jxr-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jxr-maven-plugin</artifactId>
+          <artifactId>maven-changelog-plugin</artifactId>
+          <reportSets>
+              <reportSet>
+                  <id>dual-report</id>
+                  <configuration>
+                      <type>range</type>
+                      <range>30</range>
+                  </configuration>
+                  <reports>
+                      <report>changelog</report>
+                      <report>file-activity</report>
+                      <report>dev-activity</report>
+                  </reports>
+              </reportSet>
+          </reportSets>
       </plugin>
       <!-- 
       <plugin>
@@ -268,11 +263,9 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
-        <version>2.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.2</version>
         <configuration>
           <rulesets>
             <ruleset>/rulesets/basic.xml</ruleset>

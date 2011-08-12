@@ -40,11 +40,15 @@
     <skin>
       	<groupId>org.apache.myfaces.maven</groupId>
       	<artifactId>myfaces-site-skin</artifactId>
-      	<version>2</version>
+      	<version>3</version>
     </skin>
     
     <body>
         <links>
+            <item name="FAQ"            href="https://cwiki.apache.org/confluence/display/MYFACES/FAQ"/>
+            <item name="Generated Doc"  href="./javadoc.html"/>
+            <item name="Quick Start"    href="https://cwiki.apache.org/confluence/display/MYFACES/Quick+Start"/>
+            <item name="User Guide"     href="https://cwiki.apache.org/confluence/display/MYFACES/MyFaces+Core+User+Guide"/>
             <item name="Apache"         href="http://www.apache.org/"/>
             <item name="MyFaces"        href="http://myfaces.apache.org/index.html"/>
         </links>
@@ -55,50 +59,51 @@
         </menu>
 
         <menu name="MyFaces Projects" inherit="top">
-            <item name="Core JSF-2.1"   href="http://myfaces.apache.org/core21/index.html" collapse="false">
-              <item name="API"          href="http://myfaces.apache.org/core21/myfaces-api/index.html"/>
-              <item name="Impl"         href="http://myfaces.apache.org/core21/myfaces-impl/index.html"/>
+            <item name="Core JSF-2.1"   href="./index.html" collapse="false">
+              <item name="API"          href="./myfaces-api/index.html"/>
+              <item name="Impl"         href="./myfaces-impl/index.html"/>
+              <item name="Shared"       href="./myfaces-impl-shared/index.html"/>
+              <item name="Bundle"       href="./myfaces-bundle/index.html"/>
             </item>
-            <item name="Core JSF-2.0"   href="http://myfaces.apache.org/core20/index.html" collapse="true">
+            <item name="Core JSF-2.0"   href="../core20/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
-            <item name="Core JSF-1.2"   href="http://myfaces.apache.org/core12/index.html" collapse="true">
+            <item name="Core JSF-1.2"   href="../core12/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
-            <item name="Core JSF-1.1"   href="http://myfaces.apache.org/core11/index.html" collapse="true">
+            <item name="Core JSF-1.1"   href="../core11/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
         </menu>
 
         <menu name="UI-Component Sets" inherit="top">
-            <item name="Trinidad"       href="./trinidad/index.html"/>
-            <item name="Tobago"         href="./tobago/index.html"/>
-            <item name="Tomahawk"       href="./tomahawk/index.html" collapse="true">
+            <item name="Trinidad"       href="../trinidad/index.html"/>
+            <item name="Tobago"         href="../tobago/index.html"/>
+            <item name="Tomahawk"       href="../tomahawk/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
         </menu>
 
         <menu name="Add-ons and Extensions" inherit="top">
-            <item name="CODI"           href="./extensions/cdi/index.html"/>
-            <item name="Orchestra"      href="./orchestra/index.html"/>
-            <item name="ExtVal"         href="./extensions/validator/index.html"/>
-            <item name="Portlet Bridge" href="./portlet-bridge/index.html"/>
-            <item name="Test"           href="./test/index.html"/>
-            <item name="Commons"        href="./commons/index.html"/>
-            <item name="HTML5"          href="./html5/index.html"/>
-            <item name="Sandbox"        href="./sandbox/index.html" collapse="true">
+            <item name="CODI"           href="../extensions/cdi/index.html"/>
+            <item name="Orchestra"      href="../orchestra/index.html"/>
+            <item name="ExtVal"         href="../extensions/validator/index.html"/>
+            <item name="Portlet Bridge" href="../portlet-bridge/index.html"/>
+            <item name="Test"           href="../test/index.html"/>
+            <item name="Commons"        href="../commons/index.html"/>
+            <item name="HTML5"          href="../html5/index.html"/>
+            <item name="Sandbox"        href="../sandbox/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
-            <item name="Others"         href="./otherProjects.html"/>
+            <item name="Others"         href="../otherProjects.html"/>
         </menu>
         
         <menu name="Documentation" inherit="top">
-            <item name="Getting Started" href="http://myfaces.apache.org/core20/gettingstarted.html"/>
-            <item name="MyFaces and RI"  href="http://myfaces.apache.org/core20/risamples.html"/>
+            <item name="Quick Start"     href="https://cwiki.apache.org/confluence/display/MYFACES/Quick+Start"/>
+            <item name="Getting Started" href="https://cwiki.apache.org/confluence/display/MYFACES/Getting+Started"/>
             <item name="MyFaces and Google App Engine"  href="http://myfaces.apache.org/core20/googleappenginesupport.html"/>
-            <item name="Tomcat Config"   href="http://myfaces.apache.org/core20/tomcat.html"/>
-            <item name="Javadocs"        href="http://myfaces.apache.org/core20/javadoc.html"/>
-            <item name="FAQ"             href="http://myfaces.apache.org/core20/faq.html"/>
+            <item name="Generated Javadoc, Tlddoc and Others"        href="./javadoc.html"/>
+            <item name="FAQ"             href="https://cwiki.apache.org/confluence/display/MYFACES/FAQ"/>
         </menu>
 
         <menu ref="reports" inherit="top"/>

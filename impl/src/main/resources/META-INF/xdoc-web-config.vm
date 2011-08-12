@@ -141,11 +141,11 @@ $baseContent
     <br/>
 #end
 #if ($webConfigParam.sourceClassName.startsWith("javax.faces."))
-#set ($javadocPath = "../../myfaces-api/apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#set ($javadocPath = "../myfaces-api/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
 #elseif ($webConfigParam.sourceClassName.startsWith("org.apache.myfaces.shared."))
-#set ($javadocPath = "../../myfaces-impl-shared/apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#set ($javadocPath = "../myfaces-impl-shared/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
 #else
-#set ($javadocPath = "../apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#set ($javadocPath = "./xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
 #end
     <b>Source Class:</b> <a href="${javadocPath}.html">$webConfigParam.sourceClassName</a>
     <br/>
