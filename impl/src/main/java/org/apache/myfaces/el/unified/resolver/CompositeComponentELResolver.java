@@ -141,7 +141,7 @@ public final class CompositeComponentELResolver extends ELResolver
             {
                 //create a wrapper map
                 attributesMap = new CompositeComponentAttributesMapWrapper(
-                        baseComponent, elContext);
+                        baseComponent);
                 compositeComponentAttributesMaps.put(baseComponent,
                         new WeakReference<Map<String, Object>>(attributesMap));
             }
@@ -150,7 +150,7 @@ public final class CompositeComponentELResolver extends ELResolver
         {
             //Create both required maps
             attributesMap = new CompositeComponentAttributesMapWrapper(
-                    baseComponent, elContext);
+                    baseComponent);
             compositeComponentAttributesMaps = new WeakHashMap<UIComponent, WeakReference<Map<String, Object>>>();
             compositeComponentAttributesMaps.put(baseComponent,
                     new WeakReference<Map<String, Object>>(attributesMap));
@@ -189,15 +189,13 @@ public final class CompositeComponentELResolver extends ELResolver
         private final UIComponent _component;
         private final BeanInfo _beanInfo;
         private final Map<String, Object> _originalMap;
-        private final ELContext _elContext;
         private final PropertyDescriptor [] _propertyDescriptors;
 
-        private CompositeComponentAttributesMapWrapper(UIComponent component, ELContext context)
+        private CompositeComponentAttributesMapWrapper(UIComponent component)
         {
             this._component = component;
             this._originalMap = component.getAttributes();
             this._beanInfo = (BeanInfo) _originalMap.get(UIComponent.BEANINFO_KEY);
-            this._elContext = context;
             this._propertyDescriptors = _beanInfo.getPropertyDescriptors();
         }
 
@@ -257,7 +255,7 @@ public final class CompositeComponentELResolver extends ELResolver
                 // always stored as (Tag-)ValueExpressions.
                 if (obj != null && obj instanceof ValueExpression)
                 {
-                    return ((ValueExpression) obj).getValue(_elContext);
+                    return ((ValueExpression) obj).getValue(FacesContext.getCurrentInstance().getELContext());
                 }
                 else
                 {
@@ -283,7 +281,7 @@ public final class CompositeComponentELResolver extends ELResolver
             // Per the spec, if the result is a ValueExpression, call setValue().
             if (valueExpression != null)
             {
-                valueExpression.setValue(_elContext, value);
+                valueExpression.setValue(FacesContext.getCurrentInstance().getELContext(), value);
 
                 return null;
             }
