@@ -45,6 +45,8 @@ public final class HtmlLibrary extends AbstractHtmlLibrary
 
         this.addHtmlComponent("dataTable", "javax.faces.HtmlDataTable", "javax.faces.Table");
 
+        this.addHtmlComponent("doctype", "javax.faces.OutputDoctype", "javax.faces.Doctype");
+        
         this.addHtmlComponent("form", "javax.faces.HtmlForm", "javax.faces.Form");
 
         this.addHtmlComponent("graphicImage", "javax.faces.HtmlGraphicImage", "javax.faces.Image");
