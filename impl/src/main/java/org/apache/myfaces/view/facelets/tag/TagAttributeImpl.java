@@ -91,7 +91,10 @@ public final class TagAttributeImpl extends TagAttribute
         boolean resourceExpression;
         this.location = location;
         this.namespace = ns;
-        this.localName = localName;
+        // "xmlns" attribute name can be swallowed by SAX compiler, so we should check if
+        // localName is null or empty and if that so, assign it from the qName 
+        // (if localName is empty it is not prefixed, so it is save to set it directly). 
+        this.localName = (localName == null) ? qName : ((localName.length() > 0) ? localName : qName);
         this.qName = qName;
         this.value = value;
 
