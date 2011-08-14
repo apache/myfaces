@@ -150,6 +150,71 @@ class _ComponentUtils
 
         return null;
     }
+    
+    static UIComponent innerFindComponent(UIComponent parent, String id, String innerExpr)
+    {
+        if (parent.getFacetCount() > 0)
+        {
+            for (UIComponent facet : parent.getFacets().values())
+            {
+                if (id.equals(facet.getId()))
+                {
+                    if (innerExpr == null)
+                    {
+                        return facet;
+                    }
+                    else if (facet instanceof NamingContainer)
+                    {
+                        UIComponent find = facet.findComponent(innerExpr);
+                        if (find != null)
+                        {
+                            return find;
+                        }
+                    }
+                }
+                else
+                {
+                    UIComponent find = innerFindComponent(facet, id, innerExpr);
+                    if (find != null)
+                    {
+                        return find;
+                    }
+                }
+            }
+        }
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i++)
+            {
+                UIComponent child = parent.getChildren().get(i);
+                if (id.equals(child.getId()))
+                {
+                    if (innerExpr == null)
+                    {
+                        return child;
+                    }
+                    else if (child instanceof NamingContainer)
+                    {
+                        UIComponent find = child.findComponent(innerExpr);
+                        if (find != null)
+                        {
+                            return find;
+                        }
+                    }
+                }
+                else
+                {
+                    UIComponent find = innerFindComponent(child, id, innerExpr);
+                    if (find != null)
+                    {
+                        return find;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 
     /*
      * Return true if the specified component matches the provided id. This needs some quirks to handle components whose
