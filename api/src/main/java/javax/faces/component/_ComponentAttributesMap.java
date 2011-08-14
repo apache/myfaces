@@ -283,8 +283,33 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                             {
                                 if (attribute.getName().equals(key))
                                 {
-                                    value = attribute.getValue("default");
-                                    break;
+                                    String attributeName = attribute.getName();
+                                    boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
+                                            || "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
+                                    
+                                    // <composite:attribute> method-signature attribute is 
+                                    // ValueExpression that must evaluate to String
+                                    ValueExpression methodSignatureExpression
+                                            = (ValueExpression) attribute.getValue("method-signature");
+                                    String methodSignature = null;
+                                    if (methodSignatureExpression != null)
+                                    {
+                                        // Check if the value expression holds a method signature
+                                        // Note that it could be null, so in that case we don't have to do anything
+                                        methodSignature = (String) methodSignatureExpression.getValue(_component.getFacesContext().getELContext());
+                                    }
+                                    
+                                    // either the attributeName has to be a knownMethod or there has to be a method-signature
+                                    if (isKnownMethod || methodSignature != null)
+                                    {
+                                        //In this case it is expecting a ValueExpression
+                                        return attribute.getValue("default");
+                                    }
+                                    else
+                                    {
+                                        value = attribute.getValue("default");
+                                        break;
+                                    }
                                 }
                             }
                             // We have to check for a ValueExpression and also evaluate it
