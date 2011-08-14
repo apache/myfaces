@@ -286,9 +286,9 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     protected String[] getFaceletsViewMappings(FacesContext context)
     {
         String faceletsViewMappings= context.getExternalContext().getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
-        if(faceletsViewMappings == null)    //consider alias facelets.VIEWMAPPINGS
+        if(faceletsViewMappings == null)    //consider alias facelets.VIEW_MAPPINGS
         {
-            faceletsViewMappings= context.getExternalContext().getInitParameter("facelets.VIEWMAPPINGS");
+            faceletsViewMappings= context.getExternalContext().getInitParameter("facelets.VIEW_MAPPINGS");
         }
         
         return faceletsViewMappings == null ? null : faceletsViewMappings.split(";");
