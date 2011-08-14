@@ -93,6 +93,10 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
         assert context != null;
 
         String mappings = context.getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
+        if(mappings == null)    //consider alias facelets.VIEW_MAPPINGS
+        {
+            mappings = context.getInitParameter("facelets.VIEW_MAPPINGS");
+        }
         if (mappings == null)
         {
             return null;
