@@ -247,7 +247,11 @@ public class ResourceImpl extends Resource
                 path = path + "&stage=" + facesContext.getApplication().getProjectStage().toString();
             }
         }
-        
+        if (_resourceMeta.getLocalePrefix() != null)
+        {
+            path = path + (useAmp ? '&' : '?') + "loc=" + _resourceMeta.getLocalePrefix();
+            useAmp = true;
+        }
         return facesContext.getApplication().getViewHandler().getResourceURL(facesContext, path);
     }
 

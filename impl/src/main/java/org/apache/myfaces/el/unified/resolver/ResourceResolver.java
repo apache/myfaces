@@ -94,9 +94,9 @@ public final class ResourceResolver extends ELResolver
                 }
             }
             
+            context.setPropertyResolved(true);
             if (resource != null)
             {
-                context.setPropertyResolved(true);
                 return resource.getRequestPath();
             }
         }
