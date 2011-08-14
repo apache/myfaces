@@ -437,27 +437,47 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         String localePrefix = null;
         FacesContext context = FacesContext.getCurrentInstance();
+        boolean isResourceRequest = context.getApplication().getResourceHandler().isResourceRequest(context);
 
+        if (isResourceRequest)
+        {
+            localePrefix = context.getExternalContext().getRequestParameterMap().get("loc");
+            
+            if (localePrefix != null)
+            {
+                return localePrefix;
+            }
+        }
+        
         String bundleName = context.getApplication().getMessageBundle();
 
         if (null != bundleName)
         {
-            Locale locale = context.getApplication().getViewHandler()
-                    .calculateLocale(context);
-
-            ResourceBundle bundle = ResourceBundle
-                    .getBundle(bundleName, locale, ClassUtils.getContextClassLoader());
-
-            if (bundle != null)
+            Locale locale = null;
+            
+            if (isResourceRequest || context.getViewRoot() == null)
             {
-                try
+                locale = context.getApplication().getViewHandler()
+                                .calculateLocale(context);
+            }
+            else
+            {
+                locale = context.getViewRoot().getLocale();
+            }
+
+            try
+            {
+                ResourceBundle bundle = ResourceBundle
+                        .getBundle(bundleName, locale, ClassUtils.getContextClassLoader());
+
+                if (bundle != null)
                 {
                     localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);
                 }
-                catch (MissingResourceException e)
-                {
-                    // Ignore it and return null
-                }
+            }
+            catch (MissingResourceException e)
+            {
+                // Ignore it and return null
             }
         }
         return localePrefix;
