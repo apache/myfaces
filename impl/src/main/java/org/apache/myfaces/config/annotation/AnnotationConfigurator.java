@@ -383,6 +383,8 @@ public class AnnotationConfigurator
                     // singleton).
                     org.apache.myfaces.config.impl.digester.elements.NamedEvent namedEventConfig = 
                         new org.apache.myfaces.config.impl.digester.elements.NamedEvent();
+                    namedEventConfig.setEventClass(clazz.getName());
+                    namedEventConfig.setShortName(namedEvent.shortName());
                     facesConfig.addNamedEvent(namedEventConfig);
                 }
             }
