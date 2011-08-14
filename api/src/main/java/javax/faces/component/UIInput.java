@@ -1107,6 +1107,15 @@ public class UIInput extends UIOutput implements EditableValueHolder
             return;
         }
         
+        if (facesContext.getViewRoot() == null)
+        {
+            // No viewRoot set, it is creating component, 
+            // so it is not possible to calculate the clientId, 
+            // abort processing because the interesting part will
+            // happen later.
+            return;
+        }
+        
         // convert Array values into a more readable format
         if (oldValue != null && oldValue.getClass().isArray())
         {
