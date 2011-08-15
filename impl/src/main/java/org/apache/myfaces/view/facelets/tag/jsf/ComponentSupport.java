@@ -25,7 +25,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.faces.FacesException;
+import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -429,5 +431,85 @@ public final class ComponentSupport
         {
             FaceletViewDeclarationLanguage.cleanTransientBuildOnRestore(context);
         }
+    }
+    
+    public static UIComponent findComponentChildOrFacetFrom(FacesContext facesContext, UIComponent parent, String expr)
+    {
+        final char separatorChar = UINamingContainer.getSeparatorChar(facesContext);
+        int separator = expr.indexOf(separatorChar);
+        if (separator == -1)
+        {
+            return ComponentSupport.findComponentChildOrFacetFrom(
+                    parent, expr, null);
+        }
+        else
+        {
+            return ComponentSupport.findComponentChildOrFacetFrom(
+                    parent, expr.substring(0,separator), expr);
+        }
+    }
+    
+    public static UIComponent findComponentChildOrFacetFrom(UIComponent parent, String id, String innerExpr)
+    {
+        if (parent.getFacetCount() > 0)
+        {
+            for (UIComponent facet : parent.getFacets().values())
+            {
+                if (id.equals(facet.getId()))
+                {
+                    if (innerExpr == null)
+                    {
+                        return facet;
+                    }
+                    else if (facet instanceof NamingContainer)
+                    {
+                        UIComponent find = facet.findComponent(innerExpr);
+                        if (find != null)
+                        {
+                            return find;
+                        }
+                    }
+                }
+                else if (!(facet instanceof NamingContainer))
+                {
+                    UIComponent find = findComponentChildOrFacetFrom(facet, id, innerExpr);
+                    if (find != null)
+                    {
+                        return find;
+                    }
+                }
+            }
+        }
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i++)
+            {
+                UIComponent child = parent.getChildren().get(i);
+                if (id.equals(child.getId()))
+                {
+                    if (innerExpr == null)
+                    {
+                        return child;
+                    }
+                    else if (child instanceof NamingContainer)
+                    {
+                        UIComponent find = child.findComponent(innerExpr);
+                        if (find != null)
+                        {
+                            return find;
+                        }
+                    }
+                }
+                else if (!(child instanceof NamingContainer))
+                {
+                    UIComponent find = findComponentChildOrFacetFrom(child, id, innerExpr);
+                    if (find != null)
+                    {
+                        return find;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
