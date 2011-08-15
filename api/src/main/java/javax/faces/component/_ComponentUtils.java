@@ -151,7 +151,7 @@ class _ComponentUtils
         return null;
     }
     
-    static UIComponent innerFindComponent(UIComponent parent, String id, String innerExpr)
+    static UIComponent findComponentChildOrFacetFrom(UIComponent parent, String id, String innerExpr)
     {
         if (parent.getFacetCount() > 0)
         {
@@ -172,9 +172,9 @@ class _ComponentUtils
                         }
                     }
                 }
-                else
+                else if (!(facet instanceof NamingContainer))
                 {
-                    UIComponent find = innerFindComponent(facet, id, innerExpr);
+                    UIComponent find = findComponentChildOrFacetFrom(facet, id, innerExpr);
                     if (find != null)
                     {
                         return find;
@@ -202,9 +202,9 @@ class _ComponentUtils
                         }
                     }
                 }
-                else
+                else if (!(child instanceof NamingContainer))
                 {
-                    UIComponent find = innerFindComponent(child, id, innerExpr);
+                    UIComponent find = findComponentChildOrFacetFrom(child, id, innerExpr);
                     if (find != null)
                     {
                         return find;
@@ -214,7 +214,6 @@ class _ComponentUtils
         }
         return null;
     }
-
 
     /*
      * Return true if the specified component matches the provided id. This needs some quirks to handle components whose
