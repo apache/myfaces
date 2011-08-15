@@ -25,10 +25,12 @@ import java.util.List;
 
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
 
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * 
@@ -67,9 +69,24 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         if (targetsArray.length > 0)
         {
             List<UIComponent> targetsList = new ArrayList<UIComponent>(targetsArray.length);
+            final char separatorChar = UINamingContainer.getSeparatorChar(facesContext);
+            UIComponent facetBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
             for (String target : targetsArray)
             {
-                UIComponent innerComponent = topLevelComponent.findComponent(target);
+                //UIComponent innerComponent = topLevelComponent.findComponent(
+                //        topLevelComponent.getId() + UINamingContainer.getSeparatorChar(facesContext) + target);
+                int separator = target.indexOf(separatorChar);
+                UIComponent innerComponent = null;
+                if (separator == -1)
+                {
+                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
+                            facetBase, target, null);
+                }
+                else
+                {
+                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
+                            facetBase, target.substring(0,separator), target);
+                }
                 
                 if (innerComponent != null)
                 {
@@ -87,7 +104,11 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
             String name = getName();
             if (name != null)
             {
-                UIComponent innerComponent = topLevelComponent.findComponent(getName());
+                //UIComponent innerComponent = topLevelComponent.findComponent(
+                //        topLevelComponent.getId() + UINamingContainer.getSeparatorChar(facesContext) + getName());
+                UIComponent innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
+                        topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME),
+                        name, null);
                 if (innerComponent != null)
                 {
                     List<UIComponent> targetsList = new ArrayList<UIComponent>(1);

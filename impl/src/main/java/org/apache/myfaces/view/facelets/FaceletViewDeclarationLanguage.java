@@ -113,6 +113,7 @@ import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBeha
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
@@ -973,10 +974,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             }
                             // Otherwise keep the current ValueExpression, because it will be used chain other value expressions
                         }
+                        
+                        UIComponent topLevelComponentBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
 
                         for (String target : targetsArray)
                         {
-                            UIComponent innerComponent = topLevelComponent.findComponent(target);
+                            UIComponent innerComponent = ComponentSupport.findComponentChildOrFacetFrom(context, topLevelComponentBase, target);
                             
                             if (innerComponent == null)
                             {
@@ -1122,9 +1125,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         
                         methodExpression = reWrapMethodExpression(methodExpression, attributeNameValueExpression);
     
+                        UIComponent topLevelComponentBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+                        
                         for (String target : targetsArray)
                         {
-                            UIComponent innerComponent = topLevelComponent.findComponent(target);
+                            UIComponent innerComponent = ComponentSupport.findComponentChildOrFacetFrom(context, topLevelComponentBase, target);
                             
                             if (innerComponent == null)
                             {
