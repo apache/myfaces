@@ -21,13 +21,13 @@
               version="2.0">
   <name>a</name>
   <ordering>
+      <after>
+         <name>d</name>
+      </after>      
       <before>
          <name>b</name>
          <name>c</name>
          <others/>
       </before>
-      <after>
-         <name>d</name>
-      </after>      
   </ordering>
 </faces-config>
