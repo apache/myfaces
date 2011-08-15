@@ -630,20 +630,20 @@ public abstract class UIComponentBase extends UIComponent
             {
                 //innerExpr1 = null;
                 //nextId= innerExpr;
-                return _ComponentUtils.innerFindComponent(findBase, innerExpr, null);
+                return _ComponentUtils.findComponentChildOrFacetFrom(findBase, innerExpr, null);
             }
             else
             {
                 //innerExpr1 = innerExpr.substring(separator+1);
                 //nextId = innerExpr.substring(0,separator);
-                return _ComponentUtils.innerFindComponent(findBase, innerExpr.substring(0,separator), innerExpr);
+                return _ComponentUtils.findComponentChildOrFacetFrom(findBase, innerExpr.substring(0,separator), innerExpr);
             }
         }
         else
         {
             //At this point, findBase has a NamingContainer that does not match with the id.
             //We need to scan from this component the full expression.
-            return _ComponentUtils.innerFindComponent(findBase, expr, null);
+            return _ComponentUtils.findComponentChildOrFacetFrom(findBase, expr, null);
         }
     }
 
