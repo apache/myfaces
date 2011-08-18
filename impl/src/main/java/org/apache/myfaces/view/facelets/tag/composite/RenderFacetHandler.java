@@ -129,8 +129,7 @@ public class RenderFacetHandler extends ComponentHandler
     
             if (_required != null && _required.getBoolean(ctx) && parentCompositeComponent.getFacet(facetName) == null)
             {
-                throw new TagException(this.tag, "Cannot find facet with name "+facetName+" in composite component "
-                        +parentCompositeComponent.getClientId(ctx.getFacesContext()));
+                throw new TagException(this.tag, "Cannot find facet with name '"+facetName+"' in composite component");
             }
             
             c.getAttributes().put(UIComponent.FACETS_KEY, facetName);
