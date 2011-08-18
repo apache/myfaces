@@ -411,6 +411,35 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
         Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
         compositeComponent.popComponentFromEL(facesContext);
     }
+    
+    @Test
+    public void testSimpleActionMethodExpressionTarget3() throws Exception
+    {
+        MockAttributeBean bean = new MockAttributeBean();
+        
+        facesContext.getExternalContext().getRequestMap().put("bean",
+                bean);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testSimpleAttributeActionMethodExpressionTarget3.xhtml");
+
+        
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent);
+        UICommand testComponent = (UICommand) compositeComponent.findComponent("testComponent");
+        Assert.assertNotNull(testComponent);
+        Assert.assertNotNull(testComponent.getActionExpression());
+        Assert.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
+        
+        UICommand testComponentNoTarget = (UICommand) compositeComponent.findComponent("testComponentNoTarget");
+        Assert.assertNotNull(testComponentNoTarget);
+        Assert.assertNotNull(testComponentNoTarget.getActionExpression());
+        compositeComponent.pushComponentToEL(facesContext, compositeComponent);
+        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
+        compositeComponent.popComponentFromEL(facesContext);
+    }
 
     @Test
     public void testCompositeActionMethodExpressionTarget2() throws Exception
@@ -493,5 +522,60 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
         compositeComponent3.popComponentFromEL(facesContext);
         compositeComponent.popComponentFromEL(facesContext);
     }
+    
+    @Test
+    public void testCompositeActionMethodExpressionTarget3() throws Exception
+    {
+        MockAttributeBean bean = new MockAttributeBean();
+        
+        facesContext.getExternalContext().getRequestMap().put("bean",
+                bean);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testCompositeAttributeActionMethodExpressionTarget3.xhtml");
+
+        
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        UINamingContainer compositeComponent = (UINamingContainer) panelGroup1.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent);
+        
+        UINamingContainer compositeComponent2 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionTarget");
+        Assert.assertNotNull(compositeComponent2);
+        UICommand testComponent = (UICommand) compositeComponent2.findComponent("testComponent");
+        Assert.assertNotNull(testComponent);
+        Assert.assertNotNull(testComponent.getActionExpression());
+        Assert.assertEquals(bean.doSomeAction(), testComponent.getActionExpression().invoke(facesContext.getELContext(), null));
+
+        UICommand testComponentNoTarget = (UICommand) compositeComponent2.findComponent("testComponentNoTarget");
+        Assert.assertNotNull(testComponentNoTarget);
+        Assert.assertNotNull(testComponentNoTarget.getActionExpression());
+        compositeComponent.pushComponentToEL(facesContext, compositeComponent);
+        compositeComponent2.pushComponentToEL(facesContext, compositeComponent2);
+        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget.getActionExpression().invoke(facesContext.getELContext(), null));
+        compositeComponent2.popComponentFromEL(facesContext);
+        compositeComponent.popComponentFromEL(facesContext);
+        
+        UINamingContainer compositeComponent3 = (UINamingContainer) compositeComponent.findComponent("simpleAttributeMethodExpressionNoTarget");
+        Assert.assertNotNull(compositeComponent3);
+        UICommand testComponent3 = (UICommand) compositeComponent3.findComponent("testComponent");
+        Assert.assertNotNull(testComponent3);
+        Assert.assertNotNull(testComponent3.getActionExpression());
+        compositeComponent.pushComponentToEL(facesContext, compositeComponent);
+        compositeComponent3.pushComponentToEL(facesContext, compositeComponent3);
+        Assert.assertEquals(bean.doSomeAction(), testComponent3.getActionExpression().invoke(facesContext.getELContext(), null));
+        compositeComponent3.popComponentFromEL(facesContext);
+        compositeComponent.popComponentFromEL(facesContext);
+        
+        UICommand testComponentNoTarget3 = (UICommand) compositeComponent3.findComponent("testComponentNoTarget");
+        Assert.assertNotNull(testComponentNoTarget3);
+        Assert.assertNotNull(testComponentNoTarget3.getActionExpression());
+        compositeComponent.pushComponentToEL(facesContext, compositeComponent);
+        compositeComponent3.pushComponentToEL(facesContext, compositeComponent3);
+        Assert.assertEquals(bean.doSomeAction(), testComponentNoTarget3.getActionExpression().invoke(facesContext.getELContext(), null));
+        compositeComponent3.popComponentFromEL(facesContext);
+        compositeComponent.popComponentFromEL(facesContext);
+    }
+
 
 }

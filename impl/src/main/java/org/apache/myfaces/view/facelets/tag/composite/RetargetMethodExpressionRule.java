@@ -22,6 +22,7 @@ import java.beans.PropertyDescriptor;
 
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.Metadata;
@@ -84,6 +85,22 @@ final class RetargetMethodExpressionRule extends MetaRule
                     (ValueExpression) propertyDescriptor.getValue("method-signature");
                 
                 if (methodSignatureExpression != null)
+                {
+                    return new RetargetValueExpressionMapper(attribute, name);
+                }
+                
+                ValueExpression targetAttributeNameVE = 
+                    (ValueExpression)propertyDescriptor.getValue("targetAttributeName");
+                if (targetAttributeNameVE != null)
+                {
+                    return new RetargetValueExpressionMapper(attribute, name);
+                }
+                
+                //if there is a targets declaration, is a retarget without doubt
+                ValueExpression targets = 
+                    (ValueExpression)propertyDescriptor.getValue("targets");
+                
+                if (targets != null)
                 {
                     return new RetargetValueExpressionMapper(attribute, name);
                 }

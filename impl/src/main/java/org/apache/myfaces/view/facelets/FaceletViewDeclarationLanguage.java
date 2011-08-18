@@ -937,8 +937,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             }
             
             String attributeName = propertyDescriptor.getName();
-            boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
-                    || "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
+            //boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
+            //        || "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
             
             // <composite:attribute> method-signature attribute is 
             // ValueExpression that must evaluate to String
@@ -952,8 +952,26 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 methodSignature = (String) methodSignatureExpression.getValue(elContext);
             }
             
+            String targetAttributeName = null;
+            ValueExpression targetAttributeNameVE = (ValueExpression)propertyDescriptor.getValue("targetAttributeName");
+            if (targetAttributeNameVE != null)
+            {
+                targetAttributeName = (String) targetAttributeNameVE.getValue(context.getELContext());
+                if (targetAttributeName == null)
+                {
+                    targetAttributeName = attributeName;
+                }
+            }
+            else
+            {
+                targetAttributeName = attributeName;
+            }
+            
+            boolean isKnownTargetAttributeMethod = "action".equals(targetAttributeName) || "actionListener".equals(targetAttributeName)  
+                || "validator".equals(targetAttributeName) || "valueChangeListener".equals(targetAttributeName);
+            
             // either the attributeName has to be a knownMethod or there has to be a method-signature
-            if (isKnownMethod || methodSignature != null)
+            if (isKnownTargetAttributeMethod || methodSignature != null)
             {
                 ValueExpression targetsExpression = 
                     (ValueExpression) propertyDescriptor.getValue("targets");
@@ -1029,24 +1047,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(
                                 attributeNameValueExpression.getExpressionString());
 
-                    String targetAttributeName = null;
-                    ValueExpression targetAttributeNameVE = (ValueExpression)propertyDescriptor.getValue("targetAttributeName");
-                    if (targetAttributeNameVE != null)
-                    {
-                        targetAttributeName = (String) targetAttributeNameVE.getValue(context.getELContext());
-                        if (targetAttributeName == null)
-                        {
-                            targetAttributeName = attributeName;
-                        }
-                    }
-                    else
-                    {
-                        targetAttributeName = attributeName;
-                    }
-                    
-                    boolean isKnownTargetAttributeMethod = "action".equals(targetAttributeName) || "actionListener".equals(targetAttributeName)  
-                        || "validator".equals(targetAttributeName) || "valueChangeListener".equals(targetAttributeName);
-                    
                     if (isKnownTargetAttributeMethod)
                     {
                         // To add support to #{cc.attrs.action}, #{cc.attrs.actionListener}, #{cc.attrs.validator} or
@@ -1055,7 +1055,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         // org.apache.myfaces.view.facelets.tag.composite.RetargetMethodExpressionRule already put
                         // a ValueExpression, so we only need to put a MethodExpression when a non redirecting
                         // expression is used (for example when a nested #{cc.attrs.xxx} is used).
-                        if ("action".equals(attributeName))
+                        if ("action".equals(targetAttributeName))
                         {
                             // target is ActionSource2
                             methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
@@ -1070,7 +1070,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             }
                             // Otherwise keep the current ValueExpression, because it will be used chain other value expressions
                         }
-                        else if ("actionListener".equals(attributeName))
+                        else if ("actionListener".equals(targetAttributeName))
                         {
                             // target is ActionSource2
                             methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
@@ -1089,7 +1089,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             }
                             // Otherwise keep the current ValueExpression, because it will be used chain other value expressions
                         }
-                        else if ("validator".equals(attributeName))
+                        else if ("validator".equals(targetAttributeName))
                         {
                             // target is EditableValueHolder
                             methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
@@ -1105,7 +1105,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             }
                             // Otherwise keep the current ValueExpression, because it will be used chain other value expressions
                         }
-                        else if ("valueChangeListener".equals(attributeName))
+                        else if ("valueChangeListener".equals(targetAttributeName))
                         {
                             // target is EditableValueHolder
                             methodExpression = reWrapMethodExpression(context.getApplication().getExpressionFactory().
@@ -1352,8 +1352,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
                 if (attributeName.equals(propertyDescriptor.getName()))
                 {
-                    boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
-                    || "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
+                    //boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
+                    //|| "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
             
                     // <composite:attribute> method-signature attribute is 
                     // ValueExpression that must evaluate to String
@@ -1367,22 +1367,40 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         methodSignature = (String) methodSignatureExpression.getValue(elContext);
                     }
                     
-                    // either the attributeName has to be a knownMethod or there has to be a method-signature
-                    if (isKnownMethod || methodSignature != null)
+                    String targetAttributeName = null;
+                    ValueExpression targetAttributeNameVE = (ValueExpression)propertyDescriptor.getValue("targetAttributeName");
+                    if (targetAttributeNameVE != null)
                     {
-                        if ("action".equals(attributeName))
+                        targetAttributeName = (String) targetAttributeNameVE.getValue(context.getELContext());
+                        if (targetAttributeName == null)
+                        {
+                            targetAttributeName = attributeName;
+                        }
+                    }
+                    else
+                    {
+                        targetAttributeName = attributeName;
+                    }
+                    
+                    boolean isKnownTargetAttributeMethod = "action".equals(targetAttributeName) || "actionListener".equals(targetAttributeName)  
+                        || "validator".equals(targetAttributeName) || "valueChangeListener".equals(targetAttributeName);
+                    
+                    // either the attributeName has to be a knownMethod or there has to be a method-signature
+                    if (isKnownTargetAttributeMethod || methodSignature != null)
+                    {
+                        if ("action".equals(targetAttributeName))
                         {
                             return !(component instanceof ActionSource2);
                         }
-                        else if ("actionListener".equals(attributeName))
+                        else if ("actionListener".equals(targetAttributeName))
                         {
                             return !(component instanceof ActionSource2);
                         }
-                        else if ("validator".equals(attributeName))
+                        else if ("validator".equals(targetAttributeName))
                         {
                             return !(component instanceof EditableValueHolder);
                         }
-                        else if ("valueChangeListener".equals(attributeName))
+                        else if ("valueChangeListener".equals(targetAttributeName))
                         {
                             return !(component instanceof EditableValueHolder);
                         }
