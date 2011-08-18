@@ -22,6 +22,7 @@ import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -269,6 +270,40 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 nextHandler.apply(ctx, c);
             }
         }
+        
+        //Check for required facets
+        Map<String, PropertyDescriptor> facetPropertyDescriptorMap = (Map<String, PropertyDescriptor>)
+            beanDescriptor.getValue(UIComponent.FACETS_KEY);
+        
+        if (facetPropertyDescriptorMap != null)
+        {
+            List<String> facetsRequiredNotFound = null;
+            for (Map.Entry<String, PropertyDescriptor> entry : facetPropertyDescriptorMap.entrySet())
+            {
+                ValueExpression requiredExpr = (ValueExpression) entry.getValue().getValue("required");
+                if (requiredExpr != null)
+                {
+                    Boolean required = (Boolean) requiredExpr.getValue(ctx.getFacesContext().getELContext());
+                    if (Boolean.TRUE.equals(required))
+                    {
+                        initFacetHandlersMap(ctx);
+                        if (!_facetHandlersMap.containsKey(entry.getKey()))
+                        {
+                            if (facetsRequiredNotFound == null)
+                            {
+                                facetsRequiredNotFound = new ArrayList(facetPropertyDescriptorMap.size());
+                            }
+                            facetsRequiredNotFound.add(entry.getKey());
+                        }
+                        
+                    }
+                }
+            }
+            if (facetsRequiredNotFound != null && !facetsRequiredNotFound.isEmpty())
+            {
+                throw new TagException(getTag(), "The following facets are required by the component: "+facetsRequiredNotFound);
+            }
+        }
     }
     
     protected void applyCompositeComponentFacelet(FaceletContext faceletContext, UIComponent compositeComponentBase) 
@@ -379,6 +414,27 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         return m;
     }
     
+    private void initFacetHandlersMap(FaceletContext ctx)
+    {
+        if (_facetHandlersMap == null)
+        {
+            Map<String, FaceletHandler> map = new HashMap<String, FaceletHandler>();
+            
+            for (FaceletHandler handler : _facetHandlers)
+            {
+                if (handler instanceof javax.faces.view.facelets.FacetHandler )
+                {
+                    map.put( ((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx), handler);
+                }
+                else if (handler instanceof InsertFacetHandler)
+                {
+                    map.put( ((InsertFacetHandler)handler).getFacetName(ctx), handler);
+                }
+            }
+            _facetHandlersMap = map;
+        }
+    }
+    
     public boolean apply(FaceletContext ctx, UIComponent parent, String name)
             throws IOException, FacesException, FaceletException, ELException
     {        
@@ -387,26 +443,11 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             //1. Initialize map used to retrieve facets
             if (_facetHandlers == null || _facetHandlers.isEmpty())
             {
+                checkFacetRequired(ctx, parent, name);
                 return true;
             }
-            
-            if (_facetHandlersMap == null)
-            {
-                Map<String, FaceletHandler> map = new HashMap<String, FaceletHandler>();
-                
-                for (FaceletHandler handler : _facetHandlers)
-                {
-                    if (handler instanceof javax.faces.view.facelets.FacetHandler )
-                    {
-                        map.put( ((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx), handler);
-                    }
-                    else if (handler instanceof InsertFacetHandler)
-                    {
-                        map.put( ((InsertFacetHandler)handler).getFacetName(ctx), handler);
-                    }
-                }
-                _facetHandlersMap = map;
-            }
+
+            initFacetHandlersMap(ctx);
 
             FaceletHandler handler = _facetHandlersMap.get(name);
 
@@ -436,6 +477,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             }
             else
             {
+                checkFacetRequired(ctx, parent, name);
                 return true;
             }
         }
@@ -464,6 +506,33 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 fcc.pushCompositeComponentToStack(innerCompositeComponent);
             }
             return true;
+        }
+    }
+    
+    private void checkFacetRequired(FaceletContext ctx, UIComponent parent, String name)
+    {
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        FaceletCompositionContext fcc = actx.getFaceletCompositionContext(); 
+        UIComponent innerCompositeComponent = fcc.getCompositeComponentFromStack();
+        
+        CompositeComponentBeanInfo beanInfo = 
+            (CompositeComponentBeanInfo) innerCompositeComponent.getAttributes()
+            .get(UIComponent.BEANINFO_KEY);
+        
+        BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
+        
+        Map<String, PropertyDescriptor> insertFacetPropertyDescriptorMap = (Map<String, PropertyDescriptor>)
+            beanDescriptor.getValue(InsertFacetHandler.INSERT_FACET_KEYS);
+
+        if (insertFacetPropertyDescriptorMap != null && insertFacetPropertyDescriptorMap.containsKey(name))
+        {
+            ValueExpression requiredExpr = (ValueExpression) insertFacetPropertyDescriptorMap.get(name).getValue("required");
+            
+            if (requiredExpr != null && Boolean.TRUE.equals(requiredExpr.getValue(ctx.getFacesContext().getELContext())))
+            {
+                //Insert facet associated is required, but it was not applied.
+                throw new TagException(this.tag, "Cannot find facet with name '"+name+"' in composite component");
+            }
         }
     }
 }

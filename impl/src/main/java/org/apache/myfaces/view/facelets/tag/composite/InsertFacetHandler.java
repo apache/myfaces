@@ -19,9 +19,13 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.beans.BeanDescriptor;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +33,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
+import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
@@ -50,6 +55,12 @@ public class InsertFacetHandler extends TagHandler
     //public static String INSERT_FACET_ORDERING = "org.apache.myfaces.INSERT_FACET_ORDERING.";
     
     public static String INSERT_FACET_USED = "org.apache.myfaces.INSERT_FACET_USED";
+    
+    /**
+     * Key used to save on bean descriptor a map containing the metadata
+     * information related to this tag. It will be used later to check "required" property.
+     */
+    public static String INSERT_FACET_KEYS = "org.apache.myfaces.INSERT_FACET_KEYS";
     
     private static final Logger log = Logger.getLogger(InsertFacetHandler.class.getName());
     
@@ -120,6 +131,18 @@ public class InsertFacetHandler extends TagHandler
             }
             
             facetList.add(facetName);
+
+            Map<String, PropertyDescriptor> insertFacetPropertyDescriptorMap = (Map<String, PropertyDescriptor>)
+                beanDescriptor.getValue(INSERT_FACET_KEYS);
+        
+            if (insertFacetPropertyDescriptorMap == null)
+            {
+                insertFacetPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
+                beanDescriptor.setValue(INSERT_FACET_KEYS, insertFacetPropertyDescriptorMap);
+            }
+            
+            PropertyDescriptor facetDescriptor = _createFacetPropertyDescriptor(facetName, ctx, parent);
+            insertFacetPropertyDescriptorMap.put(facetName, facetDescriptor);
         }
         else
         {
@@ -134,6 +157,31 @@ public class InsertFacetHandler extends TagHandler
             //parentCompositeComponent.getAttributes().put(INSERT_FACET_USED+facetName, Boolean.TRUE);
         }
         
+    }
+    
+    private PropertyDescriptor _createFacetPropertyDescriptor(String facetName, FaceletContext ctx, UIComponent parent)
+    throws TagException, IOException
+    {
+        try
+        {
+            CompositeComponentPropertyDescriptor facetPropertyDescriptor = 
+                new CompositeComponentPropertyDescriptor(facetName);
+            
+            if (_required != null)
+            {
+                facetPropertyDescriptor.setValue("required", _required.getValueExpression(ctx, Boolean.class));
+            }
+            
+            return facetPropertyDescriptor;
+        }
+        catch (IntrospectionException e)
+        {
+            if (log.isLoggable(Level.SEVERE))
+            {
+                log.log(Level.SEVERE, "Cannot create PropertyDescriptor for attribute ",e);
+            }
+            throw new TagException(tag,e);
+        }
     }
     
     /*
