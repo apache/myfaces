@@ -31,6 +31,7 @@ import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandLink;
 import javax.faces.component.html.HtmlOutputText;
+import javax.faces.event.PreRenderViewEvent;
 
 import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -674,6 +675,43 @@ public class CompositeComponentTestCase extends FaceletTestCase
         Assert.assertNotNull(compositeComponent1);
         
         Assert.assertTrue("postAddToViewCallback should be called", (Boolean) compositeComponent1.getAttributes().get("postAddToViewCallback"));
+        
+        /*
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+
+        compositeComponent1.encodeAll(facesContext);
+
+        sw.flush();
+        
+        String resp = sw.toString();
+
+        Assert.assertTrue(resp.contains("HELLO"));
+        Assert.assertTrue(resp.contains("WORLD"));
+        */
+        
+    }
+    
+    @Test
+    public void testSimpleFEvent2() throws Exception
+    {
+        HelloWorld helloWorld = new HelloWorld(); 
+        
+        facesContext.getExternalContext().getRequestMap().put("helloWorldBean",
+                helloWorld);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testSimpleFEvent2.xhtml");
+        
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        CompositeTestComponent compositeComponent1 = (CompositeTestComponent) panelGroup1.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent1);
+        
+        application.publishEvent(facesContext, PreRenderViewEvent.class, root);
+        
+        Assert.assertTrue("preRenderViewCallback should be called", (Boolean) compositeComponent1.getAttributes().get("preRenderViewCallback"));
         
         /*
         StringWriter sw = new StringWriter();

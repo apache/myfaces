@@ -39,6 +39,11 @@ public class CompositeTestComponent extends UINamingContainer
         getAttributes().put("postAddToViewCallback", true);
     }
     
+    public void preRenderViewCallback(ComponentSystemEvent event)
+    {
+        getAttributes().put("preRenderViewCallback", true);
+    }
+    
     protected enum PropertyKeys
     {
         javaProperty
