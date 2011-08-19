@@ -28,11 +28,15 @@ import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
 import javax.faces.FacesException;
+import javax.faces.component.NamingContainer;
+import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRenderViewEvent;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
@@ -44,10 +48,10 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -73,11 +77,21 @@ public final class EventHandler extends TagHandler {
             deferredValueType="java.lang.String")
     private TagAttribute type;
     
+    private boolean listenerIsCompositeComponentME;
+    
     public EventHandler (TagConfig tagConfig)
     {
         super (tagConfig);
         
         listener = getRequiredAttribute("listener");
+        if (!listener.isLiteral())
+        {
+            listenerIsCompositeComponentME = CompositeComponentELUtils.isCompositeComponentExpression(listener.getValue());
+        }
+        else
+        {
+            listenerIsCompositeComponentME = false;
+        }
         type = getRequiredAttribute("type");
     }
     
@@ -115,7 +129,18 @@ public final class EventHandler extends TagHandler {
         {
             // ensure ViewRoot for PreRenderViewEvent
             UIViewRoot viewRoot = ComponentSupport.getViewRoot(ctx, parent);
-            viewRoot.subscribeToEvent(eventClass, new Listener(methodExpOneArg, methodExpZeroArg));
+            if (listenerIsCompositeComponentME)
+            {
+                // Subscribe after the view is built, so we can calculate a findComponent valid expression, and then use it to
+                // put the expression in context.
+                UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+                parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
+                        new SubscribeEventListener(eventClass, methodExpOneArg, methodExpZeroArg, (eventClass == PreRenderViewEvent.class) ? null : parent));
+            }
+            else
+            {
+                viewRoot.subscribeToEvent(eventClass, new Listener(methodExpOneArg, methodExpZeroArg));
+            }
         }
         else
         {
@@ -255,6 +280,213 @@ public final class EventHandler extends TagHandler {
                     throw mnfeOneArg;
                 }
             }
+        }
+    }
+    
+    public static class CompositeComponentRelativeListener  implements ComponentSystemEventListener, Serializable 
+    {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 3822330995358746099L;
+        
+        private String _compositeComponentExpression;
+        private MethodExpression methodExpOneArg;
+        private MethodExpression methodExpZeroArg;
+        
+        public CompositeComponentRelativeListener()
+        {
+            super();
+        }
+        
+        public CompositeComponentRelativeListener(MethodExpression methodExpOneArg, 
+                                MethodExpression methodExpZeroArg, 
+                                String compositeComponentExpression)
+        {
+            this.methodExpOneArg = methodExpOneArg;
+            this.methodExpZeroArg = methodExpZeroArg;
+            this._compositeComponentExpression = compositeComponentExpression;
+        }
+        
+        public void processEvent(ComponentSystemEvent event)
+        {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            UIComponent cc = facesContext.getViewRoot().findComponent(_compositeComponentExpression);
+            
+            if (cc != null)
+            {
+                pushAllComponentsIntoStack(facesContext, cc);
+                cc.pushComponentToEL(facesContext, cc);
+                try
+                {
+                    ELContext elContext = facesContext.getELContext();
+                    try
+                    {
+                        // first try to invoke the MethodExpression with one argument
+                        this.methodExpOneArg.invoke(elContext, new Object[] { event });
+                    }
+                    catch (MethodNotFoundException mnfeOneArg)
+                    {
+                        try
+                        {
+                            // if that fails try to invoke the MethodExpression with zero arguments
+                            this.methodExpZeroArg.invoke(elContext, new Object[0]);
+                        }
+                        catch (MethodNotFoundException mnfeZeroArg)
+                        {
+                            // if that fails too rethrow the original MethodNotFoundException
+                            throw mnfeOneArg;
+                        }
+                    }
+                }
+                finally
+                {
+                    popAllComponentsIntoStack(facesContext, cc);
+                }
+            }
+            else
+            {
+                throw new NullPointerException("Composite Component associated with expression cannot be found");
+            }
+        }
+        
+        private void pushAllComponentsIntoStack(FacesContext facesContext, UIComponent component)
+        {
+            UIComponent parent = component.getParent();
+            if (parent != null)
+            {
+                pushAllComponentsIntoStack(facesContext, parent);
+            }
+            component.pushComponentToEL(facesContext, component);
+        }
+        
+        private void popAllComponentsIntoStack(FacesContext facesContext, UIComponent component)
+        {
+            UIComponent parent = component.getParent();
+            component.popComponentFromEL(facesContext);
+            if (parent != null)
+            {
+                popAllComponentsIntoStack(facesContext, parent);
+            }
+        }
+    }
+    
+    public static final class SubscribeEventListener implements ComponentSystemEventListener, PartialStateHolder
+    {
+        private MethodExpression methodExpOneArg;
+        private MethodExpression methodExpZeroArg;
+        private Class<? extends ComponentSystemEvent> eventClass;
+        private UIComponent _targetComponent;
+        private String _targetFindComponentExpression;
+    
+        private boolean markInitialState;
+
+        public SubscribeEventListener()
+        {
+        }
+        
+        public SubscribeEventListener(
+                Class<? extends ComponentSystemEvent> eventClass,
+                MethodExpression methodExpOneArg, 
+                MethodExpression methodExpZeroArg,
+                UIComponent targetComponent)
+        {
+            //_listener = listener;
+            this.eventClass = eventClass;
+            this.methodExpOneArg = methodExpOneArg;
+            this.methodExpZeroArg = methodExpZeroArg;
+            this._targetComponent = targetComponent;
+        }
+        
+        public void processEvent(ComponentSystemEvent event)
+        {
+            UIComponent parentCompositeComponent = event.getComponent();
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            //Calculate a findComponent expression to locate the right instance so PreRenderViewEvent could be called
+            String findComponentExpression = ComponentSupport.getFindComponentExpression(facesContext, parentCompositeComponent);
+            
+            //Note in practice this is only used for PreRenderViewEvent, but in the future it could be more events that
+            //require this hack.
+            if (eventClass == PreRenderViewEvent.class)
+            {
+                // ensure ViewRoot for PreRenderViewEvent
+                UIViewRoot viewRoot = facesContext.getViewRoot();
+                viewRoot.subscribeToEvent(eventClass, new CompositeComponentRelativeListener(methodExpOneArg, methodExpZeroArg, findComponentExpression));
+            }
+            else
+            {
+                if (_targetComponent == null)
+                {
+                    if (_targetFindComponentExpression.startsWith(findComponentExpression) )
+                    {
+                        _targetComponent = ComponentSupport.findComponentChildOrFacetFrom(
+                                facesContext, parentCompositeComponent, 
+                                _targetFindComponentExpression.substring(findComponentExpression.length()));
+                    }
+                    else
+                    {
+                        _targetComponent = facesContext.getViewRoot().findComponent(_targetFindComponentExpression);
+                    }
+                }
+                
+                _targetComponent.subscribeToEvent(eventClass, new CompositeComponentRelativeListener(methodExpOneArg, methodExpZeroArg, findComponentExpression));
+            }
+        }
+        
+        public Object saveState(FacesContext context)
+        {
+            if (!initialStateMarked())
+            {
+                Object[] values = new Object[4];
+                values[0] = (String) ( (_targetComponent != null && _targetFindComponentExpression == null) ? 
+                                            ComponentSupport.getFindComponentExpression(context, _targetComponent) : 
+                                            _targetFindComponentExpression );
+                values[1] = eventClass;
+                values[2] = methodExpZeroArg;
+                values[3] = methodExpOneArg;
+                return values;
+            }
+            // If the listener was marked, no need to save anything, because 
+            // this object is immutable after that.
+            return null;
+        }
+
+        public void restoreState(FacesContext context, Object state)
+        {
+            if (state == null)
+            {
+                return;
+            }
+            Object[] values = (Object[])state;
+            _targetFindComponentExpression = (String) values[0];
+            eventClass = (Class) values[1];
+            methodExpZeroArg = (MethodExpression) values[2];
+            methodExpOneArg = (MethodExpression) values[3];
+        }
+
+        public boolean isTransient()
+        {
+            return false;
+        }
+
+        public void setTransient(boolean newTransientValue)
+        {
+            // no-op as listener is transient
+        }
+        
+        public void clearInitialState()
+        {
+            markInitialState = false;
+        }
+
+        public boolean initialStateMarked()
+        {
+            return markInitialState;
+        }
+
+        public void markInitialState()
+        {
+            markInitialState = true;
         }
     }
 }
