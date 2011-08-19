@@ -19,18 +19,13 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
-import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ComponentSystemEvent;
@@ -39,6 +34,7 @@ import javax.faces.event.ListenerFor;
 import javax.faces.event.ListenersFor;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.render.Renderer;
+import javax.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
@@ -46,6 +42,8 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.view.facelets.PostBuildComponentTreeOnRestoreViewEvent;
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * Renderer used by h:outputStylesheet component
@@ -82,7 +80,17 @@ public class HtmlStylesheetRenderer extends Renderer implements
         //        component.setId(facesContext.getViewRoot().createUniqueId(facesContext, null));
         //    }
         //}
-        
+        Location location = (Location) component.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
+        if (location != null)
+        {
+            UIComponent ccParent = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location); 
+            if (ccParent != null)
+            {
+                component.getAttributes().put(
+                        CompositeComponentELUtils.CC_FIND_COMPONENT_EXPRESSION,
+                        ComponentSupport.getFindComponentExpression(facesContext, ccParent));
+            }
+        }
         facesContext.getViewRoot().addComponentResource(facesContext,
                     component, "head");
     }

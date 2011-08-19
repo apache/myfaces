@@ -512,4 +512,22 @@ public final class ComponentSupport
         }
         return null;
     }
+    
+    public static String getFindComponentExpression(FacesContext facesContext, UIComponent component)
+    {
+        char separatorChar = UINamingContainer.getSeparatorChar(facesContext);
+        UIComponent parent = component.getParent();
+        StringBuilder sb = new StringBuilder();
+        sb.append(component.getId());
+        while (parent != null)
+        {
+            if (parent instanceof NamingContainer)
+            {
+                sb.insert(0, separatorChar);
+                sb.insert(0, parent.getId());
+            }
+            parent = parent.getParent();
+        }
+        return sb.toString();
+    }
 }
