@@ -609,7 +609,20 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
             throw new NullPointerException();
         }
 
-        if (isRendered()) {
+        pushComponentToEL(context, this);
+        try
+        {
+            if (!isRendered())
+            {
+                return;
+            }
+        }
+        finally
+        {
+            popComponentFromEL(context);
+        }
+        
+        //if (isRendered()) {
             this.encodeBegin(context);
 
             // rendering children
@@ -626,7 +639,7 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                 }
             }
             this.encodeEnd(context);
-        }
+        //}
     }
 
     protected abstract void addFacesListener(FacesListener listener);
