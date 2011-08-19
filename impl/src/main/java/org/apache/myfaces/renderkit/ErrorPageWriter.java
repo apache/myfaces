@@ -69,6 +69,7 @@ import javax.faces.view.Location;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.StateUtils;
@@ -484,6 +485,24 @@ public final class ErrorPageWriter
             facesContext.getExternalContext().responseReset();
         }
 
+        int responseStatus = -1;
+        for (Throwable ex : exs)
+        {
+            if (ex instanceof ViewNotFoundException)
+            {
+                responseStatus = HttpServletResponse.SC_NOT_FOUND;
+                break;
+            }
+            else
+            {
+                responseStatus = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            }
+        }
+        if (responseStatus != -1)
+        {
+            facesContext.getExternalContext().setResponseStatus(responseStatus);
+        }
+        
         // normal request --> html error page
         facesContext.getExternalContext().setResponseContentType("text/html");
         facesContext.getExternalContext().setResponseCharacterEncoding("UTF-8");

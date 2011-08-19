@@ -36,7 +36,9 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.SystemEvent;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.WebConfigProvider;
@@ -78,7 +80,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     
             _isErrorPagePresent = webConfigProvider.isErrorPagePresent(facesContext.getExternalContext());
             _useMyFacesErrorHandling = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    ErrorPageWriter.ERROR_HANDLING_PARAMETER, true);
+                    ErrorPageWriter.ERROR_HANDLING_PARAMETER, facesContext.isProjectStage(ProjectStage.Development) ? true : false);
             _inited = true;
         }
     }
@@ -199,7 +201,23 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                 // save current view in the request map to access it on the error page
                 facesContext.getExternalContext().getRequestMap().put(ErrorPageWriter.VIEW_KEY, facesContext.getViewRoot());
             }
-            super.handle();
+            try
+            {
+                super.handle();
+            }
+            catch (FacesException e)
+            {
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                if (e.getCause() instanceof ViewNotFoundException)
+                {
+                    facesContext.getExternalContext().setResponseStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
+                else
+                {
+                    facesContext.getExternalContext().setResponseStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
+                throw e;
+            }
             return;
         }
         else
