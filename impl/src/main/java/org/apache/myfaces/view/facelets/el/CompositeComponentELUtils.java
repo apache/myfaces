@@ -75,6 +75,8 @@ public final class CompositeComponentELUtils
     
     private static final String CC_ATTRS = "cc.attrs";
     
+    public static final String CC_FIND_COMPONENT_EXPRESSION = "oam.CC_FIND_COMPONENT_EXPRESSION";
+    
     /**
      * private constructor
      */
@@ -139,6 +141,35 @@ public final class CompositeComponentELUtils
             boolean found = false;
             while (currentComponent != null && !found)
             {
+                String findComponentExpr = (String) currentComponent.getAttributes().get(CC_FIND_COMPONENT_EXPRESSION);
+                if (findComponentExpr != null)
+                {
+                    UIComponent foundComponent = facesContext.getViewRoot().findComponent(findComponentExpr);
+                    if (foundComponent != null)
+                    {
+                        Location foundComponentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
+                        if (foundComponentLocation != null 
+                                && foundComponentLocation.getPath().equals(location.getPath()))
+                        {
+                            return foundComponent;
+                        }
+                        else
+                        {
+                            while (foundComponent != null)
+                            {
+                                Location componentLocation = (Location) foundComponent.getAttributes().get(LOCATION_KEY);
+                                if (componentLocation != null 
+                                        && componentLocation.getPath().equals(location.getPath()))
+                                {
+                                    return foundComponent;
+                                }
+                                // get the composite component's parent
+                                foundComponent = UIComponent.getCompositeComponentParent(foundComponent);
+                            }
+                        }
+                    }
+                }
+
                 if (UIComponent.isCompositeComponent(currentComponent))
                 {
                     found = true;

@@ -26,6 +26,8 @@ import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.RelocatableResourceHandler;
 
@@ -72,4 +74,15 @@ public class HtmlOutputScriptHandler extends HtmlComponentHandler implements Rel
         }
     }
 
+
+    @Override
+    public void onComponentCreated(FaceletContext ctx, UIComponent c,
+            UIComponent parent)
+    {
+        UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+        if (parentCompositeComponent != null)
+        {
+            c.getAttributes().put(CompositeComponentELUtils.LOCATION_KEY, parentCompositeComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY));
+        }
+    }
 }
