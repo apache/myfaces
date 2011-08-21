@@ -239,6 +239,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public final static String CLEAN_TRANSIENT_BUILD_ON_RESTORE = "org.apache.myfaces.CLEAN_TRANSIENT_BUILD_ON_RESTORE";
 
     private final static String STATE_KEY = "<!--@@JSF_FORM_STATE_MARKER@@-->";
+    
+    private static final String IS_BUILDING_INITIAL_STATE = "javax.faces.IS_BUILDING_INITIAL_STATE";
 
     private final static int STATE_KEY_LEN = STATE_KEY.length();
 
@@ -311,6 +313,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             if (!refreshTransientBuild)
             {
                 context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
+                context.getAttributes().put(IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
             }
             if (refreshTransientBuildOnPSS)
             {
@@ -397,6 +400,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 //Remove the key that indicate we need to call UIComponent.markInitialState
                 //on the current tree
                 context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
+                context.getAttributes().remove(IS_BUILDING_INITIAL_STATE);
             }
             
             // We need to suscribe the listeners of changes in the component tree

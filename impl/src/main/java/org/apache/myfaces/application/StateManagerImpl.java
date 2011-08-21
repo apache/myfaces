@@ -47,6 +47,8 @@ public class StateManagerImpl extends StateManager
     private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
         StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     
+    private static final String IS_SAVING_STATE = "javax.faces.IS_SAVING_STATE";
+    
     private RenderKitFactory _renderKitFactory = null;
     
     public StateManagerImpl()
@@ -149,69 +151,78 @@ public class StateManagerImpl extends StateManager
         String viewId = uiViewRoot.getViewId();
         ViewDeclarationLanguage vdl = facesContext.getApplication().
             getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
-        if (vdl != null)
-        {
-            StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
-            
-            if (sms != null)
-            {
-                if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy: "+sms.getClass().getName());
-                
-                serializedView = sms.saveView(facesContext);
-                
-                // If MyfacesResponseStateManager is used, give the option to do
-                // additional operations for save the state if is necessary.
-                if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
-                {
-                    StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
-                }
-                
-                return serializedView; 
-            }
-        }
-
-        // In StateManagementStrategy.saveView there is a check for transient at
-        // start, but the same applies for VDL without StateManagementStrategy,
-        // so this should be checked before call parent (note that parent method
-        // does not do this check).
-        if (uiViewRoot.isTransient())
-        {
-            return null;
-        }
-
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering saveSerializedView");
-
-        checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<String>());
-
-        if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - Checked for duplicate Ids");
-
-        ExternalContext externalContext = facesContext.getExternalContext();
-
-        // SerializedView already created before within this request?
-        serializedView = externalContext.getRequestMap()
-                                                            .get(SERIALIZED_VIEW_REQUEST_ATTR);
-        if (serializedView == null)
-        {
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - create new serialized view");
-
-            // first call to saveSerializedView --> create SerializedView
-            Object treeStruct = getTreeStructureToSave(facesContext);
-            Object compStates = getComponentStateToSave(facesContext);
-            serializedView = new Object[] {treeStruct, compStates};
-            externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
-                                                serializedView);
-
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - new serialized view created");
-        }
         
-        // If MyfacesResponseStateManager is used, give the option to do
-        // additional operations for save the state if is necessary.
-        if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
+        try
         {
-            StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
+            facesContext.getAttributes().put(IS_SAVING_STATE, Boolean.TRUE);
+            if (vdl != null)
+            {
+                StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
+                
+                if (sms != null)
+                {
+                    if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy: "+sms.getClass().getName());
+                    
+                    serializedView = sms.saveView(facesContext);
+                    
+                    // If MyfacesResponseStateManager is used, give the option to do
+                    // additional operations for save the state if is necessary.
+                    if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
+                    {
+                        StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
+                    }
+                    
+                    return serializedView; 
+                }
+            }
+    
+            // In StateManagementStrategy.saveView there is a check for transient at
+            // start, but the same applies for VDL without StateManagementStrategy,
+            // so this should be checked before call parent (note that parent method
+            // does not do this check).
+            if (uiViewRoot.isTransient())
+            {
+                return null;
+            }
+    
+            if (log.isLoggable(Level.FINEST)) log.finest("Entering saveSerializedView");
+    
+            checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<String>());
+    
+            if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - Checked for duplicate Ids");
+    
+            ExternalContext externalContext = facesContext.getExternalContext();
+    
+            // SerializedView already created before within this request?
+            serializedView = externalContext.getRequestMap()
+                                                                .get(SERIALIZED_VIEW_REQUEST_ATTR);
+            if (serializedView == null)
+            {
+                if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - create new serialized view");
+    
+                // first call to saveSerializedView --> create SerializedView
+                Object treeStruct = getTreeStructureToSave(facesContext);
+                Object compStates = getComponentStateToSave(facesContext);
+                serializedView = new Object[] {treeStruct, compStates};
+                externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
+                                                    serializedView);
+    
+                if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - new serialized view created");
+            }
+            
+            // If MyfacesResponseStateManager is used, give the option to do
+            // additional operations for save the state if is necessary.
+            if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
+            {
+                StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
+            }
+    
+            if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveView");
         }
-
-        if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveView");
+        finally
+        {
+            facesContext.getAttributes().remove(IS_SAVING_STATE);
+        }
 
         return serializedView;
     }
@@ -234,11 +245,18 @@ public class StateManagerImpl extends StateManager
             ids = new HashSet<String>();
         }
         
-        Iterator<UIComponent> it = component.getFacetsAndChildren();
-        while (it.hasNext())
+        int facetCount = component.getFacetCount();
+        if (facetCount > 0)
         {
-            UIComponent kid = it.next();
-            checkForDuplicateIds(context, kid, ids);
+            for (UIComponent facet : component.getFacets().values())
+            {
+                checkForDuplicateIds (context, facet, ids);
+            }
+        }
+        for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+        {
+            UIComponent child = component.getChildren().get(i);
+            checkForDuplicateIds (context, child, ids);
         }
     }
 
