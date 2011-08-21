@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,13 +35,16 @@ import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
-import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
@@ -49,9 +53,10 @@ import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.application.StateManagerImpl;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * This class implements partial state saving feature when facelets
@@ -112,12 +117,25 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
      */
     public  static final String COMPONENT_ADDED_AFTER_BUILD_VIEW = "oam.COMPONENT_ADDED_AFTER_BUILD_VIEW"; 
     
+    /**
+     * If this param is set to true (by default), when pss algorithm is executed to save state, a visit tree
+     * traversal is done, instead a plain traversal like previous versions (2.0.7/2.1.1 and earlier) of MyFaces Core.
+     * 
+     * This param is just provided to preserve backwards behavior. 
+     */
+    @JSFWebConfigParam(since="2.0.8, 2.1.2", defaultValue="true", expectedValues="true, false")
+    public static final String SAVE_STATE_WITH_VISIT_TREE_ON_PSS = "org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS";
+    
+    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    
     private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
         StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     
     private ViewDeclarationLanguageFactory _vdlFactory;
     
     private RenderKitFactory _renderKitFactory = null;
+    
+    private Boolean _saveStateWithVisitTreeOnPSS;
     
     public DefaultFaceletsStateManagementStrategy ()
     {
@@ -449,7 +467,14 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 states = new HashMap<String, Object>();
 
-                saveStateOnMap(context,(Map<String,Object>) states, view);
+                if (isSaveStateWithVisitTreeOnPSS(context))
+                {
+                    saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
+                }
+                else
+                {
+                    saveStateOnMap(context,(Map<String,Object>) states, view);
+                }
                 
                 if ( ((Map<String,Object>)states).isEmpty())
                 {
@@ -626,7 +651,124 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
         setClientsIdsAdded(uiViewRoot, clientIdsAdded);
     }
+
+    public boolean isSaveStateWithVisitTreeOnPSS(FacesContext facesContext)
+    {
+        if (_saveStateWithVisitTreeOnPSS == null)
+        {
+            _saveStateWithVisitTreeOnPSS = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
+                    SAVE_STATE_WITH_VISIT_TREE_ON_PSS, Boolean.TRUE);
+        }
+        return Boolean.TRUE.equals(_saveStateWithVisitTreeOnPSS);
+    }
+
+    private void saveStateOnMapVisitTree(final FacesContext facesContext, final Map<String,Object> states,
+            final UIViewRoot uiViewRoot)
+    {
+        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+        try
+        {
+            EnumSet<VisitHint> visitHints = EnumSet.of(VisitHint.SKIP_ITERATION);
+            uiViewRoot.visitTree( VisitContext.createVisitContext (facesContext, null, visitHints), new VisitCallback()
+            {
+                public VisitResult visit(VisitContext context, UIComponent target)
+                {
+                    FacesContext facesContext = context.getFacesContext();
+                    Object state;
+                    
+                    if ((target == null) || target.isTransient()) {
+                        // No need to bother with these components or their children.
+                        
+                        return VisitResult.REJECT;
+                    }
+                    
+                    ComponentState componentAddedAfterBuildView = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                    
+                    //Note if UIViewRoot has this marker, JSF 1.2 like state saving is used.
+                    if (componentAddedAfterBuildView != null && (target.getParent() != null))
+                    {
+                        if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
+                        {
+                            registerOnAddRemoveList(target.getClientId());
+                            target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                        }
+                        else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
+                        {
+                            registerOnAddList(target.getClientId());
+                            target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                        }
+                        else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
+                        {
+                            registerOnAddList(target.getClientId());
+                        }
+                        ensureClearInitialState(target);
+                        //Save all required info to restore the subtree.
+                        //This includes position, structure and state of subtree
+                        
+                        int childIndex = target.getParent().getChildren().indexOf(target);
+                        if (childIndex >= 0)
+                        {
+                            states.put(target.getClientId(facesContext), new AttachedFullStateWrapper( 
+                                    new Object[]{
+                                        target.getParent().getClientId(facesContext),
+                                        null,
+                                        childIndex,
+                                        internalBuildTreeStructureToSave(target),
+                                        target.processSaveState(facesContext)}));
+                        }
+                        else
+                        {
+                            String facetName = null;
+                            for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
+                            {
+                                if (target.equals(entry.getValue()))
+                                {
+                                    facetName = entry.getKey();
+                                    break;
+                                }
+                            }
+                            states.put(target.getClientId(facesContext),new AttachedFullStateWrapper(new Object[]{
+                                    target.getParent().getClientId(facesContext),
+                                    facetName,
+                                    null,
+                                    internalBuildTreeStructureToSave(target),
+                                    target.processSaveState(facesContext)}));
+                        }
+                        return VisitResult.REJECT;
+                    }
+                    else if (uiViewRoot.getParent() != null)
+                    {
+                        state = target.saveState (facesContext);
+                        
+                        if (state != null) {
+                            // Save by client ID into our map.
+                            
+                            states.put (target.getClientId (facesContext), state);
+                        }
+                        
+                        return VisitResult.ACCEPT;
+                    }
+                    else
+                    {
+                        //Only UIViewRoot has no parent in a component tree.
+                        return VisitResult.ACCEPT;
+                    }
+                }
+            });
+        }
+        finally
+        {
+            facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+        }
+        
+        Object state = uiViewRoot.saveState (facesContext);
+        if (state != null) {
+            // Save by client ID into our map.
             
+            states.put (uiViewRoot.getClientId (facesContext), state);
+        }
+    }
+
     private void saveStateOnMap(final FacesContext context, final Map<String,Object> states,
             final UIComponent component)
     {
