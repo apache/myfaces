@@ -135,8 +135,8 @@
 
         <!-- this dependency will be packed together with the main artifact of this pom -->
         <dependency>
-            <groupId>org.apache.myfaces.shared</groupId>
-            <artifactId>myfaces-shared-impl</artifactId>
+            <groupId>org.apache.myfaces.core.internal</groupId>
+            <artifactId>myfaces-impl-shared</artifactId>
         </dependency>
 
         <!-- Servlet 2.5 -->

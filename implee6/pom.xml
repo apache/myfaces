@@ -51,8 +51,8 @@
 
         <!-- we can use myfaces-shared-impl, but we cannot use myfaces-impl (cyclic dependency) -->
         <dependency>
-            <groupId>org.apache.myfaces.shared</groupId>
-            <artifactId>myfaces-shared-impl</artifactId>
+            <groupId>org.apache.myfaces.core.internal</groupId>
+            <artifactId>myfaces-impl-shared</artifactId>
         </dependency>
 
         <dependency>
