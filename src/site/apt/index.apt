@@ -34,6 +34,15 @@ MyFaces Core 2.0 Project
 
   These two libraries (myfaces-api.jar and myfaces-impl.jar) are deployed together with your
   code to form a JSF web application.
+  
+  Additionally, there are other submodules:  
+      
+    * The Shared internal submodule provides support "invisible" classes "shared" between other 
+      projects in MyFaces land like Tomahawk, Orchestra and Portlet Bridge. A copy of these 
+      classes are added to Impl submodule.
+      
+    * The Bundle submodule provides both API and Impl classes into a single jar file with 
+      a OSGi MANIFEST.MF.
 
   If you want to know more about how JavaServer(tm) Faces works, take a look at the documentation
   referenced from the main MyFaces site.
