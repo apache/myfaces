@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.ee6;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,6 +28,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.FacesException;
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
 import javax.faces.bean.ApplicationScoped;
@@ -52,8 +56,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.HandlesTypes;
-
-import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.
@@ -104,7 +106,19 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     private static final String[] FACES_SERVLET_MAPPINGS = { "/faces/*", "*.jsf", "*.faces" };
     private static final String FACES_SERVLET_NAME = "FacesServlet";
     private static final Class<? extends Servlet> FACES_SERVLET_CLASS = FacesServlet.class;
-    private static final Class<?> DELEGATED_FACES_SERVLET_CLASS = DelegatedFacesServlet.class;
+    private static Class<?> DELEGATED_FACES_SERVLET_CLASS = null;
+
+    static 
+    {
+        try 
+        {
+            DELEGATED_FACES_SERVLET_CLASS = classForName("org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet");
+        }
+        catch (Exception e)
+        {
+            //No op
+        }
+    }
 
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException
     {
@@ -237,6 +251,60 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         catch (ClassNotFoundException cnfe)
         {
             return false;
+        }
+    }
+
+   // ~ Methods Copied from _ClassUtils ------------------------------------------------------------------------------------
+    
+    /**
+     * Tries a Class.loadClass with the context class loader of the current thread first and automatically falls back to
+     * the ClassUtils class loader (i.e. the loader of the myfaces.jar lib) if necessary.
+     * 
+     * @param type
+     *            fully qualified name of a non-primitive non-array class
+     * @return the corresponding Class
+     * @throws NullPointerException
+     *             if type is null
+     * @throws ClassNotFoundException
+     */
+    private static Class<?> classForName(String type) throws ClassNotFoundException
+    {
+        if (type == null)
+            throw new NullPointerException("type");
+        try
+        {
+            // Try WebApp ClassLoader first
+            return Class.forName(type, false, // do not initialize for faster startup
+                getContextClassLoader());
+        }
+        catch (ClassNotFoundException ignore)
+        {
+            // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
+            return Class.forName(type, false, // do not initialize for faster startup
+                MyFacesContainerInitializer.class.getClassLoader());
+        }
+    }
+    
+    /**
+     * Gets the ClassLoader associated with the current thread. Returns the class loader associated with the specified
+     * default object if no context loader is associated with the current thread.
+     * 
+     * @return ClassLoader
+     */
+    private static ClassLoader getContextClassLoader(){
+        if (System.getSecurityManager() != null) {
+            try {
+                Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                            public Object run() throws PrivilegedActionException {
+                                return Thread.currentThread().getContextClassLoader();
+                            }
+                        });
+                return (ClassLoader) cl;
+            } catch (PrivilegedActionException pae) {
+                throw new FacesException(pae);
+            }
+        }else{
+            return Thread.currentThread().getContextClassLoader();
         }
     }
 }
