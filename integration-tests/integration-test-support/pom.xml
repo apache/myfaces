@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core.integrationtest</groupId>
         <artifactId>myfaces-integration-tests</artifactId>
-        <version>2.0.8-SNAPSHOT</version>
+        <version>2.0.9-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
