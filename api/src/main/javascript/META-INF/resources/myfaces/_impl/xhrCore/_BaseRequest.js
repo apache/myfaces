@@ -16,14 +16,33 @@
 
 /**
  *
- * Abstract base request encapuslating all methods and variables
- * shared over all different request objects
- *
  * Author: Werner Punz (latest modification by $Author: ganeshpuri $)
  * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  */
-/** @namespace myfaces._impl.xhrCore._AjaxRequest */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", myfaces._impl.xhrCore._FinalizeableObj, {
+
+/**
+ * @memberOf myfaces._impl
+ * @namespace
+ * @name xhrCore
+ */
+
+/**
+ * @class
+ * @name _BaseRequest
+ * @memberOf myfaces._impl.xhrCore
+ * @extends myfaces._impl.xhrCore._FinalizeableObj
+ *
+ * @description
+ * Abstract base request encapuslating all methods and variables
+ * shared over all different request objects
+ * <p />
+ * Abstract methods which have to be implemented:<br />
+ * Since we do not have abstract methods we simulate them
+ * by using empty ones
+ */
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._BaseRequest", myfaces._impl.xhrCore._FinalizeableObj,
+/** @lends myfaces._impl.xhrCore._BaseRequest.prototype */
+{
 
     _Dom: null,
     _Lang: null,

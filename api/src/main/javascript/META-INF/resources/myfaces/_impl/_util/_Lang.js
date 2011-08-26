@@ -27,10 +27,30 @@
  space is not worth the loss of readability
  */
 
-//Intellij Warnings settings
-/** @namespace myfaces._impl._util._Lang */
-/** @namespace window.console */
-myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", myfaces._impl.core._Runtime, {
+
+/**
+ * @memberOf myfaces._impl
+ * @namespace
+ * @name _util
+ */
+(myfaces._impl._util) ? myfaces._impl._util: {};
+
+
+
+/**
+ * @class
+ * @name _Lang
+ * @memberOf myfaces._impl._util
+ * @extends myfaces._impl.core._Runtime
+ * @description Object singleton for Language related methods, this object singleton
+ * decorates the namespace myfaces._impl.core._Runtime and adds a bunch of new methods to
+ * what _Runtime provided
+ * */
+var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", myfaces._impl.core._Runtime,
+        /**
+         * @lends myfaces._impl._util._Lang.prototype
+         */
+        {
 
     _processedExceptions: {},
 
@@ -846,5 +866,4 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", my
 
         return bufInstance;
     }
-})
-        ;
+});

@@ -34,32 +34,79 @@
  */
 /** @namespace myfaces._impl.core._Runtime*/
 
-(!window.myfaces) ? window.myfaces = {} : null;
-(!myfaces._impl) ? myfaces._impl = {} : null;
-(!myfaces._impl.core) ? myfaces._impl.core = {} : null;
+/**
+* @namespace
+* @name window
+* @description supplimental window methods.
+*/
+
+
+
+if(!window.myfaces) {
+    /**
+     * @namespace
+     * @name myfaces
+     */
+    var myfaces = new function() {};
+    window.myfaces = myfaces;
+}
+
+
+
+/**
+* @memberOf myfaces
+* @namespace
+* @name _impl
+*/
+myfaces._impl = (myfaces._impl) ? myfaces._impl : {};
+/**
+ * @memberOf myfaces._impl
+ * @namespace
+ * @name core
+ */
+myfaces._impl.core = (myfaces._impl.core) ? myfaces._impl.core : {};
 //now this is the only time we have to do this cascaded and manually
 //for the rest of the classes our reserveNamespace function will do the trick
 //Note, this class uses the classical closure approach (to save code)
 //it cannot be inherited by our inheritance mechanism, but must be delegated
 //if you want to derive from it
 //closures and prototype inheritance do not mix, closures and delegation however do
+/**
+ * @ignore
+ */
 if (!myfaces._impl.core._Runtime) {
+    /**
+     * @memberOf myfaces._impl.core
+     * @namespace
+     * @name _Runtime
+     */
     myfaces._impl.core._Runtime = new function() {
         //the rest of the namespaces can be handled by our namespace feature
         //helper to avoid unneeded hitches
+        /**
+         * @borrows myfaces._impl.core._Runtime as _T
+         */
         var _T = this;
 
         //namespace idx to speed things up by hitting eval way less
-        _T._reservedNMS = {};
+        this._reservedNMS = {};
 
         /**
          * replacement counter for plugin classes
          */
-        _T._classReplacementCnt = 0;
+        this._classReplacementCnt = 0;
 
         /*cascaded eval methods depending upon the browser*/
 
-        /*legacy browser IE*/
+        /**
+         * @function
+         * @param code
+
+         *
+         * evals a script globally using exec script (ie6 fallback)
+         * @param {String} code the code which has to be evaluated
+         * @borrows myfaces._impl.core._Runtime as _T
+         */
         _T._evalExecScript = function(code) {
             //execScript definitely only for IE otherwise we might have a custom
             //window extension with undefined behavior on our necks
@@ -78,7 +125,8 @@ if (!myfaces._impl.core._Runtime) {
          * but seems to be the only method which works on blackberry correctly
          * hence we are going to use it as fallback
          *
-         * @param code the code part to be evaled
+         * @param {String} code the code part to be evaled
+         * @borrows myfaces._impl.core._Runtime as _T
          */
         _T._evalBBOld = function(code) {
             var location = document.getElementsByTagName("head")[0] || document.documentElement;
@@ -90,6 +138,11 @@ if (!myfaces._impl.core._Runtime) {
             return null;
         };
 
+        /**
+         * @name myfaces._impl.core._Runtime._standardGlobalEval
+         * @private
+         * @param {String} code
+         */
         _T._standardGlobalEval = function(code) {
             //fix which works in a cross browser way
             //we used to scope an anonymous function
@@ -110,16 +163,9 @@ if (!myfaces._impl.core._Runtime) {
 
         /**
          * global eval on scripts
-         *
-         * usage return _T.globalEval('myvar.myvar2;');
-         *
-         *
-         * Note some libraries like jquery use html head attachments
-         * to run the global eval, at least for loaded scripts
-         * this methid was flaky and failed on chrome under certain conditions,
-         * since our method works reliably in modern browsers currently in use
-         * we do it via eval, we still can switch to the head method
-         * if there are arguments why that one works better than ours
+         * @param {String} code
+         * @name myfaces._impl.core._Runtime.globalEval
+         * @function
          */
         _T.globalEval = function(code) {
             //TODO add a config param which allows to evaluate global scripts even if the call
@@ -140,7 +186,6 @@ if (!myfaces._impl.core._Runtime) {
             return null;
         };
 
-
         /**
          * applies an object to a namespace
          * basically does what bla.my.name.space = obj does
@@ -148,8 +193,10 @@ if (!myfaces._impl.core._Runtime) {
          * myNameSpace = obj because the result of fetch is already the object
          * which the namespace points to, hence this function
          *
-         * @param nms the namespace to be assigned to
-         * @param obj the  object to be assigned
+         * @param {String} nms the namespace to be assigned to
+         * @param {Any} obj the  object to be assigned
+         * @name myfaces._impl.core._Runtime.applyToGlobalNamespace
+         * @function
          */
         _T.applyToGlobalNamespace = function(nms, obj) {
             var splitted = nms.split(/\./);
@@ -165,10 +212,10 @@ if (!myfaces._impl.core._Runtime) {
 
         /**
          * fetches the object the namespace points to
-         * @param nms the namespace which has to be fetched
+         * @param {String} nms the namespace which has to be fetched
          * @return the object the namespace points to or null if nothing is found
          */
-        _T.fetchNamespace = function(nms) {
+        this.fetchNamespace = function(nms) {
             if ('undefined' == typeof nms || null == nms || !_T._reservedNMS[nms]) {
                 return null;
             }
@@ -209,10 +256,10 @@ if (!myfaces._impl.core._Runtime) {
          * Backported from dojo
          * a failsafe string determination method
          * (since in javascript String != "" typeof alone fails!)
-         * @param it {|Object|} the object to be checked for being a string
-         * @return true in case of being a string false otherwise
+         * @param {Object} it  the object to be checked for being a string
+         * @return {boolean} true in case of being a string false otherwise
          */
-        _T.isString = function(/*anything*/ it) {
+        this.isString = function(/*anything*/ it) {
             //	summary:
             //		Return true if it is a String
             return !!arguments.length && it != null && (typeof it == "string" || it instanceof String); // Boolean
@@ -242,11 +289,11 @@ if (!myfaces._impl.core._Runtime) {
          * complexity while a simple map lookup is (O)log n with additional speedup from the engine.
          *
          *
-         * @param {|String|} nms
-         * @returns true if it was not provided
+         * @param {String} nms
+         * @returns {boolean} true if it was not provided
          * false otherwise for further action
          */
-        _T.reserveNamespace = function(nms, obj) {
+        this.reserveNamespace = function(nms, obj) {
 
             if (!_T.isString(nms)) {
                 throw Error("Namespace must be a string with . as delimiter");
@@ -284,7 +331,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Object} root the root element
          * @param {String} subNms the namespace
          */
-        _T.exists = function(root, subNms) {
+        this.exists = function(root, subNms) {
             if (!root) {
                 return false;
             }
@@ -334,11 +381,9 @@ if (!myfaces._impl.core._Runtime) {
          * myfacesScriptRoot to the root of your script files (aka under normal circumstances
          * resources/scripts)
          *
-         * @param localOptions
-         * @param configName
-         * @param defaultValue
+         * @param {String}Â nms, the subnamespace to be required
          */
-        _T.require = function(nms) {
+        this.require = function(nms) {
             //namespace exists
             if (_T.exists(nms)) return;
             var rootPath = _T.getGlobalConfig("myfacesScriptRoot", "");
@@ -352,17 +397,17 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return either the config entry or if none is given the default value
          */
-        _T.getGlobalConfig = function(configName, defaultValue) {
-            /**
-             * note we could use exists but this is an heavy operation, since the config name usually
-             * given this function here is called very often
-             * is a single entry without . in between we can do the lighter shortcut
-             */
-            return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
-                    myfaces.config[configName]
-                    :
-                    defaultValue;
-        };
+         this.getGlobalConfig = function(configName, defaultValue) {
+                    /**
+                     * note we could use exists but this is an heavy operation, since the config name usually
+                     * given this function here is called very often
+                     * is a single entry without . in between we can do the lighter shortcut
+                     */
+                    return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
+                            myfaces.config[configName]
+                            :
+                            defaultValue;
+                };
 
         /**
          * gets the local or global options with local ones having higher priority
@@ -375,7 +420,7 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return either the config entry or if none is given the default value
          */
-        _T.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
+        this.getLocalOrGlobalConfig = function(localOptions, configName, defaultValue) {
             /*use(myfaces._impl._util)*/
             var _local = !!localOptions;
             var _localResult;
@@ -396,7 +441,7 @@ if (!myfaces._impl.core._Runtime) {
          * 1.5 for mozillas send as binary implementation
          * 2 for xhr level 2
          */
-        _T.getXHRLvl = function() {
+        this.getXHRLvl = function() {
             if (!_T.XHR_LEVEL) {
                 _T.getXHRObject();
             }
@@ -412,7 +457,7 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return the xhr object according to the browser type
          */
-        _T.getXHRObject = function() {
+        this.getXHRObject = function() {
             //since this is a global object ie hates it if we do not check for undefined
             if (window.XMLHttpRequest) {
                 var _ret = new XMLHttpRequest();
@@ -446,7 +491,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Boolean} async tells whether the script can be asynchronously loaded or not, currently
          * not used
          */
-        _T.loadScriptEval = function(src, type, defer, charSet, async) {
+        this.loadScriptEval = function(src, type, defer, charSet, async) {
             var xhr = _T.getXHRObject();
             xhr.open("GET", src, false);
 
@@ -491,7 +536,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
          * @param {String} charSet the charset under which the script has to be loaded
          */
-        _T.loadScriptByBrowser = function(src, type, defer, charSet, async) {
+        this.loadScriptByBrowser = function(src, type, defer, charSet, async) {
             //if a head is already present then it is safer to simply
             //use the body, some browsers prevent head alterations
             //after the first initial rendering
@@ -526,14 +571,14 @@ if (!myfaces._impl.core._Runtime) {
                 holder.appendChild(script);
 
             } catch (e) {
-                //in case of a loading error we retry via eval    
+                //in case of a loading error we retry via eval
                 return false;
             }
 
             return true;
         };
 
-        _T.loadScript = function(src, type, defer, charSet, async) {
+        this.loadScript = function(src, type, defer, charSet, async) {
             //the chrome engine has a nasty javascript bug which prevents
             //a correct order of scripts being loaded
             //if you use script source on the head, we  have to revert
@@ -572,12 +617,12 @@ if (!myfaces._impl.core._Runtime) {
          *      _T._callDelegate("myMethod", arg1,"hello world");
          *
          *
-         * @param newCls the new class name to be generated
-         * @param delegateObj the delegation object
-         * @param protoFuncs the prototype functions which should be attached
-         * @param nmsFuncs the namespace functions which should be attached to the namespace
+         * @param {String} newCls the new class name to be generated
+         * @param {Object} delegateObj the delegation object
+         * @param {Map} protoFuncs the prototype functions which should be attached
+         * @param {Map} nmsFuncs the namespace functions which should be attached to the namespace
          */
-        _T.delegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+        this.delegateObj = function( newCls, delegateObj, protoFuncs, nmsFuncs) {
             if (!_T.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
             }
@@ -619,12 +664,14 @@ if (!myfaces._impl.core._Runtime) {
             return newCls;
         };
 
-        /**
+        /*
          * prototype based delegation inheritance
          *
          * implements prototype delegaton inheritance dest <- a
          *
-         * usage var newClass = _T.extends( function (var1, var2) {
+         * usage
+         * <pre>
+         *  var newClass = _T.extends( function (var1, var2) {
          *                                          _T._callSuper("constructor", var1,var2);
          *                                     };
          *                                  ,origClass);
@@ -642,19 +689,21 @@ if (!myfaces._impl.core._Runtime) {
          *                                  _T._callSuper("method2", F1,"hello world");
          *                              }
          *              });
-         *
+         * </p>
          * @param {function|String} newCls either a unnamed function which can be assigned later or a namespace
          * @param {function} extendCls the function class to be extended
          * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
          *
          * To explain further
          * prototype functions:
+         * <pre>
          *  newClass.prototype.<prototypeFunction>
          * namspace function
-         *  newClass.<namespaceFunction> = function() {...}
+         *  newCls.<namespaceFunction> = function() {...}
+         *  </pre>
          */
 
-        _T.extendClass = function(newCls, extendCls, protoFuncs, nmsFuncs) {
+        this.extendClass = function(newCls, extendCls, protoFuncs, nmsFuncs) {
 
             if (!_T.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
@@ -683,12 +732,16 @@ if (!myfaces._impl.core._Runtime) {
                 var tmpFunc = function() {
                 };
                 tmpFunc.prototype = extendCls.prototype;
-                newCls.prototype = new tmpFunc();
-                tmpFunc = null;
-                newCls.prototype.constructor = newCls;
-                newCls.prototype._parentCls = extendCls.prototype;
 
-                newCls.prototype._callSuper = function(methodName) {
+                var newClazz = newCls;
+                newClazz.prototype = new tmpFunc();
+                tmpFunc = null;
+                newClazz.prototype.constructor = newCls;
+                newClazz.prototype._parentCls = extendCls.prototype;
+                /**
+                 * @ignore
+                 */
+                newClazz.prototype._callSuper = function(methodName) {
                     var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
 
                     //we store the descension level of each method under a mapped
@@ -716,7 +769,7 @@ if (!myfaces._impl.core._Runtime) {
                     }
                 };
                 //reference to its own type
-                newCls.prototype._mfClazz = newCls;
+                newClazz.prototype._mfClazz = newCls;
             }
 
             //we now map the function map in
@@ -742,7 +795,7 @@ if (!myfaces._impl.core._Runtime) {
          * TODO do not use this function yet it needs some refinement, it will be interesting later
          * anyway
          */
-        _T.pluginClass = function(classNms, protoFuncs, overWrite) {
+        this.pluginClass = function(classNms, protoFuncs, overWrite) {
             var oldClass = _T.fetchNamespace(classNms);
             if (!oldClass) throw new Error("The class namespace " + classNms + " is not existent");
 
@@ -769,7 +822,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param {function} extendsCls the function class to be extended
          * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
          */
-                _T.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
+                this.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
                     return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
                 };
 
@@ -781,7 +834,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param protoFuncs the prototype functions which are attached on prototype level
          * @param nmsFuncs the functions which are attached on the classes namespace level
          */
-        _T.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+        this.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
             if (_T._reservedNMS[newCls]) {
                 return;
             }
@@ -844,7 +897,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param probe the probe to be checked for the correct type
          * @param theType the type to be checked for
          */
-        _T.assertType = function(probe, theType) {
+        this.assertType = function(probe, theType) {
             return _T.isString(theType) ? probe == typeof theType : probe instanceof theType;
         };
 
@@ -853,7 +906,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param func the function which should be added to the load
          * chain (note we cannot rely on return values here, hence jsf.util.chain will fail)
          */
-        _T.addOnLoad = function(target, func) {
+        this.addOnLoad = function(target, func) {
             var oldonload = (target) ? target.onload : null;
             target.onload = (!oldonload) ? func : function() {
                 try {
@@ -878,7 +931,7 @@ if (!myfaces._impl.core._Runtime) {
          * </ul>
          * null is returned if the browser fails to determine the language settings
          */
-        _T.getLanguage = function(lOverride) {
+        this.getLanguage = function(lOverride) {
             var deflt = {language: "en", variant: "UK"}; //default language and variant
             try {
                 var lang = lOverride || navigator.language || navigator.browserLanguage;

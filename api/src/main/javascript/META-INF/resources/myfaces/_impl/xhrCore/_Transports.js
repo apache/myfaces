@@ -13,31 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
+ * @class
+ * @name _Transports
+ * @memberOf myfaces._impl.xhrCore
+ * @description
+ *
  * The xhr core adapter
  * which provides the transport mechanisms to the calling
  * objects, and controls the queue behavior, the error handling
  * and partial page submit functionality among other things
- *
+ * <p />
  * The idea behind this is to make the ajax request object as barebones
  * as possible and shift the extra functionality like queuing
  * parameter handling etc... to this class so that our transports become more easily
  * pluggable. This should keep the path open to iframe submits and other transport layers
- *
+ * <p />
  * the call to the corresponding transport just should be a
- * transport.xhrQueuedPost
- *
+ * transport.xhrQueuedPost <br />
  * or transport.xhrPost,transport.xhrGet  etc... in the future
- *
+ * <p />
  * Note we have taken a pattern lesson or two from the dojo toolkit and its excellent handling
  * of transports by our patterns here (which is mainly a centralized transport singleton which routes
  * to different transport implementations and the auto passing of parameters into their
  * corresponding protected attributes on class level in the transports themselves)
- *
  */
-/** @namespace myfaces._impl.xhrCore._Transports */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
-        , Object, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports" , Object,
+     /** @lends myfaces._impl.xhrCore._Transports.prototype */ {
 
     _PAR_ERRORLEVEL:"errorlevel",
     _PAR_QUEUESIZE:"queuesize",
@@ -258,6 +261,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      */
     _getArguments: function(source, sourceForm, context, passThrgh) {
         var _RT = myfaces._impl.core._Runtime;
+        /** @ignore */
         var _getConfig = _RT.getLocalOrGlobalConfig;
         var _Lang = myfaces._impl._util._Lang;
 
@@ -296,6 +300,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports"
      */
     _applyConfig: function(destination, context, destParm, srcParm) {
         var _RT = myfaces._impl.core._Runtime;
+        /** @ignore */
         var _getConfig = _RT.getLocalOrGlobalConfig;
         if (_getConfig(context, srcParm, null) != null) {
             destination[destParm] = _getConfig(context, srcParm, null);

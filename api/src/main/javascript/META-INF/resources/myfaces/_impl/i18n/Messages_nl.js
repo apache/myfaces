@@ -15,11 +15,16 @@
  */
 
 /**
- * System messages base version
- * (note the base version is basically the en_US) version
- * of all messages
+ * System messages dutch version
+ *
+ * @class
+ * @name Messages_nl
+ * @extends myfaces._impl.i18n.Messages
+ * @memberOf myfaces._impl.i18n
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_nl", myfaces._impl.i18n.Messages, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_nl", myfaces._impl.i18n.Messages,
+/** @lends myfaces._impl.i18n.Messages_nl.prototype */
+{
 
     MSG_TEST:               "Testbericht",
 

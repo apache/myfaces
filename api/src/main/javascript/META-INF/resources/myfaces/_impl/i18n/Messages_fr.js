@@ -20,8 +20,14 @@
  * (note the base version is basically the en) version
  * of all messages
  *
+ * @class
+ * @name Messages_fr
+ * @extends myfaces._impl.i18n.Messages
+ * @memberOf myfaces._impl.i18n
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_fr", myfaces._impl.i18n.Messages, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_fr", myfaces._impl.i18n.Messages,
+/** @lends myfaces._impl.i18n.Messages_fr.prototype */
+{
     MSG_TEST:               "MessageTest FR",
 
        /*Messages*/

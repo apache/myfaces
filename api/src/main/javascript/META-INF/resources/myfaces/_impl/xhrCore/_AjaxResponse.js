@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-/** @namespace myfaces._impl.xhrCore._AjaxResponse */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", myfaces._impl.xhrCore._FinalizeableObj, {
+/**
+ * @class
+ * @name _AjaxResponse
+ * @memberOf myfaces._impl.xhrCore
+ * @extends myfaces._impl.xhrCore._FinalizeableObj
+ * @description
+ * This class is responsible for handling the standardized xml ajax response
+ */
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", myfaces._impl.xhrCore._FinalizeableObj,
+/** @lends myfaces._impl.xhrCore._AjaxResponse.prototype */
+{
 
     /*partial response types*/
     RESP_PARTIAL : "partial-response",
@@ -42,7 +51,8 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
 
 
     /**
-     * Constructor
+     * Standard constructor
+     *
      * @param {function} base request classed parent object
      * @param {function} onException
      * @param {function} onWarning
@@ -151,6 +161,11 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         }
     },
 
+    /**
+     * fixes the viewstates in the current page
+     *
+     * @param context
+     */
     fixViewStates : function(context) {
 
         if (null == this.appliedViewState) {
@@ -218,7 +233,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
     },
 
 
-
+    /**
+     * processes an incoming error from the response
+     * which is hosted under the &lt;error&gt; tag
+     * @param request the current request
+     * @param context the contect object
+     * @param node the node in the xml hosting the error message
+     */
     processError : function(request, context, node) {
         /**
          * <error>
@@ -234,6 +255,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxResponse", m
         _Impl.sendError(request, context, myfaces._impl.core.Impl.SERVER_ERROR, errorName, errorMessage);
     },
 
+    /**
+     * processes an incoming xml redirect directive from the ajax response
+     * @param request the request object
+     * @param context the context
+     * @param node the node hosting the redirect data
+     */
     processRedirect : function(request, context, node) {
         /**
          * <redirect url="url to redirect" />
