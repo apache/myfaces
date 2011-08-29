@@ -209,7 +209,8 @@ public class HtmlGridRendererBase
         writer.writeAttribute(HTML.COLSPAN_ATTR, Integer.toString(columns), null);
 
         HtmlRendererUtils.writePrettyLineSeparator(context);
-        RendererUtils.renderChild(context, facet);
+        //RendererUtils.renderChild(context, facet);
+        facet.encodeAll(context);
 
         HtmlRendererUtils.writePrettyLineSeparator(context);
         writer.endElement(header ? HTML.TH_ELEM : HTML.TD_ELEM);
@@ -331,7 +332,8 @@ public class HtmlGridRendererBase
                         writer.writeAttribute(HTML.CLASS_ATTR, columnClassesArray[columnIndex], null);
                     }
                     columnIndex = childAttributes(context, writer, child, columnIndex);
-                    RendererUtils.renderChild(context, child);
+                    //RendererUtils.renderChild(context, child);
+                    child.encodeAll(context);
                     writer.endElement(HTML.TD_ELEM);
 
                     columnIndex++;

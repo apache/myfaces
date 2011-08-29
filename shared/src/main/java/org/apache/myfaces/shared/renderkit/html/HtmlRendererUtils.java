@@ -927,7 +927,8 @@ public final class HtmlRendererUtils {
             writer.writeAttribute(HTML.STYLE_ATTR, captionStyle, null);
         }
 
-        RendererUtils.renderChild(context, captionFacet);
+        //RendererUtils.renderChild(context, captionFacet);
+        captionFacet.encodeAll(context);
 
         writer.endElement(HTML.CAPTION_ELEM);
     }
