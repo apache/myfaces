@@ -736,7 +736,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         }
                         return VisitResult.REJECT;
                     }
-                    else if (uiViewRoot.getParent() != null)
+                    else if (target.getParent() != null)
                     {
                         state = target.saveState (facesContext);
                         
