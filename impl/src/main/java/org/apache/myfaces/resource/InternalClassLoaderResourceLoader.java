@@ -42,7 +42,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
      * If this param is true and the project stage is development mode,
      * the source javascript files will be loaded separately instead have
      * all in just one file, to preserve line numbers and make javascript
-     * debugging of jsf.js more simple.
+     * debugging of the default jsf javascript file more simple.
      */
     @JSFWebConfigParam(since="2.0.1",defaultValue="false",expectedValues="true,false")
     public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";

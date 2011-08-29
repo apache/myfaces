@@ -195,6 +195,13 @@ public final class ErrorPageWriter
 
     private static final String ERROR_TEMPLATE = "META-INF/rsc/myfaces-dev-error.xml";
 
+    /**
+     * Indicate the template name used to render the default error page used by MyFaces specific 
+     * error handler implementation. 
+     * 
+     * <p>See org.apache.myfaces.ERROR_HANDLING for details about
+     * how to enable/disable it.</p>
+     */
     @JSFWebConfigParam(defaultValue="META-INF/rsc/myfaces-dev-error.xml", since="1.2.4")
     private static final String ERROR_TEMPLATE_RESOURCE = "org.apache.myfaces.ERROR_TEMPLATE_RESOURCE";
 
@@ -202,6 +209,9 @@ public final class ErrorPageWriter
 
     private static final String DEBUG_TEMPLATE = "META-INF/rsc/myfaces-dev-debug.xml";
 
+    /**
+     * Indicate the template name used to render the default debug page (see ui:debug tag).
+     */
     @JSFWebConfigParam(defaultValue="META-INF/rsc/myfaces-dev-debug.xml", since="1.2.4")
     private static final String DEBUG_TEMPLATE_RESOURCE = "org.apache.myfaces.DEBUG_TEMPLATE_RESOURCE";
 

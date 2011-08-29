@@ -28,6 +28,7 @@ import org.apache.myfaces.spi.impl.DefaultFaceletConfigResourceProviderFactory;
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 /**
+ * Factory that provide FaceletConfigResourceProvider instances
  * 
  * @since 2.0.2
  * @author Leonardo Uribe

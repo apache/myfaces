@@ -75,7 +75,7 @@ public class MyfacesConfig
     private static final boolean INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT = true;
 
     /**
-     * 
+     * Deprecated: tomahawk specific param to detect javascript, but it is no longer valid anymore.
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true,false",since="1.1")
     private static final String  INIT_PARAM_DETECT_JAVASCRIPT = "org.apache.myfaces.DETECT_JAVASCRIPT";
@@ -102,7 +102,8 @@ public class MyfacesConfig
      * StreamingAddResource instead of DefaultAddResource if you want to
      * gain performance.
      */
-    @JSFWebConfigParam(defaultValue="org.apache.myfaces. renderkit.html.util. DefaultAddResource",since="1.1")
+    @JSFWebConfigParam(defaultValue="org.apache.myfaces. renderkit.html.util. DefaultAddResource",since="1.1",
+            desc="Tomahawk specific: Indicate the class responsible to place scripts and css using tomahawk AddResource API")
     private static final String INIT_PARAM_ADD_RESOURCE_CLASS = "org.apache.myfaces.ADD_RESOURCE_CLASS";
     private static final String INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT = "org.apache.myfaces.renderkit.html.util.DefaultAddResource";
 
@@ -118,42 +119,66 @@ public class MyfacesConfig
      * 
      * In tomahawk for JSF 2.0 since version 1.1.11, this param is set by default to false, otherwise is true.
      */
-    @JSFWebConfigParam(defaultValue="for JSF 2.0 since 1.1.11 false, otherwise true", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="for JSF 2.0 since 1.1.11 false, otherwise true", expectedValues="true,false",since="1.1",
+            desc="Tomahawk specific: This parameter will check for a properly configured Extensions-Filter if it is needed by the web-app.")
     private static final String  INIT_CHECK_EXTENSIONS_FILTER = "org.apache.myfaces.CHECK_EXTENSIONS_FILTER";
     private static final boolean INIT_CHECK_EXTENSIONS_FILTER_DEFAULT = false;
 
     /**
-     * 
+     * Tomahawk specific: Interpret "readonly" property as "disable" for select components like t:selectOneRow.
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1")
     private static final String INIT_READONLY_AS_DISABLED_FOR_SELECT = "org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS";
     private static final boolean INIT_READONLY_AS_DISABLED_FOR_SELECT_DEFAULT = true;
 
     /**
-     * 
+     * Set the time in seconds that check for updates of web.xml and faces-config descriptors and refresh the configuration.
+     * This param is valid only if project stage is not production. Set this param to 0 disable this feature.
      */
     @JSFWebConfigParam(defaultValue="2",since="1.1")
     public static final String INIT_PARAM_CONFIG_REFRESH_PERIOD = "org.apache.myfaces.CONFIG_REFRESH_PERIOD";
     public static final long INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT = 2;
 
     /**
-     * 
+     * Set the view state using a javascript function instead a hidden input field.
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true,false",since="1.1")
     private static final String  INIT_PARAM_VIEWSTATE_JAVASCRIPT = "org.apache.myfaces.VIEWSTATE_JAVASCRIPT";
     private static final boolean INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT = false;
 
     /**
+     * Define if the input field that should store the state (javax.faces.ViewState) should render id="javax.faces.ViewState".
      * 
+     * JSF API 1.2 defines a "javax.faces.ViewState" client parameter, that must be rendered as both the "name"
+     * and the "id" attribute of the hidden input that is rendered for the purpose of state saving
+     * (see <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/javax/faces/render/ResponseStateManager.html#VIEW_STATE_PARAM">API</a>).
+     * Actually this causes duplicate id attributes and thus invalid XHTML pages when multiple forms are rendered on
+     * one page. With the org.apache.myfaces.RENDER_VIEWSTATE_ID context parameter you can tune this behaviour.
+     * <br/>Set it to
+     * <ul><li>true - to render JSF 1.2 compliant id attributes (that might cause invalid XHTML), or</li>
+     * <li>false - to omit rendering of the id attribute (which is only needed for very special AJAX/Javascript components)</li></ul>
+     * Default value is: true (for backwards compatibility and JSF 1.2 compliancy) 
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1")
     private static final String  INIT_PARAM_RENDER_VIEWSTATE_ID = "org.apache.myfaces.RENDER_VIEWSTATE_ID";
     private static final boolean INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT = true;
 
     /**
-     * 
+     * Use "&amp;amp;" entity instead a plain "&amp;" character within HTML.
+     * <p>W3C recommends to use the "&amp;amp;" entity instead of a plain "&amp;" character within HTML.
+     * This also applies to attribute values and thus to the "href" attribute of &lt;a&gt; elements as well.
+     * Even more, when XHTML is used as output the usage of plain "&amp;" characters is forbidden and would lead to
+     * invalid XML code.
+     * Therefore, since version 1.1.6 MyFaces renders the correct "&amp;amp;" entity for links.</p>
+     * <p>The init parameter
+     * org.apache.myfaces.STRICT_XHTML_LINKS makes it possible to restore the old behaviour and to make MyFaces
+     * "bug compatible" to the Sun RI which renders plain "&amp;" chars in links as well.</p>
+     * <p>
+     * See: <a href="http://www.w3.org/TR/html401/charset.html#h-5.3.2">HTML 4.01 Specification</a>
+     * See: <a href="http://issues.apache.org/jira/browse/MYFACES-1774">Jira: MYFACES-1774</a>
+     * </p>
      */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1.6")
     private static final String  INIT_PARAM_STRICT_XHTML_LINKS = "org.apache.myfaces.STRICT_XHTML_LINKS";
     private static final boolean INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT = true;
     
@@ -186,7 +211,11 @@ public class MyfacesConfig
     private static final boolean INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT = false;
     
     /**
+     * Define an alternate class name that will be used to initialize MyFaces, instead the default javax.faces.webapp.FacesServlet.
      * 
+     * <p>This helps MyFaces to detect the mappings and other additional configuration used to setup the environment, and prevent
+     * abort initialization if no FacesServlet config is detected.
+     * </p>
      */
     @JSFWebConfigParam(since="1.2.7")
     private static final String INIT_PARAM_DELEGATE_FACES_SERVLET = "org.apache.myfaces.DELEGATE_FACES_SERVLET";

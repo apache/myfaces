@@ -46,6 +46,13 @@ public class ResolverBuilderBase
     
     private static final Logger log = Logger.getLogger(ResolverBuilderBase.class.getName());
     
+    /**
+     * Define a custom comparator class used to sort the ELResolvers.
+     * 
+     * <p>This is useful when it is necessary to put an ELResolver on top of other resolvers. Note set
+     * this param override the default ordering described by JSF spec section 5. 
+     * </p>
+     */
     @JSFWebConfigParam(since = "1.2.10, 2.0.2",
             desc = "The Class of an Comparator&lt;ELResolver&gt; implementation.")
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";

@@ -131,15 +131,26 @@ public class ApplicationImpl extends Application
     @Deprecated
     public final static String MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "org.apache.myfaces.PROJECT_STAGE";
     
+    /**
+     * Set the default timezone as system timezone when a converter extending from DateTimeConverter is created.
+     */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0")
     public final static String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME 
         = "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
     
+    /**
+     * Indicate the stage of the initialized application.
+     */
     @JSFWebConfigParam(defaultValue="Production",
             expectedValues="Development, Production, SystemTest, UnitTest",
             since="2.0")
     private static final String PROJECT_STAGE_PARAM_NAME = "javax.faces.PROJECT_STAGE";
 
+    /**
+     * Indicate if the classes associated to components, converters, validators or behaviors
+     * should be loaded as soon as they are added to the current application instance or instead
+     * loaded in a lazy way.
+     */
     @JSFWebConfigParam(defaultValue="true",since="2.0")
     private static final String LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME = "org.apache.myfaces.LAZY_LOAD_CONFIG_OBJECTS";
     private static final boolean LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE = true;

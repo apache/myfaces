@@ -28,6 +28,7 @@ import org.apache.myfaces.spi.impl.DefaultAnnotationProviderFactory;
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 /**
+ * Factory that provide AnnotationProvider instances
  * 
  * @since 2.0.2
  * @author Leonardo Uribe

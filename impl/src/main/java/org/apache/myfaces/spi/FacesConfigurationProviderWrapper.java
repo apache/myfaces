@@ -27,6 +27,9 @@ import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesConfigData;
 
 /**
+ * To wrap the default FacesConfigurationProvider, use a constructor like 
+ * CustomFacesConfigurationProvider(FacesConfigurationProvider fcp)
+ * and extend it from FacesConfigurationProviderWrapper
  * 
  * @author Leonardo Uribe
  * @since 2.0.3

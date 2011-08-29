@@ -56,7 +56,9 @@ public class FlashImpl extends Flash
     private static final Logger logger = Logger.getLogger(FlashImpl.class.getName());
     
     /**
-     * Defines whether flash scope is disabled.
+     * Defines whether flash scope is disabled, preventing add the Flash cookie to the response. 
+     * 
+     * <p>This is useful for applications that does not require to use flash scope, and instead uses other scopes.</p>
      */
     @JSFWebConfigParam(defaultValue="false",since="2.0.5")
     private static final String FLASH_SCOPE_DISABLED_PARAM = "org.apache.myfaces.FLASH_SCOPE_DISABLED";

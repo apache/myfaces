@@ -25,6 +25,11 @@ import java.util.Collection;
 import javax.faces.context.ExternalContext;
 
 /**
+ * Locate facelet taglib xml files through classpath. These
+ * files has definitions that are used by facelets algorithm to parse view files.
+ * <p>
+ * By default it locate all files inside META-INF folder, ending with .taglib.xml
+ * </p> 
  * 
  * @since 2.0.2
  * @author Leonardo Uribe 
@@ -33,6 +38,8 @@ public abstract class FaceletConfigResourceProvider
 {
     
     /**
+     * Return a list of urls pointing to valid facelet taglib xml files. These
+     * files will be parsed later and used by facelets algorithm.
      * 
      * @param context
      * @return

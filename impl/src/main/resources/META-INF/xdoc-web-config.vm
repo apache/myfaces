@@ -63,6 +63,8 @@ $baseContent
 #end
 #if ($webConfigParam.description)
   <td>$webConfigParam.description</td>
+#elseif ($webConfigParam.longDescription)
+  <td>$webConfigParam.longDescription</td>
 #else
   <td></td>
 #end
@@ -153,6 +155,10 @@ $baseContent
     <b>Description:</b> 
     <br/>
     $webConfigParam.longDescription
+#elseif ($webConfigParam.description)
+    <b>Description:</b> 
+    <br/>
+    $webConfigParam.description
 #else
     <b>Description:</b> no description available yet.
     <br/>

@@ -29,6 +29,8 @@ import javax.faces.FacesWrapper;
 import javax.faces.context.ExternalContext;
 
 /**
+ * Wrapper class that all AnnotationProvider instances should extend. This is used
+ * to wrap the default algorithm and add some additional custom processing.
  * 
  * @since 2.0.3
  * @author Leonardo Uribe 
