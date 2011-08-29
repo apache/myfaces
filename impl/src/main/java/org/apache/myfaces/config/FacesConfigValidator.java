@@ -35,6 +35,12 @@ import org.apache.myfaces.shared.util.ClassUtils;
 public class FacesConfigValidator
 {
 
+    /**
+     * Validate if the managed beans and navigations rules are correct.
+     * 
+     * <p>For example, it checks if the managed bean classes really exists, or if the 
+     * navigation rules points to existing view files.</p>
+     */
     @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false")
     public static final String VALIDATE_CONTEXT_PARAM = "org.apache.myfaces.VALIDATE";
     

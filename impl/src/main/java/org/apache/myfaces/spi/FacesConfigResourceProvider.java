@@ -25,6 +25,12 @@ import java.util.Collection;
 import javax.faces.context.ExternalContext;
 
 /**
+ * Locate faces-config xml files through classpath. These
+ * files has definitions that are used by initialize jsf environment.
+ * <p>
+ * By default it locate all files inside META-INF folder, named faces-config.xml
+ * or ending with .faces-config.xml
+ * </p> 
  * 
  * @since 2.0.2
  * @author Leonardo Uribe 
@@ -33,6 +39,8 @@ public abstract class FacesConfigResourceProvider
 {
     
     /**
+     * Return a list of urls pointing to valid faces config-xml files. These
+     * files will be parsed later and used initialize jsf environment.
      * 
      * @param context
      * @return

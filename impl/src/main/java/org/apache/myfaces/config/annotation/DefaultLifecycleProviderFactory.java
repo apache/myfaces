@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -45,6 +44,12 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory {
     //private static Log log = LogFactory.getLog(DefaultLifecycleProviderFactory.class);
     private static Logger log = Logger.getLogger(DefaultLifecycleProviderFactory.class.getName());
 
+    /**
+     * Define the class implementing LifecycleProvider2 interface to handle PostConstruct and PreDestroy annotations.
+     * 
+     * <p>This also can be configured using a SPI entry (/META-INF/services/...).
+     * </p>
+     */
     public static final String LIFECYCLE_PROVIDER_INSTANCE_KEY = LifecycleProvider.class.getName() + ".LIFECYCLE_PROVIDER_INSTANCE";
 
     @JSFWebConfigParam(name="org.apache.myfaces.config.annotation.LifecycleProvider", since="1.1")

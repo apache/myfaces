@@ -28,6 +28,7 @@ import org.apache.myfaces.spi.impl.DefaultFacesConfigResourceProviderFactory;
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 /**
+ * Factory that provide FacesConfigResourceProvider instances
  * 
  * @since 2.0.2
  * @author Leonardo Uribe

@@ -23,7 +23,7 @@ import java.util.List;
 import javax.faces.context.ExternalContext;
 
 /**
- * SPI to provide a custom WebXml implementation.
+ * SPI to provide a custom WebConfigProvider implementation.
  *
  * @author Leonardo Uribe
  * @since 2.0.3

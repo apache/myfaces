@@ -153,9 +153,18 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     
     //public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
     
-    @JSFWebConfigParam(since="2.0")
+    /**
+     * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
+     * servlet environment to HttpServletResponse.setBufferSize().
+     */
+    @JSFWebConfigParam(since="2.0",
+            desc="Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a servlet environment to HttpServletResponse.setBufferSize()")
     public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
     
+    /**
+     * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
+     * servlet environment to HttpServletResponse.setBufferSize().
+     */
     @JSFWebConfigParam(since="2.0")
     private final static String PARAM_BUFFER_SIZE_DEPRECATED = "facelets.BUFFER_SIZE";
     
@@ -163,9 +172,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     //private final static String PARAM_BUILD_BEFORE_RESTORE = "facelets.BUILD_BEFORE_RESTORE";
 
+    /**
+     * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
+     * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
+     */
     @JSFWebConfigParam(since="2.0")
     public final static String PARAM_DECORATORS = "javax.faces.FACELETS_DECORATORS";
     
+    /**
+     * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
+     * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
+     */
     @JSFWebConfigParam(since="2.0")
     private final static String PARAM_DECORATORS_DEPRECATED = "facelets.DECORATORS";
     
@@ -177,33 +194,61 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      */
     public final static String PARAM_ENCODING = "facelets.Encoding";
 
-    @JSFWebConfigParam(since="2.0")
+    /**
+     * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
+     */
+    @JSFWebConfigParam(since="2.0", desc="Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.")
     public final static String PARAM_LIBRARIES = "javax.faces.FACELETS_LIBRARIES";
     
-    @JSFWebConfigParam(since="2.0")
+    /**
+     * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
+     */
+    @JSFWebConfigParam(since="2.0", desc="Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.")
     private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
     
     private final static String[] PARAMS_LIBRARIES = {PARAM_LIBRARIES, PARAM_LIBRARIES_DEPRECATED};
 
-    @JSFWebConfigParam(since="2.0")
+    /**
+     * Define the period used to refresh the facelet abstract syntax tree from the view definition file. 
+     * 
+     * <p>By default is infinite (no active).</p>
+     */
+    @JSFWebConfigParam(since="2.0", defaultValue="-1")
     public final static String PARAM_REFRESH_PERIOD = "javax.faces.FACELETS_REFRESH_PERIOD";
     
-    @JSFWebConfigParam(since="2.0")
+    /**
+     * Define the period used to refresh the facelet abstract syntax tree from the view definition file. 
+     * 
+     * <p>By default is infinite (no active).</p>
+     */
+    @JSFWebConfigParam(since="2.0", defaultValue="-1")
     private final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
     
     private final static String[] PARAMS_REFRESH_PERIOD = {PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED};
     
+    /**
+     * Class implementing ResourceResolver interface used to locate facelet resources. 
+     */
     @JSFWebConfigParam(since="2.0")
     public final static String PARAM_RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
     
+    /**
+     * Class implementing ResourceResolver interface used to locate facelet resources.
+     */
     @JSFWebConfigParam(since="2.0")
     private final static String PARAM_RESOURCE_RESOLVER_DEPRECATED = "facelets.RESOURCE_RESOLVER";
     
     private final static String[] PARAMS_RESOURCE_RESOLVER = {PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED};
     
+    /**
+     * Skip comments found on a facelet file.
+     */
     @JSFWebConfigParam(since="2.0")
     public final static String PARAM_SKIP_COMMENTS = "javax.faces.FACELETS_SKIP_COMMENTS";
     
+    /**
+     * Skip comments found on a facelet file.
+     */
     @JSFWebConfigParam(since="2.0")
     private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
     

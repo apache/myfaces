@@ -38,10 +38,19 @@ public class ResourceHandlerCache
     private Boolean _resourceCacheEnabled = null;
     private Map<ResourceKey, ResourceValue> _resourceCacheMap = null;
 
+    /**
+     * Controls the size of the cache used to check if a resource exists or not. 
+     * 
+     * <p>See org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED for details.</p>
+     */
     @JSFWebConfigParam(defaultValue = "500", since = "2.0.2")
     private static final String RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.RESOURCE_HANDLER_CACHE_SIZE";
     private static final int RESOURCE_HANDLER_CACHE_DEFAULT_SIZE = 500;
 
+    /**
+     * Enable or disable the cache used to "remember" if a resource handled by the default ResourceHandler exists or not.
+     * 
+     */
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.2")
     private static final String RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
     private static final boolean RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT = true;

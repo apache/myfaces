@@ -63,6 +63,8 @@ $baseContent
 #end
 #if ($webConfigParam.description)
   <td>$webConfigParam.description</td>
+#elseif ($webConfigParam.longDescription)
+  <td>$webConfigParam.longDescription</td>
 #else
   <td></td>
 #end
@@ -141,11 +143,11 @@ $baseContent
     <br/>
 #end
 #if ($webConfigParam.sourceClassName.startsWith("javax.faces."))
-#set ($javadocPath = "../../myfaces-api/apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#set ($javadocPath = "../myfaces-api/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
 #elseif ($webConfigParam.sourceClassName.startsWith("org.apache.myfaces.shared."))
-#set ($javadocPath = "../../myfaces-impl-shared/apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#set ($javadocPath = "../myfaces-impl-shared/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
 #else
-#set ($javadocPath = "../apidocs/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#set ($javadocPath = "./xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
 #end
     <b>Source Class:</b> <a href="${javadocPath}.html">$webConfigParam.sourceClassName</a>
     <br/>
@@ -153,6 +155,10 @@ $baseContent
     <b>Description:</b> 
     <br/>
     $webConfigParam.longDescription
+#elseif ($webConfigParam.description)
+    <b>Description:</b> 
+    <br/>
+    $webConfigParam.description
 #else
     <b>Description:</b> no description available yet.
     <br/>
