@@ -522,12 +522,20 @@ public final class RendererUtils
             for (int i = 0; i < childCount; i++)
             {
                 UIComponent child = component.getChildren().get(i);
-                renderChild(facesContext, child);
+                //renderChild(facesContext, child);
+                child.encodeAll(facesContext);
             }
         }
     }
 
-
+    /**
+     * 
+     * @param facesContext
+     * @param child
+     * @throws IOException
+     * @deprecated use UIComponent.encodeAll() instead
+     */
+    @Deprecated
     public static void renderChild(FacesContext facesContext, UIComponent child)
             throws IOException
     {

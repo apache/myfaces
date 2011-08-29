@@ -225,7 +225,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
         // render the facet
         HtmlRendererUtils.writePrettyLineSeparator(facesContext);
-        RendererUtils.renderChild(facesContext, colgroupsFacet);
+        //RendererUtils.renderChild(facesContext, colgroupsFacet);
+        colgroupsFacet.encodeAll(facesContext);
     } 
     
     /**
@@ -501,7 +502,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
         {
             writer.writeAttribute(HTML.CLASS_ATTR, styles.getColumnStyle(columnStyleIndex), null);
         }
-        RendererUtils.renderChild(facesContext, component);
+        //RendererUtils.renderChild(facesContext, component);
+        component.encodeAll(facesContext);
         if(rowHeader) 
         {
             writer.endElement(HTML.TH_ELEM);   
@@ -919,7 +921,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
         if (facet != null)
         {
-            RendererUtils.renderChild(facesContext, facet);
+            //RendererUtils.renderChild(facesContext, facet);
+            facet.encodeAll(facesContext);
         }
         writer.endElement(colElementName);
         writer.endElement(HTML.TR_ELEM);
@@ -971,7 +974,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
         if(spacer == null) return;
          
          writer.startElement(HTML.TD_ELEM, component);
-         RendererUtils.renderChild(facesContext, spacer);
+         //RendererUtils.renderChild(facesContext, spacer);
+         spacer.encodeAll(facesContext);
          writer.endElement(HTML.TD_ELEM);
      }
 
@@ -1067,7 +1071,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
 
         if (facet != null)
         {
-            RendererUtils.renderChild(facesContext, facet);
+            //RendererUtils.renderChild(facesContext, facet);
+            facet.encodeAll(facesContext);
         }
         writer.endElement(determineHeaderCellTag(facesContext, uiComponent.getParent()));
     }
@@ -1118,7 +1123,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
         if (facet != null)
         {
-            RendererUtils.renderChild(facesContext, facet);
+            //RendererUtils.renderChild(facesContext, facet);
+            facet.encodeAll(facesContext);
         }
         writer.endElement(HTML.TD_ELEM);
     }
