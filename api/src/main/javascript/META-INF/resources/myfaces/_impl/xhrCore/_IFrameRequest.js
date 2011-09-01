@@ -15,24 +15,45 @@
  */
 
 /**
- * iframe request for communications over iframe
+ * @class
+ * @name _IFrameRequest
+ * @memberOf myfaces._impl.xhrCore
+ * @extends myfaces._impl.xhrCore._BaseRequest
+ * @description
+ * iframe transport for an alternative way to do ajax communication
+ * <p />
+ * The idea to make a frame a protocol transport is, to make a form submit
+ * with the iframe as target, and once done use the result in the iframe
+ * as result for the request.
  *
+ * <p />
  * This method can be used by older browsers and if you have
  * a multipart request which includes
  * a fileupload element, fileuploads cannot be handled by
  * normal xhr requests. The standard html 4+ compliant way to do this
  * is to use an iframe as submit target for a form.
- *
+ * <p />
  * Note on almost all browsers this method induces a real asynchronity, the only
  * exception is firefox 3.6- which blocks the ui, this is resolved in Firefox 4
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", myfaces._impl.xhrCore._BaseRequest, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", myfaces._impl.xhrCore._BaseRequest,
+/** @lends  myfaces._impl.xhrCore._IFrameRequest */
+{
 
     _FRAME_ID: "_mf_comm_frm",
     _frame: null,
     _RT: myfaces._impl.core._Runtime,
     CLS_NAME: "myfaces._impl.xhrCore._IFrameRequest",
+
+    /**
+     * @constant
+     * @description request marker that the request is an iframe based request
+     */
     JX_PART_IFRAME: "javax.faces.partial.iframe",
+    /**
+     * @constant
+     * @description request marker that the request is an apache myfaces iframe request based request
+     */
     MF_PART_IFRAME: "org.apache.myfaces.partial.iframe",
 
     /**
@@ -186,6 +207,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", 
         appendHiddenValue(this.MF_PART_IFRAME, "true");
 
     },
+
 
     _removeAjaxParams: function(oldTarget) {
         var _Impl = this._getImpl();

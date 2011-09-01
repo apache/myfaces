@@ -437,6 +437,35 @@
             </pluginRepositories>
         </profile>
 
+        <!--
+            this optional profile generates the jsdoc content from
+            the embedded javascripts
+        -->
+
+        <profile>
+            <id>generateJsDoc</id>
+            <build>
+              <plugins>
+                    <plugin>
+                        <groupId>org.apache.myfaces.buildtools</groupId>
+                        <artifactId>myfaces-jsdoc-plugin</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>jsdoc</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+
+                    </plugin>
+               </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
     

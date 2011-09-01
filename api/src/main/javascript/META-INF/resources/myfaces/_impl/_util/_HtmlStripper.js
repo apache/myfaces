@@ -15,17 +15,28 @@
 */
 
 /**
- * <p>
+ * @class
+ * @name _HtmlStripper
+ * @memberOf myfaces._impl._util
+ * @extends myfaces._impl.core._Runtime
+ * @description
  *  Fallback routine if the browser embedded xml parser fails on the document
  *  This fallback is not failsafe but should give enough cover to handle all cases
- * </p>
  */
 
 /** @namespace myfaces._impl._util._HtmlStripper */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Object, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Object,
+/** @lends myfaces._impl._util._HtmlStripper.prototype */
+{
     BEGIN_TAG: "html",
     END_TAG: "lmth",
-
+    /**
+     * main parse routine parses the document for a given tag name
+     *
+     *
+     * @param theString  the markup string to be parsed
+     * @param tagNameStart the tag name to be parsed for
+     */
     parse : function(theString, tagNameStart) {
         this.tokens = theString.split("");
         this.tagAttributes = {};

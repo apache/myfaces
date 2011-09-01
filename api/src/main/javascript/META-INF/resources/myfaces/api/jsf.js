@@ -30,31 +30,50 @@ if ('undefined' != typeof OpenAjax && ('undefined' == typeof jsf || null == type
     OpenAjax.hub.registerLibrary("jsf", "www.sun.com", "1.0", null);
 }
 //just in case openajax has failed (testing environment)
-//under normal circumstances this should not happen
-//either check for window.jsf == true or do it the verbose way
+/**
+* @ignore
+*/
 if (!window.jsf) {
-    window.jsf = new function() {
+	/**
+	* @namespace jsf
+	*/
+    var jsf = new function() {
         /*
-         * specified by the spec symbols/jsf.html#.specversion
-         * as specified left two digits major release number
-         * middle two digits minor spec release number
-         * right two digits bug release number
+         * Version of the implementation for the jsf.js.
+         * <p />
+         * as specified within the jsf specifications jsf.html:
+         * <ul>
+         * <li>left two digits major release number</li>
+         * <li>middle two digits minor spec release number</li>
+         * <li>right two digits bug release number</li>
+         * </ul>
+		 * @constant
          */
         this.specversion = 200000;
         /**
-         * specified by the spec symbols/jsf.html#.implversion
-         * a number increased with every implementation version
+         * Implementation version as specified within the jsf specification.
+         * <p />
+         * A number increased with every implementation version
          * and reset by moving to a new spec release number
          *
-         * Due to the constraints that we cannot put
-         * non jsf.&lt;namespace&gt; references outside of functions in the api
-         * we have to set the version here instead of the impl.
+		 * @constant
          */
         this.implversion = 6;
 
         /**
-         * @return the current project state emitted by the server side method:
-         * javax.faces.application.Application.getProjectStage()
+         * This method is responsible for the return of a given project stage as defined
+         * by the jsf specification.
+         * <p/>
+         * Valid return values are:
+         * <ul>
+         *     <li>&quot;Production&quot;</li>
+         *     <li>&quot;Development&quot;</li>
+         *     <li>&quot;SystemTest&quot;</li>
+         *     <li>&quot;UnitTest&quot;</li>
+         * </li>
+         *
+         * @return {String} the current project state emitted by the server side method:
+         * <i>javax.faces.application.Application.getProjectStage()</i>
          */
         this.getProjectStage = function() {
             var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
@@ -75,6 +94,8 @@ if (!window.jsf) {
             return impl.getViewState(formElement);
         };
     };
+	//jsdoc helper to avoid warnings, we map later 
+	window.jsf = jsf;
 }
 
 /**
@@ -84,6 +105,9 @@ if (!window.jsf) {
  * it is safer in this case than the standard way of doing a strong comparison
  **/
 if (!jsf.ajax) {
+	/**
+	* @namespace jsf.ajax
+	*/
     jsf.ajax = new function() {
 
 
@@ -99,8 +123,8 @@ if (!jsf.ajax) {
          * </ul>
          *
          * @param {String|Node} element: any dom element no matter being it html or jsf, from which the event is emitted
-         * @param {|EVENT|} event: any javascript event supported by that object
-         * @param {Map||} options : map of options being pushed into the ajax cycle
+         * @param {EVENT} event: any javascript event supported by that object
+         * @param {Map} options : map of options being pushed into the ajax cycle
          */
         this.request = function(element, event, options) {
             if (!options) {
@@ -111,11 +135,34 @@ if (!jsf.ajax) {
             return impl.request(element, event, options);
         };
 
+		/**
+		* Adds an error handler to our global error queue.
+		* the error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
+		* with errorData being of following format:
+		* <ul>
+         *     <li> errorData.type : &quot;error&quot;</li>
+         *     <li> errorData.status : the error status message</li>
+         *     <li> errorData.serverErrorName : the server error name in case of a server error</li>
+         *     <li> errorData.serverErrorMessage : the server error message in case of a server error</li>
+         *     <li> errorData.source  : the issuing source element which triggered the request </li>
+         *     <li> eventData.responseCode: the response code (aka http request response code, 401 etc...) </li>
+         *     <li> eventData.responseText: the request response text </li>
+         *     <li> eventData.responseXML: the request response xml </li>
+        * </ul>
+         *
+         * @param {function} errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
+		*/
         this.addOnError = function(/*function*/errorListener) {
             var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
             return impl.addOnError(errorListener);
         };
 
+        /**
+         * Adds a global event listener to the ajax event queue. The event listener must be a function
+         * of following format: <i>function eventListener(&lt;eventData&gt;)</i>
+         *
+         * @param {function} eventListener event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
+         */
         this.addOnEvent = function(/*function*/eventListener) {
             var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
             return impl.addOnEvent(eventListener);
@@ -134,6 +181,9 @@ if (!jsf.ajax) {
 }
 
 if (!jsf.util) {
+	/**
+	* @namespace jsf.util
+	*/
     jsf.util = new function() {
 
         /**

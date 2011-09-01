@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- *  A helper object which supports IE with its non working garbage collection.
- *
- * See also:
- *
- * http://msdn.microsoft.com/en-us/library/bb250448%28VS.85%29.aspx
- * http://weblogs.java.net/blog/driscoll/archive/2009/11/13/ie-memory-management-and-you
- * http://home.orange.nl/jsrosman/
- * http://www.quirksmode.org/blog/archives/2005/10/memory_leaks_li.html
- * http://www.josh-davis.org/node/7
- *
+/*
  * Author: Werner Punz (latest modification by $Author: werpu $)
  * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._FinalizeableObj", Object, {
+
+/**
+ * @class
+ * @name _FinalizeableObj
+ * @memberOf myfaces._impl.xhrCore
+ * @description  A helper class which supports IE with its non working garbage collection.
+ * @see <a href="http://msdn.microsoft.com/en-us/library/bb250448%28VS.85%29.aspx">http://msdn.microsoft.com/en-us/library/bb250448%28VS.85%29.aspx</a>
+ * @see <a href="http://weblogs.java.net/blog/driscoll/archive/2009/11/13/ie-memory-management-and-you">http://weblogs.java.net/blog/driscoll/archive/2009/11/13/ie-memory-management-and-you</a>
+ * @see <a href="http://home.orange.nl/jsrosman/">http://home.orange.nl/jsrosman/</a>
+ * @see <a href="http://www.quirksmode.org/blog/archives/2005/10/memory_leaks_li.html">http://www.quirksmode.org/blog/archives/2005/10/memory_leaks_li.html</a>
+ * @see <a href="http://www.josh-davis.org/node/7">http://www.josh-davis.org/node/7</a>
+ */
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._FinalizeableObj", Object,
+/** @lends myfaces._impl.xhrCore._FinalizeableObj.prototype */
+{
 
     _resettableContent: null,
 
@@ -47,6 +50,9 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._FinalizeableObj"
 
     /**
      * ie6 cleanup
+     * This method disposes all properties manually in case of ie6
+     * hence reduces the chance of running into a gc problem tremendously
+     * on other browsers this method does nothing
      */
     _finalize: function() {
         if (!myfaces._impl.core._Runtime.browser.isIE || !this._resettableContent) {

@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-/** @namespace myfaces._impl._util._Queue */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
+/**
+ * @class
+ * @name _Queue
+ * @memberOf myfaces._impl._util
+ * @description Queue implementation used by our runtime system
+ * improved version of
+ * @see <a href="http://safalra.com/web-design/javascript/queues/Queue.js">http://safalra.com/web-design/javascript/queues/Queue.js</a>
+ */
+myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object,
+  /**
+   * @lends myfaces._impl._util._Queue.prototype
+   */
+{
     //faster queue by http://safalra.com/web-design/javascript/queues/Queue.js
     //license public domain
     //The trick is to simply reduce the number of slice and slice ops to a bare minimum.
@@ -24,22 +35,37 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
     _space : 0,
     _size: -1,
 
+    /**
+     * Standard constructor
+     */
     constructor_: function() {
         this._q = [];
         this._Lang = myfaces._impl._util._Lang;
     },
 
+    /**
+     * @return the length of the queue as integer
+     */
     length: function() {
         // return the number of elements in the queue
         return this._q.length - this._space;
 
     },
 
+    /**
+     * @return true if the current queue is empty false otherwise
+     */
     isEmpty: function() {
         // return true if the queue is empty, and false otherwise
         return (this._q.length == 0);
     },
 
+    /**
+     * Sets the current queue to a new size, all overflow elements at the end are stripped
+     * automatically
+     *
+     * @param {int} newSize as numeric value
+     */
     setQueueSize: function(newSize) {
         this._size = newSize;
         this._readjust();
@@ -80,6 +106,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
         }
     },
 
+    /**
+     * dequeues the last element in the queue
+     * @return {Object} element which is dequeued
+     */
     dequeue: function() {
         // initialise the element to return to be undefined
         var element = null;
@@ -117,6 +147,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
      * simple foreach
      *
      * @param closure a closure which processes the element
+     * @code
+     *   queue.each(function(element) {
+     *      //do something with the element
+     *   });
      */
     each: function(closure) {
         this._Lang.arrForEach(this._q, closure, this._space);
@@ -134,10 +168,17 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object, {
         return this._Lang.arrFilter(this._q, closure, this._space);
     },
 
+    /**
+     * @param element
+     * @return the current index of the element in the queue or -1 if it is not found
+     */
     indexOf: function(element) {
         return this._Lang.arrIndexOf(this._q, element);
     },
 
+    /**
+     * resets the queue to initial empty state
+     */
     cleanup: function() {
         this._q = [];
         this._space = 0;

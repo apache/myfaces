@@ -16,11 +16,15 @@
 
 /**
  * System messages kyrillic/russian version
- * (note the base version is basically the en_US) version
- * of all messages
  *
+ * @class
+ * @name Messages_nl
+ * @extends myfaces._impl.i18n.Messages
+ * @memberOf myfaces._impl.i18n
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_ru", myfaces._impl.i18n.Messages, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_ru", myfaces._impl.i18n.Messages,
+/** myfaces._impl.i18n.Messages_ru.prototype */
+{
 
     MSG_TEST:               "ТестовоеСообщение",
 

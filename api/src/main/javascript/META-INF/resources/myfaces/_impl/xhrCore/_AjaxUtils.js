@@ -13,8 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/** @namespace myfaces._impl.xhrCore._AjaxUtils */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", myfaces._impl.xhrCore._FinalizeableObj, {
+/**
+ * @class
+ * @name _AjaxUtils
+ * @memberOf myfaces._impl.xhrCore
+ * @extends myfaces._impl.xhrCore._FinalizeableObj
+ * @description
+ *
+ * A set of helper routines which are utilized within our Ajax subsystem and nowhere else
+ */
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", myfaces._impl.xhrCore._FinalizeableObj,
+/** @lends myfaces._impl.xhrCore._AjaxUtils.prototype */
+{
       _processedExceptions: {},
 
     /**
@@ -26,6 +36,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", myfa
         this._onException = onException;
         this._onWarning = onWarning;
     },
+
 
     /**
      * determines fields to submit

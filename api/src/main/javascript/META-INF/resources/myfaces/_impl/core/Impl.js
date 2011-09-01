@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-/** @namespace myfaces._impl.core.Impl*/
-/** @namespace myfaces._impl._util._ListenerQueue */
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Object, {
+/**
+ * @class
+ * @name Impl
+ * @memberOf myfaces._impl.core
+ * @description Implementation singleton which implements all interface method
+ * defined by our jsf.js API
+ * */
+myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Object,
+/**
+ * @lends myfaces._impl.core.Impl.prototype
+ */
+{
 
     //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
     _transport      : new (myfaces._impl.core._Runtime.getGlobalConfig("transport", myfaces._impl.xhrCore._Transports))(),
@@ -147,6 +156,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
 
         //options not set we define a default one with nothing
         options = options || {};
+
+		/*preparations for jsf 2.2 windowid handling*/
+        //pass the window id into the options if not set already
+        if(!options.windowId) {
+            var windowId = _Dom.getWindowId();
+            (windowId) ? options["javax.faces.windowId"] = windowId: null;
+        } else {
+            options["javax.faces.windowId"] = options.windowId;
+            delete options.windowId;
+        }
 
         /**
          * we cross reference statically hence the mapping here
@@ -280,9 +299,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * determines the transport type to be called
      * for the ajax call
      *
-     * @param context
-     * @param passThrgh
-     * @param form
+     * @param context the context
+     * @param passThrgh  pass through values
+     * @param form the form which issues the request
      */
     _getTransportType: function(context, passThrgh, form) {
         /**

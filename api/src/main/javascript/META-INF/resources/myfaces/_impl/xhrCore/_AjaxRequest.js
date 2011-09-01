@@ -22,22 +22,25 @@
  * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
  * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  */
-/** @namespace myfaces._impl.xhrCore._AjaxRequest */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", myfaces._impl.xhrCore._BaseRequest, {
 
-
-    /*
-     note there is a load of common properties
-     inherited by the base class which define the corner
-     parameters and the general internal behavior
-     like _onError etc...
-     */
-
+/**
+ * @class
+ * @name _AjaxRequest
+ * @memberOf myfaces._impl.xhrCore
+ * @extends myfaces._impl.xhrCore._BaseRequest
+ */
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", myfaces._impl.xhrCore._BaseRequest,
+/** myfaces._impl.xhrCore._AjaxRequest.prototype */
+{
     /**
      * Constructor
-     * @arguments  an arguments map which an override any of the given protected
+     * <p />
+     * note there is a load of common properties
+     * inherited by the base class which define the corner
+     * parameters and the general internal behavior
+     * like _onError etc...
+     * @param {Map} an arguments map which an override any of the given protected
      * instance variables, by a simple name value pair combination
-     *
      */
     constructor_: function(arguments) {
 

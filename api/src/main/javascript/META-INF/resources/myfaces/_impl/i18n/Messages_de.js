@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
+
+
 /**
  * System messages german version
  * (note the base version is basically the en_US) version
  * of all messages
- *
+ * <p />
  * We use inheritance to overide the default messages with our
  * german one, variants can derive from the german one (like
  * suisse which do not have the emphasized s)
- *
+ * <p />
  * By using inheritance we can be sure that we fall back to the default one
  * automatically and that our variants only have to override the parts
  * which have changed from the baseline
  *
+ * @class
+ * @name Messages_de
+ * @extends myfaces._impl.i18n.Messages
+ * @memberOf myfaces._impl.i18n
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_de", myfaces._impl.i18n.Messages, {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_de", myfaces._impl.i18n.Messages,
+/** @lends myfaces._impl.i18n.Messages_de.prototype */
+{
 
     MSG_TEST:               "Testnachricht",
 
