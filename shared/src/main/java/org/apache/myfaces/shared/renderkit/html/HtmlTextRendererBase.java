@@ -109,8 +109,7 @@ public class HtmlTextRendererBase
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
-                
-                if (commonPropertiesMarked > 0)
+                if ( (commonPropertiesMarked & ~(CommonPropertyConstants.ESCAPE_PROP)) > 0)
                 {
                     span = true;
                     writer.startElement(HTML.SPAN_ELEM, component);
