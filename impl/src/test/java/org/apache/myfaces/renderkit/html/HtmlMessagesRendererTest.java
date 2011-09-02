@@ -68,11 +68,6 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
                 messages.getRendererType(),
                 new HtmlMessagesRenderer());
         
-        messages.setErrorClass(ERROR_CLASS);
-        messages.setWarnClass(WARN_CLASS);
-        messages.setInfoClass(INFO_CLASS);
-        messages.setWarnStyle("warnStyle");
-        
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
 
@@ -107,6 +102,11 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
         facesContext.addMessage("test2", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary2", "detailWarnSummary2"));        
 
+        messages.setErrorClass(ERROR_CLASS);
+        messages.setWarnClass(WARN_CLASS);
+        messages.setInfoClass(INFO_CLASS);
+        messages.setWarnStyle("warnStyle");
+        
         messages.setLayout("table");
         //messages.setStyle("left: 48px; top: 432px; position: absolute");
         
@@ -118,12 +118,84 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
         }
     }
     
+    public void testRenderSpanOnlyWhenNecessary1() throws Exception
+    {
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        messages.encodeEnd(facesContext);
+        facesContext.renderResponse();
+        String output = writer.getWriter().toString();
+        assertTrue(output.contains("warnSumary"));
+        assertTrue(!output.contains("span"));
+    }
+    
+    public void testRenderSpanOnlyWhenNecessary2() throws Exception
+    {
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        messages.setLayout("table");
+        messages.encodeEnd(facesContext);
+        facesContext.renderResponse();
+        String output = writer.getWriter().toString();
+        assertTrue(output.contains("warnSumary"));
+        assertTrue(!output.contains("span"));
+    }
+    
+    public void testRenderSpanOnlyWhenNecessary3() throws Exception
+    {
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        messages.setId("msgPanel");
+        messages.encodeEnd(facesContext);
+        facesContext.renderResponse();
+        String output = writer.getWriter().toString();
+        assertTrue(output.contains("warnSumary"));
+        assertTrue(!output.contains("span"));
+    }
+    
+    /**
+     * It should output the class on li
+     * @throws Exception
+     */
+    public void testRenderSpanOnlyWhenNecessary4() throws Exception
+    {
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_FATAL, "fatalSumary", "detailFatalSummary"));
+        messages.setId("msgPanel");
+        messages.setFatalClass("fatalClass");
+        messages.encodeEnd(facesContext);
+        facesContext.renderResponse();
+        String output = writer.getWriter().toString();
+        assertTrue(output.contains("fatalSumary"));
+        assertTrue(output.contains("li class=\"fatalClass\""));
+        assertTrue(!output.contains("span"));
+    }
+    
+    /**
+     * It should output the class on td
+     * @throws Exception
+     */
+    public void testRenderSpanOnlyWhenNecessary5() throws Exception
+    {
+        facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_FATAL, "fatalSumary", "detailFatalSummary"));
+        messages.setId("msgPanel");
+        messages.setLayout("table");
+        messages.setFatalClass("fatalClass");
+        messages.encodeEnd(facesContext);
+        facesContext.renderResponse();
+        String output = writer.getWriter().toString();
+        assertTrue(output.contains("fatalSumary"));
+        assertTrue(output.contains("td class=\"fatalClass\""));
+        assertTrue(!output.contains("span"));
+    }
+    
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
         
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
 
+        messages.setErrorClass(ERROR_CLASS);
+        messages.setWarnClass(WARN_CLASS);
+        messages.setInfoClass(INFO_CLASS);
+        messages.setWarnStyle("warnStyle");
+        
         messages.setLayout("table");
         messages.setStyle("left: 48px; top: 432px; position: absolute");
         

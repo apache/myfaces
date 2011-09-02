@@ -82,16 +82,10 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
         //inputText.setParent(form);
         inputText.setId("myInputId");
         
-        message.setErrorClass(ERROR_CLASS);
-        message.setWarnClass(WARN_CLASS);
-        message.setInfoClass(INFO_CLASS);
         //message.setParent(form);
         
         form.getChildren().add(inputText);
         form.getChildren().add(message);
-        
-        facesContext.addMessage(inputText.getClientId(facesContext), 
-                new FacesMessage("Validation message here."));
         
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
@@ -124,7 +118,12 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
             new HtmlRenderedAttr("styleClass", "styleClass", "class=\"infoClass\""),
         };
         
+        facesContext.addMessage(inputText.getClientId(facesContext), 
+                new FacesMessage("Validation message here."));        
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        message.setErrorClass(ERROR_CLASS);
+        message.setWarnClass(WARN_CLASS);
+        message.setInfoClass(INFO_CLASS);
         message.setStyle("left: 48px; top: 432px; position: absolute");
         message.setFor("myInputId");
         
@@ -136,11 +135,26 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
         }
     }
     
+    public void testRenderSpanOnlyWhenNecessary() throws Exception
+    {
+        facesContext.addMessage(inputText.getClientId(), new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        message.setFor("myInputId");
+        message.encodeEnd(facesContext);
+        facesContext.renderResponse();
+        String output = writer.getWriter().toString();
+        System.out.println(output);
+    }
+    
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();
         
+        facesContext.addMessage(inputText.getClientId(facesContext), 
+                new FacesMessage("Validation message here."));
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
+        message.setErrorClass(ERROR_CLASS);
+        message.setWarnClass(WARN_CLASS);
+        message.setInfoClass(INFO_CLASS);
         message.setStyle("left: 48px; top: 432px; position: absolute");
         message.setFor("myInputId");
         

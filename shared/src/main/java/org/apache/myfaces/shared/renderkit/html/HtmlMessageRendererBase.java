@@ -164,11 +164,31 @@ public abstract class HtmlMessageRendererBase
     }
 
     protected void renderSingleFacesMessage(FacesContext facesContext,
+            UIComponent message,
+            FacesMessage facesMessage,
+            String messageClientId,
+            boolean renderId,
+            boolean renderStyleAndStyleClass)
+    throws IOException
+    {
+        Map<String, List<ClientBehavior>> behaviors = null;
+        if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        {
+            behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
+        }
+        boolean wrapSpan = (message.getId() != null && !message.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX)) 
+            || (behaviors != null && !behaviors.isEmpty());
+
+        renderSingleFacesMessage(facesContext, message, facesMessage, messageClientId, renderId, renderStyleAndStyleClass, wrapSpan);
+    }
+    
+    protected void renderSingleFacesMessage(FacesContext facesContext,
                                             UIComponent message,
                                             FacesMessage facesMessage,
                                             String messageClientId,
                                             boolean renderId,
-                                            boolean renderStyleAndStyleClass)
+                                            boolean renderStyleAndStyleClass,
+                                            boolean wrapSpan)
             throws IOException
     {
         // determine style and style class
@@ -197,8 +217,7 @@ public abstract class HtmlMessageRendererBase
             behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
         }
         
-        if ( (message.getId() != null && !message.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX)) 
-                || (behaviors != null && !behaviors.isEmpty()) )
+        if ( wrapSpan )
         {
             span = true;
 
