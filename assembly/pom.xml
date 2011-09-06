@@ -101,6 +101,24 @@
              </configuration>
            </execution>
           <execution>
+            <id>copy-jsdoc</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.myfaces.core</groupId>
+                  <artifactId>myfaces-api</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>jsdoc</classifier>
+                </artifactItem>
+               </artifactItems>
+               <outputDirectory>${project.build.directory}/jsdoc</outputDirectory>
+             </configuration>
+           </execution>
+          <execution>
             <id>copy-source</id>
             <phase>package</phase>
             <goals>

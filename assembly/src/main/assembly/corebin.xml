@@ -49,6 +49,13 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>target/jsdoc</directory>
+      <outputDirectory>jsdoc</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>target/tlddoc</directory>
       <outputDirectory>tlddoc</outputDirectory>
       <includes>
