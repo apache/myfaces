@@ -300,38 +300,42 @@ class _ComponentUtils
             catch (EvaluationException e)
             {
                 input.setValid(false);
-                Throwable cause = e.getCause();
-                if (cause instanceof ValidatorException)
+
+                // we need to check for a ValidatorException
+                Throwable cause = e;
+                while ((cause = cause.getCause()) != null)
                 {
-                    String validatorMessage = input.getValidatorMessage();
-                    if (validatorMessage != null)
+                    if (cause instanceof ValidatorException)
                     {
-                        context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            validatorMessage, validatorMessage));
-                    }
-                    else
-                    {
-                        FacesMessage facesMessage = ((ValidatorException)cause).getFacesMessage();
-                        if (facesMessage != null)
+                        String validatorMessage = input.getValidatorMessage();
+                        if (validatorMessage != null)
                         {
-                            facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-                            context.addMessage(input.getClientId(context), facesMessage);
+                            context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                validatorMessage, validatorMessage));
                         }
-                        Collection<FacesMessage> facesMessages = ((ValidatorException)cause).getFacesMessages();
-                        if (facesMessages != null)
+                        else
                         {
-                            for (FacesMessage message : facesMessages)
+                            FacesMessage facesMessage = ((ValidatorException)cause).getFacesMessage();
+                            if (facesMessage != null)
                             {
-                                message.setSeverity(FacesMessage.SEVERITY_ERROR);
-                                context.addMessage(input.getClientId(context), message);
+                                facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+                                context.addMessage(input.getClientId(context), facesMessage);
+                            }
+                            Collection<FacesMessage> facesMessages = ((ValidatorException)cause).getFacesMessages();
+                            if (facesMessages != null)
+                            {
+                                for (FacesMessage message : facesMessages)
+                                {
+                                    message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                                    context.addMessage(input.getClientId(context), message);
+                                }
                             }
                         }
                     }
                 }
-                else
-                {
-                    throw e;
-                }
+
+                // no ValidatorException found, re-throw EvaluationException
+                throw e;
             }
         }
     }
