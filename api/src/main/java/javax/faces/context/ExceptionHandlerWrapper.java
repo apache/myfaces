@@ -41,7 +41,7 @@ public abstract class ExceptionHandlerWrapper extends ExceptionHandler implement
     @Override
     public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents()
     {
-        return getWrapped().getUnhandledExceptionQueuedEvents();
+        return getWrapped().getHandledExceptionQueuedEvents();
     }
 
     @Override
