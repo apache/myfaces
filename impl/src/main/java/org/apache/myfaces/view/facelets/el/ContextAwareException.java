@@ -18,41 +18,30 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.PropertyNotFoundException;
+import javax.el.ELException;
 import javax.faces.FacesWrapper;
 import javax.faces.view.Location;
 
 /**
- * Implementation of types {@link PropertyNotFoundException}, {@link ContextAware} and {@link FacesWrapper}
+ * Implementation of types {@link ELException}, {@link ContextAware} and {@link FacesWrapper}
  * 
  * @author martinkoci
  * 
  * @see ContextAware
  */
-public class ContextAwarePropertyNotFoundException extends javax.el.PropertyNotFoundException implements ContextAwareExceptionWrapper {
-    
+public class ContextAwareException extends RuntimeException implements ContextAwareExceptionWrapper {
+
     /**
      * 
      */
-    private static final long serialVersionUID = -4194177998555929451L;
+    private static final long serialVersionUID = 7239367504106332588L;
     
     private ContextAwareExceptionWrapper _delegate;
-    //private Throwable _wrappedException;
-    //private String _localizedMessage;
 
-
-    public ContextAwarePropertyNotFoundException(Location location,
-            String expressionString, String qName,
-            Throwable wrapped) {
+    public ContextAwareException(Location location, String expressionString,
+            String qName, Throwable wrapped) {
         super(wrapped);
-        //super(wrapped.getMessage());
-        //_localizedMessage = wrapped.getLocalizedMessage();
-        //_wrappedException = wrapped;
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
-    }
-
-    public Location getLocation() {
-        return _delegate.getLocation();
     }
 
     public String getExpressionString() {
@@ -66,23 +55,8 @@ public class ContextAwarePropertyNotFoundException extends javax.el.PropertyNotF
     public Throwable getWrapped() {
         return _delegate.getWrapped();
     }
-    
-    /*
-    @Override
-    public String getLocalizedMessage()
-    {
-        return _localizedMessage;
-    }
 
-    @Override
-    public Throwable getCause()
-    {
-        return _wrappedException.getCause();
+    public Location getLocation() {
+        return _delegate.getLocation();
     }
-
-    @Override
-    public synchronized Throwable initCause(Throwable cause)
-    {
-        return _wrappedException.initCause(cause);
-    }*/
 }

@@ -58,6 +58,18 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @JSFWebConfigParam(since="2.0.8", defaultValue="noCache", expectedValues="noCache, strict, allowCset, always")
     public static final String INIT_PARAM_CACHE_EL_EXPRESSIONS = "org.apache.myfaces.CACHE_EL_EXPRESSIONS";
     
+    /**
+     * Wrap exception caused by calls to EL expressions, so information like the location, expression string and tag name can be retrieved by
+     * the ExceptionHandler implementation and used to output meaningful information about itself.
+     * 
+     * <p>Note in some cases this will wrap the original javax.el.ELException, so the information will not be on the stack trace unless ExceptionHandler
+     * retrieve checking if the exception implements ContextAware interface and calling getWrapped() method.
+     * </p>
+     * 
+     */
+    @JSFWebConfigParam(since="2.0.9, 2.1.3" , defaultValue="true", expectedValues="true, false")
+    public static final String INIT_PARAM_WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE = "org.apache.myfaces.WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE";
+    
     private FacesContext _facesContext;
     
     private FaceletFactory _factory;
@@ -81,6 +93,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private Boolean _usingPSSOnThisView;
     
     private ELExpressionCacheMode _elExpressionCacheMode;
+    
+    private Boolean _isWrapTagExceptionsAsContextAware;
 
     private List<Map<String, UIComponent>> _componentsMarkedForDeletion;
     
@@ -375,6 +389,17 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
             _elExpressionCacheMode = Enum.valueOf(ELExpressionCacheMode.class, value); 
         }
         return _elExpressionCacheMode;
+    }
+
+    @Override
+    public boolean isWrapTagExceptionsAsContextAware()
+    {
+        if (_isWrapTagExceptionsAsContextAware == null)
+        {
+            _isWrapTagExceptionsAsContextAware = WebConfigParamUtils.getBooleanInitParameter(_facesContext.getExternalContext(),
+                    INIT_PARAM_WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE, true);
+        }
+        return _isWrapTagExceptionsAsContextAware;
     }
 
     @Override

@@ -342,4 +342,14 @@ abstract public class FaceletCompositionContext
     {
         return ELExpressionCacheMode.noCache;
     }
+    
+    /**
+     * 
+     * @since 2.0.9
+     * @return
+     */
+    public boolean isWrapTagExceptionsAsContextAware()
+    {
+        return true;
+    }
 }
