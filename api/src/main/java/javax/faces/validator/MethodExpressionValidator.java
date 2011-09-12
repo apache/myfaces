@@ -63,18 +63,38 @@ public class MethodExpressionValidator implements Validator, StateHolder
         }
         catch (ELException e)
         {
-            // we need to check for a ValidatorException
-            Throwable cause = e;
-            while ((cause = cause.getCause()) != null)
+            Throwable cause = e.getCause();
+            ValidatorException vex = null;
+            if (cause != null)
             {
-                if (cause instanceof ValidatorException)
+                do
                 {
-                    throw (ValidatorException)cause;
+                    if (cause != null && cause instanceof ValidatorException)
+                    {
+                        vex = (ValidatorException) cause;
+                        break;
+                    }
+                    cause = cause.getCause();
                 }
+                while (cause != null);
             }
-
-            // no ValidatorException found, re-throw ELException
-            throw e;
+            if (vex != null)
+            {
+                throw vex;
+            }
+            else
+            {
+                throw e;
+            }
+            //Throwable cause = e.getCause();
+            //if (cause instanceof ValidatorException)
+            //{
+            //    throw (ValidatorException)cause;
+            //}
+            //else
+            //{
+            //    throw e;
+            //}
         }
     }
 

@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.el.ELContext;
+import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
@@ -83,22 +84,54 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
                 methodExpressionZeroArg.invoke(getElContext(), EMPTY_PARAMS);
             }
         }
-        catch (Exception e)
+        catch (ELException e)
         {
-            // If that fails for any reason, throw an AbortProcessingException, including the cause of the failure
+            // "... If that fails for any reason, throw an AbortProcessingException, including the cause of the failure ..."
+            // -= Leonardo Uribe =- after discussing this topic on MYFACES-3199, the conclusion is the part is an advice
+            // for the developer implementing a listener in a method expressions that could be wrapped by this class.
+            // The spec wording is poor but, to keep this coherently with ExceptionHandler API, the spec and code on UIViewRoot we need:
+            // 2a) "exception is instance of APE or any of the causes of the exception are an APE, 
+            // DON'T publish ExceptionQueuedEvent and terminate processing for current event".
+            // 2b) for any other exception publish ExceptionQueuedEvent and continue broadcast processing.
             Throwable cause = e.getCause();
-            if (cause == null)
+            AbortProcessingException ape = null;
+            if (cause != null)
             {
-                cause = e;
+                do
+                {
+                    if (cause != null && cause instanceof AbortProcessingException)
+                    {
+                        ape = (AbortProcessingException) cause;
+                        break;
+                    }
+                    cause = cause.getCause();
+                }
+                while (cause != null);
             }
-            if (cause instanceof AbortProcessingException)
+            
+            if (ape != null)
             {
-                throw (AbortProcessingException) cause;
+                // 2a) "exception is instance of APE or any of the causes of the exception are an APE, 
+                // DON'T publish ExceptionQueuedEvent and terminate processing for current event".
+                // To do this throw an AbortProcessingException here, later on UIViewRoot.broadcastAll,
+                // this exception will be received and stored to handle later.
+                throw ape;
             }
-            else
-            {
-                throw new AbortProcessingException(cause);
-            }
+            //for any other exception publish ExceptionQueuedEvent and continue broadcast processing.
+            throw e;
+            //Throwable cause = e.getCause();
+            //if (cause == null)
+            //{
+            //    cause = e;
+            //}
+            //if (cause instanceof AbortProcessingException)
+            //{
+            //    throw (AbortProcessingException) cause;
+            //}
+            //else
+            //{
+            //    throw new AbortProcessingException(cause);
+            //}
         }
     }
 

@@ -49,18 +49,15 @@ public class TagValueExpressionUEL extends TagValueExpression
     {
         try
         {
-            return getWrapped().getValueReference(context);
+            return this.orig.getValueReference(context);
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName() ,  pnfe);
+            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
         }
         catch (ELException e)
         {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(),  e);
-        }
-        catch (Exception e) {
-            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(), e);
+            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
         }
     }
     

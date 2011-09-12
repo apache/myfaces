@@ -31,11 +31,21 @@ import javax.faces.view.Location;
  */
 public class ContextAwareELException extends ELException implements ContextAwareExceptionWrapper {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2231893442274827689L;
+    
     private ContextAwareExceptionWrapper _delegate;
+    //private Throwable _wrappedException;
+    //private String _localizedMessage;
 
     public ContextAwareELException(Location location, String expressionString,
             String qName, Throwable wrapped) {
         super(wrapped);
+        //super(wrapped.getMessage());
+        //_localizedMessage = wrapped.getLocalizedMessage();
+        //_wrappedException = wrapped;
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 
@@ -54,4 +64,23 @@ public class ContextAwareELException extends ELException implements ContextAware
     public Location getLocation() {
         return _delegate.getLocation();
     }
+
+    /*
+    @Override
+    public String getLocalizedMessage()
+    {
+        return _localizedMessage;
+    }
+
+    @Override
+    public Throwable getCause()
+    {
+        return _wrappedException.getCause();
+    }
+
+    @Override
+    public synchronized Throwable initCause(Throwable cause)
+    {
+        return _wrappedException.initCause(cause);
+    }*/
 }

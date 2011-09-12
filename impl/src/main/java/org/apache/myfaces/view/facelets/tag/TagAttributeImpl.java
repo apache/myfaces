@@ -32,6 +32,9 @@ import javax.faces.view.facelets.TagAttributeException;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
+import org.apache.myfaces.view.facelets.el.ContextAwareTagMethodExpression;
+import org.apache.myfaces.view.facelets.el.ContextAwareTagValueExpression;
+import org.apache.myfaces.view.facelets.el.ContextAwareTagValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpression;
@@ -263,7 +266,14 @@ public final class TagAttributeImpl extends TagAttribute
                 }
             }
             
-            methodExpression = new TagMethodExpression(this, methodExpression);
+            if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
+            {
+                methodExpression = new ContextAwareTagMethodExpression(this, methodExpression);
+            }
+            else
+            {
+                methodExpression = new TagMethodExpression(this, methodExpression);
+            }
                 
             if (actx.isAllowCacheELExpressions() && !actx.isAnyFaceletsVariableResolved())
             {
@@ -447,11 +457,25 @@ public final class TagAttributeImpl extends TagAttribute
             
             if (ExternalSpecifications.isUnifiedELAvailable())
             {
-                valueExpression = new TagValueExpressionUEL(this, valueExpression);
+                if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
+                {
+                    valueExpression = new ContextAwareTagValueExpressionUEL(this, valueExpression);
+                }
+                else
+                {
+                    valueExpression = new TagValueExpressionUEL(this, valueExpression);
+                }
             }
             else
             {
-                valueExpression = new TagValueExpression(this, valueExpression);
+                if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
+                {
+                    valueExpression = new ContextAwareTagValueExpression(this, valueExpression);
+                }
+                else
+                {
+                    valueExpression = new TagValueExpression(this, valueExpression);
+                }
             }
 
             // if the ValueExpression contains a reference to the current composite

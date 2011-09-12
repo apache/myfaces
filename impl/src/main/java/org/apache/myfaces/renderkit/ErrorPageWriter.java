@@ -76,6 +76,7 @@ import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
+import org.apache.myfaces.view.facelets.el.ContextAware;
 
 /**
  * This class provides utility methods to generate the
@@ -766,9 +767,24 @@ public final class ErrorPageWriter
     private static void _writeCause(Writer writer, Throwable ex) throws IOException
     {
         String msg = ex.getMessage();
+        String contextAwareLocation = null;
+        if (ex instanceof ContextAware)
+        {
+            ContextAware caex = (ContextAware) ex;
+            contextAwareLocation = caex.getLocation().toString() + "    " +  
+                                   caex.getQName() + "=\"" + 
+                                   caex.getExpressionString() + "\"";
+        }
         while (ex.getCause() != null)
         {
             ex = ex.getCause();
+            if (ex instanceof ContextAware)
+            {
+                ContextAware caex = (ContextAware) ex;
+                contextAwareLocation = caex.getLocation().toString() + "    " +  
+                                       caex.getQName() + "=\"" + 
+                                       caex.getExpressionString() + "\"";
+            }
             if (ex.getMessage() != null)
                 msg = ex.getMessage();
         }
@@ -784,6 +800,13 @@ public final class ErrorPageWriter
         }
         StackTraceElement stackTraceElement = ex.getStackTrace()[0];
         writer.write("<br/> at " + stackTraceElement.toString());
+        
+        if (contextAwareLocation != null)
+        {
+            writer.write("<br/> <br/>");
+            writer.write(contextAwareLocation);
+            writer.write("<br/>");
+        }
     }
 
     private static void _writeVariables(Writer writer, FacesContext faces, UIViewRoot view) throws IOException
