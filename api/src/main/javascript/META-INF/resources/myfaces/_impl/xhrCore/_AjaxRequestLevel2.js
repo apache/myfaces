@@ -13,57 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
- * an implementation of an xhr level2 object
- * doing all needed operations (aka FormElement, input type submit handling,
- * progress notifications)
- *
- * NOTE this is alpha code since the browsers emit currently insufficient
- * multipart data, this will be enabled as soon as it is possible
- * 
- * Author: Werner Punz (latest modification by $Author: werpu $)
- * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
+ * this method is used only for pure multipart form parts
+ * otherwise the normal method is used
+ * IT is a specialized request which uses the form data
+ * element for the handling of forms
  */
-
 myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestLevel2", myfaces._impl.xhrCore._AjaxRequest, {
 
+    _sourceForm: null,
+
     constructor_: function(arguments) {
-        this._callSuper("constructor", arguments);
-        //this._contentType = "multipart/form-data; boundary=---------------------------168072824752491622650073 ";
+        this._callSuper("constructor_", arguments);
+        //TODO xhr level2 can deal with real props
+
     },
 
-    /**
-     * internal callback from AjaxRequest._startXHR
-     * at this stage the xhr object has been initialized last
-     * post finish works like additional listeners can be registered
-     */
-    _preSend: function() {
-        this._callSuper("_preSend");
-    },
-
-    /**
-     * xhr level2 optimized getViewState element
-     */
-    getViewState: function() {
-        var _Lang = myfaces._impl._util._Lang;
-        var _ret;
+    getFormData: function() {
+        var ret;
         if (!this._partialIdsArray || this._partialIdsArray.length == 0) {
-            //Standard case we have only the normal form issued
-            //var getFormDataPresent = this._sourceForm.getFormData;
-            _ret = _Lang.createFormDataDecorator(new FormData()); 
-            //_ret = _Lang.createFormDataDecorator((getFormDataPresent) ? this._sourceForm.getFormData() : new FormData());
-            if (true) {
-                this._ajaxUtil.encodeSubmittableFields(_ret, this._xhr, this._context, this._source,
-                        this._sourceForm, this._partialIdsArray);
-            }
-            this._ajaxUtil.appendIssuingItem(this._source, _ret);
+            ret = new FormData(this._sourceForm);
         } else {
-            _ret = _Lang.createFormDataDecorator(new FormData());
-            this._ajaxUtil.encodeSubmittableFields(_ret, this._xhr, this._context, this._source,
+            //for speed reasons we only need encodesubmittablefields
+            //in the pps case
+            ret = new FormData(this._sourceForm);
+            this._AJAXUTIL.encodeSubmittableFields(ret, this._xhr, this._context, this._source,
                     this._sourceForm, this._partialIdsArray);
         }
-        return _ret;
-    }
-});
+        return ret;
+    },
 
+    _formDataToURI: function() {
+        //i assume in xhr level2 form data takes care of the http get parametrisation
+        return "";
+    },
+
+    _getTransport: function() {
+        return new XMLHttpRequest();
+    }
+
+});

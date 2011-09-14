@@ -224,10 +224,14 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports" , Ob
     /**
      * Spec. 13.3.3
      * Examining the response markup and updating the DOM tree
-     * @param {XmlHttpRequest} request - the ajax request
-     * @param {XmlHttpRequest} context - the ajax context
+     * @param {XMLHttpRequest} request - the ajax request
+     * @param {Object} context - the ajax context
      */
     response : function(request, context) {
+
+        //TODO we can eliminate this method in favor of an impl specific code where
+        //the response is weakly bound
+
         var internalContext = context._mfInternal;
 
         //the normal usecase is that the request knows about its response
@@ -336,7 +340,12 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._Transports" , Ob
 
 
     _getAjaxReqClass: function(context) {
-        return myfaces._impl.xhrCore._AjaxRequest;
+        // var _RT = myfaces._impl.core._Runtime;
+        //if(_RT.getXHRLvl() < 2) {
+            return myfaces._impl.xhrCore._AjaxRequest;
+        //} else {
+        //    return myfaces._impl.xhrCore._AjaxRequestLevel2;
+        //}
     }
 
 });

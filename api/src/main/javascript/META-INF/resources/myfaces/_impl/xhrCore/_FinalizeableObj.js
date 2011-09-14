@@ -17,6 +17,12 @@
  * Author: Werner Punz (latest modification by $Author: werpu $)
  * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  */
+/**
+ * @memberOf myfaces._impl
+ * @namespace
+ * @name xhrCore
+ */
+
 
 /**
  * @class
@@ -37,6 +43,10 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._FinalizeableObj"
 
     constructor_: function() {
         this._resettableContent={};
+        //we add our three util singletons
+        this._RT =   myfaces._impl.core._Runtime;
+        this._Lang = myfaces._impl._util._Lang;
+        this._Dom = myfaces._impl._util._Dom;
     },
 
     _initDefaultFinalizableFields: function() {

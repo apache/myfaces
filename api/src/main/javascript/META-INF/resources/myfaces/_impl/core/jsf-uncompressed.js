@@ -38,7 +38,15 @@ if (!window.jsf) {
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_FinalizeableObj.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxUtils.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequestQueue.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_BaseRequest.js']}", null, null, "UTF-8", false);
+
+
+    //_ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_BaseRequest.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore.engine:_XhrConst.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore.engine:FormData.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore.engine:Xhr1.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore.engine:IFrame.js']}", null, null, "UTF-8", false);
+
+
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequest.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_IFrameRequest.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxResponse.js']}", null, null, "UTF-8", false);

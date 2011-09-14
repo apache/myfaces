@@ -33,7 +33,6 @@
  * @namespace
  * @name _util
  */
-(myfaces._impl._util) ? myfaces._impl._util: {};
 
 
 
@@ -42,6 +41,7 @@
  * @name _Lang
  * @memberOf myfaces._impl._util
  * @extends myfaces._impl.core._Runtime
+ * @namespace
  * @description Object singleton for Language related methods, this object singleton
  * decorates the namespace myfaces._impl.core._Runtime and adds a bunch of new methods to
  * what _Runtime provided
@@ -257,46 +257,9 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
     },
 
     /**
-     * backported from dojo
-     * Converts an array-like object (i.e. arguments, DOMCollection) to an
-     array. Returns a new Array with the elements of obj.
-     * @param {Object} obj the object to "arrayify". We expect the object to have, at a
-     minimum, a length property which corresponds to integer-indexed
-     properties.
-     * @param {int} offset the location in obj to start iterating from. Defaults to 0.
-     Optional.
-     * @param {Array} packArr An array to pack with the properties of obj. If provided,
-     properties in obj are appended at the end of startWith and
-     startWith is the returned array.
-     */
-    /*_toArray : function(obj, offset, packArr) {
-     //	summary:
-     //		Converts an array-like object (i.e. arguments, DOMCollection) to an
-     //		array. Returns a new Array with the elements of obj.
-     //	obj:
-     //		the object to "arrayify". We expect the object to have, at a
-     //		minimum, a length property which corresponds to integer-indexed
-     //		properties.
-     //	offset:
-     //		the location in obj to start iterating from. Defaults to 0.
-     //		Optional.
-     //	startWith:
-     //		An array to pack with the properties of obj. If provided,
-     //		properties in obj are appended at the end of startWith and
-     //		startWith is the returned array.
-     var arr = packArr || [];
-     //TODO add splicing here
-
-     for (var x = offset || 0; x < obj.length; x++) {
-     arr.push(obj[x]);
-     }
-     return arr; // Array
-     }, */
-
-    /**
      * Helper function to provide a trim with a given splitter regular expression
-     * @param {|String|} it the string to be trimmed
-     * @param {|RegExp|} splitter the splitter regular expressiion
+     * @param {String} it the string to be trimmed
+     * @param {RegExp} splitter the splitter regular expressiion
      *
      * FIXME is this still used?
      */
@@ -340,7 +303,9 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
         str = str.replace(/^\s\s*/, '');
         var ws = /\s/;
         var i = str.length;
-        while (ws.test(str.charAt(--i)));
+        while (ws.test(str.charAt(--i))){
+            //do nothing
+        }
         return str.slice(0, i + 1);
     },
 
@@ -431,50 +396,36 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
     /**
      * Helper function to merge two maps
      * into one
-     * @param {|Object|} dest the destination map
-     * @param {|Object|} src the source map
-     * @param {|boolean|} overwrite if set to true the destination is overwritten if the keys exist in both maps
+     * @param {Object} dest the destination map
+     * @param {Object} src the source map
+     * @param {boolean} overwrite if set to true the destination is overwritten if the keys exist in both maps
      **/
-    mixMaps : function(dest, src, overwrite, blockFilter) {
-        if (!dest || !src) {
+    mixMaps: function(dest, src, overwrite, blockFilter, whitelistFilter) {
+      if (!dest || !src) {
             throw Error(this.getMessage("ERR_PARAM_MIXMAPS",null,"_Lang.mixMaps"));
-        }
+      }
+      var _undef = "undefined";
+      for (var key in src) {
+         if(blockFilter && blockFilter[key]) {
+            continue;
+         }
+         if(whitelistFilter && !whitelistFilter[key]) {
+            continue;
+         }
+         if (!overwrite) {
 
-        /**
-         * mixing code depending on the state of dest and the overwrite param
-         */
-        var ret = {};
-        var keyIdx = {};
-        var key = null;
-        var _undef = "undefined";
-        for (key in src) {
-            if(blockFilter && blockFilter[key]) {
-                continue;
-            }
-            /**
-             *we always overwrite dest with source
-             *unless overWrite is not set or source does not exist
-             *but also only if dest exists otherwise source still is taken
-             */
-            if (!overwrite) {
                 /**
                  *we use exists instead of booleans because we cannot rely
                  *on all values being non boolean, we would need an elvis
                  *operator in javascript to shorten this :-(
                  */
-                ret[key] = (_undef != typeof dest[key]) ? dest[key] : src[key];
+                dest[key] = (_undef != typeof dest[key]) ? dest[key] : src[key];
             } else {
-                ret[key] = (_undef != typeof src[key]) ? src[key] : dest[key];
+                dest[key] = (_undef != typeof src[key]) ? src[key] : dest[key];
             }
-            keyIdx[key] = true;
-        }
-        for (key in dest) {
-            /*if result.key does not exist we push in dest.key*/
-            ret[key] = (_undef != typeof ret[key]) ? ret[key] : dest[key];
-        }
-        return ret;
-    }
-    ,
+      }
+        return dest;
+    },
 
     /**
      * checks if an array contains an element
@@ -565,8 +516,13 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
      * @param arr the array to filter
      * @param func the closure to apply the function to, with the syntax defined by the ecmascript functionality
      * function (element<,key, array>)
-     * @param startPos (optional) the starting position
-     * @param scope (optional) the scope to apply the closure to
+     * <p />
+     * optional params
+     * <p />
+     * <ul>
+     *      <li>param startPos (optional) the starting position </li>
+     *      <li>param scope (optional) the scope to apply the closure to  </li>
+     * </ul>
      */
     arrForEach: function(arr, func /*startPos, scope*/) {
         if(!arr || !arr.length ) return;
@@ -606,9 +562,12 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
      * @param arr the array to filter
      * @param func the closure to apply the function to, with the syntax defined by the ecmascript functionality
      * function (element<,key, array>)
-     * @param startPos (optional) the starting position
-     * @param scope (optional) the scope to apply the closure to
-     *
+     * <p />
+     * additional params
+     * <ul>
+     *  <li> startPos (optional) the starting position</li>
+     *  <li> scope (optional) the scope to apply the closure to</li>
+     * </ul>
      */
     arrFilter: function(arr, func /*startPos, scope*/) {
         if(!arr || !arr.length ) return [];
@@ -627,11 +586,12 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
                 startPos = (startPos < 0) ? Math.ceil(startPos) : Math.floor(startPos);
 
                 for (var cnt = startPos; cnt < arr.length; cnt++) {
+                    var elem = null;
                     if (thisObj) {
-                        var elem = arr[cnt];
+                        elem = arr[cnt];
                         if (func.call(thisObj, elem, cnt, arr)) ret.push(elem);
                     } else {
-                        var elem = arr[cnt];
+                        elem = arr[cnt];
                         if (func(arr[cnt], cnt, arr)) ret.push(elem);
                     }
                 }

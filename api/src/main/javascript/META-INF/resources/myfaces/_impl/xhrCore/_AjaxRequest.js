@@ -19,7 +19,7 @@
  * with partial page submit functionality, and jsf
  * ppr request and timeout handling capabilities
  *
- * Author: Ganesh Jung (latest modification by $Author: ganeshpuri $)
+ * Author: Werner Punz (latest modification by $Author: ganeshpuri $)
  * Version: $Revision: 1.4 $ $Date: 2009/05/31 09:16:44 $
  */
 
@@ -27,205 +27,329 @@
  * @class
  * @name _AjaxRequest
  * @memberOf myfaces._impl.xhrCore
- * @extends myfaces._impl.xhrCore._BaseRequest
+ * @extends myfaces._impl.xhrCore._FinalizeableObj
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", myfaces._impl.xhrCore._BaseRequest,
-/** myfaces._impl.xhrCore._AjaxRequest.prototype */
-{
-    /**
-     * Constructor
-     * <p />
-     * note there is a load of common properties
-     * inherited by the base class which define the corner
-     * parameters and the general internal behavior
-     * like _onError etc...
-     * @param {Map} an arguments map which an override any of the given protected
-     * instance variables, by a simple name value pair combination
-     */
-    constructor_: function(arguments) {
+myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", myfaces._impl.xhrCore._FinalizeableObj,
+        /** @lends myfaces._impl.xhrCore._AjaxRequest.prototype */
+        {
 
-        try {
-            this._callSuper("constructor", arguments);
-            /*namespace remapping for readability*/
-            //we fetch in the standard arguments
-            //and apply them to our protected attributes
-            this._Lang.applyArgs(this, arguments);
+            _contentType: "application/x-www-form-urlencoded",
+            /** source element issuing the request */
+            _source: null,
+            /** encoding for the submit */
+            _encoding:null ,
+            /** context passed down from the caller */
+            _context:null,
+            /** source form issuing the request */
+            _sourceForm: null,
+            /** passthrough parameters */
+            _passThrough: null,
 
-            //if our response handler is not set
-            if (!this._response) {
-                this._response = new myfaces._impl.xhrCore._AjaxResponse(this._onException, this._onWarning);
-            }
+            /** queue control */
+            _timeout: null,
+            /** enqueuing delay */
+            _delay:null,
+            /** queue size */
+            _queueSize:-1,
 
-            this._ajaxUtil = new myfaces._impl.xhrCore._AjaxUtils(this._onException, this._onWarning);
-        } catch (e) {
-            //_onError
-            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
-        }
-    },
+            /**
+             back reference to the xhr queue,
+             only set if the object really is queued
+             */
+            _xhrQueue: null,
 
-    /**
-     * Sends an Ajax request
-     */
-    send : function() {
-        try {
-            //we have to encode at send time, otherwise
-            //we pick up old viewstates
-            this._initRequestParams();
-            this._startXHR();
-            this._startTimeout();
-        } catch (e) {
-            //_onError//_onError
-            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "send", e);
-        }
-    },
+            /** pps an array of identifiers which should be part of the submit, the form is ignored */
+            _partialIdsArray : null,
 
+            /** xhr object, internal param */
+            _xhr: null,
 
-    /**
-     * gets the ViewState including all now passed in sideconstraints
-     */
-    _initRequestParams: function() {
-        this._requestParameters = this.getViewState();
-        for (var key in this._passThrough) {
-            this._requestParameters.append(key, this._passThrough[key]);
-        }
-    },
+            /** response object which is exposed to the queue */
+            _response: null,
 
-    /**
-     * starts the asynchronous xhr request
-     */
-    _startXHR: function() {
-        this._preCreateXHR();
-        this._xhr = myfaces._impl.core._Runtime.getXHRObject();
-        this._postCreateXHR();
+            /** predefined method */
+            _ajaxType:"POST",
 
-        var targetURL;
-        if (typeof this._sourceForm.elements["javax.faces.encodedURL"] == 'undefined') {
-            targetURL = this._sourceForm.action;
-        } else {
-            targetURL = this._sourceForm.elements["javax.faces.encodedURL"].value;
-        }
+            //CONSTANTS
+            ENCODED_URL:"javax.faces.encodedURL",
+            /*
+             * constants used internally
+             */
+            _CONTENT_TYPE:"Content-Type",
+            _HEAD_FACES_REQ:"Faces-Request",
+            _VAL_AJAX: "partial/ajax",
+            _XHR_CONST: myfaces._impl.xhrCore.engine.XhrConst,
 
-        this._xhr.open(this._ajaxType, targetURL +
-                ((this._ajaxType == "GET") ? "?" + this._requestParameters.makeFinal() : "")
-                , true);
+            // _exception: null,
+            // _requestParameters: null,
+            /**
+             * Constructor
+             * <p />
+             * note there is a load of common properties
+             * inherited by the base class which define the corner
+             * parameters and the general internal behavior
+             * like _onError etc...
+             * @param {Object} args an arguments map which an override any of the given protected
+             * instance variables, by a simple name value pair combination
+             */
+            constructor_: function(args) {
 
-        var contentType = this._contentType;
-        if (this._encoding) {
-            contentType = contentType + "; charset:" + this._encoding;
-        }
+                try {
+                    this._callSuper("constructor_", args);
+                    this._initDefaultFinalizableFields();
 
-        this._xhr.setRequestHeader(this._CONTENT_TYPE, this._contentType);
-        this._xhr.setRequestHeader(this._HEAD_FACES_REQ, this._VAL_AJAX);
+                    this._onException = this._Lang.hitch(this, this._stdErrorHandler);
+                    this._onWarn = this._Lang.hitch(this, this._stdErrorHandler);
 
-        this._xhr.onreadystatechange = this._Lang.hitch(this, this.callback);
-        var _Impl = this._getImpl();
-        _Impl.sendEvent(this._xhr, this._context, _Impl.BEGIN);
+                    this._Lang.applyArgs(this, args);
+                    var mfInternal = this._context._mfInternal;
+                    mfInternal._onException = this._onException;
+                    mfInternal._onWarning = this._onWarn;
 
-        this._preSend();
+                    /*namespace remapping for readability*/
+                    //we fetch in the standard arguments
+                    //and apply them to our protected attributes
+                    //we do not gc the entry hence it is not defined on top
+                    var xhrCore = myfaces._impl.xhrCore;
+                    this._AJAXUTIL = xhrCore._AjaxUtils;
 
-        try {
-            this._xhr.send((this._ajaxType != "GET") ? this._requestParameters.makeFinal() : null);
-        } finally {
-            this._postSend();
-        }
-    },
-
-
-
-    /**
-     * starts the timeout
-     * which is able to terminate the xhr upfront early
-     */
-    _startTimeout: function() {
-        if (this._timeout && this._onTimeout) {
-            var _req = this._xhr;
-            var _context = this._context;
-            if (this._timeoutId) {
-                window.clearTimeout(this._timeoutId);
-                this._timeoutId = null;
-            }
-            this._timeoutId = window.setTimeout(
-                //we unify the api, there must be always a request passed to the external function
-                //and always a context, no matter what
-                    this._Lang.hitch(this,
-                            function() {
-                                //the hitch has to be done due to the setTimeout refocusing the scope of this
-                                //to window
-                                try {
-                                    _req.onreadystatechange = function() {
-                                    };
-
-                                    //to avoid malformed whatever, we have
-                                    //the timeout covered already on the _onTimeout function
-                                    _req.abort();
-                                    this._onTimeout(_req, _context);
-                                } catch (e) {
-                                    alert(e);
-                                } finally {
-                                }
-                            })
-                    , this._timeout);
-        }
-    },
-
-    /**
-     * Callback method to process the Ajax response
-     * triggered by RequestQueue
-     */
-    callback : function() {
-
-        try {
-            var _Impl = this._getImpl();
-
-            if (this._xhr.readyState == this._READY_STATE_DONE) {
-                if (this._timeoutId) {
-                    //normally the timeout should not cause anything anymore
-                    //but just to make sure
-                    window.clearTimeout(this._timeoutId);
-                    this._timeoutId = null;
+                    //we cannot eliminate it due to the direct reference to its request the response needs
+                    //at least for now, in the long run we can and must
+                    this._response = xhrCore._AjaxResponse;
+                } catch (e) {
+                    //_onError
+                    this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
                 }
-                this._onDone(this);
-                if (this._xhr.status >= this._STATUS_OK_MINOR && this._xhr.status < this._STATUS_OK_MAJOR) {
-                    this._onSuccess();
-                } else {
-                    this._onError();
+            },
+
+            /**
+             * Sends an Ajax request
+             */
+            send : function() {
+
+                var _Lang = this._Lang;
+
+                try {
+
+                    var scopeThis = _Lang.hitch(this, function(functionName) {
+                        return _Lang.hitch(this, this[functionName]);
+                    });
+                    this._xhr = _Lang.mixMaps(this._getTransport(), {
+                        onprogress: scopeThis("onprogress"),
+                        ontimeout:  scopeThis("ontimeout"),
+                        onloadend:  scopeThis("ondone"),
+                        onload:     scopeThis("onsuccess"),
+                        onerror:    scopeThis("onerror")
+
+                    }, true);
+                    var xhr = this._xhr;
+
+                    var targetURL = (typeof this._sourceForm.elements[this.ENCODED_URL] == 'undefined') ?
+                            this._sourceForm.action :
+                            this._sourceForm.elements[this.ENCODED_URL].value;
+
+                    var formData = this.getFormData();
+                    for (var key in this._passThrough) {
+                        formData.append(key, this._passThrough[key]);
+                    }
+
+                    xhr.open(this._ajaxType, targetURL +
+                            ((this._ajaxType == "GET") ? "?" + this._formDataToURI(formData) : "")
+                            , true);
+                    xhr.timeout = this._timeout || 0;
+                    var contentType = this._contentType;
+                    if (this._encoding) {
+                        contentType = contentType + "; charset:" + this._encoding;
+                    }
+
+                    xhr.setRequestHeader(this._CONTENT_TYPE, this._contentType);
+                    xhr.setRequestHeader(this._HEAD_FACES_REQ, this._VAL_AJAX);
+
+                    this._sendEvent("BEGIN");
+                    //Check if it is a custom form data object
+                    //if yes we use makefinal for the final handling
+                    if (formData && formData.makeFinal) {
+                        formData = formData.makeFinal()
+                    }
+                    xhr.send((this._ajaxType != "GET") ? formData : null);
+
+                } catch (e) {
+                    //_onError//_onError
+                    this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "send", e);
+                }
+            },
+
+
+            ondone: function() {
+                this._requestDone();
+            },
+
+
+            onsuccess: function(evt) {
+
+                var context = this._context;
+                var xhr = this._xhr;
+                try {
+                    this._sendEvent("COMPLETE");
+                    //now we have to reroute into our official api
+                    //because users might want to decorate it, we will split it apart afterwards
+                    context._mfInternal = context._mfInternal || {};
+                    context._mfInternal._mfRequest = this;
+
+                    jsf.ajax.response((xhr.getXHRObject) ? xhr.getXHRObject() : xhr, context);
+
+                    this._sendEvent("SUCCESS");
+                } catch (e) {
+                    this._onException(xhr, context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
+                }
+            },
+
+            onerror: function(evt) {
+
+                var context = this._context;
+                var xhr = this._xhr;
+                var _Lang = this._Lang;
+
+                var errorText = "";
+                this._sendEvent("COMPLETE");
+                try {
+                    var UNKNOWN = _Lang.getMessage("UNKNOWN");
+                    errorText = _Lang.getMessage("ERR_REQU_FAILED", null,
+                            (xhr.status || UNKNOWN),
+                            (xhr.statusText || UNKNOWN));
+
+                } catch (e) {
+                    errorText = _Lang.getMessage("ERR_REQ_FAILED_UNKNOWN", null);
+                } finally {
+                    var _Impl = this._getImpl();
+                    _Impl.sendError(xhr, context, _Impl.HTTPERROR,
+                            _Impl.HTTPERROR, errorText);
+                }
+                //_onError
+            },
+
+            onprogress: function(evt) {
+                //do nothing for now
+            },
+
+            ontimeout: function(evt) {
+
+                try {
+                    //we issue an event not an error here before killing the xhr process
+                    this._sendEvent("TIMEOUT_EVENT");
+                    //timeout done we process the next in the queue
+                } finally {
+                    this._requestDone();
+                }
+            },
+
+            _formDataToURI: function(formData) {
+                if (formData && formData.makeFinal) {
+                    formData = formData.makeFinal()
+                }
+                return formData;
+            },
+
+            _getTransport: function() {
+                var _Rt = myfaces._impl.core._Runtime;
+                //same interface between 1 and 2, in the worst case
+                //so we can make a drop in replacement, on level2
+                //we have one layer less hence we can work directly
+                //on the xhr object, on level2 we have our engine
+                //emulation layer which thunks back into level1
+                //for all calls
+
+                var xhr = myfaces._impl.core._Runtime.getXHRObject();
+                //the current xhr level2 timeout w3c spec is not implemented by the browsers yet
+                //we have to do a fallback to our custom routines
+                if (('undefined' == typeof this._timeout || null == this._timeout) && _Rt.getXHRLvl() >= 2) {
+                    //no timeout we can skip the emulation layer
+                    return xhr;
+                }
+
+                return new myfaces._impl.xhrCore.engine.Xhr1({xhrObject: xhr});
+            },
+
+
+
+            //----------------- backported from the base request --------------------------------
+            //non abstract ones
+            /**
+             * Spec. 13.3.1
+             * Collect and encode input elements.
+             * Additionally the hidden element javax.faces.ViewState
+             *
+             *
+             * @return  an element of formDataWrapper
+             * which keeps the final Send Representation of the
+             */
+            getFormData : function() {
+
+                var ret = this._Lang.createFormDataDecorator(new Array());
+
+                this._AJAXUTIL.encodeSubmittableFields(ret, this._xhr, this._context, this._source,
+                        this._sourceForm, this._partialIdsArray);
+
+                return ret;
+            },
+
+            _getImpl: function() {
+
+                this._Impl = this._Impl || myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
+                return this._Impl;
+            },
+
+            /**
+             * Client error handlers which also in the long run route into our error queue
+             * but also are able to deliver more meaningful messages
+             * note, in case of an error all subsequent xhr requests are dropped
+             * to get a clean state on things
+             *
+             * @param request the xhr request object
+             * @param context the context holding all values for further processing
+             * @param sourceClass (String) the issuing class for a more meaningful message
+             * @param func the issuing function
+             * @param exception the embedded exception
+             */
+            _stdErrorHandler: function(request, context, sourceClass, func, exception) {
+
+                var xhrQueue = this._xhrQueue;
+                try {
+                    var _Impl = this._getImpl();
+                    _Impl.stdErrorHandler(request, context, sourceClass, func, exception);
+                } finally {
+                    if (xhrQueue) {
+                        xhrQueue.cleanup();
+                    }
+                }
+            },
+
+            _sendEvent: function(evtType) {
+
+                var _Impl = this._getImpl();
+                _Impl.sendEvent(this._xhr, this._context, _Impl[evtType]);
+            },
+
+            _requestDone: function() {
+
+                if (this._xhrQueue) {
+                    this._xhrQueue.processQueue();
+                }
+                //ie6 helper cleanup
+                delete this._context.source;
+                this._finalize();
+            },
+
+            //cleanup
+            _finalize: function() {
+
+                //final cleanup to terminate everything
+                this._Lang.clearExceptionProcessed();
+
+                //_t._context.source;
+                if (this._xhr.readyState == this._XHR_CONST.READY_STATE_DONE) {
+                    this._callSuper("_finalize");
                 }
             }
-        } catch (e) {
-            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
-        } finally {
-            //final cleanup to terminate everything
-            this._Lang.clearExceptionProcessed();
-
-            //this._context.source;
-            if (this._xhr.readyState == this._READY_STATE_DONE) {
-                this._callSuper("_finalize");
-            }
-
-        }
-    },
-
-
-
-
-
-    /*
-     * various lifecycle callbacks which can be used by differing AjaxRequest impls
-     * (namely level 1.5 (Mozilla XHR) and level 2 (html5 xhr) to run special initialisation code
-     **/
-    _preCreateXHR : function() {
-        //called after the xhr object has been created
-    },
-
-    _postCreateXHR : function() {
-        //called after the xhr object has been created
-    },
-    _preSend : function() {
-        //called before the xhr object is sent
-    },
-    _postSend : function() {
-        //called after the xhr object is sent for cleanup purposes
-    }
-
-});
+        });
 

@@ -40,6 +40,7 @@
         <script>
             <fileName>jsf-uncompressed.js</fileName>
             <includes>
+                <include>**/_impl/core/_EvalHandlers.js</include>
                 <include>**/_impl/core/_Runtime.js</include>
                 <include>**/_impl/core/jsf-uncompressed.js</include>
             </includes>
