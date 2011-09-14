@@ -203,7 +203,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     nodeIdOrName: function(elem) {
         if (elem) {
             //just to make sure that the pas
-            var origElemIdentifier = elem;
+
             elem = this.byId(elem);
             if(!elem) return null;
             //detached element handling, we also store the element name
@@ -240,6 +240,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         this._removeNode(item, false);
     },
 
+    createElement: function(nodeName, attrs) {
+        var ret = document.createElement(nodeName);
+        if(attrs) {
+            for(var key in attrs) {
+                this.setAttribute(ret, key, attrs[key]);
+            }
+        }
+        return ret;
+    },
 
     /**
      * Checks whether the browser is dom compliant.
@@ -286,8 +295,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (markup !== "") {
             var ret = null;
 
-            //w3c compliant browsers with proper contextual fragments
-            var parentNode;
             // we try to determine the browsers compatibility
             // level to standards dom level 2 via various methods
             if (this.isDomCompliant()) {
@@ -318,7 +325,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     /**
      * detchaes a set of nodes from their parent elements
      * in a browser independend manner
-     * @param {Nodelist} items the items which need to be detached
+     * @param {Object} items the items which need to be detached
      * @return {Array} an array of nodes with the detached dom nodes
      */
     detach: function(items) {
@@ -333,9 +340,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
         //all ies treat node lists not as arrays so we have to take
         //an intermediate step
-        var items = this._Lang.objToArray(items);
-        for(var cnt = 0; cnt < items.length; cnt++) {
-            ret.push(items[cnt].parentNode.removeChild(items[cnt]));
+        var nodeArr = this._Lang.objToArray(items);
+        for(var cnt = 0; cnt < nodeArr.length; cnt++) {
+            ret.push(nodeArr[cnt].parentNode.removeChild(nodeArr[cnt]));
         }
         return ret;
     },
@@ -416,8 +423,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             var dummyPlaceHolder = this.getDummyPlaceHolder();
             //now that Microsoft has finally given
             //ie a working gc in 8 we can skip the costly operation
-            var b = myfaces._impl.core._Runtime.browser;
-
             if (b.isIE && b.isIE < 8) {
                 this._removeChildNodes(dummyPlaceHolder, false);
             }
@@ -498,7 +503,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //we have customers using html unit, this has a bug in the table resolution
         //hence we determine the depth dynamically
         var depth = this._determineDepth(probe);
-        var newProbe = probe;
+
         this._removeChildNodes(probe, false);
         probe.innerHTML = "";
 
@@ -568,7 +573,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         try {
             //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
             //again to speed things up we precheck first
-            if(!this._isTableElement(childNode)) {
+            if(!this._isTableElement(node)) {
                 //we do not do a table structure innnerhtml on table elements except td
                 //htmlunit rightfully complains that we should not do it
                 node.innerHTML = "";
@@ -588,6 +593,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                 // both innerHTML and outerHTML fails when <tr> is the node, but in that case 
                 // we need to force node removal, otherwise it will be on the tree (IE 7 IE 6)
                 this.detach(node);
+                if (!b.isIEMobile) {
+                    delete node;
+                }
             } catch (e1) {
             }
         }
@@ -1147,12 +1155,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
 
         //before going into the more complicated stuff we try the simple approach
+        var ret = null;
+        var elemForm =  null;
         if (!this._Lang.isString(elem)) {
 
             //html 5 allows finally the detachement of elements
             //by introducing a form attribute
 
-            var elemForm = this.html5FormDetection(elem);
+            elemForm = this.html5FormDetection(elem);
             if (elemForm) {
                 return elemForm;
             }
@@ -1164,7 +1174,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (this._Lang.equalsIgnoreCase(elem.tagName, "form")) {
                 return elem;
             }
-            var ret = this.getParent(elem, "form");
+            ret = this.getParent(elem, "form");
             if (ret) return ret;
         } else {
             elem = this.byId(elem);
@@ -1172,7 +1182,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (!elem){
             	return null;
             }
-            var ret = this.getParent(elem, "form");
+            ret = this.getParent(elem, "form");
             if (ret) return ret;
         }
 
@@ -1186,7 +1196,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         if (id && '' != id) {
             //we have to assert that the element passed down is detached
             var domElement = this.byId(id);
-            var elemForm = this.html5FormDetection(domElement);
+            elemForm = this.html5FormDetection(domElement);
             if (elemForm) {
                 return elemForm;
             }
@@ -1442,7 +1452,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     isManualScriptEval: function() {
 
         if (!this._Lang.exists(myfaces, "config._autoeval")) {
-            var _Browser = this._RT.browser;
+
             //now we rely on the document being processed if called for the first time
             var evalDiv = document.createElement("div");
             this._Lang.reserveNamespace("myfaces.config._autoeval");
@@ -1530,7 +1540,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     }
     ,
 
-    getDummyPlaceHolder: function(markup) {
+    getDummyPlaceHolder: function() {
         var created = false;
         if (!this._dummyPlaceHolder) {
             this._dummyPlaceHolder = document.createElement("div");

@@ -91,7 +91,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
      * find the javax.faces.ViewState element and encode its value as well!
      * return a concatenated string of the encoded values!
      *
-     * @throws error in case of the given element not being of type form!
+     * @throws Error in case of the given element not being of type form!
      * https://issues.apache.org/jira/browse/MYFACES-2110
      */
     getViewState : function(form) {
@@ -147,7 +147,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
          **/
         var _Lang = this._Lang;
         var _Dom =  this._Dom;
-        var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
 
         /*assert if the onerror is set and once if it is set it must be of type function*/
         _Lang.assertType(options.onerror, "function");

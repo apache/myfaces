@@ -34,36 +34,9 @@
  */
 /** @namespace myfaces._impl.core._Runtime*/
 
-/**
-* @namespace
-* @name window
-* @description supplimental window methods.
-*/
 
 
 
-if(!window.myfaces) {
-    /**
-     * @namespace
-     * @name myfaces
-     */
-    var myfaces = new function() {};
-    window.myfaces = myfaces;
-}
-
-
-
-/**
-* @memberOf myfaces
-* @namespace
-* @name _impl
-*/
-myfaces._impl = (myfaces._impl) ? myfaces._impl : {};
-/**
- * @memberOf myfaces._impl
- * @namespace
- * @name core
- */
 myfaces._impl.core = (myfaces._impl.core) ? myfaces._impl.core : {};
 //now this is the only time we have to do this cascaded and manually
 //for the rest of the classes our reserveNamespace function will do the trick
@@ -96,94 +69,14 @@ if (!myfaces._impl.core._Runtime) {
          */
         this._classReplacementCnt = 0;
 
-        /*cascaded eval methods depending upon the browser*/
-
-        /**
-         * @function
-         * @param code
-
-         *
-         * evals a script globally using exec script (ie6 fallback)
-         * @param {String} code the code which has to be evaluated
-         * @borrows myfaces._impl.core._Runtime as _T
-         */
-        _T._evalExecScript = function(code) {
-            //execScript definitely only for IE otherwise we might have a custom
-            //window extension with undefined behavior on our necks
-            //window.execScript does not return anything
-            //on htmlunit it return "null object"
-            var ret = window.execScript(code);
-            if ('undefined' != typeof ret && ret == "null" /*htmlunit bug*/) {
-                return null;
-            }
-            return ret;
-        };
-
-        /**
-         * flakey head appendix method which does not work in the correct
-         * order or at all for all modern browsers
-         * but seems to be the only method which works on blackberry correctly
-         * hence we are going to use it as fallback
-         *
-         * @param {String} code the code part to be evaled
-         * @borrows myfaces._impl.core._Runtime as _T
-         */
-        _T._evalBBOld = function(code) {
-            var location = document.getElementsByTagName("head")[0] || document.documentElement;
-            var placeHolder = document.createElement("script");
-            placeHolder.type = "text/javascript";
-            placeHolder.text = code;
-            location.insertBefore(placeHolder, location.firstChild);
-            location.removeChild(placeHolder);
-            return null;
-        };
-
-        /**
-         * @name myfaces._impl.core._Runtime._standardGlobalEval
-         * @private
-         * @param {String} code
-         */
-        _T._standardGlobalEval = function(code) {
-            //fix which works in a cross browser way
-            //we used to scope an anonymous function
-            //but I think this is better
-            //the reason is firefox applies a wrong scope
-            //if we call eval by not scoping
-
-            var gEval = function () {
-
-                var ret = window.eval.call(window, code);
-                if ('undefined' == typeof ret) return null;
-                return ret;
-            };
-            var ret = gEval();
-            if ('undefined' == typeof ret) return null;
-            return ret;
-        };
-
         /**
          * global eval on scripts
-         * @param {String} code
+         * @param {String} code
          * @name myfaces._impl.core._Runtime.globalEval
          * @function
          */
         _T.globalEval = function(code) {
-            //TODO add a config param which allows to evaluate global scripts even if the call
-            //is embedded in an iframe
-            //We lazy init the eval type upon the browsers
-            //capabilities
-            if ('undefined' == typeof _T._evalType) {
-                _T._evalType = window.execScript ? "_evalExecScript" : null;
-                _T._evalType = !_T._evalType && window.eval && (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6) ? "_standardGlobalEval" : null;
-                _T._evalType = (window.eval && !_T._evalType) ? "_evalBBOld" : null;
-            }
-            if (_T._evalType) {
-                return _T[_T._evalType](code);
-            }
-            //we probably have covered all browsers, but this is a safety net which might be triggered
-            //by some foreign browser which is not covered by the above cases
-            eval.call(window, code);
-            return null;
+            return myfaces._impl.core._EvalHandlers.globalEval(code);
         };
 
         /**
@@ -194,7 +87,7 @@ if (!myfaces._impl.core._Runtime) {
          * which the namespace points to, hence this function
          *
          * @param {String} nms the namespace to be assigned to
-         * @param {Any} obj the  object to be assigned
+         * @param {Object} obj the  object to be assigned
          * @name myfaces._impl.core._Runtime.applyToGlobalNamespace
          * @function
          */
@@ -381,14 +274,14 @@ if (!myfaces._impl.core._Runtime) {
          * myfacesScriptRoot to the root of your script files (aka under normal circumstances
          * resources/scripts)
          *
-         * @param {String}Â nms, the subnamespace to be required
+         * @param {String} nms the subnamespace to be required
          */
         this.require = function(nms) {
             //namespace exists
             if (_T.exists(nms)) return;
             var rootPath = _T.getGlobalConfig("myfacesScriptRoot", "");
             _T.loadScriptEval(rootPath + "/" + nms.replace(/\./g, "/") + ".js");
-        },
+        };
 
         /**
          * fetches a global config entry
@@ -397,17 +290,17 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @return either the config entry or if none is given the default value
          */
-         this.getGlobalConfig = function(configName, defaultValue) {
-                    /**
-                     * note we could use exists but this is an heavy operation, since the config name usually
-                     * given this function here is called very often
-                     * is a single entry without . in between we can do the lighter shortcut
-                     */
-                    return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
-                            myfaces.config[configName]
-                            :
-                            defaultValue;
-                };
+        this.getGlobalConfig = function(configName, defaultValue) {
+            /**
+             * note we could use exists but this is an heavy operation, since the config name usually
+             * given this function here is called very often
+             * is a single entry without . in between we can do the lighter shortcut
+             */
+            return (myfaces["config"] && 'undefined' != typeof myfaces.config[configName] ) ?
+                    myfaces.config[configName]
+                    :
+                    defaultValue;
+        };
 
         /**
          * gets the local or global options with local ones having higher priority
@@ -464,12 +357,12 @@ if (!myfaces._impl.core._Runtime) {
                 //we now check the xhr level
                 //sendAsBinary = 1.5 which means mozilla only
                 //upload attribute present == level2
-                /*
-                 if (!_T.XHR_LEVEL) {
-                 var _e = _T.exists;
-                 _T.XHR_LEVEL = (_e(_ret, "sendAsBinary")) ? 1.5 : 1;
-                 _T.XHR_LEVEL = (_e(_ret, "upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
-                 }*/
+
+                if (!_T.XHR_LEVEL) {
+                    var _e = _T.exists;
+                    _T.XHR_LEVEL = (_e(_ret, "sendAsBinary")) ? 1.5 : 1;
+                    _T.XHR_LEVEL = (_e(_ret, "upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
+                }
                 return _ret;
             }
             //IE
@@ -543,8 +436,7 @@ if (!myfaces._impl.core._Runtime) {
 
             //ok this is nasty we have to do a head modification for ie pre 8
             //the rest can be finely served with body
-            var d = _T.browser;
-            var position = "head"
+            var position = "head";
 
             try {
                 var holder = document.getElementsByTagName(position)[0];
@@ -619,10 +511,10 @@ if (!myfaces._impl.core._Runtime) {
          *
          * @param {String} newCls the new class name to be generated
          * @param {Object} delegateObj the delegation object
-         * @param {Map} protoFuncs the prototype functions which should be attached
-         * @param {Map} nmsFuncs the namespace functions which should be attached to the namespace
+         * @param {Object} protoFuncs the prototype functions which should be attached
+         * @param {Object} nmsFuncs the namespace functions which should be attached to the namespace
          */
-        this.delegateObj = function( newCls, delegateObj, protoFuncs, nmsFuncs) {
+        this.delegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
             if (!_T.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
             }
@@ -805,14 +697,12 @@ if (!myfaces._impl.core._Runtime) {
 
                 return _T.extendClass(classNms, preserveNMS, protoFuncs);
             } else {
-                //TODO constructor mapping?
                 if (protoFuncs.constructor_) {
-                    //TODO needs testing if this works!
                     newCls.prototype.constructor = protoFuncs.constructor_;
                 }
                 _applyFuncs(oldClass, protoFuncs, true);
             }
-        },
+        };
 
         /**
          * Extends a class and puts a singleton instance at the reserved namespace instead
@@ -822,9 +712,9 @@ if (!myfaces._impl.core._Runtime) {
          * @param {function} extendsCls the function class to be extended
          * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
          */
-                this.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
-                    return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
-                };
+        this.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
+            return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
+        };
 
         /**
          * delegation pattern which attached singleton generation
@@ -966,6 +856,7 @@ if (!myfaces._impl.core._Runtime) {
                     tv = parseFloat(dav);
 
             _T.browser = {};
+            myfaces._impl.core._EvalHandlers.browser = _T.browser;
             var d = _T.browser;
 
             if (dua.indexOf("Opera") >= 0) {

@@ -78,8 +78,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", my
      * @param {Object} argument, the arguments passed down which are broadcast
      */
     broadcastEvent : function(argument) {
-        var _Lang = myfaces._impl._util._Lang;
-        var _args = _Lang.objToArray(arguments);
+        var _args = myfaces._impl._util._Lang.objToArray(arguments);
 
         var broadCastFunc = function(element) {
             element.apply(null, _args);

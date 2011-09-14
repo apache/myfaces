@@ -17,24 +17,20 @@
  * @class
  * @name _AjaxUtils
  * @memberOf myfaces._impl.xhrCore
- * @extends myfaces._impl.xhrCore._FinalizeableObj
  * @description
  *
  * A set of helper routines which are utilized within our Ajax subsystem and nowhere else
+ *
+ * TODO move this into a singleton, the current structure is
+ * still a j4fry legacy we need to get rid of it in the long run
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", myfaces._impl.xhrCore._FinalizeableObj,
+myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxUtils", Object,
 /** @lends myfaces._impl.xhrCore._AjaxUtils.prototype */
 {
-      _processedExceptions: {},
-
     /**
      * Constructor
-     * @param {function} onException - exception handler
-     * @param {function} onWarning - warning handler
      */
-    constructor_ : function(onException, onWarning) {
-        this._onException = onException;
-        this._onWarning = onWarning;
+    constructor_ : function() {
     },
 
 
@@ -51,7 +47,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", myfa
 
         try {
             if (!parentItem) {
-                this._onWarning(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields " + "Html-Component is not nested in a Form-Tag");
+                context._mfInternal._onWarning(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields " + "Html-Component is not nested in a Form-Tag");
                 return null;
             }
 
@@ -67,7 +63,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", myfa
 
             this.appendIssuingItem(item, targetBuf);
         } catch (e) {
-            this._onException(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields", e);
+            context._mfInternal._onException(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields", e);
         }
     },
 
@@ -235,11 +231,5 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxUtils", myfa
             }
 
         }
-    },
-
-    _finalize: function() {
-        delete this._onException;
-        delete this._onWarning;
     }
-
 });

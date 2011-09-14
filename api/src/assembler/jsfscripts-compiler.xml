@@ -40,11 +40,17 @@
         <script>
             <fileName>jsf.js</fileName>
             <includes>
+                <include>**/_impl/core/_EvalHandlers.js</include>
+
                 <include>**/_impl/core/_Runtime.js</include>
 
                 <include>**/_impl/i18n/Messages.js</include>
                 <include>**/_impl/i18n/Messages_de.js</include>
                 <include>**/_impl/i18n/Messages_nl.js</include>
+                <include>**/_impl/i18n/Messages_fr.js</include>
+                <include>**/_impl/i18n/Messages_it.js</include>
+                <include>**/_impl/i18n/Messages_es.js</include>
+                <include>**/_impl/i18n/Messages_ru.js</include>
 
                 <include>**/_impl/_util/_Lang.js</include>
                 <include>**/_impl/_util/_Queue.js</include>
@@ -56,10 +62,18 @@
                 <include>**/_impl/xhrCore/_FinalizeableObj.js</include>
                 <include>**/_impl/xhrCore/_AjaxUtils.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequestQueue.js</include>
-                <include>**/_impl/xhrCore/_BaseRequest.js</include>
+
+                <!-- the jsf.js independend xhr core engine -->
+                <include>**/_impl/xhrCore/engine/XhrConst.js</include>
+                <include>**/_impl/xhrCore/engine/FormData.js</include>
+                <include>**/_impl/xhrCore/engine/BaseRequest.js</include>
+                <include>**/_impl/xhrCore/engine/Xhr1.js</include>
+                <include>**/_impl/xhrCore/engine/IFrame.js</include>
+
+
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
 
-                <!-- this is pure 2.1 functionality -->
+                <!-- this is pure 2.2 functionality -->
                 <include>**/_impl/xhrCore/_IFrameRequest.js</include>
 
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
