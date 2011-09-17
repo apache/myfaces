@@ -26,6 +26,11 @@
                 <li><a href="myfaces-impl/apidocs/index.html">Javadoc (Impl)</a></li>
             </ul>
         </section>
+        <section name="Jsdoc Links">
+            <ul>
+                <li><a href="myfaces-api/jsdoc/index.html">Jsdoc (API)</a></li>
+            </ul>
+        </section>
         <section name="TLD Links">
             <ul>
                 <li><a href="myfaces-impl/tlddoc/index.html">Core: Tlddoc for Jsp.</a></li>
