@@ -21,6 +21,9 @@
 <document>
   <body>
     <section name="Viewing Examples Application">
+       <p><b>NOTE: See the updated documentation in our 
+       <a href="https://cwiki.apache.org/confluence/display/MYFACES">Confluence Wiki</a></b>
+       </p>
        <p>
        Your first step with Apache MyFaces Core should be to have a look at our
        examples application. You can do that by going to our working distribution
