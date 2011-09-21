@@ -73,11 +73,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     // the javabean properties of the associated component. This is built by
     // introspection on the associated UIComponent. Don't serialize this as
     // it can always be recreated when needed.
-    private transient Map<String, PropertyDescriptor> _propertyDescriptorMap = null;
+    private transient Map<String, _PropertyDescriptorHolder> _propertyDescriptorMap = null;
 
     // Cache for component property descriptors
-    private static Map<Class<?>, Map<String, PropertyDescriptor>> _propertyDescriptorCache = 
-        new WeakHashMap<Class<?>, Map<String, PropertyDescriptor>>();
+    private static Map<Class<?>, Map<String, _PropertyDescriptorHolder>> _propertyDescriptorCache = 
+        new WeakHashMap<Class<?>, Map<String, _PropertyDescriptorHolder>>();
     
     private boolean _isCompositeComponent;
     private boolean _isCompositeComponentSet;
@@ -250,7 +250,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         Object value;
 
         // is there a javabean property to read?
-        PropertyDescriptor propertyDescriptor = getPropertyDescriptor((String) key);
+        _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
         if (propertyDescriptor != null)
         {
             value = getComponentProperty(propertyDescriptor);
@@ -342,7 +342,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     public Object remove(Object key)
     {
         checkKey(key);
-        PropertyDescriptor propertyDescriptor = getPropertyDescriptor((String) key);
+        _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
         if (propertyDescriptor != null)
         {
             throw new IllegalArgumentException("Cannot remove component property attribute");
@@ -385,7 +385,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             throw new NullPointerException("key");
         }
 
-        PropertyDescriptor propertyDescriptor = getPropertyDescriptor(key);
+        _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor(key);
         if (propertyDescriptor == null)
         {
             if (value == null)
@@ -427,7 +427,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * currently 100 UIInputText components means performing introspection
      * on the UIInputText component 100 times.
      */
-    private PropertyDescriptor getPropertyDescriptor(String key)
+    private _PropertyDescriptorHolder getPropertyDescriptor(String key)
     {
         if (_propertyDescriptorMap == null)
         {
@@ -447,14 +447,15 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                     throw new FacesException(e);
                 }
                 PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-                _propertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
+                _propertyDescriptorMap = new HashMap<String, _PropertyDescriptorHolder>();
                 for (int i = 0; i < propertyDescriptors.length; i++)
                 {
                     PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-                    if (propertyDescriptor.getReadMethod() != null)
+                    Method readMethod = propertyDescriptor.getReadMethod();
+                    if (readMethod != null)
                     {
                         _propertyDescriptorMap.put(propertyDescriptor.getName(),
-                                propertyDescriptor);
+                                new _PropertyDescriptorHolder(propertyDescriptor, readMethod));
                     }
                 }
                 // ... and put it in cache
@@ -483,7 +484,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * @throws FacesException           if any other problem occurs while invoking
      *                                  the getter method.
      */
-    private Object getComponentProperty(PropertyDescriptor propertyDescriptor)
+    private Object getComponentProperty(_PropertyDescriptorHolder propertyDescriptor)
     {
         Method readMethod = propertyDescriptor.getReadMethod();
         if (readMethod == null)
@@ -510,7 +511,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * @throws FacesException           if any other problem occurs while invoking
      *                                  the getter method.
      */
-    private void setComponentProperty(PropertyDescriptor propertyDescriptor, Object value)
+    private void setComponentProperty(_PropertyDescriptorHolder propertyDescriptor, Object value)
     {
         Method writeMethod = propertyDescriptor.getWriteMethod();
         if (writeMethod == null)
