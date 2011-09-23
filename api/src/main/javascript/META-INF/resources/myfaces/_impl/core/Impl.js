@@ -468,7 +468,15 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
             var finalMessage = [];
 
             finalMessage.push((name) ? name : "");
+            if (name)
+            {
+                finalMessage.push(": ");
+            }
             finalMessage.push((serverErrorName) ? serverErrorName : "");
+            if (serverErrorName)
+            {
+                finalMessage.push(" ");
+            }
             finalMessage.push((serverErrorMessage) ? serverErrorMessage : "");
             finalMessage.push(malFormedMessage());
             finalMessage.push("\n\n");
