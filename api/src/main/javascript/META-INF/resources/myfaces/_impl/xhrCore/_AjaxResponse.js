@@ -604,96 +604,150 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxRes
             }
             ,
 
-            /*insert, three attributes can be present
-             * id = insert id
-             * before = before id
-             * after = after  id
+            /**
+             * xml insert command handler
              *
-             * the insert id is the id of the node to be inserted
-             * the before is the id if set which the component has to be inserted before
-             * the after is the id if set which the component has to be inserted after
+             * @param request the ajax request element
+             * @param context the context element holding the data
+             * @param node the xml node holding the insert data
+             * @return true upon successful completion, false otherwise
+             *
              **/
-            processInsert : function(request, context, node) {
+            processInsert: function(request, context, node) {
                 /*remapping global namespaces for speed and readability reasons*/
                 var _Impl = this._getImpl();
                 var _Lang = this._Lang;
+                var _Dom = this._Dom;
+                //determine which path to go:
 
-                var insertId = node.getAttribute('id');
-                var beforeId = node.getAttribute('before');
-                var afterId = node.getAttribute('after');
+                var insertData = this._determineInsertData(request, context, node);
+                if(!insertData) return false;
 
-                var isInsert = insertId && _Lang.trim(insertId) != "";
-                var isBefore = beforeId && _Lang.trim(beforeId) != "";
-                var isAfter = afterId && _Lang.trim(afterId) != "";
-
-                if (!isInsert) {
-                    _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, this._Lang.getMessage("ERR_PPR_IDREQ"));
+                var opNode = this._Dom.byIdOrName(insertData.opId);
+                if (!opNode) {
+                    _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, this._Lang.getMessage("ERR_PPR_INSERTBEFID_1", null, "_AjaxResponse.processInsert", insertData.opId));
                     return false;
                 }
-                if (!(isBefore || isAfter)) {
-                    _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, this._Lang.getMessage("ERR_PPR_INSERTBEFID"));
-                    return false;
-                }
-                //either before or after but not two at the same time
-                var nodeHolder = null;
-                var parentNode = null;
 
-                var cDataBlock = this._Dom.concatCDATABlocks(node);
+                //call _insertBefore or _insertAfter
+                return this[insertData.insertType](request, context, opNode, insertData.cDataBlock);
+            },
 
-                var replacementFragment;
-                if (isBefore) {
-                    beforeId = _Lang.trim(beforeId);
-                    var beforeNode = this._Dom.byIdOrName(beforeId);
-                    if (!beforeNode) {
-                        _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, this._Lang.getMessage("ERR_PPR_INSERTBEFID_1", null, "_AjaxResponse.processInsert", beforeId));
+            /**
+             * determines the corner data from the insert tag parsing process
+             *
+             *
+             * @param request request
+             * @param context context
+             * @param node the current node pointing to the insert tag
+             * @return false if the parsing failed, otherwise a map with follwing attributes
+             * <ul>
+             *     <li>inserType - a ponter to a constant which maps the direct function name for the insert operation </li>
+             *     <li>opId - the before or after id </li>
+             *     <li>cDataBlock - the html cdata block which needs replacement </li>
+             * </ul>
+             *
+             * TODO we have to find a mechanism to replace the direct sendError calls with a javascript exception
+             * which we then can use for cleaner error code handling
+             */
+            _determineInsertData: function(request, context, node) {
+                var _Impl = this._getImpl();
+                var _Lang = this._Lang;
+                var _Dom = this._Dom;
+
+                var INSERT_TYPE_BEFORE = "_insertBefore";
+                var INSERT_TYPE_AFTER = "_insertAfter";
+
+                var id = node.getAttribute("id");
+                var beforeId = node.getAttribute("before");
+                var afterId = node.getAttribute("after");
+                var ret = {};
+
+                //now we have to make a distinction between two different parsing paths
+                //due to a spec malalignment
+                //a <insert id="... beforeId|AfterId ="...
+                //b <insert><before id="..., <insert> <after id="....
+                //see https://issues.apache.org/jira/browse/MYFACES-3318
+                //simple id, case1
+                if (id && beforeId && !afterId) {
+                    ret.insertType = INSERT_TYPE_BEFORE;
+                    ret.opId = beforeId;
+                    ret.cDataBlock = this._Dom.concatCDATABlocks(node);
+
+                    //<insert id=".. afterId="..
+                } else if (id && !beforeId && afterId) {
+                    ret.insertType = INSERT_TYPE_AFTER;
+                    ret.opId = afterId;
+                    ret.cDataBlock = this._Dom.concatCDATABlocks(node);
+
+                    //<insert><before id="... <insert><after id="...
+                } else if (!id) {
+                    var opType = node.childNodes[0].tagName;
+
+                    if (opType != "before" && opType != "after") {
+                        _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, this._Lang.getMessage("ERR_PPR_INSERTBEFID"));
                         return false;
                     }
-                    /**
-                     *we generate a temp holder
-                     *so that we can use innerHTML for
-                     *generating the content upfront
-                     *before inserting it"
-                     **/
-                    nodeHolder = document.createElement("div");
-                    parentNode = beforeNode.parentNode;
-                    parentNode.insertBefore(nodeHolder, beforeNode);
-                    replacementFragment = this.replaceHtmlItem(request, context,
-                            nodeHolder, cDataBlock);
-                    if (replacementFragment) {
-                        this._pushOperationResult(context, replacementFragment);
-                    }
-
+                    opType = opType.toLowerCase();
+                    var beforeAfterId = node.childNodes[0].getAttribute("id");
+                    ret.insertType = (opType == "before") ? INSERT_TYPE_BEFORE : INSERT_TYPE_AFTER;
+                    ret.opId = beforeAfterId;
+                    ret.cDataBlock = this._Dom.concatCDATABlocks(node.childNodes[0]);
                 } else {
-                    afterId = _Lang.trim(afterId);
-                    var afterNode = this._Dom.byIdOrName(afterId);
-                    if (!afterNode) {
-                        _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML, this._Lang.getMessage("ERR_PPR_INSERTBEFID_2", null, "_AjaxResponse.processInsert", afterId));
-                        return false;
-                    }
+                    _Impl.sendError(request, context, _Impl.MALFORMEDXML, _Impl.MALFORMEDXML,
+                            this._Lang.getMessage("ERR_PPR_IDREQ") +
+                            "\n "+ this._Lang.getMessage("ERR_PPR_INSERTBEFID"));
+                    return false;
+                }
+                ret.opId = _Lang.trim(ret.opId);
+                return ret;
+            },
 
-                    nodeHolder = document.createElement("div");
-                    parentNode = afterNode.parentNode;
+            _insertBefore: function(request, context, opNode, cDataBlock) {
+                /**
+                 *we generate a temp holder
+                 *so that we can use innerHTML for
+                 *generating the content upfront
+                 *before inserting it"
+                 **/
+                var nodeHolder = document.createElement("div");
+                var parentNode = opNode.parentNode;
 
-                    //TODO nextsibling not working in ieMobile 6.1 we have to change the method
-                    //of accessing it to something else
-                    parentNode.insertBefore(nodeHolder, afterNode.nextSibling);
-
-                    replacementFragment = this.replaceHtmlItem(request, context,
-                            nodeHolder, cDataBlock);
-
-                    if (replacementFragment) {
-                        this._pushOperationResult(context, replacementFragment);
-                    }
-
+                parentNode.insertBefore(nodeHolder, opNode);
+                var replacementFragment = this.replaceHtmlItem(request, context,
+                        nodeHolder, cDataBlock);
+                if (replacementFragment) {
+                    this._pushOperationResult(context, replacementFragment);
                 }
                 return true;
-            }
-            ,
+            },
+
+            _insertAfter: function(request, context, afterNode, cDataBlock) {
+                var nodeHolder = document.createElement("div");
+                var parentNode = afterNode.parentNode;
+
+                //TODO nextsibling not working in ieMobile 6.1 we have to change the method
+                //of accessing it to something else
+                if (afterNode.nextSibling) {
+                    parentNode.insertBefore(nodeHolder, afterNode.nextSibling);
+                } else {
+                    parentNode.appendChild(nodeHolder);
+                }
+
+                var replacementFragment = this.replaceHtmlItem(request, context,
+                        nodeHolder, cDataBlock);
+
+                if (replacementFragment) {
+                    this._pushOperationResult(context, replacementFragment);
+                }
+				return true;
+            },
+
 
             processDelete : function(request, context, node) {
                 var _Impl = this._getImpl();
                 var _Lang = this._Lang;
-                
+
                 var deleteId = node.getAttribute('id');
                 if (!deleteId) {
                     _Impl.sendError(request, context, _Impl.MALFORMEDXML,
