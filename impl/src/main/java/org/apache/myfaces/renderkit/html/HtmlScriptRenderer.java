@@ -26,11 +26,15 @@ import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
-import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import javax.faces.event.*;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ComponentSystemEventListener;
+import javax.faces.event.ListenerFor;
+import javax.faces.event.ListenersFor;
+import javax.faces.event.PostAddToViewEvent;
+import javax.faces.event.PreRenderViewEvent;
 import javax.faces.render.Renderer;
 import javax.faces.view.Location;
 
@@ -188,6 +192,14 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
         if ("".equals(resourceName)) {
             return;
         }
+        
+        String additionalQueryParams = null;
+        int index = resourceName.indexOf('?'); 
+        if (index >= 0)
+        {
+            additionalQueryParams = resourceName.substring(index + 1);
+            resourceName = resourceName.substring(0, index);
+        }
 
         Resource resource;
         if (libraryName == null) {
@@ -222,7 +234,12 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
 // We can't render the content type, because usually it returns "application/x-javascript"
 // and this is not compatible with IE. We should force render "text/javascript".
             writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
-            writer.writeURIAttribute(HTML.SRC_ATTR, facesContext.getExternalContext().encodeResourceURL(resource.getRequestPath()), null);
+            String path = resource.getRequestPath();
+            if (additionalQueryParams != null)
+            {
+                path = path + ( (path.indexOf('?') >= 0) ? "&amp;" : "?" ) + additionalQueryParams; 
+            }
+            writer.writeURIAttribute(HTML.SRC_ATTR, facesContext.getExternalContext().encodeResourceURL(path), null);
             writer.endElement(HTML.SCRIPT_ELEM);
         }
     }
