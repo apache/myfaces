@@ -1117,11 +1117,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
         
         // convert Array values into a more readable format
-        if (oldValue != null && oldValue.getClass().isArray())
+        if (oldValue != null && oldValue.getClass().isArray() && Object[].class.isAssignableFrom(oldValue.getClass()))
         {
             oldValue = Arrays.deepToString((Object[]) oldValue);
         }
-        if (newValue != null && newValue.getClass().isArray())
+        if (newValue != null && newValue.getClass().isArray() && Object[].class.isAssignableFrom(newValue.getClass()))
         {
             newValue = Arrays.deepToString((Object[]) newValue);
         }
