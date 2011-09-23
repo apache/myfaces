@@ -516,10 +516,9 @@ public final class RendererUtils
     public static void renderChildren(FacesContext facesContext, UIComponent component)
             throws IOException
     {
-        int childCount = component.getChildCount();
-        if (childCount > 0)
+        if (component.getChildCount() > 0)
         {
-            for (int i = 0; i < childCount; i++)
+            for (int i = 0; i < component.getChildCount(); i++)
             {
                 UIComponent child = component.getChildren().get(i);
                 //renderChild(facesContext, child);

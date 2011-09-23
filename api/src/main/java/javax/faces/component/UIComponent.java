@@ -630,9 +630,8 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
                 this.encodeChildren(context);
             } // let children render itself
             else {
-                int childCount = this.getChildCount();
-                if (childCount > 0) {
-                    for (int i =0; i < childCount; i++) {
+                if (this.getChildCount() > 0) {
+                    for (int i =0; i < this.getChildCount(); i++) {
                         UIComponent comp = this.getChildren().get(i);
                         comp.encodeAll(context);
                     }
