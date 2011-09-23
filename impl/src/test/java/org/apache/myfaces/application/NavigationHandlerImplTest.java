@@ -277,6 +277,22 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     }
     
     @Test
+    public void testGetSimpleIfPreferMathRule() throws Exception
+    {
+        loadTextFacesConfig("simple-if-rules-config-2.xml");
+
+        externalContext.getRequestMap().put("test", new TestBean());
+        
+        facesContext.getViewRoot().setViewId("/a.jsp");
+        
+        NavigationHandlerImpl nh = new NavigationHandlerImpl();
+
+        NavigationCase nc = nh.getNavigationCase(facesContext, null, "go");
+
+        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+    }
+
+    @Test
     public void testGetSimpleNotIfExactMatchRule() throws Exception
     {
         loadTextFacesConfig("simple-if-rules-config.xml");
