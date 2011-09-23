@@ -37,7 +37,7 @@ public final class HtmlLibrary extends AbstractHtmlLibrary
         
         this.addHtmlComponent ("button", "javax.faces.HtmlOutcomeTargetButton", "javax.faces.Button");
         
-        this.addHtmlComponent("column", "javax.faces.Column", null);
+        this.addHtmlComponent("column", "javax.faces.HtmlColumn", null);
 
         this.addHtmlComponent("commandButton", "javax.faces.HtmlCommandButton", "javax.faces.Button");
 
