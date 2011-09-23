@@ -38,7 +38,6 @@ import javax.faces.application.NavigationCase;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
@@ -449,9 +448,13 @@ public class NavigationHandlerImpl
     {
         NavigationCase noConditionCase = null;
         NavigationCase firstCase = null;
+        NavigationCase firstCaseIf = null;
         NavigationCase secondCase = null;
+        NavigationCase secondCaseIf = null;
         NavigationCase thirdCase = null;
+        NavigationCase thirdCaseIf = null;
         NavigationCase fourthCase = null;
+        NavigationCase fourthCaseIf = null;
                         
         for (NavigationCase caze : casesList)
         {
@@ -487,7 +490,7 @@ public class NavigationHandlerImpl
                         {
                             if (ifMatches)
                             {
-                                firstCase = caze;
+                                firstCaseIf = caze;
                                 //return caze;
                             }
 
@@ -511,7 +514,7 @@ public class NavigationHandlerImpl
                         {
                             if (ifMatches)
                             {
-                                thirdCase = caze;
+                                thirdCaseIf = caze;
                                 //return caze;
                             }
                             
@@ -543,7 +546,7 @@ public class NavigationHandlerImpl
                         {
                             if (ifMatches)
                             {
-                                secondCase = caze;
+                                secondCaseIf = caze;
                                 //return caze;
                             }
                             
@@ -567,7 +570,7 @@ public class NavigationHandlerImpl
                 {
                     if (ifMatches)
                     {
-                        fourthCase = caze;
+                        fourthCaseIf = caze;
                         //return caze;
                     }
                     
@@ -582,17 +585,33 @@ public class NavigationHandlerImpl
             }
         }
         
-        if (firstCase != null)
+        if (firstCaseIf != null)
+        {
+            return firstCaseIf;
+        }
+        else if (firstCase != null)
         {
             return firstCase;
+        }
+        else if (secondCaseIf != null)
+        {
+            return secondCaseIf;
         }
         else if (secondCase != null)
         {
             return secondCase;
         }
+        else if (thirdCaseIf != null)
+        {
+            return thirdCaseIf;
+        }
         else if (thirdCase != null)
         {
             return thirdCase;
+        }
+        else if (fourthCaseIf != null)
+        {
+            return fourthCaseIf;
         }
         else if (fourthCase != null)
         {
