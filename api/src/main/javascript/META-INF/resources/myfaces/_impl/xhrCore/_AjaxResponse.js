@@ -615,12 +615,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxRes
              **/
             processInsert: function(request, context, node) {
                 /*remapping global namespaces for speed and readability reasons*/
-                var _Impl = this._getImpl();
-                var _Lang = this._Lang;
-                var _Dom = this._Dom;
+                var _Impl   = this._getImpl();
+                var _Lang   = this._Lang;
+                var _Dom    = this._Dom;
                 //determine which path to go:
 
-                var insertData = this._determineInsertData(request, context, node);
+                var insertData = this._parseInsertData(request, context, node);
                 if(!insertData) return false;
 
                 var opNode = this._Dom.byIdOrName(insertData.opId);
@@ -629,8 +629,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxRes
                     return false;
                 }
 
-                //call _insertBefore or _insertAfter
-                return this[insertData.insertType](request, context, opNode, insertData.cDataBlock);
+                //call insertBefore or insertAfter in our dom routines
+                var replacementFragment = _Dom[insertData.insertType](opNode, insertData.cDataBlock);
+                if(replacementFragment) {
+                    this._pushOperationResult(context, replacementFragment);
+                }
+                return true;
             },
 
             /**
@@ -650,13 +654,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxRes
              * TODO we have to find a mechanism to replace the direct sendError calls with a javascript exception
              * which we then can use for cleaner error code handling
              */
-            _determineInsertData: function(request, context, node) {
+            _parseInsertData: function(request, context, node) {
                 var _Impl = this._getImpl();
                 var _Lang = this._Lang;
                 var _Dom = this._Dom;
 
-                var INSERT_TYPE_BEFORE = "_insertBefore";
-                var INSERT_TYPE_AFTER = "_insertAfter";
+                var INSERT_TYPE_BEFORE = "insertBefore";
+                var INSERT_TYPE_AFTER = "insertAfter";
 
                 var id = node.getAttribute("id");
                 var beforeId = node.getAttribute("before");
@@ -702,47 +706,6 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxRes
                 ret.opId = _Lang.trim(ret.opId);
                 return ret;
             },
-
-            _insertBefore: function(request, context, opNode, cDataBlock) {
-                /**
-                 *we generate a temp holder
-                 *so that we can use innerHTML for
-                 *generating the content upfront
-                 *before inserting it"
-                 **/
-                var nodeHolder = document.createElement("div");
-                var parentNode = opNode.parentNode;
-
-                parentNode.insertBefore(nodeHolder, opNode);
-                var replacementFragment = this.replaceHtmlItem(request, context,
-                        nodeHolder, cDataBlock);
-                if (replacementFragment) {
-                    this._pushOperationResult(context, replacementFragment);
-                }
-                return true;
-            },
-
-            _insertAfter: function(request, context, afterNode, cDataBlock) {
-                var nodeHolder = document.createElement("div");
-                var parentNode = afterNode.parentNode;
-
-                //TODO nextsibling not working in ieMobile 6.1 we have to change the method
-                //of accessing it to something else
-                if (afterNode.nextSibling) {
-                    parentNode.insertBefore(nodeHolder, afterNode.nextSibling);
-                } else {
-                    parentNode.appendChild(nodeHolder);
-                }
-
-                var replacementFragment = this.replaceHtmlItem(request, context,
-                        nodeHolder, cDataBlock);
-
-                if (replacementFragment) {
-                    this._pushOperationResult(context, replacementFragment);
-                }
-				return true;
-            },
-
 
             processDelete : function(request, context, node) {
                 var _Impl = this._getImpl();

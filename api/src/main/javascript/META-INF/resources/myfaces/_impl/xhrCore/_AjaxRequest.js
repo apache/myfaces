@@ -262,10 +262,13 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 var xhr = myfaces._impl.core._Runtime.getXHRObject();
                 //the current xhr level2 timeout w3c spec is not implemented by the browsers yet
                 //we have to do a fallback to our custom routines
-                if (('undefined' == typeof this._timeout || null == this._timeout) && _Rt.getXHRLvl() >= 2) {
+
+                //Chrome fails in the current builds, on our loadend, we disable the xhr
+                //level2 optimisations for now
+                //if (('undefined' == typeof this._timeout || null == this._timeout) && _Rt.getXHRLvl() >= 2) {
                     //no timeout we can skip the emulation layer
-                    return xhr;
-                }
+                //    return xhr;
+                //}
 
                 return new myfaces._impl.xhrCore.engine.Xhr1({xhrObject: xhr});
             },
