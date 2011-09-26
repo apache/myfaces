@@ -372,6 +372,15 @@ final class TextUnit extends CompilationUnit
         {
             i--;
         }
+        if (i >= 0)
+        {
+            return s;
+        }
+        else
+        {
+            return "";
+        }
+        /*
         if (i == s.length() - 1)
         {
             return s;
@@ -379,7 +388,7 @@ final class TextUnit extends CompilationUnit
         else
         {
             return s.substring(0, i + 1);
-        }
+        }*/
     }
 
     public String toString()
