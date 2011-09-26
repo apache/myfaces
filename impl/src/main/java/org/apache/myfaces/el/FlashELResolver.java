@@ -117,13 +117,21 @@ public class FlashELResolver extends ELResolver
 
         String strProperty = property.toString();
 
-        FacesContext facesContext = facesContext(elContext);
-        ExternalContext externalContext = facesContext.getExternalContext();
-
         if (base == null)
         {
             if (FLASH.equals(strProperty))
             {
+                FacesContext facesContext = facesContext(elContext);
+                if (facesContext == null)
+                {
+                    return null;
+                }
+                ExternalContext externalContext = facesContext.getExternalContext();
+                if (externalContext == null)
+                {
+                    return null;
+                }
+
                 //Access to flash object
                 elContext.setPropertyResolved(true);
                 Flash flash = externalContext.getFlash();
@@ -139,6 +147,16 @@ public class FlashELResolver extends ELResolver
         }
         else if (base instanceof Flash)
         {
+            FacesContext facesContext = facesContext(elContext);
+            if (facesContext == null)
+            {
+                return null;
+            }
+            ExternalContext externalContext = facesContext.getExternalContext();
+            if (externalContext == null)
+            {
+                return null;
+            }
             Flash flash = (Flash) base;
             if (KEEP.equals(strProperty))
             {
