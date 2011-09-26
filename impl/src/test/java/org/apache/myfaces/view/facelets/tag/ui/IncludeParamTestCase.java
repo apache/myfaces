@@ -129,7 +129,7 @@ public class IncludeParamTestCase extends FaceletTestCase
         
         String result = fw.toString();
         
-        Assert.assertTrue("Output:" + result, result.contains("<p>Component value:page test2</p>"));
+        Assert.assertTrue("Output:" + result, result.contains("<p>Component value: page test2</p>"));
         Assert.assertTrue("Output:" + result,result.contains("<p>Inline EL value: page test2</p>"));
         
         //System.out.println(fw);
@@ -154,7 +154,7 @@ public class IncludeParamTestCase extends FaceletTestCase
         
         result = fw.toString();
         
-        Assert.assertTrue("Output:" + result, result.contains("<p>Component value:page test3</p>"));
+        Assert.assertTrue("Output:" + result, result.contains("<p>Component value: page test3</p>"));
         Assert.assertTrue("Output:" + result, result.contains("<p>Inline EL value: page test3</p>"));
 
     }
