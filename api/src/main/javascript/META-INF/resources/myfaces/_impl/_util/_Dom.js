@@ -240,6 +240,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         this._removeNode(item, false);
     },
 
+    /**
+     * creates a node upon a given node name
+     * @param nodeName {String} the node name to be created
+     * @param attrs {Array} a set of attributes to be set
+     */
     createElement: function(nodeName, attrs) {
         var ret = document.createElement(nodeName);
         if(attrs) {
@@ -277,6 +282,59 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     },
 
     /**
+     * proper insert before which takes tables into consideration as well as
+     * browser deficiencies
+     * @param item the node to insert before
+     * @param markup the markup to be inserted
+     */
+    insertBefore: function(item, markup) {
+        this._assertStdParams(item, markup, "insertBefore");
+        markup = this._Lang.trim(markup);
+        if (markup === "") return null;
+
+        var evalNodes = this._buildEvalNodes(item, markup);
+        var currentRef = item;
+        var parentNode = item.parentNode;
+        var ret = [];
+        for(var cnt = evalNodes.length -1; cnt >= 0; cnt--) {
+            currentRef = parentNode.insertBefore(evalNodes[cnt], currentRef);
+            ret.push(currentRef);
+        }
+        ret = ret.reverse();
+        this._eval(ret);
+        return ret;
+    },
+
+    /**
+     * proper insert before which takes tables into consideration as well as
+     * browser deficiencies
+     * @param item the node to insert before
+     * @param markup the markup to be inserted
+     */
+    insertAfter: function(item, markup) {
+        this._assertStdParams(item, markup, "insertAfter");
+        markup = this._Lang.trim(markup);
+        if (markup === "") return null;
+
+        var evalNodes = this._buildEvalNodes(item, markup);
+        var currentRef = item;
+        var parentNode = item.parentNode;
+        var ret = [];
+        for(var cnt = 0; cnt < evalNodes.length; cnt++) {
+            if(currentRef.nextSibling) {
+                //TODO winmobile6 has problems with this strategy
+                currentRef = parentNode.insertBefore(evalNodes[cnt], currentRef.nextSibling);
+            } else {
+                currentRef = parentNode.appendChild(evalNodes[cnt]);
+            }
+            ret.push(currentRef);
+        }
+        this._eval(ret);
+        return ret;
+    },
+
+
+    /**
      * outerHTML replacement which works cross browserlike
      * but still is speed optimized
      *
@@ -284,12 +342,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param markup the markup for the replacement
      */
     outerHTML : function(item, markup) {
-        if (!item) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null,"myfaces._impl._util._Dom.outerHTML", "item"));
-        }
-        if (!markup) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null,"myfaces._impl._util._Dom.outerHTML", "markup"));
-        }
+        this._assertStdParams(item, markup, "outerHTML");
 
         markup = this._Lang.trim(markup);
         if (markup !== "") {
@@ -306,24 +359,16 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
             // and remove the old item
             //first we have to save the node newly insert for easier access in our eval part
-            if (this.isManualScriptEval()) {
-                var isArr = ret instanceof Array;
-                if (isArr && ret.length) {
-                    for (var cnt = 0; cnt < ret.length; cnt++) {
-                        this.runScripts(ret[cnt]);
-                    }
-                } else if (!isArr) {
-                    this.runScripts(ret);
-                }
-            }
+            this._eval(ret);
             return ret;
         }
         // and remove the old item, in case of an empty newtag and do nothing else
         this._removeNode(item, false);
         return null;
     },
+
     /**
-     * detchaes a set of nodes from their parent elements
+     * detaches a set of nodes from their parent elements
      * in a browser independend manner
      * @param {Object} items the items which need to be detached
      * @return {Array} an array of nodes with the detached dom nodes
@@ -350,14 +395,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     _outerHTMLCompliant: function(item, markup) {
         var evalNodes;
         //table element replacements like thead, tbody etc... have to be treated differently
-        if (this._isTableElement(item)) {
-            evalNodes = this._buildTableNodes(item, markup);
-        } else {
-            evalNodes = this._buildNodesCompliant(markup);
-        }
-        var evalNodeLen = evalNodes.length;
+        var evalNodes = this._buildEvalNodes(item, markup);
 
-        if (evalNodeLen == 1) {
+        if (evalNodes.length == 1) {
             var ret = evalNodes[0];
             item.parentNode.replaceChild(ret, item);
             return ret;
@@ -402,13 +442,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         try {
             //check for a subtable rendering case
 
-            if (this._isTableElement(item)) {
-                evalNodes = this._buildTableNodes(item, markup);
-            } else {
-                //if no subtable element is given we simply work on our
-                //normal markup
-                evalNodes = this._buildNodesNonCompliant(markup);
-            }
+            var evalNodes = this._buildEvalNodes(item, markup);
 
             if (evalNodes.length == 1) {
                 var ret = evalNodes[0];
@@ -666,6 +700,59 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         }
     }
     ,
+
+    /**
+     * build up the nodes from html markup in a browser independend way
+     * so that it also works with table nodes
+     *
+     * @param item the parent item upon the nodes need to be processed upon after building
+     * @param markup the markup to be built up
+     */
+    _buildEvalNodes: function(item, markup) {
+        var evalNodes = null;
+        if (this._isTableElement(item)) {
+            evalNodes = this._buildTableNodes(item, markup);
+        } else {
+            evalNodes = (this.isDomCompliant()) ? this._buildNodesCompliant(markup): this._buildNodesNonCompliant(markup);
+        }
+        return evalNodes;
+    },
+
+    /**
+     * we have lots of methods with just an item and a markup as params
+     * this method builds an assertion for those methods to reduce code
+     *
+     * @param item  the item to be tested
+     * @param markup the mark
+     * @param caller
+     */
+    _assertStdParams: function(item, markup, caller) {
+         //internal error
+         if(!caller) throw Error("Caller must be set for assertion");
+         if (!item) {
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null,"myfaces._impl._util._Dom."+caller, "item"));
+        }
+        if (!markup) {
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom."+caller, "markup"));
+        }
+    },
+
+    /**
+     * internal eval handler used by various functions
+     * @param _nodeArr
+     */
+    _eval: function(_nodeArr) {
+        if (this.isManualScriptEval()) {
+            var isArr = _nodeArr instanceof Array;
+            if (isArr && _nodeArr.length) {
+                for (var cnt = 0; cnt < _nodeArr.length; cnt++) {
+                    this.runScripts(_nodeArr[cnt]);
+                }
+            } else if (!isArr) {
+                this.runScripts(_nodeArr);
+            }
+        }
+    },
 
     /**
      * break the standard events from an existing dom node
