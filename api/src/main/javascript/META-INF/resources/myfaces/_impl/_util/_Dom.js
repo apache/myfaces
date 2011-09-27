@@ -117,7 +117,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
                     //we have to move this into an inner if because chrome otherwise chokes
                     //due to changing the and order instead of relying on left to right
                     if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
-                            && src.indexOf("/jsf-uncompressed.js") == -1))
+                            && src.indexOf("/jsf-uncompressed.js") == -1))  {
                         if (finalScripts.length) {
                             //script source means we have to eval the existing
                             //scripts before running the include
@@ -125,7 +125,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
                             finalScripts = [];
                         }
-                    this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
+                        //if jsf.js is already registered we do not replace it anymore
+                        if(!window.jsf) {
+                            this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
+                        }
+                    }
                     //TODO handle embedded scripts
                 } else {
                     // embedded script auto eval
