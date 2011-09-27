@@ -851,6 +851,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      * @param deepScan if set to true a deep scan is performed otherwise a shallow scan
      */
     findByTagNames: function(fragment, tagNames, deepScan) {
+        if(!fragment) {
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagNames", "fragment"));
+        }
+        if(!tagNames) {
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagNames", "tagNames"));
+        }
+
         var nodeType = fragment.nodeType;
         if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
@@ -905,6 +912,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
      *
      */
     findByTagName : function(fragment, tagName, deepScan) {
+        if(!fragment) {
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagName", "fragment"));
+        }
+        if(!tagName) {
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagName", "tagName"));
+        }
+
         var nodeType = fragment.nodeType;
         if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
@@ -944,6 +958,14 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
     ,
 
     findByName : function(fragment, name, deepScan) {
+        if(!fragment) {
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByName", "fragment"));
+        }
+        if(!name) {
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByName", "name"));
+        }
+
+
         var nodeType = fragment.nodeType;
         if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
