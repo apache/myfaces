@@ -733,12 +733,14 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
     }
     ,
 
-    serializeXML: function(xmlNode) {
+    serializeXML: function(xmlNode, escape) {
         if (xmlNode.xml) return xmlNode.xml; //IE
-        //rest of the world
+        if(!escape) {
+            if (xmlNode.data) return xmlNode.data; //CDATA block has raw data
+            if (xmlNode.textContent) return xmlNode.textContent; //textNode has textContent
+        }
         return (new XMLSerializer()).serializeToString(xmlNode);
-    }
-    ,
+    },
 
     serializeChilds: function(xmlNode) {
         var buffer = [];
