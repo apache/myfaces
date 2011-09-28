@@ -556,7 +556,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxRes
                     //for code reduction, speedwise we will take a small hit
                     //there which we will clean up in the future, but for now
                     //this is ok, I guess, since replace body only is a small subcase
-                    bodyData = _Lang.serializeChilds(newBodyData);
+                    //bodyData = _Lang.serializeChilds(newBodyData);
 
                     if (!this._RT.browser.isIEMobile || this._RT.browser.isIEMobile >= 7) {
                         //TODO check what is failing there
@@ -567,8 +567,11 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxRes
                         }
                     }
                 }
+                //we cannot serialize here, due to escape problems
+                //we must parse, this is somewhat unsafe but should be safe enough
+                var parser = new (this._RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
+                bodyData = parser.parse(newData, "body");
 
-                //TODO eliminate the serialisation in case of already having a parsed tree
                 var returnedElement = this.replaceHtmlItem(request, context, placeHolder, bodyData);
 
                 if (returnedElement) {
