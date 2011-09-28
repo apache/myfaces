@@ -97,6 +97,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
 
         ViewDeclarationLanguage vdl = _mocksControl.createMock(ViewDeclarationLanguage.class);
         expect(_restoreViewSupport.deriveViewId(same(_facesContext), eq("calculatedViewId"))).andReturn("calculatedViewId");
+        expect(_facesContext.getResponseComplete()).andReturn(false);
         expect(_viewHandler.getViewDeclarationLanguage(same(_facesContext), eq("calculatedViewId")))
             .andReturn(vdl);
         expect(vdl.getViewMetadata(same(_facesContext), eq("calculatedViewId")))

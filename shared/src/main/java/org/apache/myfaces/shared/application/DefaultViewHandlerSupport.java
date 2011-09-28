@@ -31,6 +31,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
@@ -86,6 +87,16 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         else if(mapping.isPrefixMapping())
         {
             viewId = handlePrefixMapping(viewId,mapping.getPrefix());
+            
+            // A viewId that is equals to the prefix mapping on servlet mode is
+            // considered invalid, because jsp vdl will use RequestDispatcher and cause
+            // a loop that ends in a exception. Note in portlet mode the view
+            // could be encoded as a query param, so the viewId could be valid.
+            if (viewId != null && viewId.equals(mapping.getPrefix()) &&
+                !ExternalContextUtils.isPortlet(context.getExternalContext()))
+            {
+                throw new InvalidViewIdException();
+            }
         }
         else if (viewId != null && mapping.getUrlPattern().startsWith(viewId))
         {
@@ -118,6 +129,16 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 
             if(viewId != null)
             {
+                // A viewId that is equals to the prefix mapping on servlet mode is
+                // considered invalid, because jsp vdl will use RequestDispatcher and cause
+                // a loop that ends in a exception. Note in portlet mode the view
+                // could be encoded as a query param, so the viewId could be valid.
+                if (viewId != null && viewId.equals(mapping.getPrefix()) &&
+                    !ExternalContextUtils.isPortlet(context.getExternalContext()))
+                {
+                    throw new InvalidViewIdException();
+                }
+
                 return (checkResourceExists(context,viewId) ? viewId : null);
             }
         }

@@ -43,6 +43,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.shared.application.FacesServletMapping;
 import org.apache.myfaces.shared.application.InvalidViewIdException;
 import org.apache.myfaces.shared.util.Assert;
+import org.apache.myfaces.shared.util.ExternalContextUtils;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -232,6 +233,16 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         else if(mapping.isPrefixMapping())
         {
             viewId = handlePrefixMapping(viewId,mapping.getPrefix());
+            
+            // A viewId that is equals to the prefix mapping on servlet mode is
+            // considered invalid, because jsp vdl will use RequestDispatcher and cause
+            // a loop that ends in a exception. Note in portlet mode the view
+            // could be encoded as a query param, so the viewId could be valid.
+            if (viewId != null && viewId.equals(mapping.getPrefix()) &&
+                !ExternalContextUtils.isPortlet(context.getExternalContext()))
+            {
+                throw new InvalidViewIdException();
+            }
         }
         else if (viewId != null && mapping.getUrlPattern().startsWith(viewId))
         {
