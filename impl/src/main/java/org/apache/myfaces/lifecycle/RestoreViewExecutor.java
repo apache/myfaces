@@ -42,6 +42,7 @@ import javax.faces.view.ViewMetadata;
 import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
+import org.apache.myfaces.shared.util.ExternalContextUtils;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
@@ -150,6 +151,13 @@ class RestoreViewExecutor extends PhaseExecutor
             //restoreViewSupport.deriveViewId(facesContext, viewId)
             ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
                     viewHandler.deriveLogicalViewId(facesContext, viewId));
+            
+            // viewHandler.deriveLogicalViewId() could trigger an InvalidViewIdException, which
+            // it is handled internally sending a 404 error code set the response as complete.
+            if (facesContext.getResponseComplete())
+            {
+                return true;
+            }
             
             if (vdl != null)
             {
