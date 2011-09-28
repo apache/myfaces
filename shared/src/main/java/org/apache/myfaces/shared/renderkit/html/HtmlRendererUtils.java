@@ -1831,7 +1831,14 @@ public final class HtmlRendererUtils {
             {
                 parameters = new HashMap<String, List<String>>(); 
             }
-            parameters.putAll(navigationCaseParams);
+            //parameters.putAll(navigationCaseParams);
+            for (Map.Entry<String, List<String>> entry : navigationCaseParams.entrySet())
+            {
+                if (!parameters.containsKey(entry.getKey()))
+                {
+                    parameters.put(entry.getKey(), entry.getValue());
+                }
+            }
         }
         
         if (parameters == null)
