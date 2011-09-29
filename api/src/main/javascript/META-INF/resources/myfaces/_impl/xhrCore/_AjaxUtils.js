@@ -36,23 +36,21 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxUti
 
     /**
      * determines fields to submit
-     * @param {Object} request the xhr request object
-     * @param {Object} context (Map)
-     * @param {Node} item - item that triggered the event
+     * @param {Object} targetBuf - the target form buffer receiving the data
      * @param {Node} parentItem - form element item is nested in
      * @param {Array} partialIds - ids fo PPS
      */
-    encodeSubmittableFields : function(targetBuf, request, context, item,
+    encodeSubmittableFields : function(targetBuf,
                                        parentItem, partialIds) {
 
-        try {
+        //try {
             if (!parentItem) {
-                context._mfInternal._onWarning(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields " + "Html-Component is not nested in a Form-Tag");
-                return null;
+            //    context._mfInternal._onWarning(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields " + "Html-Component is not nested in a Form-Tag");
+                throw "NO_PARITEM";
             }
 
-            if (partialIds && partialIds.length > 0) {
-                this.encodePartialSubmit(parentItem, item, false, partialIds, targetBuf);
+            if (partialIds ) {
+                this.encodePartialSubmit(parentItem, false, partialIds, targetBuf);
             } else {
                 // add all nodes
                 var eLen = parentItem.elements.length;
@@ -61,10 +59,9 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxUti
                 } // end of for (formElements)
             }
 
-            this.appendIssuingItem(item, targetBuf);
-        } catch (e) {
-            context._mfInternal._onException(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields", e);
-        }
+        //} catch (e) {
+        //    context._mfInternal._onException(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields", e);
+        //}
     },
 
     /**
@@ -77,13 +74,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxUti
      * Now this algorithm is up for discussion because it is relatively complex
      * but for now we will leave it as it is.
      *
-     * @param {Node} node - the root node of the partial page submit
+     * @param {Node} node - the root node of the partial page submit  (usually the form)
      * @param {boolean} submitAll - if set to true, all elements within this node will
      * be added to the partial page submit
      * @param {Array} partialIds - an array of partial ids which should be used for the submit
-     * @param {Array} targetBuf a target string buffer which receives the encoded elements
+     * @param {Object} targetBuf a target string buffer which receives the encoded elements
      */
-    encodePartialSubmit : function(node, issuingItem, submitAll,
+    encodePartialSubmit : function(node,  submitAll,
                                    partialIds, targetBuf) {
         var _Lang = myfaces._impl._util._Lang;
         var _Impl = myfaces._impl.core.Impl;

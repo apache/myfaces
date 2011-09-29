@@ -73,7 +73,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang",
      */
     _log: function(logType /*+arguments*/, args) {
 
-        var argsString = this.objToArray(arguments[1]).join(" ");
+        var argsString = this.objToArray(arguments[1]).join("|");
         var c = window.console;
         
 
@@ -96,7 +96,15 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang",
                 elem.className ="consoleLog " + logType;
             }
             logHolder.appendChild(elem);
-            elem.innerHTML = logType.toUpperCase() + ": " + argsString;
+            var argsArr = this.objToArray(arguments[1]);
+            var argsStr = [];
+
+            for(var cnt = 0; cnt < argsArr.length; cnt++) {
+                argsStr.push("<div class='args args_"+cnt+"'>");
+                argsStr.push(argsArr[cnt]);
+                argsStr.push("</div>");
+            }
+            elem.innerHTML = "<div class='args argsinfo'>"+logType.toUpperCase() + "</div>" + argsStr.join("");
         }
     },
 

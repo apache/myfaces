@@ -802,6 +802,30 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
             };
 
         }
+        if (!this.FormDataDecoratorString) {
+            this.FormDataDecoratorString = function (theFormData) {
+                this._preprocessedData = theFormData;
+                this._valBuf = [];
+                this._idx = {};
+
+            };
+            _newCls = this.FormDataDecoratorString;
+            _newCls.prototype.append = function(key, val) {
+                this._valBuf.push([encodeURIComponent(key), encodeURIComponent(val)].join("="));
+                this._idx[key] = true;
+            };
+            //for now we check only for keys which are added subsequently otherwise we do not perform any checks
+            _newCls.prototype.hasKey = function(key) {
+                return !!this._idx[key];
+            };
+            _newCls.prototype.makeFinal = function() {
+                if(this._preprocessedData != "") {
+                  return this._preprocessedData + "&"+ this._valBuf.join("&")
+                } else {
+                  return this._valBuf.join("&");
+                }
+            };
+        }
         if (!this.FormDataDecoratorOther) {
             this.FormDataDecoratorOther = function (theFormData) {
                 this._valBuf = theFormData;
@@ -822,6 +846,8 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
 
         if (formData instanceof Array) {
             bufInstance = new this.FormDataDecoratorArray(formData);
+        } else if(this.isString(formData)) {
+            bufInstance = new this.FormDataDecoratorString(formData);
         } else {
             bufInstance = new this.FormDataDecoratorOther(formData);
         }
