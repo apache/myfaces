@@ -371,8 +371,7 @@ public class AjaxHandler extends TagHandler implements
             }
         }
 
-        AjaxBehavior ajaxBehavior = (AjaxBehavior) context.getApplication()
-                .createBehavior(AjaxBehavior.BEHAVIOR_ID);
+        AjaxBehavior ajaxBehavior = createBehavior(context);
 
         if (_disabled != null)
         {
@@ -442,6 +441,11 @@ public class AjaxHandler extends TagHandler implements
         }
         
         cvh.addClientBehavior(eventName, ajaxBehavior);
+    }
+
+    protected AjaxBehavior createBehavior(FacesContext context)
+    {
+        return (AjaxBehavior) context.getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
     }
 
     /**
