@@ -32,6 +32,7 @@ import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
@@ -55,6 +56,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * This class implements partial state saving feature when facelets
@@ -180,6 +182,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             // Per the spec: build the view.
             ViewDeclarationLanguage vdl = _vdlFactory.getViewDeclarationLanguage(viewId);
+            Object faceletViewState = null;
             try {
                 ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
                 
@@ -201,6 +204,16 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 
                 context.setViewRoot (view); 
                 
+                if (state != null && state[1] != null)
+                {
+                    states = (Map<String, Object>) state[1];
+                    faceletViewState = UIComponentBase.restoreAttachedState(context,states.get(ComponentSupport.FACELET_STATE_INSTANCE));
+                    if (faceletViewState != null)
+                    {
+                        view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                    }
+                }
+
                 // TODO: Why is necessary enable event processing?
                 // ANS: On RestoreViewExecutor, setProcessingEvents is called first to false
                 // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
@@ -237,6 +250,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 
                 //Restore state of current components
                 restoreStateFromMap(context, states, view);
+                
+                if (faceletViewState != null)
+                {
+                    view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                }
                 
                 // TODO: handle dynamic add/removes as mandated by the spec.  Not sure how to do handle this yet.
                 List<String> clientIdsRemoved = getClientIdsRemoved(view);
@@ -465,6 +483,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 states = new HashMap<String, Object>();
 
+                Object faceletViewState = view.getAttributes().get(ComponentSupport.FACELET_STATE_INSTANCE);
+                if (faceletViewState != null)
+                {
+                    ((Map<String, Object>)states).put(ComponentSupport.FACELET_STATE_INSTANCE, UIComponentBase.saveAttachedState(context, faceletViewState));
+                    //Do not save on UIViewRoot
+                    view.getAttributes().remove(ComponentSupport.FACELET_STATE_INSTANCE);
+                }
                 if (isSaveStateWithVisitTreeOnPSS(context))
                 {
                     saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);

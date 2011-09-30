@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELException;
-import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
@@ -38,9 +37,10 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
-import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * The decorate tag acts the same as a composition tag, but it will not trim 
@@ -143,14 +143,35 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
             }
         }
 
+        FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+        String path;
+        if (!_template.isLiteral())
+        {
+            String uniqueId = fcc.startComponentUniqueIdSection();
+            path = getTemplateValue(actx, fcc, parent, uniqueId);
+            ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, path);
+        }
+        else
+        {
+            path = _template.getValue(ctx);
+        }
         try
         {
-            ctx.includeFacelet(parent, _template.getValue(ctx));
+            ctx.includeFacelet(parent, path);
         }
         finally
         {
             //ctx.setVariableMapper(orig);
             actx.popClient(this);
+        }
+        if (!_template.isLiteral())
+        {
+            fcc.endComponentUniqueIdSection();
+        }
+        if ( !_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
+        {
+            //Mark the parent component to be saved and restored fully.
+            ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
     }
 
@@ -174,6 +195,19 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
         {
             this.nextHandler.apply(ctx, parent);
             return true;
+        }
+    }
+    
+    private String getTemplateValue(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId)
+    {
+        String template = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
+        if (template != null)
+        {
+            return template;
+        }
+        else
+        {
+            return this._template.getValue(ctx);
         }
     }
 }

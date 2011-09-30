@@ -108,81 +108,113 @@ public final class IncludeHandler extends TagHandler
             ELException
     {
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-        String path = this.src.getValue(ctx);
-        if (path == null || path.length() == 0)
+        FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+        String path;
+        if (!src.isLiteral())
         {
-            return;
+            String uniqueId = fcc.startComponentUniqueIdSection();
+            path = getSrcValue(actx, fcc, parent, uniqueId);
+            ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, path);
         }
-        VariableMapper orig = ctx.getVariableMapper();
-        ctx.setVariableMapper(new VariableMapperWrapper(orig));
+        else
+        {
+            path = this.src.getValue(ctx);
+        }
         try
         {
-            //Only ui:param could be inside ui:include.
-            //this.nextHandler.apply(ctx, null);
-            
-            URL url = null;
-            // if we are in ProjectStage Development and the path equals "javax.faces.error.xhtml"
-            // we should include the default error page
-            if (ctx.getFacesContext().isProjectStage(ProjectStage.Development) 
-                    && ERROR_PAGE_INCLUDE_PATH.equals(path))
+            if (path == null || path.length() == 0)
             {
-                url =ClassUtils.getResource(ERROR_FACELET);
-                
+                return;
             }
+            VariableMapper orig = ctx.getVariableMapper();
+            ctx.setVariableMapper(new VariableMapperWrapper(orig));
             try
             {
-                if (_params != null)
+                //Only ui:param could be inside ui:include.
+                //this.nextHandler.apply(ctx, null);
+                
+                URL url = null;
+                // if we are in ProjectStage Development and the path equals "javax.faces.error.xhtml"
+                // we should include the default error page
+                if (ctx.getFacesContext().isProjectStage(ProjectStage.Development) 
+                        && ERROR_PAGE_INCLUDE_PATH.equals(path))
                 {
-                    // ui:include defines a new TemplateContext, but ui:param EL expressions
-                    // defined inside should be built before the new context is setup, to
-                    // apply then after. The final effect is EL expressions will be resolved
-                    // correctly when nested ui:params with the same name or based on other
-                    // ui:params are used.
+                    url =ClassUtils.getResource(ERROR_FACELET);
                     
-                    String[] names = new String[_params.length];
-                    ValueExpression[] values = new ValueExpression[_params.length];
-                    
-                    for (int i = 0; i < _params.length; i++)
+                }
+                try
+                {
+                    if (_params != null)
                     {
-                        names[i] = _params[i].getName(ctx);
-                        values[i] = _params[i].getValue(ctx);
+                        // ui:include defines a new TemplateContext, but ui:param EL expressions
+                        // defined inside should be built before the new context is setup, to
+                        // apply then after. The final effect is EL expressions will be resolved
+                        // correctly when nested ui:params with the same name or based on other
+                        // ui:params are used.
+                        
+                        String[] names = new String[_params.length];
+                        ValueExpression[] values = new ValueExpression[_params.length];
+                        
+                        for (int i = 0; i < _params.length; i++)
+                        {
+                            names[i] = _params[i].getName(ctx);
+                            values[i] = _params[i].getValue(ctx);
+                        }
+                        
+                        actx.pushTemplateContext(new TemplateContextImpl());
+                        
+                        for (int i = 0; i < _params.length; i++)
+                        {
+                            _params[i].apply(ctx, parent, names[i], values[i]);
+                        }
                     }
-                    
-                    actx.pushTemplateContext(new TemplateContextImpl());
-                    
-                    for (int i = 0; i < _params.length; i++)
+                    else
                     {
-                        _params[i].apply(ctx, parent, names[i], values[i]);
+                        actx.pushTemplateContext(new TemplateContextImpl());
+                    }
+                    if (url == null)
+                    {
+                        ctx.includeFacelet(parent, path);
+                    }
+                    else
+                    {
+                        ctx.includeFacelet(parent, url);
                     }
                 }
-                else
+                finally
                 {
-                    actx.pushTemplateContext(new TemplateContextImpl());
-                }
-                if (url == null)
-                {
-                    ctx.includeFacelet(parent, path);
-                }
-                else
-                {
-                    ctx.includeFacelet(parent, url);
+                    actx.popTemplateContext();
                 }
             }
             finally
             {
-                actx.popTemplateContext();
+                ctx.setVariableMapper(orig);
             }
         }
         finally
         {
-            ctx.setVariableMapper(orig);
+            if (!src.isLiteral())
+            {
+                fcc.endComponentUniqueIdSection();
+            }
         }
-        if ( !src.isLiteral() && FaceletCompositionContext.getCurrentInstance(ctx).
-                isMarkInitialStateAndIsRefreshTransientBuildOnPSS())
+        if ( !src.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
     }
 
+    private String getSrcValue(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId)
+    {
+        String src = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
+        if (src != null)
+        {
+            return src;
+        }
+        else
+        {
+            return this.src.getValue(ctx);
+        }
+    }
 }

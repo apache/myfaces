@@ -30,7 +30,6 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -77,7 +76,9 @@ public final class IfHandler extends TagHandler
 
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException
     {
-        boolean b = this.test.getBoolean(ctx);
+        FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+        String uniqueId = fcc.startComponentUniqueIdSection();
+        boolean b = getTestValue(ctx, fcc, parent, uniqueId);
         if (this.var != null)
         {
             ctx.setAttribute(var.getValue(ctx), new Boolean(b));
@@ -86,13 +87,26 @@ public final class IfHandler extends TagHandler
         {
             this.nextHandler.apply(ctx, parent);
         }
+        fcc.endComponentUniqueIdSection();
         //AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-        if (FaceletCompositionContext.getCurrentInstance(ctx).
-                isMarkInitialStateAndIsRefreshTransientBuildOnPSS())
+        ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, b);
+        if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
     }
-
+    
+    private boolean getTestValue(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId)
+    {
+        Boolean b = (Boolean) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
+        if (b != null)
+        {
+            return b.booleanValue();
+        }
+        else
+        {
+            return this.test.getBoolean(ctx);
+        }
+    }
 }

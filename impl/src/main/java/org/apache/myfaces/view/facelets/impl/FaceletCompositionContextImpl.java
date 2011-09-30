@@ -108,6 +108,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
 
     private static final String VIEWROOT_FACELET_ID = "oam.VIEW_ROOT";
     
+    private SectionUniqueIdCounter _sectionUniqueIdCounter;
+    
+    private SectionUniqueIdCounter _sectionUniqueComponentIdCounter;
+    
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
         super();
@@ -118,6 +122,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _methodExpressionsTargeted = new HashMap<UIComponent, Map<String, Object>>();
         _compositeComponentAttributesMarked = new HashMap<UIComponent, Map<String, Boolean>>();
         _deletionLevel = -1;
+        _sectionUniqueIdCounter = new SectionUniqueIdCounter();
+        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_");
     }
 
     public FaceletFactory getFaceletFactory()
@@ -137,6 +143,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _uniqueIdVendorStack = null;
         _validationGroupsStack = null;
         _componentsMarkedForDeletion = null;
+        _sectionUniqueIdCounter = null;
+        _sectionUniqueComponentIdCounter = null;
     }
    
     @Override
@@ -664,5 +672,27 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         }
         
         decreaseComponentLevelMarkedForDeletion();
-    }    
+    }
+    
+    public String startComponentUniqueIdSection()
+    {
+        _sectionUniqueComponentIdCounter.startUniqueIdSection();
+        return _sectionUniqueIdCounter.startUniqueIdSection();
+    }
+    
+    public String generateUniqueId()
+    {
+        return _sectionUniqueIdCounter.generateUniqueId();
+    }
+    
+    public String generateUniqueComponentId()
+    {
+        return _sectionUniqueComponentIdCounter.generateUniqueId();
+    }
+    
+    public void endComponentUniqueIdSection()
+    {
+        _sectionUniqueIdCounter.endUniqueIdSection();
+        _sectionUniqueComponentIdCounter.endUniqueIdSection();
+    }
 }
