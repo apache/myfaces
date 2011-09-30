@@ -196,6 +196,18 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
         currentElement.getWriter().flush();
         StringBuffer buffer = currentElement.getDoubleBuffer().getBuffer();
 
+        int i = buffer.indexOf("]]>");
+        if (i >= 0)
+        {
+            do
+            {
+                buffer.replace(i, i+3, "]]><![CDATA[]]]]><![CDATA[>");
+                i=i+27; //27 is "]]><![CDATA[]]]]><![CDATA[>".length();
+            }
+            while ( (i = buffer.indexOf("]]>",i)) >= 0 );
+        }
+        return buffer.toString();
+        /*
         String resultString = buffer.toString();
         //section http://www.w3.org/TR/REC-xml/#sec-cdata-sect everything is parsed
         //until it hits a ]]> hence we need to do some mapping here
@@ -210,11 +222,15 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
             //we now first remove pending javascript CDATA blocks
             //the reason is if we leave them the ppr chokes on them
             //the syntax from the auto generated CDATA usually is //\s+<![CDATA[
-            resultString = resultString.replaceAll("//\\s*((\\<\\!\\[CDATA\\[)|(\\]\\]\\>))", "");
+            // -= Leonardo Uribe =- Do this cause a bug on the client side, because
+            // scripts containing '&' will be considered invalid xml. 
+            //resultString = resultString.replaceAll("//\\s*((\\<\\!\\[CDATA\\[)|(\\]\\]\\>))", "");
+
             //now to fullfill the xml spec we have to replace all ]] with blocks of cdata
             resultString = resultString.replaceAll("\\]\\]\\>", "]]><![CDATA[]]]]><![CDATA[>");
         }
         return resultString;
+        */
     }
 
     //--- we need to override ppr specifics to cover the case
