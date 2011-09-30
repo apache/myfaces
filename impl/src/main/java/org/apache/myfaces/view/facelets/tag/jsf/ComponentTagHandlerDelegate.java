@@ -190,6 +190,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // Cast to use UniqueIdVendor stuff
         FaceletCompositionContext mctx = (FaceletCompositionContext) FaceletCompositionContext.getCurrentInstance(ctx);
                 
+        String componentId = mctx.generateUniqueComponentId();
+            
         // grab our component
         UIComponent c = null;
         //boolean componentFoundInserted = false;
@@ -301,7 +303,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 {
                     // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
                     // and call createUniqueId()
-                    String uid = uniqueIdVendor.createUniqueId(facesContext, id);
+                    String uid = uniqueIdVendor.createUniqueId(facesContext, componentId);
                     c.setId(uid);
                 }
             }

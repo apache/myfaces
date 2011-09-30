@@ -80,8 +80,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     private FunctionMapper _fnMapper;
 
-    private final Map<String, Integer> _ids;
-    private final Map<Integer, Integer> _prefixes;
+    //private final Map<String, Integer> _ids;
+    //private final Map<Integer, Integer> _prefixes;
     private String _prefix;
 
     private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
@@ -106,8 +106,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             AbstractFacelet facelet, boolean ccWrap)
     {
         _ctx = ctx._ctx;
-        _ids = ctx._ids;
-        _prefixes = ctx._prefixes;
+        //_ids = ctx._ids;
+        //_prefixes = ctx._prefixes;
         //_clients = ctx._clients;
         _faces = ctx._faces;
         _fnMapper = ctx._fnMapper;
@@ -161,8 +161,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public DefaultFaceletContext(FacesContext faces, AbstractFacelet facelet, FaceletCompositionContext mctx)
     {
         _ctx = faces.getELContext();
-        _ids = new HashMap<String, Integer>();
-        _prefixes = new HashMap<Integer, Integer>();
+        //_ids = new HashMap<String, Integer>();
+        //_prefixes = new HashMap<Integer, Integer>();
         //_clients = new LinkedList<TemplateManager>();
         _faces = faces;
         _fnMapper = _ctx.getFunctionMapper();
@@ -289,7 +289,38 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     @Override
     public String generateUniqueId(String base)
     {
+        if (_prefix == null)
+        {
+            StringBuilder builder = new StringBuilder(
+                    _faceletHierarchy.size() * 30);
+            for (int i = 0; i < _faceletHierarchy.size(); i++)
+            {
+                AbstractFacelet facelet = _faceletHierarchy.get(i);
+                builder.append(facelet.getAlias());
+            }
 
+            // Integer prefixInt = new Integer(builder.toString().hashCode());
+            // -= Leonardo Uribe =- if the previous formula is used, it is possible that
+            // negative values are introduced. The presence of '-' char causes problems
+            // with htmlunit 2.4 or lower, so in order to prevent it it is better to use
+            // only positive values instead.
+            // Take into account CompilationManager.nextTagId() uses Math.abs too.
+            Integer prefixInt = new Integer(Math.abs(builder.toString().hashCode()));
+            _prefix = prefixInt.toString();
+        }
+
+        _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
+        // getFaceletCompositionContext().generateUniqueId() is the one who ensures
+        // the final id will be unique, but prefix and base ensure it will be unique
+        // per facelet because prefix is calculated from faceletHierarchy and base is
+        // related to the tagId, which depends on the location.
+        _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
+        _uniqueIdBuilder.append("_");
+        _uniqueIdBuilder.append(_prefix);
+        _uniqueIdBuilder.append("_");
+        _uniqueIdBuilder.append(base);
+        return _uniqueIdBuilder.toString();
+        /*
         if (_prefix == null)
         {
             StringBuilder builder = new StringBuilder(
@@ -327,6 +358,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         {
             _ids.put(base, Integer.valueOf(0));
             _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
+            _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
+            _uniqueIdBuilder.append("_");
             _uniqueIdBuilder.append(_prefix);
             _uniqueIdBuilder.append("_");
             _uniqueIdBuilder.append(base);
@@ -337,13 +370,15 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             int i = cnt.intValue() + 1;
             _ids.put(base, Integer.valueOf(i));
             _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
+            _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
+            _uniqueIdBuilder.append("_");
             _uniqueIdBuilder.append(_prefix);
             _uniqueIdBuilder.append("_");
             _uniqueIdBuilder.append(base);
             _uniqueIdBuilder.append("_");
             _uniqueIdBuilder.append(i);
             return _uniqueIdBuilder.toString();
-        }
+        }*/
     }
 
     /**

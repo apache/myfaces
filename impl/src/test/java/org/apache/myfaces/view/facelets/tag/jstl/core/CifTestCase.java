@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
+import javax.faces.event.PhaseId;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
@@ -45,6 +46,8 @@ public class CifTestCase extends FaceletTestCase
     @Test
     public void testIf1() throws Exception
     {
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
         Map session = facesContext.getExternalContext().getSessionMap();
         Employee e = new Employee();
         session.put("employee", e);
@@ -83,6 +86,8 @@ public class CifTestCase extends FaceletTestCase
     @Test
     public void testIf2() throws Exception
     {
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
         Map session = facesContext.getExternalContext().getSessionMap();
         Employee e = new Employee();
         session.put("employee", e);
@@ -116,6 +121,8 @@ public class CifTestCase extends FaceletTestCase
     @Test
     public void testIf3() throws Exception
     {
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
         Map session = facesContext.getExternalContext().getSessionMap();
         Employee e = new Employee();
         session.put("employee", e);

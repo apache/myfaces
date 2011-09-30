@@ -31,6 +31,7 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
@@ -38,6 +39,7 @@ import javax.faces.view.facelets.TagAttributeException;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.ComponentState;
 import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
@@ -57,6 +59,11 @@ public final class ComponentSupport
      * This constant is duplicate in javax.faces.webapp.UIComponentClassicTagBase
      */
     public final static String FACET_CREATED_UIPANEL_MARKER = "org.apache.myfaces.facet.createdUIPanel";
+    
+    /**
+     * The key under the facelet state map is stored
+     */
+    public final static String FACELET_STATE_INSTANCE = "oam.FACELET_STATE_INSTANCE";
 
     /**
      * Used in conjunction with markForDeletion where any UIComponent marked will be removed.
@@ -530,4 +537,48 @@ public final class ComponentSupport
         }
         return sb.toString();
     }
+    
+    public static Object restoreInitialTagState(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId)
+    {
+        Object value = null;
+        if (fcc.isUsingPSSOnThisView() &&
+                PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()) &&
+                !MyfacesConfig.getCurrentInstance(ctx.getFacesContext().getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
+        {
+            UIViewRoot root = getViewRoot(ctx, parent);
+            FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);
+            if (map == null)
+            {
+                value = null;
+            }
+            else
+            {
+                value = map.getState(uniqueId);
+            }
+        }
+        return value;
+    }
+    
+    public static void saveInitialTagState(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId, Object value)
+    {
+        if (fcc.isUsingPSSOnThisView())
+        {
+            // Only save the value when the view was built the first time, to ensure PSS algorithm 
+            // work correctly. If preserve state is enabled, just ignore it, because this tag will
+            // force full restore over the parent
+            if (!fcc.isRefreshingTransientBuild() && !ctx.getFacesContext().isPostback()
+                && !MyfacesConfig.getCurrentInstance(ctx.getFacesContext().getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
+            {
+                UIViewRoot root = getViewRoot(ctx, parent);
+                FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);
+                if (map == null)
+                {
+                    map = new FaceletState();
+                    root.getAttributes().put(FACELET_STATE_INSTANCE, map);
+                }
+                map.putState(uniqueId, value);
+            }
+        }
+    }
+
 }

@@ -83,24 +83,50 @@ public final class ChooseHandler extends TagHandler
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
+        FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+        boolean processed = false;
+        //assign an unique id for this section
+        String uniqueId = fcc.startComponentUniqueIdSection();
+        Integer savedOption = getSavedOption(ctx, fcc, parent, uniqueId);
         for (int i = 0; i < this.when.length; i++)
         {
-            if (this.when[i].isTestTrue(ctx))
+            //Ensure each option has its unique section
+            fcc.startComponentUniqueIdSection();
+            if (!processed)
             {
-                this.when[i].apply(ctx, parent);
-                return;
+                if ((savedOption != null) ? savedOption.equals(i) : this.when[i].isTestTrue(ctx))
+                {
+                    this.when[i].apply(ctx, parent);
+                    processed = true;
+                    savedOption = i;
+                    //return;
+                }
             }
+            fcc.endComponentUniqueIdSection();
         }
         if (this.otherwise != null)
         {
-            this.otherwise.apply(ctx, parent);
+            fcc.startComponentUniqueIdSection();
+            if (!processed)
+            {
+                this.otherwise.apply(ctx, parent);
+                savedOption = -1;
+            }
+            fcc.endComponentUniqueIdSection();
         }
+        
+        fcc.endComponentUniqueIdSection();
 
-        if (FaceletCompositionContext.getCurrentInstance(ctx).
-                isMarkInitialStateAndIsRefreshTransientBuildOnPSS())
+        ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, savedOption);
+        if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
+    }
+    
+    private Integer getSavedOption(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId)
+    {
+        return (Integer) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
     }
 }

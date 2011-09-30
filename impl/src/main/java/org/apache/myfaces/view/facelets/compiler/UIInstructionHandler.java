@@ -93,6 +93,8 @@ final class UIInstructionHandler extends AbstractUIHandler
             FaceletCompositionContext mctx= FaceletCompositionContext.getCurrentInstance(ctx);
             boolean componentFoundInserted = false;
             
+            String componentId = mctx.generateUniqueComponentId();
+            
             if (mctx.isRefreshingTransientBuild())
             {
                 c = ComponentSupport.findChildByTagId(parent, id);
@@ -180,7 +182,7 @@ final class UIInstructionHandler extends AbstractUIHandler
                     // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
                     // and call createUniqueId(). Also, note that UIViewRoot.createUniqueId() javadoc
                     // says we could send as seed the facelet generated id.
-                    String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(), id);
+                    String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(), componentId);
                     c.setId(uid);
                 }                
                 c.getAttributes().put(ComponentSupport.MARK_CREATED, id);
