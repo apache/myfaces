@@ -291,7 +291,7 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 var ret = null;
 
                 //now this is less performant but we have to call it to allow viewstate decoration
-                if(!this._partialIdsArray || !this._partialIdsArray.length) {
+                if(!this._partialIdsArray ||!this._partialIdsArray.length) {
                     var viewState = jsf.getViewState(this._sourceForm);
                     ret = this._Lang.createFormDataDecorator(viewState);
 
