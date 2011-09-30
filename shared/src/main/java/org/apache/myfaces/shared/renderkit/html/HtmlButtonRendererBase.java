@@ -333,12 +333,18 @@ public class HtmlButtonRendererBase
 
         if (nestedFormInfo != null) 
         {
-            if (validParams != null && !validParams.isEmpty() )
-            {
-                rendererOnClick.append(buildServerOnclick(facesContext, uiComponent, uiComponent.getClientId(facesContext), nestedFormInfo, validParams));
-            }
-            else
-            {
+            // There is no clean way to detect if a "submit" behavior has been added to the component, 
+            // so to keep things simple, if the button is submit type, it is responsibility of the 
+            // developer to add a client behavior that submit the form, for example using a f:ajax tag.
+            // Otherwise, there will be a situation where a full submit could be trigger after an ajax
+            // operation. Note we still need to append two scripts if necessary: autoscroll and clear
+            // hidden fields, because this code is called for a submit button.
+            //if (behaviors.isEmpty() && validParams != null && !validParams.isEmpty() )
+            //{
+            //    rendererOnClick.append(buildServerOnclick(facesContext, uiComponent, uiComponent.getClientId(facesContext), nestedFormInfo, validParams));
+            //}
+            //else
+            //{
                 String formName = nestedFormInfo.getFormName();
                 if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext())) {
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
@@ -348,7 +354,7 @@ public class HtmlButtonRendererBase
                 if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll()) {
                     HtmlRendererUtils.appendAutoScrollAssignment(rendererOnClick, formName);
                 }
-            }
+            //}
         }
 
         //according to the specification in jsf.util.chain jdocs and the spec document we have to use
