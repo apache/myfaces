@@ -1116,6 +1116,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
             return;
         }
         
+        if (getParent() == null || !isInView())
+        {
+            //Skip if no parent or is not in view
+            return;
+        }
+        
         // convert Array values into a more readable format
         if (oldValue != null && oldValue.getClass().isArray() && Object[].class.isAssignableFrom(oldValue.getClass()))
         {
