@@ -20,6 +20,7 @@ package org.apache.myfaces.taglib.core;
 
 
 import org.apache.myfaces.shared_impl.taglib.UIComponentELTagUtils;
+import org.apache.myfaces.shared_impl.util.LocaleUtils;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
@@ -150,10 +151,19 @@ public class ConvertNumberTag
             Locale locale;
             if (_locale.isLiteralText())
             {
-                locale = new Locale(_locale.getExpressionString());
-            } else
+                locale = LocaleUtils.toLocale(_locale.getExpressionString());
+            }
+            else
             {
-                locale = (Locale) _locale.getValue(elContext);
+                Object localeValue = _locale.getValue(elContext);
+                if (localeValue instanceof Locale)
+                {
+                    locale = (Locale)localeValue;
+                }
+                else
+                {
+                    locale = LocaleUtils.toLocale(localeValue.toString());
+                }
                 if (null == locale)
                 {
                     locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
