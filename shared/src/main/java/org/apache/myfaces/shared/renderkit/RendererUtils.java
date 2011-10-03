@@ -649,7 +649,7 @@ public final class RendererUtils
             converter = new PassThroughAsStringConverter(converter);
         }
 
-        return internalSubmittedOrSelectedValuesAsSet(context, component, converter, uiSelectMany, submittedValues);
+        return internalSubmittedOrSelectedValuesAsSet(context, component, converter, uiSelectMany, submittedValues, false);
     }
 
 
@@ -666,7 +666,7 @@ public final class RendererUtils
     {
         Object selectedValues = uiSelectMany.getValue();
 
-        return internalSubmittedOrSelectedValuesAsSet(context, component, converter, uiSelectMany, selectedValues);
+        return internalSubmittedOrSelectedValuesAsSet(context, component, converter, uiSelectMany, selectedValues, true);
     }
 
 
@@ -701,10 +701,9 @@ public final class RendererUtils
         return getConvertedStringValue(context, component, converter, selectItem.getValue());
     }
 
-
     private static Set internalSubmittedOrSelectedValuesAsSet(FacesContext context,
             UIComponent component, Converter converter, UISelectMany uiSelectMany,
-            Object values)
+            Object values, boolean allowNonArrayOrCollectionValue)
     {
         if (values == null || EMPTY_STRING.equals(values))
         {
@@ -751,6 +750,12 @@ public final class RendererUtils
 
             return set;
 
+        }
+        else if (allowNonArrayOrCollectionValue)
+        {
+            HashSet set = new HashSet(HashMapUtils.calcCapacity(1));
+            set.add(values);
+            return set;
         }
         else
         {
