@@ -914,7 +914,11 @@ public class HtmlTableRendererBase extends HtmlRenderer
         {
             totalColumns = totalColumns + newsPaperColumns - 1;
         }
-        writer.writeAttribute(HTML.COLSPAN_ATTR, new Integer(totalColumns), null);
+        // Only render colspan if is > 0
+        if (totalColumns > 0)
+        {
+            writer.writeAttribute(HTML.COLSPAN_ATTR, new Integer(totalColumns), null);
+        }
         if (styleClass != null)
         {
             writer.writeAttribute(HTML.CLASS_ATTR, styleClass, null);
