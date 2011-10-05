@@ -18,10 +18,19 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import java.beans.FeatureDescriptor;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
@@ -34,25 +43,17 @@ import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.el.CompositeComponentExpressionHolder;
-import javax.servlet.ServletContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.MessageInterpolator;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
-import java.beans.FeatureDescriptor;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * <p>
@@ -270,23 +271,22 @@ public class BeanValidator implements Validator, PartialStateHolder
      * @throws FacesException if no ValidatorFactory can be obtained because: a) the
      * container is not a Servlet container or b) because Bean Validation is not available.
      */
-    private synchronized ValidatorFactory createValidatorFactory(FacesContext context)
+    private ValidatorFactory createValidatorFactory(FacesContext context)
     {
-        final Object ctx = context.getExternalContext().getContext();
-        if (ctx instanceof ServletContext)
+        Map<String, Object> applicationMap = context.getExternalContext().getApplicationMap();
+        Object attr = applicationMap.get(VALIDATOR_FACTORY_KEY);
+        if (attr instanceof ValidatorFactory)
         {
-            final ServletContext servletCtx = (ServletContext) ctx;
-            final Object attr = servletCtx.getAttribute(VALIDATOR_FACTORY_KEY);
-            if (attr != null)
-            {
-                return (ValidatorFactory) attr;
-            }
-            else
+            return (ValidatorFactory) attr;
+        }
+        else
+        {
+            synchronized (this)
             {
                 if (_ExternalSpecifications.isBeanValidationAvailable())
                 {
                     final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-                    servletCtx.setAttribute(VALIDATOR_FACTORY_KEY, attr);
+                    applicationMap.put(VALIDATOR_FACTORY_KEY, attr);
                     return factory;
                 }
                 else
@@ -294,10 +294,6 @@ public class BeanValidator implements Validator, PartialStateHolder
                     throw new FacesException("Bean Validation is not present");
                 }
             }
-        }
-        else
-        {
-            throw new FacesException("Only Servlet environments are supported for Bean Validation");
         }
     }
 
