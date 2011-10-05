@@ -95,6 +95,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<String> variableResolver = new ArrayList<String>();
     private List<String> viewHandlers = new ArrayList<String>();
     private List<String> defaultValidatorIds = new ArrayList<String>();
+    private List<String> defaultAnnotatedValidatorIds = new ArrayList<String>();
     
     private List<ManagedBean> managedBeans = new ArrayList<ManagedBean>();
     
@@ -181,6 +182,13 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
                 
                 // now add all default-validator entries (could be zero)
                 defaultValidatorIds.addAll(application.getDefaultValidatorIds());
+            }
+            else
+            {
+                //If isDefaultValidatorsPresent() is false, and there are still 
+                //default validators, it means they were added using annotations, so
+                //they are not affected by the empty entry according to section 3.5.3
+                defaultAnnotatedValidatorIds.addAll(application.getDefaultValidatorIds());
             }
             
             systemEventListeners.addAll(application.getSystemEventListeners());
@@ -554,7 +562,10 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      */
     public Collection<String> getDefaultValidatorIds ()
     {
-        return defaultValidatorIds;
+        List<String> allDefaultValidatorIds = new ArrayList<String>();
+        allDefaultValidatorIds.addAll(defaultAnnotatedValidatorIds);
+        allDefaultValidatorIds.addAll(defaultValidatorIds);
+        return allDefaultValidatorIds;
     }
     
     /**

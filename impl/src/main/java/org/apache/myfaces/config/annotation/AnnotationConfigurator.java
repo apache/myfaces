@@ -45,6 +45,7 @@ import javax.faces.render.FacesRenderer;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.validator.FacesValidator;
 
+import org.apache.myfaces.config.impl.digester.elements.Application;
 import org.apache.myfaces.config.impl.digester.elements.Behavior;
 import org.apache.myfaces.config.impl.digester.elements.Converter;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
@@ -185,6 +186,19 @@ public class AnnotationConfigurator
                                 + ")");
                     }
                     facesConfig.addValidator(val.value(), clazz.getName());
+                    if (val.isDefault())
+                    {
+                        Application app = null;
+                        if(facesConfig.getApplications().isEmpty())
+                        {
+                            app = new Application();
+                        }
+                        else
+                        {
+                            app = (Application) facesConfig.getApplications().get(0);
+                        }
+                        app.addDefaultValidatorId(val.value());
+                    }
                 }
             }
         }
