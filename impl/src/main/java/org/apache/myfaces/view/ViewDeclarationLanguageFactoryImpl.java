@@ -44,7 +44,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     /**
      * Disable facelets VDL from the current application project. 
      */
-    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true,false")
+    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true,false", group="viewhandler")
     public static final String PARAM_DISABLE_JSF_FACELET = "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
 
     private static final String FACELETS_1_VIEW_HANDLER = "com.sun.facelets.FaceletViewHandler";

@@ -56,7 +56,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     /**
      * Controls the size of the cache used to "remember" if a view exists or not.
      */
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2",
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", classType="java.lang.Integer",
             desc="Controls the size of the cache used to 'remember' if a view exists or not.")
     private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
     private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
@@ -65,7 +65,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
      * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
      * sucesive calls to ExternalContext.getResource().
      */
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2",
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", tags="performance",
             desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact of sucesive calls to ExternalContext.getResource().")
     private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;

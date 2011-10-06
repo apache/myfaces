@@ -104,7 +104,7 @@ public final class StateUtils {
     /**
      * Indicate if the view state is encrypted or not. By default, encryption is enabled.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.USE_ENCRYPTION",since="1.1",defaultValue="true",expectedValues="true,false")
+    @JSFWebConfigParam(name="org.apache.myfaces.USE_ENCRYPTION",since="1.1",defaultValue="true",expectedValues="true,false",group="state")
     public static final String USE_ENCRYPTION = INIT_PREFIX + "USE_ENCRYPTION";
     
     /**
@@ -113,32 +113,32 @@ public final class StateUtils {
      * for instructions on how to configure an application for 
      * different encryption strengths.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.SECRET",since="1.1")
+    @JSFWebConfigParam(name="org.apache.myfaces.SECRET",since="1.1",group="state")
     public static final String INIT_SECRET = INIT_PREFIX + "SECRET";
     
     /**
      * Indicate the encryption algorithm used for encrypt the view state.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM",since="1.1",defaultValue="DES")
+    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM",since="1.1",defaultValue="DES",group="state",tags="performance")
     public static final String INIT_ALGORITHM = INIT_PREFIX + "ALGORITHM";
 
     /**
      * If is set to "false", the secret key used for encryption algorithm is not cached. This is used
      * when the returned SecretKey for encryption algorithm is not thread safe. 
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.SECRET.CACHE",since="1.1")
+    @JSFWebConfigParam(name="org.apache.myfaces.SECRET.CACHE",since="1.1",group="state")
     public static final String INIT_SECRET_KEY_CACHE = INIT_SECRET + ".CACHE";
     
     /**
      * Defines the initialization vector (Base64 encoded) used for the encryption algorithm
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM.IV",since="1.1")
+    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM.IV",since="1.1",group="state")
     public static final String INIT_ALGORITHM_IV = INIT_ALGORITHM + ".IV";
     
     /**
      * Defines the default mode and padding used for the encryption algorithm
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM.PARAMETERS",since="1.1",defaultValue="ECB/PKCS5Padding")
+    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM.PARAMETERS",since="1.1",defaultValue="ECB/PKCS5Padding",group="state")
     public static final String INIT_ALGORITHM_PARAM = INIT_ALGORITHM + ".PARAMETERS";
     
     /**
@@ -146,13 +146,13 @@ public final class StateUtils {
      * by state manager into a byte array. The expected class must implement
      * org.apache.myfaces.shared.util.serial.SerialFactory interface.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.SERIAL_FACTORY", since="1.1")
+    @JSFWebConfigParam(name="org.apache.myfaces.SERIAL_FACTORY", since="1.1",group="state",tags="performance")
     public static final String SERIAL_FACTORY = INIT_PREFIX + "SERIAL_FACTORY";
     
     /**
      * Indicate if the view state should be compressed before encrypted(optional) and encoded
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.COMPRESS_STATE_IN_CLIENT",since="1.1",defaultValue="false",expectedValues="true,false")
+    @JSFWebConfigParam(name="org.apache.myfaces.COMPRESS_STATE_IN_CLIENT",since="1.1",defaultValue="false",expectedValues="true,false",group="state",tags="performance")
     public static final String COMPRESS_STATE_IN_CLIENT = INIT_PREFIX + "COMPRESS_STATE_IN_CLIENT";
 
     public static final String DEFAULT_MAC_ALGORITHM = "HmacSHA1";
@@ -161,21 +161,21 @@ public final class StateUtils {
      * Indicate the algorithm used to calculate the Message Authentication Code that is
      * added to the view state.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.MAC_ALGORITHM",defaultValue="HmacSHA1")
+    @JSFWebConfigParam(name="org.apache.myfaces.MAC_ALGORITHM",defaultValue="HmacSHA1",group="state",tags="performance")
     public static final String INIT_MAC_ALGORITHM = "org.apache.myfaces.MAC_ALGORITHM";
     
     /**
      * Define the initialization code that are used to initialize the secret key used
      * on the Message Authentication Code algorithm
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.MAC_SECRET")
+    @JSFWebConfigParam(name="org.apache.myfaces.MAC_SECRET",group="state")
     public static final String INIT_MAC_SECRET = "org.apache.myfaces.MAC_SECRET";
 
     /**
      * If is set to "false", the secret key used for MAC algorithm is not cached. This is used
      * when the returned SecretKey for mac algorithm is not thread safe. 
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.MAC_SECRET.CACHE")
+    @JSFWebConfigParam(name="org.apache.myfaces.MAC_SECRET.CACHE",group="state")
     public static final String INIT_MAC_SECRET_KEY_CACHE = "org.apache.myfaces.MAC_SECRET.CACHE";
     
     /** Utility class, do not instatiate */

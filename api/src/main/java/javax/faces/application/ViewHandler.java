@@ -77,19 +77,19 @@ public abstract class ViewHandler
      * Indicate the default suffixes, separated by spaces to derive the default file URI 
      * used by JSF to create views and render pages. 
      */
-    @JSFWebConfigParam(defaultValue=".xhtml .view.xml .jsp", since="1.1")
+    @JSFWebConfigParam(defaultValue=".xhtml .view.xml .jsp", since="1.1", group="viewhandler")
     public static final String DEFAULT_SUFFIX_PARAM_NAME = "javax.faces.DEFAULT_SUFFIX";
     
     /**
      * The default extension used to handle facelets pages.
      */
-    @JSFWebConfigParam(defaultValue=".xhtml", since="2.0")
+    @JSFWebConfigParam(defaultValue=".xhtml", since="2.0", group="viewhandler")
     public static final String FACELETS_SUFFIX_PARAM_NAME = "javax.faces.FACELETS_SUFFIX";
     
     /**
      * Set of extensions handled by facelets, separated by ';'.
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since="2.0", group="viewhandler")
     public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "javax.faces.FACELETS_VIEW_MAPPINGS";
     // TODO: Notify EG on that last constant. Using the Facelets' param as well for backward compatiblity is 
     //       silly. If an application uses Facelets then they'll be using facelets.jar. Once they chose to 

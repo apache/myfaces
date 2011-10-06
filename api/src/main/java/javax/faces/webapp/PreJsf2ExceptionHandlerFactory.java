@@ -95,7 +95,7 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
          * </ul>
          * Furthermore, the init parameter only works when using the PreJsf2ExceptionHandlerFactory.
          */
-        @JSFWebConfigParam(since="1.2.4",desc="Deprecated: use JSF 2.0 ExceptionHandler")
+        @JSFWebConfigParam(since="1.2.4",desc="Deprecated: use JSF 2.0 ExceptionHandler", deprecated=true)
         private static final String ERROR_HANDLER_PARAMETER = "org.apache.myfaces.ERROR_HANDLER";
         
         private Queue<ExceptionQueuedEvent> handled;

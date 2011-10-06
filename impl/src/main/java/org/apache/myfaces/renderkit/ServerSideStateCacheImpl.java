@@ -69,7 +69,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * </p>
      * 
      */
-    @JSFWebConfigParam(defaultValue="20",since="1.1")
+    @JSFWebConfigParam(defaultValue="20",since="1.1", classType="java.lang.Integer", group="state", tags="performance")
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
 
     /**
@@ -82,7 +82,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * store more sessions org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION. This feature becomes useful for multi-window applications.
      * where without this feature a window can swallow all view slots so the other ones will throw ViewExpiredException.</p>
      */
-    @JSFWebConfigParam(since="2.0.6")
+    @JSFWebConfigParam(since="2.0.6", classType="java.lang.Integer", group="state", tags="performance")
     private static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
     
     /**
@@ -98,7 +98,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * If <code>false</code> the state will not be serialized to a byte stream.
      * </p>
      */
-    @JSFWebConfigParam(defaultValue="true",since="1.1")
+    @JSFWebConfigParam(defaultValue="true",since="1.1", expectedValues="true,false", group="state", tags="performance")
     private static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
     /**
@@ -108,7 +108,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
      * If <code>false</code> the state will not be compressed.
      */
-    @JSFWebConfigParam(defaultValue="true",since="1.1")
+    @JSFWebConfigParam(defaultValue="true",since="1.1", expectedValues="true,false", group="state", tags="performance")
     private static final String COMPRESS_SERVER_STATE_PARAM = "org.apache.myfaces.COMPRESS_STATE_IN_SESSION";
 
     /**
@@ -144,7 +144,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * </ul>
      * 
      */
-    @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak", since="1.2.5")
+    @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak", since="1.2.5", group="state", tags="performance")
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
     
     /**
@@ -170,7 +170,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * Only applicable if state saving method is "server" (= default).
      * The default value is false.</p>
      */
-    @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false")
+    @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false", group="state")
     private static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
 
     private static final int UNCOMPRESSED_FLAG = 0;

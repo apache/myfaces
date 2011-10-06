@@ -55,7 +55,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
      * </ul>
      * 
      */
-    @JSFWebConfigParam(since="2.0.8", defaultValue="noCache", expectedValues="noCache, strict, allowCset, always")
+    @JSFWebConfigParam(since="2.0.8", defaultValue="noCache", expectedValues="noCache, strict, allowCset, always", group="EL", tags="performance")
     public static final String INIT_PARAM_CACHE_EL_EXPRESSIONS = "org.apache.myfaces.CACHE_EL_EXPRESSIONS";
     
     /**

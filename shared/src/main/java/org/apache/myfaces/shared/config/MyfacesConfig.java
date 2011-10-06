@@ -50,6 +50,11 @@ public class MyfacesConfig
 
     private static final String APPLICATION_MAP_PARAM_NAME = MyfacesConfig.class.getName();
 
+    /**
+     * Set the virtual path used to serve resources using tomahawk addResource API. Note ExtensionsFilter should
+     * be able to receive request on the prefix used here.
+     */
+    @JSFWebConfigParam(tags="tomahawk")
     public static final String  INIT_PARAM_RESOURCE_VIRTUAL_PATH = "org.apache.myfaces.RESOURCE_VIRTUAL_PATH";
     public static final String  INIT_PARAM_RESOURCE_VIRTUAL_PATH_DEFAULT = "/faces/myFacesExtensionResource";
 
@@ -58,7 +63,8 @@ public class MyfacesConfig
      * i.e. additional line separators and whitespace will be written, that do not
      * influence the HTML code. Default: "true"
      */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1",
+            ignoreUpperLowerCase=true, group="render")
     private static final String  INIT_PARAM_PRETTY_HTML = "org.apache.myfaces.PRETTY_HTML";
     private static final boolean INIT_PARAM_PRETTY_HTML_DEFAULT = true;
 
@@ -70,14 +76,16 @@ public class MyfacesConfig
      * added as url parameters.
      * Default: "true"
      */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1",
+            ignoreUpperLowerCase=true, group="render")
     private static final String  INIT_PARAM_ALLOW_JAVASCRIPT = "org.apache.myfaces.ALLOW_JAVASCRIPT";
     private static final boolean INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT = true;
 
     /**
      * Deprecated: tomahawk specific param to detect javascript, but it is no longer valid anymore.
      */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1",
+            ignoreUpperLowerCase=true, deprecated=true, tags="tomahawk", group="render")
     private static final String  INIT_PARAM_DETECT_JAVASCRIPT = "org.apache.myfaces.DETECT_JAVASCRIPT";
     private static final boolean INIT_PARAM_DETECT_JAVASCRIPT_DEFAULT = false;
 
@@ -88,7 +96,8 @@ public class MyfacesConfig
      * if you trigger a link or button action that stays on the same page.
      * Default: "false"
      */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1", 
+            ignoreUpperLowerCase=true, tags="tomahawk")
     private static final String  INIT_PARAM_AUTO_SCROLL = "org.apache.myfaces.AUTO_SCROLL";
     private static final boolean INIT_PARAM_AUTO_SCROLL_DEFAULT = false;
 
@@ -103,7 +112,7 @@ public class MyfacesConfig
      * gain performance.
      */
     @JSFWebConfigParam(defaultValue="org.apache.myfaces. renderkit.html.util. DefaultAddResource",since="1.1",
-            desc="Tomahawk specific: Indicate the class responsible to place scripts and css using tomahawk AddResource API")
+            desc="Tomahawk specific: Indicate the class responsible to place scripts and css using tomahawk AddResource API", tags="tomahawk")
     private static final String INIT_PARAM_ADD_RESOURCE_CLASS = "org.apache.myfaces.ADD_RESOURCE_CLASS";
     private static final String INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT = "org.apache.myfaces.renderkit.html.util.DefaultAddResource";
 
@@ -119,15 +128,15 @@ public class MyfacesConfig
      * 
      * In tomahawk for JSF 2.0 since version 1.1.11, this param is set by default to false, otherwise is true.
      */
-    @JSFWebConfigParam(defaultValue="for JSF 2.0 since 1.1.11 false, otherwise true", expectedValues="true,false",since="1.1",
-            desc="Tomahawk specific: This parameter will check for a properly configured Extensions-Filter if it is needed by the web-app.")
+    @JSFWebConfigParam(defaultValue="for JSF 2.0 since 1.1.11 false, otherwise true", expectedValues="true, false, on, off, yes, no",since="1.1", ignoreUpperLowerCase=true,
+            desc="Tomahawk specific: This parameter will check for a properly configured Extensions-Filter if it is needed by the web-app.", tags="tomahawk")
     private static final String  INIT_CHECK_EXTENSIONS_FILTER = "org.apache.myfaces.CHECK_EXTENSIONS_FILTER";
     private static final boolean INIT_CHECK_EXTENSIONS_FILTER_DEFAULT = false;
 
     /**
      * Tomahawk specific: Interpret "readonly" property as "disable" for select components like t:selectOneRow.
      */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", ignoreUpperLowerCase=true, tags="tomahawk", group="render")
     private static final String INIT_READONLY_AS_DISABLED_FOR_SELECT = "org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS";
     private static final boolean INIT_READONLY_AS_DISABLED_FOR_SELECT_DEFAULT = true;
 
@@ -135,14 +144,15 @@ public class MyfacesConfig
      * Set the time in seconds that check for updates of web.xml and faces-config descriptors and refresh the configuration.
      * This param is valid only if project stage is not production. Set this param to 0 disable this feature.
      */
-    @JSFWebConfigParam(defaultValue="2",since="1.1")
+    @JSFWebConfigParam(defaultValue="2",since="1.1", classType="java.lang.Long")
     public static final String INIT_PARAM_CONFIG_REFRESH_PERIOD = "org.apache.myfaces.CONFIG_REFRESH_PERIOD";
     public static final long INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT = 2;
 
     /**
      * Set the view state using a javascript function instead a hidden input field.
      */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1", 
+            ignoreUpperLowerCase=true, deprecated=true, group="state")
     private static final String  INIT_PARAM_VIEWSTATE_JAVASCRIPT = "org.apache.myfaces.VIEWSTATE_JAVASCRIPT";
     private static final boolean INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT = false;
 
@@ -159,7 +169,8 @@ public class MyfacesConfig
      * <li>false - to omit rendering of the id attribute (which is only needed for very special AJAX/Javascript components)</li></ul>
      * Default value is: true (for backwards compatibility and JSF 1.2 compliancy) 
      */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", 
+            ignoreUpperLowerCase=true, group="state")
     private static final String  INIT_PARAM_RENDER_VIEWSTATE_ID = "org.apache.myfaces.RENDER_VIEWSTATE_ID";
     private static final boolean INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT = true;
 
@@ -178,7 +189,8 @@ public class MyfacesConfig
      * See: <a href="http://issues.apache.org/jira/browse/MYFACES-1774">Jira: MYFACES-1774</a>
      * </p>
      */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true,false",since="1.1.6")
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1.6", 
+            ignoreUpperLowerCase=true, group="render")
     private static final String  INIT_PARAM_STRICT_XHTML_LINKS = "org.apache.myfaces.STRICT_XHTML_LINKS";
     private static final boolean INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT = true;
     
@@ -188,7 +200,8 @@ public class MyfacesConfig
      * because jsf ri does not render javascript on onclick method for button,
      * so myfaces should do this.
      */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true,false",since="1.2.3")
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.2.3",
+            ignoreUpperLowerCase=true, group="render")
     private static final String INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON = "org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON";
     private static final boolean INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT= false;
 
@@ -198,7 +211,8 @@ public class MyfacesConfig
      * automatically to ensure consistency. This feature is required to support Windows Mobile 6, because in this environment,
      * document.createElement() and form.appendChild() javascript methods are not supported.
      */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true,false",since="1.2.9")
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.2.9",
+            ignoreUpperLowerCase=true, group="render")
     private static final String INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS = "org.apache.myfaces.RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS";
     private static final boolean INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS_DEFAULT= false;
     
@@ -206,7 +220,8 @@ public class MyfacesConfig
      * Add a code that save the form before submit using a
      * link (call to window.external.AutoCompleteSaveForm(form) ). It's a bug on IE.
      */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true,false",since="1.1")
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1",
+            ignoreUpperLowerCase=true, group="render")
     private static final String INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE = "org.apache.myfaces.SAVE_FORM_SUBMIT_LINK_IE";
     private static final boolean INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT = false;
     
@@ -230,7 +245,8 @@ public class MyfacesConfig
      * c:choose and ui:include with src=ELExpression is used on the page and if that so, mark the view
      * to be refreshed.</p> 
      */
-    @JSFWebConfigParam(since="2.0", defaultValue="auto", expectedValues="true,false,auto")
+    @JSFWebConfigParam(since="2.0", defaultValue="auto", expectedValues="true,false,auto", tags="performance", 
+            ignoreUpperLowerCase=true, group="state")
     public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"; 
     public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT = "auto";
 
@@ -243,7 +259,8 @@ public class MyfacesConfig
      * c:choose and ui:include with src=ELExpression are marked to be restored fully, so state
      * is preserved between request.</p>
      */
-    @JSFWebConfigParam(since="2.0", defaultValue="false")
+    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false, on, off, yes, no", tags="performance",
+            ignoreUpperLowerCase=true, group="state")
     public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE";
     public final static boolean INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT = false;
     
@@ -251,21 +268,23 @@ public class MyfacesConfig
      * If set to <code>true</code>, tag library XML files and faces config XML files using schema 
      * will be validated during application start up
      */
-    @JSFWebConfigParam(since="2.0", expectedValues="true,false")
+    @JSFWebConfigParam(since="2.0", expectedValues="true, false, on, off, yes, no", ignoreUpperLowerCase=true)
     public final static String INIT_PARAM_VALIDATE_XML = "org.apache.myfaces.VALIDATE_XML";
     public final static boolean INIT_PARAM_VALIDATE_XML_DEFAULT = false;
     
     /**
      * Wrap content inside script with xml comment to prevent old browsers to display it. By default it is true. 
      */
-    @JSFWebConfigParam(since="2.0.1", expectedValues="true,false", defaultValue="true")
+    @JSFWebConfigParam(since="2.0.1", expectedValues="true, false, on, off, yes, no", defaultValue="true",
+            ignoreUpperLowerCase=true, group="render")
     public final static String INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG = "org.apache.myfaces.WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG";
     public final static boolean INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = true;
     
     /**
      * If set true, render the form submit script inline, as in myfaces core 1.2 and earlier versions 
      */
-    @JSFWebConfigParam(since="2.0.2", expectedValues="true,false", defaultValue="false")
+    @JSFWebConfigParam(since="2.0.2", expectedValues="true, false, on, off, yes, no", defaultValue="false", 
+            ignoreUpperLowerCase=true, group="render")
     public final static String INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE = "org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE";
     public final static boolean INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT = false;
     
@@ -482,7 +501,7 @@ public class MyfacesConfig
 
             myfacesConfig.setCheckExtensionsFilter(getBooleanInitParameter(extCtx, INIT_CHECK_EXTENSIONS_FILTER,
                     INIT_CHECK_EXTENSIONS_FILTER_DEFAULT));
-            
+            /*
             if(RI_IMPL_AVAILABLE)
             {
                 if(log.isLoggable(Level.INFO))
@@ -497,20 +516,22 @@ public class MyfacesConfig
                 {
                     log.info("Starting up Tomahawk on the MyFaces-JSF-Implementation");
                 }
-            }
+            }*/
         }
+        /*
         else
         {
             if (log.isLoggable(Level.INFO))
             {
                 log.info("Tomahawk jar not available. Autoscrolling, DetectJavascript, AddResourceClass and CheckExtensionsFilter are disabled now.");
             }
-        }
+        }*/
 
+        /*
         if(RI_IMPL_AVAILABLE && MYFACES_IMPL_AVAILABLE)
         {
             log.severe("Both MyFaces and the RI are on your classpath. Please make sure to use only one of the two JSF-implementations.");
-        }
+        }*/
         return myfacesConfig;
     }
 
@@ -521,7 +542,7 @@ public class MyfacesConfig
         String strValue = externalContext.getInitParameter(paramName);
         if (strValue == null)
         {
-            if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + paramName + "' found, using default value " + defaultValue);
+            //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + paramName + "' found, using default value " + defaultValue);
             return defaultValue;
         }
         else if (strValue.equalsIgnoreCase("true") || strValue.equalsIgnoreCase("on") || strValue.equalsIgnoreCase("yes"))
@@ -534,7 +555,7 @@ public class MyfacesConfig
         }
         else
         {
-            if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" + paramName + "' (='" + strValue + "'), using default value " + defaultValue);
+            //if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" + paramName + "' (='" + strValue + "'), using default value " + defaultValue);
             return defaultValue;
         }
     }
@@ -546,7 +567,7 @@ public class MyfacesConfig
         String strValue = externalContext.getInitParameter(paramName);
         if (strValue == null)
         {
-            if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + paramName + "' found, using default value " + defaultValue); //defaultValue==null should not be a problem here
+            //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + paramName + "' found, using default value " + defaultValue); //defaultValue==null should not be a problem here
             return defaultValue;
         }
         
@@ -559,7 +580,7 @@ public class MyfacesConfig
        String strValue = externalContext.getInitParameter(paramName);
        if (strValue == null)
        {
-           if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" +paramName +"' found, using default value " +defaultValue);
+           //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" +paramName +"' found, using default value " +defaultValue);
            return defaultValue;
        }
        else
@@ -567,7 +588,7 @@ public class MyfacesConfig
            try {
                return Long.parseLong(strValue);
            } catch (NumberFormatException e) {
-               if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" + paramName + "' (='" + strValue + "'), using default value " + defaultValue);
+               //if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" + paramName + "' (='" + strValue + "'), using default value " + defaultValue);
            }
            return defaultValue;
        }

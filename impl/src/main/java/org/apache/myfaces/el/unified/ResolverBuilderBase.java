@@ -53,11 +53,11 @@ public class ResolverBuilderBase
      * this param override the default ordering described by JSF spec section 5. 
      * </p>
      */
-    @JSFWebConfigParam(since = "1.2.10, 2.0.2",
+    @JSFWebConfigParam(since = "1.2.10, 2.0.2", group="EL",
             desc = "The Class of an Comparator&lt;ELResolver&gt; implementation.")
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
     
-    @JSFWebConfigParam(since = "2.1.0",
+    @JSFWebConfigParam(since = "2.1.0", group="EL",
             desc="The Class of an org.apache.commons.collections.Predicate&lt;ELResolver&gt; implementation." +
             "If used and returns true for a ELResolver instance, such resolver will not be installed in ELResolvers chain." +
             "Use with caution - can break functionality defined in JSF specification 'ELResolver Instances Provided by Faces'")

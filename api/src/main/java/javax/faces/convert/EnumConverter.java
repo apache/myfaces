@@ -44,7 +44,7 @@ public class EnumConverter implements Converter, PartialStateHolder
      * 
      * See MYFACES-2739 for details.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.ENUM_CONVERTER_ALLOW_STRING_PASSTROUGH", since="2.0.1", expectedValues="true,false",defaultValue="false")
+    @JSFWebConfigParam(name="org.apache.myfaces.ENUM_CONVERTER_ALLOW_STRING_PASSTROUGH", since="2.0.1", expectedValues="true,false",defaultValue="false", group="validation")
     private static final String ALLOW_STRING_PASSTROUGH = "org.apache.myfaces.ENUM_CONVERTER_ALLOW_STRING_PASSTROUGH";
     
     // TODO: Find a valid generic usage -= Simon Lessard =-

@@ -125,7 +125,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
      * 
      * This param is just provided to preserve backwards behavior. 
      */
-    @JSFWebConfigParam(since="2.0.8, 2.1.2", defaultValue="true", expectedValues="true, false")
+    @JSFWebConfigParam(since="2.0.8, 2.1.2", defaultValue="true", expectedValues="true, false", group="state", tags="performance")
     public static final String SAVE_STATE_WITH_VISIT_TREE_ON_PSS = "org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS";
     
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";

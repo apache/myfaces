@@ -72,7 +72,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
     /**
      * This parameter specifies the ExpressionFactory implementation to use.
      */
-    @JSFWebConfigParam(since="1.2.7")
+    @JSFWebConfigParam(since="1.2.7", group="EL")
     protected static final String EXPRESSION_FACTORY = "org.apache.myfaces.EXPRESSION_FACTORY";
     
     /**
@@ -80,6 +80,16 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      */
     @JSFWebConfigParam(since="2.0.3", defaultValue="false")
     protected static final String INITIALIZE_ALWAYS_STANDALONE = "org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE";
+    
+    /**
+     * Indicate if log all web config params should be done before initialize the webapp. 
+     * <p>
+     * If is set in "auto" mode, web config params are only logged on "Development" and "Production" project stages.
+     * </p> 
+     */
+    @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
+    public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
+    public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS_DEFAULT ="auto";
 
     /**
      * Performs all necessary initialization tasks like configuring this JSF
@@ -129,15 +139,20 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 StateUtils.initSecret(servletContext);
             }
 
-            if (log.isLoggable(Level.INFO)) {
-                log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
-            }
-            
             // initialize eager managed beans
             _createEagerBeans(facesContext);
 
             _dispatchApplicationEvent(servletContext, PostConstructApplicationEvent.class);
-            
+
+            if ( (facesContext.isProjectStage(ProjectStage.Development) || 
+                  facesContext.isProjectStage(ProjectStage.Production)) &&
+                 log.isLoggable(Level.INFO))
+            {
+                log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
+            }
+
+            WebConfigParamsLogger.logWebContextParams(facesContext);
+
             // print out a very prominent log message if the project stage is != Production
             if (!facesContext.isProjectStage(ProjectStage.Production))
             {

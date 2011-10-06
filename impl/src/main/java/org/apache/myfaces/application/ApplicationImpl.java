@@ -134,7 +134,7 @@ public class ApplicationImpl extends Application
     /**
      * Set the default timezone as system timezone when a converter extending from DateTimeConverter is created.
      */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0")
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
     public final static String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME 
         = "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
     
@@ -151,7 +151,7 @@ public class ApplicationImpl extends Application
      * should be loaded as soon as they are added to the current application instance or instead
      * loaded in a lazy way.
      */
-    @JSFWebConfigParam(defaultValue="true",since="2.0")
+    @JSFWebConfigParam(defaultValue="true",since="2.0",tags="performance")
     private static final String LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME = "org.apache.myfaces.LAZY_LOAD_CONFIG_OBJECTS";
     private static final boolean LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE = true;
     private Boolean _lazyLoadConfigObjects = null;
