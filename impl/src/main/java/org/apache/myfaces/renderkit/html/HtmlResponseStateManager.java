@@ -63,7 +63,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * it is set to true, to keep aligned with the Reference Implementation (RI).
      * </p> 
      */
-    @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true")
+    @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true", group="state")
     public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
     
     private Boolean _handleStateCachingMechanics;

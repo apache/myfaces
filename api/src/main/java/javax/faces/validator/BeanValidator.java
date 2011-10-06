@@ -93,7 +93,7 @@ public class BeanValidator implements Validator, PartialStateHolder
      * If this init parameter is present, no Bean Validators should be added to an UIInput by default.
      * Explicitly adding a BeanValidator to an UIInput is possible though.
      */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false", since="2.0")
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false", since="2.0", group="validation")
     public static final String DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME = "javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR";
 
     /**

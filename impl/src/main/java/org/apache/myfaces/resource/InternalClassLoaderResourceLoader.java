@@ -44,7 +44,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
      * all in just one file, to preserve line numbers and make javascript
      * debugging of the default jsf javascript file more simple.
      */
-    @JSFWebConfigParam(since="2.0.1",defaultValue="false",expectedValues="true,false")
+    @JSFWebConfigParam(since="2.0.1",defaultValue="false",expectedValues="true,false", group="render")
     public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
     
     private final boolean _useMultipleJsFilesForJsfUncompressedJs;

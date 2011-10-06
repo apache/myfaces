@@ -38,7 +38,7 @@ public abstract class ResourceHandler
     /**
      * Space separated file extensions that will not be served by the default ResourceHandler implementation.
      */
-    @JSFWebConfigParam(defaultValue=".class .jsp .jspx .properties .xhtml",since="2.0")
+    @JSFWebConfigParam(defaultValue=".class .jsp .jspx .properties .xhtml",since="2.0", group="resources")
     public static final String RESOURCE_EXCLUDES_PARAM_NAME = "javax.faces.RESOURCE_EXCLUDES";
     public static final String RESOURCE_IDENTIFIER = "/javax.faces.resource";
     

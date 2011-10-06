@@ -157,7 +157,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
      * servlet environment to HttpServletResponse.setBufferSize().
      */
-    @JSFWebConfigParam(since="2.0",
+    @JSFWebConfigParam(since="2.0", alias="facelets.BUFFER_SIZE", classType="java.lang.Integer", tags="performance",
             desc="Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a servlet environment to HttpServletResponse.setBufferSize()")
     public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
     
@@ -165,7 +165,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
      * servlet environment to HttpServletResponse.setBufferSize().
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since="2.0", deprecated=true, classType="java.lang.Integer")
     private final static String PARAM_BUFFER_SIZE_DEPRECATED = "facelets.BUFFER_SIZE";
     
     private final static String[] PARAMS_BUFFER_SIZE = {PARAM_BUFFER_SIZE, PARAM_BUFFER_SIZE_DEPRECATED};
@@ -176,14 +176,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
      * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since="2.0", alias="facelets.DECORATORS")
     public final static String PARAM_DECORATORS = "javax.faces.FACELETS_DECORATORS";
     
     /**
      * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
      * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since="2.0", deprecated=true)
     private final static String PARAM_DECORATORS_DEPRECATED = "facelets.DECORATORS";
     
     private final static String[] PARAMS_DECORATORS = {PARAM_DECORATORS, PARAM_DECORATORS_DEPRECATED};
@@ -197,13 +197,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     /**
      * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
      */
-    @JSFWebConfigParam(since="2.0", desc="Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.")
+    @JSFWebConfigParam(since="2.0", desc="Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
+            alias="facelets.LIBRARIES")
     public final static String PARAM_LIBRARIES = "javax.faces.FACELETS_LIBRARIES";
     
     /**
      * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
      */
-    @JSFWebConfigParam(since="2.0", desc="Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.")
+    @JSFWebConfigParam(since="2.0", desc="Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
+            deprecated=true)
     private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
     
     private final static String[] PARAMS_LIBRARIES = {PARAM_LIBRARIES, PARAM_LIBRARIES_DEPRECATED};
@@ -213,7 +215,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * 
      * <p>By default is infinite (no active).</p>
      */
-    @JSFWebConfigParam(since="2.0", defaultValue="-1")
+    @JSFWebConfigParam(since="2.0", defaultValue="-1", alias="facelets.REFRESH_PERIOD", classType="java.lang.Long", tags="performance")
     public final static String PARAM_REFRESH_PERIOD = "javax.faces.FACELETS_REFRESH_PERIOD";
     
     /**
@@ -221,7 +223,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * 
      * <p>By default is infinite (no active).</p>
      */
-    @JSFWebConfigParam(since="2.0", defaultValue="-1")
+    @JSFWebConfigParam(since="2.0", defaultValue="-1", deprecated=true)
     private final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
     
     private final static String[] PARAMS_REFRESH_PERIOD = {PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED};
@@ -229,13 +231,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     /**
      * Class implementing ResourceResolver interface used to locate facelet resources. 
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since="2.0", alias="facelets.RESOURCE_RESOLVER")
     public final static String PARAM_RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
     
     /**
      * Class implementing ResourceResolver interface used to locate facelet resources.
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since="2.0", deprecated=true)
     private final static String PARAM_RESOURCE_RESOLVER_DEPRECATED = "facelets.RESOURCE_RESOLVER";
     
     private final static String[] PARAMS_RESOURCE_RESOLVER = {PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED};
@@ -243,13 +245,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     /**
      * Skip comments found on a facelet file.
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since="2.0", alias="facelets.SKIP_COMMENTS")
     public final static String PARAM_SKIP_COMMENTS = "javax.faces.FACELETS_SKIP_COMMENTS";
     
     /**
      * Skip comments found on a facelet file.
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since="2.0", deprecated=true)
     private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
     
     private final static String[] PARAMS_SKIP_COMMENTS = {PARAM_SKIP_COMMENTS, PARAM_SKIP_COMMENTS_DEPRECATED};

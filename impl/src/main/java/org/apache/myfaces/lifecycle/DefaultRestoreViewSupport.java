@@ -68,11 +68,11 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     //private final Log log = LogFactory.getLog(DefaultRestoreViewSupport.class);
     private final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
 
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2")
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", classType="java.lang.Integer")
     private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
     private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
 
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2")
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="viewhandler", expectedValues="true,false", tags="performance")
     private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
     

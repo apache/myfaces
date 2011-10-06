@@ -72,6 +72,23 @@
                     </execution>
                     
                     <execution>
+                        <id>makeWebConfigParamsLogger</id>
+                        <configuration>
+                            <templateFile>WebConfigParamsLogger.vm</templateFile>
+                            <outputDirectory>${project.build.directory}/generated-sources/myfaces-builder-plugin</outputDirectory>
+                            <xmlFile>org/apache/myfaces/webapp/WebConfigParamsLogger.java</xmlFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
+                            </modelIds>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
+                    
+                    <execution>
                         <id>makefacesconfig</id>
                         <configuration>
                             <templateFile>faces-config20.vm</templateFile>

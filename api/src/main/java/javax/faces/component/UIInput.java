@@ -74,7 +74,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * Force validation on empty fields (By default is auto, which means it is only 
      * enabled when Bean Validation binaries are available on the current classpath).
      */
-    @JSFWebConfigParam(defaultValue="auto", expectedValues="auto, true, false", since="2.0")
+    @JSFWebConfigParam(defaultValue="auto", expectedValues="auto, true, false", since="2.0", group="validation")
     public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
     
     /** 
@@ -82,7 +82,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * <p>Note this param is ignored for components extending from UISelectOne/UISelectMany.</p>
      **/
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0")
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
     private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
 
     // our own, cached key

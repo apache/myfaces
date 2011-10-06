@@ -50,7 +50,7 @@ public class ResolverBuilderBase
      * this param override the default ordering described by JSF spec section 5. 
      * </p>
      */
-    @JSFWebConfigParam(since = "1.2.10, 2.0.2",
+    @JSFWebConfigParam(since = "1.2.10, 2.0.2", group="EL",
             desc = "The Class of an Comparator&lt;ELResolver&gt; implementation.")
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
     
