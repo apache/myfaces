@@ -563,7 +563,17 @@
 
         </dependencies>
     </dependencyManagement>
-    
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apache.snapshots.plugin</id>
+            <name>Apache Snapshot Repository</name>
+            <url>http://repository.apache.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
 
     <repositories>
 
