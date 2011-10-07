@@ -172,6 +172,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             if (mapping.isExtensionMapping())
             {
+                //See JSF 2.0 section 7.5.2 
                 String[] contextSuffixes = getContextSuffix(context); 
                 boolean founded = false;
                 for (String contextSuffix : contextSuffixes)
@@ -186,15 +187,27 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                 }
                 if (!founded)
                 {   
-                    if(viewId.lastIndexOf(".") != -1 )
+                    //See JSF 2.0 section 7.5.2
+                    // - If the argument viewId has an extension, and this extension is mapping, the result is contextPath + viewId
+                    //
+                    // -= Leonardo Uribe =- It is evident that when the page is generated, the derived viewId will end with the 
+                    // right contextSuffix, and a navigation entry on faces-config.xml should use such id, this is just a workaroud
+                    // for usability. There is a potential risk that change the mapping in a webapp make the same application fail,
+                    // so use viewIds ending with mapping extensions is not a good practice.
+                    if (viewId.endsWith(mapping.getExtension()))
+                    {
+                        builder.append(viewId);
+                    }
+                    else if(viewId.lastIndexOf(".") != -1 )
                     {
                         builder.append(viewId.substring(0,viewId.lastIndexOf(".")));
+                        builder.append(contextSuffixes[0]);
                     }
                     else
                     {
                         builder.append(viewId);
+                        builder.append(contextSuffixes[0]);
                     }
-                    builder.append(contextSuffixes[0]);
                 }
             }
             else
