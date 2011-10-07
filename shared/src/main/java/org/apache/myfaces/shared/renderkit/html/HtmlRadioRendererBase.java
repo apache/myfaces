@@ -115,7 +115,7 @@ public class HtmlRadioRendererBase
         List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(selectOne, facesContext);
         converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
         
-        Object currentValue = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, selectOne);
+        Object currentValue = org.apache.myfaces.shared.renderkit.RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(facesContext, selectOne);
 
         int itemNum = 0;
 
@@ -218,7 +218,11 @@ public class HtmlRadioRendererBase
         else 
         {
             String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedStringValue(facesContext, selectOne, converter, selectItem.getValue());
-            boolean itemChecked = itemStrValue.equals(currentValue);
+            boolean itemChecked = (itemStrValue == null) ? 
+                    itemStrValue == currentValue : 
+                    "".equals(itemStrValue) ? 
+                            (currentValue == null || itemStrValue.equals(currentValue)) : 
+                            itemStrValue.equals(currentValue);
             
             // IF the hideNoSelectionOption attribute of the component is true
             // AND this selectItem is the "no selection option"
@@ -311,6 +315,10 @@ public class HtmlRadioRendererBase
         if (value != null)
         {
             writer.writeAttribute(HTML.VALUE_ATTR, value, null);
+        }
+        else
+        {
+            writer.writeAttribute(HTML.VALUE_ATTR, "", null);
         }
         
         Map<String, List<ClientBehavior>> behaviors = null;
