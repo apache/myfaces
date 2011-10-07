@@ -19,14 +19,27 @@
 
 package org.apache.myfaces.context;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
-
-import javax.faces.context.PartialResponseWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 /**
  * Test cases for our impl, which tests for the CDATA nesting
@@ -39,6 +52,8 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
 
     static Logger _log = Logger.getLogger(PartialResponseWriterImplTest.class.getName());
 
+    private final String filePath = this.getDirectory();
+    
     PartialResponseWriterImpl _writer;
     StringWriter _contentCollector;
     private static final String STD_UPDATE_RESULT = "<changes><update id=\"blaId\"><![CDATA[testing]]></update>";
@@ -52,7 +67,86 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         super.setUp();
         _contentCollector = new StringWriter(100);
     }
+    
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        _contentCollector = null;
+    }
 
+    private void checkOutput(File expected, String output) throws Exception
+    {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(false);
+        dbf.setCoalescing(true);
+        dbf.setIgnoringElementContentWhitespace(true);
+        dbf.setIgnoringComments(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc1 = db.parse(expected.toURI().toString());
+        doc1.normalizeDocument();
+        InputSource is2 = new InputSource();
+        is2.setCharacterStream(new StringReader(output));
+        Document doc2 = db.parse(is2);
+        doc2.normalizeDocument();
+        assertTrue(doc1.isEqualNode(doc2));
+    }
+
+    /**
+     * Get the node path
+     */
+    public String getPath( Node node )
+    {
+        StringBuilder path = new StringBuilder();
+
+        do
+        {           
+            path.insert(0, node.getNodeName() );
+            path.insert( 0, "/" );
+        }
+        while( ( node = node.getParentNode() ) != null );
+
+        return path.toString();
+    }
+
+
+    protected URL getLocalFile(String name) throws FileNotFoundException
+    {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        URL url = cl.getResource(this.filePath + "/" + name);
+        if (url == null)
+        {
+            throw new FileNotFoundException(cl.getResource("").getFile() + name
+                    + " was not found");
+        }
+        return url;
+    }
+    
+    protected String getDirectory()
+    {
+        return this.getClass().getName().substring(0,
+                this.getClass().getName().lastIndexOf('.')).replace('.', '/')
+                + "/";
+    }
+    
+    public void testNestedScriptCDATA() throws Exception {
+        _writer = createTestProbe();
+        try {
+            _writer.startDocument();
+            _writer.startUpdate("blaId");
+            _writer.startElement("script", null);
+            _writer.writeAttribute("type", "text/javascript", null);
+            _writer.write("\n// <![CDATA[\n");
+            _writer.write("var a && b;");
+            _writer.write("\n// ]]>\n");
+            _writer.endElement("script");
+            _writer.endUpdate();
+            _writer.endDocument();
+            
+            checkOutput(new File(getLocalFile("nestedScriptCDATA.xml").toURI()), _contentCollector.toString());
+        } catch (IOException e) {
+            fail(e.toString());
+        }
+    }
+    
     public void testBasicWriteTest() {
         _writer = createTestProbe();
         try {
