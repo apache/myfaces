@@ -105,6 +105,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtLang",
                 argsStr.push("</div>");
             }
             elem.innerHTML = "<div class='args argsinfo'>"+logType.toUpperCase() + "</div>" + argsStr.join("");
+            logHolder.scrollTop = logHolder.scrollHeight;
         }
     },
 
