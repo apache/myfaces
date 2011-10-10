@@ -52,6 +52,9 @@
                 <include>**/_impl/i18n/Messages_fr.js</include>
                 <include>**/_impl/i18n/Messages_it.js</include>
                 <include>**/_impl/i18n/Messages_ru.js</include>
+                <include>**/_impl/i18n/Messages_zh_CN.js</include>
+                <include>**/_impl/i18n/Messages_zh_HK.js</include>
+                <include>**/_impl/i18n/Messages_zh_TW.js</include>
 
                 <include>**/_impl/_util/_Lang.js</include>
                 <include>**/_impl/_util/_ExtLang.js</include>
