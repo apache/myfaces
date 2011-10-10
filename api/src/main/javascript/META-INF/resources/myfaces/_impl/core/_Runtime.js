@@ -650,14 +650,17 @@ if (!myfaces._impl.core._Runtime) {
                     var _oldDescLevel = this._mfClsDescLvl[_mappedName] || this;
                     //we now step one level down
                     var _parentCls = _oldDescLevel._parentCls;
-
+                    var ret = null;
                     try {
                         //we now store the level position as new descension level for callSuper
                         descLevel[_mappedName] = _parentCls;
                         //and call the code on this
-                        _parentCls[methodName].apply(this, passThrough);
+                        ret = _parentCls[methodName].apply(this, passThrough);
                     } finally {
                         descLevel[_mappedName] = _oldDescLevel;
+                    }
+                    if('undefined' != typeof ret) {
+                        return ret;
                     }
                 };
                 //reference to its own type
