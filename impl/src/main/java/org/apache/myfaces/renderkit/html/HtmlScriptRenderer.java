@@ -227,8 +227,14 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                     " It will be silenty ignored.");
             return;
         } else {
+            if (ResourceUtils.isRenderedScript(facesContext, resource.getLibraryName(), resource.getResourceName())) {
+                //Resource already founded
+                return;
+            }
+            
             // Rendering resource
             ResourceUtils.markScriptAsRendered(facesContext, libraryName, resourceName);
+            ResourceUtils.markStylesheetAsRendered(facesContext, resource.getLibraryName(), resource.getResourceName());
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.SCRIPT_ELEM, component);
 // We can't render the content type, because usually it returns "application/x-javascript"
