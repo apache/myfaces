@@ -214,8 +214,15 @@ public class HtmlStylesheetRenderer extends Renderer implements
         }
         else
         {
+            if (ResourceUtils.isRenderedStylesheet(facesContext, resource.getLibraryName(), resource.getResourceName()))
+            {
+                //Resource already founded
+                return;
+            }
+
             // Rendering resource
             ResourceUtils.markStylesheetAsRendered(facesContext, libraryName, resourceName);
+            ResourceUtils.markStylesheetAsRendered(facesContext, resource.getLibraryName(), resource.getResourceName());
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.LINK_ELEM, component);
             writer.writeAttribute(HTML.REL_ATTR, HTML.STYLESHEET_VALUE,null );
