@@ -100,6 +100,78 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //now of the onload handler also is overwritten we have a problem
     },
 
+    runCss: function(item, xmlData) {
+
+        var stylesheets = document.styleSheets;
+        var finalCss    = [];
+
+        var applyStyle = this._Lang.hitch(this, function(item, style) {
+            var newSS = document.createElement("style");
+
+            newSS.setAttribute("rel",item.getAttribute("rel") || "stylesheet");
+            newSS.setAttribute("type",item.getAttribute("type") || "text/css");
+            document.getElementsByTagName("head")[0].appendChild(newSS);
+            //ie merrily again goes its own way
+            if(window.attachEvent && !this._RT.isOpera  && 'undefined' != typeof newSS.styleSheet && 'undefined' != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
+            else newSS.appendChild(document.createTextNode(style));
+        });
+
+        var execCss = this._Lang.hitch(this, function(item) {
+            var _eqi = this._Lang.equalsIgnoreCase;
+
+            if (item.tagName && _eqi(item.tagName, "link") && _eqi(item.getAttribute("type"), "text/css")) {
+                var style = "@import url('"+item.getAttribute("href")+"');";
+                applyStyle(item, style);
+            } else if(item.tagName && _eqi(item.tagName, "style") && _eqi(item.getAttribute("type"), "text/css")) {
+                var innerText = [];
+                //compliant browsers know childnodes
+                if(item.childNodes) {
+                    var len = item.childNodes.length;
+                    for(var cnt = 0; cnt < len; cnt++) {
+                        innerText.push(item.childNodes[cnt].innerHTML || item.childNodes[cnt].data);
+                    }
+                //non compliant ones innerHTML
+                } else if(item.innerHTML) {
+                    innerText.push(item.innerHTML);
+                }
+
+                var style = innerText.join("");
+                applyStyle(item, style);
+            }
+        });
+
+        try {
+            var scriptElements = this.findByTagNames(item, {"link":true,"style":true}, true);
+            if (scriptElements == null) return;
+            for (var cnt = 0; cnt < scriptElements.length; cnt++) {
+                execCss(scriptElements[cnt]);
+            }
+
+        } finally {
+            //the usual ie6 fix code
+            //the IE6 garbage collector is broken
+            //nulling closures helps somewhat to reduce
+            //mem leaks, which are impossible to avoid
+            //at this browser
+            execCss = null;
+            applyStyle = null;
+        }
+    },
+
+
+    deleteScripts: function(nodeList) {
+        if(!nodeList || !nodeList.length) return;
+        var len = nodeList.length;
+        for(var cnt = 0; cnt < len; cnt++) {
+             var item = nodeList[cnt];
+             var src = item.getAttribute('src');
+             if (src  && src.length > 0 && (src.indexOf("/jsf.js") != -1 || src.indexOf("/jsf-uncompressed.js") != -1))  {
+                        continue;
+             }
+             this.deleteItem(item);
+        }
+    },
+
     /**
      * Run through the given Html item and execute the inline scripts
      * (IE doesn't do this by itself)
@@ -230,6 +302,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             return elementId;
         }
         return null;
+    },
+
+    deleteItems: function(items) {
+        if(! items || ! items.length) return;
+        for(var cnt = 0; cnt < items.length; cnt++) {
+            this.deleteItem(items[cnt]);
+        }
     },
 
     /**
@@ -455,7 +534,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             } else {
                 return this.replaceElements(item, evalNodes);
             }
-       
+
         } finally {
 
             var dummyPlaceHolder = this.getDummyPlaceHolder();

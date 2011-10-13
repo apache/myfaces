@@ -128,7 +128,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore.engine.Xhr1", myf
                         try {
                             var status = xhr.status;
                             if (status >= XHRConst.STATUS_OK_MINOR && status < XHRConst.STATUS_OK_MAJOR) {
-
                                 this.onload(myevt);
                             } else {
                                 evt.type = "error";
