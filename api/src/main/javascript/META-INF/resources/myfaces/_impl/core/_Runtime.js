@@ -34,9 +34,6 @@
  */
 /** @namespace myfaces._impl.core._Runtime*/
 
-
-
-
 myfaces._impl.core = (myfaces._impl.core) ? myfaces._impl.core : {};
 //now this is the only time we have to do this cascaded and manually
 //for the rest of the classes our reserveNamespace function will do the trick

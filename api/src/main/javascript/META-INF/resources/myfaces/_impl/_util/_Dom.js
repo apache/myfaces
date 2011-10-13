@@ -100,6 +100,78 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         //now of the onload handler also is overwritten we have a problem
     },
 
+    runCss: function(item, xmlData) {
+
+        var stylesheets = document.styleSheets;
+        var finalCss    = [];
+
+        var applyStyle = this._Lang.hitch(this, function(item, style) {
+            var newSS = document.createElement("style");
+
+            newSS.setAttribute("rel",item.getAttribute("rel") || "stylesheet");
+            newSS.setAttribute("type",item.getAttribute("type") || "text/css");
+            document.getElementsByTagName("head")[0].appendChild(newSS);
+            //ie merrily again goes its own way
+            if(window.attachEvent && !this._RT.isOpera  && 'undefined' != typeof newSS.styleSheet && 'undefined' != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
+            else newSS.appendChild(document.createTextNode(style));
+        });
+
+        var execCss = this._Lang.hitch(this, function(item) {
+            var _eqi = this._Lang.equalsIgnoreCase;
+
+            if (item.tagName && _eqi(item.tagName, "link") && _eqi(item.getAttribute("type"), "text/css")) {
+                var style = "@import url('"+item.getAttribute("href")+"');";
+                applyStyle(item, style);
+            } else if(item.tagName && _eqi(item.tagName, "style") && _eqi(item.getAttribute("type"), "text/css")) {
+                var innerText = [];
+                //compliant browsers know childnodes
+                if(item.childNodes) {
+                    var len = item.childNodes.length;
+                    for(var cnt = 0; cnt < len; cnt++) {
+                        innerText.push(item.childNodes[cnt].innerHTML || item.childNodes[cnt].data);
+                    }
+                //non compliant ones innerHTML
+                } else if(item.innerHTML) {
+                    innerText.push(item.innerHTML);
+                }
+
+                var style = innerText.join("");
+                applyStyle(item, style);
+            }
+        });
+
+        try {
+            var scriptElements = this.findByTagNames(item, {"link":true,"style":true}, true);
+            if (scriptElements == null) return;
+            for (var cnt = 0; cnt < scriptElements.length; cnt++) {
+                execCss(scriptElements[cnt]);
+            }
+
+        } finally {
+            //the usual ie6 fix code
+            //the IE6 garbage collector is broken
+            //nulling closures helps somewhat to reduce
+            //mem leaks, which are impossible to avoid
+            //at this browser
+            execCss = null;
+            applyStyle = null;
+        }
+    },
+
+
+    deleteScripts: function(nodeList) {
+        if(!nodeList || !nodeList.length) return;
+        var len = nodeList.length;
+        for(var cnt = 0; cnt < len; cnt++) {
+             var item = nodeList[cnt];
+             var src = item.getAttribute('src');
+             if (src  && src.length > 0 && (src.indexOf("/jsf.js") != -1 || src.indexOf("/jsf-uncompressed.js") != -1))  {
+                        continue;
+             }
+             this.deleteItem(item);
+        }
+    },
+
     /**
      * Run through the given Html item and execute the inline scripts
      * (IE doesn't do this by itself)
@@ -230,6 +302,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             return elementId;
         }
         return null;
+    },
+
+    deleteItems: function(items) {
+        if(! items || ! items.length) return;
+        for(var cnt = 0; cnt < items.length; cnt++) {
+            this.deleteItem(items[cnt]);
+        }
     },
 
     /**
@@ -455,7 +534,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             } else {
                 return this.replaceElements(item, evalNodes);
             }
-       
+
         } finally {
 
             var dummyPlaceHolder = this.getDummyPlaceHolder();
@@ -503,7 +582,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             probe.innerHTML = "<table><" + itemNodeName + "></" + itemNodeName + ">" + "</table>";
         }
         var depth = this._determineDepth(probe);
-        
+
         this._removeChildNodes(probe, false);
         probe.innerHTML = "";
 
@@ -628,7 +707,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //on some elements we might not have covered by our table check on the outerHTML
             // can fail we skip those in favor of stability
             try {
-                // both innerHTML and outerHTML fails when <tr> is the node, but in that case 
+                // both innerHTML and outerHTML fails when <tr> is the node, but in that case
                 // we need to force node removal, otherwise it will be on the tree (IE 7 IE 6)
                 this.detach(node);
                 if (!b.isIEMobile) {
@@ -845,12 +924,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     /**
      * optimized search for an array of tag names
-     *
+     * deep scan will always be performed.
      * @param fragment the fragment which should be searched for
      * @param tagNames an map indx of tag names which have to be found
-     * @param deepScan if set to true a deep scan is performed otherwise a shallow scan
+     * 
      */
-    findByTagNames: function(fragment, tagNames, deepScan) {
+    findByTagNames: function(fragment, tagNames) {
         if(!fragment) {
             throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagNames", "fragment"));
         }
@@ -861,26 +940,19 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var nodeType = fragment.nodeType;
         if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
-
-        //shortcut for single components
-        if (!deepScan && tagNames[fragment.tagName.toLowerCase()]) {
-            return fragment;
+        //we can use the shortcut
+        if(fragment.querySelectorAll) {
+           var query = [];
+           for(var key in tagNames) {
+               query.push(key);
+           }
+           var res = [];
+           if(fragment.tagName && tagNames[fragment.tagName.toLowerCase()]) {
+               res.push(fragment);
+           }
+           return res.concat(this._Lang.objToArray( fragment.querySelectorAll(query.join(", "))));
         }
 
-        //shortcut elementsByTagName
-        if (deepScan && this._Lang.exists(fragment, "getElementsByTagName")) {
-            var retArr = [];
-            for (var key in tagNames) {
-                var foundElems = this.findByTagName(fragment, key, deepScan);
-                if (foundElems) {
-                    retArr = retArr.concat(foundElems);
-                }
-            }
-            return retArr;
-        } else if (deepScan) {
-            //no node type with child tags we can handle that without node type checking
-            return null;
-        }
 
         //now the filter function checks case insensitively for the tag names needed
         var filter = function(node) {
@@ -889,7 +961,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         //now we run an optimized find all on it
         try {
-            return this.findAll(fragment, filter, deepScan);
+            return this.findAll(fragment, filter, true);
         } finally {
             //the usual IE6 is broken, fix code
             filter = null;
@@ -1291,7 +1363,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (ret) return ret;
         } else {
             elem = this.byId(elem);
-            // element might have removed from DOM in method processUpdate 
+            // element might have removed from DOM in method processUpdate
             if (!elem){
             	return null;
             }
