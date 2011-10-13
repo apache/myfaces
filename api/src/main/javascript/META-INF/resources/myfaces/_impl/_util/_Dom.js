@@ -160,7 +160,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
 
     deleteScripts: function(nodeList) {
-        if(!nodeList ||Â !nodeList.length) return;
+        if(!nodeList || !nodeList.length) return;
         var len = nodeList.length;
         for(var cnt = 0; cnt < len; cnt++) {
              var item = nodeList[cnt];
