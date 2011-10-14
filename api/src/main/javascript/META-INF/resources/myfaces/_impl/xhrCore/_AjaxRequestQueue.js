@@ -14,7 +14,7 @@
  * limitations under the License.
 */
 /** @namespace myfaces._impl.xhrCore._AjaxRequestQueue */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestQueue", myfaces._impl._util._Queue,
+_MF_CLS("myfaces._impl.xhrCore._AjaxRequestQueue", myfaces._impl._util._Queue,
         /** @lends  myfaces._impl.xhrCore._AjaxRequestQueue.prototype */
         {
 

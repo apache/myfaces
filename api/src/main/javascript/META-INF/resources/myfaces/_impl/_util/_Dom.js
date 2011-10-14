@@ -29,7 +29,7 @@
  * A jquery like query API would be nice
  * but this would blow up our codebase significantly
  */
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Object,
+_MF_SINGLTN("myfaces._impl._util._Dom", Object,
 /**
  * @lends myfaces._impl._util._Dom.prototype
  */
@@ -160,7 +160,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
 
     deleteScripts: function(nodeList) {
-        if(!nodeList || !nodeList.length) return;
+        if(!nodeList || !nodeList.length) return;
         var len = nodeList.length;
         for(var cnt = 0; cnt < len; cnt++) {
              var item = nodeList[cnt];
@@ -582,7 +582,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             probe.innerHTML = "<table><" + itemNodeName + "></" + itemNodeName + ">" + "</table>";
         }
         var depth = this._determineDepth(probe);
-        
+
         this._removeChildNodes(probe, false);
         probe.innerHTML = "";
 
@@ -707,7 +707,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             //on some elements we might not have covered by our table check on the outerHTML
             // can fail we skip those in favor of stability
             try {
-                // both innerHTML and outerHTML fails when <tr> is the node, but in that case 
+                // both innerHTML and outerHTML fails when <tr> is the node, but in that case
                 // we need to force node removal, otherwise it will be on the tree (IE 7 IE 6)
                 this.detach(node);
                 if (!b.isIEMobile) {
@@ -924,12 +924,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
     /**
      * optimized search for an array of tag names
-     *
+     * deep scan will always be performed.
      * @param fragment the fragment which should be searched for
      * @param tagNames an map indx of tag names which have to be found
-     * @param deepScan if set to true a deep scan is performed otherwise a shallow scan
+     * 
      */
-    findByTagNames: function(fragment, tagNames, deepScan) {
+    findByTagNames: function(fragment, tagNames) {
         if(!fragment) {
             throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagNames", "fragment"));
         }
@@ -940,26 +940,19 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
         var nodeType = fragment.nodeType;
         if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
-
-        //shortcut for single components
-        if (!deepScan && tagNames[fragment.tagName.toLowerCase()]) {
-            return fragment;
+        //we can use the shortcut
+        if(fragment.querySelectorAll) {
+           var query = [];
+           for(var key in tagNames) {
+               query.push(key);
+           }
+           var res = [];
+           if(fragment.tagName && tagNames[fragment.tagName.toLowerCase()]) {
+               res.push(fragment);
+           }
+           return res.concat(this._Lang.objToArray( fragment.querySelectorAll(query.join(", "))));
         }
 
-        //shortcut elementsByTagName
-        if (deepScan && this._Lang.exists(fragment, "getElementsByTagName")) {
-            var retArr = [];
-            for (var key in tagNames) {
-                var foundElems = this.findByTagName(fragment, key, deepScan);
-                if (foundElems) {
-                    retArr = retArr.concat(foundElems);
-                }
-            }
-            return retArr;
-        } else if (deepScan) {
-            //no node type with child tags we can handle that without node type checking
-            return null;
-        }
 
         //now the filter function checks case insensitively for the tag names needed
         var filter = function(node) {
@@ -968,7 +961,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
         //now we run an optimized find all on it
         try {
-            return this.findAll(fragment, filter, deepScan);
+            return this.findAll(fragment, filter, true);
         } finally {
             //the usual IE6 is broken, fix code
             filter = null;
@@ -1370,7 +1363,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
             if (ret) return ret;
         } else {
             elem = this.byId(elem);
-            // element might have removed from DOM in method processUpdate 
+            // element might have removed from DOM in method processUpdate
             if (!elem){
             	return null;
             }

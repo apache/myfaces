@@ -19,7 +19,7 @@
  * IT is a specialized request which uses the form data
  * element for the handling of forms
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequestLevel2", myfaces._impl.xhrCore._AjaxRequest, {
+_MF_CLS("myfaces._impl.xhrCore._AjaxRequestLevel2", myfaces._impl.xhrCore._AjaxRequest, {
 
     _sourceForm: null,
 

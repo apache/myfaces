@@ -23,7 +23,7 @@
  * @description specialized implementation of the jsf js ajax request class
  * which utilizes an iframe transport for communications to the server
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._IFrameRequest", myfaces._impl.xhrCore._AjaxRequest,
+_MF_CLS("myfaces._impl.xhrCore._IFrameRequest", myfaces._impl.xhrCore._AjaxRequest,
         /** @lends myfaces._impl.xhrCore._IFrameRequest.prototype */
         {
 

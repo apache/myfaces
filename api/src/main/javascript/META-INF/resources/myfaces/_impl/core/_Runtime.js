@@ -34,9 +34,6 @@
  */
 /** @namespace myfaces._impl.core._Runtime*/
 
-
-
-
 myfaces._impl.core = (myfaces._impl.core) ? myfaces._impl.core : {};
 //now this is the only time we have to do this cascaded and manually
 //for the rest of the classes our reserveNamespace function will do the trick
@@ -916,3 +913,10 @@ if (!myfaces._impl.core._Runtime) {
 
     };
 }
+
+/*we cannot privatize with a global function hence we store the values away for the init part*/
+myfaces._impl.core._Runtime._oldExtends = window._MF_CLS;
+myfaces._impl.core._Runtime._oldSingleton = window._MF_SINGLETON;
+
+window._MF_CLS = myfaces._impl.core._Runtime.extendClass;
+window._MF_SINGLTN = myfaces._impl.core._Runtime.singletonExtendClass;

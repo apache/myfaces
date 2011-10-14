@@ -26,7 +26,7 @@
  * it emulates the xhr level2 api which is way simpler than the level1 api
  */
 
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore.engine.Xhr1", myfaces._impl.xhrCore.engine.BaseRequest,
+_MF_CLS("myfaces._impl.xhrCore.engine.Xhr1", myfaces._impl.xhrCore.engine.BaseRequest,
         /** @lends myfaces._impl.xhrCore.engine.Xhr1.prototype */
         {
 

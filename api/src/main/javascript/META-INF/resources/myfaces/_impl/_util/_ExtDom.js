@@ -1,4 +1,4 @@
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._ExtDom", myfaces._impl._util._Dom, {
+_MF_SINGLTN("myfaces._impl._util._ExtDom", myfaces._impl._util._Dom, {
 
     _Lang:myfaces._impl._util._Lang,
     _RT:myfaces._impl.core._Runtime,

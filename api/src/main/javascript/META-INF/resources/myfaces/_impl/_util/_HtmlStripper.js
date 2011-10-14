@@ -25,7 +25,7 @@
  */
 
 /** @namespace myfaces._impl._util._HtmlStripper */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._HtmlStripper", Object,
+_MF_CLS("myfaces._impl._util._HtmlStripper", Object,
 /** @lends myfaces._impl._util._HtmlStripper.prototype */
 {
     BEGIN_TAG: "html",

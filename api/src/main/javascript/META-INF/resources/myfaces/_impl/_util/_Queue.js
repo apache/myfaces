@@ -22,7 +22,7 @@
  * improved version of
  * @see <a href="http://safalra.com/web-design/javascript/queues/Queue.js">http://safalra.com/web-design/javascript/queues/Queue.js</a>
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._Queue", Object,
+_MF_CLS("myfaces._impl._util._Queue", Object,
   /**
    * @lends myfaces._impl._util._Queue.prototype
    */
