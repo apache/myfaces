@@ -57,7 +57,7 @@
                 <include>**/_impl/i18n/Messages_zh_TW.js</include>
 
                 <include>**/_impl/_util/_Lang.js</include>
-                <include>**/_impl/_util/_ExtLang.js</include>
+                <include>**/_impl/_util/_Logging.js</include>
                 <include>**/_impl/_util/_Queue.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
@@ -82,6 +82,9 @@
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
                 <include>**/_impl/xhrCore/_Transports.js</include>
                 <include>**/_impl/core/Impl.js</include>
+                <!-- optimization helper -->
+                <include>**/_impl/core/_EndImpl.js</include>
+                <!-- api -->
                 <include>**/api/jsf.js</include>
             </includes>
         </script>
