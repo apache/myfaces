@@ -1081,11 +1081,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 return;
             }
             
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            if (FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext))
-            {
-                return;
-            }
+            //FacesContext facesContext = FacesContext.getCurrentInstance();
+            //if (FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext))
+            //{
+            //    return;
+            //}
             
             if (event instanceof PostAddToViewEvent)
             {
@@ -1094,6 +1094,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
             else
             {
+                FacesContext facesContext = FacesContext.getCurrentInstance();
                 // In this case if we are removing components on build, it is not necessary to register
                 // again the current id, and its more, it could cause a concurrent exception. But note
                 // we need to propagate PreRemoveFromViewEvent, otherwise the view will not be restored

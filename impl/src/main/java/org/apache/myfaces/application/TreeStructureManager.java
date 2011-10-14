@@ -22,6 +22,8 @@ import org.apache.myfaces.shared.util.ClassUtils;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +100,7 @@ public class TreeStructureManager
     {
         if (treeStructRoot instanceof TreeStructComponent)
         {
-            return (UIViewRoot)internalRestoreTreeStructure((TreeStructComponent)treeStructRoot);
+            return (UIViewRoot)internalRestoreTreeStructure((TreeStructComponent)treeStructRoot, true);
         }
         
         
@@ -107,13 +109,17 @@ public class TreeStructureManager
         
     }
 
-    private UIComponent internalRestoreTreeStructure(TreeStructComponent treeStructComp)
+    private UIComponent internalRestoreTreeStructure(TreeStructComponent treeStructComp, boolean checkViewRoot)
     {
         String compClass = treeStructComp.getComponentClass();
         String compId = treeStructComp.getComponentId();
         UIComponent component = (UIComponent)ClassUtils.newInstance(compClass);
         component.setId(compId);
 
+        if (checkViewRoot && component instanceof UIViewRoot)
+        {
+            FacesContext.getCurrentInstance().setViewRoot((UIViewRoot) component);
+        }
         //children
         TreeStructComponent[] childArray = treeStructComp.getChildren();
         if (childArray != null)
@@ -121,7 +127,7 @@ public class TreeStructureManager
             List<UIComponent> childList = component.getChildren();
             for (int i = 0, len = childArray.length; i < len; i++)
             {
-                UIComponent child = internalRestoreTreeStructure(childArray[i]);
+                UIComponent child = internalRestoreTreeStructure(childArray[i], false);
                 childList.add(child);
             }
         }
@@ -136,7 +142,7 @@ public class TreeStructureManager
                 Object[] tuple = (Object[])facetArray[i];
                 String facetName = (String)tuple[0];
                 TreeStructComponent structChild = (TreeStructComponent)tuple[1];
-                UIComponent child = internalRestoreTreeStructure(structChild);
+                UIComponent child = internalRestoreTreeStructure(structChild, false);
                 facetMap.put(facetName, child);
             }
         }
