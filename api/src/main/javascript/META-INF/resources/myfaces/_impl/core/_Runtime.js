@@ -913,3 +913,10 @@ if (!myfaces._impl.core._Runtime) {
 
     };
 }
+
+/*we cannot privatize with a global function hence we store the values away for the init part*/
+myfaces._impl.core._Runtime._oldExtends = window._MF_CLS;
+myfaces._impl.core._Runtime._oldSingleton = window._MF_SINGLETON;
+
+window._MF_CLS = myfaces._impl.core._Runtime.extendClass;
+window._MF_SINGLTN = myfaces._impl.core._Runtime.singletonExtendClass;

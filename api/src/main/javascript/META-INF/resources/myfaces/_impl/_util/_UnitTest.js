@@ -24,7 +24,7 @@
  * which test the various functions of the framework
  */
 /** @namespace myfaces._impl._util._UnitTest*/
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._UnitTest", Object, {
+_MF_SINGLTN("myfaces._impl._util._UnitTest", Object, {
 
     /**
      * Simple assert true
@@ -33,13 +33,13 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._UnitTest"
      * @param assertionOutcome the assertion outcome (true or false)
      */
     assertTrue: function(message, assertionOutcome) {
-        var _Lang = myfaces._impl._util._Lang;
+        var _Logger = myfaces._impl._util._Logging;
 
         if (!assertionOutcome) {
-            _Lang.logError(message, "assertionOutcome:", assertionOutcome);
+            _Logger.logError(message, "assertionOutcome:", assertionOutcome);
             throw Error(message, assertionOutcome);
         }
-        _Lang.logInfo(message, "assertionOutcome:", assertionOutcome);
+        _Logger.logInfo(message, "assertionOutcome:", assertionOutcome);
     },
     
     /**
@@ -49,12 +49,12 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._UnitTest"
      * @param assertionOutcome the assertion outcome (true or false)
      */
     assertFalse: function(message, assertionOutcome) {
-        var _Lang = myfaces._impl._util._Lang;
+        var _Logger = myfaces._impl._util._Logging;
 
         if (assertionOutcome) {
-            _Lang.logError(message, "assertionOutcome:", assertionOutcome);
+            _Logger.logError(message, "assertionOutcome:", assertionOutcome);
             throw Error(message, assertionOutcome);
         }
-        _Lang.logInfo(message, "assertionOutcome:", assertionOutcome);
+        _Logger.logInfo(message, "assertionOutcome:", assertionOutcome);
     }
 });

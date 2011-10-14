@@ -24,7 +24,7 @@
  * TODO move this into a singleton, the current structure is
  * still a j4fry legacy we need to get rid of it in the long run
  */
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxUtils", Object,
+_MF_SINGLTN("myfaces._impl.xhrCore._AjaxUtils", Object,
 /** @lends myfaces._impl.xhrCore._AjaxUtils.prototype */
 {
     /**

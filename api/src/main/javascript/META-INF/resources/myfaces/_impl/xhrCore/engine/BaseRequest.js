@@ -69,7 +69,7 @@
  *      <li>statusText</li>
  * </ul>
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore.engine.BaseRequest", myfaces._impl.xhrCore._FinalizeableObj,
+_MF_CLS("myfaces._impl.xhrCore.engine.BaseRequest", myfaces._impl.xhrCore._FinalizeableObj,
         /** @lends myfaces._impl.xhrCore.engine.BaseRequest.prototype */
         {
             /*standard attributes*/

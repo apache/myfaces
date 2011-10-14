@@ -29,7 +29,7 @@
  * @memberOf myfaces._impl.xhrCore
  * @extends myfaces._impl.xhrCore._FinalizeableObj
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", myfaces._impl.xhrCore._FinalizeableObj,
+_MF_CLS("myfaces._impl.xhrCore._AjaxRequest", myfaces._impl.xhrCore._FinalizeableObj,
         /** @lends myfaces._impl.xhrCore._AjaxRequest.prototype */
         {
 
@@ -287,25 +287,27 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
              * which keeps the final Send Representation of the
              */
             getFormData : function() {
+                var _AJAXUTIL = this._AJAXUTIL;
+                var _Lang = this._Lang;
+                var myfacesOptions = this._context.myfaces;
 
                 var ret = null;
 
                 //now this is less performant but we have to call it to allow viewstate decoration
                 if(!this._partialIdsArray ||!this._partialIdsArray.length) {
                     var viewState = jsf.getViewState(this._sourceForm);
-                    ret = this._Lang.createFormDataDecorator(viewState);
+                    ret = _Lang.createFormDataDecorator(viewState);
 
                     //just in case the source item is outside of the form
                     //only if the form override is set we have to append the issuing item
                     //otherwise it is an element of the parent form
-                    if(this._source && this._context.myfaces && this._context.myfaces.form)
-                        this._AJAXUTIL.appendIssuingItem(this._source);
+                    if(this._source && myfacesOptions && myfacesOptions.form)
+                        _AJAXUTIL.appendIssuingItem(this._source);
                 } else {
-                    ret = this._Lang.createFormDataDecorator(new Array());
-                    this._AJAXUTIL.encodeSubmittableFields(ret,
-                            this._sourceForm, this._partialIdsArray);
-                    if(this._source && this._context.myfaces && this._context.myfaces.form)
-                        this._AJAXUTIL.appendIssuingItem(this._source);
+                    ret = _Lang.createFormDataDecorator(new Array());
+                    _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, this._partialIdsArray);
+                    if(this._source && myfacesOptions && myfacesOptions.form)
+                        _AJAXUTIL.appendIssuingItem(this._source);
                 }
 
                 return ret;
@@ -364,7 +366,6 @@ myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._AjaxRequest", my
                 //final cleanup to terminate everything
                 this._Lang.clearExceptionProcessed();
 
-                //_t._context.source;
                 if (this._xhr.readyState == this._XHR_CONST.READY_STATE_DONE) {
                     this._callSuper("_finalize");
                 }

@@ -29,7 +29,7 @@
  * <p>It is based upon our high performance queue and adds dedicated
  * methods for listener based closures to the mix </p>
  * */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl._util._ListenerQueue", myfaces._impl._util._Queue,
+_MF_CLS("myfaces._impl._util._ListenerQueue", myfaces._impl._util._Queue,
 /**
  * @lends myfaces._impl._util._ListenerQueue.prototype
  */

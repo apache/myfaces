@@ -21,7 +21,7 @@
  * @description Implementation singleton which implements all interface method
  * defined by our jsf.js API
  * */
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Object,
+_MF_SINGLTN("myfaces._impl.core.Impl", Object,
 /**
  * @lends myfaces._impl.core.Impl.prototype
  */
@@ -708,3 +708,5 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.core.Impl", Obje
         }
     }
 });    
+
+

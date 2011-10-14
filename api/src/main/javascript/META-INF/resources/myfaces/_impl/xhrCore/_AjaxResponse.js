@@ -28,7 +28,7 @@
  * The singleton approach also improves performance
  * due to less object gc compared to the old instance approach.
  */
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl.xhrCore._AjaxResponse", Object,
+_MF_SINGLTN("myfaces._impl.xhrCore._AjaxResponse", Object,
         /** @lends myfaces._impl.xhrCore._AjaxResponse.prototype */
         {
 

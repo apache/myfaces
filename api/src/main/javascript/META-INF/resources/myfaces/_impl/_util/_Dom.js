@@ -29,7 +29,7 @@
  * A jquery like query API would be nice
  * but this would blow up our codebase significantly
  */
-myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Object,
+_MF_SINGLTN("myfaces._impl._util._Dom", Object,
 /**
  * @lends myfaces._impl._util._Dom.prototype
  */
@@ -160,7 +160,7 @@ myfaces._impl.core._Runtime.singletonExtendClass("myfaces._impl._util._Dom", Obj
 
 
     deleteScripts: function(nodeList) {
-        if(!nodeList || !nodeList.length) return;
+        if(!nodeList || !nodeList.length) return;
         var len = nodeList.length;
         for(var cnt = 0; cnt < len; cnt++) {
              var item = nodeList[cnt];

@@ -35,7 +35,7 @@
  * @see <a href="http://www.quirksmode.org/blog/archives/2005/10/memory_leaks_li.html">http://www.quirksmode.org/blog/archives/2005/10/memory_leaks_li.html</a>
  * @see <a href="http://www.josh-davis.org/node/7">http://www.josh-davis.org/node/7</a>
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore._FinalizeableObj", Object,
+_MF_CLS("myfaces._impl.xhrCore._FinalizeableObj", Object,
 /** @lends myfaces._impl.xhrCore._FinalizeableObj.prototype */
 {
 

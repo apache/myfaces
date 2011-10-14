@@ -30,7 +30,7 @@
  * @name Messages
  * @memberOf myfaces._impl.i18n
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages", Object,
+_MF_CLS("myfaces._impl.i18n.Messages", Object,
 /**
  * @lends myfaces._impl.i18n.Messages.prototype
  */

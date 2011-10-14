@@ -24,7 +24,7 @@
  * wrapper for an iframe transport object with all its differences
  * it emulates the xhr level2 api
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.xhrCore.engine.IFrame", myfaces._impl.xhrCore.engine.BaseRequest,
+_MF_CLS("myfaces._impl.xhrCore.engine.IFrame", myfaces._impl.xhrCore.engine.BaseRequest,
         /** @lends myfaces._impl.xhrCore.engine.IFrame.prototype */
         {
 

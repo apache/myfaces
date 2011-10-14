@@ -25,7 +25,7 @@
  * @extends myfaces._impl.i18n.Messages
  * @memberOf myfaces._impl.i18n
  */
-myfaces._impl.core._Runtime.extendClass("myfaces._impl.i18n.Messages_fr", myfaces._impl.i18n.Messages,
+_MF_CLS("myfaces._impl.i18n.Messages_fr", myfaces._impl.i18n.Messages,
 /** @lends myfaces._impl.i18n.Messages_fr.prototype */
 {
     MSG_TEST:               "MessageTest FR",
