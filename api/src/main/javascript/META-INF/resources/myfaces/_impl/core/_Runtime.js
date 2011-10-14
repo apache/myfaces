@@ -265,20 +265,7 @@ if (!myfaces._impl.core._Runtime) {
             }
         };
 
-        /**
-         * A dojo like require to load scripts dynamically, note
-         * to use this mechanism you have to set your global config param
-         * myfacesScriptRoot to the root of your script files (aka under normal circumstances
-         * resources/scripts)
-         *
-         * @param {String} nms the subnamespace to be required
-         */
-        this.require = function(nms) {
-            //namespace exists
-            if (_T.exists(nms)) return;
-            var rootPath = _T.getGlobalConfig("myfacesScriptRoot", "");
-            _T.loadScriptEval(rootPath + "/" + nms.replace(/\./g, "/") + ".js");
-        };
+
 
         /**
          * fetches a global config entry
@@ -482,76 +469,7 @@ if (!myfaces._impl.core._Runtime) {
 
         //Base Patterns, Inheritance, Delegation and Singleton
 
-        /**
-         * delegation pattern
-         * usage:
-         * this.delegateObject("my.name.space", delegate,
-         * {
-         *  constructor_ :function(bla, bla1) {
-         *      _T._callDelegate("constructor", bla1);
-         *  },
-         *  myFunc: function(yyy) {
-         *      DoSomething;
-         *      _T._callDelegate("someOtherFunc", yyyy);
-         *  }, null
-         * });
-         *
-         * or
-         * usage var newClass = this.delegateObject(
-         * function (var1, var2) {
-         *  _T._callDelegate("constructor", var1,var2);
-         * };
-         * ,delegateObject);
-         * newClass.prototype.myMethod = function(arg1) {
-         *      _T._callDelegate("myMethod", arg1,"hello world");
-         *
-         *
-         * @param {String} newCls the new class name to be generated
-         * @param {Object} delegateObj the delegation object
-         * @param {Object} protoFuncs the prototype functions which should be attached
-         * @param {Object} nmsFuncs the namespace functions which should be attached to the namespace
-         */
-        this.delegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
-            if (!_T.isString(newCls)) {
-                throw Error("new class namespace must be of type String");
-            }
 
-            if ('function' != typeof newCls) {
-                newCls = _reserveClsNms(newCls, protoFuncs);
-                if (!newCls) return null;
-            }
-
-            //central delegation mapping core
-            var proto = newCls.prototype;
-
-            //the trick here is to isolate the entries to bind the
-            //keys in a private scope see
-            //http://www.ruzee.com/blog/2008/12/javascript-inheritance-via-prototypes-and-closures
-            for (var key in delegateObj) (function(key, delFn) {
-                //The isolation is needed otherwise the last _key assigend would be picked
-                //up internally
-                if (key && typeof delFn == "function") {
-                    proto[key] = function(/*arguments*/) {
-                        return delFn.apply(delegateObj, arguments);
-                    };
-                }
-            })(key, delegateObj[key]);
-
-            proto._delegateObj = delegateObj;
-            proto.constructor = newCls;
-
-            proto._callDelegate = function(methodName) {
-                var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
-                var ret = this._delegateObj[methodName].apply(this._delegateObj, passThrough);
-                if ('undefined' != ret) return ret;
-            };
-
-            //we now map the function map in
-            _applyFuncs(newCls, protoFuncs, true);
-            _applyFuncs(newCls, nmsFuncs, false);
-
-            return newCls;
-        };
 
         /*
          * prototype based delegation inheritance
@@ -665,44 +583,16 @@ if (!myfaces._impl.core._Runtime) {
             }
 
             //we now map the function map in
-            _applyFuncs(newCls, protoFuncs, true);
+            _T._applyFuncs(newCls, protoFuncs, true);
             //we could add inherited but that would make debugging harder
             //see http://www.ruzee.com/blog/2008/12/javascript-inheritance-via-prototypes-and-closures on how to do it
 
-            _applyFuncs(newCls, nmsFuncs, false);
+            _T._applyFuncs(newCls, nmsFuncs, false);
 
             return newCls;
         };
 
-        /**
-         * convenience method which basically replaces an existing class
-         * with a new one under the same namespace, note all old functionality will be
-         * presereced by pushing the original class into an new nampespace
-         *
-         * @param classNms the namespace for the class, must already be existing
-         * @param protoFuncs the new prototype functions which are plugins for the old ones
-         * @param overWrite if set to true replaces the old funcs entirely otherwise just does an implicit
-         * inheritance with super being remapped
-         *
-         * TODO do not use this function yet it needs some refinement, it will be interesting later
-         * anyway
-         */
-        this.pluginClass = function(classNms, protoFuncs, overWrite) {
-            var oldClass = _T.fetchNamespace(classNms);
-            if (!oldClass) throw new Error("The class namespace " + classNms + " is not existent");
 
-            if (!overWrite) {
-                var preserveNMS = classNms + "." + ("" + _T._classReplacementCnt++);
-                _T.reserveNamespace(preserveNMS, oldClass);
-
-                return _T.extendClass(classNms, preserveNMS, protoFuncs);
-            } else {
-                if (protoFuncs.constructor_) {
-                    newCls.prototype.constructor = protoFuncs.constructor_;
-                }
-                _applyFuncs(oldClass, protoFuncs, true);
-            }
-        };
 
         /**
          * Extends a class and puts a singleton instance at the reserved namespace instead
@@ -713,38 +603,25 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
          */
         this.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
-            return _makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
+            return _T._makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
         };
 
-        /**
-         * delegation pattern which attached singleton generation
-         *
-         * @param newCls the new namespace object to be generated as singletoin
-         * @param delegateObj the object which has to be delegated
-         * @param protoFuncs the prototype functions which are attached on prototype level
-         * @param nmsFuncs the functions which are attached on the classes namespace level
-         */
-        this.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
-            if (_T._reservedNMS[newCls]) {
-                return;
-            }
-            return _makeSingleton(_T.delegateObj, newCls, delegateObj, protoFuncs, nmsFuncs);
-        };
+
 
         //since the object is self contained and only
         //can be delegated we can work with real private
         //functions here, the other parts of the
         //system have to emulate them via _ prefixes
-        var _makeSingleton = function(ooFunc, newCls, delegateObj, protoFuncs, nmsFuncs) {
+        this._makeSingleton = function(ooFunc, newCls, delegateObj, protoFuncs, nmsFuncs) {
             if (_T._reservedNMS[newCls]) {
-                return;
+                return _T._reservedNMS[newCls];
             }
 
             var clazz = ooFunc(newCls + "._mfClazz", delegateObj, protoFuncs, nmsFuncs);
             if (clazz != null) {
                 _T.applyToGlobalNamespace(newCls, new clazz());
             }
-            _T.fetchNamespace(newCls)["_mfClazz"] = clazz;
+            return _T.fetchNamespace(newCls)["_mfClazz"] = clazz;
         };
 
         //internal class namespace reservation depending on the type (string or function)
@@ -766,7 +643,7 @@ if (!myfaces._impl.core._Runtime) {
             return newCls;
         };
 
-        var _applyFuncs = function (newCls, funcs, proto) {
+        this._applyFuncs = function (newCls, funcs, proto) {
             if (funcs) {
                 for (var key in funcs) {
                     //constructor already passed, callSuper already assigned
@@ -834,6 +711,9 @@ if (!myfaces._impl.core._Runtime) {
                 return deflt;
             }
         };
+
+        //implemented in extruntime
+        this.singletonDelegateObj = function()  {};
 
         //initial browser detection, we encapsule it in a closure
         //to drop all temporary variables from ram as soon as possible
@@ -915,8 +795,11 @@ if (!myfaces._impl.core._Runtime) {
 }
 
 /*we cannot privatize with a global function hence we store the values away for the init part*/
-myfaces._impl.core._Runtime._oldExtends = window._MF_CLS;
-myfaces._impl.core._Runtime._oldSingleton = window._MF_SINGLETON;
+(function() {
+    var _RT = myfaces._impl.core._Runtime;
+    _RT._oldExtends = window._MF_CLS;
+    _RT._oldSingleton = window._MF_SINGLTN;
 
-window._MF_CLS = myfaces._impl.core._Runtime.extendClass;
-window._MF_SINGLTN = myfaces._impl.core._Runtime.singletonExtendClass;
+    window._MF_CLS = _RT.extendClass;
+    window._MF_SINGLTN = _RT.singletonExtendClass;
+})();
