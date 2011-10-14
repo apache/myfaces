@@ -46,7 +46,7 @@
  * decorates the namespace myfaces._impl.core._Runtime and adds a bunch of new methods to
  * what _Runtime provided
  * */
-var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._Lang", myfaces._impl.core._Runtime,
+var _Lang = _MF_SINGLTN("myfaces._impl._util._Lang", Object,
         /**
          * @lends myfaces._impl._util._Lang.prototype
          */
@@ -55,6 +55,8 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
     _processedExceptions: {},
 
     _installedLocale: null,
+
+    _RT: myfaces._impl.core._Runtime,
 
     /**
      * returns a given localized message upon a given key
@@ -96,7 +98,7 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
             this._installedLocale = new newLocale();
             return;
         }
-        var language_Variant = this._callDelegate("getLanguage", this._callDelegate("getGlobalConfig","locale")); 
+        var language_Variant = this._RT.getLanguage(this._RT.getGlobalConfig("locale"));
         var langStr = language_Variant ? language_Variant.language:"";
         var variantStr = language_Variant ? [language_Variant.language,"_",language_Variant.variant||""].join(""):"";
 
@@ -108,6 +110,13 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
         this._installedLocale = new i18nHolder();
     },
 
+    assertType: function(probe, theType) {
+       return this._RT.assertType(probe, theType);
+    },
+
+     exists: function(nms, theType) {
+       return this._RT.exists(nms, theType);
+    },
 
     isExceptionProcessed: function(e) {
         return !! this._processedExceptions[e.toString()];
@@ -129,21 +138,21 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
         if (!namespace || !this.isString(namespace)) {
             throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.fetchNamespace","namespace"));
         }
-        return this._callDelegate("fetchNamespace", namespace);
+        return this._RT.fetchNamespace(namespace);
     },
 
     reserveNamespace : function(namespace) {
         if (!this.isString(namespace)) {
             throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.reserveNamespace", "namespace"));
         }
-        return this._callDelegate("reserveNamespace", namespace);
+        return this._RT.reserveNamespace(namespace);
     },
 
     globalEval : function(code) {
         if (!this.isString(code)) {
             throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.globalEval", "code"));
         }
-        return this._callDelegate("globalEval", code);
+        return  this._RT.globalEval(code);
     },
 
 
@@ -329,69 +338,15 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
      * (notably happens often in lazy xhr code)
      *
      * @param {Function} scope of the function to be executed in
-     * @param {Function} method to be executed
+     * @param {Function} method to be executed, the method must be of type function
      *
-     * @return whatevery the executed method returns
+     * @return whatever the executed method returns
      */
-    hitch : function(/*Object*/scope, /*Function|String*/method /*,...*/) {
-        //	summary:
-        //		Returns a function that will only ever execute in the a given scope.
-        //		This allows for easy use of object member functions
-        //		in callbacks and other places in which the "this" keyword may
-        //		otherwise not reference the expected scope.
-        //		Any number of default positional arguments may be passed as parameters
-        //		beyond "method".
-        //		Each of these values will be used to "placehold" (similar to curry)
-        //		for the hitched function.
-        //	scope:
-        //		The scope to use when method executes. If method is a string,
-        //		scope is also the object containing method.
-        //	method:
-        //		A function to be hitched to scope, or the name of the method in
-        //		scope to be hitched.
-        //	example:
-        //	|	myfaces._impl._util._Lang.hitch(foo, "bar")();
-        //		runs foo.bar() in the scope of foo
-        //	example:
-        //	|	myfaces._impl._util._Lang.hitch(foo, myFunction);
-        //		returns a function that runs myFunction in the scope of foo
-        if (arguments.length > 2) {
-            return this._hitchArgs._hitchArgs.apply(this._hitchArgs, arguments); // Function
-        }
-        if (!method) {
-            method = scope;
-            scope = null;
-        }
-        if (this.isString(method)) {
-            scope = scope || window || function() {
-            };
-            /*since we do not have dojo global*/
-            if (!scope[method]) {
-                throw(['myfaces._impl._util._Lang: scope["', method, '"] is null (scope="', scope, '")'].join(''));
-            }
-            return function() {
-                return scope[method].apply(scope, arguments || []);
-            }; // Function
-        }
+    hitch : function(scope, method) {
         return !scope ? method : function() {
             return method.apply(scope, arguments || []);
         }; // Function
-    }
-    ,
-
-    _hitchArgs : function(scope, method /*,...*/) {
-        var pre = this.objToArray(arguments, 2);
-        var named = this.isString(method);
-        return function() {
-            // array-fy arguments
-            var args = this.objToArray(arguments);
-            // locate our method
-            var f = named ? (scope || this.global)[method] : method;
-            // invoke with collected args
-            return f && f.apply(scope || this, pre.concat(args)); // mixed
-        }; // Function
-    }
-    ,
+    },
 
     /**
      * Helper function to merge two maps
@@ -443,8 +398,7 @@ var _Lang = myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._uti
             }
         }
         return false;
-    }
-    ,
+    },
 
 
     arrToMap: function(arr, offset) {
