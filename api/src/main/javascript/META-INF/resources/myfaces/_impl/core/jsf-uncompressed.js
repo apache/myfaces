@@ -15,6 +15,7 @@
  */
 if (!window.jsf) {
     var _ls = myfaces._impl.core._Runtime.loadScript;
+    _ls("#{resource['org.apache.myfaces.core.impl.core:_StartImpl.js']}", null, null, "UTF-8", false);
 
     _ls("#{resource['org.apache.myfaces.core.impl.i18n:Messages.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.i18n:Messages_de.js']}", null, null, "UTF-8", false);
@@ -29,12 +30,13 @@ if (!window.jsf) {
 
 
     _ls("#{resource['org.apache.myfaces.core.impl.util:_Lang.js']}", null, null, "UTF-8", false);
-
-    _ls("#{resource['org.apache.myfaces.core.impl.util:_Logging.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.util:_UnitTest.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.util:_LangQuirks.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.core:Object.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_Queue.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_ListenerQueue.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_Dom.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.util:_DomQuirks.js']}", null, null, "UTF-8", false);
+
     _ls("#{resource['org.apache.myfaces.core.impl.util:_HtmlStripper.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_OamSubmit.js']}", null, null, "UTF-8", false);
 

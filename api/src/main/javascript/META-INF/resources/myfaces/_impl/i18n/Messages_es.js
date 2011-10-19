@@ -24,7 +24,7 @@
  * @extends myfaces._impl.i18n.Messages
  * @memberOf myfaces._impl.i18n
  */
-_MF_CLS("myfaces._impl.i18n.Messages_es", myfaces._impl.i18n.Messages,
+_MF_CLS(_PFX_I18N+"Messages_es", myfaces._impl.i18n.Messages,
 /** @lends myfaces._impl.i18n.Messages_es.prototype */
 {
 

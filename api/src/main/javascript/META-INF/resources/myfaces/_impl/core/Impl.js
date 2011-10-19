@@ -21,14 +21,14 @@
  * @description Implementation singleton which implements all interface method
  * defined by our jsf.js API
  * */
-_MF_SINGLTN("myfaces._impl.core.Impl", Object,
+_MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
 /**
  * @lends myfaces._impl.core.Impl.prototype
  */
 {
 
     //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
-    _transport      : new (myfaces._impl.core._Runtime.getGlobalConfig("transport", myfaces._impl.xhrCore._Transports))(),
+    _transport      : myfaces._impl.core._Runtime.getGlobalConfig("transport", myfaces._impl.xhrCore._Transports),
 
     /**
      * external event listener queue!
@@ -76,8 +76,6 @@ _MF_SINGLTN("myfaces._impl.core.Impl", Object,
     CLIENT_ERROR:   "clientError",
     TIMEOUT_EVENT:  "timeout",
 
-    _Lang:  myfaces._impl._util._Lang,
-    _Dom:   myfaces._impl._util._Dom,
 
     /*error reporting threshold*/
     _threshold: "ERROR",
@@ -85,6 +83,8 @@ _MF_SINGLTN("myfaces._impl.core.Impl", Object,
     /*blockfilter for the passthrough filtering, the attributes given here
      * will not be transmitted from the options into the passthrough*/
     _BLOCKFILTER: {onerror: true, onevent: true, render: true, execute: true, myfaces: true},
+
+
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -141,7 +141,7 @@ _MF_SINGLTN("myfaces._impl.core.Impl", Object,
      * b) passThrough handling with a map copy with a filter map block map
      */
     request : function(elem, event, options) {
-     
+
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
          *all the time
@@ -520,7 +520,7 @@ _MF_SINGLTN("myfaces._impl.core.Impl", Object,
                 var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);
                 impl.sendError(request, context, this.CLIENT_ERROR, "ErrorRetrievingResponse",
                         _Lang.getMessage("ERR_CONSTRUCT", e.toString()));
-                     
+
                 //client errors are not swallowed
                 throw e;
             }
@@ -559,7 +559,7 @@ _MF_SINGLTN("myfaces._impl.core.Impl", Object,
         /* run through all script tags and try to find the one that includes jsf.js */
         var scriptTags = document.getElementsByTagName("script");
         var getConfig  = myfaces._impl.core._Runtime.getGlobalConfig;
-        
+
         for (var i = 0; i < scriptTags.length; i++) {
             if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
                 var result = scriptTags[i].src.match(/stage=([^&;]*)/);
@@ -707,6 +707,6 @@ _MF_SINGLTN("myfaces._impl.core.Impl", Object,
             throw exception;
         }
     }
-});    
+});
 
 

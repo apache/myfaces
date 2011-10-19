@@ -25,7 +25,7 @@
  */
 
 /** @namespace myfaces._impl._util._HtmlStripper */
-_MF_CLS("myfaces._impl._util._HtmlStripper", Object,
+_MF_CLS(_PFX_UTIL+"_HtmlStripper", Object,
 /** @lends myfaces._impl._util._HtmlStripper.prototype */
 {
     BEGIN_TAG: "html",

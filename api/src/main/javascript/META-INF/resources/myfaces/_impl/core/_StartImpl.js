@@ -13,29 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @memberOf myfaces._impl.xhrCore
- * @namespace
- * @name engine
- */
+/*we cannot privatize with a global function hence we store the values away for the init part*/
+(function() {
+    //some mobile browsers do not have a window object
+    var target = window || document.body;
+    var _RT = myfaces._impl.core._Runtime;
+    var impl = "myfaces._impl.";
+    var params = {_MF_CLS: _RT.extendClass,
+        _MF_SINGLTN: _RT.singletonExtendClass,
+        _PFX_UTIL: impl+"_util.",
+        _PFX_CORE:impl+"core.",
+        _PFX_XHR: impl+"xhrCore.",
+        _PFX_I18N: impl+"i18n."};
 
-/**
- * @class
- * @name XhrConst
- * @memberOf myfaces._impl.xhrCore.engine
- */
-_MF_SINGLTN(_PFX_XHR+"engine.XhrConst", Object,
-        /** @lends myfaces._impl.xhrCore.engine.XhrConst.prototype */
-        {
-            READY_STATE_UNSENT:     0,
-            READY_STATE_OPENED:     1,
-            READY_STATE_HEADERS_RECEIVED: 2,
-            READY_STATE_LOADING:    3,
-            READY_STATE_DONE:       4,
-
-            STATUS_OK_MINOR:        200,
-            STATUS_OK_MAJOR:        300,
-
-            constructor_: function() {
-            }
-        });
+    for (var key in params) {
+        _RT[key] = target[key];
+        target[key] = params[key];
+    }
+})();

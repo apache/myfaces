@@ -14,7 +14,7 @@
  * limitations under the License.
 */
 /** @namespace myfaces._impl.xhrCore._AjaxRequestQueue */
-_MF_CLS("myfaces._impl.xhrCore._AjaxRequestQueue", myfaces._impl._util._Queue,
+_MF_CLS(_PFX_XHR+"_AjaxRequestQueue", myfaces._impl._util._Queue,
         /** @lends  myfaces._impl.xhrCore._AjaxRequestQueue.prototype */
         {
 
@@ -25,12 +25,7 @@ _MF_CLS("myfaces._impl.xhrCore._AjaxRequestQueue", myfaces._impl._util._Queue,
     _curReq : null,
 
 
-    /**
-     * the standard constructur of our class
-     */
-    constructor_: function() {
-        this._callSuper("constructor");
-    },
+
 
     /**
      * delay request, then call enqueue

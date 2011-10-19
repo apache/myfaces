@@ -30,7 +30,7 @@
  * @name Messages
  * @memberOf myfaces._impl.i18n
  */
-_MF_CLS("myfaces._impl.i18n.Messages", Object,
+_MF_CLS(_PFX_I18N+"Messages", Object,
 /**
  * @lends myfaces._impl.i18n.Messages.prototype
  */
