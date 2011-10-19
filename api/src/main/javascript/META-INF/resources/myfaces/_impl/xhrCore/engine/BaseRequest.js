@@ -35,7 +35,7 @@
  * @class
  * @name BaseRequest
  * @memberOf myfaces._impl.xhrCore.engine
- * @extends myfaces._impl.xhrCore._FinalizeableObj
+ * @extends myfaces._impl.core.Object
  * @description
  * Abstract Base for all classes which simulate the xhr level2 object
  * with a different transport
@@ -69,7 +69,7 @@
  *      <li>statusText</li>
  * </ul>
  */
-_MF_CLS("myfaces._impl.xhrCore.engine.BaseRequest", myfaces._impl.xhrCore._FinalizeableObj,
+_MF_CLS(_PFX_XHR+"engine.BaseRequest", _MF_OBJECT,
         /** @lends myfaces._impl.xhrCore.engine.BaseRequest.prototype */
         {
             /*standard attributes*/

@@ -22,7 +22,7 @@
  * improved version of
  * @see <a href="http://safalra.com/web-design/javascript/queues/Queue.js">http://safalra.com/web-design/javascript/queues/Queue.js</a>
  */
-_MF_CLS("myfaces._impl._util._Queue", Object,
+_MF_CLS(_PFX_UTIL+"_Queue", _MF_OBJECT,
   /**
    * @lends myfaces._impl._util._Queue.prototype
    */
@@ -39,8 +39,8 @@ _MF_CLS("myfaces._impl._util._Queue", Object,
      * Standard constructor
      */
     constructor_: function() {
+        this._callSuper("constructor_");
         this._q = [];
-        this._Lang = myfaces._impl._util._Lang;
     },
 
     /**

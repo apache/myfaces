@@ -14,16 +14,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
--->    
+-->
 <assembler>
     <scripts>
+        <!--
+           Separate language pack for use with the minimal scripts,
+           can be included with a minimal js file
+        -->
+
 
         <script>
-            <fileName>jsf-uncompressed.js</fileName>
+            <fileName>jsf-i18n.js</fileName>
             <includes>
-                <include>**/_impl/core/_EvalHandlers.js</include>
-                <include>**/_impl/core/_Runtime.js</include>
-                <include>**/_impl/core/jsf-uncompressed.js</include>
+                <include>**/_impl/core/_StartImpl.js</include>
+                <include>**/_impl/i18n/Messages_de.js</include>
+                <include>**/_impl/i18n/Messages_nl.js</include>
+                <include>**/_impl/i18n/Messages_es.js</include>
+                <include>**/_impl/i18n/Messages_fr.js</include>
+                <include>**/_impl/i18n/Messages_it.js</include>
+                <include>**/_impl/i18n/Messages_ru.js</include>
+                <include>**/_impl/i18n/Messages_zh_CN.js</include>
+                <include>**/_impl/i18n/Messages_zh_HK.js</include>
+                <include>**/_impl/i18n/Messages_zh_TW.js</include>
+                <include>**/_impl/core/_EndImpl.js</include>
             </includes>
         </script>
     </scripts>

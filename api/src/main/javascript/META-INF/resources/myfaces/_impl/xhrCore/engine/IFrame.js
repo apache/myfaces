@@ -24,7 +24,7 @@
  * wrapper for an iframe transport object with all its differences
  * it emulates the xhr level2 api
  */
-_MF_CLS("myfaces._impl.xhrCore.engine.IFrame", myfaces._impl.xhrCore.engine.BaseRequest,
+_MF_CLS(_PFX_XHR+"engine.IFrame", myfaces._impl.xhrCore.engine.BaseRequest,
         /** @lends myfaces._impl.xhrCore.engine.IFrame.prototype */
         {
 
@@ -104,7 +104,8 @@ _MF_CLS("myfaces._impl.xhrCore.engine.IFrame", myfaces._impl.xhrCore.engine.Base
                 var oldTarget = formData.form.target;
                 var oldMethod = formData.form.method;
                 var oldAction = formData.form.action;
-
+                var formDataForm = formData.form;
+                
                 try {
                     //_t._initAjaxParams();
                     for (var key in this._requestHeader) {

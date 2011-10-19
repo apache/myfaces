@@ -74,12 +74,13 @@ if (!myfaces._impl.core._EvalHandlers) {
          * @borrows myfaces._impl.core._Runtime as _T
          */
         _T._evalBBOld = function(code) {
-            var location = document.getElementsByTagName("head")[0] || document.documentElement;
-            var placeHolder = document.createElement("script");
-            placeHolder.type = "text/javascript";
-            placeHolder.text = code;
-            location.insertBefore(placeHolder, location.firstChild);
-            location.removeChild(placeHolder);
+            var loc = document.getElementsByTagName("head")[0] || document.documentElement;
+            //placeHolder
+            var pHldr = document.createElement("script");
+            pHldr.type = "text/javascript";
+            pHldr.text = code;
+            loc.insertBefore(pHldr, loc.firstChild);
+            loc.removeChild(pHldr);
             return null;
         };
 
@@ -108,26 +109,29 @@ if (!myfaces._impl.core._EvalHandlers) {
 
         /**
          * global eval on scripts
-         * @param {String} code
+         * @param {String} c (code abbreviated since the compression does not work here)
          * @name myfaces._impl.core._Runtime.globalEval
          * @function
          */
-        _T.globalEval = function(code) {
+        _T.globalEval = function(c) {
             //TODO add a config param which allows to evaluate global scripts even if the call
             //is embedded in an iframe
             //We lazy init the eval type upon the browsers
-            //capabilities
-            if ('undefined' == typeof _T._evalType) {
-                _T._evalType = window.execScript ? "_evalExecScript" : null;
-                _T._evalType = !_T._evalType && window.eval && (!_T.browser.isBlackBerry || _T.browser.isBlackBerry >= 6) ? "_standardGlobalEval" : null;
-                _T._evalType = (window.eval && !_T._evalType) ? "_evalBBOld" : null;
+            //capabilities   
+            var _et = "_evalType";
+            var _w = window;
+            var _b = _T.browser;
+            if ('undefined' == typeof _T[_et]) {
+                _T[_et] = _w.execScript ? "_evalExecScript" : null;
+                _T[_et] = !_T[_et] && _w.eval && (!_b.isBlackBerry || _b.isBlackBerry >= 6) ? "_standardGlobalEval" : null;
+                _T[_et] = (_w.eval && !_T[_et]) ? "_evalBBOld" : null;
             }
-            if (_T._evalType) {
-                return _T[_T._evalType](code);
+            if (_T[_et]) {
+                return _T[_T[_et]](c);
             }
             //we probably have covered all browsers, but this is a safety net which might be triggered
             //by some foreign browser which is not covered by the above cases
-            eval.call(window, code);
+            eval.call(window, c);
             return null;
         };
 

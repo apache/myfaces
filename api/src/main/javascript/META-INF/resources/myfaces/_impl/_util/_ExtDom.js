@@ -15,10 +15,27 @@
  * limitations under the License.
  */
 
-myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtDom", myfaces._impl._util._Dom, {
+/*only quirksmode browsers get the quirks part of the code*/
+_MF_SINGLTN(_PFX_UTIL + "_ExtDom", myfaces._impl._util._Dom, {
 
     _Lang:myfaces._impl._util._Lang,
     _RT:myfaces._impl.core._Runtime,
+
+    constructor_: function() {
+        this._callSuper("constructor_");
+        var _T = this;
+        //we only apply lazy if the jsf part is loaded already
+        //otherwise we are at the correct position
+        if (myfaces._impl.core.Impl) {
+            this._RT.iterateClasses(function (proto) {
+                if (proto._Dom) {
+                    proto._Dom = _T;
+                }
+            });
+        }
+
+        myfaces._impl._util._Dom = _T;
+    },
 
     /**
      * finds the elements by an attached style class
@@ -69,7 +86,7 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtDom", 
             } else {
                 //fallback to the classical filter methods if we cannot use the
                 //html 5 selectors for whatever reason
-                return this._callDelegate("findAll", fragment, filter, deepScan);
+                return this._callSuper("findAll", fragment, filter, deepScan);
             }
 
         } finally {
@@ -136,12 +153,8 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtDom", 
      * @returns the found node or null otherwise
      */
     findFormElement : function(form, nameId) {
-        if (!form) {
-            throw Error("_Dom.findFormElement a form node must be given");
-        }
-        if (!nameId) {
-            throw Error("_Dom.findFormElement an element or identifier must be given");
-        }
+        this._assertStdParams(form, nameId, "findFormElement");
+
         if (!form.elements) return null;
         return form.elements[nameId] || this.findById(form, nameId);
     },
@@ -261,7 +274,84 @@ myfaces._impl.core._Runtime.singletonDelegateObj("myfaces._impl._util._ExtDom", 
             return treeWalker.currentNode;
         }
         return null;
+    },
+
+
+    /**
+     * a closure based child filtering routine
+     * which steps one level down the tree and
+     * applies the filter closure
+     *
+     * @param item the node which has to be investigates
+     * @param filter the filter closure
+     */
+    getFilteredChild: function(item, filter) {
+
+        this._assertStdParams(item, filter, "getFilteredChild");
+
+        var childs = item.childNodes;
+        if (!childs) {
+            return null;
+        }
+        for (var c = 0, cLen = childs.length; c < cLen; c++) {
+            if (filter(childs[c])) {
+                return childs[c];
+            }
+        }
+        return null;
     }
+    ,
 
+    /**
+     * gets the child of an item with a given tag name
+     * @param {Node} item - parent element
+     * @param {String} childName - TagName of child element
+     * @param {String} itemName - name  attribute the child can have (can be null)
+     * @Deprecated
+     */
+    getChild: function(item, childName, itemName) {
+        var _Lang = this._Lang;
 
+        function filter(node) {
+            return node.tagName
+                    && _Lang.equalsIgnoreCase(node.tagName, childName)
+                    && (!itemName || (itemName && itemName == node.getAttribute("name")));
+
+        }
+
+        return this.getFilteredChild(item, filter);
+    },
+
+    /**
+     * fetches the style class for the node
+     * cross ported from the dojo toolkit
+     * @param {String|Object} node the node to search
+     * @returns the className or ""
+     */
+    getClass : function(node) {
+        node = this.byId(node);
+        if (!node) {
+            return "";
+        }
+        var cs = "";
+        if (node.className) {
+            cs = node.className;
+        } else {
+            if (this.hasAttribute(node, "class")) {
+                cs = this.getAttribute(node, "class");
+            }
+        }
+        return cs.replace(/^\s+|\s+$/g, "");
+    },
+
+    /**
+     * fetches the class for the node,
+     * cross ported from the dojo toolkit
+     * @param {String|Object}node the node to search
+     */
+    getClasses : function(node) {
+        var c = this.getClass(node);
+        return (c == "") ? [] : c.split(/\s+/g);
+    }
 });
+

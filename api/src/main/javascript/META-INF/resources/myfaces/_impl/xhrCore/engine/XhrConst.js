@@ -24,7 +24,7 @@
  * @name XhrConst
  * @memberOf myfaces._impl.xhrCore.engine
  */
-_MF_SINGLTN("myfaces._impl.xhrCore.engine.XhrConst", Object,
+_MF_SINGLTN(_PFX_XHR+"engine.XhrConst", Object,
         /** @lends myfaces._impl.xhrCore.engine.XhrConst.prototype */
         {
             READY_STATE_UNSENT:     0,

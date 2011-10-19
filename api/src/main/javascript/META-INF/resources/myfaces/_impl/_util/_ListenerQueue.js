@@ -29,17 +29,11 @@
  * <p>It is based upon our high performance queue and adds dedicated
  * methods for listener based closures to the mix </p>
  * */
-_MF_CLS("myfaces._impl._util._ListenerQueue", myfaces._impl._util._Queue,
+_MF_CLS(_PFX_UTIL+"_ListenerQueue", myfaces._impl._util._Queue,
 /**
  * @lends myfaces._impl._util._ListenerQueue.prototype
  */
 {
-    /**
-     * standard constructor
-     */
-    constructor_: function() {
-        this._callSuper("constructor");
-    },
 
     /**
      * listener type safety assertion function

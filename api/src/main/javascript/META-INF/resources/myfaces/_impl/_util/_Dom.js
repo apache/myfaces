@@ -27,43 +27,24 @@
  * we will focus with our dom routines to only
  * the parts which our impl uses.
  * A jquery like query API would be nice
- * but this would blow up our codebase significantly
+ * but this would increase up our codebase significantly
+ *
+ * <p>This class provides the proper fallbacks for ie8- and Firefox 3.6-</p>
  */
-_MF_SINGLTN("myfaces._impl._util._Dom", Object,
+_MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
 /**
  * @lends myfaces._impl._util._Dom.prototype
  */
 {
-    IE_QUIRKS_EVENTS : {
-        "onabort": true,
-        "onload":true,
-        "onunload":true,
-        "onchange": true,
-        "onsubmit": true,
-        "onreset": true,
-        "onselect": true,
-        "onblur": true,
-        "onfocus": true,
-        "onkeydown": true,
-        "onkeypress": true,
-        "onkeyup": true,
-        "onclick": true,
-        "ondblclick": true,
-        "onmousedown": true,
-        "onmousemove": true,
-        "onmouseout": true,
-        "onmouseover": true,
-        "onmouseup": true
-    },
 
     /*table elements which are used in various parts */
     TABLE_ELEMS:  {
-        "thead": true,
-        "tbody": true,
-        "tr": true,
-        "th": true,
-        "td": true,
-        "tfoot" : true
+        "thead": 1,
+        "tbody": 1,
+        "tr": 1,
+        "th": 1,
+        "td": 1,
+        "tfoot" : 1
     },
 
     _Lang:  myfaces._impl._util._Lang,
@@ -79,15 +60,6 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         //under normal circumstances this works, if there are no normal ones
         //then this also will work at the second time, but the onload handler
         //should cover 99% of all use cases to avoid a loading race condition
-        var b = myfaces._impl.core._Runtime.browser;
-
-        if (b.isIE <= 6 && b.isIEMobile) {
-            //winmobile hates add onLoad, and checks on the construct
-            //it does not eval scripts anyway
-            myfaces.config = myfaces.config || {};
-            myfaces.config._autoeval = false;
-            return;
-        }
         this._RT.addOnLoad(window, function() {
             myfaces._impl._util._Dom.isManualScriptEval();
         });
@@ -117,14 +89,13 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         });
 
         var execCss = this._Lang.hitch(this, function(item) {
-            var _eqi = this._Lang.equalsIgnoreCase;
+            var equalsIgnoreCase = this._Lang.equalsIgnoreCase;
 
-            if (item.tagName && _eqi(item.tagName, "link") && _eqi(item.getAttribute("type"), "text/css")) {
-                var style = "@import url('"+item.getAttribute("href")+"');";
-                applyStyle(item, style);
-            } else if(item.tagName && _eqi(item.tagName, "style") && _eqi(item.getAttribute("type"), "text/css")) {
+            if (item.tagName && equalsIgnoreCase(item.tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
+                applyStyle(item, "@import url('"+item.getAttribute("href")+"');");
+            } else if(item.tagName && equalsIgnoreCase(item.tagName, "style") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
                 var innerText = [];
-                //compliant browsers know childnodes
+                //compliant browsers know child nodes
                 if(item.childNodes) {
                     var len = item.childNodes.length;
                     for(var cnt = 0; cnt < len; cnt++) {
@@ -135,13 +106,12 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
                     innerText.push(item.innerHTML);
                 }
 
-                var style = innerText.join("");
-                applyStyle(item, style);
+                applyStyle(item, innerText.join(""));
             }
         });
 
         try {
-            var scriptElements = this.findByTagNames(item, {"link":true,"style":true}, true);
+            var scriptElements = this.findByTagNames(item, {"link":1,"style":1}, true);
             if (scriptElements == null) return;
             for (var cnt = 0; cnt < scriptElements.length; cnt++) {
                 execCss(scriptElements[cnt]);
@@ -355,13 +325,7 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
      * browsers capabilities
      */
     isDomCompliant: function() {
-        if('undefined' == typeof this._isCompliantBrowser) {
-            this._isCompliantBrowser = !! ((window.Range
-                    && typeof Range.prototype.createContextualFragment == 'function') //createContextualFragment hints to a no quirks browser but we need more fallbacks
-                    || document.querySelectoryAll  //query selector all hints to html5 capabilities
-                    || document.createTreeWalker);   //treewalker is either firefox 3.5+ or ie9 standards mode
-        }
-        return this._isCompliantBrowser;
+        return true;
     },
 
     /**
@@ -372,6 +336,7 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
      */
     insertBefore: function(item, markup) {
         this._assertStdParams(item, markup, "insertBefore");
+
         markup = this._Lang.trim(markup);
         if (markup === "") return null;
 
@@ -436,7 +401,7 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
             if (this.isDomCompliant()) {
                 ret = this._outerHTMLCompliant(item, markup);
             } else {
-
+                //call into abstract method
                 ret = this._outerHTMLNonCompliant(item, markup);
             }
 
@@ -503,51 +468,6 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
       return !!this.TABLE_ELEMS[itemNodeName];
     },
 
-
-    /**
-     * now to the evil browsers
-     * of what we are dealing with is various bugs
-     * first a simple replaceElement leaks memory
-     * secondly embedded scripts can be swallowed upon
-     * innerHTML, we probably could also use direct outerHTML
-     * but then we would run into the script swallow bug
-     *
-     * the entire mess is called IE6 and IE7
-     *
-     * @param item
-     * @param markup
-     */
-    _outerHTMLNonCompliant: function(item, markup) {
-        
-        var b = this._RT.browser;
-        var evalNodes = null;
-
-        try {
-            //check for a subtable rendering case
-
-            var evalNodes = this._buildEvalNodes(item, markup);
-
-            if (evalNodes.length == 1) {
-                var ret = evalNodes[0];
-                this.replaceElement(item, evalNodes[0]);
-                return ret;
-            } else {
-                return this.replaceElements(item, evalNodes);
-            }
-
-        } finally {
-
-            var dummyPlaceHolder = this.getDummyPlaceHolder();
-            //now that Microsoft has finally given
-            //ie a working gc in 8 we can skip the costly operation
-            if (b.isIE && b.isIE < 8) {
-                this._removeChildNodes(dummyPlaceHolder, false);
-            }
-            dummyPlaceHolder.innerHTML = "";
-        }
-
-    },
-
     /**
      * non ie browsers do not have problems with embedded scripts or any other construct
      * we simply can use an innerHTML in a placeholder
@@ -598,58 +518,11 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         }
         evalNodes = (evalNodes.parentNode) ? evalNodes.parentNode.childNodes : null;
         return this.detach(evalNodes);
-    }
-    ,
+    },
 
-    /**
-     * builds the ie nodes properly in a placeholder
-     * and bypasses a non script insert bug that way
-     * @param markup the marku code
-     */
-    _buildNodesNonCompliant: function(markup) {
-
-        var evalNodes = null;
-
-        //now to the non w3c compliant browsers
-        //http://blogs.perl.org/users/clinton_gormley/2010/02/forcing-ie-to-accept-script-tags-in-innerhtml.html
-        //we have to cope with deficiencies between ie and its simulations in this case
-        var probe = this.getDummyPlaceHolder();//document.createElement("div");
-
-        probe.innerHTML = "<table><tbody><tr><td><div></div></td></tr></tbody></table>";
-
-        //we have customers using html unit, this has a bug in the table resolution
-        //hence we determine the depth dynamically
-        var depth = this._determineDepth(probe);
-
-        this._removeChildNodes(probe, false);
-        probe.innerHTML = "";
-
-        var dummyPlaceHolder = this.getDummyPlaceHolder();//document.createElement("div");
-
-        //fortunately a table element also works which is less critical than form elements regarding
-        //the inner content
-        dummyPlaceHolder.innerHTML = "<table><tbody><tr><td>" + markup + "</td></tr></tbody></table>";
-        evalNodes = dummyPlaceHolder;
-
-        for (var cnt = 0; cnt < depth; cnt++) {
-            evalNodes = evalNodes.childNodes[0];
-        }
-        var ret = (evalNodes.parentNode) ? this.detach(evalNodes.parentNode.childNodes) : null;
-
-        if ('undefined' == typeof evalNodes || null == evalNodes) {
-            //fallback for htmlunit which should be good enough
-            //to run the tests, maybe we have to wrap it as well
-            dummyPlaceHolder.innerHTML = "<div>" + markup + "</div>";
-            //note this is triggered only in htmlunit no other browser
-            //so we are save here
-            evalNodes = this.detach(dummyPlaceHolder.childNodes[0].childNodes);
-        }
-
-        this._removeChildNodes(dummyPlaceHolder, false);
-        //ie fix any version, ie does not return true javascript arrays so we have to perform
-        //a cross conversion
-        return ret;
-
+    _removeChildNodes: function(node, breakEventsOpen) {
+        if (!node) return;
+        node.innerHTML = "";
     },
 
     _determineDepth: function(probe) {
@@ -664,125 +537,13 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         return depth;
     },
 
-
-    //now to another nasty issue:
-    //for ie we have to walk recursively over all nodes:
-    //http://msdn.microsoft.com/en-us/library/bb250448%28VS.85%29.aspx
-    //http://weblogs.java.net/blog/driscoll/archive/2009/11/13/ie-memory-management-and-you
-    //http://home.orange.nl/jsrosman/
-    //http://www.quirksmode.org/blog/archives/2005/10/memory_leaks_li.html
-    //http://www.josh-davis.org/node/7
     _removeNode: function(node, breakEventsOpen) {
         if (!node) return;
-        var b = this._RT.browser;
-        if (this.isDomCompliant()) {
-            //recursive descension only needed for old ie versions
-            //all newer browsers cleanup the garbage just fine without it
-            //thank you
-            if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
-                node.parentNode.removeChild(node);
-            return;
-        }
+        if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
+            node.parentNode.removeChild(node);
+        return;
+    },
 
-        //now to the browsers with non working garbage collection
-        this._removeChildNodes(node, breakEventsOpen);
-
-        try {
-            //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
-            //again to speed things up we precheck first
-            if(!this._isTableElement(node)) {
-                //we do not do a table structure innnerhtml on table elements except td
-                //htmlunit rightfully complains that we should not do it
-                node.innerHTML = "";
-            }
-            if (b.isIE && 'undefined' != typeof node.outerHTML) {//ie8+ check done earlier we skip it here
-                node.outerHTML = '';
-            } else {
-                node = this.detach(node)[0];
-            }
-            if (!b.isIEMobile) {
-                delete node;
-            }
-        } catch (e) {
-            //on some elements we might not have covered by our table check on the outerHTML
-            // can fail we skip those in favor of stability
-            try {
-                // both innerHTML and outerHTML fails when <tr> is the node, but in that case
-                // we need to force node removal, otherwise it will be on the tree (IE 7 IE 6)
-                this.detach(node);
-                if (!b.isIEMobile) {
-                    delete node;
-                }
-            } catch (e1) {
-            }
-        }
-    }
-    ,
-
-
-
-    /**
-     * recursive delete child nodes
-     * node, this method only makes sense in the context of IE6 + 7 hence
-     * it is not exposed to the public API, modern browsers
-     * can garbage collect the nodes just fine by doing the standard removeNode method
-     * from the dom API!
-     *
-     * @param node  the node from which the childnodes have to be deletd
-     * @param breakEventsOpen if set to true a standard events breaking is performed
-     */
-    _removeChildNodes: function(node, breakEventsOpen) {
-        if (!node) return;
-
-        //node types which cannot be cleared up by normal means
-        var disallowedNodes = this.TABLE_ELEMS;
-
-        //for now we do not enable it due to speed reasons
-        //normally the framework has to do some event detection
-        //which we cannot do yet, I will dig for options
-        //to enable it in a speedly manner
-        //ie7 fixes this area anyway
-        //this.breakEvents(node);
-
-        var b = this._RT.browser;
-        if (breakEventsOpen) {
-            this.breakEvents(node);
-        }
-
-        for (var cnt = node.childNodes.length - 1; cnt >= 0; cnt -= 1) {
-            var childNode = node.childNodes[cnt];
-            //we cannot use our generic recursive tree walking due to the needed head recursion
-            //to clean it up bottom up, the tail recursion we were using in the search either would use more time
-            //because we had to walk and then clean bottom up, so we are going for a direct head recusion here
-            if ('undefined' != typeof childNode.childNodes && node.childNodes.length)
-                this._removeChildNodes(childNode);
-            try {
-                var nodeName = (childNode.nodeName || childNode.tagName) ? (childNode.nodeName || childNode.tagName).toLowerCase() : null;
-                //ie chokes on clearing out table inner elements, this is also covered by our empty
-                //catch block, but to speed things up it makes more sense to precheck that
-                if (!disallowedNodes[nodeName]) {
-                    //outer HTML setting is only possible in earlier IE versions all modern browsers throw an exception here
-                    //again to speed things up we precheck first
-                    if(!this._isTableElement(childNode)) {    //table elements cannot be deleted
-                        childNode.innerHTML = "";
-                    }
-                    if (b.isIE && b.isIE < 8 && 'undefined' != childNode.outerHTML)
-                        childNode.outerHTML = '';
-                    else {
-                        node.removeChild(childNode);
-                    }
-                    if (!b.isIEMobile) {
-                        delete childNode;
-                    }
-                }
-            } catch (e) {
-                //on some elements the outerHTML can fail we skip those in favor
-                //of stability
-
-            }
-        }
-    }
-    ,
 
     /**
      * build up the nodes from html markup in a browser independend way
@@ -809,14 +570,18 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
      * @param markup the mark
      * @param caller
      */
-    _assertStdParams: function(item, markup, caller) {
+    _assertStdParams: function(item, markup, caller, params) {
          //internal error
          if(!caller) throw Error("Caller must be set for assertion");
+         var _Lang = this._Lang;
+         var ERR_PROV = "ERR_MUST_BE_PROVIDED1";
+         var DOM = "myfaces._impl._util._Dom.";
+         var finalParams = params || ["item", "markup"];
          if (!item) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null,"myfaces._impl._util._Dom."+caller, "item"));
+            throw Error(_Lang.getMessage(ERR_PROV,null,DOM+caller, params[0]));
         }
         if (!markup) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom."+caller, "markup"));
+            throw Error(_Lang.getMessage(ERR_PROV,null, DOM+caller, params[1]));
         }
     },
 
@@ -837,30 +602,6 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         }
     },
 
-    /**
-     * break the standard events from an existing dom node
-     * (note this method is not yet used, but can be used
-     * by framework authors to get rid of ie circular event references)
-     *
-     * another way probably would be to check all attributes of a node
-     * for a function and if one is present break it by nulling it
-     * I have to do some further investigation on this.
-     *
-     * The final fix is to move away from ie6 at all which is the root cause of
-     * this.
-     *
-     * @param node the node which has to be broken off its events
-     */
-    breakEvents: function(node) {
-        if (!node) return;
-        var evtArr = this.IE_QUIRKS_EVENTS;
-        for (var key in evtArr) {
-            if (key != "onunload" && node[key]) {
-                node[key] = null;
-            }
-        }
-    }
-    ,
 
 
     /**
@@ -930,12 +671,7 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
      * 
      */
     findByTagNames: function(fragment, tagNames) {
-        if(!fragment) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagNames", "fragment"));
-        }
-        if(!tagNames) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagNames", "tagNames"));
-        }
+        this._assertStdParams(fragment, tagNames, "findByTagNames",["fragment", "tagNames"]);
 
         var nodeType = fragment.nodeType;
         if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
@@ -966,15 +702,13 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
             //the usual IE6 is broken, fix code
             filter = null;
         }
-    }
-    ,
+    },
 
     /**
      * determines the number of nodes according to their tagType
      *
      * @param {Node} fragment (Node or fragment) the fragment to be investigated
      * @param {String} tagName the tag name (lowercase)
-     * @param {Boolean} deepScan if set to true a found element does not prevent to scan deeper
      * (the normal usecase is false, which means if the element is found only its
      * adjacent elements will be scanned, due to the recursive descension
      * this should work out with elements with different nesting depths but not being
@@ -983,13 +717,8 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
      * @return the child elements as array or null if nothing is found
      *
      */
-    findByTagName : function(fragment, tagName, deepScan) {
-        if(!fragment) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagName", "fragment"));
-        }
-        if(!tagName) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByTagName", "tagName"));
-        }
+    findByTagName : function(fragment, tagName) {
+        this._assertStdParams(fragment, tagName, "findByTagName", ["fragment", "tagName"]);
 
         var nodeType = fragment.nodeType;
         if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
@@ -998,88 +727,23 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         //remapping to save a few bytes
         var _Lang = this._Lang;
 
-        deepScan = !!deepScan;
+        var ret = _Lang.objToArray(fragment.getElementsByTagName(tagName));
+        if (fragment.tagName && _Lang.equalsIgnoreCase(fragment.tagName, tagName)) ret.unshift(fragment);
+        return ret;
+    },
 
-        //elements by tagname is the fastest, ie throws an error on fragment.getElementsByTagName, the exists type
-        //via namespace array checking is safe
-        if (deepScan && _Lang.exists(fragment, "getElementsByTagName")) {
-            var ret = _Lang.objToArray(fragment.getElementsByTagName(tagName));
-            if (fragment.tagName && _Lang.equalsIgnoreCase(fragment.tagName, tagName)) ret.unshift(fragment);
-            return ret;
-        } else if (deepScan) {
-            //no node type with child tags we can handle that without node type checking
-            return null;
-        }
-        //since getElementsByTagName is a standardized dom node function and ie also supports
-        //it since 5.5
-        //we need no fallback to the query api and the recursive filter
-        //also is only needed in case of no deep scan or non dom elements
-
-        var filter = function(node) {
-            return node.tagName && _Lang.equalsIgnoreCase(node.tagName, tagName);
-        };
-        try {
-            return this.findAll(fragment, filter, deepScan);
-        } finally {
-            //the usual IE6 is broken, fix code
-            filter = null;
-            _Lang = null;
-        }
-
-    }
-    ,
-
-    findByName : function(fragment, name, deepScan) {
-        if(!fragment) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByName", "fragment"));
-        }
-        if(!name) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "myfaces._impl._util._Dom.findByName", "name"));
-        }
-
+    findByName : function(fragment, name) {
+        this._assertStdParams(fragment, name, "findByName", ["fragment", "name"]);
 
         var nodeType = fragment.nodeType;
         if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
         var _Lang = this._Lang;
-        var filter = function(node) {
-            return  node.name && _Lang.equalsIgnoreCase(node.name, name);
-        };
-        try {
-            deepScan = !!deepScan;
 
-            //elements byName is the fastest
-            if (deepScan && _Lang.exists(fragment, "getElementsByName")) {
-                var ret = _Lang.objToArray(fragment.getElementsByName(name));
-                if (fragment.name == name) ret.unshift(fragment);
-                return ret;
-            }
-
-            if (deepScan && _Lang.exists(fragment, "querySelectorAll")) {
-                try {
-                    var newName = name;
-                    if (_Lang.isString(newName)) {
-                        newName = _Lang.escapeString(newName);
-                    }
-                    var result = fragment.querySelectorAll("[name=" + newName + "]");
-                    if (fragment.nodeType == 1 && filter(fragment)) {
-                        result = (result == null) ? [] : _Lang.objToArray(result);
-                        result.push(fragment);
-                    }
-                    return result;
-                } catch(e) {
-                    //in case the selector bombs we retry manually
-                }
-            }
-
-            return this.findAll(fragment, filter, deepScan);
-        } finally {
-            //the usual IE6 is broken, fix code
-            filter = null;
-            _Lang = null;
-        }
-    }
-    ,
+        var ret = _Lang.objToArray(fragment.getElementsByName(name));
+        if (fragment.name == name) ret.unshift(fragment);
+        return ret;
+    },
 
 
 
@@ -1098,44 +762,13 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         if (document.createTreeWalker && NodeFilter) {
             return this._iteratorSearchAll(rootNode, filter, deepScan);
         } else {
+            //will not be called in dom level3 compliant browsers
             return this._recursionSearchAll(rootNode, filter, deepScan);
         }
 
-    }
-    ,
+    },
 
-    /**
-     * classical recursive way which definitely will work on all browsers
-     * including the IE6
-     *
-     * @param rootNode the root node
-     * @param filter the filter to be applied to
-     * @param deepScan if set to true a deep scan is performed
-     */
-    _recursionSearchAll: function(rootNode, filter, deepScan) {
-        var ret = [];
-        //fix the value to prevent undefined errors
 
-        if (filter(rootNode)) {
-            ret.push(rootNode);
-            if (!deepScan) return ret;
-        }
-
-        //
-        if (!rootNode.childNodes) {
-            return ret;
-        }
-
-        //subfragment usecases
-
-        var retLen = ret.length;
-        var childLen = rootNode.childNodes.length;
-        for (var cnt = 0; (deepScan || retLen == 0) && cnt < childLen; cnt++) {
-            ret = ret.concat(this._recursionSearchAll(rootNode.childNodes[cnt], filter, deepScan));
-        }
-        return ret;
-    }
-    ,
 
     /**
      * the faster dom iterator based search, works on all newer browsers
@@ -1181,112 +814,13 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
      * bugfixing for ie6 which does not cope properly with setAttribute
      */
     setAttribute : function(node, attr, val) {
-
-        if (!node) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.setAttribute", "node {DomNode}"));
-        }
-        if (!attr) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.setAttribute", "attr {String}"));
-        }
-
-        //quirks mode and ie7 mode has the attributes problems ie8 standards mode behaves like
-        //a good citizen
-        var _Browser = this._RT.browser;
-        //in case of ie > ie7 we have to check for a quirks mode setting
-        if (!_Browser.isIE || _Browser.isIE > 7 && this.isDomCompliant()) {
-            if (!node.setAttribute) {
-                return;
-            }
-            node.setAttribute(attr, val);
+        this._assertStdParams(node, attr, "setAttribute", ["fragment", "name"]);
+        if (!node.setAttribute) {
             return;
         }
-
-        /*
-         Now to the broken browsers IE6+.... ie7 and ie8 quirks mode
-
-         we deal mainly with three problems here
-         class and for are not handled correctly
-         styles are arrays and cannot be set directly
-         and javascript events cannot be set via setAttribute as well!
-
-         or in original words of quirksmode.org ... this is a mess!
-
-         Btw. thank you Microsoft for providing all necessary tools for free
-         for being able to debug this entire mess in the ie rendering engine out
-         (which is the Microsoft ie vms, developers toolbar, Visual Web Developer 2008 express
-         and the ie8 8 developers toolset!)
-
-         also thank you http://www.quirksmode.org/
-         dojotoolkit.org and   //http://delete.me.uk/2004/09/ieproto.html
-         for additional information on this mess!
-
-         The lowest common denominator tested within this code
-         is IE6, older browsers for now are legacy!
-         */
-        attr = attr.toLowerCase();
-
-        if (attr === "class") {
-            //setAttribute does not work for winmobile browsers
-            //firect calls work
-            node.className = val;
-        } else if (attr === "name") {
-            //the ie debugger fails to assign the name via setAttr
-            //in quirks mode
-            node[attr] = val;
-        } else if (attr === "for") {
-            if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
-                node.setAttribute("htmlFor", val);
-            } else {
-                node.htmlFor = val;
-            }
-        } else if (attr === "style") {
-            //We have to split the styles here and assign them one by one
-            var styles = val.split(";");
-            var stylesLen = styles.length;
-            for (var loop = 0; loop < stylesLen; loop++) {
-                var keyVal = styles[loop].split(":");
-                if (keyVal[0] != "" && keyVal[0] == "opacity") {
-                    //special ie quirks handling for opacity
-
-                    var opacityVal = Math.max(100, Math.round(parseFloat(keyVal[1]) * 10));
-                    //probably does not work in ie mobile anyway
-                    if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
-                        node.style.setAttribute("arrFilter", "alpha(opacity=" + opacityVal + ")");
-                    }
-                    //if you need more hacks I would recommend
-                    //to use the class attribute and conditional ie includes!
-                } else if (keyVal[0] != "") {
-                    if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
-                        node.style.setAttribute(keyVal[0], keyVal[1]);
-                    } else {
-                        node.style[keyVal[0]] = keyVal[1];
-                    }
-                }
-            }
-        } else {
-            //check if the attribute is an event, since this applies only
-            //to quirks mode of ie anyway we can live with the standard html4/xhtml
-            //ie supported events
-            if (this.IE_QUIRKS_EVENTS[attr]) {
-                if (this._Lang.isString(attr)) {
-                    //event resolves to window.event in ie
-                    node.setAttribute(attr, function() {
-                        //event implicitly used
-                        return this._Lang.globalEval(val);
-                    });
-                }
-            } else {
-                //unknown cases we try to catch them via standard setAttributes
-                if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
-                    node.setAttribute(attr, val);
-                } else {
-                    node[attr] = val;
-                }
-            }
-        }
-    }
-    ,
-
+        node.setAttribute(attr, val);
+        return;
+    },
 
     /**
      * fuzzy form detection which tries to determine the form
@@ -1417,7 +951,8 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
     ,
 
     html5FormDetection: function(item) {
-        if (this._RT.browser.isIEMobile && this._RT.browser.isIEMobile <= 7) {
+        var browser =  this._RT.browser;
+        if (browser.isIEMobile && browser.isIEMobile <= 7) {
             return null;
         }
         var elemForm = this.getAttribute(item, "form");
@@ -1461,12 +996,7 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
      * @param {function} filter the filter closure
      */
     getFilteredParent : function(item, filter) {
-        if (!item) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getFilteredParent", "item {DomNode}"));
-        }
-        if (!filter) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getFilteredParent", "filter {function}"));
-        }
+        this._assertStdParams(item, filter, "getFilteredParent",["item", "filter"]);
 
         //search parent tag parentName
         var parentItem = (item.parentNode) ? item.parentNode : null;
@@ -1475,58 +1005,7 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
             parentItem = parentItem.parentNode;
         }
         return (parentItem) ? parentItem : null;
-    }
-    ,
-
-    /**
-     * a closure based child filtering routine
-     * which steps one level down the tree and
-     * applies the filter closure
-     *
-     * @param item the node which has to be investigates
-     * @param filter the filter closure
-     */
-    getFilteredChild: function(item, filter) {
-        if (!item) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getFilteredParent", "item {DomNode}"));
-        }
-        if (!filter) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getFilteredParent", "filter {function}"));
-        }
-
-        var childs = item.childNodes;
-        if (!childs) {
-            return null;
-        }
-        for (var c = 0, cLen = childs.length; c < cLen; c++) {
-            if (filter(childs[c])) {
-                return childs[c];
-            }
-        }
-        return null;
-    }
-    ,
-
-    /**
-     * gets the child of an item with a given tag name
-     * @param {Node} item - parent element
-     * @param {String} childName - TagName of child element
-     * @param {String} itemName - name  attribute the child can have (can be null)
-     * @Deprecated
-     */
-    getChild: function(item, childName, itemName) {
-        var _Lang = this._Lang;
-
-        function filter(node) {
-            return node.tagName
-                    && _Lang.equalsIgnoreCase(node.tagName, childName)
-                    && (!itemName || (itemName && itemName == node.getAttribute("name")));
-
-        }
-
-        return this.getFilteredChild(item, filter);
-    }
-    ,
+    },
 
     /**
      * cross ported from dojo
@@ -1537,40 +1016,8 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
      * @return the attributes value or null
      */
     getAttribute : function(/* HTMLElement */node, /* string */attr) {
-        //	summary
-        //	Returns the value of attribute attr from node.
-        node = this.byId(node);
-        // FIXME: need to add support for attr-specific accessors
-        if ((!node) || (!node.getAttribute)) {
-            // if(attr !== 'nwType'){
-            //	alert("getAttr of '" + attr + "' with bad node");
-            // }
-            return null;
-        }
-        var ta = typeof attr == 'string' ? attr : new String(attr);
-
-        // first try the approach most likely to succeed
-        var v = node.getAttribute(ta.toUpperCase());
-        if ((v) && (typeof v == 'string') && (v != "")) {
-            return v;	//	string
-        }
-
-        // try returning the attributes value, if we couldn't get it as a string
-        if (v && v.value) {
-            return v.value;	//	string
-        }
-
-        // this should work on Opera 7, but it's a little on the crashy side
-        if ((node.getAttributeNode) && (node.getAttributeNode(ta))) {
-            return (node.getAttributeNode(ta)).value;	//	string
-        } else if (node.getAttribute(ta)) {
-            return node.getAttribute(ta);	//	string
-        } else if (node.getAttribute(ta.toLowerCase())) {
-            return node.getAttribute(ta.toLowerCase());	//	string
-        }
-        return null;	//	string
-    }
-    ,
+        return node.getAttribute(attr);
+    },
 
     /**
      * checks whether the given node has an attribute attached
@@ -1583,41 +1030,7 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         //	summary
         //	Determines whether or not the specified node carries a value for the attribute in question.
         return this.getAttribute(node, attr) ? true : false;	//	boolean
-    }
-    ,
-
-    /**
-     * fetches the style class for the node
-     * cross ported from the dojo toolkit
-     * @param {String|Object} node the node to search
-     * @returns the className or ""
-     */
-    getClass : function(node) {
-        node = this.byId(node);
-        if (!node) {
-            return "";
-        }
-        var cs = "";
-        if (node.className) {
-            cs = node.className;
-        } else {
-            if (this.hasAttribute(node, "class")) {
-                cs = this.getAttribute(node, "class");
-            }
-        }
-        return cs.replace(/^\s+|\s+$/g, "");
-    }
-    ,
-    /**
-     * fetches the class for the node,
-     * cross ported from the dojo toolkit
-     * @param {String|Object}node the node to search
-     */
-    getClasses : function(node) {
-        var c = this.getClass(node);
-        return (c == "") ? [] : c.split(/\s+/g);
-    }
-    ,
+    },
 
     /**
      * concatenation routine which concats all childnodes of a node which
@@ -1631,67 +1044,11 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
             cDataBlock.push(node.childNodes[i].data);
         }
         return cDataBlock.join('');
-    }
-    ,
+    },
 
     isManualScriptEval: function() {
-
-        if (!this._Lang.exists(myfaces, "config._autoeval")) {
-
-            //now we rely on the document being processed if called for the first time
-            var evalDiv = document.createElement("div");
-            this._Lang.reserveNamespace("myfaces.config._autoeval");
-            //null not swallowed
-            myfaces.config._autoeval = false;
-
-            var markup = "<script type='text/javascript'> myfaces.config._autoeval = true; </script>";
-            //now we rely on the same replacement mechanisms as outerhtml because
-            //some browsers have different behavior of embedded scripts in the contextualfragment
-            //or innerhtml case (opera for instance), this way we make sure the
-            //eval detection is covered correctly
-            this.setAttribute(evalDiv, "style", "display:none");
-
-            //it is less critical in some browsers (old ie versions)
-            //to append as first element than as last
-            //it should not make any difference layoutwise since we are on display none anyway.
-            this.insertFirst(evalDiv);
-
-            //we remap it into a real boolean value
-            if (window.Range
-                    && typeof Range.prototype.createContextualFragment == 'function') {
-                this._outerHTMLCompliant(evalDiv, markup);
-            } else {
-                this._outerHTMLNonCompliant(evalDiv, markup);
-            }
-
-        }
-
-        return  !myfaces.config._autoeval;
-        /* var d = _this.browser;
-
-
-         return (_this.exists(d, "isIE") &&
-         ( d.isIE > 5.5)) ||
-         //firefox at version 4 beginning has dropped
-         //auto eval to be compliant with the rest
-         (_this.exists(d, "isFF") &&
-         (d.isFF > 3.9)) ||
-         (_this.exists(d, "isKhtml") &&
-         (d.isKhtml > 0)) ||
-         (_this.exists(d, "isWebKit") &&
-         (d.isWebKit > 0)) ||
-         (_this.exists(d, "isSafari") &&
-         (d.isSafari > 0));
-         */
-        //another way to determine this without direct user agent parsing probably could
-        //be to add an embedded script tag programmatically and check for the script variable
-        //set by the script if existing, the add went through an eval if not then we
-        //have to deal with it ourselves, this might be dangerous in case of the ie however
-        //so in case of ie we have to parse for all other browsers we can make a dynamic
-        //check if the browser does auto eval
-
-    }
-    ,
+        return true;
+    },
 
     isMultipartCandidate: function(executes) {
         if (this._Lang.isString(executes)) {
@@ -1706,9 +1063,7 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
             }
         }
         return false;
-    }
-    ,
-
+    },
 
     insertFirst: function(newNode) {
         var body = document.body;
@@ -1717,13 +1072,11 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
         } else {
             body.appendChild(newNode);
         }
-    }
-    ,
+    },
 
     byId: function(id) {
         return this._Lang.byId(id);
-    }
-    ,
+    },
 
     getDummyPlaceHolder: function() {
         var created = false;
@@ -1731,17 +1084,6 @@ _MF_SINGLTN("myfaces._impl._util._Dom", Object,
             this._dummyPlaceHolder = document.createElement("div");
             created = true;
         }
-
-        //ieMobile in its 6.1-- incarnation cannot handle innerHTML detached objects so we have
-        //to attach the dummy placeholder, we try to avoid it for
-        //better browsers so that we do not have unecessary dom operations
-        if (this._RT.browser.isIEMobile && created) {
-            this.insertFirst(this._dummyPlaceHolder);
-
-            this.setAttribute(this._dummyPlaceHolder, "style", "display: none");
-
-        }
-
         return this._dummyPlaceHolder;
     },
 

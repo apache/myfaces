@@ -60,7 +60,8 @@ if (!myfaces._impl.core._Runtime) {
 
         //namespace idx to speed things up by hitting eval way less
         this._reservedNMS = {};
-
+        this._registeredSingletons = {};
+        this._registeredClasses = [];
         /**
          * replacement counter for plugin classes
          */
@@ -211,6 +212,30 @@ if (!myfaces._impl.core._Runtime) {
                 _T._reservedNMS[tmpNmsName.join(".")] = true;
             }
             return true;
+        };
+
+        /**
+         * iterates over all registered singletons in the namespace
+         * @param operator a closure which applies a certain function
+         * on the namespace singleton
+         */
+        this.iterateSingletons = function(operator) {
+            var singletons = _T._registeredSingletons;
+            for(var key in singletons) {
+                var nms = _T.fetchNamespace(key);
+                operator(nms);
+            }
+        };
+        /**
+         * iterates over all registered singletons in the namespace
+         * @param operator a closure which applies a certain function
+         * on the namespace singleton
+         */
+        this.iterateClasses = function(operator) {
+            var classes = _T._registeredClasses;
+            for(var cnt  = 0; cnt < classes.length; cnt++) {
+                operator(classes[cnt], cnt);
+            }
         };
 
         /**
@@ -515,9 +540,17 @@ if (!myfaces._impl.core._Runtime) {
             if (!_T.isString(newCls)) {
                 throw Error("new class namespace must be of type String");
             }
+            var className = newCls;
 
             if (_T._reservedNMS[newCls]) {
                 return;
+            }
+            var constr = "constructor_";
+            var parClassRef = "_mfClazz";
+            if(!protoFuncs[constr]) {
+              protoFuncs[constr] =  (extendCls[parClassRef]  || (extendCls.prototype && extendCls.prototype[parClassRef])) ?
+                      function() {this._callSuper("constructor_");}: function() {};
+              var assigned = true;
             }
 
             if ('function' != typeof newCls) {
@@ -529,8 +562,8 @@ if (!myfaces._impl.core._Runtime) {
             //instead of only from classes
             //sort of like   this.extendClass(newCls, extendObj._mfClazz...
 
-            if (extendCls._mfClazz) {
-                extendCls = extendCls._mfClazz;
+            if (extendCls[parClassRef]) {
+                extendCls = extendCls[parClassRef];
             }
 
             if ('undefined' != typeof extendCls && null != extendCls) {
@@ -550,15 +583,15 @@ if (!myfaces._impl.core._Runtime) {
                  */
                 newClazz.prototype._callSuper = function(methodName) {
                     var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
-
+                    var accDescLevel = "_mfClsDescLvl";
                     //we store the descension level of each method under a mapped
                     //name to avoid name clashes
                     //to avoid name clashes with internal methods of array
                     //if we don't do this we trap the callSuper in an endless
                     //loop after descending one level
                     var _mappedName = ["_",methodName,"_mf_r"].join("");
-                    this._mfClsDescLvl = this._mfClsDescLvl || new Array();
-                    var descLevel = this._mfClsDescLvl;
+                    this[accDescLevel] = this[accDescLevel] || new Array();
+                    var descLevel = this[accDescLevel];
                     //we have to detect the descension level
                     //we now check if we are in a super descension for the current method already
                     //if not we are on this level
@@ -570,6 +603,9 @@ if (!myfaces._impl.core._Runtime) {
                         //we now store the level position as new descension level for callSuper
                         descLevel[_mappedName] = _parentCls;
                         //and call the code on this
+                        if(!_parentCls[methodName]) {
+                            throw Error("Method _callSuper('"+ methodName+"')  called from "+className+" Method does not exist ");
+                        }
                         ret = _parentCls[methodName].apply(this, passThrough);
                     } finally {
                         descLevel[_mappedName] = _oldDescLevel;
@@ -579,7 +615,8 @@ if (!myfaces._impl.core._Runtime) {
                     }
                 };
                 //reference to its own type
-                newClazz.prototype._mfClazz = newCls;
+                newClazz.prototype[parClassRef] = newCls;
+                _T._registeredClasses.push(newClazz.prototype);
             }
 
             //we now map the function map in
@@ -603,6 +640,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Object} protoFuncs (Map) an optional map of prototype functions which in case of overwriting a base function get an inherited method
          */
         this.singletonExtendClass = function(newCls, extendsCls, protoFuncs, nmsFuncs) {
+            _T._registeredSingletons[newCls] = true;
             return _T._makeSingleton(_T.extendClass, newCls, extendsCls, protoFuncs, nmsFuncs);
         };
 
@@ -794,12 +832,3 @@ if (!myfaces._impl.core._Runtime) {
     };
 }
 
-/*we cannot privatize with a global function hence we store the values away for the init part*/
-(function() {
-    var _RT = myfaces._impl.core._Runtime;
-    _RT._oldExtends = window._MF_CLS;
-    _RT._oldSingleton = window._MF_SINGLTN;
-
-    window._MF_CLS = _RT.extendClass;
-    window._MF_SINGLTN = _RT.singletonExtendClass;
-})();

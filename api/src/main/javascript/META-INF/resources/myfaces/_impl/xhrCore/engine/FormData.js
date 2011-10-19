@@ -22,7 +22,7 @@
  *
  * html5 formdata object emulation for the iframe
  */
-_MF_CLS("myfaces._impl.xhrCore.engine.FormData", Object,
+_MF_CLS(_PFX_XHR+"engine.FormData", Object,
         /** @lends myfaces._impl.xhrCore.engine.FormData.prototype */
         {
             form: null,

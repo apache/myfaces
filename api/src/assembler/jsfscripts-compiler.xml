@@ -43,7 +43,7 @@
                 <include>**/_impl/core/_EvalHandlers.js</include>
 
                 <include>**/_impl/core/_Runtime.js</include>
-
+                <include>**/_impl/core/_StartImpl.js</include>
                 <include>**/_impl/i18n/Messages.js</include>
                 <include>**/_impl/i18n/Messages_de.js</include>
                 <include>**/_impl/i18n/Messages_nl.js</include>
@@ -56,9 +56,13 @@
                 <include>**/_impl/i18n/Messages_zh_TW.js</include>
 
                 <include>**/_impl/_util/_Lang.js</include>
+                <include>**/_impl/_util/_LangQuirks.js</include>
+                <include>**/_impl/core/Object.js</include>
+
                 <include>**/_impl/_util/_Queue.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
+                <include>**/_impl/_util/_DomQuirks.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
                 <include>**/_impl/_util/_OamSubmit.js</include>
 
@@ -81,7 +85,9 @@
 
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
                 <include>**/_impl/xhrCore/_Transports.js</include>
+                <include>**/_impl/xhrCore/_ExtTransport.js</include>
                 <include>**/_impl/core/Impl.js</include>
+                <include>**/_impl/core/_EndImpl.js</include>
                 <include>**/api/jsf.js</include>
             </includes>
         </script>

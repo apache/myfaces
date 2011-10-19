@@ -14,16 +14,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
--->    
+-->
 <assembler>
     <scripts>
+        <!--
+            Assembly for our javascripts
+            if you want to include them manually use:
 
+            Experimental stuff not yet in the jsf spec or extended apis
+        -->
         <script>
-            <fileName>jsf-uncompressed.js</fileName>
+            <fileName>jsf-experimental.js</fileName>
             <includes>
-                <include>**/_impl/core/_EvalHandlers.js</include>
-                <include>**/_impl/core/_Runtime.js</include>
-                <include>**/_impl/core/jsf-uncompressed.js</include>
+                <include>**/_impl/core/_StartImpl.js</include>
+                <include>**/_impl/_util/_Logging.js</include>
+                <include>**/_impl/_util/_ExtDom.js</include>
+                <include>**/_impl/xhrCore/engine/IFrame.js</include>
+                <include>**/_impl/xhrCore/_AjaxRequest.js</include>
+                <include>**/_impl/xhrCore/_IFrameRequest.js</include>
+                <include>**/_impl/xhrCore/_PartialSubmitUtils.js</include>
+                <include>**/_impl/xhrCore/_ExtTransports.js</include>
+                <include>**/_impl/core/_EndImpl.js</include>
             </includes>
         </script>
     </scripts>
