@@ -16,7 +16,7 @@
  */
 
 /*only quirksmode browsers get the quirks part of the code*/
-_MF_SINGLTN(_PFX_UTIL + "_ExtDom", myfaces._impl._util._Dom, {
+_MF_SINGLTN && _MF_SINGLTN(_PFX_UTIL + "_ExtDom", myfaces._impl._util._Dom, {
 
     _Lang:myfaces._impl._util._Lang,
     _RT:myfaces._impl.core._Runtime,
