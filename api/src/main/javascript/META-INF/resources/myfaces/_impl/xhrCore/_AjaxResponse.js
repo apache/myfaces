@@ -651,9 +651,9 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
              * @param request request
              * @param context context
              * @param node the current node pointing to the insert tag
-             * @return false if the parsing failed, otherwise a map with follwing attributes
+             * @return false if the parsing failed, otherwise a map with the following attributes:
              * <ul>
-             *     <li>inserType - a ponter to a constant which maps the direct function name for the insert operation </li>
+             *     <li>insertType - a pointer to a constant which maps the direct function name for the insert operation </li>
              *     <li>opId - the before or after id </li>
              *     <li>cDataBlock - the html cdata block which needs replacement </li>
              * </ul>
