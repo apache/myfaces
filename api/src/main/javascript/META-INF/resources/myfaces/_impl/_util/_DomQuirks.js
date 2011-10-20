@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-if(!document.querySelectorAll) {
+if(!document.querySelectorAll && _MF_SINGLTN) {
 /***
  Dom.js version for non html5 browsers
  */
