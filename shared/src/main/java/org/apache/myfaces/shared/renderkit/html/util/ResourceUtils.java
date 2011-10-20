@@ -19,6 +19,7 @@
 package org.apache.myfaces.shared.renderkit.html.util;
 
 import java.io.IOException;
+import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.HTML;
@@ -45,10 +47,21 @@ public class ResourceUtils {
     public final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
     private final static String RENDERED_MYFACES_JS = "org.apache.myfaces.RENDERED_MYFACES_JS";
 
+    public final static String JSF_MYFACES_JSFJS_MINIMAL = "minimal";
+    public final static String JSF_MYFACES_JSFJS_MINIMAL_MODERN = "minimal-modern";
+    public final static String JSF_MYFACES_JSFJS_NORMAL = "normal";
+    
     public final static String JSF_UNCOMPRESSED_JS_RESOURCE_NAME = "jsf-uncompressed.js";
+    public final static String JSF_MINIMAL_JS_RESOURCE_NAME = "jsf-minimal.js";
+    public final static String JSF_MINIMAL_MODERN_JS_RESOURCE_NAME = "jsf-minimal-modern.js";
+    
+    public final static String JSF_MYFACES_JSFJS_I18N = "jsf-i18n.js";
+    public final static String JSF_MYFACES_JSFJS_EXPERIMENTAL = "jsf-experimental.js";
+    public final static String JSF_MYFACES_JSFJS_LEGACY = "jsf-legacy.js";
+
     private final static String RENDERED_STYLESHEET_RESOURCES_SET = "org.apache.myfaces.RENDERED_STYLESHEET_RESOURCES_SET";
     private final static String RENDERED_SCRIPT_RESOURCES_SET = "org.apache.myfaces.RENDERED_SCRIPT_RESOURCES_SET";
-    private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
+    public final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
     public final static String HEAD_TARGET = "head";
     public final static String BODY_TARGET = "body";
     public final static String FORM_TARGET = "form";

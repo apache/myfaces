@@ -73,12 +73,9 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         }
     };*/
     
-    private final boolean _developmentStage;
-
     public ClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
-        _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
     @Override
@@ -434,21 +431,21 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     public ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
                                            String resourceName, String resourceVersion)
     {
-        if (_developmentStage && libraryName != null && 
-                ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
-                ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName))
-        {
+        //if (_developmentStage && libraryName != null && 
+        //        ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
+        //        ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName))
+        //{
             // InternalClassLoaderResourceLoader will serve it, so return null in this case.
-            return null;
-        } else if (_developmentStage && libraryName != null &&
-                ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
-                ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName)) {
+        //    return null;
+        //} else if (_developmentStage && libraryName != null &&
+        //        ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
+        //        ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName)) {
             // InternalClassLoaderResourceLoader will serve it, so return null in this case.
-             return null;
-        } else
-        {
+        //     return null;
+        //} else
+        //{
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
-        }
+        //}
     }
 
     /**
