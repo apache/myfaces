@@ -181,7 +181,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                 return null;
             }
         }
-        else if (javaxFacesLib && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
+        else if (javaxFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
                                    (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName) ||
                                    ResourceUtils.JSF_MYFACES_JSFJS_EXPERIMENTAL.equals(resourceName) ||
                                    ResourceUtils.JSF_MYFACES_JSFJS_LEGACY.equals(resourceName)) )
