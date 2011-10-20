@@ -21,6 +21,7 @@ package org.apache.myfaces.resource;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -30,10 +31,10 @@ import org.apache.myfaces.shared.resource.ResourceMeta;
 import org.apache.myfaces.shared.resource.ResourceMetaImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  * A resource loader implementation which loads resources from the thread ClassLoader.
- * 
  */
 public class InternalClassLoaderResourceLoader extends ResourceLoader
 {
@@ -44,16 +45,36 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
      * all in just one file, to preserve line numbers and make javascript
      * debugging of the default jsf javascript file more simple.
      */
-    @JSFWebConfigParam(since="2.0.1",defaultValue="false",expectedValues="true,false", group="render")
+    @JSFWebConfigParam(since = "2.0.1", defaultValue = "false", expectedValues = "true,false", group = "render")
     public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
+
+    /**
+     * Define the mode used for jsf.js file:
+     * <ul>
+     * <li>normal : contains everything, including jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
+     * <li>minimal-modern : is the core jsf with a baseline of ie9+, without jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
+     * <li>minimal: which is the same with a baseline of ie6, without jsf-i18n.js, jsf-experimental.js</li>
+     * </ul>
+     * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
+     * is Development, this param is ignored.</p>
+     */
+    @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal", expectedValues = "normal, minimal-modern, minimal",
+            group = "render")
+    public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
     
     private final boolean _useMultipleJsFilesForJsfUncompressedJs;
+    private final String _jsfMode;
+    private final boolean _developmentStage;
 
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
         _useMultipleJsFilesForJsfUncompressedJs = WebConfigParamUtils.getBooleanInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
                 USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, false);
+
+        _jsfMode = WebConfigParamUtils.getStringInitParameter(FacesContext.getCurrentInstance().getExternalContext(), MYFACES_JSF_MODE, 
+                ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
+        _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
     @Override
@@ -65,7 +86,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     @Override
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
-        InputStream is = null;
+        InputStream is;
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
             String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
@@ -90,7 +111,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     @Override
     public URL getResourceURL(ResourceMeta resourceMeta)
     {
-        URL url = null;
+        URL url;
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
             String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
@@ -108,7 +129,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
             {
                 url = this.getClass().getClassLoader().getResource(resourceMeta.getResourceIdentifier());
             }
-            return url; 
+            return url;
         }
     }
 
@@ -123,28 +144,59 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                                            String resourceName, String resourceVersion)
     {
         //handle jsf.js
-        if (libraryName != null && 
-                org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
-                org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName))
+        final boolean javaxFacesLib = libraryName != null &&
+        ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName);
+        final boolean javaxFaces = javaxFacesLib &&
+                ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName);
+
+        if (javaxFaces)
         {
-            if (_useMultipleJsFilesForJsfUncompressedJs)
+            if (_developmentStage)
             {
-                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
-                    resourceName, resourceVersion, org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME, true);
+                if (_useMultipleJsFilesForJsfUncompressedJs)
+                {
+                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
+                            resourceName, resourceVersion, ResourceUtils.JSF_UNCOMPRESSED_JS_RESOURCE_NAME, true);
+                }
+                else
+                {
+                    //normall we would have to take care about the standard jsf.js case also
+                    //but our standard resource loader takes care of it, because this part is only called in debugging mode
+                    //in production only in debugging
+                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion, "jsf-uncompressed-full.js", false);
+                }
+            }
+            else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL) )
+            {
+                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                        ResourceUtils.JSF_MINIMAL_JS_RESOURCE_NAME, false);
+            }
+            else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL_MODERN) )
+            {
+                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                        ResourceUtils.JSF_MINIMAL_MODERN_JS_RESOURCE_NAME, false);
             }
             else
             {
-                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion, "jsf-uncompressed-full.js", false);
+                return null;
             }
         }
-        //handle the oamSubmit.js
-        else if (libraryName != null &&
-                org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
-                org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName))
+        else if (javaxFacesLib && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
+                                   (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName) ||
+                                   ResourceUtils.JSF_MYFACES_JSFJS_EXPERIMENTAL.equals(resourceName) ||
+                                   ResourceUtils.JSF_MYFACES_JSFJS_LEGACY.equals(resourceName)) )
         {
-                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
-                    resourceName, resourceVersion, org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED, true);
-        } else if (libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
+            return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
+        }
+        else if (_developmentStage && libraryName != null &&
+                ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
+                ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName))
+        {
+            //handle the oamSubmit.js
+            return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
+                    resourceName, resourceVersion, ResourceUtils.MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED, true);
+        }
+        else if (_developmentStage && libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
         }
@@ -157,7 +209,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     /**
      * Returns the ClassLoader to use when looking up resources under the top level package. By default, this is the
      * context class loader.
-     * 
+     *
      * @return the ClassLoader used to lookup resources
      */
     protected ClassLoader getClassLoader()

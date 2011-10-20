@@ -22,10 +22,12 @@ import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.resource.BaseResourceHandlerSupport;
 import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.shared.resource.ExternalContextResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceLoader;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * A ResourceHandlerSupport implementation for use with standard Java Servlet engines,
@@ -36,6 +38,10 @@ import org.apache.myfaces.shared.resource.ResourceLoader;
  */
 public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
 {
+
+    private static final String META_INF_RESOURCES = "META-INF/resources";
+    private static final String RESOURCES = "/resources";
+    private static final String META_INF_INTERNAL_RESOURCES = "META-INF/internal-resources";
 
     private ResourceLoader[] _resourceLoaders;
     
@@ -48,21 +54,27 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
     {
         if (_resourceLoaders == null)
         {
+            FacesContext facesContext = FacesContext.getCurrentInstance(); 
             //The ExternalContextResourceLoader has precedence over
             //ClassLoaderResourceLoader, so it goes first.
-            if (FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development))
+            String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
+                    InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
+                    ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
+
+            if (facesContext.isProjectStage(ProjectStage.Development) ||
+                 !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
             {
                 _resourceLoaders = new ResourceLoader[] {
-                        new ExternalContextResourceLoader("/resources"),
-                        new ClassLoaderResourceLoader("META-INF/resources"),
-                        new InternalClassLoaderResourceLoader("META-INF/internal-resources")
+                        new ExternalContextResourceLoader(RESOURCES),
+                        new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES),
+                        new ClassLoaderResourceLoader(META_INF_RESOURCES)
                 };
             }
             else
             {
                 _resourceLoaders = new ResourceLoader[] {
-                        new ExternalContextResourceLoader("/resources"),
-                        new ClassLoaderResourceLoader("META-INF/resources")
+                        new ExternalContextResourceLoader(RESOURCES),
+                        new ClassLoaderResourceLoader(META_INF_RESOURCES)
                 };
             }
         }
