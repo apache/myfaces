@@ -200,9 +200,22 @@ public final class FactoryFinder
                 
                 //Call getFactory method and pass the params
                 return _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_GET_FACTORY_METHOD.invoke(ffp, factoryName);
-            }
-            catch (Exception e)
-            {
+            } catch (InvocationTargetException e) {
+                Throwable targetException = e.getCause();
+                if (targetException instanceof NullPointerException) {
+                    throw (NullPointerException) targetException;
+                } else if (targetException instanceof FacesException) {
+                    throw (FacesException) targetException;
+                } else if (targetException instanceof IllegalArgumentException) {
+                    throw (IllegalArgumentException) targetException;
+                } else if (targetException instanceof IllegalStateException) {
+                    throw (IllegalStateException) targetException;
+                } else if (targetException == null) {
+                    throw new FacesException(e);
+                } else {
+                    throw new FacesException(targetException);
+                }
+            } catch (Exception e) {
                 //No Op
                 throw new FacesException(e);
             }
@@ -380,9 +393,20 @@ public final class FactoryFinder
                 
                 //Call getFactory method and pass the params
                 _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_SET_FACTORY_METHOD.invoke(ffp, factoryName, implName);
-            }
-            catch (Exception e)
-            {
+            } catch (InvocationTargetException e) {
+                Throwable targetException = e.getCause();
+                if (targetException instanceof NullPointerException) {
+                    throw (NullPointerException) targetException;
+                } else if (targetException instanceof FacesException) {
+                    throw (FacesException) targetException;
+                } else if (targetException instanceof IllegalArgumentException) {
+                    throw (IllegalArgumentException) targetException;
+                } else if (targetException == null) {
+                    throw new FacesException(e);
+                } else {
+                    throw new FacesException(targetException);
+                }
+            } catch (Exception e) {
                 //No Op
                 throw new FacesException(e);
             }
@@ -449,9 +473,16 @@ public final class FactoryFinder
                 
                 //Call getFactory method and pass the params
                 _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_RELEASE_FACTORIES_METHOD.invoke(ffp, null);
-            }
-            catch (Exception e)
-            {
+            } catch (InvocationTargetException e) {
+                Throwable targetException = e.getCause();
+                if (targetException instanceof FacesException) {
+                    throw (FacesException) targetException;
+                } else if (targetException == null) {
+                    throw new FacesException(e);
+                } else {
+                    throw new FacesException(targetException);
+                }
+            } catch (Exception e) {
                 //No Op
                 throw new FacesException(e);
             }
