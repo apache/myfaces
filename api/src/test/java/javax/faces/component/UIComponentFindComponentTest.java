@@ -161,6 +161,25 @@ public class UIComponentFindComponentTest extends AbstractUIComponentBaseTest
         assertNotNull(viewRoot.findComponent(":data:1:command"));
     }
 
+    @Test
+    public void testXXFindComponent() {
+        UIViewRoot viewRoot = new UIViewRoot();
+        UIData uiData = new UIData();
+        uiData.setId("x");
+        UIColumn column = new UIColumn();
+        column.setId("column");
+        UICommand command = new UICommand();
+        command.setId("x");
+        viewRoot.getChildren().add(uiData);
+        uiData.getChildren().add(column);
+        column.getChildren().add(command);
+
+        assertNull(viewRoot.findComponent(":xx"));
+        assertNotNull(viewRoot.findComponent(":x"));
+        assertEquals(column, viewRoot.findComponent(":x:column"));
+        assertEquals(command, viewRoot.findComponent(":x:x"));
+    }
+
     public abstract static class TestNamingContainerComponent extends UIComponent implements NamingContainer
     {
     }

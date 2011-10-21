@@ -94,11 +94,6 @@ class _ComponentUtils
      */
     static UIComponent findComponent(UIComponent findBase, String id)
     {
-        if (idsAreEqual(id,findBase))
-        {
-            return findBase;
-        }
-
         for (Iterator it = findBase.getFacetsAndChildren(); it.hasNext(); )
         {
             UIComponent childOrFacet = (UIComponent)it.next();
@@ -112,7 +107,10 @@ class _ComponentUtils
                 return childOrFacet;
             }
         }
-
+        if (idsAreEqual(id,findBase))
+        {
+            return findBase;
+        }
         return null;
     }
 
