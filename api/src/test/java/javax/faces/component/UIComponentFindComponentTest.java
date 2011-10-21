@@ -163,6 +163,25 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         assertNotNull(viewRoot.findComponent(":data:1:command"));
     }
 
+    public void testXXFindComponent() {
+        UIViewRoot viewRoot = new UIViewRoot();
+        UIData uiData = new UIData();
+        uiData.setId("x");
+        UIColumn column = new UIColumn();
+        column.setId("column");
+        UICommand command = new UICommand();
+        command.setId("x");
+        viewRoot.getChildren().add(uiData);
+        uiData.getChildren().add(column);
+        column.getChildren().add(command);
+
+        assertNull(viewRoot.findComponent(":xx"));
+        assertNotNull(viewRoot.findComponent(":x"));
+        assertNotNull(viewRoot.findComponent(":x:column"));
+        assertNotNull(viewRoot.findComponent(":x:x"));
+    }
+
+
     public void testWithRelativeExpressionNamingContainer() throws Exception
     {
         String expression = "testimpl";
