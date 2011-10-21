@@ -57,11 +57,12 @@ if (!myfaces._impl.core._EvalHandlers) {
             //window extension with undefined behavior on our necks
             //window.execScript does not return anything
             //on htmlunit it return "null object"
-            var ret = window.execScript(code);
-            if ('undefined' != typeof ret && ret == "null" /*htmlunit bug*/) {
+            //_r == ret
+            var _r = window.execScript(code);
+            if ('undefined' != typeof _r && _r == "null" /*htmlunit bug*/) {
                 return null;
             }
-            return ret;
+            return _r;
         };
 
         /**
@@ -74,13 +75,14 @@ if (!myfaces._impl.core._EvalHandlers) {
          * @borrows myfaces._impl.core._Runtime as _T
          */
         _T._evalBBOld = function(code) {
-            var loc = document.getElementsByTagName("head")[0] || document.documentElement;
-            //placeHolder
-            var pHldr = document.createElement("script");
-            pHldr.type = "text/javascript";
-            pHldr.text = code;
-            loc.insertBefore(pHldr, loc.firstChild);
-            loc.removeChild(pHldr);
+            //_l == location
+            var _l = document.getElementsByTagName("head")[0] || document.documentElement;
+            //_p == placeHolder
+            var _p = document.createElement("script");
+            _p.type = "text/javascript";
+            _p.text = code;
+            _l.insertBefore(_p, _l.firstChild);
+            _l.removeChild(_p);
             return null;
         };
 
@@ -95,16 +97,17 @@ if (!myfaces._impl.core._EvalHandlers) {
             //but I think this is better
             //the reason is firefox applies a wrong scope
             //if we call eval by not scoping
-
+            //_U == "undefined"
+            var _U = "undefined";
             var gEval = function () {
-
-                var ret = window.eval.call(window, code);
-                if ('undefined' == typeof ret) return null;
-                return ret;
+                //_r == retVal;
+                var _r = window.eval.call(window, code);
+                if (_U == typeof _r) return null;
+                return _r;
             };
-            var ret = gEval();
-            if ('undefined' == typeof ret) return null;
-            return ret;
+            var _r = gEval();
+            if (_U == typeof _r) return null;
+            return _r;
         };
 
         /**
@@ -120,11 +123,11 @@ if (!myfaces._impl.core._EvalHandlers) {
             //capabilities   
             var _et = "_evalType";
             var _w = window;
-            var _b = _T.browser;
-            if ('undefined' == typeof _T[_et]) {
+            var _b = myfaces._impl.core._Runtime.browser;
+            if (!_T[_et]) {
                 _T[_et] = _w.execScript ? "_evalExecScript" : null;
-                _T[_et] = !_T[_et] && _w.eval && (!_b.isBlackBerry || _b.isBlackBerry >= 6) ? "_standardGlobalEval" : null;
-                _T[_et] = (_w.eval && !_T[_et]) ? "_evalBBOld" : null;
+                _T[_et] = _T[_et] ||(( _w.eval && (!_b.isBlackBerry ||_b.isBlackBerry >= 6)) ? "_standardGlobalEval" : null);
+                _T[_et] = _T[_et] ||((_w.eval ) ? "_evalBBOld" : null);
             }
             if (_T[_et]) {
                 return _T[_T[_et]](c);
