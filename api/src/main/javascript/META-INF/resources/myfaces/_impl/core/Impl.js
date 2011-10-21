@@ -556,33 +556,38 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
      * The value for it comes from the request parameter of the jsf.js script called "stage".
      */
     getProjectStage : function() {
-        /* run through all script tags and try to find the one that includes jsf.js */
-        var scriptTags = document.getElementsByTagName("script");
-        var getConfig  = myfaces._impl.core._Runtime.getGlobalConfig;
+        //since impl is a singleton we only have to do it once at first access
+        if(!this._projectStage) {
+            var PRJ_STAGE = "projectStage";
+            var STG_PROD ="Production";
 
-        for (var i = 0; i < scriptTags.length; i++) {
-            if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
-                var result = scriptTags[i].src.match(/stage=([^&;]*)/);
-                if (result) {
-                    // we found stage=XXX
-                    // return only valid values of ProjectStage
-                    if (   result[1] == "Production"
-                        || result[1] == "Development"
-                        || result[1] == "SystemTest"
-                        || result[1] == "UnitTest") {
-                        return result[1];
+            var scriptTags = document.getElementsByTagName("script");
+            var getConfig  = myfaces._impl.core._Runtime.getGlobalConfig;
+            var projectStage = null;
+            var found = false;
+            var allowedProjectStages = {STG_PROD:1,"Development":1, "SystemTest":1,"UnitTest":1};
+
+             /* run through all script tags and try to find the one that includes jsf.js */
+            for (var i = 0; i < scriptTags.length && !found; i++) {
+                if (scriptTags[i].src.search(/\/javax\.faces\.resource\/jsf\.js.*ln=javax\.faces/) != -1) {
+                    var result = scriptTags[i].src.match(/stage=([^&;]*)/);
+                    found = true;
+                    if (result) {
+                        // we found stage=XXX
+                        // return only valid values of ProjectStage
+                        projectStage = (allowedProjectStages[result[1]]) ? result[1] : null;
+                    }
+                    else {
+                        //we found the script, but there was no stage parameter -- Production
+                        //(we also add an override here for testing purposes, the default, however is Production)
+                        projectStage = getConfig(PRJ_STAGE, STG_PROD);
                     }
                 }
-                else {
-                    //we found the script, but there was no stage parameter -- Production
-                    //(we also add an override here for testing purposes, the default, however is Production)
-                    return getConfig("projectStage", "Production");
-                    //return "Production";
-                }
             }
+            /* we could not find anything valid --> return the default value */
+            this._projectStage = projectStage || getConfig(PRJ_STAGE, STG_PROD);
         }
-        /* we could not find anything valid --> return the default value */
-        return getConfig("projectStage", "Production");
+        return this._projectStage;
     },
 
     /**
