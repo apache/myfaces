@@ -157,10 +157,11 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         column.getChildren().add(command);
 
         assertNull(viewRoot.findComponent(":xx"));
-        assertNotNull(viewRoot.findComponent(":data"));
-        assertNotNull(viewRoot.findComponent(":data:column"));
-        assertNotNull(viewRoot.findComponent(":data:command"));
-        assertNotNull(viewRoot.findComponent(":data:1:command"));
+        assertEquals(uiData, viewRoot.findComponent(":data"));
+        assertEquals(column, viewRoot.findComponent(":data:column"));
+        assertEquals(command, viewRoot.findComponent(":data:command"));
+        assertEquals(command, viewRoot.findComponent("data:1:command"));
+        assertEquals(command, viewRoot.findComponent(":data:1:command"));
     }
 
     public void testXXFindComponent() {
