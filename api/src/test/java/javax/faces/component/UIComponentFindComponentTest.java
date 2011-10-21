@@ -160,6 +160,7 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         assertNotNull(viewRoot.findComponent(":data"));
         assertNotNull(viewRoot.findComponent(":data:column"));
         assertNotNull(viewRoot.findComponent(":data:command"));
+        assertNotNull(viewRoot.findComponent("data:1:command"));
         assertNotNull(viewRoot.findComponent(":data:1:command"));
     }
 
