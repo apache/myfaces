@@ -616,35 +616,8 @@ public abstract class UIComponentBase extends UIComponent
             throw new IllegalArgumentException("Intermediate identifier " + id + " in search expression " + expr
                     + " identifies a UIComponent that is not a NamingContainer");
 
-        if (id.equals(findBase.getId()))
-        {
-            // At this point, findBase has a NamingContainer that match with the id.
-            // So we need to call findComponent over the rest of the expression without take
-            // into account the base id, to allow use the same id on the inner component.
-            //return findBase.findComponent(expr.substring(separator + 1));
-            String innerExpr = expr.substring(separator + 1);
-            separator = innerExpr.indexOf(separatorChar);
-            //String innerExpr1 = null;
-            //String nextId = null;
-            if (separator == -1)
-            {
-                //innerExpr1 = null;
-                //nextId= innerExpr;
-                return _ComponentUtils.findComponentChildOrFacetFrom(findBase, innerExpr, null);
-            }
-            else
-            {
-                //innerExpr1 = innerExpr.substring(separator+1);
-                //nextId = innerExpr.substring(0,separator);
-                return _ComponentUtils.findComponentChildOrFacetFrom(findBase, innerExpr.substring(0,separator), innerExpr);
-            }
-        }
-        else
-        {
-            //At this point, findBase has a NamingContainer that does not match with the id.
-            //We need to scan from this component the full expression.
-            return _ComponentUtils.findComponentChildOrFacetFrom(findBase, expr, null);
-        }
+        return findBase.findComponent(expr.substring(separator + 1));
+
     }
 
     /**

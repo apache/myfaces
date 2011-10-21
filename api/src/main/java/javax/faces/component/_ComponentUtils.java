@@ -110,7 +110,8 @@ class _ComponentUtils
      */
     static UIComponent findComponent(UIComponent findBase, String id, final char separatorChar)
     {
-        if (idsAreEqual(id, findBase, separatorChar))
+
+        if (!(findBase instanceof NamingContainer) && idsAreEqual(id, findBase, separatorChar))
         {
             return findBase;
         }
@@ -146,6 +147,11 @@ class _ComponentUtils
             {
                 return child;
             }
+        }
+
+        if (findBase instanceof NamingContainer && idsAreEqual(id, findBase, separatorChar))
+        {
+            return findBase;
         }
 
         return null;
