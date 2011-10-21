@@ -109,7 +109,7 @@ public class TreeStructureManager
         
     }
 
-    private UIComponent internalRestoreTreeStructure(TreeStructComponent treeStructComp)
+    private UIComponent internalRestoreTreeStructure(TreeStructComponent treeStructComp, boolean checkViewRoot)
     {
         String compClass = treeStructComp.getComponentClass();
         String compId = treeStructComp.getComponentId();
