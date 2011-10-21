@@ -40,7 +40,6 @@ public class UIComponentFindComponentTest extends AbstractUIComponentBaseTest
         _testImpl.setId("testimpl");
         expect(_testImpl.getParent()).andReturn(parent).anyTimes();
         expect(parent.getParent()).andReturn(root).anyTimes();
-        expect(parent.getFacetsAndChildren()).andReturn(Collections.EMPTY_LIST.iterator());
         expect(root.getParent()).andReturn(null).anyTimes();
         expect(parent.getId()).andReturn("parent").anyTimes();
         expect(root.getId()).andReturn("root").anyTimes();
