@@ -118,6 +118,51 @@ public class UIComponentFindComponentTest extends AbstractComponentTest
         assertEquals(_testImpl, namingContainer.findComponent(expression));
     }
 
+    public void testOverriddenFindComponent() {
+        UIViewRoot viewRoot = new UIViewRoot();
+        UIData uiData = new UIData()
+        {
+            public UIComponent findComponent(String expr)
+            {
+                return super.findComponent(stripRowIndex(expr));
+            }
+
+            public String stripRowIndex(String searchId) {
+                if (searchId.length() > 0 && Character.isDigit(searchId.charAt(0)))
+                {
+                    for (int i = 1; i < searchId.length(); ++i)
+                    {
+                        char c = searchId.charAt(i);
+                        if (c == SEPARATOR_CHAR)
+                        {
+                            searchId = searchId.substring(i + 1);
+                            break;
+                        }
+                        if (!Character.isDigit(c))
+                        {
+                            break;
+                        }
+                    }
+                }
+                return searchId;
+            }
+        };
+        uiData.setId("data");
+        UIColumn column = new UIColumn();
+        column.setId("column");
+        UICommand command = new UICommand();
+        command.setId("command");
+        viewRoot.getChildren().add(uiData);
+        uiData.getChildren().add(column);
+        column.getChildren().add(command);
+
+        assertNull(viewRoot.findComponent(":xx"));
+        assertNotNull(viewRoot.findComponent(":data"));
+        assertNotNull(viewRoot.findComponent(":data:column"));
+        assertNotNull(viewRoot.findComponent(":data:command"));
+        assertNotNull(viewRoot.findComponent(":data:1:command"));
+    }
+
     public void testWithRelativeExpressionNamingContainer() throws Exception
     {
         String expression = "testimpl";
