@@ -129,8 +129,17 @@ if (!myfaces._impl.core._Runtime) {
             if ('undefined' != typeof ret && null != ret) {
                 return ret;
             }
+            return _T._manuallyResolveNMS(nms);
+
+        };
+
+        _T._manuallyResolveNMS = function(nms) {
+             //ie fallback for some ie versions path because it cannot eval namespaces
+            //ie in any version does not like that particularily
+            //we do it the hard way now
+
             nms = nms.split(/\./);
-            ret = window;
+            var ret = window;
             var len = nms.length;
 
             for (var cnt = 0; cnt < len; cnt++) {
@@ -140,7 +149,6 @@ if (!myfaces._impl.core._Runtime) {
                 }
             }
             return ret;
-
         };
 
         /**
@@ -197,14 +205,14 @@ if (!myfaces._impl.core._Runtime) {
             var currNms = window;
 
             var tmpNmsName = [];
-
+            var  UDEF = "undefined";
             for (var cnt = 0; cnt < entries.length; cnt++) {
                 var subNamespace = entries[cnt];
                 tmpNmsName.push(subNamespace);
-                if ('undefined' == typeof currNms[subNamespace]) {
+                if (UDEF == typeof currNms[subNamespace]) {
                     currNms[subNamespace] = {};
                 }
-                if (cnt == entries.length - 1 && 'undefined' != typeof obj) {
+                if (cnt == entries.length - 1 && UDEF != typeof obj) {
                     currNms[subNamespace] = obj;
                 } else {
                     currNms = currNms[subNamespace];
@@ -260,9 +268,10 @@ if (!myfaces._impl.core._Runtime) {
             if (!subNms) {
                 return true;
             }
+            var UDEF = "undefined";
             try {
                 //special condition subnamespace exists as full blown key with . instead of function map
-                if ('undefined' != typeof root[subNms]) {
+                if (UDEF != typeof root[subNms]) {
                     return true;
                 }
 
@@ -277,7 +286,7 @@ if (!myfaces._impl.core._Runtime) {
                     //which has a value set to false
                     // (TODO send in a bugreport to the Dojo people)
 
-                    if ('undefined' == typeof root[p[i]]) {
+                    if (UDEF == typeof root[p[i]]) {
                         return false;
                     } // Boolean
                     root = root[p[i]];
@@ -326,12 +335,14 @@ if (!myfaces._impl.core._Runtime) {
             /*use(myfaces._impl._util)*/
             var _local = !!localOptions;
             var _localResult;
+            var MYFACES = "myfaces";
+
             if (_local) {
                 //note we also do not use exist here due to performance improvement reasons
                 //not for now we loose the subnamespace capabilities but we do not use them anyway
                 //this code will give us a performance improvement of 2-3%
-                _localResult = (localOptions["myfaces"]) ? localOptions["myfaces"][configName] : undefined;
-                _local = 'undefined' != typeof _localResult;
+                _localResult = (localOptions[MYFACES]) ? localOptions[MYFACES][configName] : undefined;
+                _local = "undefined" != typeof _localResult;
             }
 
             return (!_local) ? _T.getGlobalConfig(configName, defaultValue) : _localResult;
@@ -360,28 +371,17 @@ if (!myfaces._impl.core._Runtime) {
          * @return the xhr object according to the browser type
          */
         this.getXHRObject = function() {
-            //since this is a global object ie hates it if we do not check for undefined
-            if (window.XMLHttpRequest) {
-                var _ret = new XMLHttpRequest();
-                //we now check the xhr level
-                //sendAsBinary = 1.5 which means mozilla only
-                //upload attribute present == level2
-
-                if (!_T.XHR_LEVEL) {
-                    var _e = _T.exists;
-                    _T.XHR_LEVEL = (_e(_ret, "sendAsBinary")) ? 1.5 : 1;
-                    _T.XHR_LEVEL = (_e(_ret, "upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
-                }
-                return _ret;
+            var _ret = new XMLHttpRequest();
+            //we now check the xhr level
+            //sendAsBinary = 1.5 which means mozilla only
+            //upload attribute present == level2
+            var XHR_LEVEL = "XHR_LEVEL";
+            if (!_T[XHR_LEVEL]) {
+                var _e = _T.exists;
+                _T[XHR_LEVEL] = (_e(_ret, "sendAsBinary")) ? 1.5 : 1;
+                _T[XHR_LEVEL] = (_e(_ret, "upload") && 'undefined' != typeof FormData) ? 2 : _T.XHR_LEVEL;
             }
-            //IE
-            try {
-                _T.XHR_LEVEL = 1;
-                return new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-
-            }
-            return new ActiveXObject('Microsoft.XMLHTTP');
+            return _ret;
         };
 
         /**
@@ -446,10 +446,10 @@ if (!myfaces._impl.core._Runtime) {
             //ok this is nasty we have to do a head modification for ie pre 8
             //the rest can be finely served with body
             var position = "head";
-
+            var UDEF = "undefined";
             try {
                 var holder = document.getElementsByTagName(position)[0];
-                if ('undefined' == typeof holder || null == holder) {
+                if (UDEF == typeof holder || null == holder) {
                     holder = document.createElement(position);
                     var html = document.getElementsByTagName("html");
                     html.appendChild(holder);
@@ -466,7 +466,7 @@ if (!myfaces._impl.core._Runtime) {
                 }
                 /*html5 capable browsers can deal with script.async for
                  * proper head loading*/
-                if ('undefined' != typeof script.async) {
+                if (UDEF != typeof script.async) {
                     script.async = async;
                 }
                 holder.appendChild(script);
@@ -576,12 +576,13 @@ if (!myfaces._impl.core._Runtime) {
                 var newClazz = newCls;
                 newClazz.prototype = new tmpFunc();
                 tmpFunc = null;
-                newClazz.prototype.constructor = newCls;
-                newClazz.prototype._parentCls = extendCls.prototype;
+                var clzProto = newClazz.prototype;
+                clzProto.constructor = newCls;
+                clzProto._parentCls = extendCls.prototype;
                 /**
                  * @ignore
                  */
-                newClazz.prototype._callSuper = function(methodName) {
+                clzProto._callSuper = function(methodName) {
                     var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
                     var accDescLevel = "_mfClsDescLvl";
                     //we store the descension level of each method under a mapped
@@ -595,7 +596,7 @@ if (!myfaces._impl.core._Runtime) {
                     //we have to detect the descension level
                     //we now check if we are in a super descension for the current method already
                     //if not we are on this level
-                    var _oldDescLevel = this._mfClsDescLvl[_mappedName] || this;
+                    var _oldDescLevel = this[accDescLevel][_mappedName] || this;
                     //we now step one level down
                     var _parentCls = _oldDescLevel._parentCls;
                     var ret = null;
@@ -615,8 +616,8 @@ if (!myfaces._impl.core._Runtime) {
                     }
                 };
                 //reference to its own type
-                newClazz.prototype[parClassRef] = newCls;
-                _T._registeredClasses.push(newClazz.prototype);
+                clzProto[parClassRef] = newCls;
+                _T._registeredClasses.push(clzProto);
             }
 
             //we now map the function map in
@@ -665,9 +666,9 @@ if (!myfaces._impl.core._Runtime) {
         //internal class namespace reservation depending on the type (string or function)
         var _reserveClsNms = function(newCls, protoFuncs) {
             var constr = null;
-
-            if ('undefined' != typeof protoFuncs && null != protoFuncs) {
-                constr = ('undefined' != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
+            var UDEF = "undefined";
+            if (UDEF != typeof protoFuncs && null != protoFuncs) {
+                constr = (UDEF != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
                 };
             } else {
                 constr = function() {
@@ -753,82 +754,35 @@ if (!myfaces._impl.core._Runtime) {
         //implemented in extruntime
         this.singletonDelegateObj = function()  {};
 
-        //initial browser detection, we encapsule it in a closure
-        //to drop all temporary variables from ram as soon as possible
-        (function() {
-            /**
-             * browser detection code
-             * cross ported from dojo 1.2
-             *
-             * dojos browser detection code is very sophisticated
-             * hence we port it over it allows a very fine grained detection of
-             * browsers including the version number
-             * this however only can work out if the user
-             * does not alter the user agent, which they normally dont!
-             *
-             * the exception is the ie detection which relies on specific quirks in ie
-             */
-            var n = navigator;
-            var dua = n.userAgent,
-                    dav = n.appVersion,
-                    tv = parseFloat(dav);
+        //for modern browsers we do not need it anymore
+        //there we can rely on browser capabilities checks
+        //we only have one xml special case so webkit and opera is the
+        //only detection we still need for the minimal case
+        //TODO determine how to eliminate this check
+        //with a direct capabilities check
+        var pf = parseFloat,
+                n = navigator,
+                dua = n.userAgent,
+                dav = n.appVersion,
+                tv = pf(dav);
+        var dua = n.userAgent;
+        _T.browser = {};
+        var d  = _T.browser;
+        d.isWebKit = pf(dua.split("WebKit/")[1]) || undefined;
+        d.isChrome = pf(dua.split("Chrome/")[1]) || undefined;
+        if (dua.indexOf("Opera") >= 0) {
+            d.isOpera = pf(n.appVersion);
+        }
 
-            _T.browser = {};
-            myfaces._impl.core._EvalHandlers.browser = _T.browser;
-            var d = _T.browser;
-
-            if (dua.indexOf("Opera") >= 0) {
-                _T.isOpera = tv;
-            }
-            if (dua.indexOf("AdobeAIR") >= 0) {
-                d.isAIR = 1;
-            }
-            if (dua.indexOf("BlackBerry") >= 0) {
-                d.isBlackBerry = tv;
-            }
-            d.isKhtml = (dav.indexOf("Konqueror") >= 0) ? tv : 0;
-            d.isWebKit = parseFloat(dua.split("WebKit/")[1]) || undefined;
-            d.isChrome = parseFloat(dua.split("Chrome/")[1]) || undefined;
-
-            // safari detection derived from:
-            //		http://developer.apple.com/internet/safari/faq.html#anchor2
-            //		http://developer.apple.com/internet/safari/uamatrix.html
-            var index = Math.max(dav.indexOf("WebKit"), dav.indexOf("Safari"), 0);
-            if (index && !d.isChrome) {
-                // try to grab the explicit Safari version first. If we don't get
-                // one, look for less than 419.3 as the indication that we're on something
-                // "Safari 2-ish".
-                d.isSafari = parseFloat(dav.split("Version/")[1]);
-                if (!d.isSafari || parseFloat(dav.substr(index + 7)) <= 419.3) {
-                    d.isSafari = 2;
-                }
-            }
-
-            //>>excludeStart("webkitMobile", kwArgs.webkitMobile);
-
-            if (dua.indexOf("Gecko") >= 0 && !d.isKhtml && !d.isWebKit) {
-                d.isMozilla = d.isMoz = tv;
-            }
-            if (d.isMoz) {
-                //We really need to get away from _T. Consider a sane isGecko approach for the future.
-                d.isFF = parseFloat(dua.split("Firefox/")[1] || dua.split("Minefield/")[1] || dua.split("Shiretoko/")[1]) || undefined;
-            }
-
-            if (document.all && !d.isOpera && !d.isBlackBerry) {
-                d.isIE = parseFloat(dav.split("MSIE ")[1]) || undefined;
-                d.isIEMobile = parseFloat(dua.split("IEMobile")[1]);
-                //In cases where the page has an HTTP header or META tag with
-                //X-UA-Compatible, then it is in emulation mode, for a previous
-                //version. Make sure isIE reflects the desired version.
-                //document.documentMode of 5 means quirks mode.
-
-                /** @namespace document.documentMode */
-                if (d.isIE >= 8 && document.documentMode != 5) {
-                    d.isIE = document.documentMode;
-                }
-            }
-        })();
-
+        //only needed for the loadscript, todo check how to replace it
+        //with browser capabilities detection
+        if (dua.indexOf("Gecko") >= 0 && !d.isKhtml && !d.isWebKit) {
+            d.isMozilla = d.isMoz = tv;
+        }
+        if (d.isMoz) {
+            //We really need to get away from _T. Consider a sane isGecko approach for the future.
+            d.isFF = pf(dua.split("Firefox/")[1] || dua.split("Minefield/")[1] || dua.split("Shiretoko/")[1]) || undefined;
+        }
     };
 }
 
