@@ -24,8 +24,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 /**
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-14 15:23:50 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */
@@ -63,8 +63,8 @@ public abstract class ClientBehaviorContext
     public abstract String getSourceId();
 
     /**
-     * @author Simon Lessard (latest modification by $Author: slessard $)
-     * @version $Revision: 696523 $ $Date: 2009-03-14 15:15:41 -0400 (mer., 17 sept. 2008) $
+     * @author Simon Lessard (latest modification by $Author$)
+     * @version $Revision$ $Date$
      * 
      * @since 2.0
      */

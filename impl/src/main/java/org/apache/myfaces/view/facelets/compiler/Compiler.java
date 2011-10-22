@@ -46,7 +46,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  * A Compiler instance may handle compiling multiple sources
  * 
  * @author Jacob Hookom
- * @version $Id: Compiler.java,v 1.16 2008/07/13 19:01:33 rlubke Exp $
+ * @version $Id$
  */
 public abstract class Compiler
 {
@@ -272,3 +272,4 @@ public abstract class Compiler
         this.developmentProjectStage = developmentProjectStage;
     }
 }
+

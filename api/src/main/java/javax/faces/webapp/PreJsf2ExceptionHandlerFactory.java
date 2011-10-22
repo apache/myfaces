@@ -42,9 +42,9 @@ import javax.faces.event.SystemEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
- * @author Simon Lessard (latest modification by $Author: slessard $)
+ * @author Simon Lessard (latest modification by $Author$)
  * @author Jakob Korherr
- * @version $Revision: 696523 $ $Date: 2009-03-14 20:06:50 -0400 (mer., 17 sept. 2008) $
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */

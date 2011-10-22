@@ -37,7 +37,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * documentation</a>.
  * 
  * @author Jacob Hookom
- * @version $Id: ConvertDelegateHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(
         name = "f:converter",

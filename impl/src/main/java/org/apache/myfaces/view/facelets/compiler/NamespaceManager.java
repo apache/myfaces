@@ -25,7 +25,7 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
 
 /**
  * @author Jacob Hookom
- * @version $Id: NamespaceManager.java,v 1.5 2008/07/13 19:01:33 rlubke Exp $
+ * @version $Id$
  */
 final class NamespaceManager
 {

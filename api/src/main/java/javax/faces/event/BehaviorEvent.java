@@ -23,8 +23,8 @@ import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.ClientBehavior;
 
 /**
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-14 15:19:44 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */

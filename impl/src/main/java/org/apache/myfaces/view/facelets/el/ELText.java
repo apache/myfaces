@@ -39,7 +39,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
  * or <code>#{..}</code>.
  * 
  * @author Jacob Hookom
- * @version $Id: ELText.java,v 1.8 2008/07/13 19:01:42 rlubke Exp $
+ * @version $Id$
  */
 public class ELText
 {

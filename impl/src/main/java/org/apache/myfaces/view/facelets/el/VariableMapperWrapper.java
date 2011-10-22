@@ -32,7 +32,7 @@ import javax.faces.FacesWrapper;
  * the ValueExpression requested.
  * 
  * @author Jacob Hookom
- * @version $Id: VariableMapperWrapper.java,v 1.7 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 public final class VariableMapperWrapper extends VariableMapperBase implements FacesWrapper<VariableMapper>
 {

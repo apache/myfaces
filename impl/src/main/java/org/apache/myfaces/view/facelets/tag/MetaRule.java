@@ -29,7 +29,7 @@ import javax.faces.view.facelets.TagAttribute;
  * @see org.apache.myfaces.view.facelets.tag.Metadata
  * @see org.apache.myfaces.view.facelets.tag.MetadataTarget
  * @author Jacob Hookom
- * @version $Id: MetaRule.java,v 1.3 2008/07/13 19:01:36 rlubke Exp $
+ * @version $Id$
  */
 @Deprecated
 public abstract class MetaRule

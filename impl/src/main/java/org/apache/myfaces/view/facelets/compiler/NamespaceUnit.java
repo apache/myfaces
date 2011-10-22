@@ -28,7 +28,7 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
 /**
  * 
  * @author Jacob Hookom
- * @version $Id: NamespaceUnit.java,v 1.4 2008/07/13 19:01:34 rlubke Exp $
+ * @version $Id$
  */
 final class NamespaceUnit extends CompilationUnit
 {

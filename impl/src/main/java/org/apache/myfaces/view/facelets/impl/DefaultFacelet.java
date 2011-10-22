@@ -54,7 +54,7 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
  * Default Facelet implementation.
  * 
  * @author Jacob Hookom
- * @version $Id: DefaultFacelet.java,v 1.11 2008/07/13 19:01:52 rlubke Exp $
+ * @version $Id$
  */
 final class DefaultFacelet extends AbstractFacelet
 {

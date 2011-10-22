@@ -26,8 +26,8 @@ import javax.faces.view.facelets.FaceletContext;
  * so it is necessary to provide a proper algorithm to find it. 
  * 
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 931412 $ $Date: 2010-04-06 21:56:36 -0500 (Mar, 06 Abr 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public interface RelocatableResourceHandler
 {

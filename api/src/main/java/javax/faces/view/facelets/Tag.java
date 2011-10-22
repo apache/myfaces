@@ -24,7 +24,7 @@ import javax.faces.view.Location;
  * Representation of a Tag in the Facelet definition
  * 
  * @author Jacob Hookom
- * @version $Id: Tag.java,v 1.5 2008/07/13 19:01:36 rlubke Exp $
+ * @version $Id$
  */
 public final class Tag
 {

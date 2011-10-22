@@ -34,8 +34,8 @@ import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 
 /**
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 824859 $ $Date: 2009-10-13 12:42:36 -0500 (Mar, 13 Oct 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 4.0.1
  */
 public class ResourceUtils {

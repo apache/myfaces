@@ -36,7 +36,7 @@ import org.apache.myfaces.view.facelets.el.LegacyMethodBinding;
 /**
  * 
  * @author Jacob Hookom
- * @version $Id: ActionSourceRule.java,v 1.5 2008/07/13 19:01:46 rlubke Exp $
+ * @version $Id$
  */
 public final class ActionSourceRule extends MetaRule
 {

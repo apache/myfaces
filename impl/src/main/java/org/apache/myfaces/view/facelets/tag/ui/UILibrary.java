@@ -23,7 +23,7 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
 /**
  * @author Jacob Hookom
- * @version $Id: UILibrary.java,v 1.8 2008/07/13 19:01:42 rlubke Exp $
+ * @version $Id$
  */
 public final class UILibrary extends AbstractTagLibrary
 {

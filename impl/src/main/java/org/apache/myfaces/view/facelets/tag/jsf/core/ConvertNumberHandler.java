@@ -39,7 +39,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertNumber.html">tag documentation</a>.
  * 
  * @author Jacob Hookom
- * @version $Id: ConvertNumberHandler.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(
         name = "f:convertNumber",

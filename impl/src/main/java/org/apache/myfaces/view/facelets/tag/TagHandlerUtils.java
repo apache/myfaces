@@ -29,8 +29,8 @@ import javax.faces.view.facelets.FaceletHandler;
  * Also, since it was created on the fly while converting, it's highly possible that methods in this class
  * should be moved in a more logical location and/or removed.
  * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-21 12:31:27 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */

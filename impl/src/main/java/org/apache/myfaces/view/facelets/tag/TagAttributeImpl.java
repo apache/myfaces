@@ -48,7 +48,7 @@ import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
  * Representation of a Tag's attribute in a Facelet File
  * 
  * @author Jacob Hookom
- * @version $Id: TagAttribute.java,v 1.9 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public final class TagAttributeImpl extends TagAttribute
 {

@@ -27,8 +27,8 @@ import javax.faces.component.UIComponent;
 /**
  * A participant in UIComponent tree building
  * 
- * @author Jacob Hookom (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-12-10 18:36:19 -0400 (mer., 17 sept. 2008) $
+ * @author Jacob Hookom (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */

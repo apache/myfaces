@@ -57,8 +57,8 @@ import javax.faces.render.Renderer;
  * This class also implements FacesWrapper interface, to make possible to retrieve the
  * real component if necessary.
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 808704 $ $Date: 2009-08-27 19:56:06 -0500 (jue, 27 ago 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent 
     implements FacesWrapper<UIComponent>, ClientBehaviorHolder

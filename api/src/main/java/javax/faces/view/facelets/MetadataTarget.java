@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
  * @see com.sun.facelets.tag.MetaRule
  * @see com.sun.facelets.tag.Metadata
  * @author Jacob Hookom
- * @version $Id: MetadataTarget.java,v 1.3 2008/07/13 19:01:36 rlubke Exp $
+ * @version $Id$
  */
 public abstract class MetadataTarget
 {

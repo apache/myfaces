@@ -47,8 +47,8 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * <li>Set a Location object to resolve #{cc} correctly</li>
  * <li>Push the current composite component on FaceletCompositionContext stack</li>
  * </ul>
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 945454 $ $Date: 2010-05-17 20:40:21 -0500 (Lun, 17 May 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public final class CompositeComponentDefinitionTagHandler implements FaceletHandler
 {

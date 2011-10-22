@@ -37,8 +37,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 808704 $ $Date: 2009-08-27 19:56:06 -0500 (jue, 27 ago 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 @JSFFaceletTag(name="composite:clientBehavior")
 public class ClientBehaviorHandler extends TagHandler implements InterfaceDescriptorCreator

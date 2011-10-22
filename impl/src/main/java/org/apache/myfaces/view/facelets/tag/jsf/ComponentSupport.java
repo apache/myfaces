@@ -45,7 +45,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 /**
  * 
  * @author Jacob Hookom
- * @version $Id: ComponentSupport.java,v 1.8 2008/07/13 19:01:46 rlubke Exp $
+ * @version $Id$
  */
 public final class ComponentSupport
 {

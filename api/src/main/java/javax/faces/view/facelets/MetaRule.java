@@ -24,7 +24,7 @@ package javax.faces.view.facelets;
  * @see com.sun.facelets.tag.Metadata
  * @see com.sun.facelets.tag.MetadataTarget
  * @author Jacob Hookom
- * @version $Id: MetaRule.java,v 1.3 2008/07/13 19:01:36 rlubke Exp $
+ * @version $Id$
  */
 public abstract class MetaRule
 {

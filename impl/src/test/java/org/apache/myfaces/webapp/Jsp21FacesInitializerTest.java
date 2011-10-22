@@ -40,8 +40,8 @@ import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
 /**
- * @author Mathias Broekelmann (latest modification by $Author: baranda $)
- * @version $Revision: 532019 $ $Date: 2007-04-24 19:34:36 +0200 (Di, 24 Apr 2007) $
+ * @author Mathias Broekelmann (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class Jsp21FacesInitializerTest extends AbstractJsfTestCase
 {

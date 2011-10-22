@@ -48,7 +48,7 @@ import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
  * @see org.apache.myfaces.view.facelets.compiler.Compiler
  * 
  * @author Jacob Hookom
- * @version $Id: CompilationManager.java,v 1.15 2008/07/13 19:01:34 rlubke Exp $
+ * @version $Id$
  */
 final class CompilationManager
 {
@@ -558,3 +558,4 @@ final class CompilationManager
         }
     }
 }
+

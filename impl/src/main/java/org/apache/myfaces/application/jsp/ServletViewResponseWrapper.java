@@ -31,8 +31,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
 /**
- * @author Bruno Aranda (latest modification by $Author: lu4242 $)
- * @version $Revision: 823354 $ $Date: 2009-10-08 17:05:00 -0600 (Thu, 08 Oct 2009) $
+ * @author Bruno Aranda (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class ServletViewResponseWrapper extends HttpServletResponseWrapper implements ViewResponseWrapper
 {

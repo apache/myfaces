@@ -64,7 +64,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary} from a {@link java.net.URL URL} source.
  * 
  * @author Jacob Hookom
- * @version $Id: TagLibraryConfig.java,v 1.14 2008/07/13 19:01:34 rlubke Exp $
+ * @version $Id$
  */
 public final class TagLibraryConfig
 {

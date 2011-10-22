@@ -37,7 +37,7 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 /**
  * 
  * @author Jacob Hookom
- * @version $Id: EditableValueHolderRule.java,v 1.3 2008/07/13 19:01:46 rlubke Exp $
+ * @version $Id$
  */
 public final class EditableValueHolderRule extends MetaRule
 {

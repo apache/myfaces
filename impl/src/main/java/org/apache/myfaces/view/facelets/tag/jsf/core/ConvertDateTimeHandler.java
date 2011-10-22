@@ -43,7 +43,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * 
  * @deprecated use 
  * @author Jacob Hookom
- * @version $Id: ConvertDateTimeHandler.java,v 1.6 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(
         name = "f:convertDateTime",

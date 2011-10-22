@@ -60,7 +60,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  * 
  * @deprecated code refactored to FaceletViewDeclarationLanguage
  * @author Jacob Hookom
- * @version $Id: FaceletViewHandler.java,v 1.49.2.6 2006/03/20 07:22:00 jhook Exp $
+ * @version $Id$
  */
 @Deprecated
 public class FaceletViewHandler extends ViewHandler

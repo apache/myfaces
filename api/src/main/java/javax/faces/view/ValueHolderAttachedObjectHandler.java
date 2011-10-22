@@ -23,8 +23,8 @@ package javax.faces.view;
  * implementation of Facelets must provide an implemention of this in the handler for the
  * <code>&lt;f:converter&gt;</code> (and any tags for any of the standard converters) tags.
  * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-24 19:26:04 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */

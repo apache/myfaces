@@ -24,8 +24,8 @@ package org.apache.myfaces.view.facelets;
  * add, removed and add o it was already added to DefaultFaceletsStateManagementStrategy.CLIENTIDS_ADDED
  * and DefaultFaceletsStateManagementStrategy.CLIENTIDS_REMOVED
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 793245 $ $Date: 2009-07-11 18:50:53 -0500 (Sat, 11 Jul 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 2.0
  */
 public enum ComponentState

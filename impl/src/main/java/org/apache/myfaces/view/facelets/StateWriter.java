@@ -42,7 +42,7 @@ import java.io.Writer;
  * </ul>
  * 
  * @author Adam Winer
- * @version $Id: StateWriter.java,v 1.2 2008/07/13 19:01:40 rlubke Exp $
+ * @version $Id$
  */
 public final class StateWriter extends Writer
 {

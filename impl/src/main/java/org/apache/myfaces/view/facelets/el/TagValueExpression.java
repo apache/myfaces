@@ -35,7 +35,7 @@ import javax.faces.view.facelets.TagAttribute;
  * 
  * 
  * @author Jacob Hookom
- * @version $Id: TagValueExpression.java,v 1.7 2008/07/13 19:01:42 rlubke Exp $
+ * @version $Id$
  */
 public class TagValueExpression extends ValueExpression implements Externalizable, FacesWrapper<ValueExpression>
 {

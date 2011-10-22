@@ -26,9 +26,9 @@ import javax.faces.application.FacesMessage;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *
- * @author Manfred Geiler (latest modification by $Author: mconcini $)
+ * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
- * @version $Revision: 798178 $ $Date: 2009-07-27 16:52:07 +0200 (ma, 27 jul 2009) $
+ * @version $Revision$ $Date$
  */
 public class ValidatorException
         extends FacesException

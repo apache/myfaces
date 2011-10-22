@@ -40,7 +40,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @see javax.faces.component.UIComponent#getAttributes()
  * @see javax.faces.component.UIComponent#setValueExpression(java.lang.String, javax.el.ValueExpression)
  * @author Jacob Hookom
- * @version $Id: AttributeHandler.java,v 1.3 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(
         name = "f:attribute",

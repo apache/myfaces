@@ -31,7 +31,7 @@ import javax.faces.view.facelets.FaceletException;
  * UIComponent parent in relation to the create/restore lifecycle of JSF.
  * 
  * @author Jacob Hookom
- * @version $Id: Facelet.java,v 1.3 2008/07/13 19:01:40 rlubke Exp $
+ * @version $Id$
  */
 public abstract class Facelet
 {

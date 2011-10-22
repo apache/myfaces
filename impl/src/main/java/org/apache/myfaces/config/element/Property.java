@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * @author Martin Marinschek
- * @version $Revision: 698799 $ $Date: 2008-09-24 21:03:47 -0500 (mié, 24 sep 2008) $
+ * @version $Revision$ $Date$
  *
      The "property" element represents a JavaBean property of the Java class
      represented by our parent element.

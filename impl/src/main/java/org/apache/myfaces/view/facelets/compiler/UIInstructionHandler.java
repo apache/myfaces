@@ -39,7 +39,7 @@ import org.apache.myfaces.view.facelets.util.FastWriter;
 
 /**
  * @author Adam Winer
- * @version $Id: UIInstructionHandler.java,v 1.6 2008/07/13 19:01:33 rlubke Exp $
+ * @version $Id$
  */
 final class UIInstructionHandler extends AbstractUIHandler
 {

@@ -22,8 +22,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author Manfred Geiler (latest modification by $Author: skitching $)
- * @version $Revision: 676298 $ $Date: 2008-07-13 05:31:48 -0500 (dom, 13 jul 2008) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 class _AttachedListStateWrapper
         implements Serializable

@@ -50,7 +50,7 @@ import org.apache.myfaces.view.facelets.util.FastWriter;
  * hot keys to each one.
  * 
  * @author Jacob Hookom
- * @version $Id: UIDebug.java,v 1.6 2008/07/13 19:01:41 rlubke Exp $
+ * @version $Id$
  */
 @JSFComponent(name="ui:debug")
 @JSFJspProperty(name = "binding", tagExcluded=true)

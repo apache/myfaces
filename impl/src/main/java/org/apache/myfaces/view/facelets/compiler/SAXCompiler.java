@@ -59,7 +59,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @see org.apache.myfaces.view.facelets.compiler.Compiler
  * 
  * @author Jacob Hookom
- * @version $Id: SAXCompiler.java,v 1.14 2008/07/13 19:01:33 rlubke Exp $
+ * @version $Id$
  */
 public final class SAXCompiler extends Compiler
 {

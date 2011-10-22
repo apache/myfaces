@@ -23,7 +23,7 @@ import java.io.Writer;
 
 /**
  * @author Jacob Hookom
- * @version $Id: FastWriter.java,v 1.4 2008/07/13 19:01:34 rlubke Exp $
+ * @version $Id$
  */
 public final class FastWriter extends Writer
 {

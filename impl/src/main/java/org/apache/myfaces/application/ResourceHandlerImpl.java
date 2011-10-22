@@ -49,9 +49,9 @@ import java.util.logging.Logger;
 /**
  * DOCUMENT ME!
  *
- * @author Simon Lessard (latest modification by $Author: slessard $)
+ * @author Simon Lessard (latest modification by $Author$)
  * 
- * @version $Revision: 696515 $ $Date: 2008-09-17 19:37:53 -0500 (mer., 17 sept. 2008) $
+ * @version $Revision$ $Date$
  */
 public class ResourceHandlerImpl extends ResourceHandler
 {

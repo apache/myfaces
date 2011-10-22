@@ -30,8 +30,8 @@ import javax.faces.el.ValueBinding;
  * This class encapsulates a FacesMessage to evaluate the label
  * expression on render response, where f:loadBundle is available
  * 
- * @author Leonardo Uribe (latest modification by $Author: skitching $)
- * @version $Revision: 676298 $ $Date: 2008-07-13 05:31:48 -0500 (Dom, 13 Jul 2008) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 class _ParametrizableFacesMessage extends FacesMessage
 {

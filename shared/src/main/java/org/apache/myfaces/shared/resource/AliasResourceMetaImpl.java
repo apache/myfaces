@@ -21,8 +21,8 @@ package org.apache.myfaces.shared.resource;
 /**
  * Contains the metadata information to reference a resource 
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 700544 $ $Date: 2008-09-30 13:44:02 -0500 (Mar, 30 Sep 2008) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class AliasResourceMetaImpl extends ResourceMetaImpl
 {

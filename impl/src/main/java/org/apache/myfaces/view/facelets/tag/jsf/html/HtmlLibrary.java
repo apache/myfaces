@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 
 /**
  * @author Jacob Hookom
- * @version $Id: HtmlLibrary.java,v 1.3 2008/07/13 19:01:50 rlubke Exp $
+ * @version $Id$
  */
 public final class HtmlLibrary extends AbstractHtmlLibrary
 {

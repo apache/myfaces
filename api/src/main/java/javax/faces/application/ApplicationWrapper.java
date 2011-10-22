@@ -46,8 +46,8 @@ import javax.faces.event.SystemEventListener;
 import javax.faces.validator.Validator;
 
 /**
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-12-02 18:14:34 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */

@@ -38,7 +38,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * This includes composition and decorate tags.
  * 
  * @author Jacob Hookom
- * @version $Id: DefineHandler.java,v 1.5 2008/07/13 19:01:41 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="ui:define")
 public final class DefineHandler extends TagHandler

@@ -31,7 +31,7 @@ import org.apache.myfaces.view.facelets.util.ParameterCheck;
  * searching as soon as one of the children handles the requested method.
  * 
  * @author Jacob Hookom
- * @version $Id: CompositeTagLibrary.java,v 1.4 2008/07/13 19:01:36 rlubke Exp $
+ * @version $Id$
  */
 public final class CompositeTagLibrary implements TagLibrary
 {

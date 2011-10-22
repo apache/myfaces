@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
  * Implementations of JSTL Functions
  * 
  * @author Jacob Hookom
- * @version $Id: JstlFunction.java,v 1.6 2009/01/16 20:51:11 rlubke Exp $
+ * @version $Id$
  */
 public final class JstlFunction
 {

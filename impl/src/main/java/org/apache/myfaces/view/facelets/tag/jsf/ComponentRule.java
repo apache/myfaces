@@ -31,7 +31,7 @@ import javax.faces.view.facelets.TagAttribute;
 /**
  * 
  * @author Jacob Hookom
- * @version $Id: ComponentRule.java,v 1.4 2008/07/13 19:01:47 rlubke Exp $
+ * @version $Id$
  */
 final class ComponentRule extends MetaRule
 {

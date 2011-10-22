@@ -31,7 +31,7 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * Handler for f:verbatim
  * 
  * @author Adam Winer
- * @version $Id: VerbatimHandler.java,v 1.3 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(
         name = "f:verbatim",

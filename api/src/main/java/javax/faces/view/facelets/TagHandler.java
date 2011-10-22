@@ -24,7 +24,7 @@ import javax.faces.view.facelets.FaceletHandler;
  * Foundation class for FaceletHandlers associated with markup in a Facelet document.
  * 
  * @author Jacob Hookom
- * @version $Id: TagHandler.java,v 1.6 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public abstract class TagHandler implements FaceletHandler
 {

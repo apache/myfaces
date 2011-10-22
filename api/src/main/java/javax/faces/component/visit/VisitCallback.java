@@ -24,8 +24,8 @@ import javax.faces.component.UIComponent;
  * <p>A simple callback interface that enables 
  * taking action on a specific UIComponent (either facet or child) during 
  * a component tree visit.</p>
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-14 16:45:40 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */

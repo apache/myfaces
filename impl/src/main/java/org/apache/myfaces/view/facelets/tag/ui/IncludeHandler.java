@@ -54,7 +54,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * tags to pass EL expressions/values to the target page.
  * 
  * @author Jacob Hookom
- * @version $Id: IncludeHandler.java,v 1.5 2008/07/13 19:01:41 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="ui:include", bodyContent="JSP")
 public final class IncludeHandler extends TagHandler

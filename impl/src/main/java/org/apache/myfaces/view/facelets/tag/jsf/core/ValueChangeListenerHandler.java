@@ -51,7 +51,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/valueChangeListener.html">tag documentation</a>.
  * 
  * @author Jacob Hookom
- * @version $Id: ValueChangeListenerHandler.java,v 1.2 2005/08/24 04:38:50 jhook Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(
         name = "f:valueChangeListener",

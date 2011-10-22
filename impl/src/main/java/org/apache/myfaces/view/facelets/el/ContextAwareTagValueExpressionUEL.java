@@ -28,8 +28,8 @@ import javax.faces.view.facelets.TagAttribute;
 /**
  * TagValueExpression for el-api 2.2
  * 
- * @author Jakob Korherr (latest modification by $Author: lu4242 $)
- * @version $Revision: 1150175 $ $Date: 2011-07-23 12:37:25 -0500 (Sáb, 23 Jul 2011) $
+ * @author Jakob Korherr (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class ContextAwareTagValueExpressionUEL extends ContextAwareTagValueExpression
 {

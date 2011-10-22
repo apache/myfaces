@@ -126,8 +126,8 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 /**
  * This class represents the abstraction of Facelets as a ViewDeclarationLanguage.
  * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-21 14:57:08 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */

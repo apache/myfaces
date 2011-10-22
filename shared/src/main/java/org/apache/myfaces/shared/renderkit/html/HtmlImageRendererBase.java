@@ -39,10 +39,10 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 
 /**
- * @author Manfred Geiler (latest modification by $Author: grantsmith $)
+ * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @author Anton Koinov
- * @version $Revision$ $Date: 2005-05-11 18:45:06 +0200 (Wed, 11 May 2005) $
+ * @version $Revision$ $Date$
  */
 public class HtmlImageRendererBase
         extends HtmlRenderer

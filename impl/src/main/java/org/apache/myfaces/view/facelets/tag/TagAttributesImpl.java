@@ -38,7 +38,7 @@ import javax.faces.view.facelets.TagAttributes;
  * @see org.apache.myfaces.view.facelets.tag.Tag
  * @see org.apache.myfaces.view.facelets.tag.TagAttributeImpl
  * @author Jacob Hookom
- * @version $Id: TagAttributes.java,v 1.3 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public final class TagAttributesImpl extends TagAttributes
 {

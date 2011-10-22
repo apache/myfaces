@@ -28,7 +28,7 @@ import org.apache.myfaces.view.facelets.el.ELText;
 
 /**
  * @author Jacob Hookom
- * @version $Id: UIText.java,v 1.7 2008/07/13 19:01:33 rlubke Exp $
+ * @version $Id$
  */
 final class UIText extends UILeaf
 {

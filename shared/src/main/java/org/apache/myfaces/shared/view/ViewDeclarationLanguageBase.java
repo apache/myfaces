@@ -27,8 +27,8 @@ import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.shared.application.InvalidViewIdException;
 
 /**
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-22 15:03:20 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */

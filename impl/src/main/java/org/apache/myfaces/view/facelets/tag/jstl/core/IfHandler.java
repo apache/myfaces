@@ -39,7 +39,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * scripting variable representing the evaluation of this condition
  * 
  * @author Jacob Hookom
- * @version $Id: IfHandler.java,v 1.5 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="c:if")
 @JSFFaceletAttribute(

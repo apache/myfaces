@@ -23,7 +23,7 @@ package javax.faces.view.facelets;
  * will be composed into a single Metadata instance.
  * 
  * @author Jacob Hookom
- * @version $Id: MetaRuleset.java,v 1.3 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public abstract class MetaRuleset
 {

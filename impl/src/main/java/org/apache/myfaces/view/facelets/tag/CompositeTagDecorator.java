@@ -28,7 +28,7 @@ import org.apache.myfaces.view.facelets.util.ParameterCheck;
  * stop processing if any of the TagDecorators return a value other than null.
  * 
  * @author Jacob Hookom
- * @version $Id: CompositeTagDecorator.java,v 1.5 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public final class CompositeTagDecorator implements TagDecorator
 {
@@ -62,3 +62,4 @@ public final class CompositeTagDecorator implements TagDecorator
     }
 
 }
+

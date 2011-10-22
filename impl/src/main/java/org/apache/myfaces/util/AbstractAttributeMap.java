@@ -32,8 +32,8 @@ import java.util.Set;
 /**
  * Helper Map implementation for use with different Attribute Maps.
  * 
- * @author Anton Koinov (latest modification by $Author: slessard $)
- * @version $Revision: 701829 $ $Date: 2008-10-05 12:06:02 -0500 (Dom, 05 Oct 2008) $
+ * @author Anton Koinov (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 {

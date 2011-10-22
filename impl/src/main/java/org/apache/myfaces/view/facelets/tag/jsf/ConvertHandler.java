@@ -48,7 +48,7 @@ import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
  * @see javax.faces.convert.Converter
  * @see javax.faces.component.ValueHolder
  * @author Jacob Hookom
- * @version $Id: ConvertHandler.java,v 1.4 2008/07/13 19:01:46 rlubke Exp $
+ * @version $Id$
  */
 @Deprecated
 public class ConvertHandler extends MetaTagHandlerImpl

@@ -46,8 +46,8 @@ import javax.faces.event.ExceptionQueuedEventContext;
 /**
  * Default implementation for resources
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 957739 $ $Date: 2010-06-24 17:27:40 -0500 (Jue, 24 Jun 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class ResourceImpl extends Resource
 {

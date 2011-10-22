@@ -24,8 +24,8 @@ package javax.faces.component.visit;
  * the behavior of a component tree visit.</p>
  *
  * @see VisitContext#getHints VisitContext.getHints()
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-14 16:46:33 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */
