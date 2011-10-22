@@ -148,7 +148,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                   facesContext.isProjectStage(ProjectStage.Production)) &&
                  log.isLoggable(Level.INFO))
             {
-                log.info("ServletContext '" + servletContext.getRealPath("/") + "' initialized.");
+                String contextPath = servletContext.getContextPath();
+                log.info("ServletContext '" + (contextPath == null ? "/" : contextPath) + "' initialized.");
             }
 
             WebConfigParamsLogger.logWebContextParams(facesContext);
@@ -333,7 +334,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         String validate = servletContext.getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM);
         if ("true".equals(validate) && log.isLoggable(Level.WARNING)) { // the default value is false
             List<String> warnings = FacesConfigValidator.validate(
-                    externalContext, servletContext.getRealPath("/"));
+                    externalContext);
 
             for (String warning : warnings) {
                 log.warning(warning);

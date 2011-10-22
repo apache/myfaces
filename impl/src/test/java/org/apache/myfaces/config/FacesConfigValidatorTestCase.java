@@ -63,7 +63,7 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
         Collection<ManagedBean> managedBeans = dispenser.getManagedBeans();
         Collection<NavigationRule> navRules = dispenser.getNavigationRules();
         
-        List<String> list = FacesConfigValidator.validate(managedBeans, navRules, "C:/somePath/");
+        List<String> list = FacesConfigValidator.validate(managedBeans, navRules, externalContext);
         
         int expected = 3;
         
