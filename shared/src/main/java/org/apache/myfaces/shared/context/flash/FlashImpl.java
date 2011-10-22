@@ -630,7 +630,9 @@ public class FlashImpl extends Flash
                 // to this request object
                 cookie.setMaxAge(0);
                 cookie.setPath(_getCookiePath(externalContext));
-                cookie.setValue(null);
+                //MYFACES-3354 jetty 6.1.5 does not allow this,
+                //call setMaxAge(0) is enough
+                //cookie.setValue(null);
                 httpResponse.addCookie(cookie);
             }
         }
