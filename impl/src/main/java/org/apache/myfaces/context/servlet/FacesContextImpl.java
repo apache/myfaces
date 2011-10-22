@@ -355,6 +355,7 @@ public class FacesContextImpl extends FacesContextImplBase
         assertNotReleased();
 
         RenderKit renderKit = getRenderKit();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         if (renderKit == null)
         {
             // NullPointerException with StateManager, because
@@ -373,12 +374,12 @@ public class FacesContextImpl extends FacesContextImplBase
             // will be the one tied to faces-config selected RenderKit. But the usual 
             // method to check if a request is a postback, is always detect the param
             // javax.faces.ViewState, so there is no problem after all.
-            String renderKitId = this.getApplication().getViewHandler().calculateRenderKitId(this);
+            String renderKitId = facesContext.getApplication().getViewHandler().calculateRenderKitId(facesContext);
             RenderKitFactory factory = (RenderKitFactory) 
                 FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-            renderKit = factory.getRenderKit(this, renderKitId);            
+            renderKit = factory.getRenderKit(facesContext, renderKitId);
         }
-        return renderKit.getResponseStateManager().isPostback(this);            
+        return renderKit.getResponseStateManager().isPostback(facesContext);
     }
 
     @Override

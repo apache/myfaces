@@ -177,7 +177,7 @@ public abstract class FacesContextImplBase extends FacesContext
             return _elContext;
         }
 
-        _elContext = new FacesELContext(getApplication().getELResolver(), this);
+        _elContext = new FacesELContext(getApplication().getELResolver(), FacesContext.getCurrentInstance());
 
         ELContextEvent event = new ELContextEvent(_elContext);
         for (ELContextListener listener : getApplication().getELContextListeners())
@@ -272,7 +272,7 @@ public abstract class FacesContextImplBase extends FacesContext
             {
                 _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
             }
-            _cachedRenderKit = _renderKitFactory.getRenderKit(this, renderKitId);
+            _cachedRenderKit = _renderKitFactory.getRenderKit(FacesContext.getCurrentInstance(), renderKitId);
         }
         
         return _cachedRenderKit;
