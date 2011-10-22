@@ -19,6 +19,8 @@
 package org.apache.myfaces.config;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +50,7 @@ public class FacesConfigValidator
         // hidden 
     }
 
-    public static List<String> validate(ExternalContext ctx, String ctxPath){
+    public static List<String> validate(ExternalContext ctx){
         
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(ctx);
         
@@ -62,12 +64,12 @@ public class FacesConfigValidator
         
         Collection<? extends NavigationRule> navRules = runtimeConfig.getNavigationRules();
         
-        return validate(managedBeans, navRules, ctxPath);
+        return validate(managedBeans, navRules, ctx);
         
     }
     
     public static List<String> validate(Collection<? extends ManagedBean> managedBeans, 
-                                        Collection<? extends NavigationRule> navRules, String ctxPath)
+                                        Collection<? extends NavigationRule> navRules, ExternalContext ctx)
     {
         
         List<String> list = new ArrayList<String>();
@@ -79,38 +81,52 @@ public class FacesConfigValidator
         
         if (navRules != null)
         {
-            validateNavRules(navRules, list, ctxPath);
+            validateNavRules(navRules, list, ctx);
         }
         
         return list;
     }
 
-    private static void validateNavRules(Collection<? extends NavigationRule> navRules, List<String> list, 
-                                         String ctxPath)
+    private static void validateNavRules(Collection<? extends NavigationRule> navRules, List<String> list, ExternalContext ctx)
     {
         for (NavigationRule navRule : navRules)
         {
-            validateNavRule(navRule, list, ctxPath);
+            validateNavRule(navRule, list, ctx);
         }
     }
     
-    private static void validateNavRule(NavigationRule navRule, List<String> list, String ctxPath){
+    private static void validateNavRule(NavigationRule navRule, List<String> list, ExternalContext ctx){
         
         String fromId = navRule.getFromViewId();
-        String filePath = ctxPath + fromId;
-        
-        if(fromId != null && ! "*".equals(fromId) && ! new File(filePath).exists())
+        URL filePath;
+        try
         {
-            list.add("File for navigation 'from id' does not exist " + filePath);
-        }            
-            
+            filePath = ctx.getResource(fromId);
+
+            if(fromId != null && ! "*".equals(fromId) && filePath == null)
+            {
+                list.add("File for navigation 'from id' does not exist " + filePath);
+            }            
+        }
+        catch (MalformedURLException e)
+        {
+            list.add("File for navigation 'from id' does not exist " + fromId);
+        }
+        
         for (NavigationCase caze : navRule.getNavigationCases())
         {
-            String toViewPath = ctxPath + caze.getToViewId();
-            
-            if(!new File(toViewPath).exists())
+            try
             {
-                list.add("File for navigation 'to id' does not exist " + toViewPath);
+                URL toViewPath = ctx.getResource(caze.getToViewId());
+                
+                if(toViewPath == null)
+                {
+                    list.add("File for navigation 'to id' does not exist " + toViewPath);
+                }
+            }
+            catch (MalformedURLException e)
+            {
+                list.add("File for navigation 'from id' does not exist " + caze.getToViewId());
             }
         }
     }
