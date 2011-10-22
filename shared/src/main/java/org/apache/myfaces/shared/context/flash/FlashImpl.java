@@ -44,9 +44,9 @@ import java.util.logging.Logger;
 /**
  * Implementation of Flash object
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
+ * @author Leonardo Uribe (latest modification by $Author$)
  * @author Jakob Korherr
- * @version $Revision: 904316 $ $Date: 2010-01-28 17:14:41 -0700 (Thu, 28 Jan 2010) $
+ * @version $Revision$ $Date$
  */
 public class FlashImpl extends Flash
 {

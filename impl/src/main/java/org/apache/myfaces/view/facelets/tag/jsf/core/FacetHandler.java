@@ -37,7 +37,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/facet.html">tag documentation</a>.
  * 
  * @author Jacob Hookom
- * @version $Id: FacetHandler.java,v 1.8 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(
         name = "f:facet",

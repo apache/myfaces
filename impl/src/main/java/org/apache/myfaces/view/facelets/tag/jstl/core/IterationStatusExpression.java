@@ -23,7 +23,7 @@ import javax.el.ValueExpression;
 
 /**
  * @author Jacob Hookom
- * @version $Id: IterationStatusExpression.java,v 1.4 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 public final class IterationStatusExpression extends ValueExpression
 {

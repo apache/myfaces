@@ -141,8 +141,8 @@ import javax.faces.context.FacesContext;
  * </p>
  *
  * @author Werner Punz
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Rev: 980927 $ $Date: 2010-07-30 14:05:55 -0500 (Vie, 30 Jul 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Rev$ $Date$
  */
 class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
 {

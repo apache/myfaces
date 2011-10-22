@@ -21,8 +21,8 @@ package org.apache.myfaces.config.element;
 import java.io.Serializable;
 
 /**
- * @author Mathias Broekelmann (latest modification by $Author: skitching $)
- * @version $Revision: 684459 $ $Date: 2008-08-10 06:13:56 -0500 (dom, 10 ago 2008) $
+ * @author Mathias Broekelmann (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public abstract class ResourceBundle implements Serializable
 {

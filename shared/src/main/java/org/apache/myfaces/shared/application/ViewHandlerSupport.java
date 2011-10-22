@@ -29,8 +29,8 @@ import javax.faces.context.FacesContext;
  * For example, an implementation of this interface might support javax.servlet,
  * javax.portlet, or some other mechanism.
  *    
- * @author Mathias Broekelmann (latest modification by $Author: lu4242 $)
- * @version $Revision: 887436 $ $Date: 2009-12-04 16:11:25 -0700 (Fri, 04 Dec 2009) $
+ * @author Mathias Broekelmann (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public interface ViewHandlerSupport
 {

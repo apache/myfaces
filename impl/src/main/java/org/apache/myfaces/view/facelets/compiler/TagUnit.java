@@ -27,7 +27,7 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
 /**
  * 
  * @author Jacob Hookom
- * @version $Id: TagUnit.java,v 1.7 2008/07/13 19:01:33 rlubke Exp $
+ * @version $Id$
  */
 class TagUnit extends CompilationUnit implements TagConfig
 {

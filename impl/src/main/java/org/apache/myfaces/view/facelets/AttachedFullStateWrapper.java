@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets;
 import java.io.Serializable;
 
 /**
- * @author Leonardo Uribe (latest modification by $Author: slessard $)
- * @version $Revision: 701829 $ $Date: 2008-10-05 12:06:02 -0500 (dom, 05 oct 2008) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class AttachedFullStateWrapper implements Serializable
 {

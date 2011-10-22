@@ -36,7 +36,7 @@ import javax.faces.view.facelets.TagAttribute;
  * 
  * 
  * @author Jacob Hookom
- * @version $Id: TagMethodExpression.java,v 1.7 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 public final class TagMethodExpression extends MethodExpression implements Externalizable, FacesWrapper<MethodExpression>
 {

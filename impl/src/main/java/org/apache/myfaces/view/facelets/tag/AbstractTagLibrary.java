@@ -45,7 +45,7 @@ import javax.faces.view.facelets.ValidatorHandler;
  * Base class for defining TagLibraries in Java
  * 
  * @author Jacob Hookom
- * @version $Id: AbstractTagLibrary.java,v 1.10 2008/07/13 19:01:36 rlubke Exp $
+ * @version $Id$
  */
 public abstract class AbstractTagLibrary implements TagLibrary
 {

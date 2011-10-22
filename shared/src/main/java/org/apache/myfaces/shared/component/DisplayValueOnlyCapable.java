@@ -24,10 +24,10 @@ package org.apache.myfaces.shared.component;
  * When displayValueOnly is true, the renderer should not render any input widget.
  * Only the text corresponding to the component's value should be rendered instead.
  * 
- * @author Sylvain Vieujot (latest modification by $Author: svieujot $)
+ * @author Sylvain Vieujot (latest modification by $Author$)
  * @author Martin Marinschek
  *
- * @version $Revision: 169739 $ $Date: 2005-05-12 02:45:14 +0200 (Thu, 12 May 2005) $
+ * @version $Revision$ $Date$
  */
 public interface DisplayValueOnlyCapable
 {

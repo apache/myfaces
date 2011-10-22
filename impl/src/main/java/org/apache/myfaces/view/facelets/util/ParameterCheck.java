@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.util;
 
 /**
  * @author Jacob Hookom
- * @version $Id: ParameterCheck.java,v 1.3 2008/07/13 19:01:34 rlubke Exp $
+ * @version $Id$
  */
 public final class ParameterCheck
 {

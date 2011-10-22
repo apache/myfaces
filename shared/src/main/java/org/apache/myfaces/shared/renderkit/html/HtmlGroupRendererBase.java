@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  * @author Martin Marinschek
- * @version $Revision: $ $Date: $
+ * @version $Revision$ $Date$
  *          <p/>
  *          $Log: $
  */

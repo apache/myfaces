@@ -25,7 +25,7 @@ package javax.faces.view.facelets;
  * @see com.sun.facelets.tag.Tag
  * @see com.sun.facelets.tag.TagAttribute
  * @author Jacob Hookom
- * @version $Id: TagAttributes.java,v 1.3 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public abstract class TagAttributes
 {

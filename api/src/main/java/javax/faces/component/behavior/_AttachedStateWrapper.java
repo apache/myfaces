@@ -21,8 +21,8 @@ package javax.faces.component.behavior;
 import java.io.Serializable;
 
 /**
- * @author Manfred Geiler (latest modification by $Author: slessard $)
- * @version $Revision: 701829 $ $Date: 2008-10-05 12:06:02 -0500 (Dom, 05 Oct 2008) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 class _AttachedStateWrapper implements Serializable
 {

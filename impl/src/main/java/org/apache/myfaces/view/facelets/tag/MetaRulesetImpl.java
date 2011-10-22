@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 /**
  * 
  * @author Jacob Hookom
- * @version $Id: MetaRulesetImpl.java,v 1.3 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public final class MetaRulesetImpl extends MetaRuleset
 {

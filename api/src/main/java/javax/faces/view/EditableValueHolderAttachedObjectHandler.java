@@ -25,8 +25,8 @@ package javax.faces.view;
  * <code>&lt;f:validator&gt;</code> (and any tags for any of the standard validators) and
  * <code>&lt;f:valueChangeListener&gt;</code> tags.
  * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-24 19:49:48 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */

@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets;
 
 /**
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 945454 $ $Date: 2010-05-17 20:40:21 -0500 (Lun, 17 May 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 2.0
  */
 public abstract class TemplateManager implements TemplateClient

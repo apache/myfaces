@@ -28,8 +28,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 /**
- * @author Martin Marinschek (latest modification by $Author: grantsmith $)
- * @version $Revision: 169655 $ $Date: 2005-05-11 18:45:06 +0200 (Mi, 11 Mai 2005) $
+ * @author Martin Marinschek (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class RestoreStateUtils
 {

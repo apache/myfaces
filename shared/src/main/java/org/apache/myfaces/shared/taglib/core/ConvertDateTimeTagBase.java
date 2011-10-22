@@ -32,8 +32,8 @@ import javax.servlet.jsp.JspException;
 import org.apache.myfaces.shared.util.LocaleUtils;
 
 /**
- * @author Manfred Geiler (latest modification by $Author: schof $)
- * @version $Revision: 382015 $ $Date: 2006-03-01 14:47:11 +0100 (Wed, 01 Mar 2006) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class ConvertDateTimeTagBase 
         extends ConverterTag

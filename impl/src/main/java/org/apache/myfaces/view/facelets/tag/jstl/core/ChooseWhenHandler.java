@@ -37,7 +37,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * condition evalutes to 'true'
  * 
  * @author Jacob Hookom
- * @version $Id: ChooseWhenHandler.java,v 1.3 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="c:when")
 public final class ChooseWhenHandler extends TagHandler

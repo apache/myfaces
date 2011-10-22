@@ -26,8 +26,8 @@ import javax.faces.view.ViewDeclarationLanguage;
  * the purpose of determining which one to use for a given view id by calling the {@link #handles} 
  * method of each ofthe registered support and using the first match.
  * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-22 12:25:01 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */

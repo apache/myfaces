@@ -30,7 +30,7 @@ import javax.el.FunctionMapper;
  * @see java.lang.reflect.Method
  * 
  * @author Jacob Hookom
- * @version $Id: CompositeFunctionMapper.java,v 1.3 2008/07/13 19:01:42 rlubke Exp $
+ * @version $Id$
  */
 public final class CompositeFunctionMapper extends FunctionMapper
 {

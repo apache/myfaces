@@ -27,8 +27,8 @@ import java.util.Comparator;
  * Base class for resource loaders.  Resource loaders can lookup resources 
  * as URLs from arbitrary locations, including JAR files.
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 882702 $ $Date: 2009-11-20 15:16:07 -0500 (Vie, 20 Nov 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public abstract class ResourceLoader
 {

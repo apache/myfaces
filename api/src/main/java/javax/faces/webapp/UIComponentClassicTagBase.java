@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.JspIdConsumer;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
- * @author Bruno Aranda (latest modification by $Author: baranda $)
+ * @author Bruno Aranda (latest modification by $Author$)
  * @author Manfred Geiler
  * @author Dennis Byrne
  * @version $Revision$ $Date$

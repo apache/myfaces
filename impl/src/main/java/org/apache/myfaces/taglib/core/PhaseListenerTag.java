@@ -42,7 +42,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
  * Register a PhaseListener instance
  * 
  * @author martin.haimberger
- * @version $Revision: 462929 $ $Date: 2006-10-11 21:26:36 +0100 (mi�, 11 oct 2006) $
+ * @version $Revision$ $Date$
  */
 @JSFJspTag(name = "f:phaseListener", bodyContent = "empty")
 public class PhaseListenerTag extends TagSupport

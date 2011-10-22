@@ -40,7 +40,7 @@ import java.nio.charset.Charset;
  * @author Jacob Hookom
  * @author Roland Huss
  * @author Ales Justin (ales.justin@jboss.org)
- * @version $Id: Classpath.java,v 1.10 2008/07/13 19:01:34 rlubke Exp $
+ * @version $Id$
  */
 public final class Classpath
 {

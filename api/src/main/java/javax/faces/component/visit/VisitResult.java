@@ -26,8 +26,8 @@ package javax.faces.component.visit;
  *
  * @see VisitCallback#visit VisitCallback.visit()
  * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-14 16:46:04 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */

@@ -24,8 +24,8 @@ import org.apache.myfaces.shared.util.el.GenericMap;
  * You can use this class to perform tests.
  * Use this for example in JSF backing beans, like BaseFace.getUserInRole(String).
  *
- * @author Sylvain Vieujot (latest modification by $Author: skitching $)
- * @version $Revision: 355303 $ $Date: 2005-12-09 02:36:08 +0100 (Fr, 09 Dez 2005) $
+ * @author Sylvain Vieujot (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public abstract class TestsMap extends GenericMap {
 

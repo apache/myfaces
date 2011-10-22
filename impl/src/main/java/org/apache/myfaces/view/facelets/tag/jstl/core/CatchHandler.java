@@ -37,7 +37,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * exposes it.
  * 
  * @author Jacob Hookom
- * @version $Id: CatchHandler.java,v 1.5 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="c:catch")
 public final class CatchHandler extends TagHandler

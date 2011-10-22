@@ -37,7 +37,7 @@ import org.apache.myfaces.view.facelets.el.ELText;
 /**
  * 
  * @author Jacob Hookom
- * @version $Id: TextUnit.java,v 1.12 2008/07/13 19:01:34 rlubke Exp $
+ * @version $Id$
  */
 final class TextUnit extends CompilationUnit
 {

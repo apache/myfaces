@@ -35,8 +35,8 @@ import javax.faces.context.FacesContext;
  * take care of populating the passed UIComponent parent in relation to the
  * create/restore lifecycle of JSF.
  * 
- * @author Jacob Hookom (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-12-10 18:39:00 -0400 (mer., 17 sept. 2008) $
+ * @author Jacob Hookom (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */

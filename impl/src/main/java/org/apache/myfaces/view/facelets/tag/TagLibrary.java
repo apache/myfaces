@@ -28,7 +28,7 @@ import javax.faces.view.facelets.TagHandler;
  * A library of Tags associated with one or more namespaces.
  * 
  * @author Jacob Hookom
- * @version $Id: TagLibrary.java,v 1.3 2008/07/13 19:01:36 rlubke Exp $
+ * @version $Id$
  */
 public interface TagLibrary
 {

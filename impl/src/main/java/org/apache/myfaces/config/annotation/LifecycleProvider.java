@@ -26,7 +26,7 @@ import javax.naming.NamingException;
  * Proposed interface to annotation service. An implementation of this class needs to know the appropriate classloader,
  * dependencies to be injected, and lifecycle methods to be called.
  *
- * @version $Rev:$ $Date:$
+ * @version $Rev$ $Date$
  */
 public interface LifecycleProvider {
 

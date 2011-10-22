@@ -28,7 +28,7 @@ import org.apache.myfaces.view.facelets.util.ParameterCheck;
  * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.
  * 
  * @author Jacob Hookom
- * @version $Id: MetaTagHandler.java,v 1.3 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public abstract class MetaTagHandlerImpl extends MetaTagHandler
 {

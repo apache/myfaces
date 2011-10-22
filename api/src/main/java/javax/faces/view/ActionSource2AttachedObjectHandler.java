@@ -23,8 +23,8 @@ package javax.faces.view;
  * default implementation of Facelets must provide an implemention of this in the handler for the
  * <code>&lt;f:actionListener&gt;</code> tag.
  * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-24 19:04:31 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */

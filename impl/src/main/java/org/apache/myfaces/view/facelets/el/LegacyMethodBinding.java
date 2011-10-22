@@ -31,7 +31,7 @@ import javax.faces.el.MethodNotFoundException;
  * For legacy ActionSources
  * 
  * @author Jacob Hookom
- * @version $Id: LegacyMethodBinding.java,v 1.7 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  * @deprecated
  */
 public final class LegacyMethodBinding extends MethodBinding implements

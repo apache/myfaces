@@ -43,7 +43,7 @@ import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
  * Sets the result of an expression evaluation in a 'scope'
  * 
  * @author Jacob Hookom
- * @version $Id: SetHandler.java,v 1.2 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="c:set")
 public class SetHandler extends TagHandler

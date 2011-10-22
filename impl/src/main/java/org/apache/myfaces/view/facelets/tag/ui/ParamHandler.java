@@ -37,7 +37,7 @@ import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 
 /**
  * @author Jacob Hookom
- * @version $Id: ParamHandler.java,v 1.6 2008/07/13 19:01:42 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="ui:param")
 public class ParamHandler extends TagHandler

@@ -23,8 +23,8 @@ import java.util.Set;
 import java.util.Collection;
 
 /**
- * @author Sylvain Vieujot (latest modification by $Author: skitching $)
- * @version $Revision: 355303 $ $Date: 2005-12-09 02:36:08 +0100 (Fr, 09 Dez 2005) $
+ * @author Sylvain Vieujot (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  */
 public abstract class GenericMap implements Map {

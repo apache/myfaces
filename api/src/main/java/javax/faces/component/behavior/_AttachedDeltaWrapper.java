@@ -21,8 +21,8 @@ package javax.faces.component.behavior;
 import java.io.Serializable;
 
 /**
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 788877 $ $Date: 2009-06-26 16:30:38 -0500 (vie, 26 jun 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 class _AttachedDeltaWrapper implements Serializable
 {

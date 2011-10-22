@@ -27,8 +27,8 @@ import javax.faces.context.FacesContext;
  * {@link javax.faces.validator.Validator Validator}, {@link javax.faces.event.ValueChangeEvent ValueChangeEvent}, and
  * {@link javax.faces.event.ActionListener ActionListener} for use by <em>page authors</em>.
  * 
- * @author Simon Lessard (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2008-09-24 19:06:57 -0400 (mer., 17 sept. 2008) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * 
  * @since 2.0
  */

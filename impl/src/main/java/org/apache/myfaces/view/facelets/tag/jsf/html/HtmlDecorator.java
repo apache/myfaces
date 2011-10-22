@@ -27,7 +27,7 @@ import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 
 /**
  * @author Jacob Hookom
- * @version $Id: HtmlDecorator.java,v 1.4 2008/07/13 19:01:50 rlubke Exp $
+ * @version $Id$
  */
 public final class HtmlDecorator implements TagDecorator
 {

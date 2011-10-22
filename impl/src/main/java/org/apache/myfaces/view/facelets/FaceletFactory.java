@@ -28,7 +28,7 @@ import java.net.URL;
  * FaceletFactory for producing Facelets relative to the context of the underlying implementation.
  * 
  * @author Jacob Hookom
- * @version $Id: FaceletFactory.java,v 1.4 2008/07/13 19:01:39 rlubke Exp $
+ * @version $Id$
  */
 public abstract class FaceletFactory
 {

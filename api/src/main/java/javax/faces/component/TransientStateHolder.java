@@ -31,8 +31,8 @@ package javax.faces.component;
  * methods reside at different levels of the hierarchy.</p>
  * 
  * @since 2.1
- * @author Leonardo Uribe (latest modification by $Author: slessard $)
- * @version $Revision: 696523 $ $Date: 2009-03-21 10:05:08 -0400 (mer., 17 sept. 2008) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public interface TransientStateHolder
 {

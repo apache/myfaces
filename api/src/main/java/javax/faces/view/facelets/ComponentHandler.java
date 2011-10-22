@@ -26,7 +26,7 @@ import javax.faces.view.facelets.FaceletContext;
  * Facelets.
  * 
  * @author Jacob Hookom
- * @version $Id: ComponentHandler.java,v 1.19 2008/07/13 19:01:47 rlubke Exp $
+ * @version $Id$
  */
 public class ComponentHandler extends DelegatingMetaTagHandler
 {

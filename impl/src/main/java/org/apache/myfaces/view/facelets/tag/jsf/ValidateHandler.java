@@ -44,7 +44,7 @@ import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
  * 
  * @deprecated use javax.faces.view.facelets.ValidatorHandler instead
  * @author Jacob Hookom
- * @version $Id: ValidateHandler.java,v 1.4 2008/07/13 19:01:46 rlubke Exp $
+ * @version $Id$
  */
 @Deprecated
 public class ValidateHandler extends MetaTagHandlerImpl

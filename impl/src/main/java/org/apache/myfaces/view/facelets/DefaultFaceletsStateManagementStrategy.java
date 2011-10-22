@@ -92,8 +92,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * 11.The order is important for ids added when it is traversed the tree, otherwise the algorithm 
  *    could change the order in which components will be restored.  
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 793245 $ $Date: 2009-07-11 18:50:53 -0500 (Sat, 11 Jul 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 2.0
  *
  */

@@ -27,8 +27,8 @@ import javax.faces.context.FacesContext;
 
 /**
  *
- * @author  Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 799765 $ $Date: 2009-07-31 17:55:49 -0500 (vie, 31 jul 2009) $
+ * @author  Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 2.0.2
  */
 public class RequestViewContext

@@ -50,8 +50,8 @@ import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
  * This helper class contains methods used by DefaultFaceletsStateManagementStrategy that comes
  * from JspStateManagerImpl, but are used by our default StateManagementStrategy
  *  
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 793245 $ $Date: 2009-07-11 18:50:53 -0500 (Sat, 11 Jul 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 2.0
  * @deprecated replaced by org.apache.myfaces.application.StateCache
  *

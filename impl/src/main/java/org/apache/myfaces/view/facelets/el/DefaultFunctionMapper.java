@@ -37,7 +37,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
  * @see javax.el.FunctionMapper
  * 
  * @author Jacob Hookom
- * @version $Id: DefaultFunctionMapper.java,v 1.6 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 public final class DefaultFunctionMapper extends FunctionMapper implements Externalizable
 {

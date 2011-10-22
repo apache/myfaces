@@ -49,7 +49,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * 
  * @author Jacob Hookom
  * @author Andrew Robinson
- * @version $Id: ForEachHandler.java,v 1.12 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="c:forEach")
 public final class ForEachHandler extends TagHandler

@@ -23,7 +23,7 @@ import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
 
 /**
- * @version $Id: IteratedValueExpression.java,v 1.2 2008/07/13 19:01:44 rlubke Exp $
+ * @version $Id$
  */
 public final class IteratedValueExpression extends ValueExpression
 {

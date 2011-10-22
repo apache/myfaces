@@ -39,7 +39,7 @@ import org.apache.myfaces.view.facelets.TemplateClient;
  * The insert tag is used within your templates to declare spots of replicable data.
  * 
  * @author Jacob Hookom
- * @version $Id: InsertHandler.java,v 1.7 2008/07/13 19:01:42 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="ui:insert")
 public final class InsertHandler extends TagHandler implements TemplateClient

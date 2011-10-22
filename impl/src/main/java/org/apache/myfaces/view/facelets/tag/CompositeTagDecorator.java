@@ -28,7 +28,7 @@ import org.apache.myfaces.view.facelets.util.ParameterCheck;
  * stop processing if any of the TagDecorators return a value other than null.
  * 
  * @author Jacob Hookom
- * @version $Id: CompositeTagDecorator.java,v 1.5 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public final class CompositeTagDecorator implements TagDecorator
 {
@@ -45,7 +45,7 @@ public final class CompositeTagDecorator implements TagDecorator
      * Uses the chain of responsibility pattern to stop processing if any of the TagDecorators return a value other than
      * null.
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagDecorator#decorate(org.apache.myfaces.view.facelets.tag.Tag)
+     * @see javax.faces.view.facelets.TagDecorator#decorate(javax.faces.view.facelets.Tag)
      */
     public Tag decorate(Tag tag)
     {
@@ -62,3 +62,4 @@ public final class CompositeTagDecorator implements TagDecorator
     }
 
 }
+

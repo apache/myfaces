@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 /**
  * @author Jacob Hookom
- * @version $Id: IterationStatus.java,v 1.4 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 public final class IterationStatus implements Serializable
 {

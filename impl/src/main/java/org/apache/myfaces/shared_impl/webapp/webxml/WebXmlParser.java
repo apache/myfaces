@@ -40,8 +40,8 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
- * @author Manfred Geiler (latest modification by $Author: lu4242 $)
- * @version $Revision: 1041085 $ $Date: 2010-12-01 12:15:31 -0500 (Mié, 01 Dic 2010) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class WebXmlParser
 {

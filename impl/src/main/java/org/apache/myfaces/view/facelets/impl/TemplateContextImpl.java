@@ -47,8 +47,8 @@ import org.apache.myfaces.view.facelets.TemplateManager;
 
 /**
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 947351 $ $Date: 2010-05-22 19:19:48 -0500 (Sáb, 22 May 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 2.0.1
  */
 public class TemplateContextImpl extends TemplateContext

@@ -30,8 +30,8 @@ import java.io.ObjectStreamClass;
  * the input stream.  The solution appears to be to subclass ObjectInputStream
  * (eg. CustomInputStream), and specify a different class-loading mechanism.
  *
- * @author Robert Gothan <robert@funkyjazz.net> (latest modification by $Author: schof $)
- * @version $Revision: 382015 $ $Date: 2006-03-01 08:47:11 -0500 (Wed, 01 Mar 2006) $
+ * @author Robert Gothan <robert@funkyjazz.net> (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class MyFacesObjectInputStream
     extends ObjectInputStream

@@ -23,8 +23,8 @@ import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.component.html.HtmlPanelGrid;
 
 /**
- * @author Leonardo Uribe (latest modification by $Author: jankeesvanandel $)
- * @version $Revision: 799929 $ $Date: 2009-08-01 16:29:33 -0500 (sáb, 01 ago 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class HtmlGraphicImageClientBehaviorRendererTest extends AbstractClientBehaviorTestCase
 {

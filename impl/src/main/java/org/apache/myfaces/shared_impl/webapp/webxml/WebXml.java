@@ -32,8 +32,8 @@ import javax.faces.webapp.FacesServlet;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 
 /**
- * @author Manfred Geiler (latest modification by $Author: lu4242 $)
- * @version $Revision: 1031726 $ $Date: 2010-11-05 14:15:42 -0500 (Vie, 05 Nov 2010) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class WebXml
 {

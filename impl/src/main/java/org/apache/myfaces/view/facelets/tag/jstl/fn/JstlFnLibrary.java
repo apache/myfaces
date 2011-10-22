@@ -33,7 +33,7 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
  * Library for JSTL Functions
  * 
  * @author Jacob Hookom
- * @version $Id: JstlFnLibrary.java,v 1.3 2008/07/13 19:01:51 rlubke Exp $
+ * @version $Id$
  */
 public class JstlFnLibrary implements TagLibrary
 {

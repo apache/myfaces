@@ -46,7 +46,7 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * TODO: REFACTOR - This class could easily use a common parent with DecoratorHandler
  * 
  * @author Jacob Hookom
- * @version $Id: CompositionHandler.java,v 1.14 2008/07/13 19:01:42 rlubke Exp $
+ * @version $Id$
  */
 @JSFFaceletTag(name="ui:composition")
 public final class CompositionHandler extends TagHandler implements TemplateClient

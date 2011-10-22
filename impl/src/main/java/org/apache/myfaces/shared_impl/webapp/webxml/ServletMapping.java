@@ -19,8 +19,8 @@
 package org.apache.myfaces.shared_impl.webapp.webxml;
 
 /**
- * @author Manfred Geiler (latest modification by $Author: matzew $)
- * @version $Revision: 557350 $ $Date: 2007-07-18 13:19:50 -0500 (Mié, 18 Jul 2007) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class ServletMapping
 {

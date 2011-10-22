@@ -32,7 +32,7 @@ import javax.faces.view.facelets.FaceletException;
  * 'true'.
  * 
  * @author Jacob Hookom
- * @version $Id: TemplateClient.java,v 1.3 2008/07/13 19:01:39 rlubke Exp $
+ * @version $Id$
  */
 public interface TemplateClient
 {

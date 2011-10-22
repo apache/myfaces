@@ -22,7 +22,7 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
 /**
  * @author Jacob Hookom
- * @version $Id: JstlCoreLibrary.java,v 1.5 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 public final class JstlCoreLibrary extends AbstractTagLibrary
 {

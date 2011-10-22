@@ -39,8 +39,8 @@ import javax.faces.view.facelets.FaceletException;
  * The methods here are only used by the current implementation and the intention
  * is not expose it as public api.
  * 
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 947351 $ $Date: 2010-05-22 19:19:48 -0500 (Sáb, 22 May 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  * @since 2.0.1
  */
 public abstract class TemplateContext

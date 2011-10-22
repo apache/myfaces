@@ -21,8 +21,8 @@ package org.apache.myfaces.shared.context.flash;
 import javax.faces.FacesException;
 
 /**
- * @author Ganesh Jung (latest modification by $Author: $)
- * @version $Revision: $ $Date: $
+ * @author Ganesh Jung (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class FlashScopeDisabledException extends FacesException
 {

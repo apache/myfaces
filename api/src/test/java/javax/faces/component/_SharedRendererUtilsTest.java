@@ -32,8 +32,8 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 
 /**
- * @author Jakob Korherr (latest modification by $Author: $)
- * @version $Revision: $ $Date: $
+ * @author Jakob Korherr (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class _SharedRendererUtilsTest extends AbstractJsfTestCase
 {

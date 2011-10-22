@@ -35,7 +35,7 @@ import org.apache.myfaces.view.facelets.TemplateContext;
  * @see java.util.Map
  * 
  * @author Jacob Hookom
- * @version $Id: DefaultVariableMapper.java,v 1.3 2008/07/13 19:01:43 rlubke Exp $
+ * @version $Id$
  */
 public final class DefaultVariableMapper extends VariableMapperBase
 {

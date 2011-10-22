@@ -34,8 +34,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.RelocatableResourceHandler;
 /**
  * 
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 931412 $ $Date: 2010-04-06 21:56:36 -0500 (Mar, 06 Abr 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 @JSFFaceletTag(
         name = "h:outputStylesheet",

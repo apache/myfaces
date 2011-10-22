@@ -22,7 +22,7 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
 /**
  * @author Jacob Hookom
- * @version $Id: AbstractHtmlLibrary.java,v 1.3 2008/07/13 19:01:50 rlubke Exp $
+ * @version $Id$
  */
 public abstract class AbstractHtmlLibrary extends AbstractTagLibrary
 {

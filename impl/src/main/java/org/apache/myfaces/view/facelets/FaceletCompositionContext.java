@@ -29,8 +29,8 @@ import javax.faces.view.facelets.FaceletContext;
 
 /**
  * @since 2.0.1
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 899026 $ $Date: 2010-01-13 20:47:14 -0500 (Mié, 13 Ene 2010) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 abstract public class FaceletCompositionContext
 {

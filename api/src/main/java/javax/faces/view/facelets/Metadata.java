@@ -24,7 +24,7 @@ import javax.faces.view.facelets.FaceletContext;
  * External information on how to wire dynamic or literal state to the passed Object instance.
  * 
  * @author Jacob Hookom
- * @version $Id: Metadata.java,v 1.3 2008/07/13 19:01:35 rlubke Exp $
+ * @version $Id$
  */
 public abstract class Metadata
 {

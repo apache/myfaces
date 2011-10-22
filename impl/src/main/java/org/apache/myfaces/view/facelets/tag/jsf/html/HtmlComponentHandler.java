@@ -24,7 +24,7 @@ import javax.faces.view.facelets.MetaRuleset;
 
 /**
  * @author Jacob Hookom
- * @version $Id: HtmlComponentHandler.java,v 1.3 2008/07/13 19:01:50 rlubke Exp $
+ * @version $Id$
  */
 public class HtmlComponentHandler extends ComponentHandler
 {

@@ -48,7 +48,7 @@ import org.apache.myfaces.view.facelets.util.ParameterCheck;
  * Default FaceletFactory implementation.
  * 
  * @author Jacob Hookom
- * @version $Id: DefaultFaceletFactory.java,v 1.10 2007/04/09 01:13:17 youngm Exp $
+ * @version $Id$
  */
 public final class DefaultFaceletFactory extends FaceletFactory
 {

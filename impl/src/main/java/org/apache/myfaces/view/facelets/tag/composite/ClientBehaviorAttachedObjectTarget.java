@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import javax.faces.view.BehaviorHolderAttachedObjectTarget;
 
 /**
- * @author Leonardo Uribe (latest modification by $Author: lu4242 $)
- * @version $Revision: 808704 $ $Date: 2009-08-27 19:56:06 -0500 (jue, 27 ago 2009) $
+ * @author Leonardo Uribe (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public interface ClientBehaviorAttachedObjectTarget extends BehaviorHolderAttachedObjectTarget
 {

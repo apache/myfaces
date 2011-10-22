@@ -33,7 +33,7 @@ import javax.faces.view.facelets.FaceletHandler;
  * 
  * @deprecated use javax.faces.view.facelets.CompositeFaceletHandler
  * @author Jacob Hookom
- * @version $Id: CompositeFaceletHandler.java,v 1.5 2008/07/13 19:01:36 rlubke Exp $
+ * @version $Id$
  */
 public final class CompositeFaceletHandler implements FaceletHandler
 {

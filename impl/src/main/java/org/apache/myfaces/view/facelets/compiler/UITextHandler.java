@@ -36,7 +36,7 @@ import org.apache.myfaces.view.facelets.util.FastWriter;
 
 /**
  * @author Jacob Hookom
- * @version $Id: UITextHandler.java,v 1.10 2008/07/13 19:01:33 rlubke Exp $
+ * @version $Id$
  */
 final class UITextHandler extends AbstractUIHandler
 {
