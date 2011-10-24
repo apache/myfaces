@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces</groupId>
         <artifactId>myfaces</artifactId>
-        <version>10</version>
+        <version>11-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -90,7 +90,6 @@
                   -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.6</version>
                 <executions>
                     <execution>
                         <id>verify-style</id>
@@ -186,6 +185,36 @@
 
     
     <profiles>
+        <profile>
+            <!-- TODO: delete me after the cleanup is done. This profile only exists temporarily!-->
+            <id>checkstyle</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!--
+                          - Make a checkstyle violation a compile error. Note that if a compile error occurs,
+                          - further information can be found in target/site/checkstyle.html (present even when
+                          - just the compile goal and not the site goal has been run). Note also that child
+                          - projects may redeclare this plugin and provide different configuration settings
+                          - to use different checks (more or less strict than the default).
+                          -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>verify-style</id>
+                                <phase>verify</phase>
+                                <goals><goal>check</goal></goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <configLocation>default/myfaces-checks-standard.xml</configLocation>
+                            <headerLocation>default/myfaces-header.txt</headerLocation>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
         <!-- TODO jakobk: we could change this to -Papache-release -->
         <!--
