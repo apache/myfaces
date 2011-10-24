@@ -195,12 +195,16 @@ public abstract class ViewHandler
     }
 
     /**
-     * Returns a URL, suitable for encoding and rendering, that (if activated) will cause the JSF request processing lifecycle for the specified viewId to be executed
+     * Returns a URL, suitable for encoding and rendering, that (if activated) will cause the JSF
+     * request processing lifecycle for the specified viewId to be executed
      */
     public abstract String getActionURL(FacesContext context, String viewId);
 
     /**
-     * Return a JSF action URL derived from the viewId argument that is suitable to be used as the target of a link in a JSF response. Compiliant implementations must implement this method as specified in section JSF.7.5.2. The default implementation simply calls through to getActionURL(javax.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
+     * Return a JSF action URL derived from the viewId argument that is suitable to be used as
+     * the target of a link in a JSF response. Compiliant implementations must implement this method
+     * as specified in section JSF.7.5.2. The default implementation simply calls through to
+     * getActionURL(javax.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
      * @param context
      * @param viewId
@@ -229,8 +233,10 @@ public abstract class ViewHandler
      */
     public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId)
     {
-        // TODO: In some places like RestoreViewExecutor, we are calling deriveViewId after call restoreViewSupport.calculateViewId
-        // Maybe this method should be called from here, because it is supposed that calculateViewId "calculates the view id!"
+        // TODO: In some places like RestoreViewExecutor, we are calling deriveViewId
+        // TODO: after call restoreViewSupport.calculateViewId
+        // Maybe this method should be called from here, because it is supposed that
+        // calculateViewId "calculates the view id!"
         
         // here we return null to support pre jsf 2.0 ViewHandlers (e.g. com.sun.facelets.FaceletViewHandler),
         // because they don't provide any ViewDeclarationLanguage,
@@ -239,7 +245,11 @@ public abstract class ViewHandler
     }
 
     /**
-     * Return a JSF action URL derived from the viewId argument that is suitable to be used by the NavigationHandler to issue a redirect request to the URL using a NonFaces request. Compiliant implementations must implement this method as specified in section JSF.7.5.2. The default implementation simply calls through to getActionURL(javax.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
+     * Return a JSF action URL derived from the viewId argument that is suitable to be used by
+     * the NavigationHandler to issue a redirect request to the URL using a NonFaces request.
+     * Compiliant implementations must implement this method as specified in section JSF.7.5.2.
+     * The default implementation simply calls through to
+     * getActionURL(javax.faces.context.FacesContext, java.lang.String), passing the arguments context and viewId.
      * 
      * @param context
      * @param viewId
@@ -256,16 +266,23 @@ public abstract class ViewHandler
     }
 
     /**
-     * Returns a URL, suitable for encoding and rendering, that (if activated) will retrieve the specified web application resource.
+     * Returns a URL, suitable for encoding and rendering, that (if activated)
+     * will retrieve the specified web application resource.
      */
     public abstract String getResourceURL(FacesContext context, String path);
 
     /**
      * Initialize the view for the request processing lifecycle.
      * <P>
-     * This method must be called at the beginning of the Restore View Phase of the Request Processing Lifecycle. It is responsible for performing any per-request initialization necessary to the operation of the lifycecle.
+     * This method must be called at the beginning of the Restore View Phase of the Request
+     * Processing Lifecycle. It is responsible for performing any per-request initialization
+     * necessary to the operation of the lifycecle.
      * <P>
-     * The default implementation must perform the following actions. If ExternalContext.getRequestCharacterEncoding() returns null, call calculateCharacterEncoding(javax.faces.context.FacesContext) and pass the result, if non-null, into the ExternalContext.setRequestCharacterEncoding(java.lang.String) method. If ExternalContext.getRequestCharacterEncoding() returns non-null take no action.
+     * The default implementation must perform the following actions. If
+     * ExternalContext.getRequestCharacterEncoding() returns null, call
+     * calculateCharacterEncoding(javax.faces.context.FacesContext) and pass the result,
+     * if non-null, into the ExternalContext.setRequestCharacterEncoding(java.lang.String) method.
+     * If ExternalContext.getRequestCharacterEncoding() returns non-null take no action.
      * 
      * @since JSF 1.2
      */
@@ -286,23 +303,38 @@ public abstract class ViewHandler
     }
 
     /**
-     *  Perform whatever actions are required to render the response view to the response object associated with the current FacesContext.
+     *  Perform whatever actions are required to render the response view to the
+     *  response object associated with the current FacesContext.
      *  <P>
-     *  Otherwise, the default implementation must obtain a reference to the ViewDeclarationLanguage for the viewId of the argument viewToRender and call its ViewDeclarationLanguage.renderView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot) method, returning the result and not swallowing any exceptions thrown by that method.
+     *  Otherwise, the default implementation must obtain a reference to the
+     *  ViewDeclarationLanguage for the viewId of the argument viewToRender and call its
+     *  ViewDeclarationLanguage.renderView(javax.faces.context.FacesContext, javax.faces.component.UIViewRoot)
+     *  method, returning the result and not swallowing any exceptions thrown by that method.
      */
     public abstract void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException;
 
     /**
-     * Perform whatever actions are required to restore the view associated with the specified FacesContext and viewId. It may delegate to the restoreView of the associated StateManager to do the actual work of restoring the view. If there is no available state for the specified viewId, return null.
+     * Perform whatever actions are required to restore the view associated with the
+     * specified FacesContext and viewId. It may delegate to the restoreView of the
+     * associated StateManager to do the actual work of restoring the view. If there
+     * is no available state for the specified viewId, return null.
      * <P>
-     * Otherwise, the default implementation must obtain a reference to the ViewDeclarationLanguage for this viewId and call its ViewDeclarationLanguage.restoreView(javax.faces.context.FacesContext, java.lang.String) method, returning the result and not swallowing any exceptions thrown by that method.
+     * Otherwise, the default implementation must obtain a reference to the
+     * ViewDeclarationLanguage for this viewId and call its
+     * ViewDeclarationLanguage.restoreView(javax.faces.context.FacesContext, java.lang.String)
+     * method, returning the result and not swallowing any exceptions thrown by that method.
      */
     public abstract UIViewRoot restoreView(FacesContext context, String viewId);
 
     /**
-     * Take any appropriate action to either immediately write out the current state information (by calling StateManager.writeState(javax.faces.context.FacesContext, java.lang.Object), or noting where state information should later be written.
+     * Take any appropriate action to either immediately write out the current state information
+     * (by calling StateManager.writeState(javax.faces.context.FacesContext, java.lang.Object),
+     * or noting where state information should later be written.
      * <P>
-     * This method must do nothing if the current request is an Ajax request. When responding to Ajax requests, the state is obtained by calling StateManager.getViewState(javax.faces.context.FacesContext) and then written into the Ajax response during final encoding (UIViewRoot.encodeEnd(javax.faces.context.FacesContext). 
+     * This method must do nothing if the current request is an Ajax request. When responding
+     * to Ajax requests, the state is obtained by calling StateManager.getViewState(javax.faces.context.FacesContext)
+     * and then written into the Ajax response during
+     * final encoding (UIViewRoot.encodeEnd(javax.faces.context.FacesContext).
      */
     public abstract void writeState(FacesContext context) throws IOException;
 

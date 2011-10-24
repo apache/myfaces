@@ -73,8 +73,13 @@ import java.util.logging.Logger;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFComponent(type = "javax.faces.ComponentBase", family = "javax.faces.ComponentBase", desc = "base component when all components must inherit", tagClass = "javax.faces.webapp.UIComponentELTag", configExcluded = true)
-@JSFJspProperty(name = "binding", returnType = "javax.faces.component.UIComponent", longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind to this component instance. This value must be an EL expression.", desc = "backing bean property to bind to this component instance")
+@JSFComponent(type = "javax.faces.ComponentBase", family = "javax.faces.ComponentBase",
+              desc = "base component when all components must inherit",
+              tagClass = "javax.faces.webapp.UIComponentELTag", configExcluded = true)
+@JSFJspProperty(name = "binding", returnType = "javax.faces.component.UIComponent",
+                longDesc = "Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind "
+                           + "to this component instance. This value must be an EL expression.",
+                desc = "backing bean property to bind to this component instance")
 public abstract class UIComponentBase extends UIComponent
 {
     //private static Log log = LogFactory.getLog(UIComponentBase.class);
@@ -306,7 +311,8 @@ public abstract class UIComponentBase extends UIComponent
             //log an error and return
             if(log.isLoggable(Level.SEVERE))
             {
-                log.severe("attempted to add a behavior to a component which did not properly implement getEventNames.  getEventNames must not return null");
+                log.severe("attempted to add a behavior to a component which did not properly "
+                           + "implement getEventNames.  getEventNames must not return null");
                 return;
             }
         }
@@ -449,14 +455,15 @@ public abstract class UIComponentBase extends UIComponent
     
             if (isRendered())
             {
-                // If our rendered property is true, render the beginning of the current state of this UIComponent to the
-                // response contained in the specified FacesContext.
+                // If our rendered property is true, render the beginning of the current state of this
+                // UIComponent to the response contained in the specified FacesContext.
     
                 // Call Application.publishEvent(java.lang.Class, java.lang.Object), passing BeforeRenderEvent.class as
                 // the first argument and the component instance to be rendered as the second argument.
     
-                //The main issue we have here is that the listeners are normally just registered to UIComponent, how do we deal with inherited ones?
-                //We have to ask the EG
+                // The main issue we have here is that the listeners are normally just registered
+                // to UIComponent, how do we deal with inherited ones?
+                // We have to ask the EG
                 context.getApplication().publishEvent(context,  PreRenderComponentEvent.class, UIComponent.class, this);
     
                 Renderer renderer = getRenderer(context);
@@ -807,7 +814,8 @@ public abstract class UIComponentBase extends UIComponent
             if (containerClientId != null)
             {
                 StringBuilder bld = __getSharedStringBuilder(context);
-                _clientId = bld.append(containerClientId).append(UINamingContainer.getSeparatorChar(context)).append(id).toString();
+                _clientId = bld.append(containerClientId).append(
+                                      UINamingContainer.getSeparatorChar(context)).append(id).toString();
             }
             else
             {
@@ -861,7 +869,8 @@ public abstract class UIComponentBase extends UIComponent
      */
     public Collection<String> getEventNames()
     {
-        // must be specified by the implementing component.  Returning null will force an error message in addClientBehavior.
+        // must be specified by the implementing component.
+        // Returning null will force an error message in addClientBehavior.
         return null;
     }
 
@@ -1779,7 +1788,8 @@ public abstract class UIComponentBase extends UIComponent
                 return null;
             }
             
-            return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved, systemEventListenerClassMapSaved};
+            return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
+                                 systemEventListenerClassMapSaved};
         }
         else
         {
@@ -1911,7 +1921,8 @@ public abstract class UIComponentBase extends UIComponent
             _unmodifiableBehaviorsMap = null;
             for (Map.Entry<String, Object> entry : stateMap.entrySet())
             {
-                _behaviorsMap.put(entry.getKey(), (List<ClientBehavior>) restoreAttachedState(facesContext, entry.getValue()));
+                _behaviorsMap.put(entry.getKey(),
+                                  (List<ClientBehavior>) restoreAttachedState(facesContext, entry.getValue()));
             }
         }
         else
@@ -1939,11 +1950,13 @@ public abstract class UIComponentBase extends UIComponent
                 if (savedObject instanceof _AttachedDeltaWrapper)
                 {
                     StateHolder holderList = (StateHolder) _behaviorsMap.get(entry.getKey());
-                    holderList.restoreState(facesContext, ((_AttachedDeltaWrapper) savedObject).getWrappedStateObject());
+                    holderList.restoreState(facesContext,
+                                            ((_AttachedDeltaWrapper) savedObject).getWrappedStateObject());
                 }
                 else
                 {
-                    _behaviorsMap.put(entry.getKey(), (List<ClientBehavior>) restoreAttachedState(facesContext, savedObject));
+                    _behaviorsMap.put(entry.getKey(),
+                                      (List<ClientBehavior>) restoreAttachedState(facesContext, savedObject));
                 }
             }
         }
@@ -2009,10 +2022,12 @@ public abstract class UIComponentBase extends UIComponent
         {
             Map<Class<? extends SystemEvent>, Object> stateMap = (Map<Class<? extends SystemEvent>, Object>) stateObj;
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
-            _systemEventListenerClassMap = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>(initCapacity);
+            _systemEventListenerClassMap
+                    = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>(initCapacity);
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
-                _systemEventListenerClassMap.put(entry.getKey(), (List<SystemEventListener>) restoreAttachedState(facesContext, entry.getValue()));
+                _systemEventListenerClassMap.put(entry.getKey(),
+                        (List<SystemEventListener>) restoreAttachedState(facesContext, entry.getValue()));
             }
         }
         else
@@ -2030,7 +2045,8 @@ public abstract class UIComponentBase extends UIComponent
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
             if (_systemEventListenerClassMap == null)
             {
-                _systemEventListenerClassMap = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>(initCapacity);
+                _systemEventListenerClassMap
+                        = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>(initCapacity);
             }
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
@@ -2038,11 +2054,13 @@ public abstract class UIComponentBase extends UIComponent
                 if (savedObject instanceof _AttachedDeltaWrapper)
                 {
                     StateHolder holderList = (StateHolder) _systemEventListenerClassMap.get(entry.getKey());
-                    holderList.restoreState(facesContext, ((_AttachedDeltaWrapper) savedObject).getWrappedStateObject());
+                    holderList.restoreState(facesContext,
+                                            ((_AttachedDeltaWrapper) savedObject).getWrappedStateObject());
                 }
                 else
                 {
-                    _systemEventListenerClassMap.put(entry.getKey(), (List<SystemEventListener>) restoreAttachedState(facesContext, savedObject));
+                    _systemEventListenerClassMap.put(entry.getKey(),
+                            (List<SystemEventListener>) restoreAttachedState(facesContext, savedObject));
                 }
             }
         }
@@ -2054,9 +2072,11 @@ public abstract class UIComponentBase extends UIComponent
         {
             if (initialStateMarked())
             {
-                HashMap<Class<? extends SystemEvent>, Object> stateMap = new HashMap<Class<? extends SystemEvent>, Object>(_systemEventListenerClassMap.size(), 1);
+                HashMap<Class<? extends SystemEvent>, Object> stateMap
+                        = new HashMap<Class<? extends SystemEvent>, Object>(_systemEventListenerClassMap.size(), 1);
                 boolean nullDelta = true;
-                for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry : _systemEventListenerClassMap.entrySet())
+                for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry
+                        : _systemEventListenerClassMap.entrySet())
                 {
                     // The list is always an instance of _DeltaList so we can cast to
                     // PartialStateHolder 
@@ -2066,8 +2086,8 @@ public abstract class UIComponentBase extends UIComponent
                         Object attachedState = holder.saveState(facesContext);
                         if (attachedState != null)
                         {
-                            stateMap.put(entry.getKey(), new _AttachedDeltaWrapper(_systemEventListenerClassMap.getClass(),
-                                    attachedState));
+                            stateMap.put(entry.getKey(),
+                                    new _AttachedDeltaWrapper(_systemEventListenerClassMap.getClass(), attachedState));
                             nullDelta = false;
                         }
                     }
@@ -2088,7 +2108,8 @@ public abstract class UIComponentBase extends UIComponent
                 //Save it in the traditional way
                 HashMap<Class<? extends SystemEvent>, Object> stateMap = 
                     new HashMap<Class<? extends SystemEvent>, Object>(_systemEventListenerClassMap.size(), 1);
-                for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry : _systemEventListenerClassMap.entrySet())
+                for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry
+                        : _systemEventListenerClassMap.entrySet())
                 {
                     stateMap.put(entry.getKey(), saveAttachedState(facesContext, entry.getValue()));
                 }
@@ -2166,9 +2187,9 @@ public abstract class UIComponentBase extends UIComponent
         // 2. First character must be a letter or an underscore ('_').
         if (!Character.isLetter(string.charAt(0)) && string.charAt(0) != '_')
         {
-            throw new IllegalArgumentException(
-                                               "component identifier's first character must be a letter or an underscore ('_')! But it is \""
-                                                       + string.charAt(0) + "\"");
+            throw new IllegalArgumentException("component identifier's first character must be a letter "
+                                               + "or an underscore ('_')! But it is \""
+                                               + string.charAt(0) + "\"");
         }
         for (int i = 1; i < string.length(); i++)
         {
@@ -2176,9 +2197,10 @@ public abstract class UIComponentBase extends UIComponent
             // 3. Subsequent characters must be a letter, a digit, an underscore ('_'), or a dash ('-').
             if (!Character.isLetterOrDigit(c) && c != '-' && c != '_')
             {
-                throw new IllegalArgumentException(
-                                                   "Subsequent characters of component identifier must be a letter, a digit, an underscore ('_'), or a dash ('-')! But component identifier contains \""
-                                                           + c + "\"");
+                throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, "
+                                                   + "a digit, an underscore ('_'), or a dash ('-')! "
+                                                   + "But component identifier contains \""
+                                                   + c + "\"");
             }
         }
     }

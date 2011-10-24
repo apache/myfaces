@@ -28,17 +28,21 @@ import javax.faces.event.ActionListener;
  *
  * @author Stan Silvert
  */
-class _MethodBindingToActionListener extends _MethodBindingToListener implements ActionListener {
+class _MethodBindingToActionListener extends _MethodBindingToListener implements ActionListener
+{
     
-    public _MethodBindingToActionListener() {
+    public _MethodBindingToActionListener()
+    {
         super();
     }
     
-    public _MethodBindingToActionListener(MethodBinding methodBinding) {
+    public _MethodBindingToActionListener(MethodBinding methodBinding)
+    {
         super(methodBinding);
     }
     
-    public void processAction(ActionEvent actionEvent) throws AbortProcessingException {
+    public void processAction(ActionEvent actionEvent) throws AbortProcessingException
+    {
         invokeMethodBinding(actionEvent);
     }
     

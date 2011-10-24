@@ -61,7 +61,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     @Override
     public void endDocument() throws IOException
     {
-        if (hasChanges) {
+        if (hasChanges)
+        {
             // Close the <insert> element, if any.
             //error close the last op if any
             endInsert();
@@ -98,7 +99,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
 
     public void endInsert() throws IOException
     {
-        if (insertType == null) {
+        if (insertType == null)
+        {
             // No insert started; ignore.
             
             return;
@@ -161,12 +163,14 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     }
 
     @Override
-    public void startCDATA() throws IOException {
+    public void startCDATA() throws IOException
+    {
         _wrapped.startCDATA();
     }
 
     @Override
-    public void endCDATA() throws IOException {
+    public void endCDATA() throws IOException
+    {
         _wrapped.endCDATA();    
     }
 
@@ -234,7 +238,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         attrNames = attributes.keySet().iterator();
         
-        while (attrNames.hasNext()) {
+        while (attrNames.hasNext())
+        {
             String attrName = attrNames.next();
             
             _wrapped.startElement ("attribute", null);
@@ -246,7 +251,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         _wrapped.endElement ("attributes");
     }
     
-    private void startChanges () throws IOException {
+    private void startChanges () throws IOException
+    {
         if (!hasChanges) {
             _wrapped.startElement ("changes", null);
             
@@ -254,8 +260,10 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         }
     }
     
-    private void startInsertCommon (String type, String targetId) throws IOException {
-        if (insertType != null) {
+    private void startInsertCommon (String type, String targetId) throws IOException
+    {
+        if (insertType != null)
+        {
             // An insert has already been started; ignore.
             
             return;

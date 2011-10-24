@@ -57,7 +57,8 @@ abstract class _UISelectItems extends UIComponentBase
    */
   @JSFProperty(tagExcluded=true)
   @Override
-  public void setRendered(boolean state) {
+  public void setRendered(boolean state)
+  {
       super.setRendered(state);
       //call parent method due TCK problems
       //throw new UnsupportedOperationException();
@@ -82,7 +83,8 @@ abstract class _UISelectItems extends UIComponentBase
    */
   @JSFExclude
   @JSFProperty(literalOnly = true)
-  public String getVar() {
+  public String getVar()
+  {
       return null;
   }
   
@@ -94,7 +96,8 @@ abstract class _UISelectItems extends UIComponentBase
    */
   @JSFExclude
   @JSFProperty
-  public Object getItemValue() {
+  public Object getItemValue()
+  {
       return null;
   }
   
@@ -106,7 +109,8 @@ abstract class _UISelectItems extends UIComponentBase
    */
   @JSFExclude
   @JSFProperty
-  public String getItemLabel() {
+  public String getItemLabel()
+  {
       return null;
   }
   
@@ -118,7 +122,8 @@ abstract class _UISelectItems extends UIComponentBase
    */
   @JSFExclude
   @JSFProperty
-  public String getItemDescription() {
+  public String getItemDescription()
+  {
       return null;
   }
   
@@ -130,7 +135,8 @@ abstract class _UISelectItems extends UIComponentBase
    */
   @JSFExclude
   @JSFProperty(defaultValue = "false", deferredValueType="java.lang.Boolean")
-  public boolean isItemDisabled() {
+  public boolean isItemDisabled()
+  {
       return false;
   }
   
@@ -143,7 +149,8 @@ abstract class _UISelectItems extends UIComponentBase
    */
   @JSFExclude
   @JSFProperty(defaultValue = "true", deferredValueType="java.lang.Boolean")
-  public boolean isItemLabelEscaped() {
+  public boolean isItemLabelEscaped()
+  {
       return true;
   }
 

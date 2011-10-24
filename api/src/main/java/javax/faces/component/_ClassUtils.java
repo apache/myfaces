@@ -391,19 +391,27 @@ final class _ClassUtils
      * 
      * @return ClassLoader
      */
-    protected static ClassLoader getContextClassLoader(){
-        if (System.getSecurityManager() != null) {
-            try {
-                Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction() {
+    protected static ClassLoader getContextClassLoader()
+    {
+        if (System.getSecurityManager() != null)
+        {
+            try
+            {
+                Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction()
+                {
                             public Object run() throws PrivilegedActionException {
                                 return Thread.currentThread().getContextClassLoader();
                             }
-                        });
+                });
                 return (ClassLoader) cl;
-            } catch (PrivilegedActionException pae) {
+            }
+            catch (PrivilegedActionException pae)
+            {
                 throw new FacesException(pae);
             }
-        }else{
+        }
+        else
+        {
             return Thread.currentThread().getContextClassLoader();
         }
     }   

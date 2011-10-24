@@ -109,14 +109,18 @@ public final class FactoryFinder
         try
         {
             ClassLoader classLoader;
-            if (System.getSecurityManager() != null) {
-                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction() {
-                    public Object run() {
+            if (System.getSecurityManager() != null)
+            {
+                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction()
+                {
+                    public Object run()
+                    {
                         return FactoryFinder.class.getClassLoader();
                     }
                 });
             }
-            else {
+            else
+            {
                 classLoader = FactoryFinder.class.getClassLoader();
             }
 
@@ -132,7 +136,7 @@ public final class FactoryFinder
         }
     }
 
-    // ~ Start FactoryFinderProvider Support ------------------------------------------------------------------------------------
+    // ~ Start FactoryFinderProvider Support
     
     private static Object _factoryFinderProviderFactoryInstance;
     
@@ -147,7 +151,7 @@ public final class FactoryFinder
         }
     }
 
-    // ~ End FactoryFinderProvider Support ------------------------------------------------------------------------------------
+    // ~ End FactoryFinderProvider Support
 
     // avoid instantiation
     FactoryFinder()
@@ -204,27 +208,43 @@ public final class FactoryFinder
             try
             {
                 //Obtain the FactoryFinderProvider instance for this context.
-                Object ffp = _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD.invoke(
-                            _factoryFinderProviderFactoryInstance, null);
+                Object ffp = _FactoryFinderProviderFactory
+                        .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
+                        .invoke(_factoryFinderProviderFactoryInstance, null);
                 
                 //Call getFactory method and pass the params
-                return _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_GET_FACTORY_METHOD.invoke(ffp, factoryName);
-            } catch (InvocationTargetException e) {
+                return _FactoryFinderProviderFactory
+                        .FACTORY_FINDER_PROVIDER_GET_FACTORY_METHOD.invoke(ffp, factoryName);
+            } catch (InvocationTargetException e)
+            {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof NullPointerException) {
+                if (targetException instanceof NullPointerException)
+                {
                     throw (NullPointerException) targetException;
-                } else if (targetException instanceof FacesException) {
+                }
+                else if (targetException instanceof FacesException)
+                {
                     throw (FacesException) targetException;
-                } else if (targetException instanceof IllegalArgumentException) {
+                }
+                else if (targetException instanceof IllegalArgumentException)
+                {
                     throw (IllegalArgumentException) targetException;
-                } else if (targetException instanceof IllegalStateException) {
+                }
+                else if (targetException instanceof IllegalStateException)
+                {
                     throw (IllegalStateException) targetException;
-                } else if (targetException == null) {
+                }
+                else if (targetException == null)
+                {
                     throw new FacesException(e);
-                } else {
+                }
+                else
+                {
                     throw new FacesException(targetException);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 //No Op
                 throw new FacesException(e);
             }
@@ -247,10 +267,14 @@ public final class FactoryFinder
 
             if (factoryClassNames == null)
             {
-                String message = "No Factories configured for this Application. This happens if the faces-initialization "
-                        + "does not work at all - make sure that you properly include all configuration settings necessary for a basic faces application "
-                        + "and that all the necessary libs are included. Also check the logging output of your web application and your container for any exceptions!"
-                        + "\nIf you did that and find nothing, the mistake might be due to the fact that you use some special web-containers which "
+                String message
+                        = "No Factories configured for this Application. This happens if the faces-initialization "
+                        + "does not work at all - make sure that you properly include all configuration "
+                        + "settings necessary for a basic faces application "
+                        + "and that all the necessary libs are included. Also check the logging output of your "
+                        + "web application and your container for any exceptions!"
+                        + "\nIf you did that and find nothing, the mistake might be due to the fact "
+                        + "that you use some special web-containers which "
                         + "do not support registering context-listeners via TLD files and "
                         + "a context listener is not setup in your web.xml.\n"
                         + "A typical config looks like this;\n<listener>\n"
@@ -397,25 +421,40 @@ public final class FactoryFinder
             try
             {
                 //Obtain the FactoryFinderProvider instance for this context.
-                Object ffp = _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD.invoke(
-                        _factoryFinderProviderFactoryInstance,null);
+                Object ffp = _FactoryFinderProviderFactory
+                        .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
+                        .invoke(_factoryFinderProviderFactoryInstance,null);
                 
                 //Call getFactory method and pass the params
-                _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_SET_FACTORY_METHOD.invoke(ffp, factoryName, implName);
-            } catch (InvocationTargetException e) {
+                _FactoryFinderProviderFactory
+                        .FACTORY_FINDER_PROVIDER_SET_FACTORY_METHOD.invoke(ffp, factoryName, implName);
+            }
+            catch (InvocationTargetException e)
+            {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof NullPointerException) {
+                if (targetException instanceof NullPointerException)
+                {
                     throw (NullPointerException) targetException;
-                } else if (targetException instanceof FacesException) {
+                }
+                else if (targetException instanceof FacesException)
+                {
                     throw (FacesException) targetException;
-                } else if (targetException instanceof IllegalArgumentException) {
+                }
+                else if (targetException instanceof IllegalArgumentException)
+                {
                     throw (IllegalArgumentException) targetException;
-                } else if (targetException == null) {
+                }
+                else if (targetException == null)
+                {
                     throw new FacesException(e);
-                } else {
+                }
+                else
+                {
                     throw new FacesException(targetException);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 //No Op
                 throw new FacesException(e);
             }
@@ -477,8 +516,9 @@ public final class FactoryFinder
             try
             {
                 //Obtain the FactoryFinderProvider instance for this context.
-                Object ffp = _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD.invoke(
-                        _factoryFinderProviderFactoryInstance, null);
+                Object ffp = _FactoryFinderProviderFactory
+                        .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
+                        .invoke(_factoryFinderProviderFactoryInstance, null);
                 
                 //Call getFactory method and pass the params
                 _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_RELEASE_FACTORIES_METHOD.invoke(ffp, null);
@@ -533,14 +573,18 @@ public final class FactoryFinder
         try
         {
             ClassLoader classLoader = null;
-            if (System.getSecurityManager() != null) {                
-                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction() {
-                    public Object run() {
+            if (System.getSecurityManager() != null)
+            {
+                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction()
+                {
+                    public Object run()
+                    {
                         return Thread.currentThread().getContextClassLoader();
                     }
                 });
             }
-            else {
+            else
+            {
                 classLoader = Thread.currentThread().getContextClassLoader();
             }
             

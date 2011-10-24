@@ -28,12 +28,14 @@ import java.util.Map;
  * @since 2.0
  */
 
-public class ScopeContext {
+public class ScopeContext
+{
 
     String _scopeName;
     Map<String, Object> _scope;
 
-    public ScopeContext(String scopeName, Map<String, Object> scope) {
+    public ScopeContext(String scopeName, Map<String, Object> scope)
+    {
         _scopeName = scopeName;
         _scope = scope;
     }
@@ -41,14 +43,16 @@ public class ScopeContext {
     /**
      * @return the scope name stored in the context
      */
-    public String getScopeName() {
+    public String getScopeName()
+    {
         return _scopeName;
     }
 
     /**
      * @return the scope data
      */
-    public Map<String, Object> getScope() {
+    public Map<String, Object> getScope()
+    {
         return _scope;
     }
 }

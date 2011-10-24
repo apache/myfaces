@@ -28,15 +28,18 @@ package javax.faces.event;
  * @since 2.0
  */
 
-public class PostConstructCustomScopeEvent extends SystemEvent {
-    public PostConstructCustomScopeEvent(ScopeContext source) {
+public class PostConstructCustomScopeEvent extends SystemEvent
+{
+    public PostConstructCustomScopeEvent(ScopeContext source)
+    {
         super(source);
     }
 
     /**
      * @return the source as scope context representation for this event
      */
-    public ScopeContext getContext() {
+    public ScopeContext getContext()
+    {
         return (ScopeContext) source;
     }
 }

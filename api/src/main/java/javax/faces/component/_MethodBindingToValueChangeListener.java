@@ -29,17 +29,21 @@ import javax.faces.event.ValueChangeListener;
  *
  * @author Stan Silvert
  */
-class _MethodBindingToValueChangeListener extends _MethodBindingToListener implements ValueChangeListener {
-    
-    public _MethodBindingToValueChangeListener() {
+class _MethodBindingToValueChangeListener extends _MethodBindingToListener implements ValueChangeListener
+{
+
+    public _MethodBindingToValueChangeListener()
+    {
         super();
     }
-    
-    public _MethodBindingToValueChangeListener(MethodBinding methodBinding) {
+
+    public _MethodBindingToValueChangeListener(MethodBinding methodBinding)
+    {
         super(methodBinding);
     }
-    
-    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException {
+
+    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
+    {
         invokeMethodBinding(event);
     }
 

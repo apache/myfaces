@@ -83,7 +83,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <p>Note this param is ignored for components extending from UISelectOne/UISelectMany.</p>
      **/
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
-    private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
+    private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME
+            = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
 
     // our own, cached key
     private static final String MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME =
@@ -422,7 +423,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             // continue for this lifecycle phase, as in all the other lifecycle phases.
             UpdateModelException updateModelException = new UpdateModelException(facesMessage, e);
             ExceptionQueuedEventContext exceptionQueuedContext 
-                    = new ExceptionQueuedEventContext (context, updateModelException, this, PhaseId.UPDATE_MODEL_VALUES);
+                    = new ExceptionQueuedEventContext(context, updateModelException, this, PhaseId.UPDATE_MODEL_VALUES);
             
             // spec javadoc says we should call context.getExceptionHandler().processEvent(exceptionQueuedContext),
             // which is not just syntactically wrong, but also stupid!!
@@ -475,7 +476,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     private boolean shouldInterpretEmptyStringSubmittedValuesAsNull(FacesContext context)
     {
         ExternalContext ec = context.getExternalContext();
-        Boolean interpretEmptyStringAsNull = (Boolean)ec.getApplicationMap().get(MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME);
+        Boolean interpretEmptyStringAsNull
+                = (Boolean)ec.getApplicationMap().get(MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME);
 
         // not yet cached...
         if (interpretEmptyStringAsNull == null)
@@ -758,7 +760,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * @deprecated
      */
     @SuppressWarnings("dep-ann")
-    @JSFProperty(stateHolder=true, returnSignature = "void", methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
+    @JSFProperty(stateHolder=true, returnSignature = "void",
+            methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
     public MethodBinding getValidator()
     {
         return (MethodBinding) getStateHelper().eval(PropertyKeys.validator);
@@ -833,7 +836,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
-    @JSFProperty(stateHolder=true, returnSignature = "void", methodSignature = "javax.faces.event.ValueChangeEvent", clientEvent="valueChange")
+    @JSFProperty(stateHolder=true, returnSignature = "void",
+                 methodSignature = "javax.faces.event.ValueChangeEvent", clientEvent="valueChange")
     public MethodBinding getValueChangeListener()
     {
         return (MethodBinding) getStateHelper().eval(PropertyKeys.valueChangeListener);

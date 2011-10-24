@@ -284,8 +284,10 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                 if (attribute.getName().equals(key))
                                 {
                                     String attributeName = attribute.getName();
-                                    boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
-                                            || "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
+                                    boolean isKnownMethod = "action".equals(attributeName)
+                                            || "actionListener".equals(attributeName)
+                                            || "validator".equals(attributeName)
+                                            || "valueChangeListener".equals(attributeName);
                                     
                                     // <composite:attribute> method-signature attribute is 
                                     // ValueExpression that must evaluate to String
@@ -296,10 +298,12 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                     {
                                         // Check if the value expression holds a method signature
                                         // Note that it could be null, so in that case we don't have to do anything
-                                        methodSignature = (String) methodSignatureExpression.getValue(_component.getFacesContext().getELContext());
+                                        methodSignature = (String) methodSignatureExpression.getValue(
+                                                                    _component.getFacesContext().getELContext());
                                     }
                                     
-                                    // either the attributeName has to be a knownMethod or there has to be a method-signature
+                                    // either the attributeName has to be a knownMethod
+                                    // or there has to be a method-signature
                                     if (isKnownMethod || methodSignature != null)
                                     {
                                         //In this case it is expecting a ValueExpression
@@ -489,7 +493,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         Method readMethod = propertyDescriptor.getReadMethod();
         if (readMethod == null)
         {
-            throw new IllegalArgumentException("Component property " + propertyDescriptor.getName() + " is not readable");
+            throw new IllegalArgumentException("Component property " + propertyDescriptor.getName()
+                                               + " is not readable");
         }
         try
         {
@@ -498,7 +503,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         catch (Exception e)
         {
             FacesContext facesContext = _component.getFacesContext();
-            throw new FacesException("Could not get property " + propertyDescriptor.getName() + " of component " + _component.getClientId(facesContext), e);
+            throw new FacesException("Could not get property " + propertyDescriptor.getName() + " of component "
+                                     + _component.getClientId(facesContext), e);
         }
     }
 
@@ -516,7 +522,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         Method writeMethod = propertyDescriptor.getWriteMethod();
         if (writeMethod == null)
         {
-            throw new IllegalArgumentException("Component property " + propertyDescriptor.getName() + " is not writable");
+            throw new IllegalArgumentException("Component property " + propertyDescriptor.getName()
+                                               + " is not writable");
         }
         try
         {
@@ -551,7 +558,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     Map<String, Object> getUnderlyingMap()
     {
-        Map _attributes = (Map<String, Object>) _component.getStateHelper().get(UIComponentBase.PropertyKeys.attributesMap);
+        Map _attributes
+                = (Map<String, Object>) _component.getStateHelper().get(UIComponentBase.PropertyKeys.attributesMap);
         return _attributes == null ? Collections.EMPTY_MAP : _attributes; 
     }
 

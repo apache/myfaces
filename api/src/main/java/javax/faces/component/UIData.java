@@ -639,14 +639,16 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         if (_initialDescendantFullComponentState != null)
         {
             //Just save the row
-            Map<String, Object> sm = saveFullDescendantComponentStates(facesContext, null, getChildren().iterator(), false);
+            Map<String, Object> sm = saveFullDescendantComponentStates(facesContext, null,
+                                                                       getChildren().iterator(), false);
             if (sm != null && !sm.isEmpty())
             {
                 _rowDeltaStates.put(getContainerClientId(facesContext), sm);
             }
             if (_rowIndex != -1)
             {
-                _rowTransientStates.put(getContainerClientId(facesContext), saveTransientDescendantComponentStates(facesContext, null, getChildren().iterator(), false));
+                _rowTransientStates.put(getContainerClientId(facesContext),
+                        saveTransientDescendantComponentStates(facesContext, null, getChildren().iterator(), false));
             }
         }
 
@@ -685,12 +687,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             if (rowState == null)
             {
                 //Restore as original
-                restoreFullDescendantComponentStates(facesContext, getChildren().iterator(), _initialDescendantFullComponentState, false);
+                restoreFullDescendantComponentStates(facesContext, getChildren().iterator(),
+                        _initialDescendantFullComponentState, false);
             }
             else
             {
                 //Restore first original and then delta
-                restoreFullDescendantComponentDeltaStates(facesContext, getChildren().iterator(), rowState, _initialDescendantFullComponentState, false);
+                restoreFullDescendantComponentDeltaStates(facesContext, getChildren().iterator(),
+                        rowState, _initialDescendantFullComponentState, false);
             }
             if (_rowIndex == -1)
             {
@@ -825,7 +829,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @param iterateFacets
      * @param restoreChildFacets 
      */
-    private void restoreDescendantComponentWithoutRestoreState(UIComponent parent, boolean iterateFacets, boolean restoreChildFacets)
+    private void restoreDescendantComponentWithoutRestoreState(UIComponent parent, boolean iterateFacets,
+                                                               boolean restoreChildFacets)
     {
         if (iterateFacets && parent.getFacetCount() > 0)
         {
@@ -1056,7 +1061,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             if (getFacesContext().getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE))
             {
-                _initialDescendantFullComponentState = saveDescendantInitialComponentStates(getFacesContext(), getChildren().iterator(), false);
+                _initialDescendantFullComponentState
+                        = saveDescendantInitialComponentStates(getFacesContext(), getChildren().iterator(), false);
             }
         }
         super.markInitialState();
@@ -1284,7 +1290,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     @SuppressWarnings("unchecked")
     /*
-    private void restoreTransientDescendantComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator, Object state,
+    private void restoreTransientDescendantComponentStates(FacesContext facesContext,
+    Iterator<UIComponent> childIterator, Object state,
                                                   boolean restoreChildFacets)
     {
         Iterator<? extends Object[]> descendantStateIterator = null;
@@ -1323,8 +1330,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
     }*/
     
-    private void restoreTransientDescendantComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator, Map<String, Object> state,
-            boolean restoreChildFacets)
+    private void restoreTransientDescendantComponentStates(FacesContext facesContext,
+                                                           Iterator<UIComponent> childIterator,
+                                                           Map<String, Object> state,
+                                                           boolean restoreChildFacets)
     {
         while (childIterator.hasNext())
         {
@@ -1334,7 +1343,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             component.setId(component.getId());
             if (!component.isTransient())
             {
-                component.restoreTransientState(facesContext, (state == null) ? null : state.get(component.getClientId(facesContext)));                    
+                component.restoreTransientState(facesContext,
+                        (state == null)
+                        ? null
+                        : state.get(component.getClientId(facesContext)));
                 
                 Iterator<UIComponent> childsIterator;
                 if (restoreChildFacets)
@@ -1364,7 +1376,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * may itself contain a collection of the state of that child's child components.
      */
     /*
-    private Collection<Object[]> saveTransientDescendantComponentStates(FacesContext facesContext, Iterator<UIComponent> childIterator,
+    private Collection<Object[]> saveTransientDescendantComponentStates(FacesContext facesContext,
+                                                               Iterator<UIComponent> childIterator,
                                                                boolean saveChildFacets)
     {
         Collection<Object[]> childStates = null;
@@ -1401,7 +1414,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         return childStates;
     }*/
     
-    private Map<String, Object> saveTransientDescendantComponentStates(FacesContext facesContext, Map<String, Object> childStates, Iterator<UIComponent> childIterator,
+    private Map<String, Object> saveTransientDescendantComponentStates(FacesContext facesContext,
+                                                                       Map<String, Object> childStates,
+                                                                       Iterator<UIComponent> childIterator,
             boolean saveChildFacets)
     {
         while (childIterator.hasNext())
@@ -1608,12 +1623,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
         uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
         getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
-        // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot. 
+        // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX,
+        // and will be unique within this UIViewRoot.
         if(seed==null)
         {
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();    
         }
-        // Optionally, a unique seed value can be supplied by component creators which should be included in the generated unique id.
+        // Optionally, a unique seed value can be supplied by component creators
+        // which should be included in the generated unique id.
         else
         {
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(seed).toString();
@@ -1912,7 +1929,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * This is complicated by the fact that this table may be nested within another table. In this case a different
      * datamodel should be fetched for each row. When nested within a parent table, the parent reference won't change
-     * but parent.getContainerClientId() will, as the suffix changes depending upon the current row index. A map object on this
+     * but parent.getContainerClientId() will, as the suffix changes
+     * depending upon the current row index. A map object on this
      * component is therefore used to cache the datamodel for each row of the table. In the normal case where this table
      * is not nested inside a component that changes its id (like a table does) then this map only ever has one entry.
      */

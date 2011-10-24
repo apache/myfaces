@@ -155,7 +155,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // Call getComponentResources to obtain the child list for the given target
         List<UIComponent> componentResources = _getComponentResources(context, target);
 
-        // If the component ID of componentResource matches the ID of a resource that has already been added, remove the old resource.
+        // If the component ID of componentResource matches the ID of a resource
+        // that has already been added, remove the old resource.
         String componentId = componentResource.getId();
         
         if (componentId == null)
@@ -253,7 +254,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         Events events = _getEvents(phaseId);
         
         // Spec. 3.4.2.6 Event Broadcasting:
-        // Queue one or more additional events, from the same source component or a different one, for processing during the
+        // Queue one or more additional events, from the same source
+        // component or a different one, for processing during the
         // current lifecycle phase.
         
         // Unfortunately with that requirement it is easy to create infinite loop in processing. One example can be:
@@ -302,7 +304,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                     String clientId = facesEvent.getComponent().getClientId(getFacesContext());
                     name.add(clientId);
                 }
-                logger.log(level, "Event broadcating for PhaseId {0} at UIViewRoot {1} reaches maximal limit, please check " +
+                logger.log(level,
+                        "Event broadcating for PhaseId {0} at UIViewRoot {1} reaches maximal limit, please check " +
                         "listeners for infinite recursion. Component id: {2}",
                         new Object [] {phaseId, getViewId(), name});
             }
@@ -331,12 +334,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
         uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
         getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
-        // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot. 
+        // Generate an identifier for a component. The identifier will be prefixed with
+        // UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot.
         if(seed==null)
         {
             return bld.append(UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();    
         }
-        // Optionally, a unique seed value can be supplied by component creators which should be included in the generated unique id.
+        // Optionally, a unique seed value can be supplied by component creators which
+        // should be included in the generated unique id.
         else
         {
             return bld.append(UNIQUE_ID_PREFIX).append(seed).toString();
@@ -418,10 +423,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             PartialViewContext partialContext = context.getPartialViewContext();
             if (!partialContext.isAjaxRequest())
             {
-                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, getViewId());
+                ViewDeclarationLanguage vdl
+                        = context.getApplication().getViewHandler().getViewDeclarationLanguage(context, getViewId());
                 if (vdl != null)
                 {
-                    // If the current view has view parameters, as indicated by a non-empty and non-UnsupportedOperationException throwing 
+                    // If the current view has view parameters, as indicated by a non-empty
+                    // and non-UnsupportedOperationException throwing
                     // return from ViewDeclarationLanguage.getViewMetadata(javax.faces.context.FacesContext, String)
                     ViewMetadata metadata = null;
                     try
@@ -449,7 +456,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                         }
                         catch(UnsupportedOperationException e)
                         {
-                            // If calling getViewParameters() causes UnsupportedOperationException to be thrown, the exception must be silently swallowed.
+                            // If calling getViewParameters() causes UnsupportedOperationException
+                            // to be thrown, the exception must be silently swallowed.
                         }
                     }
                 }
@@ -473,7 +481,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      *
      * @return the new afterPhaseListener value
      */
-    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "afterPhase", stateHolder=true)
+    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent",
+                 jspName = "afterPhase", stateHolder=true)
     public MethodExpression getAfterPhaseListener()
     {
         return (MethodExpression) getStateHelper().eval(PropertyKeys.afterPhaseListener);
@@ -485,7 +494,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      *
      * @return the new beforePhaseListener value
      */
-    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent", jspName = "beforePhase", stateHolder=true)
+    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent",
+                 jspName = "beforePhase", stateHolder=true)
     public MethodExpression getBeforePhaseListener()
     {
         return (MethodExpression) getStateHelper().eval(PropertyKeys.beforePhaseListener);
@@ -516,7 +526,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // If the facet is not found,
         if (facet == null)
         {
-            // create the facet by calling context.getApplication().createComponent()  using javax.faces.Panel as the argument
+            // create the facet by calling context.getApplication().createComponent()
+            // using javax.faces.Panel as the argument
             facet = context.getApplication().createComponent("javax.faces.Panel");
 
             // Set the id of the facet to be target
@@ -527,7 +538,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
 
         // Return the children of the facet
-        // The API doc indicates that this method should "Return an unmodifiable List of UIComponents for the provided target argument."
+        // The API doc indicates that this method should "Return an unmodifiable
+        // List of UIComponents for the provided target argument."
         // and also that "If no children are found for the facet, return Collections.emptyList()."
         List<UIComponent> children = facet.getChildren();
         return ( children == null ? Collections.<UIComponent>emptyList() : Collections.unmodifiableList(children) );
@@ -554,7 +566,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // If the facet is not found,
         if (facet == null)
         {
-            // create the facet by calling context.getApplication().createComponent()  using javax.faces.Panel as the argument
+            // create the facet by calling context.getApplication().createComponent()
+            // using javax.faces.Panel as the argument
             facet = context.getApplication().createComponent("javax.faces.ComponentResourceContainer");
 
             // Set the id of the facet to be target
@@ -851,7 +864,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                                              " in Phase " + phaseId, t);
                     if (beforePhase)
                     {
-                        return context.getResponseComplete() || (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
+                        return context.getResponseComplete() ||
+                                (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
                     }
                 }
             }
@@ -894,7 +908,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                                 logger.log(Level.SEVERE, "An Exception occured while processing the " +
                                                          "beforePhase method of PhaseListener " + phaseListener +
                                                          " in Phase " + phaseId, t);
-                                return context.getResponseComplete() || (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
+                                return context.getResponseComplete() ||
+                                        (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
                             }
                         }
                     }
@@ -939,7 +954,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
         if (beforePhase)
         {
-            return context.getResponseComplete() || (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
+            return context.getResponseComplete() ||
+                    (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
         }
         else
         {
@@ -971,7 +987,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      *
      * @return <code>true</code> if the broadcast was completed without abortion, <code>false</code> otherwise
      */
-    private void _broadcastAll(FacesContext context, Collection<? extends FacesEvent> events, Collection<FacesEvent> eventsAborted)
+    private void _broadcastAll(FacesContext context,
+                               Collection<? extends FacesEvent> events,
+                               Collection<FacesEvent> eventsAborted)
     {
         assert events != null;
 
@@ -1358,15 +1376,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
-            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId) with PhaseId.UPDATE_MODEL_VALUES if:
-            //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components in the view (PartialViewContext.isExecuteAll() returns false)
+            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId)
+            // with PhaseId.UPDATE_MODEL_VALUES if:
+            //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process all
+            // components in the view (PartialViewContext.isExecuteAll() returns false)
             //section 13.4.2 from the  JSF2  spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.APPLY_REQUEST_VALUES);
             }
-            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext) if one of the following conditions are met:
-            // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components in the view (PartialViewContext.isExecuteAll() returns true)
+            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext)
+            // if one of the following conditions are met:
+            // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components
+            // in the view (PartialViewContext.isExecuteAll() returns true)
             // *   PartialViewContext.isPartialRequest() returns false
             else
             {
@@ -1380,15 +1402,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
-            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId) with PhaseId.UPDATE_MODEL_VALUES if:
-            // PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components in the view (PartialViewContext.isExecuteAll() returns false)
+            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId)
+            // with PhaseId.UPDATE_MODEL_VALUES if:
+            // PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components
+            // in the view (PartialViewContext.isExecuteAll() returns false)
             //section 13.4.2 from the  JSF2  spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.PROCESS_VALIDATIONS);
             }
-            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext) if one of the following conditions are met:
-            // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components in the view (PartialViewContext.isExecuteAll() returns true)
+            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext)
+            // if one of the following conditions are met:
+            // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components
+            // in the view (PartialViewContext.isExecuteAll() returns true)
             // *   PartialViewContext.isPartialRequest() returns false
             else
             {
@@ -1402,15 +1428,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
-            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId) with PhaseId.UPDATE_MODEL_VALUES if:
-            //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components in the view (PartialViewContext.isExecuteAll() returns false)
+            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId)
+            // with PhaseId.UPDATE_MODEL_VALUES if:
+            //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process
+            // all components in the view (PartialViewContext.isExecuteAll() returns false)
             //section 13.4.2 from the JSF2 spec also see https://issues.apache.org/jira/browse/MYFACES-2119
             if (pvc.isPartialRequest() && !pvc.isExecuteAll())
             {
                 pvc.processPartial(PhaseId.UPDATE_MODEL_VALUES);
             }
-            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext) if one of the following conditions are met:
-            // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components in the view (PartialViewContext.isExecuteAll() returns true)
+            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext)
+            // if one of the following conditions are met:
+            // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components
+            // in the view (PartialViewContext.isExecuteAll() returns true)
             // *   PartialViewContext.isPartialRequest() returns false
             else
             {
