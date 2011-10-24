@@ -78,7 +78,7 @@ import javax.faces.validator.Validator;
 @SuppressWarnings("deprecation")
 public abstract class Application
 {
-    
+
     /**
      * Retrieve the current Myfaces Application Instance, lookup
      * on the application map. All methods introduced on jsf 1.2
@@ -100,12 +100,13 @@ public abstract class Application
             ExternalContext externalContext = facesContext.getExternalContext();
             if (externalContext != null)
             {
-                return (Application) externalContext.getApplicationMap().get("org.apache.myfaces.application.ApplicationImpl");
+                return (Application) externalContext.getApplicationMap().get(
+                                "org.apache.myfaces.application.ApplicationImpl");
             }
         }
         return null;
     }
-    
+
     private Application getMyfacesApplicationInstance(FacesContext facesContext)
     {
         if (facesContext != null)
@@ -113,12 +114,13 @@ public abstract class Application
             ExternalContext externalContext = facesContext.getExternalContext();
             if (externalContext != null)
             {
-                return (Application) externalContext.getApplicationMap().get("org.apache.myfaces.application.ApplicationImpl");
+                return (Application) externalContext.getApplicationMap().get(
+                                "org.apache.myfaces.application.ApplicationImpl");
             }
         }
         return null;
     }
-    
+
     // The concrete methods throwing UnsupportedOperationExceptiom were added for JSF 1.2.
     // They supply default to allows old Application implementations to still work.
 
@@ -361,7 +363,7 @@ public abstract class Application
      * @deprecated
      */
     public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context,
-                                                String componentType) throws FacesException;
+                    String componentType) throws FacesException;
 
     /**
      * <p>
@@ -391,7 +393,7 @@ public abstract class Application
      * @since 1.2
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType)
-            throws FacesException
+                    throws FacesException
     {
         Application application = getMyfacesApplicationInstance(context);
         if (application != null)
@@ -412,13 +414,12 @@ public abstract class Application
      * @since 2.0
      */
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
-                                       String rendererType)
+                    String rendererType)
     {
         Application application = getMyfacesApplicationInstance(context);
         if (application != null)
         {
-            return application.createComponent(componentExpression, context,
-                    componentType, rendererType);
+            return application.createComponent(componentExpression, context, componentType, rendererType);
         }
         throw new UnsupportedOperationException();
     }
@@ -527,7 +528,7 @@ public abstract class Application
      * @throws javax.el.ELException
      */
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType)
-            throws ELException
+                    throws ELException
     {
         Application application = getMyfacesApplicationInstance(context);
         if (application != null)
@@ -574,7 +575,7 @@ public abstract class Application
      * {@link javax.faces.component.ActionSource2}, and only implement {@link javax.faces.component.ActionSource}.
      */
     public abstract ActionListener getActionListener();
-    
+
     /**
      * 
      * @return
@@ -633,7 +634,7 @@ public abstract class Application
      * @return
      */
     public abstract String getDefaultRenderKitId();
-    
+
     /**
      * 
      * @return
@@ -902,7 +903,8 @@ public abstract class Application
      * 
      * @since 2.0
      */
-    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
+                    Class<?> sourceBaseType, Object source)
     {
         Application application = getMyfacesApplicationInstance(facesContext);
         if (application != null)
@@ -1154,7 +1156,7 @@ public abstract class Application
      * @since 2.0
      */
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
-                                 SystemEventListener listener)
+                    SystemEventListener listener)
     {
         Application application = getMyfacesApplicationInstance();
         if (application != null)
@@ -1192,7 +1194,7 @@ public abstract class Application
      * @since 2.0
      */
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
-                                     SystemEventListener listener)
+                    SystemEventListener listener)
     {
         Application application = getMyfacesApplicationInstance();
         if (application != null)
