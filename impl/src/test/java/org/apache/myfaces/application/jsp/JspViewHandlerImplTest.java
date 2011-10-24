@@ -18,13 +18,10 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import static org.apache.myfaces.Assert.assertException;
 import org.apache.myfaces.FacesTestCase;
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.shared.application.InvalidViewIdException;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
-
-import static org.easymock.EasyMock.*;
 import org.easymock.IAnswer;
 
 import javax.faces.application.ViewHandler;
@@ -32,7 +29,20 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import static org.apache.myfaces.Assert.assertException;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.same;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

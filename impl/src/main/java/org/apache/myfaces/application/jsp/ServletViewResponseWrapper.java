@@ -18,13 +18,16 @@
  */
 package org.apache.myfaces.application.jsp;
 
+import org.apache.myfaces.shared.view.ViewResponseWrapper;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-
-import org.apache.myfaces.shared.view.ViewResponseWrapper;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.CharArrayWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;

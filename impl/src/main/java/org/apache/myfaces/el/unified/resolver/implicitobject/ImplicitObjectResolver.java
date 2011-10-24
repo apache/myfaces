@@ -18,7 +18,11 @@
  */
 package org.apache.myfaces.el.unified.resolver.implicitobject;
 
-import javax.el.*;
+import javax.el.ELContext;
+import javax.el.ELException;
+import javax.el.ELResolver;
+import javax.el.PropertyNotFoundException;
+import javax.el.PropertyNotWritableException;
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;

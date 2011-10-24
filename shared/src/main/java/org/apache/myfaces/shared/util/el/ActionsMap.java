@@ -18,7 +18,12 @@
  */
 package org.apache.myfaces.shared.util.el;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Sylvain Vieujot (latest modification by $Author$)

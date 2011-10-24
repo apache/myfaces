@@ -18,17 +18,17 @@
  */
 package org.apache.myfaces.config.impl.digester;
 
-import java.io.IOException;
-import java.io.InputStream;
-import javax.faces.context.ExternalContext;
-
-import org.apache.myfaces.config.FacesConfigUnmarshaller;
-import org.apache.myfaces.config.impl.digester.elements.*;
-import org.apache.myfaces.config.impl.FacesConfigEntityResolver;
 import org.apache.commons.digester.Digester;
+import org.apache.myfaces.config.FacesConfigUnmarshaller;
+import org.apache.myfaces.config.impl.FacesConfigEntityResolver;
+import org.apache.myfaces.config.impl.digester.elements.*;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.faces.context.ExternalContext;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>

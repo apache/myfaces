@@ -18,14 +18,18 @@
  */
 package javax.faces.component.behavior;
 
+import javax.el.ValueExpression;
 import javax.faces.component.StateHelper;
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponentBase;
-import javax.faces.component.PartialStateHolder;
 import javax.faces.context.FacesContext;
-import javax.el.ValueExpression;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
  /**
  * @author Werner Punz (latest modification by $Author$)
