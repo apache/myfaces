@@ -21,7 +21,6 @@ package javax.faces.component;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
-import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.MethodBinding;

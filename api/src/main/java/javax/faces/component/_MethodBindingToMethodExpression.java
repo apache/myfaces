@@ -189,7 +189,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
     @Override
     public int hashCode()
     {
-        final int PRIME = 31;
+        int PRIME = 31;
         int result = 1;
         result = PRIME * result + ((methodBinding == null) ? 0 : methodBinding.hashCode());
         return result;
@@ -210,7 +210,7 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
         {
             return false;
         }
-        final _MethodBindingToMethodExpression other = (_MethodBindingToMethodExpression)obj;
+        _MethodBindingToMethodExpression other = (_MethodBindingToMethodExpression)obj;
         if (methodBinding == null)
         {
             if (other.methodBinding != null)

@@ -20,7 +20,6 @@
 package javax.faces.component;
 
 import javax.faces.FacesException;
-import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.MethodBinding;
@@ -32,17 +31,20 @@ import javax.faces.event.FacesEvent;
  *
  * @author Stan Silvert
  */
-abstract class _MethodBindingToListener implements StateHolder {
-    
+abstract class _MethodBindingToListener implements StateHolder
+{
+
     protected MethodBinding methodBinding;
-    
-    public _MethodBindingToListener() {
+
+    public _MethodBindingToListener()
+    {
     }
-    
+
     /**
      * Creates a new instance of MethodBindingToListener
      */
-    public _MethodBindingToListener(MethodBinding methodBinding) {
+    public _MethodBindingToListener(MethodBinding methodBinding)
+    {
         if (methodBinding == null)
         {
             throw new NullPointerException("methodBinding can not be null");
@@ -51,58 +53,71 @@ abstract class _MethodBindingToListener implements StateHolder {
         {
             throw new IllegalArgumentException("methodBinding must implement the StateHolder interface");
         }
-        
+
         this.methodBinding = methodBinding;
     }
 
-    private FacesContext getFacesContext() {
+    private FacesContext getFacesContext()
+    {
         return FacesContext.getCurrentInstance();
     }
 
-    protected void invokeMethodBinding(FacesEvent event) throws AbortProcessingException {
-        try {
-            methodBinding.invoke(getFacesContext(), new Object[] {event});
+    protected void invokeMethodBinding(FacesEvent event) throws AbortProcessingException
+    {
+        try
+        {
+            methodBinding.invoke(getFacesContext(), new Object[]{event});
         }
-        catch (EvaluationException e) {
+        catch (EvaluationException e)
+        {
             Throwable cause = e.getCause();
-            if (cause != null && cause instanceof AbortProcessingException) {
-                throw (AbortProcessingException)cause;
+            if (cause != null && cause instanceof AbortProcessingException)
+            {
+                throw (AbortProcessingException) cause;
             }
-            
+
             throw e;
         }
     }
-    
-    public MethodBinding getMethodBinding() {
+
+    public MethodBinding getMethodBinding()
+    {
         return methodBinding;
     }
-    
-    public void restoreState(FacesContext context, Object state) {
-        Object[] stateArray = (Object[])state;
-        try {
-            methodBinding = (MethodBinding)_ClassUtils.getContextClassLoader()
-                                                 .loadClass((String)stateArray[0])
-                                                 .newInstance();
-        } catch (Exception e) {
+
+    public void restoreState(FacesContext context, Object state)
+    {
+        Object[] stateArray = (Object[]) state;
+        try
+        {
+            methodBinding = (MethodBinding) _ClassUtils.getContextClassLoader()
+                    .loadClass((String) stateArray[0])
+                    .newInstance();
+        }
+        catch (Exception e)
+        {
             throw new FacesException(e);
         }
-       
-        ((StateHolder)methodBinding).restoreState(context, stateArray[1]);
+
+        ((StateHolder) methodBinding).restoreState(context, stateArray[1]);
     }
 
-    public Object saveState(FacesContext context) {
+    public Object saveState(FacesContext context)
+    {
         Object[] stateArray = new Object[2];
         stateArray[0] = methodBinding.getClass().getName();
-        stateArray[1] = ((StateHolder)methodBinding).saveState(context);
+        stateArray[1] = ((StateHolder) methodBinding).saveState(context);
         return stateArray;
     }
 
-    public void setTransient(boolean newTransientValue) {
-        ((StateHolder)methodBinding).setTransient(newTransientValue);
+    public void setTransient(boolean newTransientValue)
+    {
+        ((StateHolder) methodBinding).setTransient(newTransientValue);
     }
 
-    public boolean isTransient() {
-        return ((StateHolder)methodBinding).isTransient();
+    public boolean isTransient()
+    {
+        return ((StateHolder) methodBinding).isTransient();
     }
-    
+
 }

@@ -19,7 +19,6 @@
 package javax.faces.view.facelets;
 
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
-import javax.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 

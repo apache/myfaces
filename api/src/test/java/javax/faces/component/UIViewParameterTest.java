@@ -75,7 +75,7 @@ public class UIViewParameterTest extends AbstractJsfTestCase
      */
     public void testDecodeSetOnlyNonNullSubmittedValue()
     {
-        final String notNull = "not null";
+        String notNull = "not null";
         viewParameter.setSubmittedValue(notNull);
         
         // explicitly set the value in the request parameter map to null

@@ -18,8 +18,6 @@
  */
 package javax.faces.view.facelets;
 
-import javax.faces.view.facelets.FaceletHandler;
-
 /**
  * @author Simon Lessard (latest modification by $Author$)
  * @version $Revision$ $Date$

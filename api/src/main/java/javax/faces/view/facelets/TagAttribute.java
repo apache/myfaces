@@ -22,7 +22,6 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.view.Location;
-import javax.faces.view.facelets.FaceletContext;
 
 /**
  * Representation of a Tag's attribute in a Facelet File

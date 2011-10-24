@@ -210,9 +210,9 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     /**
      * Call put(key, value) for each entry in the provided map.
      */
-    public void putAll(Map<? extends String, ? extends Object> t)
+    public void putAll(Map<? extends String, ?> t)
     {
-        for (Map.Entry<? extends String, ? extends Object> entry : t.entrySet())
+        for (Map.Entry<? extends String, ?> entry : t.entrySet())
         {
             put(entry.getKey(), entry.getValue());
         }

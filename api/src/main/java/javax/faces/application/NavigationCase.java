@@ -249,7 +249,7 @@ public class NavigationCase
                 builder.append("\">\n");
                 for (Map.Entry<String, List<String>> entry : _parameters.entrySet())
                 {
-                    final String name = entry.getKey();
+                    String name = entry.getKey();
                     for (String value : entry.getValue())
                     {
                         builder.append("    <view-param>\n");

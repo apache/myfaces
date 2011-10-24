@@ -214,8 +214,8 @@ public class FacesMessageTest extends TestCase
 
     public void testSerialization() throws Exception
     {
-        final String summary = "summary";
-        final String detail = "detail";
+        String summary = "summary";
+        String detail = "detail";
         FacesMessage msg = new FacesMessage(summary, detail);
 
         // check if properties are set correctly

@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class AbstractUIComponentPropertyTest<T extends Object>
+public abstract class AbstractUIComponentPropertyTest<T>
 {
     private final String _property;
     private final T _defaultValue;

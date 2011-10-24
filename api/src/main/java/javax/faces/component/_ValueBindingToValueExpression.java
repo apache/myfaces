@@ -139,7 +139,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
     @Override
     public int hashCode()
     {
-        final int PRIME = 31;
+        int PRIME = 31;
         int result = 1;
         result = PRIME * result + (_transient ? 1231 : 1237);
         result = PRIME * result + ((_valueBinding == null) ? 0 : _valueBinding.hashCode());
@@ -161,7 +161,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
         {
             return false;
         }
-        final _ValueBindingToValueExpression other = (_ValueBindingToValueExpression)obj;
+        _ValueBindingToValueExpression other = (_ValueBindingToValueExpression)obj;
         if (_transient != other._transient)
         {
             return false;

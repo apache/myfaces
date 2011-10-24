@@ -419,7 +419,7 @@ public class UISelectMany extends UIInput
         }
         else
         {
-            Class<? extends Object> valueClass = convertedValue.getClass();
+            Class<?> valueClass = convertedValue.getClass();
             if (valueClass.isArray())
             {
                 return new _PrimitiveArrayIterator(convertedValue);

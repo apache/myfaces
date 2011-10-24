@@ -203,7 +203,7 @@ public class LengthValidator
             return false;
         }
 
-        final LengthValidator lengthValidator = (LengthValidator)o;
+        LengthValidator lengthValidator = (LengthValidator)o;
 
         if (_maximum != null ? !_maximum.equals(lengthValidator._maximum) : lengthValidator._maximum != null)
         {

@@ -1065,7 +1065,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @SuppressWarnings("unchecked")
     private Map<String, List<Object[]>> _getDebugInfoMap()
     {
-        final Map<String, Object> requestMap = getFacesContext()
+        Map<String, Object> requestMap = getFacesContext()
                 .getExternalContext().getRequestMap();
         Map<String, List<Object[]>> debugInfo = (Map<String, List<Object[]>>) 
                 requestMap.get(DEBUG_INFO_KEY + getClientId());

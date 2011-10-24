@@ -19,7 +19,6 @@
 package javax.faces.view.facelets;
 
 import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
 
 /**
  * Implementation of the tag logic used in the JSF specification. This is your golden hammer for wiring UIComponents to

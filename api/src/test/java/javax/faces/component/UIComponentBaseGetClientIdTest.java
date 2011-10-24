@@ -79,7 +79,7 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
 
     public void testWithRenderer() throws Exception
     {
-        final String id = "testId";
+        String id = "testId";
         final String expectedClientId = "convertedClientId";
         _testImpl = new UIOutput()
         {
@@ -101,8 +101,8 @@ public class UIComponentBaseGetClientIdTest extends AbstractComponentTest
 
     public void testWithParentNamingContainer() throws Exception
     {
-        final String id = "testId";
-        final String containerClientId = "containerClientId";
+        String id = "testId";
+        String containerClientId = "containerClientId";
         String expectedClientId = containerClientId + NamingContainer.SEPARATOR_CHAR + id;
         
         UIComponent namingContainer = new UINamingContainer();

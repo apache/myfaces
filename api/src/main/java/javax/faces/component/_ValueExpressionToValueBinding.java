@@ -50,7 +50,7 @@ class _ValueExpressionToValueBinding extends ValueBinding implements StateHolder
     @Override
     public int hashCode()
     {
-        final int PRIME = 31;
+        int PRIME = 31;
         int result = 1;
         result = PRIME * result + ((_valueExpression == null) ? 0 : _valueExpression.hashCode());
         result = PRIME * result + (isTransient ? 1231 : 1237);
@@ -72,7 +72,7 @@ class _ValueExpressionToValueBinding extends ValueBinding implements StateHolder
         {
             return false;
         }
-        final _ValueExpressionToValueBinding other = (_ValueExpressionToValueBinding) obj;
+        _ValueExpressionToValueBinding other = (_ValueExpressionToValueBinding) obj;
         if (_valueExpression == null)
         {
             if (other._valueExpression != null)

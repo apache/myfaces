@@ -590,7 +590,7 @@ public abstract class UIComponentBase extends UIComponent
             return null;
         }
 
-        final char separatorChar = UINamingContainer.getSeparatorChar(getFacesContext());
+        char separatorChar = UINamingContainer.getSeparatorChar(getFacesContext());
         UIComponent findBase;
         if (expr.charAt(0) == separatorChar)
         {

@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
 
 /**
  * @author Simon Lessard (latest modification by $Author$)

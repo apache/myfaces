@@ -147,18 +147,18 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
 
         // Obtain a reference to the to-be-validated object and the property name.
-        final _ValueReferenceWrapper reference = getValueReference(valueExpression, context);
+        _ValueReferenceWrapper reference = getValueReference(valueExpression, context);
         if (reference == null)
         {
             return;
         }
-        final Object base = reference.getBase();
+        Object base = reference.getBase();
         if (base == null)
         {
             return;
         }
         
-        final Class<?> valueBaseClass = base.getClass();
+        Class<?> valueBaseClass = base.getClass();
         if (valueBaseClass == null)
         {
             return;
@@ -172,31 +172,31 @@ public class BeanValidator implements Validator, PartialStateHolder
             // can exit bean validation here
             return;
         }
-        final String valueProperty = (String) referenceProperty;
+        String valueProperty = (String) referenceProperty;
 
         // Initialize Bean Validation.
-        final ValidatorFactory validatorFactory = createValidatorFactory(context);
-        final javax.validation.Validator validator = createValidator(validatorFactory);
-        final BeanDescriptor beanDescriptor = validator.getConstraintsForClass(valueBaseClass);
+        ValidatorFactory validatorFactory = createValidatorFactory(context);
+        javax.validation.Validator validator = createValidator(validatorFactory);
+        BeanDescriptor beanDescriptor = validator.getConstraintsForClass(valueBaseClass);
         if (!beanDescriptor.isBeanConstrained())
         {
             return;
         }
         
         // Note that validationGroupsArray was initialized when createValidator was called
-        final Class[] validationGroupsArray = this.validationGroupsArray;
+        Class[] validationGroupsArray = this.validationGroupsArray;
 
         // Delegate to Bean Validation.
-        final Set constraintViolations = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
+        Set constraintViolations = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
         if (!constraintViolations.isEmpty())
         {
-            final Set<FacesMessage> messages = new LinkedHashSet<FacesMessage>(constraintViolations.size());
+            Set<FacesMessage> messages = new LinkedHashSet<FacesMessage>(constraintViolations.size());
             for (Object violation: constraintViolations)
             {
-                final ConstraintViolation constraintViolation = (ConstraintViolation) violation;
-                final String message = constraintViolation.getMessage();
-                final Object[] args = new Object[]{ message, _MessageUtils.getLabel(context, component) };
-                final FacesMessage msg = _MessageUtils.getErrorMessage(context, MESSAGE_ID, args);
+                ConstraintViolation constraintViolation = (ConstraintViolation) violation;
+                String message = constraintViolation.getMessage();
+                Object[] args = new Object[]{ message, _MessageUtils.getLabel(context, component) };
+                FacesMessage msg = _MessageUtils.getErrorMessage(context, MESSAGE_ID, args);
                 messages.add(msg);
             }
             throw new ValidatorException(messages);
@@ -232,13 +232,13 @@ public class BeanValidator implements Validator, PartialStateHolder
     private _ValueReferenceWrapper getValueReference(
             final ValueExpression valueExpression, final FacesContext context)
     {
-        final ELContext elCtx = context.getELContext();
+        ELContext elCtx = context.getELContext();
         if (_ExternalSpecifications.isUnifiedELAvailable())
         {
             // unified el 2.2 is available --> we can use ValueExpression.getValueReference()
             // we can't access ValueExpression.getValueReference() directly here, because
             // Class loading would fail in applications with el-api versions prior to 2.2
-            final _ValueReferenceWrapper wrapper = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
+            _ValueReferenceWrapper wrapper = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
             if (wrapper != null)
             {
                 if (wrapper.getProperty() == null)
@@ -291,7 +291,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             {
                 if (_ExternalSpecifications.isBeanValidationAvailable())
                 {
-                    final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+                    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
                     applicationMap.put(VALIDATOR_FACTORY_KEY, attr);
                     return factory;
                 }
@@ -315,8 +315,8 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
         else
         {
-            final String[] classes = this.validationGroups.split(VALIDATION_GROUPS_DELIMITER);
-            final List<Class<?>> validationGroupsList = new ArrayList<Class<?>>(classes.length);
+            String[] classes = this.validationGroups.split(VALIDATION_GROUPS_DELIMITER);
+            List<Class<?>> validationGroupsList = new ArrayList<Class<?>>(classes.length);
 
             for (String clazz : classes)
             {
@@ -477,7 +477,7 @@ final class _FacesMessageInterpolatorHolder
         _FacesMessageInterpolatorHolder.FacesMessageInterpolator ret = instance;
         if (ret == null)
         {
-            final MessageInterpolator interpolator = validatorFactory.getMessageInterpolator();
+            MessageInterpolator interpolator = validatorFactory.getMessageInterpolator();
             instance = ret = new FacesMessageInterpolator(interpolator);
         }
         return ret;
@@ -497,7 +497,7 @@ final class _FacesMessageInterpolatorHolder
 
         public String interpolate(final String s, final Context context)
         {
-            final Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+            Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
             return interpolator.interpolate(s, context, locale);
         }
 
@@ -585,8 +585,8 @@ final class _ValueReferenceResolver extends ELResolver
      */
     public static _ValueReferenceWrapper resolve(ValueExpression valueExpression, final ELContext elCtx)
     {
-        final _ValueReferenceResolver resolver = new _ValueReferenceResolver(elCtx.getELResolver());
-        final ELContext elCtxDecorator = new _ELContextDecorator(elCtx, resolver);
+        _ValueReferenceResolver resolver = new _ValueReferenceResolver(elCtx.getELResolver());
+        ELContext elCtxDecorator = new _ELContextDecorator(elCtx, resolver);
         
         valueExpression.getValue(elCtxDecorator);
         

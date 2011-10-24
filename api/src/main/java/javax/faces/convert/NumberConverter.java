@@ -603,7 +603,6 @@ public class NumberConverter
                         {
                             java14 = 2;
                         }
-                        ;
                     default:
                         idx = 0;
                         version = null;

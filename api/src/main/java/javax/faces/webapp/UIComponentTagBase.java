@@ -31,7 +31,7 @@ import javax.servlet.jsp.tagext.JspTag;
  * @since 1.2
  */
 
-public abstract class UIComponentTagBase extends Object implements JspTag
+public abstract class UIComponentTagBase implements JspTag
 {
 
     protected static Logger log = Logger.getLogger("javax.faces.webapp");

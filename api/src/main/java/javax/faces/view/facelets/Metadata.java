@@ -18,8 +18,6 @@
  */
 package javax.faces.view.facelets;
 
-import javax.faces.view.facelets.FaceletContext;
-
 /**
  * External information on how to wire dynamic or literal state to the passed Object instance.
  * 

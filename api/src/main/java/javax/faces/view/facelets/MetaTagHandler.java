@@ -18,8 +18,6 @@
  */
 package javax.faces.view.facelets;
 
-import javax.faces.view.facelets.FaceletContext;
-
 /**
  * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.
  * 

@@ -230,7 +230,7 @@ public class LongRangeValidator
             return false;
         }
 
-        final LongRangeValidator longRangeValidator = (LongRangeValidator)o;
+        LongRangeValidator longRangeValidator = (LongRangeValidator)o;
 
         if (_maximum != null ? !_maximum.equals(longRangeValidator._maximum) : longRangeValidator._maximum != null)
         {

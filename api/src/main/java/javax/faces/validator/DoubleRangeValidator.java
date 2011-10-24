@@ -231,7 +231,7 @@ public class DoubleRangeValidator
             return false;
         }
 
-        final DoubleRangeValidator doubleRangeValidator = (DoubleRangeValidator)o;
+        DoubleRangeValidator doubleRangeValidator = (DoubleRangeValidator)o;
 
         if (_maximum != null ? !_maximum.equals(doubleRangeValidator._maximum) : doubleRangeValidator._maximum != null)
         {

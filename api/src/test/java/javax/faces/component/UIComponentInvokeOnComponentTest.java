@@ -65,7 +65,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
     @Test
     public void testInvokeOnComponentWithSameClientId() throws Exception
     {
-        final UIComponent testimpl = new UIOutput();
+        UIComponent testimpl = new UIOutput();
         testimpl.setId("xxxId");
 
         //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
@@ -99,7 +99,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
     public void testInvokeOnComponentAndNotFindComponentWithClientId() throws Exception
     {
         //List<UIComponent> emptyList = Collections.emptyList();
-        final UIComponent testimpl = new UIPanel();
+        UIComponent testimpl = new UIPanel();
         testimpl.setId("xxxId");
 
         //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
@@ -112,7 +112,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
     @Test
     public void testInvokeOnComponentOnChild() throws Exception
     {
-        final UIComponent testimpl = new UIPanel();
+        UIComponent testimpl = new UIPanel();
         testimpl.setId("xxxId");
         //EasyMock.expect(_testimpl.getClientId(EasyMock.same(facesContext))).andReturn("xxxId");
         String childId = "childId";

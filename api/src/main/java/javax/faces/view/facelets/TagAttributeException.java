@@ -18,8 +18,6 @@
  */
 package javax.faces.view.facelets;
 
-import javax.faces.view.facelets.FaceletException;
-
 /**
  * An Exception caused by a TagAttribute
  * 
