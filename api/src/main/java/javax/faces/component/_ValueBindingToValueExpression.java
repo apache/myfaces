@@ -47,7 +47,7 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
     private static final long serialVersionUID = 8071429285360496554L;
 
     //private static final Log logger = LogFactory.getLog(_ValueBindingToValueExpression.class);
-    private static final Logger logger = Logger.getLogger(_ValueBindingToValueExpression.class.getName());
+    private static final Logger log = Logger.getLogger(_ValueBindingToValueExpression.class.getName());
 
     private ValueBinding _valueBinding;
 
@@ -139,10 +139,10 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
     @Override
     public int hashCode()
     {
-        int PRIME = 31;
+        int prime = 31;
         int result = 1;
-        result = PRIME * result + (_transient ? 1231 : 1237);
-        result = PRIME * result + ((_valueBinding == null) ? 0 : _valueBinding.hashCode());
+        result = prime * result + (_transient ? 1231 : 1237);
+        result = prime * result + ((_valueBinding == null) ? 0 : _valueBinding.hashCode());
         return result;
     }
 
@@ -207,7 +207,8 @@ class _ValueBindingToValueExpression extends ValueExpression implements StateHol
             }
             catch (Throwable e)
             {
-                logger.log(Level.WARNING, "Could not determine expected type for '" + _valueBinding.getExpressionString() + "': "
+                log.log(Level.WARNING, "Could not determine expected type for '"
+                        + _valueBinding.getExpressionString() + "': "
                         + e.getMessage(), e);
             }
         }

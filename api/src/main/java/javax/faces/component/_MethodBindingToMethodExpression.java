@@ -189,9 +189,9 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
     @Override
     public int hashCode()
     {
-        int PRIME = 31;
+        int prime = 31;
         int result = 1;
-        result = PRIME * result + ((methodBinding == null) ? 0 : methodBinding.hashCode());
+        result = prime * result + ((methodBinding == null) ? 0 : methodBinding.hashCode());
         return result;
     }
 

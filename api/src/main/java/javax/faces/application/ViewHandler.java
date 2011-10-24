@@ -101,33 +101,33 @@ public abstract class ViewHandler
      */
     public String calculateCharacterEncoding(FacesContext context)
     {
-        String _encoding = null;
+        String encoding = null;
         ExternalContext externalContext = context.getExternalContext();
-        String _contentType = externalContext.getRequestHeaderMap().get("Content-Type");
-        int _indexOf = _contentType == null ? -1 : _contentType.indexOf("charset");
-        if (_indexOf != -1)
+        String contentType = externalContext.getRequestHeaderMap().get("Content-Type");
+        int indexOf = contentType == null ? -1 : contentType.indexOf("charset");
+        if (indexOf != -1)
         {
-            String _tempEnc = _contentType.substring(_indexOf); // charset=UTF-8
-            _encoding = _tempEnc.substring(_tempEnc.indexOf("=") + 1); // UTF-8
-            if (_encoding.length() == 0)
+            String tempEnc = contentType.substring(indexOf); // charset=UTF-8
+            encoding = tempEnc.substring(tempEnc.indexOf("=") + 1); // UTF-8
+            if (encoding.length() == 0)
             {
-                _encoding = null;
+                encoding = null;
             }
         }
-        if (_encoding == null) 
+        if (encoding == null)
         {
-            boolean _sessionAvailable = externalContext.getSession(false) != null;
-            if (_sessionAvailable)
+            boolean sessionAvailable = externalContext.getSession(false) != null;
+            if (sessionAvailable)
             {
-                Object _sessionParam = externalContext.getSessionMap().get(CHARACTER_ENCODING_KEY);
-                if (_sessionParam != null)
+                Object sessionParam = externalContext.getSessionMap().get(CHARACTER_ENCODING_KEY);
+                if (sessionParam != null)
                 {
-                    _encoding = _sessionParam.toString();
+                    encoding = sessionParam.toString();
                 }
             }
         }
 
-        return _encoding;
+        return encoding;
     }
 
     /**
@@ -288,12 +288,12 @@ public abstract class ViewHandler
      */
     public void initView(FacesContext context) throws FacesException
     {
-        String _encoding = this.calculateCharacterEncoding(context);
-        if (_encoding != null)
+        String encoding = this.calculateCharacterEncoding(context);
+        if (encoding != null)
         {
             try
             {
-                context.getExternalContext().setRequestCharacterEncoding(_encoding);
+                context.getExternalContext().setRequestCharacterEncoding(encoding);
             }
             catch (UnsupportedEncodingException uee)
             {

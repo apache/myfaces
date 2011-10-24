@@ -65,7 +65,9 @@ class _SelectItemsIterator implements Iterator<SelectItem>
 
     public _SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
     {
-        _children = selectItemsParent.getChildCount() > 0 ? selectItemsParent.getChildren().iterator() : _EMPTY_UICOMPONENT_ITERATOR;
+        _children = selectItemsParent.getChildCount() > 0
+                        ? selectItemsParent.getChildren().iterator()
+                        : _EMPTY_UICOMPONENT_ITERATOR;
         _facesContext = facesContext;
     }
 

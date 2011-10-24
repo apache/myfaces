@@ -22,7 +22,6 @@ import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -111,7 +110,8 @@ class _MessageUtils
                     else
                     {
                         //Neither detail nor summary found
-                        facesContext.getExternalContext().log("No message with id " + messageId + " found in any bundle");
+                        facesContext.getExternalContext().log("No message with id " + messageId
+                                                              + " found in any bundle");
                         return new FacesMessage(severity, messageId, null);
                     }
                 }
@@ -191,7 +191,8 @@ class _MessageUtils
         }
     }
     
-    static Object getLabel(FacesContext facesContext, UIComponent component) {
+    static Object getLabel(FacesContext facesContext, UIComponent component)
+    {
         Object label = component.getAttributes().get("label");
         if(label != null)
         {

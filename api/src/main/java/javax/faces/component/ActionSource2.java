@@ -26,7 +26,8 @@ import javax.el.MethodExpression;
  *
  * @author Stan Silvert
  */
-public interface ActionSource2 extends ActionSource {
+public interface ActionSource2 extends ActionSource
+{
     
     public MethodExpression getActionExpression();
     

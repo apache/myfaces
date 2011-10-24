@@ -220,7 +220,8 @@ class _DeltaList<T> implements List<T>, PartialStateHolder
                 if (lst[i] instanceof _AttachedDeltaWrapper)
                 {
                     //Delta
-                    ((StateHolder)_delegate.get(j)).restoreState(context, ((_AttachedDeltaWrapper) lst[i]).getWrappedStateObject());
+                    ((StateHolder)_delegate.get(j)).restoreState(context,
+                            ((_AttachedDeltaWrapper) lst[i]).getWrappedStateObject());
                     j++;
                 }
                 else if (lst[i] != null)

@@ -76,7 +76,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     private transient Map<String, _PropertyDescriptorHolder> _propertyDescriptorMap = null;
 
     // Cache for component property descriptors
-    private static Map<Class<?>, Map<String, _PropertyDescriptorHolder>> _propertyDescriptorCache = 
+    private static Map<Class<?>, Map<String, _PropertyDescriptorHolder>> propertyDescriptorCache =
         new WeakHashMap<Class<?>, Map<String, _PropertyDescriptorHolder>>();
     
     private boolean _isCompositeComponent;
@@ -436,7 +436,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         if (_propertyDescriptorMap == null)
         {
             // Try to get descriptor map from cache
-            _propertyDescriptorMap = _propertyDescriptorCache.get(_component.getClass());
+            _propertyDescriptorMap = propertyDescriptorCache.get(_component.getClass());
             // Cache miss: create descriptor map and put it in cache
             if (_propertyDescriptorMap == null)
             {
@@ -463,14 +463,14 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                     }
                 }
                 // ... and put it in cache
-                synchronized(_propertyDescriptorCache)
+                synchronized(propertyDescriptorCache)
                 {
                     // Use a synchronized block to ensure proper operation on concurrent use cases.
                     // This is a racy single check, because initialization over the same class could happen
                     // multiple times, but the same result is always calculated. The synchronized block 
                     // just ensure thread-safety, because only one thread will modify the cache map
                     // at the same time.
-                    _propertyDescriptorCache.put(_component.getClass(), _propertyDescriptorMap);
+                    propertyDescriptorCache.put(_component.getClass(), _propertyDescriptorMap);
                 }
             }
         }
@@ -558,9 +558,9 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     Map<String, Object> getUnderlyingMap()
     {
-        Map _attributes
+        Map attributes
                 = (Map<String, Object>) _component.getStateHelper().get(UIComponentBase.PropertyKeys.attributesMap);
-        return _attributes == null ? Collections.EMPTY_MAP : _attributes; 
+        return attributes == null ? Collections.EMPTY_MAP : attributes;
     }
 
     /**

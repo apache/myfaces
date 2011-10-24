@@ -185,7 +185,9 @@ public abstract class UIComponentBase extends UIComponent
                 }
             }
             _parent = parent;
-        } else {
+        }
+        else
+        {
             _parent = parent;
             if (parent.isInView())
             {

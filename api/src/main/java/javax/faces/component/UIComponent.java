@@ -38,7 +38,6 @@ import java.util.Set;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.application.Application;
 import javax.faces.application.Resource;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
@@ -56,7 +55,6 @@ import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.render.Renderer;
-import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -79,10 +77,10 @@ public abstract class UIComponent
      * Constant used in component attribute map to retrieve the BeanInfo of a composite
      * component.
      *
-     * @see ViewDeclarationLanguage#getComponentMetadata(FacesContext, Resource)
-     * @see ViewDeclarationLanguage#retargetAttachedObjects(FacesContext, UIComponent, List)
-     * @see ViewDeclarationLanguage#retargetMethodExpressions(FacesContext, UIComponent)
-     * @see Application#createComponent(FacesContext, Resource)
+     * @see javax.faces.view.ViewDeclarationLanguage#getComponentMetadata(FacesContext, Resource)
+     * @see javax.faces.view.ViewDeclarationLanguage#retargetAttachedObjects(FacesContext, UIComponent, List)
+     * @see javax.faces.view.ViewDeclarationLanguage#retargetMethodExpressions(FacesContext, UIComponent)
+     * @see javax.faces.application.Application#createComponent(FacesContext, Resource)
      */
     public static final String BEANINFO_KEY = "javax.faces.component.BEANINFO_KEY";
 
@@ -90,7 +88,7 @@ public abstract class UIComponent
      * Constant used in BeanInfo descriptor as a key for retrieve an alternate component type
      * for create the composite base component. 
      *
-     * @see Application#createComponent(FacesContext, Resource)
+     * @see javax.faces.application.Application#createComponent(FacesContext, Resource)
      */
     public static final String COMPOSITE_COMPONENT_TYPE_KEY = "javax.faces.component.COMPOSITE_COMPONENT_TYPE";
 

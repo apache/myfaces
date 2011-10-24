@@ -27,7 +27,6 @@ import javax.faces.el.ValueBinding;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * A collection of static helper methods for locating UIComponents.
@@ -396,11 +395,12 @@ class _ComponentUtils
     }
     
     /**
-     * Call {@link #pushComponentToEL(javax.faces.context.FacesContext,javax.faces.component.UIComponent)}, 
+     * Call {@link UIComponent#pushComponentToEL(javax.faces.context.FacesContext,javax.faces.component.UIComponent)},
      * reads the isRendered property, call {@link
      * UIComponent#popComponentFromEL} and returns the value of isRendered.
      */
-    static boolean isRendered(FacesContext facesContext, UIComponent uiComponent) {
+    static boolean isRendered(FacesContext facesContext, UIComponent uiComponent)
+    {
         // We must call pushComponentToEL here because ValueExpression may have 
         // implicit object "component" used. 
         try

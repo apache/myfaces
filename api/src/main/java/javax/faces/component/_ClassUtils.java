@@ -399,7 +399,8 @@ final class _ClassUtils
             {
                 Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction()
                 {
-                            public Object run() throws PrivilegedActionException {
+                            public Object run() throws PrivilegedActionException
+                            {
                                 return Thread.currentThread().getContextClassLoader();
                             }
                 });
