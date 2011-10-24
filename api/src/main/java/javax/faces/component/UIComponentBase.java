@@ -246,8 +246,7 @@ public abstract class UIComponentBase extends UIComponent
                     }
                     currentChild = child;
                 }
-                while ((i < children.size()) &&
-                       ((child = children.get(i)) != currentChild) );
+                while ((i < children.size()) && ((child = children.get(i)) != currentChild) );
                 i++;
             }
         }
@@ -1832,7 +1831,8 @@ public abstract class UIComponentBase extends UIComponent
         {
             //Only happens if initialStateMarked return true
             
-            if (initialStateMarked()) {
+            if (initialStateMarked())
+            {
                 return;
             }
             

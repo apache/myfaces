@@ -172,7 +172,8 @@ public class AjaxBehavior extends ClientBehaviorBase
             throw new NullPointerException("name");
         }
 
-        if (expression == null){
+        if (expression == null)
+        {
             getStateHelper().remove(PropertyKeys.bindings, name);
         }
         else
@@ -334,7 +335,8 @@ public class AjaxBehavior extends ClientBehaviorBase
      * @param stringValue
      * @return
      */
-    private Collection<String> getCollectionFromSpaceSplitString(String stringValue) {
+    private Collection<String> getCollectionFromSpaceSplitString(String stringValue)
+    {
         //@special handling for @all, @none, @form and @this
         if (stringValue.equals(VAL_FORM)) 
         {

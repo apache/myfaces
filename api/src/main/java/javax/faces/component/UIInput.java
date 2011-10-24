@@ -24,7 +24,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;

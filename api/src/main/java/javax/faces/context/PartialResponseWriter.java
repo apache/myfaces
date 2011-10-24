@@ -197,7 +197,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         attrNames = attributes.keySet().iterator();
         
-        while (attrNames.hasNext()) {
+        while (attrNames.hasNext())
+        {
             String attrName = attrNames.next();
             
             _wrapped.writeAttribute (attrName, attributes.get (attrName), null);
@@ -253,7 +254,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     
     private void startChanges () throws IOException
     {
-        if (!hasChanges) {
+        if (!hasChanges)
+        {
             _wrapped.startElement ("changes", null);
             
             hasChanges = true;

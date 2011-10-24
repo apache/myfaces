@@ -70,8 +70,9 @@ public class BigDecimalConverter
                     catch (NumberFormatException e)
                     {
                         throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                                   DECIMAL_ID,
-                                                                                   new Object[]{value,new BigDecimal(4815.16).toString(),_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                                       DECIMAL_ID,
+                                       new Object[]{value,new BigDecimal(4815.16).toString(),
+                                                    _MessageUtils.getLabel(facesContext, uiComponent)}), e);
                     }
                 }
             }
@@ -104,7 +105,8 @@ public class BigDecimalConverter
         }
         catch (Exception e)
         {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID, new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                    new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
 }

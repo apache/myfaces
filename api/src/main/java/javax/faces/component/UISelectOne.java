@@ -77,7 +77,8 @@ public class UISelectOne extends UIInput
         if (!(_SelectItemsUtil.matchValue(context, this, value, new _SelectItemsIterator(this, context), converter)
               && (!this.isRequired() 
                   || (this.isRequired() 
-                      && !_SelectItemsUtil.isNoSelectionOption(context, this, value, new _SelectItemsIterator(this, context), converter)))))
+                      && !_SelectItemsUtil.isNoSelectionOption(context, this, value,
+                                                      new _SelectItemsIterator(this, context), converter)))))
         {
             _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[] { _MessageUtils.getLabel(
                 context, this) });

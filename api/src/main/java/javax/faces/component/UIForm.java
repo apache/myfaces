@@ -28,7 +28,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PostValidateEvent;
 import javax.faces.event.PreValidateEvent;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -56,12 +55,14 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
         uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
         getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
-        // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot. 
+        // Generate an identifier for a component. The identifier will be prefixed with
+        // UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot.
         if(seed==null)
         {
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();    
         }
-        // Optionally, a unique seed value can be supplied by component creators which should be included in the generated unique id.
+        // Optionally, a unique seed value can be supplied by component creators
+        // which should be included in the generated unique id.
         else
         {
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(seed).toString();
@@ -214,7 +215,8 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 int facetCount = getFacetCount();
                 if (facetCount > 0)
                 {
-                    for (UIComponent facet : getFacets().values()) {
+                    for (UIComponent facet : getFacets().values())
+                    {
                         facet.processUpdates(context);
                     }
                 }
@@ -274,14 +276,17 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     setCachedFacesContext(context.getFacesContext());
                 }
                 
-                if (!isVisitable(context)) {
+                if (!isVisitable(context))
+                {
                     return false;
                 }
         
                 pushComponentToEL(context.getFacesContext(), this);
-                try {
+                try
+                {
                     VisitResult res = context.invokeVisitCallback(this, callback);
-                    switch (res) {
+                    switch (res)
+                    {
                     //we are done nothing has to be processed anymore
                     case COMPLETE:
                         return true;
@@ -298,15 +303,19 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                         if (subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty())
                         {
                             if (getFacetCount() > 0) {
-                                for (UIComponent facet : getFacets().values()) {
-                                    if (facet.visitTree(context, callback)) {
+                                for (UIComponent facet : getFacets().values())
+                                {
+                                    if (facet.visitTree(context, callback))
+                                    {
                                         return true;
                                     }
                                 }
                             }
-                            for (int i = 0, childCount = getChildCount(); i < childCount; i++) {
+                            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                            {
                                 UIComponent child = getChildren().get(i);
-                                if (child.visitTree(context, callback)) {
+                                if (child.visitTree(context, callback))
+                                {
                                     return true;
                                 }
                             }
@@ -314,7 +323,8 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                         return false;
                     }
                 }
-                finally {
+                finally
+                {
                     //all components must call popComponentFromEl after visiting is finished
                     popComponentFromEL(context.getFacesContext());
                 }

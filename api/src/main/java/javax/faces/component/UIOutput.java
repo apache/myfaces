@@ -18,12 +18,8 @@
  */
 package javax.faces.component;
 
-import java.util.Map;
 
 import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
@@ -214,7 +210,8 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         if (values[1] instanceof _AttachedDeltaWrapper)
         {
             //Delta
-            ((StateHolder)_converter).restoreState(facesContext, ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+            ((StateHolder)_converter).restoreState(facesContext,
+                    ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
         }
         else
         {

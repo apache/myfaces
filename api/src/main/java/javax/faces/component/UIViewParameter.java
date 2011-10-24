@@ -48,7 +48,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(name = "f:viewParam", bodyContent = "JSP", 
         tagClass = "org.apache.myfaces.taglib.core.ViewParamTag")
-@JSFJspProperty(name = "maxlength", returnType = "int", longDesc = "The max number or characters allowed for this param")
+@JSFJspProperty(name = "maxlength", returnType = "int",
+                longDesc = "The max number or characters allowed for this param")
 public class UIViewParameter extends UIInput
 {
     public static final String COMPONENT_FAMILY = "javax.faces.ViewParameter";
@@ -57,7 +58,7 @@ public class UIViewParameter extends UIInput
     private static final String DELEGATE_FAMILY = UIInput.COMPONENT_FAMILY;
     private static final String DELEGATE_RENDERER_TYPE = "javax.faces.Text";
     
-    private static Renderer _delegateRenderer;
+    private static Renderer delegateRenderer;
 
     public UIViewParameter()
     {
@@ -250,15 +251,15 @@ public class UIViewParameter extends UIInput
 
     private static Renderer getDelegateRenderer(FacesContext context)
     {
-        if (_delegateRenderer == null)
+        if (delegateRenderer == null)
         {
             RenderKitFactory factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
             RenderKit kit = factory.getRenderKit(context, RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
-            _delegateRenderer = kit.getRenderer(DELEGATE_FAMILY, DELEGATE_RENDERER_TYPE);
+            delegateRenderer = kit.getRenderer(DELEGATE_FAMILY, DELEGATE_RENDERER_TYPE);
         }
 
-        return _delegateRenderer;
+        return delegateRenderer;
     }
 
     /**

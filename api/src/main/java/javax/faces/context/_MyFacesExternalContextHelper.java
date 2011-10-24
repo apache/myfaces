@@ -45,7 +45,7 @@ final class _MyFacesExternalContextHelper
      * but since we don't have any place to init and release this variable properly
      * we should do it using reflection.
      */
-    static ThreadLocal<ExternalContext> _firstInstance = new ThreadLocal<ExternalContext>();
+    static ThreadLocal<ExternalContext> firstInstance = new ThreadLocal<ExternalContext>();
     
     /**
      * this class should not be instantiated.

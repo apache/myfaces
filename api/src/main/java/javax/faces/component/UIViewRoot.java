@@ -288,11 +288,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             
         } while (events.hasMoreEvents() && loops < maxLoops);
         
-        if (loops == maxLoops && events.hasMoreEvents()) {
+        if (loops == maxLoops && events.hasMoreEvents())
+        {
             // broadcast reach maxLoops - probably a infinitive recursion:
             boolean production = getFacesContext().isProjectStage(ProjectStage.Production);
             Level level = production ? Level.FINE : Level.WARNING;
-            if (logger.isLoggable(level)) {
+            if (logger.isLoggable(level))
+            {
                 List<String> name = new ArrayList<String>(events.getAnyPhase().size() + events.getOnPhase().size());
                 for (FacesEvent facesEvent : events.getAnyPhase())
                 {
@@ -834,7 +836,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 beforePhaseSuccess = new boolean[listenerCount];
                 listenerSuccessMap.put(phaseId, beforePhaseSuccess);
             }
-            else {
+            else
+            {
                 // afterPhase - get beforePhaseSuccess from the Map
                 beforePhaseSuccess = listenerSuccessMap.get(phaseId);
                 if (beforePhaseSuccess == null)
@@ -1244,7 +1247,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         listeners = _systemEventListeners.get (systemEvent);
         
-        if (listeners == null) {
+        if (listeners == null)
+        {
             listeners = new ArrayList<SystemEventListener>();
             
             _systemEventListeners.put (systemEvent, listeners);
@@ -1263,7 +1267,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         listeners = _systemEventListeners.get (systemEvent);
         
-        if (listeners != null) {
+        if (listeners != null)
+        {
             listeners.remove (listener);
         }
     }
@@ -1342,7 +1347,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * Gathers all event for current and ANY phase
      * @param phaseId current phase id
      */
-    private Events _getEvents(PhaseId phaseId) {
+    private Events _getEvents(PhaseId phaseId)
+    {
         // Gather the events and purge the event list to prevent concurrent modification during broadcasting
         List<FacesEvent> anyPhase = new ArrayList<FacesEvent>(
                 _events.size());
@@ -1502,7 +1508,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     /**
      * Agregates events for ANY_PHASE and current phase 
      */
-    private class Events {
+    private class Events
+    {
         
         private final List<FacesEvent> _anyPhase;
         

@@ -39,13 +39,15 @@ public abstract class VisitContext
 
     public static VisitContext createVisitContext(FacesContext context)
     {
-        VisitContextFactory factory = (VisitContextFactory) FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        VisitContextFactory factory
+                = (VisitContextFactory) FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
         return factory.getVisitContext(context, null, null);
     }
 
     public static VisitContext createVisitContext(FacesContext context, Collection<String> ids, Set<VisitHint> hints)
     {
-        VisitContextFactory factory = (VisitContextFactory) FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        VisitContextFactory factory
+                = (VisitContextFactory) FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
         return factory.getVisitContext(context, ids, hints);
     }
 

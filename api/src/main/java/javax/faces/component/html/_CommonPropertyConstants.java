@@ -105,7 +105,7 @@ class _CommonPropertyConstants
     public static final long MAXLENGTH_PROP   = 0x2000000000L;
     public static final long SIZE_PROP        = 0x4000000000L;
     
-    public static Map<String, Long> COMMON_PROPERTIES_KEY_BY_NAME = new HashMap<String, Long>(64,1);
+    public static final Map<String, Long> COMMON_PROPERTIES_KEY_BY_NAME = new HashMap<String, Long>(64,1);
     
     static
     {

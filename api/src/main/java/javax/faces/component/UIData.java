@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +35,6 @@ import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
@@ -414,9 +412,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         UIComponent child = itChildren.next();
                         if (child instanceof UIColumn && clientId.equals(child.getClientId(context)))
                         {
-                            try {
+                            try
+                            {
                                 callback.invokeContextCallback(context, child);
-                            } catch (Exception e) {
+                            }
+                            catch (Exception e)
+                            {
                                 throw new FacesException(e);
                             }
                             returnValue = true;
@@ -1545,7 +1546,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
         StringBuilder bld = __getSharedStringBuilder(context);
-        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();        
+        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
     }
 
     /**
@@ -1911,15 +1912,15 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     {
         switch (processAction)
         {
-        case PROCESS_DECODES:
-            component.processDecodes(context);
-            break;
-        case PROCESS_VALIDATORS:
-            component.processValidators(context);
-            break;
-        case PROCESS_UPDATES:
-            component.processUpdates(context);
-            break;
+            case PROCESS_DECODES:
+                component.processDecodes(context);
+                break;
+            case PROCESS_VALIDATORS:
+                component.processValidators(context);
+                break;
+            case PROCESS_UPDATES:
+                component.processUpdates(context);
+                break;
         }
     }
 
@@ -2160,9 +2161,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     if (skipIterationHint != null && skipIterationHint.booleanValue())
                     {
                         // If SKIP_ITERATION is enabled, do not take into account rows.
-                        for (int i = 0, childCount = getChildCount(); i < childCount; i++ ) {
+                        for (int i = 0, childCount = getChildCount(); i < childCount; i++ )
+                        {
                             UIComponent child = getChildren().get(i);
-                            if (child.visitTree(context, callback)) {
+                            if (child.visitTree(context, callback))
+                            {
                                 return true;
                             }
                         }

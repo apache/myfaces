@@ -116,7 +116,8 @@ public class DateTimeConverter
                 catch (ParseException e)
                 {
                     String type = getType();
-                    Object[] args = new Object[]{value,format.format(new Date()),_MessageUtils.getLabel(facesContext, uiComponent)};
+                    Object[] args = new Object[]{value,
+                            format.format(new Date()),_MessageUtils.getLabel(facesContext, uiComponent)};
                     
                     if(type.equals(TYPE_DATE))
                     {
@@ -172,7 +173,8 @@ public class DateTimeConverter
         }
         catch (Exception e)
         {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID, new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                    new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
 

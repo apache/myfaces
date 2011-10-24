@@ -67,8 +67,8 @@ public class BooleanConverter
                 catch (Exception e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               BOOLEAN_ID,
-                                                                               new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                                       BOOLEAN_ID,
+                                       new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }
@@ -100,7 +100,8 @@ public class BooleanConverter
         }
         catch (Exception e)
         {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID, new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                    new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
 }

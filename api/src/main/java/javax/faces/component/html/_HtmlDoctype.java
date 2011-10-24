@@ -19,10 +19,8 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UIOutput;
-import javax.faces.convert.Converter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**

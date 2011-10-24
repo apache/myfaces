@@ -73,7 +73,8 @@ public class UIOutcomeTarget extends UIOutput
         getStateHelper().put(PropertyKeys.includeViewParams, includeViewParams);
     }
     
-    enum PropertyKeys {
+    enum PropertyKeys
+    {
         includeViewParams,
         outcome
     }

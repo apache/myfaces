@@ -60,12 +60,15 @@ public class CharacterConverter
             value = value.trim();
             if (value.length() > 0)
             {
-                try {
+                try
+                {
                     return Character.valueOf(value.charAt(0));
-                }catch(Exception e) {
+                }
+                catch(Exception e)
+                {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                                CHARACTER_ID,
-                                                                                new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                                        CHARACTER_ID,
+                                        new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }
