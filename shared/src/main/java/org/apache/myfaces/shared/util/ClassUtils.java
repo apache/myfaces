@@ -177,7 +177,10 @@ public final class ClassUtils
         }
 
 
-        if (type == null) throw new NullPointerException("type");
+        if (type == null)
+        {
+            throw new NullPointerException("type");
+        }
         try
         {
             // Try WebApp ClassLoader first
@@ -230,7 +233,10 @@ public final class ClassUtils
     public static Class javaTypeToClass(String type)
         throws ClassNotFoundException
     {
-        if (type == null) throw new NullPointerException("type");
+        if (type == null)
+        {
+            throw new NullPointerException("type");
+        }
 
         // try common types and arrays of common types first
         Class clazz = (Class) COMMON_TYPES.get(type);
@@ -323,7 +329,10 @@ public final class ClassUtils
     public static Object newInstance(String type)
         throws FacesException
     {
-        if (type == null) return null;
+        if (type == null)
+        {
+            return null;
+        }
         return newInstance(simpleClassForName(type));
     }
 
@@ -335,7 +344,9 @@ public final class ClassUtils
     public static Object newInstance(String type, Class[] expectedTypes)
     {
         if (type == null)
-            return null;        
+        {
+            return null;
+        }
         
         Class clazzForName = simpleClassForName(type);
         
@@ -404,7 +415,10 @@ public final class ClassUtils
 
     public static Object convertToType(Object value, Class desiredClass)
     {
-        if (value == null) return null;
+        if (value == null)
+        {
+            return null;
+        }
 
         try
         {

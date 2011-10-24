@@ -57,10 +57,14 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if ((base == null) && (property == null))
+        {
             throw new PropertyNotFoundException();
+        }
 
         if (!(property instanceof String))
+        {
             return;
+        }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
@@ -76,11 +80,17 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return false;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return false;
+        }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
@@ -99,11 +109,17 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
@@ -122,11 +138,17 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
@@ -144,7 +166,9 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
 
         final ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
 
@@ -164,7 +188,9 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
 
         return String.class;
     }

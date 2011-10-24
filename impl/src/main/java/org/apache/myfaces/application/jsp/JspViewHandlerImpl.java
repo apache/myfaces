@@ -123,7 +123,9 @@ public class JspViewHandlerImpl extends ViewHandler
     public JspViewHandlerImpl()
     {
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("New ViewHandler instance created");
+        }
     }
 
     /**
@@ -256,7 +258,9 @@ public class JspViewHandlerImpl extends ViewHandler
         }
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Created view " + viewId);
+        }
         return uiViewRoot;
     }
 
@@ -324,7 +328,9 @@ public class JspViewHandlerImpl extends ViewHandler
         if (!viewToRender.isRendered())
         {
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("View is not rendered");
+            }
             return;
         }
 
@@ -333,7 +339,9 @@ public class JspViewHandlerImpl extends ViewHandler
         String viewId = facesContext.getViewRoot().getViewId();
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Rendering JSP view: " + viewId);
+        }
 
         ServletResponse response = (ServletResponse) externalContext.getResponse();
         ServletRequest request = (ServletRequest) externalContext.getRequest();

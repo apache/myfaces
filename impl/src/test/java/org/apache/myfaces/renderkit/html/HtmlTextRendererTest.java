@@ -153,9 +153,13 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
                     throws ConverterException
             {
                 if (value == null || "".equals(value))
+                {
                     return null;
+                }
                 else
+                {
                     return value;
+                }
             }
 
             public String getAsString(FacesContext context,
@@ -163,9 +167,13 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
                     throws ConverterException
             {
                 if (value == null)
+                {
                     return "";
+                }
                 else
+                {
                     return value.toString();
+                }
             }
         };
         

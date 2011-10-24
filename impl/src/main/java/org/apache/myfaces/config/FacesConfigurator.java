@@ -299,7 +299,9 @@ public class FacesConfigurator
 
         resModified = getResourceLastModified(DEFAULT_FACES_CONFIG);
         if (resModified > lastModified)
+        {
             lastModified = resModified;
+        }
 
         for (String systemId : getConfigFilesList())
         {
@@ -319,7 +321,9 @@ public class FacesConfigurator
         //and when an application is running on GAE there is no way to update faces config xml file.
         //thus, no need to check if the config file is modified.
         if (ContainerUtils.isRunningOnGoogleAppEngine(_externalContext))
+        {
             return;
+        }
         long refreshPeriod = (MyfacesConfig.getCurrentInstance(_externalContext).getConfigRefreshPeriod()) * 1000;
 
         if (refreshPeriod > 0)

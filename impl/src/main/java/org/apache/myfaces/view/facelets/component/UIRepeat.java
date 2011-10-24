@@ -581,7 +581,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         // stop if not rendered
         if (!isRendered())
+        {
             return;
+        }
         
         // validate attributes
         _validateAttributes();

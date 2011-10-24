@@ -351,7 +351,9 @@ public class ManagedBeanResolver extends ELResolver
         if (obj == null)
         {
             if (log.isLoggable(Level.FINE))
+            {
                 log.fine("Variable '" + managedBeanName + "' could not be resolved.");
+            }
         }
         else
         {
@@ -419,7 +421,9 @@ public class ManagedBeanResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
 
         final ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
 

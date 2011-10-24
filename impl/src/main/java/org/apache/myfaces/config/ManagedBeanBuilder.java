@@ -298,7 +298,9 @@ public class ManagedBeanBuilder
                     // If the getter returns null or doesn't exist, create a java.util.HashMap,
                     // otherwise use the returned java.util.Map .
                     if (PropertyUtils.isReadable(bean, property.getPropertyName()))
+                    {
                         value = elResolver.getValue(elContext, bean, property.getPropertyName());
+                    }
                     value = value == null ? new HashMap<Object, Object>() : value;
 
                     if (!(value instanceof Map))
@@ -348,7 +350,10 @@ public class ManagedBeanBuilder
     @SuppressWarnings("unchecked")
     public static <T> T coerceToType(FacesContext facesContext, Object value, Class<? extends T> desiredClass)
     {
-        if (value == null) return null;
+        if (value == null)
+        {
+            return null;
+        }
 
         try
         {

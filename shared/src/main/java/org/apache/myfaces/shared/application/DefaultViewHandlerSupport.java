@@ -436,14 +436,18 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                         builder.replace(candidateViewId.lastIndexOf('.'), candidateViewId.length(), mapping);
                         String tempViewId = builder.toString();
                         if(checkResourceExists(context,tempViewId))
+                        {
                             return tempViewId;
+                        }
                     }
                 }
             }
 
             // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
             if(checkResourceExists(context,candidateViewId))
+            {
                 return candidateViewId;
+            }
         
         }
         
@@ -475,12 +479,16 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             
             String candidateViewId = builder.toString();
             if(checkResourceExists(context,candidateViewId))
+            {
                 return candidateViewId;
+            }
         }
 
         // Otherwise, if a physical resource exists with the name requestViewId let that value be viewId.
         if(checkResourceExists(context,requestViewId))
+        {
             return requestViewId;
+        }
         
         //Otherwise return null.
         return null;

@@ -129,8 +129,10 @@ public class MyfacesLogger
     private static MyfacesLogger createMyfacesLogger(String name) 
     {
         if (name == null)
+        {
             throw new IllegalArgumentException(_LOG.getMessage(
                     "LOGGER_NAME_REQUIRED"));
+        }
 
         Logger log;
 
@@ -181,8 +183,10 @@ public class MyfacesLogger
     private static MyfacesLogger createMyfacesLogger(String name, String resourceBundleName) 
     {
         if (name == null)
+        {
             throw new IllegalArgumentException(_LOG.getMessage(
                     "LOGGER_NAME_REQUIRED"));
+        }
 
         Logger log = Logger.getLogger(name, resourceBundleName);
 
@@ -206,8 +210,10 @@ public class MyfacesLogger
     public static MyfacesLogger createMyfacesLogger(Class<?> c) 
     {
         if (c == null)
+        {
             throw new IllegalArgumentException(_LOG.getMessage(
                     "CLASS_REQUIRED"));
+        }
         String name = c.getName();
         return createMyfacesLogger(name);
     }
@@ -231,8 +237,10 @@ public class MyfacesLogger
     public static MyfacesLogger createMyfacesLogger(Class<?> c, String resourceBundleName) 
     {
         if (c == null)
+        {
             throw new IllegalArgumentException(_LOG.getMessage(
                     "CLASS_REQUIRED"));
+        }
         String name = c.getName();
         return createMyfacesLogger(name, resourceBundleName);
     }
@@ -254,8 +262,10 @@ public class MyfacesLogger
     public static MyfacesLogger createMyfacesLogger(Package p)
     {
         if (p == null)
+        {
             throw new IllegalArgumentException(_LOG.getMessage(
                     "PACKAGE_REQUIRED"));
+        }
         String name = p.getName();
         return createMyfacesLogger(name);
     }
@@ -280,8 +290,10 @@ public class MyfacesLogger
     public static MyfacesLogger createMyfacesLogger(Package p, String resourceBundleName)
     {
         if (p == null)
+        {
             throw new IllegalArgumentException(_LOG.getMessage(
                     "PACKAGE_REQUIRED"));
+        }
         String name = p.getName();
         return createMyfacesLogger(name, resourceBundleName);
     }

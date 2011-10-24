@@ -233,7 +233,9 @@ public final class MessageUtils
     {
         String localizedStr = null;
         if(params == null || msgtext == null)
+        {
             return msgtext;
+        }
 
         if(locale != null)
         {
@@ -257,7 +259,9 @@ public final class MessageUtils
         {
             locale = context.getViewRoot().getLocale();
             if(locale == null)
+            {
                 locale = Locale.getDefault();
+            }
         } else
         {
             locale = Locale.getDefault();
@@ -452,7 +456,9 @@ public final class MessageUtils
         {
             locale = context.getViewRoot().getLocale();
             if(locale == null)
+            {
                 locale = Locale.getDefault();
+            }
         }
         else
         {
@@ -565,10 +571,14 @@ public final class MessageUtils
     public static FacesMessage getMessage(FacesContext context, String messageId, Object params[])
     {
         if(context == null || messageId == null)
+        {
             throw new NullPointerException(" context " + context + " messageId " + messageId);
+        }
         Locale locale = getCurrentLocale(context);
         if(null == locale)
+        {
             throw new NullPointerException(" locale " + locale);
+        }
         FacesMessage message = getMessage(locale, messageId, params);
         if(message != null)
         {
@@ -585,10 +595,14 @@ public final class MessageUtils
     public static FacesMessage getMessage(String bundleBaseName, FacesContext context, String messageId, Object params[])
     {
         if(context == null || messageId == null)
+        {
             throw new NullPointerException(" context " + context + " messageId " + messageId);
+        }
         Locale locale = getCurrentLocale(context);
         if(null == locale)
+        {
             throw new NullPointerException(" locale " + locale);
+        }
         FacesMessage message = getMessageFromBundle(bundleBaseName, context, locale, messageId, params);
         if(message != null)
         {
@@ -605,11 +619,15 @@ public final class MessageUtils
     public static Object getLabel(FacesContext facesContext, UIComponent component) {
         Object label = component.getAttributes().get("label");
         if(label != null)
+        {
             return label;
+        }
         
         ValueExpression expression = component.getValueExpression("label");
         if(expression != null)
+        {
             return expression;
+        }
         
         //If no label is not specified, use clientId
         return component.getClientId( facesContext );

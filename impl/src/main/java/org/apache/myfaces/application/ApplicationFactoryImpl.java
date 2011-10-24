@@ -54,7 +54,10 @@ public class ApplicationFactoryImpl extends ApplicationFactory
     {
         _application = new ApplicationImpl();
         putApplicationOnMap();
-        if (log.isLoggable(Level.FINEST)) log.finest("New ApplicationFactory instance created");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("New ApplicationFactory instance created");
+        }
     }
 
     public void purgeApplication()

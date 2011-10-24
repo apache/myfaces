@@ -121,9 +121,13 @@ public class HtmlStylesheetRenderer extends Renderer implements
             throws IOException
     {
         if (facesContext == null)
+        {
             throw new NullPointerException("context");
+        }
         if (component == null)
+        {
             throw new NullPointerException("component");
+        }
 
         Map<String, Object> componentAttributesMap = component.getAttributes();
         String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);

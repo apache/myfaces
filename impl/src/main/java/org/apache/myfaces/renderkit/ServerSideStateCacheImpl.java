@@ -337,11 +337,17 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     protected Object serializeView(FacesContext context, Object serializedView)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering serializeView");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering serializeView");
+        }
 
         if(isSerializeStateInSession(context))
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize state in session");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Processing serializeView - serialize state in session");
+            }
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
             try
@@ -349,14 +355,20 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 OutputStream os = baos;
                 if(isCompressStateInSession(context))
                 {
-                    if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize compressed");
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("Processing serializeView - serialize compressed");
+                    }
 
                     os.write(COMPRESSED_FLAG);
                     os = new GZIPOutputStream(os, 1024);
                 }
                 else
                 {
-                    if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize uncompressed");
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("Processing serializeView - serialize uncompressed");
+                    }
 
                     os.write(UNCOMPRESSED_FLAG);
                 }
@@ -371,7 +383,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 out.close();
                 baos.close();
 
-                if (log.isLoggable(Level.FINEST)) log.finest("Exiting serializeView - serialized. Bytes : "+baos.size());
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Exiting serializeView - serialized. Bytes : " + baos.size());
+                }
                 return baos.toByteArray();
             }
             catch (IOException e)
@@ -383,7 +398,9 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Exiting serializeView - do not serialize state in session.");
+        }
 
         return serializedView;
 
@@ -427,11 +444,17 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     protected Object deserializeView(Object state)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering deserializeView");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering deserializeView");
+        }
 
         if(state instanceof byte[])
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing deserializeView - deserializing serialized state. Bytes : "+((byte[]) state).length);
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Processing deserializeView - deserializing serialized state. Bytes : " + ((byte[]) state).length);
+            }
 
             try
             {
@@ -492,7 +515,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         else if (state instanceof Object[])
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Exiting deserializeView - state not serialized.");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Exiting deserializeView - state not serialized.");
+            }
 
             return state;
         }
@@ -554,7 +580,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 }
             }
 
-            while (_keys.remove(key));
+            while (_keys.remove(key))
+            {
+                ;
+            }
             _keys.add(key);
 
             if (previousRestoredKey != null && maxCount != null && maxCount > 0)
@@ -575,7 +604,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     // put on that map.
                     do
                     {
-                        while (_keys.remove(keyToRemove));
+                        while (_keys.remove(keyToRemove))
+                        {
+                            ;
+                        }
 
                         Object oldView = _serializedViews.remove(keyToRemove);
                         if (oldView != null && 
@@ -774,26 +806,40 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             final SerializedViewKey other = (SerializedViewKey) obj;
             if (_sequenceId == null)
             {
                 if (other._sequenceId != null)
+                {
                     return false;
+                }
             }
             else if (!_sequenceId.equals(other._sequenceId))
+            {
                 return false;
+            }
             if (_viewId == null)
             {
                 if (other._viewId != null)
+                {
                     return false;
+                }
             }
             else if (!_viewId.equals(other._viewId))
+            {
                 return false;
+            }
             return true;
         }
 
@@ -804,11 +850,17 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     @Override
     public Object saveSerializedView(FacesContext facesContext, Object serializedView)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - server-side state saving - save state");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Processing saveSerializedView - server-side state saving - save state");
+        }
         //save state in server session
         saveSerializedViewInServletSession(facesContext, serializedView);
         
-        if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveSerializedView - server-side state saving - saved state");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Exiting saveSerializedView - server-side state saving - saved state");
+        }
         
         return encodeSerializedState(facesContext, serializedView);
     }
@@ -816,7 +868,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     @Override
     public Object restoreSerializedView(FacesContext facesContext, String viewId, Object viewState)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Restoring view from session");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Restoring view from session");
+        }
 
         Integer serverStateId = getServerStateId((Object[]) viewState);
 

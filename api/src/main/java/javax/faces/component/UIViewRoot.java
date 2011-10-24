@@ -233,7 +233,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     public void addPhaseListener(PhaseListener phaseListener)
     {
         if (phaseListener == null)
+        {
             throw new NullPointerException("phaseListener");
+        }
         
         getStateHelper().add(PropertyKeys.phaseListeners, phaseListener);
     }
@@ -1127,7 +1129,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     public void removePhaseListener(PhaseListener phaseListener)
     {
         if (phaseListener == null)
+        {
             return;
+        }
 
         getStateHelper().remove(PropertyKeys.phaseListeners, phaseListener);
     }

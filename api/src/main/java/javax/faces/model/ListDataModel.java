@@ -42,7 +42,9 @@ public class ListDataModel<E> extends DataModel<E>
     public ListDataModel(List<E> list)
     {
         if (list == null)
+        {
             throw new NullPointerException("list");
+        }
         setWrappedData(list);
     }
 

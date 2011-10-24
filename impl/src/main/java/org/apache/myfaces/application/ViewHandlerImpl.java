@@ -84,7 +84,9 @@ public class ViewHandlerImpl extends ViewHandler
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("New ViewHandler instance created");
+        }
     }
 
     @Override
@@ -302,7 +304,9 @@ public class ViewHandlerImpl extends ViewHandler
         checkNull(context, "context");
 
         if(context.getPartialViewContext().isAjaxRequest())
+        {
             return;
+        }
 
         ResponseStateManager responseStateManager = context.getRenderKit().getResponseStateManager();
         

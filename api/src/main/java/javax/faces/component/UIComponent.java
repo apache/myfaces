@@ -300,10 +300,14 @@ public abstract class UIComponent implements PartialStateHolder, TransientStateH
         Collection<VisitHint> hints = context.getHints();
 
         if (hints.contains(VisitHint.SKIP_TRANSIENT) && this.isTransient())
+        {
             return false;
+        }
 
         if (hints.contains(VisitHint.SKIP_UNRENDERED) && !this.isRendered())
+        {
             return false;
+        }
 
         //executable cannot be handled here because we do not have any method to determine
         //whether a component is executable or not, this seems to be a hole in the spec!

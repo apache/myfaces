@@ -74,7 +74,9 @@ public class ClassElementHandler extends DefaultHandler
          clazz = elementName.contains(qName);
          
          if(clazz)
+         {
              buffer = new StringBuffer();
+         }
         
     }
 

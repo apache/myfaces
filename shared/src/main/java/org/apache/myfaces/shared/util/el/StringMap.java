@@ -41,7 +41,9 @@ public abstract class StringMap extends GenericMap {
 
     public Object get(Object key) {
         if( ! (key instanceof String) )
+        {
             return null;
+        }
         return getString( (String)key );
     }
 }

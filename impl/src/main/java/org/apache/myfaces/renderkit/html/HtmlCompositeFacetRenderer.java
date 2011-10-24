@@ -52,9 +52,13 @@ public class HtmlCompositeFacetRenderer extends HtmlRenderer
             throws IOException
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         if (component == null)
+        {
             throw new NullPointerException("component");
+        }
         
         String facetName = (String) component.getAttributes().get(UIComponent.FACETS_KEY);
         

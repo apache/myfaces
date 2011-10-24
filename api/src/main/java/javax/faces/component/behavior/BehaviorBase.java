@@ -161,7 +161,9 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
         
         if (attachedObject == null)
+        {
             return null;
+        }
         // StateHolder interface should take precedence over
         // List children
         if (attachedObject instanceof StateHolder)
@@ -200,9 +202,13 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     private static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         if (stateObj == null)
+        {
             return null;
+        }
         if (stateObj instanceof _AttachedListStateWrapper)
         {
             List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();

@@ -44,7 +44,9 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>>
     public ResultDataModel(Result result)
     {
         if (result == null)
+        {
             throw new NullPointerException("result");
+        }
         setWrappedData(result);
     }
 
@@ -115,7 +117,9 @@ public class ResultDataModel extends DataModel<SortedMap<String, Object>>
     private SortedMap<String, Object>[] getRows()
     {
         if (_data == null)
+        {
             return null;
+        }
 
         return _data.getRows();
     }

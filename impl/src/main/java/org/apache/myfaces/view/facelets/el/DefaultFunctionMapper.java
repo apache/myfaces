@@ -173,7 +173,9 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
         {
             _prefix = in.readUTF();
             if ("".equals(_prefix))
+            {
                 _prefix = null;
+            }
             
             _localName = in.readUTF();
             _owner = in.readUTF();
@@ -205,9 +207,13 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
             if (_prefix != null)
             {
                 if (prefix == null)
+                {
                     return false;
+                }
                 if (!_prefix.equals(prefix))
+                {
                     return false;
+                }
             }
             
             return _localName.equals(localName);

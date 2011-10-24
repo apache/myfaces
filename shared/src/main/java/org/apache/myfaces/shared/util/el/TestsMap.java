@@ -40,7 +40,9 @@ public abstract class TestsMap extends GenericMap {
 
     public Object get(Object key) {
         if( ! (key instanceof String) )
+        {
             return null;
+        }
         return Boolean.valueOf(getTest( (String)key ));
     }
 

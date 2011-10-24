@@ -70,9 +70,18 @@ public abstract class UIComponentELTagBase
 
         setBooleanProperty(component, org.apache.myfaces.shared.renderkit.JSFAttr.FORCE_ID_ATTR, _forceId);
         setBooleanProperty(component, org.apache.myfaces.shared.renderkit.JSFAttr.FORCE_ID_INDEX_ATTR, _forceIdIndex, DEFAULT_FORCE_ID_INDEX_VALUE);
-        if (_javascriptLocation != null) setStringProperty(component, JSFAttr.JAVASCRIPT_LOCATION, _javascriptLocation);
-        if (_imageLocation != null) setStringProperty(component, JSFAttr.IMAGE_LOCATION, _imageLocation);
-        if (_styleLocation != null) setStringProperty(component, JSFAttr.STYLE_LOCATION, _styleLocation);
+        if (_javascriptLocation != null)
+        {
+            setStringProperty(component, JSFAttr.JAVASCRIPT_LOCATION, _javascriptLocation);
+        }
+        if (_imageLocation != null)
+        {
+            setStringProperty(component, JSFAttr.IMAGE_LOCATION, _imageLocation);
+        }
+        if (_styleLocation != null)
+        {
+            setStringProperty(component, JSFAttr.STYLE_LOCATION, _styleLocation);
+        }
 
         //rendererType already handled by UIComponentTag
 

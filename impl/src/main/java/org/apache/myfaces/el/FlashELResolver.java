@@ -57,9 +57,13 @@ public class FlashELResolver extends ELResolver
             ELException
     {
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return;
+        }
 
         String strProperty = property.toString();
 
@@ -87,9 +91,13 @@ public class FlashELResolver extends ELResolver
     {
 
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return false;
+        }
 
         String strProperty = property.toString();
 
@@ -111,9 +119,13 @@ public class FlashELResolver extends ELResolver
     {
 
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         String strProperty = property.toString();
 
@@ -251,9 +263,13 @@ public class FlashELResolver extends ELResolver
     {
 
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         String strProperty = property.toString();
 
@@ -312,7 +328,9 @@ public class FlashELResolver extends ELResolver
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
         if (base == null)
+        {
             return null;
+        }
 
         if (base instanceof Flash)
         {

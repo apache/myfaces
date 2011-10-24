@@ -125,7 +125,9 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         checkKey(key);
         V facet = _map.remove(key);
         if (facet != null)
+        {
             facet.setParent(null);
+        }
         return facet;
     }
 
@@ -133,10 +135,14 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
     {
         //checkKey(key);
         if (key == null)
+        {
             throw new NullPointerException("key");
+        }
         //checkValue(value);
         if (value == null)
+        {
             throw new NullPointerException("value");
+        }
         setNewParent(key, value);
         V previousValue = _map.put(key, value);
         if (previousValue != null)
@@ -176,17 +182,25 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
     private void checkKey(Object key)
     {
         if (key == null)
+        {
             throw new NullPointerException("key");
+        }
         if (!(key instanceof String))
+        {
             throw new ClassCastException("key is not a String");
+        }
     }
 
     private void checkValue(Object value)
     {
         if (value == null)
+        {
             throw new NullPointerException("value");
+        }
         if (!(value instanceof UIComponent))
+        {
             throw new ClassCastException("value is not a UIComponent");
+        }
     }
 
     private class ComponentFacetEntrySet extends AbstractSet<Entry<String, V>>

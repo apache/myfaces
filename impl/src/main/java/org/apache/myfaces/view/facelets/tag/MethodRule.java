@@ -54,7 +54,9 @@ public final class MethodRule extends MetaRule
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
         if (false == name.equals(this.methodName))
+        {
             return null;
+        }
 
         if (MethodExpression.class.equals(meta.getPropertyType(name)))
         {

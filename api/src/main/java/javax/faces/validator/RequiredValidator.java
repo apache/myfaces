@@ -56,9 +56,13 @@ public class RequiredValidator implements Validator
             Object value) throws ValidatorException
     {
         if (facesContext == null)
+        {
             throw new NullPointerException("facesContext");
+        }
         if (uiComponent == null)
+        {
             throw new NullPointerException("uiComponent");
+        }
 
         //Check if the value is empty like UIInput.validateValue
         boolean empty = value == null

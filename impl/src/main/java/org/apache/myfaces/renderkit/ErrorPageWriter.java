@@ -723,7 +723,9 @@ public final class ErrorPageWriter
             String message = e.getMessage();
     
             if (message == null)
+            {
                 continue;
+            }
     
             Pattern pattern = Pattern.compile(REGEX_PATTERN);
             Matcher matcher = pattern.matcher(message);
@@ -786,7 +788,9 @@ public final class ErrorPageWriter
                                        caex.getExpressionString() + "\"";
             }
             if (ex.getMessage() != null)
+            {
                 msg = ex.getMessage();
+            }
         }
 
         if (msg != null)
@@ -1408,7 +1412,9 @@ public final class ErrorPageWriter
     {
 
         if (ex == null)
+        {
             return;
+        }
 
         // check for getRootCause and getCause-methods
         if (!_initCausePerReflection(ex, "getRootCause"))
@@ -1436,7 +1442,9 @@ public final class ErrorPageWriter
     private static boolean _initCauseIfAvailable(Throwable th, Throwable cause)
     {
         if (cause == null)
+        {
             return false;
+        }
 
         try
         {

@@ -360,7 +360,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public void buildView(FacesContext context, UIViewRoot view) throws IOException
     {
         if (isFilledView(context, view))
+        {
             return;
+        }
         
         // setup our viewId
         String renderedViewId = getRenderedViewId(context, view.getViewId());
@@ -1075,8 +1077,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 if (required != null && required.booleanValue())
                                 {
                                     if (log.isLoggable(Level.SEVERE))
-                                        log.severe("attributeValueExpression not found under the key \""+attributeName+
+                                    {
+                                        log.severe("attributeValueExpression not found under the key \"" + attributeName +
                                                 "\". Looking for the next attribute");
+                                    }
                                 }
                             }
                             continue;
@@ -1500,7 +1504,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public static Class _javaTypeToClass(String type)
         throws ClassNotFoundException
     {
-        if (type == null) throw new NullPointerException("type");
+        if (type == null)
+        {
+            throw new NullPointerException("type");
+        }
 
         // try common types and arrays of common types first
         Class clazz = (Class) ClassUtils.COMMON_TYPES.get(type);
@@ -1921,9 +1928,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // refresh period
         long refreshPeriod;
         if(context.isProjectStage(ProjectStage.Production))
+        {
             refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD, DEFAULT_REFRESH_PERIOD_PRODUCTION);
+        }
         else
+        {
             refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD, DEFAULT_REFRESH_PERIOD);
+        }
         
         // resource resolver
         ResourceResolver resolver = new DefaultResourceResolver();

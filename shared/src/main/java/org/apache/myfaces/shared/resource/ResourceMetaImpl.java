@@ -80,25 +80,37 @@ public class ResourceMetaImpl extends ResourceMeta
         }
         if (_libraryName != null)
         {
-            if (firstSlashAdded) builder.append('/');
+            if (firstSlashAdded)
+            {
+                builder.append('/');
+            }
             builder.append(_libraryName);
             firstSlashAdded = true;
         }
         if (_libraryVersion != null)
         {
-            if (firstSlashAdded) builder.append('/');
+            if (firstSlashAdded)
+            {
+                builder.append('/');
+            }
             builder.append(_libraryVersion);
             firstSlashAdded = true;
         }
         if (_resourceName != null)
         {
-            if (firstSlashAdded) builder.append('/');
+            if (firstSlashAdded)
+            {
+                builder.append('/');
+            }
             builder.append(_resourceName);
             firstSlashAdded = true;
         }
         if (_resourceVersion != null)
         {
-            if (firstSlashAdded) builder.append('/');
+            if (firstSlashAdded)
+            {
+                builder.append('/');
+            }
             builder.append(_resourceVersion);
             builder.append(
                     _resourceName.substring(_resourceName.lastIndexOf('.')));

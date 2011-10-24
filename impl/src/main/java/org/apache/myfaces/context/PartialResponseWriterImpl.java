@@ -147,7 +147,10 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
      * @throws IOException
      */
     private void closeDoubleBuffer(boolean force) throws IOException {
-        if (!isDoubleBufferEnabled()) return;
+        if (!isDoubleBufferEnabled())
+        {
+            return;
+        }
         /*
         * if a force close is issued we reset the condition
         * to 1 to reach the underlying closing block

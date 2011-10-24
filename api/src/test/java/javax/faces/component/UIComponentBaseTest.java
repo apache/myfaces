@@ -114,7 +114,9 @@ public class UIComponentBaseTest
         expect(_testImpl.getFacesContext()).andReturn(_facesContext);
         expect(_testImpl.getRenderer(same(_facesContext))).andReturn(renderer);
         if (renderer != null)
+        {
             expect(renderer.getRendersChildren()).andReturn(expectedValue);
+        }
         _mocksControl.replay();
         assertEquals(expectedValue, _testImpl.getRendersChildren());
         _mocksControl.verify();

@@ -61,21 +61,33 @@ class _ValueExpressionToValueBinding extends ValueBinding implements StateHolder
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         final _ValueExpressionToValueBinding other = (_ValueExpressionToValueBinding) obj;
         if (_valueExpression == null)
         {
             if (other._valueExpression != null)
+            {
                 return false;
+            }
         }
         else if (!_valueExpression.equals(other._valueExpression))
+        {
             return false;
+        }
         if (isTransient != other.isTransient)
+        {
             return false;
+        }
         return true;
     }
 

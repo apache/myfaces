@@ -60,7 +60,10 @@ public abstract class DataModel<E> implements Iterable<E>
     // METHODS
     public void addDataModelListener(DataModelListener listener)
     {
-        if (listener == null) throw new NullPointerException("listener");
+        if (listener == null)
+        {
+            throw new NullPointerException("listener");
+        }
         if (_listeners == null)
         {
             _listeners = new ArrayList<DataModelListener>();
@@ -144,7 +147,10 @@ public abstract class DataModel<E> implements Iterable<E>
 
     public void removeDataModelListener(DataModelListener listener)
     {
-        if (listener == null) throw new NullPointerException("listener");
+        if (listener == null)
+        {
+            throw new NullPointerException("listener");
+        }
         if (_listeners != null)
         {
             _listeners.remove(listener);

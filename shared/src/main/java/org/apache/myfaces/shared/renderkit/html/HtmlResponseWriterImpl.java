@@ -143,7 +143,10 @@ public class HtmlResponseWriterImpl
         _contentType = contentType;
         if (_contentType == null)
         {
-            if (log.isLoggable(Level.FINE)) log.fine("No content type given, using default content type " + DEFAULT_CONTENT_TYPE);
+            if (log.isLoggable(Level.FINE))
+            {
+                log.fine("No content type given, using default content type " + DEFAULT_CONTENT_TYPE);
+            }
             _contentType = DEFAULT_CONTENT_TYPE;
         }
         _isXhtmlContentType = HtmlRendererUtils.isXHTMLContentType(_contentType);
@@ -153,7 +156,10 @@ public class HtmlResponseWriterImpl
 
         if (characterEncoding == null)
         {
-            if (log.isLoggable(Level.FINE)) log.fine("No character encoding given, using default character encoding " + DEFAULT_CHARACTER_ENCODING);
+            if (log.isLoggable(Level.FINE))
+            {
+                log.fine("No character encoding given, using default character encoding " + DEFAULT_CHARACTER_ENCODING);
+            }
             _characterEncoding = DEFAULT_CHARACTER_ENCODING;
         }
         else
@@ -182,7 +188,9 @@ public class HtmlResponseWriterImpl
             String supportedContentType = supportedContentTypes[i];
 
             if(supportedContentType.indexOf(contentType)!=-1)
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -704,8 +712,14 @@ public class HtmlResponseWriterImpl
         if (isScriptOrStyle())
         {
             // Don't bother encoding anything if chosen character encoding is UTF-8
-            if (UTF8.equals(_characterEncoding)) _currentWriter.write(strValue);
-            else _currentWriter.write(UnicodeEncoder.encode(strValue) );
+            if (UTF8.equals(_characterEncoding))
+            {
+                _currentWriter.write(strValue);
+            }
+            else
+            {
+                _currentWriter.write(UnicodeEncoder.encode(strValue));
+            }
         }
         else
         {
@@ -730,8 +744,14 @@ public class HtmlResponseWriterImpl
         {
             String strValue = new String(cbuf, off, len);
             // Don't bother encoding anything if chosen character encoding is UTF-8
-            if (UTF8.equals(_characterEncoding)) _currentWriter.write(strValue);
-            else _currentWriter.write(UnicodeEncoder.encode(strValue) );
+            if (UTF8.equals(_characterEncoding))
+            {
+                _currentWriter.write(strValue);
+            }
+            else
+            {
+                _currentWriter.write(UnicodeEncoder.encode(strValue));
+            }
         }
         else if (isTextarea())
         {
@@ -840,8 +860,14 @@ public class HtmlResponseWriterImpl
         closeStartTagIfNecessary();
         String strValue = new String(cbuf, off, len);
         // Don't bother encoding anything if chosen character encoding is UTF-8
-        if (UTF8.equals(_characterEncoding)) _currentWriter.write(strValue);
-        else _currentWriter.write(UnicodeEncoder.encode(strValue) );
+        if (UTF8.equals(_characterEncoding))
+        {
+            _currentWriter.write(strValue);
+        }
+        else
+        {
+            _currentWriter.write(UnicodeEncoder.encode(strValue));
+        }
     }
 
     public void write(int c) throws IOException
@@ -855,8 +881,14 @@ public class HtmlResponseWriterImpl
         closeStartTagIfNecessary();
         String strValue = new String(cbuf);
         // Don't bother encoding anything if chosen character encoding is UTF-8
-        if (UTF8.equals(_characterEncoding)) _currentWriter.write(strValue);
-        else _currentWriter.write(UnicodeEncoder.encode(strValue) );
+        if (UTF8.equals(_characterEncoding))
+        {
+            _currentWriter.write(strValue);
+        }
+        else
+        {
+            _currentWriter.write(UnicodeEncoder.encode(strValue));
+        }
     }
 
     public void write(String str) throws IOException
@@ -867,8 +899,14 @@ public class HtmlResponseWriterImpl
         if (str.length() > 0)
         {
             // Don't bother encoding anything if chosen character encoding is UTF-8
-            if (UTF8.equals(_characterEncoding)) _currentWriter.write(str);
-            else _currentWriter.write(UnicodeEncoder.encode(str) );
+            if (UTF8.equals(_characterEncoding))
+            {
+                _currentWriter.write(str);
+            }
+            else
+            {
+                _currentWriter.write(UnicodeEncoder.encode(str));
+            }
         }
     }
 
@@ -877,8 +915,14 @@ public class HtmlResponseWriterImpl
         closeStartTagIfNecessary();
         String strValue = str.substring(off, off+len);
         // Don't bother encoding anything if chosen character encoding is UTF-8
-        if (UTF8.equals(_characterEncoding)) _currentWriter.write(strValue);
-        else _currentWriter.write(UnicodeEncoder.encode(strValue) );
+        if (UTF8.equals(_characterEncoding))
+        {
+            _currentWriter.write(strValue);
+        }
+        else
+        {
+            _currentWriter.write(UnicodeEncoder.encode(strValue));
+        }
     }
     
     /**

@@ -45,7 +45,9 @@ public class ContainerUtils
     {
         //if running on GAE, treat like it is JSP 2.0
         if(isRunningOnGoogleAppEngine(context))
+        {
             return false;
+        }
         
         try 
         {

@@ -51,7 +51,9 @@ class _ComponentUtils
         while (parent != null)
         {
             if (parent instanceof NamingContainer)
+            {
                 return parent;
+            }
             if (returnRootIfNotFound)
             {
                 UIComponent nextParent = parent.getParent();
@@ -91,7 +93,9 @@ class _ComponentUtils
         {
             parent = component.getParent();
             if (parent == null)
+            {
                 return component;
+            }
             component = parent;
         }
     }
@@ -124,7 +128,9 @@ class _ComponentUtils
                 {
                     UIComponent find = findComponent(facet, id, separatorChar);
                     if (find != null)
+                    {
                         return find;
+                    }
                 }
                 else if (idsAreEqual(id, facet, separatorChar))
                 {
@@ -140,7 +146,9 @@ class _ComponentUtils
             {
                 UIComponent find = findComponent(child, id, separatorChar);
                 if (find != null)
+                {
                     return find;
+                }
             }
             else if (idsAreEqual(id, child, separatorChar))
             {
@@ -227,7 +235,9 @@ class _ComponentUtils
     private static boolean idsAreEqual(String id, UIComponent cmp, final char separatorChar)
     {
         if (id.equals(cmp.getId()))
+        {
             return true;
+        }
 
         /* By the spec, findComponent algorithm does not take into account UIData.rowIndex() property,
          * because it just scan over nested plain ids. 
@@ -407,7 +417,9 @@ class _ComponentUtils
     private static void getPathToComponent(UIComponent component, StringBuffer buf)
     {
         if (component == null)
+        {
             return;
+        }
 
         StringBuffer intBuf = new StringBuffer();
 

@@ -80,7 +80,9 @@ public final class FacesServlet implements Servlet
         _facesContextFactory = null;
         _lifecycle = null;
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("destroy");
+        }
     }
 
     public ServletConfig getServletConfig()
@@ -107,7 +109,9 @@ public final class FacesServlet implements Servlet
     public void init(ServletConfig servletConfig) throws ServletException
     {
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("init begin");
+        }
         _servletConfig = servletConfig;
         _facesContextFactory = (FacesContextFactory)FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
         // TODO: null-check for Weblogic, that tries to initialize Servlet before ContextListener
@@ -118,7 +122,9 @@ public final class FacesServlet implements Servlet
         LifecycleFactory lifecycleFactory = (LifecycleFactory)FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         _lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("init end");
+        }
     }
 
     public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException
@@ -162,7 +168,9 @@ public final class FacesServlet implements Servlet
         // If none of the cases described above in the specification for this method apply to the servicing of this 
         // request, the following action must be taken to service the request:
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("service begin");
+        }
 
         // Acquire a FacesContext instance for this request.
         FacesContext facesContext = prepareFacesContext(request, response);
@@ -227,7 +235,9 @@ public final class FacesServlet implements Servlet
             facesContext.release();
         }
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("service end");
+        }
     }
 
     private FacesContext prepareFacesContext(ServletRequest request, ServletResponse response)

@@ -106,11 +106,15 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
     public static boolean isValueReference(String value)
     {
         if (value == null)
+        {
             throw new NullPointerException("value");
+        }
 
         int start = value.indexOf("#{");
         if (start < 0)
+        {
             return false;
+        }
 
         int end = value.lastIndexOf('}');
         return (end >= 0 && start < end);

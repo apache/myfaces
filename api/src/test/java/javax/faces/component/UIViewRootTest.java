@@ -448,8 +448,10 @@ public class UIViewRootTest extends AbstractJsfTestCase
         PhaseEvent event = new PhaseEvent(_facesContext, phaseId, _lifecycle);
 
         if (expectSuperCall)
-            _testimpl = _mocksControl.createMock(UIViewRoot.class, new Method[] { UIViewRoot.class.getMethod(
-                    "isRendered", new Class[0]) });
+        {
+            _testimpl = _mocksControl.createMock(UIViewRoot.class, new Method[]{UIViewRoot.class.getMethod(
+                    "isRendered", new Class[0])});
+        }
 
         MethodExpression beforeListener = _mocksControl.createMock(MethodExpression.class);
         _testimpl.setBeforePhaseListener(beforeListener);
@@ -481,7 +483,9 @@ public class UIViewRootTest extends AbstractJsfTestCase
         }
 
         if (expectSuperCall)
+        {
             expect(_testimpl.isRendered()).andReturn(false);
+        }
 
         if (checkAfter)
         {

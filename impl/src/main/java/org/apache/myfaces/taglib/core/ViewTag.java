@@ -90,7 +90,9 @@ public class ViewTag extends UIComponentELTag
     public int doStartTag() throws JspException
     {
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("entering ViewTag.doStartTag");
+        }
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Object response = facesContext.getExternalContext().getResponse();
@@ -112,7 +114,9 @@ public class ViewTag extends UIComponentELTag
         Config.set(pageContext.getRequest(), Config.FMT_LOCALE, facesContext.getViewRoot().getLocale());
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("leaving ViewTag.doStartTag");
+        }
         return retVal;
     }
 
@@ -120,11 +124,15 @@ public class ViewTag extends UIComponentELTag
     public int doEndTag() throws JspException
     {
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("entering ViewTag.doEndTag");
+        }
         int retVal = super.doEndTag();
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("leaving ViewTag.doEndTag");
+        }
         return retVal;
     }
 
@@ -132,7 +140,9 @@ public class ViewTag extends UIComponentELTag
     public int doAfterBody() throws JspException
     {
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("entering ViewTag.doAfterBody");
+        }
 
         UIComponent verbatimComp = createVerbatimComponentFromBodyContent();
 
@@ -142,7 +152,9 @@ public class ViewTag extends UIComponentELTag
         }
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("leaving ViewTag.doAfterBody");
+        }
         return EVAL_PAGE;
     }
 

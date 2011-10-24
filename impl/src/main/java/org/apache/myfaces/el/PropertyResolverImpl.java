@@ -72,7 +72,9 @@ public final class PropertyResolverImpl extends PropertyResolver
         PropertyNotFoundException
     {
         if (base == null || property == null || isReadOnly (base, property))
+        {
             throw new PropertyNotFoundException();
+        }
 
         invokeResolver(new ResolverInvoker<Object>(base, property)
         {
@@ -95,7 +97,9 @@ public final class PropertyResolverImpl extends PropertyResolver
     public void setValue(Object base, int index, Object newValue) throws EvaluationException, PropertyNotFoundException
     {
         if (base == null)
+        {
             throw new PropertyNotFoundException();
+        }
 
         if (base instanceof Object[])
         {
@@ -138,7 +142,9 @@ public final class PropertyResolverImpl extends PropertyResolver
     public Class getType(final Object base, final Object property)
     {
         if (base == null || property == null)
+        {
             throw new PropertyNotFoundException();
+        }
 
         return invokeResolver(new ResolverInvoker<Class<?>>(base, property)
         {
@@ -154,7 +160,9 @@ public final class PropertyResolverImpl extends PropertyResolver
     public Class getType(Object base, int index)
     {
         if (base == null)
+        {
             throw new PropertyNotFoundException();
+        }
 
         if (base instanceof Object[])
         {

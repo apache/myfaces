@@ -46,9 +46,13 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
     public SubKeyMap(Map<String, Object> base, String prefix)
     {
         if (base == null)
+        {
             throw new NullPointerException();
+        }
         if (prefix == null)
+        {
             throw new NullPointerException();
+        }
 
         // Optimize the scenario where we're wrapping another SubKeyMap
         if (base instanceof SubKeyMap)
@@ -94,7 +98,9 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
     public boolean containsKey(Object key)
     {
         if (!(key instanceof String))
+        {
             return false;
+        }
 
         return _base.containsKey(_getBaseKey(key));
     }
@@ -103,14 +109,18 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
     public Set<Map.Entry<String, V>> entrySet()
     {
         if (_entrySet == null)
+        {
             _entrySet = new Entries<V>();
+        }
         return _entrySet;
     }
 
     private String _getBaseKey(Object key)
     {
         if (key == null)
+        {
             throw new NullPointerException();
+        }
         // Yes, I want a ClassCastException if it's not a String
         return _prefix + ((String) key);
     }
@@ -121,7 +131,9 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
         for (String key : _base.keySet())
         {
             if (key != null && key.startsWith(_prefix))
+            {
                 list.add(key);
+            }
         }
 
         return list;
@@ -154,7 +166,9 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
             for (String key : _base.keySet())
             {
                 if (key != null && key.startsWith(_prefix))
+                {
                     size++;
+                }
             }
 
             return size;
@@ -170,7 +184,9 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
                 // Short-circuit:  the default implementation would always
                 // need to iterate to find the total size.
                 if (key != null && key.startsWith(_prefix))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -213,7 +229,9 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
         public void remove()
         {
             if (_currentKey == null)
+            {
                 throw new IllegalStateException();
+            }
 
             _base.remove(_currentKey);
 
@@ -234,7 +252,9 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
         public String getKey()
         {
             if (_key == null)
+            {
                 _key = _baseKey.substring(_prefix.length());
+            }
             return _key;
         }
 
@@ -253,7 +273,9 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
         public boolean equals(Object o)
         {
             if (!(o instanceof Map.Entry))
+            {
                 return false;
+            }
             Map.Entry<String, V> e = (Map.Entry<String, V>) o;
             return _equals(getKey(), e.getKey())
                     && _equals(getValue(), e.getValue());
@@ -275,7 +297,9 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
     static private boolean _equals(Object a, Object b)
     {
         if (a == null)
+        {
             return b == null;
+        }
         return a.equals(b);
     }
 

@@ -37,7 +37,9 @@ class MyfacesLogRecord extends LogRecord
   public String getSourceClassName()
   {
     if (_needToInferCaller)
-      _inferCaller();
+    {
+        _inferCaller();
+    }
 
     return super.getSourceClassName();
   }
@@ -53,7 +55,9 @@ class MyfacesLogRecord extends LogRecord
   public String getSourceMethodName()
   {
     if (_needToInferCaller)
-      _inferCaller();
+    {
+        _inferCaller();
+    }
 
     return super.getSourceMethodName();
   }
@@ -80,7 +84,9 @@ class MyfacesLogRecord extends LogRecord
       String cname = frame.getClassName();
       if (cname.equals(_JDK_LOG_CLASS) ||
           cname.equals(_MYFACES_LOG_CLASS))
-        break;
+      {
+          break;
+      }
 
       i++;
     }

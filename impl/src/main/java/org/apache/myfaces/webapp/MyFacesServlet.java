@@ -104,9 +104,15 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
     public void service(ServletRequest request, ServletResponse response)
             throws IOException, ServletException
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("MyFacesServlet service start");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("MyFacesServlet service start");
+        }
         delegate.service(request, response);
-        if (log.isLoggable(Level.FINEST)) log.finest("MyFacesServlet service finished");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("MyFacesServlet service finished");
+        }
     }
 
 }

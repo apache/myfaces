@@ -113,7 +113,10 @@ public class WebXml
 
     public List getFacesServletMappings()
     {
-        if (_facesServletMappings != null) return _facesServletMappings;
+        if (_facesServletMappings != null)
+        {
+            return _facesServletMappings;
+        }
 
         List tempFacesServletMappings = new ArrayList();
         for (Iterator it = _servlets.entrySet().iterator(); it.hasNext(); )
@@ -145,13 +148,18 @@ public class WebXml
                                                                                                              servletClass,
                                                                                                              urlpattern));
                         if (log.isLoggable(Level.FINEST))
+                        {
                             log.finest("adding mapping for servlet + " + servletName + " urlpattern = " + urlpattern);
+                        }
                     }
                 }
             }
             else
             {
-                if (log.isLoggable(Level.FINEST)) log.finest("ignoring servlet + " + servletName + " " + servletClass + " (no FacesServlet)");
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("ignoring servlet + " + servletName + " " + servletClass + " (no FacesServlet)");
+                }
             }
         }
         
@@ -167,7 +175,10 @@ public class WebXml
      */
     public List getFacesExtensionsFilterMappings()
     {
-        if (_facesExtensionsFilterMappings != null) return _facesExtensionsFilterMappings;
+        if (_facesExtensionsFilterMappings != null)
+        {
+            return _facesExtensionsFilterMappings;
+        }
 
         List tempExtensionsFilterMappings = new ArrayList();
         for (Iterator it = _filters.entrySet().iterator(); it.hasNext(); )
@@ -193,7 +204,9 @@ public class WebXml
                     tempExtensionsFilterMappings.add(new org.apache.myfaces.shared.webapp.webxml.FilterMapping(
                         filterName, filterClass, urlpattern));
                     if (log.isLoggable(Level.FINEST))
+                    {
                         log.finest("adding mapping for filter + " + filterName + " urlpattern = " + urlpattern);
+                    }
                 }
             }
         }

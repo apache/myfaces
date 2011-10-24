@@ -116,8 +116,14 @@ public class RegexValidator implements Validator, PartialStateHolder
                          UIComponent component,
                          Object value)
     {
-        if (context == null) throw new NullPointerException("context");
-        if (component == null) throw new NullPointerException("component");
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+        if (component == null)
+        {
+            throw new NullPointerException("component");
+        }
 
         if (value == null)
         {

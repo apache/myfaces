@@ -595,7 +595,9 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
+        {
             return;
+        }
 
         Object[] serializedState = (Object[]) state;
         

@@ -88,7 +88,9 @@ public abstract class UIComponentTagBase extends Object implements JspTag
         FacesContext ctx = getFacesContext();
 
         if (ctx == null)
+        {
             throw new NullPointerException("FacesContext ctx");
+        }
 
         return getFacesContext().getELContext();
     }

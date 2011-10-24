@@ -38,7 +38,9 @@ public class ValueChangeEvent extends FacesEvent
     {
         super(uiComponent);
         if (uiComponent == null)
+        {
             throw new IllegalArgumentException("uiComponent");
+        }
         _oldValue = oldValue;
         _newValue = newValue;
     }

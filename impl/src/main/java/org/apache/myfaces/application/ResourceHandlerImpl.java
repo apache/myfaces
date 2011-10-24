@@ -244,9 +244,13 @@ public class ResourceHandlerImpl extends ResourceHandler
     public String getRendererTypeForResourceName(String resourceName)
     {
         if (resourceName.endsWith(".js"))
+        {
             return "javax.faces.resource.Script";
+        }
         else if (resourceName.endsWith(".css"))
+        {
             return "javax.faces.resource.Stylesheet";
+        }
         return null;
     }
 
@@ -368,9 +372,11 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 //TODO: Log using a localized message (which one?)
                 if (log.isLoggable(Level.SEVERE))
+                {
                     log.severe("Error trying to load resource " + resourceName
                             + " with library " + libraryName + " :"
                             + e.getMessage());
+                }
                 httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         //}
@@ -570,7 +576,9 @@ public class ResourceHandlerImpl extends ResourceHandler
     private ResourceHandlerCache getResourceLoaderCache()
     {
         if (_resourceHandlerCache == null)
+        {
             _resourceHandlerCache = new ResourceHandlerCache();
+        }
         return _resourceHandlerCache;
     }
 

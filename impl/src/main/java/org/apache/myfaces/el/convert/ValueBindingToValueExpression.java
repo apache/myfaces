@@ -151,21 +151,33 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         final ValueBindingToValueExpression other = (ValueBindingToValueExpression) obj;
         if (_transient != other._transient)
+        {
             return false;
+        }
         if (_valueBinding == null)
         {
             if (other._valueBinding != null)
+            {
                 return false;
+            }
         }
         else if (!_valueBinding.equals(other._valueBinding))
+        {
             return false;
+        }
         return true;
     }
 

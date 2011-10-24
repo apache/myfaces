@@ -55,9 +55,13 @@ public class RenderKitFactoryImpl extends RenderKitFactory
     public void addRenderKit(String renderKitId, RenderKit renderKit)
     {
         if (renderKitId == null)
+        {
             throw new NullPointerException("renderKitId");
+        }
         if (renderKit == null)
+        {
             throw new NullPointerException("renderKit");
+        }
         if (log.isLoggable(Level.INFO))
         {
             if (_renderkits.containsKey(renderKitId))
@@ -72,7 +76,9 @@ public class RenderKitFactoryImpl extends RenderKitFactory
     public RenderKit getRenderKit(FacesContext context, String renderKitId) throws FacesException
     {
         if (renderKitId == null)
+        {
             throw new NullPointerException("renderKitId");
+        }
         RenderKit renderkit = _renderkits.get(renderKitId);
         if (renderkit == null)
         {

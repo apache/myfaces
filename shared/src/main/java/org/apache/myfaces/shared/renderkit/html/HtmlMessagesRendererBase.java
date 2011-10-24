@@ -133,9 +133,13 @@ public abstract class HtmlMessagesRendererBase
                 writer.startElement(HTML.SPAN_ELEM, null);
                 writer.writeAttribute(HTML.ID_ATTR,messages.getClientId(facesContext),null);
                 if(messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR)!=null)
-                    writer.writeAttribute(HTML.CLASS_ATTR,messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR),null);
+                {
+                    writer.writeAttribute(HTML.CLASS_ATTR, messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR), null);
+                }
                 if(messages.getAttributes().get(JSFAttr.STYLE_ATTR)!=null)
-                    writer.writeAttribute(HTML.STYLE_ATTR,messages.getAttributes().get(JSFAttr.STYLE_ATTR),null);
+                {
+                    writer.writeAttribute(HTML.STYLE_ATTR, messages.getAttributes().get(JSFAttr.STYLE_ATTR), null);
+                }
                 writer.endElement(HTML.SPAN_ELEM);
             }
         }

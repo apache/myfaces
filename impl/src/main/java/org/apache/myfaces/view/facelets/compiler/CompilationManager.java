@@ -160,7 +160,9 @@ final class CompilationManager
     public void writeComment(String text)
     {
         if (this.compiler.isTrimmingComments())
+        {
             return;
+        }
 
         if (this.finished)
         {

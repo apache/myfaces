@@ -39,7 +39,9 @@ public class ArrayDataModel<E> extends DataModel<E>
     public ArrayDataModel(E[] array)
     {
         if (array == null)
+        {
             throw new NullPointerException("array");
+        }
         setWrappedData(array);
     }
 

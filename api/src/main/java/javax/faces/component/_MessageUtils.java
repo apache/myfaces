@@ -194,11 +194,15 @@ class _MessageUtils
     static Object getLabel(FacesContext facesContext, UIComponent component) {
         Object label = component.getAttributes().get("label");
         if(label != null)
+        {
             return label;
+        }
         
         ValueExpression expression = component.getValueExpression("label");
         if(expression != null)
+        {
             return expression;
+        }
         
         //If no label is not specified, use clientId
         return component.getClientId( facesContext );

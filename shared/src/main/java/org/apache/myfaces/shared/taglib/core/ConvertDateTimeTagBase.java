@@ -98,7 +98,10 @@ public class ConvertDateTimeTagBase
        Locale locale = null;
        Object _value = null;
             
-        if (value == null) return;
+        if (value == null)
+        {
+            return;
+        }
         if (UIComponentTag.isValueReference(value))
         {
             ValueBinding vb = facesContext.getApplication().createValueBinding(value);
@@ -124,7 +127,10 @@ public class ConvertDateTimeTagBase
                                               DateTimeConverter converter,
                                               String value)
     {
-        if (value == null) return;
+        if (value == null)
+        {
+            return;
+        }
         if (UIComponentTag.isValueReference(value))
         {
             ValueBinding vb = facesContext.getApplication().createValueBinding(value);
@@ -140,7 +146,10 @@ public class ConvertDateTimeTagBase
                                             DateTimeConverter converter,
                                             String value)
     {
-        if (value == null) return;
+        if (value == null)
+        {
+            return;
+        }
         if (UIComponentTag.isValueReference(value))
         {
             ValueBinding vb = facesContext.getApplication().createValueBinding(value);
@@ -156,7 +165,10 @@ public class ConvertDateTimeTagBase
                                               DateTimeConverter converter,
                                               String value)
     {
-        if (value == null) return;
+        if (value == null)
+        {
+            return;
+        }
         if (UIComponentTag.isValueReference(value))
         {
             ValueBinding vb = facesContext.getApplication().createValueBinding(value);
@@ -172,7 +184,10 @@ public class ConvertDateTimeTagBase
                                              DateTimeConverter converter,
                                              String value)
     {
-        if (value == null) return;
+        if (value == null)
+        {
+            return;
+        }
          if (UIComponentTag.isValueReference(value))
          {
             ValueBinding vb = facesContext.getApplication().createValueBinding(value);
@@ -198,7 +213,10 @@ public class ConvertDateTimeTagBase
                                          DateTimeConverter converter,
                                          String value)
     {
-        if (value == null) return;
+        if (value == null)
+        {
+            return;
+        }
         if (UIComponentTag.isValueReference(value))
         {
             ValueBinding vb = facesContext.getApplication().createValueBinding(value);

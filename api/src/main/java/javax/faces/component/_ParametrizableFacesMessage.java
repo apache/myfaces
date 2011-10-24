@@ -50,7 +50,10 @@ class _ParametrizableFacesMessage extends FacesMessage
             String summary, String detail, Object[] args, Locale locale)
     {
         super(summary, detail);
-        if(locale == null) throw new NullPointerException("locale");
+        if(locale == null)
+        {
+            throw new NullPointerException("locale");
+        }
         _locale = locale;
         _args = args;
     }
@@ -59,7 +62,10 @@ class _ParametrizableFacesMessage extends FacesMessage
             String summary, String detail, Object[] args, Locale locale)
     {
         super(severity, summary, detail);
-        if(locale == null) throw new NullPointerException("locale");
+        if(locale == null)
+        {
+            throw new NullPointerException("locale");
+        }
         _locale = locale;
         _args = args;
     }

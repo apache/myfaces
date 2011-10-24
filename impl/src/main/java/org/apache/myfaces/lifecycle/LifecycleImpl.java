@@ -215,7 +215,9 @@ public class LifecycleImpl extends Lifecycle
                 return;
             }
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+            }
     
             PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
             Flash flash = facesContext.getExternalContext().getFlash();

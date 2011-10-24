@@ -146,13 +146,17 @@ public class ConvertDateTimeTag extends ConverterTag
     private void setConverterLocale(ELContext eLContext, DateTimeConverter converter, ValueExpression value)
     {
         if (value == null)
+        {
             return;
+        }
 
         Object objLocale = UIComponentELTagUtils.evaluateValueExpression(eLContext, value);
         Locale locale;
 
         if (objLocale == null)
+        {
             return;
+        }
 
         if (objLocale instanceof Locale)
         {
@@ -168,7 +172,9 @@ public class ConvertDateTimeTag extends ConverterTag
     private void setConverterDateStyle(ELContext elContext, DateTimeConverter converter, ValueExpression value)
     {
         if (value == null)
+        {
             return;
+        }
 
         String dateStyle = (String)UIComponentELTagUtils.evaluateValueExpression(elContext, value);
 
@@ -183,7 +189,9 @@ public class ConvertDateTimeTag extends ConverterTag
     private void setConverterPattern(ELContext elContext, DateTimeConverter converter, ValueExpression value)
     {
         if (value == null)
+        {
             return;
+        }
 
         String pattern = (String)UIComponentELTagUtils.evaluateValueExpression(elContext, value);
         converter.setPattern(pattern);
@@ -192,7 +200,9 @@ public class ConvertDateTimeTag extends ConverterTag
     private void setConverterTimeStyle(ELContext elContext, DateTimeConverter converter, ValueExpression value)
     {
         if (value == null)
+        {
             return;
+        }
 
         String timeStyle = (String)UIComponentELTagUtils.evaluateValueExpression(elContext, value);
 
@@ -207,13 +217,17 @@ public class ConvertDateTimeTag extends ConverterTag
     private void setConverterTimeZone(ELContext elContext, DateTimeConverter converter, ValueExpression value)
     {
         if (value == null)
+        {
             return;
+        }
 
         Object objTimeZone = UIComponentELTagUtils.evaluateValueExpression(elContext, value);
         TimeZone timeZone;
 
         if (objTimeZone == null)
+        {
             return;
+        }
 
         if (objTimeZone instanceof TimeZone)
         {

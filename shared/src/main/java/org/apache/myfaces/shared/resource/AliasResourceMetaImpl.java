@@ -61,25 +61,37 @@ public class AliasResourceMetaImpl extends ResourceMetaImpl
         }
         if (getLibraryName() != null)
         {
-            if (firstSlashAdded) builder.append('/');
+            if (firstSlashAdded)
+            {
+                builder.append('/');
+            }
             builder.append(getLibraryName());
             firstSlashAdded = true;
         }
         if (getLibraryVersion() != null)
         {
-            if (firstSlashAdded) builder.append('/');
+            if (firstSlashAdded)
+            {
+                builder.append('/');
+            }
             builder.append(getLibraryVersion());
             firstSlashAdded = true;
         }
         if (getRealResourceName() != null)
         {
-            if (firstSlashAdded) builder.append('/');
+            if (firstSlashAdded)
+            {
+                builder.append('/');
+            }
             builder.append(getRealResourceName());
             firstSlashAdded = true;
         }
         if (getResourceVersion() != null)
         {
-            if (firstSlashAdded) builder.append('/');
+            if (firstSlashAdded)
+            {
+                builder.append('/');
+            }
             builder.append(getResourceVersion());
             builder.append(
                     getRealResourceName().substring(getRealResourceName().lastIndexOf('.')));

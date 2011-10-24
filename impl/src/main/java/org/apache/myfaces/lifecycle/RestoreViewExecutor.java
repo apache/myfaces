@@ -86,7 +86,9 @@ class RestoreViewExecutor extends PhaseExecutor
         if (viewRoot != null)
         {
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("View already exists in the FacesContext");
+            }
             
             // Set the locale on this UIViewRoot to the value returned by the getRequestLocale() method on the
             // ExternalContext for this request
@@ -114,7 +116,9 @@ class RestoreViewExecutor extends PhaseExecutor
         if (!errorPageRequest && restoreViewSupport.isPostback(facesContext))
         { // If the request is a postback
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("Request is a postback");
+            }
 
             try
             {
@@ -145,7 +149,9 @@ class RestoreViewExecutor extends PhaseExecutor
         else
         { // If the request is a non-postback
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("Request is not a postback. New UIViewRoot will be created");
+            }
             
             //viewHandler.deriveViewId(facesContext, viewId)
             //restoreViewSupport.deriveViewId(facesContext, viewId)

@@ -97,7 +97,9 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 decode(context);
                 
                 if (!isSubmitted())
+                {
                     return;
+                }
 
                 int facetCount = getFacetCount();
                 if (facetCount > 0)
@@ -148,7 +150,9 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     decode(context);
                 }
                 if (!isSubmitted())
+                {
                     return;
+                }
 
                 //Pre validation event dispatch for component
                 context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
@@ -203,7 +207,9 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     decode(context);
                 }
                 if (!isSubmitted())
+                {
                     return;
+                }
                 
                 int facetCount = getFacetCount();
                 if (facetCount > 0)

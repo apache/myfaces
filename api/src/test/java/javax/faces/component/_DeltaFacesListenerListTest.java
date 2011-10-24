@@ -53,7 +53,9 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         public boolean equals(Object obj)
         {
             if (obj instanceof NoStateFacesListener)
+            {
                 return true;
+            }
             return false;
         }
     }
@@ -68,7 +70,9 @@ public class _DeltaFacesListenerListTest extends AbstractComponentTest
         public boolean equals(Object obj)
         {
             if (obj instanceof NoStateFacesListener2)
+            {
                 return true;
+            }
             return false;
         }
     }

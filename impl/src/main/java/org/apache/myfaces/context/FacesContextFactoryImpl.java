@@ -89,14 +89,18 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         {
             // It could happen, but we can ignore it.
             if (log.isLoggable(Level.FINE))
+            {
                 log.log(Level.FINE, "Cannot access field _firstInstance"
                         + "from _MyFacesExternalContextHelper ", e);
+            }
         }
         catch (Exception e)
         {
             if (log.isLoggable(Level.SEVERE))
+            {
                 log.log(Level.SEVERE, "Cannot find field _firstInstance"
                         + "from _MyFacesExternalContextHelper ", e);
+            }
         }
         
         _firstExternalContextInstance = firstExternalContextInstance;

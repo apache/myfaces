@@ -70,7 +70,9 @@ public final class WebConfigParamUtils
     public static String getStringInitParameter(ExternalContext context, String name, String defaultValue)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = context.getInitParameter(name);
         
@@ -126,14 +128,18 @@ public final class WebConfigParamUtils
     public static String getStringInitParameter(ExternalContext context, String[] names, String defaultValue)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = context.getInitParameter(name);
             if (param != null)
@@ -200,7 +206,9 @@ public final class WebConfigParamUtils
     public static boolean getBooleanInitParameter(ExternalContext context, String name, boolean defaultValue)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
 
         String param = getStringInitParameter(context, name);
         if (param == null)
@@ -238,7 +246,9 @@ public final class WebConfigParamUtils
     public static boolean getBooleanInitParameter(ExternalContext context, String name, boolean defaultValue, String [] valuesIgnoreCase, boolean returnOnValueEqualsIgnoreCase)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
 
         String param = getStringInitParameter(context, name);
         if (param == null)
@@ -304,13 +314,17 @@ public final class WebConfigParamUtils
     public static boolean getBooleanInitParameter(ExternalContext context, String[] names, boolean defaultValue)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = getStringInitParameter(context, name);
             if (param != null)
@@ -352,13 +366,17 @@ public final class WebConfigParamUtils
     public static boolean getBooleanInitParameter(ExternalContext context, String[] names, boolean defaultValue, String [] valuesIgnoreCase, boolean returnOnValueEqualsIgnoreCase)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = getStringInitParameter(context, name);
             if (param != null)
@@ -434,7 +452,9 @@ public final class WebConfigParamUtils
     public static int getIntegerInitParameter(ExternalContext context, String name, int defaultValue)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
 
         String param = getStringInitParameter(context, name);
         if (param == null)
@@ -486,13 +506,17 @@ public final class WebConfigParamUtils
     public static int getIntegerInitParameter(ExternalContext context, String[] names, int defaultValue)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = getStringInitParameter(context, name);
             if (param != null)
@@ -554,7 +578,9 @@ public final class WebConfigParamUtils
     public static long getLongInitParameter(ExternalContext context, String name, long defaultValue)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
 
         String param = getStringInitParameter(context, name);
         if (param == null)
@@ -607,13 +633,17 @@ public final class WebConfigParamUtils
     public static long getLongInitParameter(ExternalContext context, String[] names, long defaultValue)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = getStringInitParameter(context, name);
             if (param != null)

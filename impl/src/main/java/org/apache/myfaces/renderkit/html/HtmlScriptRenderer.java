@@ -140,9 +140,13 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
     public void encodeChildren(FacesContext facesContext, UIComponent component)
             throws IOException {
         if (facesContext == null)
+        {
             throw new NullPointerException("context");
+        }
         if (component == null)
+        {
             throw new NullPointerException("component");
+        }
 
         Map<String, Object> componentAttributesMap = component.getAttributes();
         String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);

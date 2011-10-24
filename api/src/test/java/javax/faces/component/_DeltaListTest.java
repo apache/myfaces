@@ -50,7 +50,9 @@ public class _DeltaListTest extends AbstractComponentTest
         public void addTestFacesListener(FacesListener listener)
         {
             if (listener == null)
+            {
                 throw new NullPointerException("listener");
+            }
             if (_facesListeners == null)
             {
                 _facesListeners = new _DeltaList<FacesListener>(new ArrayList<FacesListener>());
@@ -80,7 +82,9 @@ public class _DeltaListTest extends AbstractComponentTest
                 if (clazz.isAssignableFrom(facesListener.getClass()))
                 {
                     if (lst == null)
+                    {
                         lst = new ArrayList<FacesListener>();
+                    }
                     lst.add(facesListener);
                 }
             }
@@ -141,8 +145,10 @@ public class _DeltaListTest extends AbstractComponentTest
                 {
                     //Delta
                     if (_facesListeners != null)
-                        ((StateHolder)_facesListeners).restoreState(facesContext,
+                    {
+                        ((StateHolder) _facesListeners).restoreState(facesContext,
                                 ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+                    }
                 }
                 else if (values[1] != null)
                 {
@@ -202,7 +208,9 @@ public class _DeltaListTest extends AbstractComponentTest
         public boolean equals(Object obj)
         {
             if (obj instanceof NoStateFacesListener)
+            {
                 return true;
+            }
             return false;
         }
     }
@@ -217,7 +225,9 @@ public class _DeltaListTest extends AbstractComponentTest
         public boolean equals(Object obj)
         {
             if (obj instanceof NoStateFacesListener2)
+            {
                 return true;
+            }
             return false;
         }
     }

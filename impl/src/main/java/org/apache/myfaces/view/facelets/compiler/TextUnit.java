@@ -304,7 +304,9 @@ final class TextUnit extends CompilationUnit
                 {
                     String s = this.buffer.toString();
                     if (child)
+                    {
                         s = trimRight(s);
+                    }
                     ELText txt = ELText.parse(s);
                     if (txt != null)
                     {

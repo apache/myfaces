@@ -74,7 +74,10 @@ public class NavigationHandlerImpl
 
     public NavigationHandlerImpl()
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("New NavigationHandler instance created");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("New NavigationHandler instance created");
+        }
     }
 
     @Override
@@ -258,7 +261,10 @@ public class NavigationHandlerImpl
                         if (casesSet != null)
                         {
                             navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
-                            if (navigationCase != null) break;
+                            if (navigationCase != null)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -268,7 +274,10 @@ public class NavigationHandlerImpl
                     if (casesSet != null)
                     {
                         navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
-                        if (navigationCase != null) break;
+                        if (navigationCase != null)
+                        {
+                            break;
+                        }
                     }
                 }
             }

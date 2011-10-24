@@ -150,7 +150,9 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
             try
             {
                 if (!_resultSet.rowDeleted())
+                {
                     _resultSet.updateRow();
+                }
 
                 setCurrentRowUpdated(false);
             }
@@ -166,7 +168,9 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
         // if no underlying data has been set, the listeners
         // need not be notified
         if (_resultSet == null)
+        {
             return;
+        }
 
         // Notify all listeners of the upated row
         DataModelListener[] listeners = getDataModelListeners();
@@ -339,7 +343,9 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
                 Object oldValue = _resultSet.getObject((String) getUnderlyingKey(key));
 
                 if (oldValue == null ? value == null : oldValue.equals(value))
+                {
                     return oldValue;
+                }
 
                 _resultSet.updateObject((String) getUnderlyingKey(key), value);
 
@@ -417,15 +423,21 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
         public boolean contains(Object o)
         {
             if (o == null)
+            {
                 throw new NullPointerException();
+            }
             if (!(o instanceof Map.Entry))
+            {
                 return false;
+            }
 
             Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
             Object key = e.getKey();
 
             if (!_wrapMap.containsKey(key))
+            {
                 return false;
+            }
 
             Object value = e.getValue();
             Object cmpValue = _wrapMap.get(key);
@@ -515,15 +527,21 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
         public boolean equals(Object o)
         {
             if (o == null)
+            {
                 return false;
+            }
 
             if (!(o instanceof Map.Entry))
+            {
                 return false;
+            }
 
             Map.Entry<?, ?> cmpEntry = (Map.Entry<?, ?>) o;
 
             if (_entryKey == null ? cmpEntry.getKey() != null : !_entryKey.equals(cmpEntry.getKey()))
+            {
                 return false;
+            }
 
             Object value = _wrapMap.get(_entryKey);
             Object cmpValue = cmpEntry.getValue();

@@ -150,8 +150,10 @@ public class HtmlRenderKitImpl extends RenderKit
         _put(componentFamily, rendererType, renderer);
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("add Renderer family = " + componentFamily + " rendererType = " + rendererType
                     + " renderer class = " + renderer.getClass().getName());
+        }
     }
     
     /**

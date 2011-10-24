@@ -241,9 +241,13 @@ public class FaceletViewHandler extends ViewHandler
         long refreshPeriod;
         
         if(ctx.isProjectStage(ProjectStage.Production))
+        {
             refreshPeriod = DEFAULT_REFRESH_PERIOD_PRODUCTION;
+        }
         else
+        {
             refreshPeriod = DEFAULT_REFRESH_PERIOD;
+        }
         
         String userPeriod = ctx.getExternalContext().getInitParameter(PARAM_REFRESH_PERIOD);
         if (userPeriod != null && userPeriod.length() > 0)
@@ -712,7 +716,9 @@ public class FaceletViewHandler extends ViewHandler
         finally
         {
             if (stateWriter != null)
+            {
                 stateWriter.release();
+            }
         }
     }
 

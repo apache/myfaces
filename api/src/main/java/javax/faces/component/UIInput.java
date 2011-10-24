@@ -143,7 +143,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     public Object getValue()
     {
-        if (isLocalValueSet()) return super.getLocalValue();
+        if (isLocalValueSet())
+        {
+            return super.getLocalValue();
+        }
         return super.getValue();
     }
 
@@ -433,7 +436,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     protected void validateValue(FacesContext context, Object convertedValue)
     {
         if (!isValid())
+        {
             return;
+        }
 
         // If our value is empty, check the required property
         boolean isEmpty = isEmpty(convertedValue); 
@@ -551,7 +556,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void validate(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
 
         Object submittedValue = getSubmittedValue();
         if (submittedValue == null)
@@ -602,7 +609,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
         validateValue(context, convertedValue);
 
         if (!isValid())
+        {
             return;
+        }
 
         Object previousValue = getValue();
         setValue(convertedValue);
@@ -787,7 +796,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void removeValidator(Validator validator)
     {
         if (validator == null || _validatorList == null)
+        {
             return;
+        }
 
         _validatorList.remove(validator);
     }

@@ -90,7 +90,10 @@ public class HtmlTextRendererBase
     {
         
         String text = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, component);
-        if (log.isLoggable(Level.FINE)) log.fine("renderOutput '" + text + "'");
+        if (log.isLoggable(Level.FINE))
+        {
+            log.fine("renderOutput '" + text + "'");
+        }
         boolean escape;
         if (component instanceof HtmlOutputText || component instanceof EscapeCapable)
         {
@@ -152,7 +155,10 @@ public class HtmlTextRendererBase
 
             if (escape)
             {
-                if (log.isLoggable(Level.FINE)) log.fine("renderOutputText writing '" + text + "'");
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("renderOutputText writing '" + text + "'");
+                }
                 writer.writeText(text, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
             }
             else
@@ -188,7 +194,10 @@ public class HtmlTextRendererBase
 
         String clientId = component.getClientId(facesContext);
         String value = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, component);
-        if (log.isLoggable(Level.FINE)) log.fine("renderInput '" + value + "'");
+        if (log.isLoggable(Level.FINE))
+        {
+            log.fine("renderInput '" + value + "'");
+        }
         writer.startElement(HTML.INPUT_ELEM, component);
         writer.writeAttribute(HTML.ID_ATTR, clientId, null);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
@@ -357,7 +366,9 @@ public class HtmlTextRendererBase
             if (escape)
             {
                 if (log.isLoggable(Level.FINE))
+                {
                     log.fine("renderOutputText writing '" + text + "'");
+                }
                 writer.writeText(text,
                         org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
             }

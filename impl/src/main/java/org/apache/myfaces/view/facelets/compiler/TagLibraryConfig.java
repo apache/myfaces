@@ -647,7 +647,9 @@ public final class TagLibraryConfig
         finally
         {
             if (is != null)
+            {
                 is.close();
+            }
         }
         return t;
     }

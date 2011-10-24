@@ -91,7 +91,9 @@ public abstract class Compiler
     private synchronized void initialize()
     {
         if (this.initialized)
+        {
             return;
+        }
         log.fine("Initializing");
         try
         {
@@ -120,7 +122,9 @@ public abstract class Compiler
             FacesException
     {
         if (!this.initialized)
+        {
             this.initialize();
+        }
         return this.doCompile(src, alias);
     }
     
@@ -128,7 +132,9 @@ public abstract class Compiler
             FacesException
     {
         if (!this.initialized)
+        {
             this.initialize();
+        }
         return this.doCompileViewMetadata(src, alias);
     }
     
@@ -136,7 +142,9 @@ public abstract class Compiler
             FacesException
     {
         if (!this.initialized)
+        {
             this.initialize();
+        }
         return this.doCompileCompositeComponentMetadata(src, alias);
     }
 

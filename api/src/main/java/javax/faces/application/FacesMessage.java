@@ -162,7 +162,9 @@ public class FacesMessage implements Serializable
     public FacesMessage(FacesMessage.Severity severity, String summary, String detail)
     {
         if (severity == null)
+        {
             throw new NullPointerException("severity");
+        }
         _severity = severity;
         _summary = summary;
         _detail = detail;
@@ -184,7 +186,9 @@ public class FacesMessage implements Serializable
     public void setSeverity(FacesMessage.Severity severity)
     {
         if (severity == null)
+        {
             throw new NullPointerException("severity");
+        }
         _severity = severity;
     }
 

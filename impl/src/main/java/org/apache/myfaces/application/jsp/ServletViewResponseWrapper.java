@@ -129,7 +129,10 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
     @Override
     public ServletOutputStream getOutputStream() throws IOException
     {
-        if (_charArrayWriter != null) throw new IllegalStateException();
+        if (_charArrayWriter != null)
+        {
+            throw new IllegalStateException();
+        }
         if (_byteArrayWriter == null)
         {
             _byteArrayWriter = new WrappedServletOutputStream();
@@ -140,7 +143,10 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
     @Override
     public PrintWriter getWriter() throws IOException
     {
-        if (_byteArrayWriter != null) throw new IllegalStateException();
+        if (_byteArrayWriter != null)
+        {
+            throw new IllegalStateException();
+        }
         if (_writer == null)
         {
             _charArrayWriter = new CharArrayWriter(4096);

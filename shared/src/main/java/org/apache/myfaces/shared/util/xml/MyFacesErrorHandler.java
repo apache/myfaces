@@ -41,7 +41,10 @@ public class MyFacesErrorHandler
 
     public void warning(SAXParseException exception)
     {
-        if (_log.isLoggable(Level.WARNING)) _log.log(Level.WARNING, getMessage(exception), exception);
+        if (_log.isLoggable(Level.WARNING))
+        {
+            _log.log(Level.WARNING, getMessage(exception), exception);
+        }
     }
 
     public void error(SAXParseException exception)

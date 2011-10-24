@@ -808,10 +808,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     protected void encodeBegin() throws IOException
     {
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("Entered encodeBegin for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        }
         _componentInstance.encodeBegin(getFacesContext());
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("Exited encodeBegin");
+        }
     }
 
     /**
@@ -822,10 +826,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     protected void encodeChildren() throws IOException
     {
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("Entered encodeChildren for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        }
         _componentInstance.encodeChildren(getFacesContext());
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("Exited encodeChildren for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        }
     }
 
     /**
@@ -835,10 +843,14 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     protected void encodeEnd() throws IOException
     {
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("Entered encodeEnd for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        }
         _componentInstance.encodeEnd(getFacesContext());
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("Exited encodeEnd for client-Id: " + _componentInstance.getClientId(getFacesContext()));
+        }
 
     }
 
@@ -914,7 +926,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         int size = stack.size();
         stack.remove(size - 1);
         if (size <= 1)
+        {
             pageContext.removeAttribute(COMPONENT_STACK_ATTR, PageContext.REQUEST_SCOPE);
+        }
 
     }
 
@@ -952,7 +966,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     private static void getPathToComponent(UIComponent component, StringBuffer buf)
     {
         if (component == null)
+        {
             return;
+        }
 
         StringBuffer intBuf = new StringBuffer();
 
@@ -1174,7 +1190,9 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         if (parentTag._childrenAdded != null && parentTag._childrenAdded.contains(id))
         {
             if (log.isLoggable(Level.WARNING))
+            {
                 log.warning("There is more than one JSF tag with an id : " + id);
+            }
         }
 
         _componentInstance = findComponent(parent, id);

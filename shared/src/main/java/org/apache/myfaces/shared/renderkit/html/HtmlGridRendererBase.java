@@ -181,7 +181,10 @@ public class HtmlGridRendererBase
         throws IOException
     {
         UIComponent facet = component.getFacet(header ? "header" : "footer");
-        if (facet == null) return;
+        if (facet == null)
+        {
+            return;
+        }
 
         HtmlRendererUtils.writePrettyLineSeparator(context);
         writer.startElement(header ? org.apache.myfaces.shared.renderkit.html.HTML.THEAD_ELEM : HTML.TFOOT_ELEM, component);

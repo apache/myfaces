@@ -27,12 +27,16 @@ public class Assert
     public static void notNull(Object value)
     {
         if (value == null)
+        {
             throw new NullPointerException("The instance is null.");
+        }
     }
 
     public static void notNull(Object value, String fieldName)
     {
         if (value == null)
+        {
             throw new NullPointerException(fieldName + " is null.");
+        }
     }
 }

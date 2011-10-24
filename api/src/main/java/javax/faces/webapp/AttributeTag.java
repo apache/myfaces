@@ -78,7 +78,9 @@ public class AttributeTag extends TagSupport
             Object value = getValue();
 
             if (value != null)
+            {
                 component.getAttributes().put(name, value);
+            }
         }
         return Tag.SKIP_BODY;
     }

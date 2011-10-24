@@ -253,7 +253,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         public void setRowIndex(int i)
         {
             if (i < -1)
+            {
                 throw new IllegalArgumentException();
+            }
         }
 
         @Override

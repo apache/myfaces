@@ -124,7 +124,9 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
       if (!view.isRendered())
       {
           if (log.isLoggable(Level.FINEST))
+          {
               log.finest("View is not rendered");
+          }
           return;
       }
       
@@ -143,7 +145,9 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
       String viewId = context.getViewRoot().getViewId();
   
       if (log.isLoggable(Level.FINEST))
+      {
           log.finest("Rendering JSP view: " + viewId);
+      }
   
   
       // handle character encoding as of section 2.5.2.2 of JSF 1.1

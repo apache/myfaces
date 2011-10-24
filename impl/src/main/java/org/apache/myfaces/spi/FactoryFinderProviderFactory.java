@@ -155,12 +155,14 @@ public abstract class FactoryFinderProviderFactory
             {
                 Logger log = Logger.getLogger(FactoryFinderProviderFactory.class.getName());
                 if (log.isLoggable(Level.WARNING))
-                    log.log(Level.WARNING, 
+                {
+                    log.log(Level.WARNING,
                             "Called FactoryFinderProviderFactory.setFactory after " +
-                            "initialized FactoryFinder (first call to getFactory() or setFactory()). " +
-                            "This method should be called before " +
-                            "any 'web context' is initialized in the current 'classloader context'. " +
-                            "By that reason it will not be changed.");
+                                    "initialized FactoryFinder (first call to getFactory() or setFactory()). " +
+                                    "This method should be called before " +
+                                    "any 'web context' is initialized in the current 'classloader context'. " +
+                                    "By that reason it will not be changed.");
+                }
             }
             else
             {
@@ -174,8 +176,10 @@ public abstract class FactoryFinderProviderFactory
             // No Op
             Logger log = Logger.getLogger(FactoryFinderProviderFactory.class.getName());
             if (log.isLoggable(Level.FINE))
+            {
                 log.log(Level.FINE, "Cannot access field _initialized"
                         + "from FactoryFinder ", e);
+            }
         }
     }
     

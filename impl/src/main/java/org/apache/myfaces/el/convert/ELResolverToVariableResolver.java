@@ -41,7 +41,9 @@ public final class ELResolverToVariableResolver extends VariableResolver
     public ELResolverToVariableResolver(final ELResolver elResolver)
     {
         if (elResolver == null)
+        {
             throw new NullPointerException();
+        }
         this.elResolver = elResolver;
     }
 

@@ -116,12 +116,18 @@ public class ResourceImpl extends Resource
         {
             int c1 = delegate.read();
             
-            if (c1 == -1) return -1;
+            if (c1 == -1)
+            {
+                return -1;
+            }
             
             if ( ((char)c1) == '#')
             {
                 int c2 = delegate.read();
-                if (c2 == -1) return -1;
+                if (c2 == -1)
+                {
+                    return -1;
+                }
                 if (((char)c2) == '{')
                 {
                     //It is a value expression. We need
@@ -174,7 +180,9 @@ public class ResourceImpl extends Resource
                             
                             Logger log = Logger.getLogger(ResourceImpl.class.getName());
                             if (log.isLoggable(Level.SEVERE))
-                                log.severe("Cannot evaluate EL expression "+convertToExpression(expressionList)+ " in resource " + getLibraryName()+":"+getResourceName());
+                            {
+                                log.severe("Cannot evaluate EL expression " + convertToExpression(expressionList) + " in resource " + getLibraryName() + ":" + getResourceName());
+                            }
                             
                             delegate.unread(c3);
                             for (int i = expressionList.size()-1; i >= 0; i--)

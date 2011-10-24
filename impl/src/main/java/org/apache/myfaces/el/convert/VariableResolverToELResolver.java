@@ -94,14 +94,20 @@ public final class VariableResolverToELResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
 
         context.setPropertyResolved(true);
 
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         final String strProperty = (String) property;
 
@@ -159,7 +165,9 @@ public final class VariableResolverToELResolver extends ELResolver
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
         if (base != null)
+        {
             return null;
+        }
 
         return String.class;
     }
@@ -170,7 +178,9 @@ public final class VariableResolverToELResolver extends ELResolver
     {
 
         if ((base == null) && (property == null))
+        {
             throw new PropertyNotFoundException();
+        }
     }
 
     @Override
@@ -179,7 +189,9 @@ public final class VariableResolverToELResolver extends ELResolver
     {
 
         if ((base == null) && (property == null))
+        {
             throw new PropertyNotFoundException();
+        }
 
         return false;
     }
@@ -190,7 +202,9 @@ public final class VariableResolverToELResolver extends ELResolver
     {
 
         if ((base == null) && (property == null))
+        {
             throw new PropertyNotFoundException();
+        }
 
         return null;
     }

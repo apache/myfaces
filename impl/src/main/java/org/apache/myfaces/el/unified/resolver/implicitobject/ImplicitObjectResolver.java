@@ -112,11 +112,17 @@ public class ImplicitObjectResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return;
+        }
 
         String strProperty = property.toString();
 
@@ -132,11 +138,17 @@ public class ImplicitObjectResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return false;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return false;
+        }
 
         String strProperty = property.toString();
 
@@ -155,11 +167,17 @@ public class ImplicitObjectResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         String strProperty = property.toString();
 
@@ -179,11 +197,17 @@ public class ImplicitObjectResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         String strProperty = property.toString();
 
@@ -199,7 +223,9 @@ public class ImplicitObjectResolver extends ELResolver
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         if (base != null)
+        {
             return null;
+        }
 
         ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(implicitObjects.size());
 
@@ -215,7 +241,9 @@ public class ImplicitObjectResolver extends ELResolver
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
         if (base != null)
+        {
             return null;
+        }
 
         return String.class;
     }

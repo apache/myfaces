@@ -133,7 +133,10 @@ public final class JavascriptUtils
             if (Character.isLetterOrDigit(c))
             {
                 // allowed char
-                if (buf != null) buf.append(c);
+                if (buf != null)
+                {
+                    buf.append(c);
+                }
             }
             else
             {

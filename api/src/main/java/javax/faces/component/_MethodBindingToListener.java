@@ -43,8 +43,14 @@ abstract class _MethodBindingToListener implements StateHolder {
      * Creates a new instance of MethodBindingToListener
      */
     public _MethodBindingToListener(MethodBinding methodBinding) {
-        if (methodBinding == null) throw new NullPointerException("methodBinding can not be null");
-        if (!(methodBinding instanceof StateHolder)) throw new IllegalArgumentException("methodBinding must implement the StateHolder interface");
+        if (methodBinding == null)
+        {
+            throw new NullPointerException("methodBinding can not be null");
+        }
+        if (!(methodBinding instanceof StateHolder))
+        {
+            throw new IllegalArgumentException("methodBinding must implement the StateHolder interface");
+        }
         
         this.methodBinding = methodBinding;
     }

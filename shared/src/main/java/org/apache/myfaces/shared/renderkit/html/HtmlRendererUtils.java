@@ -139,7 +139,9 @@ public final class HtmlRendererUtils {
         String clientId = component.getClientId(facesContext);
 
         if (isDisabledOrReadOnly(component))
+        {
             return;
+        }
 
         if (paramMap.containsKey(clientId)) {
             ((EditableValueHolder) component).setSubmittedValue(paramMap
@@ -166,7 +168,9 @@ public final class HtmlRendererUtils {
         }
 
         if (isDisabledOrReadOnly(component))
+        {
             return;
+        }
 
         Map paramMap = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -208,7 +212,9 @@ public final class HtmlRendererUtils {
         }
 
         if (!(obj instanceof Boolean))
+        {
             return false;
+        }
 
         return ((Boolean) obj).booleanValue();
     }
@@ -231,7 +237,9 @@ public final class HtmlRendererUtils {
         String clientId = component.getClientId(facesContext);
 
         if (isDisabledOrReadOnly(component))
+        {
             return;
+        }
 
         if (paramValuesMap.containsKey(clientId)) {
             String[] reqValues = (String[]) paramValuesMap.get(clientId);
@@ -262,7 +270,9 @@ public final class HtmlRendererUtils {
         }
 
         if (isDisabledOrReadOnly(component))
+        {
             return;
+        }
 
         Map paramMap = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -879,10 +889,14 @@ public final class HtmlRendererUtils {
                 if (lookupSet.contains(itemStrValue)) {  //TODO/FIX: we always compare the String vales, better fill lookupSet with Strings only when useSubmittedValue==true, else use the real item value Objects
 
                     if (!isSelectOne)
+                    {
                         writer.startElement(HTML.LI_ELEM, component);
+                    }
                     writer.writeText(selectItem.getLabel(), null);
                     if (!isSelectOne)
+                    {
                         writer.endElement(HTML.LI_ELEM);
+                    }
 
                     if (isSelectOne) {
                         //take care of several choices with the same value; use only the first one
@@ -898,7 +912,10 @@ public final class HtmlRendererUtils {
                                           UIComponent component)
             throws IOException {
         UIComponent captionFacet = component.getFacet("caption");
-        if (captionFacet == null) return;
+        if (captionFacet == null)
+        {
+            return;
+        }
 
         String captionClass;
         String captionStyle;
@@ -937,7 +954,9 @@ public final class HtmlRendererUtils {
 
         if (component instanceof org.apache.myfaces.shared.component.DisplayValueOnlyCapable) {
             if (((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) component).getDisplayValueOnlyStyleClass() != null)
-                return ((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) component).getDisplayValueOnlyStyleClass();
+            {
+                return ((DisplayValueOnlyCapable) component).getDisplayValueOnlyStyleClass();
+            }
 
             UIComponent parent = component;
 
@@ -956,7 +975,9 @@ public final class HtmlRendererUtils {
 
         if (component instanceof DisplayValueOnlyCapable) {
             if (((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) component).getDisplayValueOnlyStyle() != null)
-                return ((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) component).getDisplayValueOnlyStyle();
+            {
+                return ((DisplayValueOnlyCapable) component).getDisplayValueOnlyStyle();
+            }
 
             UIComponent parent = component;
 
@@ -975,7 +996,9 @@ public final class HtmlRendererUtils {
 
         if (component instanceof DisplayValueOnlyCapable) {
             if (((DisplayValueOnlyCapable) component).isSetDisplayValueOnly())
-                return ((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) component).isDisplayValueOnly();
+            {
+                return ((DisplayValueOnlyCapable) component).isDisplayValueOnly();
+            }
 
             UIComponent parent = component;
 
@@ -1906,7 +1929,9 @@ public final class HtmlRendererUtils {
 
             if (contentTypeListString == null) {
                 if (log.isLoggable(Level.FINE))
+                {
                     log.fine("No content type list given, creating HtmlResponseWriterImpl with default content type.");
+                }
 
                 contentTypeListString = HTML_CONTENT_TYPE;
             }
@@ -1983,21 +2008,27 @@ public final class HtmlRendererUtils {
 
     public static String getJavascriptLocation(UIComponent component) {
         if (component == null)
+        {
             return null;
+        }
 
         return (String) component.getAttributes().get(JSFAttr.JAVASCRIPT_LOCATION);
     }
 
     public static String getImageLocation(UIComponent component) {
         if (component == null)
+        {
             return null;
+        }
 
         return (String) component.getAttributes().get(JSFAttr.IMAGE_LOCATION);
     }
 
     public static String getStyleLocation(UIComponent component) {
         if (component == null)
+        {
             return null;
+        }
 
         return (String) component.getAttributes().get(JSFAttr.STYLE_LOCATION);
     }
@@ -3052,7 +3083,9 @@ public final class HtmlRendererUtils {
             currentIndentationLevel--;
 
             if (currentIndentationLevel < 0)
+            {
                 currentIndentationLevel = 0;
+            }
         }
 
         public void prettyLine() {
@@ -3060,7 +3093,9 @@ public final class HtmlRendererUtils {
                 append(LINE_SEPARATOR);
 
                 for (int i = 0; i < getCurrentIndentationLevel(); i++)
+                {
                     append(TABULATOR);
+                }
             }
         }
 

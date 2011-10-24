@@ -347,7 +347,9 @@ public class DebugUtils
     private static void printAttribute(PrintStream stream, String name, Object value)
     {
         if (IGNORE_ATTRIBUTES.contains(name))
+        {
             return;
+        }
         if (name.startsWith("javax.faces.webapp.UIComponentTag."))
         {
             name = name.substring("javax.faces.webapp.UIComponentTag.".length());

@@ -67,7 +67,9 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
     public JspViewDeclarationLanguage()
     {
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("New JspViewDeclarationLanguage instance created");
+        }
     }
 
     /**

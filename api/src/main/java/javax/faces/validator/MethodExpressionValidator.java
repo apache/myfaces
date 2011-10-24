@@ -45,7 +45,9 @@ public class MethodExpressionValidator implements Validator, StateHolder
     public MethodExpressionValidator(MethodExpression methodExpression)
     {
         if (methodExpression == null)
+        {
             throw new NullPointerException("methodExpression can not be null.");
+        }
 
         this.methodExpression = methodExpression;
     }

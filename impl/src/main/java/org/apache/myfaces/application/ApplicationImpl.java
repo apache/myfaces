@@ -255,7 +255,9 @@ public class ApplicationImpl extends Application
         _runtimeConfig = runtimeConfig;
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("New Application instance created");
+        }
         
         String configParam = getFaceContext().getExternalContext().getInitParameter(DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
         if (configParam != null && configParam.toLowerCase().equals("true"))
@@ -603,7 +605,9 @@ public class ApplicationImpl extends Application
 
         _actionListener = actionListener;
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("set actionListener = " + actionListener.getClass().getName());
+        }
     }
 
     @Override
@@ -643,7 +647,9 @@ public class ApplicationImpl extends Application
 
         _defaultLocale = locale;
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("set defaultLocale = " + locale.getCountry() + " " + locale.getLanguage());
+        }
     }
 
     @Override
@@ -659,7 +665,9 @@ public class ApplicationImpl extends Application
 
         _messageBundle = messageBundle;
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("set MessageBundle = " + messageBundle);
+        }
     }
 
     @Override
@@ -675,7 +683,9 @@ public class ApplicationImpl extends Application
 
         _navigationHandler = navigationHandler;
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("set NavigationHandler = " + navigationHandler.getClass().getName());
+        }
     }
 
     @Override
@@ -701,7 +711,9 @@ public class ApplicationImpl extends Application
         _runtimeConfig.setPropertyResolver(propertyResolver);
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("set PropertyResolver = " + propertyResolver.getClass().getName());
+        }
     }
 
     @Override
@@ -849,7 +861,9 @@ public class ApplicationImpl extends Application
 
         _supportedLocales = locales;
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("set SupportedLocales");
+        }
     }
 
     @Override
@@ -881,7 +895,9 @@ public class ApplicationImpl extends Application
         _runtimeConfig.setVariableResolver(variableResolver);
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("set VariableResolver = " + variableResolver.getClass().getName());
+        }
     }
 
     /**
@@ -905,7 +921,9 @@ public class ApplicationImpl extends Application
         }
         _viewHandler = viewHandler;
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("set ViewHandler = " + viewHandler.getClass().getName());
+        }
     }
     
     @Override
@@ -972,12 +990,18 @@ public class ApplicationImpl extends Application
         try
         {
             if(isLazyLoadConfigObjects())
+            {
                 _behaviorClassMap.put(behaviorId, behaviorClass);
+            }
             else
+            {
                 _behaviorClassMap.put(behaviorId, ClassUtils.simpleClassForName(behaviorClass));
+            }
             
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("add Behavior class = " + behaviorClass + " for id = " + behaviorId);
+            }
         }
         catch (Exception e)
         {
@@ -997,12 +1021,18 @@ public class ApplicationImpl extends Application
         try
         {
             if(isLazyLoadConfigObjects())
+            {
                 _componentClassMap.put(componentType, componentClassName);
+            }
             else
+            {
                 _componentClassMap.put(componentType, ClassUtils.simpleClassForName(componentClassName));
+            }
             
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("add Component class = " + componentClassName + " for type = " + componentType);
+            }
         }
         catch (Exception e)
         {
@@ -1021,11 +1051,17 @@ public class ApplicationImpl extends Application
         try
         {
             if(isLazyLoadConfigObjects())
+            {
                 _converterIdToClassMap.put(converterId, converterClass);
+            }
             else
+            {
                 _converterIdToClassMap.put(converterId, ClassUtils.simpleClassForName(converterClass));
+            }
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("add Converter id = " + converterId + " converterClass = " + converterClass);
+            }
         }
         catch (Exception e)
         {
@@ -1043,12 +1079,18 @@ public class ApplicationImpl extends Application
         try
         {
             if(isLazyLoadConfigObjects())
+            {
                 _converterTargetClassToConverterClassMap.put(targetClass, converterClass);
+            }
             else
+            {
                 _converterTargetClassToConverterClassMap.put(targetClass, ClassUtils.simpleClassForName(converterClass));
+            }
 
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("add Converter for class = " + targetClass + " converterClass = " + converterClass);
+            }
         }
         catch (Exception e)
         {
@@ -1067,12 +1109,18 @@ public class ApplicationImpl extends Application
         try
         {
             if(isLazyLoadConfigObjects())
+            {
                 _validatorClassMap.put(validatorId, validatorClass);
+            }
             else
+            {
                 _validatorClassMap.put(validatorId, ClassUtils.simpleClassForName(validatorClass));
+            }
             
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("add Validator id = " + validatorId + " class = " + validatorClass);
+            }
         }
         catch (Exception e)
         {
@@ -1685,7 +1733,9 @@ public class ApplicationImpl extends Application
         }
 
         if (params == null)
+        {
             params = new Class[0];
+        }
 
         MethodExpression methodExpression;
 
@@ -1862,7 +1912,9 @@ public class ApplicationImpl extends Application
         {
             listenerForList = _classToListenerForMap.get(inspectedClass);
             if(listenerForList == null)
+            {
                 return; //class has been inspected and did not contain any listener annotations
+            }
             
             isCachedList = true;    // else annotations were found in the cache
         }
@@ -1877,10 +1929,14 @@ public class ApplicationImpl extends Application
                 listenerForList = new ArrayList<ListenerFor>();
                 
                 if(listener != null)
+                {
                     listenerForList.add(listener);
+                }
                 
                 if(listeners != null)
+                {
                     listenerForList.addAll(Arrays.asList(listeners.value()));
+                }
             }
         }        
  
@@ -1894,7 +1950,9 @@ public class ApplicationImpl extends Application
         }
         
         if(isProduction && !isCachedList) //if we're in production and the list is not yet cached, store it
+        {
             _classToListenerForMap.put(inspectedClass, listenerForList); //null value stored for listenerForList means no annotations were found
+        }
     }
 
     private void _handleListenerFor(FacesContext context, Object inspected, UIComponent component,
@@ -1983,7 +2041,9 @@ public class ApplicationImpl extends Application
         {
             dependencyList = _classToResourceDependencyMap.get(inspectedClass);
             if(dependencyList == null)
+            {
                 return; //class has been inspected and did not contain any resource dependency annotations
+            }
             
             isCachedList = true;    // else annotations were found in the cache
         }
@@ -1998,10 +2058,14 @@ public class ApplicationImpl extends Application
                 dependencyList = new ArrayList<ResourceDependency>();
                 
                 if(dependency != null)
+                {
                     dependencyList.add(dependency);
+                }
                 
                 if(dependencies != null)
+                {
                     dependencyList.addAll(Arrays.asList(dependencies.value()));
+                }
             }
         }        
  
@@ -2019,7 +2083,9 @@ public class ApplicationImpl extends Application
         }
         
         if(isProduction && !isCachedList)   //if we're in production and the list is not yet cached, store it
+        {
             _classToResourceDependencyMap.put(inspectedClass, dependencyList);  //null value stored for dependencyList means no annotations were found
+        }
         
         if (!classAlreadyProcessed) { 
             rvc.setClassProcessed(inspectedClass);

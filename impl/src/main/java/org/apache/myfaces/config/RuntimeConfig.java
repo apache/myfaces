@@ -157,7 +157,9 @@ public class RuntimeConfig
     {
         _managedBeans.put(name, managedBean);
         if(_oldManagedBeans!=null)
+        {
             _oldManagedBeans.remove(name);
+        }
     }
 
     

@@ -84,7 +84,9 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
         public boolean hasNext()
         {
             if (_nextFD != null)
+            {
                 return true;
+            }
             if (_currentFDIter != null)
             {
                 while (_nextFD == null && _currentFDIter.hasNext())
@@ -109,7 +111,9 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
         public FeatureDescriptor next()
         {
             if (!hasNext())
+            {
                 throw new NoSuchElementException();
+            }
             FeatureDescriptor next = _nextFD;
             _nextFD = null;
             return next;

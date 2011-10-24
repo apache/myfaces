@@ -133,7 +133,10 @@ public class HtmlFormatRenderer extends HtmlRenderer
 
             if (escape)
             {
-                if (log.isLoggable(Level.FINE)) log.fine("renderOutputText writing '" + text + "'");
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("renderOutputText writing '" + text + "'");
+                }
                 writer.writeText(text, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
             }
             else

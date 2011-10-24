@@ -72,18 +72,24 @@ public class GuiceResolver extends ManagedBeanResolver
     {
 
         if (base != null || !(property instanceof String))
+        {
             return null;
+        }
 
         FacesContext fctx = (FacesContext)ctx.getContext(FacesContext.class);
 
         if (fctx == null)
+        {
             return null;
+        }
 
         ExternalContext ectx = fctx.getExternalContext();
 
         if (ectx == null || ectx.getRequestMap().containsKey(property) || ectx.getSessionMap().containsKey(property)
                 || ectx.getApplicationMap().containsKey(property))
+        {
             return null;
+        }
 
         ManagedBean managedBean = runtimeConfig(ctx).getManagedBean((String)property);
 
@@ -96,8 +102,10 @@ public class GuiceResolver extends ManagedBeanResolver
         Injector injector = (Injector)ectx.getApplicationMap().get(KEY);
 
         if (injector == null)
+        {
             throw new FacesException("Could not find an instance of " + Injector.class.getName()
                     + " in application scope using key '" + KEY + "'");
+        }
 
         Object value = injector.getInstance(managedBeanClass);
         ctx.setPropertyResolved(true);

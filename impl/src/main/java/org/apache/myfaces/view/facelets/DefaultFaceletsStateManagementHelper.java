@@ -262,11 +262,17 @@ class DefaultFaceletsStateManagementHelper
 
     protected Object serializeView(FacesContext context, Object serializedView)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering serializeView");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering serializeView");
+        }
 
         if(isSerializeStateInSession(context))
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize state in session");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Processing serializeView - serialize state in session");
+            }
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
             try
@@ -274,14 +280,20 @@ class DefaultFaceletsStateManagementHelper
                 OutputStream os = baos;
                 if(isCompressStateInSession(context))
                 {
-                    if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize compressed");
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("Processing serializeView - serialize compressed");
+                    }
 
                     os.write(COMPRESSED_FLAG);
                     os = new GZIPOutputStream(os, 1024);
                 }
                 else
                 {
-                    if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize uncompressed");
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("Processing serializeView - serialize uncompressed");
+                    }
 
                     os.write(UNCOMPRESSED_FLAG);
                 }
@@ -294,7 +306,10 @@ class DefaultFaceletsStateManagementHelper
                 out.close();
                 baos.close();
 
-                if (log.isLoggable(Level.FINEST)) log.finest("Exiting serializeView - serialized. Bytes : "+baos.size());
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Exiting serializeView - serialized. Bytes : " + baos.size());
+                }
                 return baos.toByteArray();
             }
             catch (IOException e)
@@ -306,7 +321,9 @@ class DefaultFaceletsStateManagementHelper
 
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Exiting serializeView - do not serialize state in session.");
+        }
 
         return serializedView;
 
@@ -350,11 +367,17 @@ class DefaultFaceletsStateManagementHelper
 
     protected Object deserializeView(Object state)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering deserializeView");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering deserializeView");
+        }
 
         if(state instanceof byte[])
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing deserializeView - deserializing serialized state. Bytes : "+((byte[]) state).length);
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Processing deserializeView - deserializing serialized state. Bytes : " + ((byte[]) state).length);
+            }
 
             try
             {
@@ -413,7 +436,10 @@ class DefaultFaceletsStateManagementHelper
         }
         else if (state instanceof Object[])
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Exiting deserializeView - state not serialized.");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Exiting deserializeView - state not serialized.");
+            }
 
             return state;
         }
@@ -445,7 +471,10 @@ class DefaultFaceletsStateManagementHelper
             Object key = new SerializedViewKey(context);
             _serializedViews.put(key, state);
 
-            while (_keys.remove(key));
+            while (_keys.remove(key))
+            {
+                ;
+            }
             _keys.add(key);
 
             int views = getNumberOfViewsInSession(context);
@@ -613,26 +642,40 @@ class DefaultFaceletsStateManagementHelper
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             final SerializedViewKey other = (SerializedViewKey) obj;
             if (_sequenceId == null)
             {
                 if (other._sequenceId != null)
+                {
                     return false;
+                }
             }
             else if (!_sequenceId.equals(other._sequenceId))
+            {
                 return false;
+            }
             if (_viewId == null)
             {
                 if (other._viewId != null)
+                {
                     return false;
+                }
             }
             else if (!_viewId.equals(other._viewId))
+            {
                 return false;
+            }
             return true;
         }
 

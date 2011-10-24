@@ -123,7 +123,9 @@ public class WebXmlParser
         try {
             URL url = context.getResource(WEB_XML_PATH);
             if (url != null)
+            {
                 return url.openConnection().getLastModified();
+            }
         } catch (IOException e) {
             log.log(Level.SEVERE, "Could not find web.xml in path " + WEB_XML_PATH);
         }
@@ -227,7 +229,10 @@ public class WebXmlParser
             }
             else
             {
-                if (log.isLoggable(Level.FINE)) log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
             }
         }
     }
@@ -256,12 +261,18 @@ public class WebXmlParser
                 }
                 else
                 {
-                    if (log.isLoggable(Level.FINE)) log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + servletElem.getNodeName() + "'.");
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + servletElem.getNodeName() + "'.");
+                    }
                 }
             }
             else
             {
-                if (log.isLoggable(Level.FINE)) log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
             }
         }
         _webXml.addServlet(servletName, servletClass);
@@ -288,12 +299,18 @@ public class WebXmlParser
                 }
                 else
                 {
-                    if (log.isLoggable(Level.FINE)) log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + servletMappingElem.getNodeName() + "'.");
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + servletMappingElem.getNodeName() + "'.");
+                    }
                 }
             }
             else
             {
-                if (log.isLoggable(Level.FINE)) log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
             }
         }
         urlPattern = urlPattern.trim();
@@ -324,12 +341,18 @@ public class WebXmlParser
                 }
                 else
                 {
-                    if (log.isLoggable(Level.FINE)) log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + filterElem.getNodeName() + "'.");
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + filterElem.getNodeName() + "'.");
+                    }
                 }
             }
             else
             {
-                if (log.isLoggable(Level.FINE)) log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
             }
         }
         _webXml.addFilter(filterName, filterClass);
@@ -360,12 +383,18 @@ public class WebXmlParser
                 }
                 else
                 {
-                    if (log.isLoggable(Level.FINE)) log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + filterMappingElem.getNodeName() + "'.");
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + filterMappingElem.getNodeName() + "'.");
+                    }
                 }
             }
             else
             {
-                if (log.isLoggable(Level.FINE)) log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
             }
         }
         _webXml.addFilterMapping(filterName, urlPattern);

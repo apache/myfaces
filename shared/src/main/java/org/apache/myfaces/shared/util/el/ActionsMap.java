@@ -71,7 +71,9 @@ public abstract class ActionsMap implements Map {
 
     public boolean containsValue(Object value) {
         if( ! (value instanceof Boolean) )
+        {
             return false;
+        }
         return ((Boolean)value).booleanValue();
     }
 
@@ -81,13 +83,17 @@ public abstract class ActionsMap implements Map {
 
     public Boolean put(String key, Boolean value) {
         if( value!=null && value.booleanValue() )
-            performAction( key );
+        {
+            performAction(key);
+        }
         return Boolean.FALSE;
     }
 
     public Object remove(Object key) {
         if( keys.remove( key ) )
+        {
             return Boolean.FALSE;
+        }
         return null;
     }
 
@@ -99,7 +105,9 @@ public abstract class ActionsMap implements Map {
             Entry entry = (Entry) it.next();
             Object obj = entry.getValue();
             if( (obj instanceof Boolean) && ((Boolean) obj).booleanValue() )
-                performAction( (String) entry.getKey() );
+            {
+                performAction((String) entry.getKey());
+            }
         }
     }
 

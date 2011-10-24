@@ -93,7 +93,10 @@ public class HtmlCheckAttributesUtil
     {
         for(int i = 0; i < attrs.length; i++) 
         {
-            if(!attrs[i].isRenderSuccessful()) return true;
+            if(!attrs[i].isRenderSuccessful())
+            {
+                return true;
+            }
         }
         return false;
     }

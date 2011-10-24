@@ -64,7 +64,9 @@ public class ExternalContextResourceLoader extends ResourceLoader
         String resourceVersion = null;
         Set<String> resourcePaths = this.getResourcePaths(path);
         if (getPrefix() != null)
+        {
             path = getPrefix() + '/' + path;
+        }
 
         if (null != resourcePaths && !resourcePaths.isEmpty())
         {

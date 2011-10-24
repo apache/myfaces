@@ -325,9 +325,13 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         while (uri.startsWith(prefix) || uri.startsWith("//")) 
         {
             if(uri.startsWith(prefix))
-                    uri = uri.substring(prefix.length() - 1);    //cut off only /faces, leave the trailing '/' char for the next iteration
+            {
+                uri = uri.substring(prefix.length() - 1);    //cut off only /faces, leave the trailing '/' char for the next iteration
+            }
             else //uri starts with '//'
+            {
                 uri = uri.substring(1); //cut off the leading slash, leaving the second slash to compare for the next iteration
+            }
         }
         //now delete any remaining leading '/'
         // TODO: CJH: I don't think this is correct, considering that getActionURL() expects everything to
@@ -389,14 +393,18 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
                         builder.replace(candidateViewId.lastIndexOf('.'), candidateViewId.length(), mapping);
                         String tempViewId = builder.toString();
                         if(checkResourceExists(context,tempViewId))
+                        {
                             return tempViewId;
+                        }
                     }
                 }
             }
 
             // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
             if(checkResourceExists(context,candidateViewId))
+            {
                 return candidateViewId;
+            }
         
         }
         
@@ -428,12 +436,16 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             
             String candidateViewId = builder.toString();
             if(checkResourceExists(context,candidateViewId))
+            {
                 return candidateViewId;
+            }
         }
 
         // Otherwise, if a physical resource exists with the name requestViewId let that value be viewId.
         if(checkResourceExists(context,requestViewId))
+        {
             return requestViewId;
+        }
         
         //Otherwise return null.
         return null;

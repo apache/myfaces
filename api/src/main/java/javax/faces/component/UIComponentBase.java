@@ -352,7 +352,9 @@ public abstract class UIComponentBase extends UIComponent
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
         if (event == null)
+        {
             throw new NullPointerException("event");
+        }
         try
         {
             if (event instanceof BehaviorEvent && event.getComponent() == this)
@@ -362,7 +364,9 @@ public abstract class UIComponentBase extends UIComponent
             }
             
             if (_facesListeners == null)
+            {
                 return;
+            }
             for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext();)
             {
                 FacesListener facesListener = it.next();
@@ -417,7 +421,9 @@ public abstract class UIComponentBase extends UIComponent
     public void decode(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         
         Renderer renderer = getRenderer(context);
         if (renderer != null)
@@ -576,9 +582,13 @@ public abstract class UIComponentBase extends UIComponent
     public UIComponent findComponent(String expr)
     {
         if (expr == null)
+        {
             throw new NullPointerException("expr");
+        }
         if (expr.length() == 0)
+        {
             return null;
+        }
 
         final char separatorChar = UINamingContainer.getSeparatorChar(getFacesContext());
         UIComponent findBase;
@@ -613,8 +623,10 @@ public abstract class UIComponentBase extends UIComponent
         }
 
         if (!(findBase instanceof NamingContainer))
+        {
             throw new IllegalArgumentException("Intermediate identifier " + id + " in search expression " + expr
                     + " identifies a UIComponent that is not a NamingContainer");
+        }
 
         return findBase.findComponent(expr.substring(separator + 1));
 
@@ -740,10 +752,14 @@ public abstract class UIComponentBase extends UIComponent
     public String getClientId(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
 
         if (_clientId != null)
+        {
             return _clientId;
+        }
 
         //boolean idWasNull = false;
         String id = getId();
@@ -885,14 +901,18 @@ public abstract class UIComponentBase extends UIComponent
         if (getFacetCount() == 0)
         {
             if (getChildCount() == 0)
+            {
                 return _EMPTY_UICOMPONENT_ITERATOR;
+            }
 
             return getChildren().iterator();
         }
         else
         {
             if (getChildCount() == 0)
+            {
                 return getFacets().values().iterator();
+            }
 
             return new _FacetsAndChildrenIterator(getFacets(), getChildren());
         }
@@ -1066,7 +1086,9 @@ public abstract class UIComponentBase extends UIComponent
     protected void addFacesListener(FacesListener listener)
     {
         if (listener == null)
+        {
             throw new NullPointerException("listener");
+        }
         if (_facesListeners == null)
         {
             _facesListeners = new _DeltaList<FacesListener>(new ArrayList<FacesListener>());
@@ -1111,7 +1133,9 @@ public abstract class UIComponentBase extends UIComponent
             if (facesListener != null && clazz.isAssignableFrom(facesListener.getClass()))
             {
                 if (lst == null)
+                {
                     lst = new ArrayList<FacesListener>();
+                }
                 lst.add(facesListener);
             }
         }
@@ -1127,10 +1151,14 @@ public abstract class UIComponentBase extends UIComponent
     protected Renderer getRenderer(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         String rendererType = getRendererType();
         if (rendererType == null)
+        {
             return null;
+        }
         
         RenderKit renderKit = context.getRenderKit();
         Renderer renderer = renderKit.getRenderer(getFamily(), rendererType);
@@ -1166,7 +1194,9 @@ public abstract class UIComponentBase extends UIComponent
     public void queueEvent(FacesEvent event)
     {
         if (event == null)
+        {
             throw new NullPointerException("event");
+        }
         UIComponent parent = getParent();
         if (parent == null)
         {
@@ -1528,7 +1558,9 @@ public abstract class UIComponentBase extends UIComponent
     private void getPathToComponent(UIComponent component, StringBuffer buf)
     {
         if (component == null)
+        {
             return;
+        }
 
         StringBuffer intBuf = new StringBuffer();
 
@@ -1582,7 +1614,9 @@ public abstract class UIComponentBase extends UIComponent
         }
         
         if (attachedObject == null)
+        {
             return null;
+        }
         // StateHolder interface should take precedence over
         // List children
         if (attachedObject instanceof StateHolder)
@@ -1635,9 +1669,13 @@ public abstract class UIComponentBase extends UIComponent
     public static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         if (stateObj == null)
+        {
             return null;
+        }
         if (stateObj instanceof _AttachedListStateWrapper)
         {
             List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
@@ -2108,7 +2146,9 @@ public abstract class UIComponentBase extends UIComponent
 
         // is there any component identifier ?
         if (string == null)
+        {
             return;
+        }
 
         // Component identifiers must obey the following syntax restrictions:
         // 1. Must not be a zero-length String.

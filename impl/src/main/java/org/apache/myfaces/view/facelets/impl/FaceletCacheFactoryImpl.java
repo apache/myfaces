@@ -48,9 +48,13 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory
         // refresh period
         long refreshPeriod;
         if(context.isProjectStage(ProjectStage.Production))
+        {
             refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD, FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD_PRODUCTION);
+        }
         else
+        {
             refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD, FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD);
+        }
         
         return new FaceletCacheImpl(refreshPeriod);
     }

@@ -102,13 +102,17 @@ class _MethodExpressionToMethodBinding extends MethodBinding implements StateHol
     public void restoreState(FacesContext context, Object state)
     {
         if (state != null)
-            methodExpression = (MethodExpression)state;
+        {
+            methodExpression = (MethodExpression) state;
+        }
     }
 
     public Object saveState(FacesContext context)
     {
         if (!isTransient)
+        {
             return methodExpression;
+        }
         return null;
     }
 

@@ -86,8 +86,14 @@ public class LongRangeValidator
                          Object value)
             throws ValidatorException
     {
-        if (facesContext == null) throw new NullPointerException("facesContext");
-        if (uiComponent == null) throw new NullPointerException("uiComponent");
+        if (facesContext == null)
+        {
+            throw new NullPointerException("facesContext");
+        }
+        if (uiComponent == null)
+        {
+            throw new NullPointerException("uiComponent");
+        }
 
         if (value == null)
         {
@@ -215,13 +221,25 @@ public class LongRangeValidator
     @Override
     public boolean equals(Object o)
     {
-        if (this == o) return true;
-        if (!(o instanceof LongRangeValidator)) return false;
+        if (this == o)
+        {
+            return true;
+        }
+        if (!(o instanceof LongRangeValidator))
+        {
+            return false;
+        }
 
         final LongRangeValidator longRangeValidator = (LongRangeValidator)o;
 
-        if (_maximum != null ? !_maximum.equals(longRangeValidator._maximum) : longRangeValidator._maximum != null) return false;
-        if (_minimum != null ? !_minimum.equals(longRangeValidator._minimum) : longRangeValidator._minimum != null) return false;
+        if (_maximum != null ? !_maximum.equals(longRangeValidator._maximum) : longRangeValidator._maximum != null)
+        {
+            return false;
+        }
+        if (_minimum != null ? !_minimum.equals(longRangeValidator._minimum) : longRangeValidator._minimum != null)
+        {
+            return false;
+        }
 
         return true;
     }

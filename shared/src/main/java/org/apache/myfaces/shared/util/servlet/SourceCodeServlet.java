@@ -56,7 +56,10 @@ public class SourceCodeServlet extends HttpServlet
             }
         }
         finally {
-            if (in != null) in.close();  // very important
+            if (in != null)
+            {
+                in.close();  // very important
+            }
         }
     }
 }

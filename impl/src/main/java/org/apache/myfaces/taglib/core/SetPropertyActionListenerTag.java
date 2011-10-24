@@ -53,15 +53,19 @@ public class SetPropertyActionListenerTag extends TagSupport
     {
 
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("JSF 1.2 Spec : Create a new instance of the ActionListener");
+        }
 
         ActionListener actionListener = new SetPropertyActionListener(target, value);
 
         UIComponentClassicTagBase tag = UIComponentClassicTagBase.getParentUIComponentClassicTagBase(pageContext);
 
         if (tag == null)
+        {
             throw new JspException("Could not find a " + "parent UIComponentClassicTagBase ... is this "
                     + "tag in a child of a UIComponentClassicTagBase?");
+        }
 
         if (tag.getCreated())
         {
@@ -69,17 +73,23 @@ public class SetPropertyActionListenerTag extends TagSupport
             UIComponent component = tag.getComponentInstance();
 
             if (component == null)
+            {
                 throw new JspException(" Could not locate a UIComponent " + "for a UIComponentClassicTagBase w/ a "
                         + "JSP id of " + tag.getJspId());
+            }
 
             if (!(component instanceof ActionSource))
+            {
                 throw new JspException("Component w/ id of " + component.getId()
                         + " is associated w/ a tag w/ JSP id of " + tag.getJspId() + ". This component is of type "
                         + component.getClass() + ", which is not an " + ActionSource.class);
+            }
 
             if (log.isLoggable(Level.FINE))
+            {
                 log.fine(" ... register it with the UIComponent " + "instance associated with our most immediately "
                         + "surrounding UIComponentTagBase");
+            }
 
             ((ActionSource)component).addActionListener(actionListener);
 

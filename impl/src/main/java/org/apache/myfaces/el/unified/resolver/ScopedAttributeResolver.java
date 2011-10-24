@@ -119,9 +119,13 @@ public final class ScopedAttributeResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
 
         context.setPropertyResolved(true);
         return Object.class;
@@ -132,7 +136,9 @@ public final class ScopedAttributeResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
 
         final List<FeatureDescriptor> descriptorList = new ArrayList<FeatureDescriptor>();
         final ExternalContext extContext = externalContext(context);
@@ -148,7 +154,9 @@ public final class ScopedAttributeResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
 
         return String.class;
     }

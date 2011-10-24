@@ -49,7 +49,10 @@ public class SelectItemGroup extends SelectItem
     public SelectItemGroup(String label, String description, boolean disabled, SelectItem[] selectItems)
     {
         super("", label, description, disabled);
-        if (selectItems == null) throw new NullPointerException("selectItems");
+        if (selectItems == null)
+        {
+            throw new NullPointerException("selectItems");
+        }
         _selectItems = selectItems;
     }
 
@@ -61,7 +64,10 @@ public class SelectItemGroup extends SelectItem
 
     public void setSelectItems(SelectItem[] selectItems)
     {
-        if (selectItems == null) throw new NullPointerException("selectItems");
+        if (selectItems == null)
+        {
+            throw new NullPointerException("selectItems");
+        }
         _selectItems = selectItems;
     }
 }

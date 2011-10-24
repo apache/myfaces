@@ -102,7 +102,9 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         }
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Writing state in client");
+        }
 
 
         if (token != null)
@@ -112,13 +114,17 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         else
         {
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("No component states to be saved in client response!");
+            }
         }
 
         savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
         
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Writing view state and renderKit fields");
+        }
 
         // write the view state field
         writeViewStateField(facesContext, responseWriter, savedState);

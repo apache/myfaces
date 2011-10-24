@@ -118,7 +118,9 @@ public abstract class HtmlDataTableELTagBase
         setIntegerProperty(component, JSFAttr.FIRST_ATTR, _first);
         
         if(_var != null)
+        {
             component.getAttributes().put(JSFAttr.VAR_ATTR, _var);
+        }
     }
 
     public void setAlign(ValueExpression align)

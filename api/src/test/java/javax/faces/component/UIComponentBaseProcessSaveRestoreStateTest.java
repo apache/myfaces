@@ -139,9 +139,13 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
         if (!facetTransient)
         {
             if (saveState)
+            {
                 expect(_facet.processSaveState(EasyMock.same(_facesContext))).andReturn(FACET_STATE);
+            }
             else
+            {
                 _facet.processRestoreState(EasyMock.same(_facesContext), EasyMock.eq(FACET_STATE));
+            }
         }
         if (saveState || !childTransient)
         {
@@ -154,13 +158,21 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
         if (!childTransient)
         {
             if (saveState)
+            {
                 expect(_child.processSaveState(EasyMock.same(_facesContext))).andReturn(CHILD_STATE);
+            }
             else
+            {
                 _child.processRestoreState(EasyMock.same(_facesContext), EasyMock.eq(CHILD_STATE));
+            }
         }
         if (saveState)
+        {
             expect(_testImpl.saveState(EasyMock.same(_facesContext))).andReturn(TESTIMPL_STATE);
+        }
         else
+        {
             _testImpl.restoreState(EasyMock.same(_facesContext), EasyMock.eq(TESTIMPL_STATE));
+        }
     }
 }

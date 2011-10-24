@@ -412,7 +412,9 @@ class _AjaxBehaviorDeltaStateHelper <A extends AjaxBehavior> implements StateHel
 
     public void restoreState(FacesContext context, Object state) {
         if (state == null)
+        {
             return;
+        }
 
         Object[] serializedState = (Object[]) state;
 

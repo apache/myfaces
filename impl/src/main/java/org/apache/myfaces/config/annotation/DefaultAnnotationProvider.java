@@ -395,6 +395,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             finally
             {
                 if (in != null)
+                {
                     try
                     {
                         in.close();
@@ -403,6 +404,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                     {
                         // No Op
                     }
+                }
             }
 
             if (couldContainAnnotation)
@@ -531,6 +533,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                     finally
                     {
                         if (in != null)
+                        {
                             try
                             {
                                 in.close();
@@ -539,6 +542,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                             {
                                 // No Op
                             }
+                        }
                     }
 
                     if (couldContainAnnotation)

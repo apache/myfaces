@@ -502,7 +502,9 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         public boolean equals(Object obj)
         {
             if (obj instanceof TestPhaseListener1)
+            {
                 return true;
+            }
             return false;
         }
     }
@@ -524,7 +526,9 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         public boolean equals(Object obj)
         {
             if (obj instanceof TestPhaseListener2)
+            {
                 return true;
+            }
             return false;
         }
     }    

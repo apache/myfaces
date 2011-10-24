@@ -87,8 +87,14 @@ public class DoubleRangeValidator
                          Object value)
             throws ValidatorException
     {
-        if (facesContext == null) throw new NullPointerException("facesContext");
-        if (uiComponent == null) throw new NullPointerException("uiComponent");
+        if (facesContext == null)
+        {
+            throw new NullPointerException("facesContext");
+        }
+        if (uiComponent == null)
+        {
+            throw new NullPointerException("uiComponent");
+        }
 
         if (value == null)
         {
@@ -216,13 +222,25 @@ public class DoubleRangeValidator
     @Override
     public boolean equals(Object o)
     {
-        if (this == o) return true;
-        if (!(o instanceof DoubleRangeValidator)) return false;
+        if (this == o)
+        {
+            return true;
+        }
+        if (!(o instanceof DoubleRangeValidator))
+        {
+            return false;
+        }
 
         final DoubleRangeValidator doubleRangeValidator = (DoubleRangeValidator)o;
 
-        if (_maximum != null ? !_maximum.equals(doubleRangeValidator._maximum) : doubleRangeValidator._maximum != null) return false;
-        if (_minimum != null ? !_minimum.equals(doubleRangeValidator._minimum) : doubleRangeValidator._minimum != null) return false;
+        if (_maximum != null ? !_maximum.equals(doubleRangeValidator._maximum) : doubleRangeValidator._maximum != null)
+        {
+            return false;
+        }
+        if (_minimum != null ? !_minimum.equals(doubleRangeValidator._minimum) : doubleRangeValidator._minimum != null)
+        {
+            return false;
+        }
 
         return true;
     }

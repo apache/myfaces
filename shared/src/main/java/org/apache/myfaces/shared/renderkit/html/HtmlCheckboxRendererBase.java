@@ -125,7 +125,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
         }        
 
         if (!pageDirectionLayout)
+        {
             writer.startElement(HTML.TR_ELEM, selectMany);
+        }
         
         Converter converter = getConverter(facesContext, selectMany);
 
@@ -148,7 +150,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
         }
 
         if (!pageDirectionLayout)
+        {
             writer.endElement(HTML.TR_ELEM);
+        }
         writer.endElement(HTML.TABLE_ELEM);
     }
 
@@ -188,7 +192,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
         if (isSelectItemGroup)
         {
             if (pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectMany);
+            }
 
             writer.startElement(HTML.TD_ELEM, selectMany);
             writer.write(selectItem.getLabel());
@@ -205,7 +211,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
             writer.writeAttribute(HTML.BORDER_ATTR, "0", null);
             
             if(!pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectMany);
+            }
 
             SelectItemGroup group = (SelectItemGroup) selectItem;
             SelectItem[] selectItems = group.getSelectItems();
@@ -217,12 +225,16 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
             }
 
             if(!pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
             writer.endElement(HTML.TABLE_ELEM);
             writer.endElement(HTML.TD_ELEM);
 
             if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
 
         }
         else
@@ -245,7 +257,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
 
             writer.write("\t\t");
             if (pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectMany);
+            }
             writer.startElement(HTML.TD_ELEM, selectMany);
 
             boolean disabled = selectItem.isDisabled();
@@ -260,7 +274,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
 
             writer.endElement(HTML.TD_ELEM);
             if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
             
             // we rendered one checkbox --> increment itemNum
             itemNum++;

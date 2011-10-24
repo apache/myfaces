@@ -124,7 +124,9 @@ public class TemplateContextImpl extends TemplateContext
         {
             client = itr.next();
             if (client.equals(owner))
+            {
                 continue;
+            }
             found = client.apply(ctx, parent, name);
         }
         return found;

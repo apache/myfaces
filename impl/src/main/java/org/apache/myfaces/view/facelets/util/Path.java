@@ -28,7 +28,9 @@ public final class Path
     public static final String normalize(String path)
     {
         if (path.length() == 0)
+        {
             return path;
+        }
         String n = path;
         boolean abs = false;
         while (n.indexOf('\\') >= 0)

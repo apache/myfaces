@@ -109,7 +109,10 @@ public class HtmlRadioRendererBase
             HtmlRendererUtils.writeIdIfNecessary(writer, selectOne, facesContext); 
         }        
 
-        if (!pageDirectionLayout) writer.startElement(HTML.TR_ELEM, selectOne);
+        if (!pageDirectionLayout)
+        {
+            writer.startElement(HTML.TR_ELEM, selectOne);
+        }
 
         Converter converter;
         List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(selectOne, facesContext);
@@ -128,7 +131,10 @@ public class HtmlRadioRendererBase
                                              converter, pageDirectionLayout, itemNum);
         }
 
-        if (!pageDirectionLayout) writer.endElement(HTML.TR_ELEM);
+        if (!pageDirectionLayout)
+        {
+            writer.endElement(HTML.TR_ELEM);
+        }
         writer.endElement(HTML.TABLE_ELEM);
     }
 
@@ -179,7 +185,9 @@ public class HtmlRadioRendererBase
         if (isSelectItemGroup) 
         {
             if (pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectOne);
+            }
 
             writer.startElement(HTML.TD_ELEM, selectOne);
             writer.write(selectItem.getLabel());
@@ -195,7 +203,9 @@ public class HtmlRadioRendererBase
             writer.writeAttribute(HTML.BORDER_ATTR, "0", null);
             
             if(!pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectOne);
+            }
 
             SelectItemGroup group = (SelectItemGroup) selectItem;
             SelectItem[] selectItems = group.getSelectItems();
@@ -207,12 +217,16 @@ public class HtmlRadioRendererBase
             }
 
             if(!pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
             writer.endElement(HTML.TABLE_ELEM);
             writer.endElement(HTML.TD_ELEM);
 
             if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
 
         } 
         else 
@@ -237,7 +251,9 @@ public class HtmlRadioRendererBase
             
             writer.write("\t\t");
             if (pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectOne);
+            }
             writer.startElement(HTML.TD_ELEM, selectOne);
     
             boolean itemDisabled = selectItem.isDisabled();
@@ -252,7 +268,9 @@ public class HtmlRadioRendererBase
     
             writer.endElement(HTML.TD_ELEM);
             if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
             
             // we rendered one radio --> increment itemNum
             itemNum++;

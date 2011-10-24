@@ -55,7 +55,9 @@ public class Property extends org.apache.myfaces.config.element.Property impleme
     public void addDescription(String value)
     {
         if(_description == null)
+        {
             _description = new ArrayList<String>();
+        }
 
         _description.add(value);
     }

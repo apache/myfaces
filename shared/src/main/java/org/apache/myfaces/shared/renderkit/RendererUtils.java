@@ -136,7 +136,9 @@ public final class RendererUtils
     private static void getPathToComponent(UIComponent component, StringBuffer buf)
     {
         if(component == null)
+        {
             return;
+        }
 
         StringBuffer intBuf = new StringBuffer();
 
@@ -165,14 +167,19 @@ public final class RendererUtils
         UIComponent child = container.findComponent(clientId);
 
         if(child == null)
-                return clientId;
+        {
+            return clientId;
+        }
 
         return getConcatenatedId(context, child);
     }
 
     public static String getConcatenatedId(FacesContext context, UIComponent component)
     {
-        if (context == null) throw new NullPointerException("context");
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
 
         StringBuffer idBuf = new StringBuffer();
 
@@ -278,7 +285,10 @@ public final class RendererUtils
                 Object submittedValue = ((EditableValueHolder)component).getSubmittedValue();
                 if (submittedValue != null)
                 {
-                        if (log.isLoggable(Level.FINE)) log.fine("returning 1 '" + submittedValue + "'");
+                        if (log.isLoggable(Level.FINE))
+                        {
+                            log.fine("returning 1 '" + submittedValue + "'");
+                        }
                         return submittedValue.toString();
                 }
             }
@@ -306,7 +316,10 @@ public final class RendererUtils
                 try
                 {
                     converter = facesContext.getApplication().createConverter(value.getClass());
-                    if (log.isLoggable(Level.FINE)) log.fine("the created converter is " + converter);
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("the created converter is " + converter);
+                    }
                 }
                 catch (FacesException e)
                 {
@@ -319,16 +332,25 @@ public final class RendererUtils
             {
                 if (value == null)
                 {
-                    if (log.isLoggable(Level.FINE)) log.fine("returning an empty string");
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("returning an empty string");
+                    }
                     return "";
                 }
 
-                if (log.isLoggable(Level.FINE)) log.fine("returning an .toString");
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("returning an .toString");
+                }
                 return value.toString();
                 
             }
 
-            if (log.isLoggable(Level.FINE)) log.fine("returning converter get as string " + converter);
+            if (log.isLoggable(Level.FINE))
+            {
+                log.fine("returning converter get as string " + converter);
+            }
             return converter.getAsString(facesContext, component, value);
             
         }
@@ -359,7 +381,9 @@ public final class RendererUtils
                 if (submittedValue != null)
                 {
                     if (log.isLoggable(Level.FINE))
+                    {
                         log.fine("returning 1 '" + submittedValue + "'");
+                    }
                     return submittedValue.toString();
                 }
             }
@@ -394,7 +418,9 @@ public final class RendererUtils
                     converter = facesContext.getApplication().createConverter(
                             value.getClass());
                     if (log.isLoggable(Level.FINE))
+                    {
                         log.fine("the created converter is " + converter);
+                    }
                 }
                 catch (FacesException e)
                 {
@@ -416,13 +442,17 @@ public final class RendererUtils
                 }
 
                 if (log.isLoggable(Level.FINE))
+                {
                     log.fine("returning an .toString");
+                }
                 return value.toString();
 
             }
 
             if (log.isLoggable(Level.FINE))
+            {
                 log.fine("returning converter get as string " + converter);
+            }
             return converter.getAsString(facesContext, component, value);
 
         }
@@ -533,18 +563,27 @@ public final class RendererUtils
     {
         // If the component has an attached Converter, use it.
         Converter converter = component.getConverter();
-        if (converter != null) return converter;
+        if (converter != null)
+        {
+            return converter;
+        }
         
         if (considerValueType)
         {
             // try to get a converter from the valueType attribute
             converter = _SharedRendererUtils.getValueTypeConverter(facesContext, component);
-            if (converter != null) return converter;
+            if (converter != null)
+            {
+                return converter;
+            }
         }
 
         //Try to find out by value expression
         ValueExpression ve = component.getValueExpression("value");
-        if (ve == null) return null;
+        if (ve == null)
+        {
+            return null;
+        }
 
         // Try to get the type from the actual value or,
         // if value == null, obtain the type from the ValueExpression
@@ -554,7 +593,10 @@ public final class RendererUtils
                         ? value.getClass() 
                         : ve.getType(facesContext.getELContext());
         
-        if (valueType == null) return null;
+        if (valueType == null)
+        {
+            return null;
+        }
         
         // a valueType of Object is also permitted, in order to support
         // managed bean properties of type Object that resolve to null at this point
@@ -571,7 +613,10 @@ public final class RendererUtils
         }
 
         Class<?> arrayComponentType = valueType.getComponentType();
-        if (String.class.equals(arrayComponentType)) return null;    //No converter needed for String type
+        if (String.class.equals(arrayComponentType))
+        {
+            return null;    //No converter needed for String type
+        }
         
         if (Object.class.equals(arrayComponentType)) 
         {    
@@ -594,9 +639,13 @@ public final class RendererUtils
     public static void checkParamValidity(FacesContext facesContext, UIComponent uiComponent, Class compClass)
     {
         if(facesContext == null)
+        {
             throw new NullPointerException("facesContext may not be null");
+        }
         if(uiComponent == null)
+        {
             throw new NullPointerException("uiComponent may not be null");
+        }
 
         //if (compClass != null && !(compClass.isAssignableFrom(uiComponent.getClass())))
         // why isAssignableFrom with additional getClass method call if isInstance does the same?
@@ -841,7 +890,9 @@ public final class RendererUtils
 
             HashSet set = new HashSet(HashMapUtils.calcCapacity(col.size()));
             for (Iterator i = col.iterator(); i.hasNext();)
+            {
                 set.add(getConvertedStringValue(context, component, converter, i.next()));
+            }
 
             return set;
 
@@ -1105,7 +1156,9 @@ public final class RendererUtils
             UIComponent lookupComp = findComponent(comp, clazz);
 
             if (lookupComp != null)
+            {
                 return lookupComp;
+            }
         }
 
         return null;
@@ -1175,9 +1228,13 @@ public final class RendererUtils
         {
             String trimedId = ids[i].trim();
             if (trimedId.equals("none"))
+            {
                 li.add(trimedId);
+            }
             else
+            {
                 li.add(RendererUtils.getClientId(facesContext, component, trimedId));
+            }
         }
         return li;
     }
@@ -1237,12 +1294,16 @@ public final class RendererUtils
         }
         catch (FileNotFoundException e) {
             if (log.isLoggable(Level.WARNING))
+            {
                 log.log(Level.WARNING, "no such file " + file, e);
+            }
             content = null;
         }
         catch (IOException e) {
             if (log.isLoggable(Level.WARNING))
+            {
                 log.log(Level.WARNING, "problems during processing resource " + file, e);
+            }
             content = null;
         }
         finally
@@ -1302,7 +1363,9 @@ public final class RendererUtils
 
     public static boolean isAdfOrTrinidadForm(UIComponent component) {
         if (component == null)
+        {
             return false;
+        }
         return ADF_FORM_COMPONENT_FAMILY.equals(component.getFamily()) ||
             TRINIDAD_FORM_COMPONENT_FAMILY.equals(component.getFamily());
     }
@@ -1421,7 +1484,9 @@ public final class RendererUtils
     static public String toResourceUri(FacesContext facesContext, Object o)
     {
       if (o == null)
-        return null;
+      {
+          return null;
+      }
 
       String uri = o.toString();
 

@@ -128,7 +128,9 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
     public boolean isLiteralText()
     {
         if (methodBinding == null)
+        {
             throw new IllegalStateException("methodBinding is null");
+        }
         String expr = methodBinding.getExpressionString();
         return !(expr.startsWith("#{") && expr.endsWith("}"));
     }
@@ -197,32 +199,46 @@ class _MethodBindingToMethodExpression extends MethodExpression implements State
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         final _MethodBindingToMethodExpression other = (_MethodBindingToMethodExpression)obj;
         if (methodBinding == null)
         {
             if (other.methodBinding != null)
+            {
                 return false;
+            }
         }
         else if (!methodBinding.equals(other.methodBinding))
+        {
             return false;
+        }
         return true;
     }
 
     private void checkNullState(Object notNullInstance, String instanceName)
     {
         if (notNullInstance == null)
+        {
             throw new IllegalStateException(instanceName + " is null");
+        }
     }
 
     private void checkNullArgument(Object notNullInstance, String instanceName)
     {
         if (notNullInstance == null)
+        {
             throw new IllegalArgumentException(instanceName + " is null");
+        }
     }
 
     private <T> T invoke(Invoker<T> invoker)

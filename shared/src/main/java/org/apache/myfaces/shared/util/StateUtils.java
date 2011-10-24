@@ -202,10 +202,12 @@ public final class StateUtils {
         if (algorithmParams != null && algorithmParams.startsWith("CBC") )
         {
             if(iv == null)
+            {
                 throw new FacesException(INIT_ALGORITHM_PARAM +
-                                    " parameter has been set with CBC mode," +
-                                    " but no initialization vector has been set " +
-                                    " with " + INIT_ALGORITHM_IV);
+                        " parameter has been set with CBC mode," +
+                        " but no initialization vector has been set " +
+                        " with " + INIT_ALGORITHM_IV);
+            }
         }
 
     }
@@ -213,7 +215,9 @@ public final class StateUtils {
     public static boolean enableCompression(ExternalContext ctx)
     {
         if(ctx == null)
+        {
             throw new NullPointerException("ExternalContext ctx");
+        }
     
         return "true".equals(ctx.getInitParameter(COMPRESS_STATE_IN_CLIENT));
     }
@@ -222,7 +226,9 @@ public final class StateUtils {
     {
         
         if(ctx == null)
+        {
             throw new NullPointerException("ExternalContext ctx");
+        }
         
         return ! "false".equals(ctx.getInitParameter(USE_ENCRYPTION));
     }
@@ -234,9 +240,13 @@ public final class StateUtils {
     public static final String construct(Object object, ExternalContext ctx){
         byte[] bytes = getAsByteArray(object, ctx);
         if( enableCompression(ctx) )
-                bytes = compress(bytes);
+        {
+            bytes = compress(bytes);
+        }
         if(isSecure(ctx))
-                bytes = encrypt(bytes, ctx);
+        {
+            bytes = encrypt(bytes, ctx);
+        }
         bytes = encode(bytes);
         try
         {
@@ -265,7 +275,9 @@ public final class StateUtils {
         SerialFactory serialFactory = (SerialFactory) ctx.getApplicationMap().get(SERIAL_FACTORY);
         
         if(serialFactory == null)
+        {
             throw new NullPointerException("serialFactory");
+        }
         
         try
         {
@@ -288,7 +300,9 @@ public final class StateUtils {
     {
 
         if (ctx == null)
+        {
             throw new NullPointerException("ExternalContext ctx");
+        }
 
         testConfiguration(ctx);
         
@@ -370,14 +384,20 @@ public final class StateUtils {
         try
         {
             if(log.isLoggable(Level.FINE))
-                log.fine("Processing state : "+string);
+            {
+                log.fine("Processing state : " + string);
+            }
 
             bytes = string.getBytes(ZIP_CHARSET);
             bytes = decode(bytes);
             if(isSecure(ctx))
+            {
                 bytes = decrypt(bytes, ctx);
+            }
             if( enableCompression(ctx) )
+            {
                 bytes = decompress(bytes);
+            }
             return getAsObject(bytes, ctx);
         }
         catch (Throwable e)
@@ -398,7 +418,9 @@ public final class StateUtils {
     public static final byte[] decompress(byte[] bytes)
     {
         if(bytes == null)
+        {
             throw new NullPointerException("byte[] bytes");
+        }
         
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -431,7 +453,9 @@ public final class StateUtils {
     public static byte[] decrypt(byte[] secure, ExternalContext ctx)
     {
         if (ctx == null)
+        {
             throw new NullPointerException("ExternalContext ctx");
+        }
 
         testConfiguration(ctx);
                 
@@ -518,7 +542,9 @@ public final class StateUtils {
             SerialFactory serialFactory = (SerialFactory) ctx.getApplicationMap().get(SERIAL_FACTORY);
             
             if(serialFactory == null)
+            {
                 throw new NullPointerException("serialFactory");
+            }
             
             ObjectInputStream s = null;
             Exception pendingException = null;
@@ -635,7 +661,9 @@ public final class StateUtils {
         }
         
         if (_iv != null)
+        {
             iv = new Base64().decode(_iv.getBytes());
+        }
         
         return iv;
     }
@@ -715,10 +743,14 @@ public final class StateUtils {
     public static void initSecret(ServletContext ctx){
         
         if(ctx == null)
+        {
             throw new NullPointerException("ServletContext ctx");
+        }
         
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("Storing SecretKey @ " + INIT_SECRET_KEY_CACHE);
+        }
 
         // Create and store SecretKey on application scope
         String cache = ctx.getInitParameter(INIT_SECRET_KEY_CACHE);
@@ -736,7 +768,9 @@ public final class StateUtils {
         }
 
         if (log.isLoggable(Level.FINE))
+        {
             log.fine("Storing SecretKey @ " + INIT_MAC_SECRET_KEY_CACHE);
+        }
         
         String macCache = ctx.getInitParameter(INIT_MAC_SECRET_KEY_CACHE);
         
@@ -793,8 +827,10 @@ public final class StateUtils {
         }
         
         if( ! ( secretKey instanceof SecretKey ) )
+        {
             throw new ClassCastException("Did not find an instance of SecretKey "
                     + "in application scope using the key '" + INIT_SECRET_KEY_CACHE + "'");
+        }
 
         
         return (SecretKey) secretKey;
@@ -835,7 +871,9 @@ public final class StateUtils {
                 bytes = kg.generateKey().getEncoded();
                 
                 if(log.isLoggable(Level.FINE))
+                {
                     log.fine("generated random password of length " + bytes.length);
+                }
             }
             catch (NoSuchAlgorithmException e)
             {
@@ -845,7 +883,9 @@ public final class StateUtils {
                 new Random().nextBytes(bytes);
                 
                 if(log.isLoggable(Level.FINE))
+                {
                     log.fine("generated random password of length " + length);
+                }
             }
         }
         else 
@@ -938,8 +978,10 @@ public final class StateUtils {
         }
         
         if( ! ( secretKey instanceof SecretKey ) )
+        {
             throw new ClassCastException("Did not find an instance of SecretKey "
                     + "in application scope using the key '" + INIT_MAC_SECRET_KEY_CACHE + "'");
+        }
 
         
         return (SecretKey) secretKey;
@@ -980,7 +1022,9 @@ public final class StateUtils {
                 bytes = kg.generateKey().getEncoded();
                 
                 if(log.isLoggable(Level.FINE))
+                {
                     log.fine("generated random mac password of length " + bytes.length);
+                }
             }
             catch (NoSuchAlgorithmException e)
             {
@@ -990,7 +1034,9 @@ public final class StateUtils {
                 new Random().nextBytes(bytes);
                 
                 if(log.isLoggable(Level.FINE))
+                {
                     log.fine("generated random mac password of length " + length);
+                }
             }
         }
         else 

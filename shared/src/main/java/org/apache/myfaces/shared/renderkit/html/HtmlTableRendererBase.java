@@ -343,8 +343,13 @@ public class HtmlTableRendererBase extends HtmlRenderer
         int newspaperColumns = getNewspaperColumns(component);
         int newspaperRows;
         if((last - first) % newspaperColumns == 0)
+        {
             newspaperRows = (last - first) / newspaperColumns;
-        else newspaperRows = ((last - first) / newspaperColumns) + 1;
+        }
+        else
+        {
+            newspaperRows = ((last - first) / newspaperColumns) + 1;
+        }
         boolean newspaperHorizontalOrientation = isNewspaperHorizontalOrientation(component);
         
         // get the row indizes for which a new TBODY element should be created
@@ -378,12 +383,19 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 // the current row in the 'real' table
                 int currentRow;
                 if (newspaperHorizontalOrientation)
+                {
                     currentRow = nr * newspaperColumns + nc + first;
+                }
                 else
+                {
                     currentRow = nc * newspaperRows + nr + first;
+                }
                 
                 // if this row is not to be rendered
-                if(currentRow >= last) continue;
+                if(currentRow >= last)
+                {
+                    continue;
+                }
 
                 // bail if any row does not exist
                 uiData.setRowIndex(currentRow);
@@ -427,19 +439,26 @@ public class HtmlTableRendererBase extends HtmlRenderer
                         boolean columnRendering = child instanceof UIColumn;
                         
                         if (columnRendering)
+                        {
                             beforeColumn(facesContext, uiData, j);
+                        }
                            
                         encodeColumnChild(facesContext, writer, uiData, child, styles, nc * uiData.getChildCount() + j);                    
                        
                         if (columnRendering)
+                        {
                             afterColumn(facesContext, uiData, j);
+                        }
                     }
                 }
 
                 if (hasNewspaperTableSpacer(uiData))
                 {
                     // draw the spacer facet
-                    if(nc < newspaperColumns - 1) renderSpacerCell(facesContext, writer, uiData);
+                    if(nc < newspaperColumns - 1)
+                    {
+                        renderSpacerCell(facesContext, writer, uiData);
+                    }
                 }
             }
             if (rowStartRendered)
@@ -771,17 +790,25 @@ public class HtmlTableRendererBase extends HtmlRenderer
             {
                 String headerStyleClass = getHeaderClass(component);
                 if (facet != null)
+                {
                     renderTableHeaderRow(facesContext, writer, component, facet, headerStyleClass, colspan);
+                }
                 if (hasColumnFacet)
+                {
                     renderColumnHeaderRow(facesContext, writer, component, headerStyleClass);
+                }
             }
             else
             {
                 String footerStyleClass = getFooterClass(component);
                 if (hasColumnFacet)
+                {
                     renderColumnFooterRow(facesContext, writer, component, footerStyleClass);
+                }
                 if (facet != null)
+                {
                     renderTableFooterRow(facesContext, writer, component, facet, footerStyleClass, colspan);
+                }
             }
             if (elemName != null)
             {
@@ -951,12 +978,16 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 if (uiComponent.isRendered())
                 {
                     if (component instanceof UIData && uiComponent instanceof UIColumn)
-                        beforeColumnHeaderOrFooter(facesContext, (UIData)component, header, columnIndex);
+                    {
+                        beforeColumnHeaderOrFooter(facesContext, (UIData) component, header, columnIndex);
+                    }
                 
                     renderColumnChildHeaderOrFooterRow(facesContext, writer, uiComponent, styleClass, header);
                     
                     if (component instanceof UIData && uiComponent instanceof UIColumn)
-                        afterColumnHeaderOrFooter(facesContext, (UIData)component, header, columnIndex);
+                    {
+                        afterColumnHeaderOrFooter(facesContext, (UIData) component, header, columnIndex);
+                    }
                 }
                 columnIndex += 1;
             }
@@ -964,7 +995,10 @@ public class HtmlTableRendererBase extends HtmlRenderer
             if (hasNewspaperTableSpacer(component))
             {
                 // draw the spacer facet
-                if(nc < newspaperColumns - 1) renderSpacerCell(facesContext, writer, component);
+                if(nc < newspaperColumns - 1)
+                {
+                    renderSpacerCell(facesContext, writer, component);
+                }
             }
         }
         writer.endElement(HTML.TR_ELEM);
@@ -975,7 +1009,10 @@ public class HtmlTableRendererBase extends HtmlRenderer
       */
     protected void renderSpacerCell(FacesContext facesContext, ResponseWriter writer, UIComponent component) throws IOException {
         UIComponent spacer = getNewspaperTableSpacer(component);
-        if(spacer == null) return;
+        if(spacer == null)
+        {
+            return;
+        }
          
          writer.startElement(HTML.TD_ELEM, component);
          //RendererUtils.renderChild(facesContext, spacer);
@@ -992,9 +1029,13 @@ public class HtmlTableRendererBase extends HtmlRenderer
             if (uiComponent instanceof HtmlColumn) {
                 HtmlColumn column = (HtmlColumn)uiComponent;
                 if (isHeader && column.getHeaderClass()!=null)
+                {
                     styleClass = column.getHeaderClass();
+                }
                 else if (!isHeader && column.getFooterClass()!=null)
+                {
                     styleClass = column.getFooterClass();
+                }
             }else{
                 //This code corrects MYFACES-1790, because HtmlColumnTag
                 //has as component type javax.faces.Column, so as side

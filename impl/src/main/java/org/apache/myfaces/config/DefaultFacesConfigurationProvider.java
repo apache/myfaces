@@ -124,9 +124,13 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             }
             InputStream stream = ClassUtils.getResourceAsStream(STANDARD_FACES_CONFIG_RESOURCE);
             if (stream == null)
+            {
                 throw new FacesException("Standard faces config " + STANDARD_FACES_CONFIG_RESOURCE + " not found");
+            }
             if (log.isLoggable(Level.INFO))
+            {
                 log.info("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
+            }
             
             FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(stream, STANDARD_FACES_CONFIG_RESOURCE);
             stream.close();
@@ -335,7 +339,9 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             if (stream != null)
             {
                 if (log.isLoggable(Level.INFO))
+                {
                     log.info("Reading config /WEB-INF/faces-config.xml");
+                }
                 webAppConfig = getUnmarshaller(ectx).getFacesConfig(stream, DEFAULT_FACES_CONFIG);
                 //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, DEFAULT_FACES_CONFIG));
                 stream.close();

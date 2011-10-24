@@ -199,7 +199,10 @@ public class StartupServletContextListener implements ServletContextListener,
 
         if(pluginEntries == null) {
             String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
-            if(plugins == null) return;
+            if(plugins == null)
+            {
+                return;
+            }
             log.info("MyFaces Plugins found");
             pluginEntries = plugins.split(",");
             _servletContext.setAttribute(FACES_INIT_PLUGINS, pluginEntries);

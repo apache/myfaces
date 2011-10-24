@@ -67,19 +67,27 @@ class _SharedRendererUtils
 
         Converter converter = component.getConverter();
         if (converter != null)
+        {
             return converter;
+        }
 
         //Try to find out by value expression
         ValueExpression expression = component.getValueExpression("value");
         if (expression == null)
+        {
             return null;
+        }
 
         Class valueType = expression.getType(facesContext.getELContext());
         if (valueType == null)
+        {
             return null;
+        }
 
         if (Object.class.equals(valueType))
+        {
             return null; //There is no converter for Object class
+        }
 
         try
         {

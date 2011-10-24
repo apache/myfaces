@@ -214,7 +214,9 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         {
             // 1. A faces-config.xml file is found in WEB-INF
             if (servletContext.getResource(FACES_CONFIG_RESOURCE) != null)
+            {
                 return true;
+            }
 
             // 4. The javax.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
             // check for alternate faces-config files specified by javax.faces.CONFIG_FILES
@@ -225,7 +227,9 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 for (String file : configFiles)
                 {
                     if (servletContext.getResource(file.trim()) != null)
+                    {
                         return true;
+                    }
                 }
             }
 

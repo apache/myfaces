@@ -114,11 +114,15 @@ public abstract class HtmlRenderer
 
       // Otherwise, if ID isn't set, don't bother
       if (id == null)
-        return false;
+      {
+          return false;
+      }
 
       // ... or if the ID was generated, don't bother
       if (id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
-        return false;
+      {
+          return false;
+      }
 
       return true;
     }
@@ -130,7 +134,9 @@ public abstract class HtmlRenderer
     static public String toUri(Object o)
     {
       if (o == null)
-        return null;
+      {
+          return null;
+      }
 
       String uri = o.toString();
       if (uri.startsWith("/"))

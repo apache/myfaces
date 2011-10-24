@@ -59,11 +59,15 @@ public class ResourceHandlerCache
             String contentType, String localePrefix)
     {
         if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        {
             return null;
+        }
 
         if (log.isLoggable(Level.FINE))
+        {
             log.log(Level.FINE, "Attemping to get resource from cache for "
                     + resourceName);
+        }
 
         ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix);
 
@@ -73,7 +77,9 @@ public class ResourceHandlerCache
     public boolean containsResource(String resourceName, String libraryName, String contentType, String localePrefix)
     {
         if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        {
             return false;
+        }
 
         ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix);
         return _resourceCacheMap.containsKey(key);
@@ -83,16 +89,22 @@ public class ResourceHandlerCache
             String contentType, String localePrefix, ResourceMeta resource, ResourceLoader loader)
     {
         if (!isResourceCachingEnabled())
+        {
             return;
+        }
 
         if (log.isLoggable(Level.FINE))
+        {
             log.log(Level.FINE, "Attemping to put resource to cache for "
                     + resourceName);
+        }
 
         if (_resourceCacheMap == null)
         {
             if (log.isLoggable(Level.FINE))
+            {
                 log.log(Level.FINE, "Initializing resource cache map");
+            }
             _resourceCacheMap = Collections
                     .synchronizedMap(new _ResourceMap<ResourceKey, ResourceValue>(
                             getMaxSize()));
@@ -116,7 +128,9 @@ public class ResourceHandlerCache
 
             ExternalContext externalContext = facesContext.getExternalContext();
             if (externalContext == null)
+            {
                 return false; //don't cache right now, but don't disable it yet either
+            }
 
             //if in production, make sure that the cache is not explicitly disabled via context param
             _resourceCacheEnabled = WebConfigParamUtils.getBooleanInitParameter(externalContext, 

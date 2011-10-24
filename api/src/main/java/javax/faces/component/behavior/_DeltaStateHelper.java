@@ -595,7 +595,9 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
+        {
             return;
+        }
 
         Object[] serializedState = (Object[]) state;
         
@@ -832,7 +834,9 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
         }
         
         if (attachedObject == null)
+        {
             return null;
+        }
         // StateHolder interface should take precedence over
         // List children
         if (attachedObject instanceof StateHolder)
@@ -871,9 +875,13 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
     private static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         if (stateObj == null)
+        {
             return null;
+        }
         if (stateObj instanceof _AttachedListStateWrapper)
         {
             List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
