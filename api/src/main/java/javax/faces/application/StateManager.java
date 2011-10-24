@@ -76,14 +76,17 @@ public abstract class StateManager
      * token is embedded in the data rendered to the user.
      * </p>
      */
-    @JSFWebConfigParam(defaultValue="server", expectedValues="server,client", since="1.1", group="state", tags="performance",
-        desc="Define the state method to be used. There are two different options defined by the specification: 'client' and 'server' state.")
+    @JSFWebConfigParam(defaultValue="server", expectedValues="server,client",
+            since="1.1", group="state", tags="performance",
+            desc="Define the state method to be used. There are two different options "
+                 + "defined by the specification: 'client' and 'server' state.")
     public static final String STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.STATE_SAVING_METHOD";
     public static final String STATE_SAVING_METHOD_CLIENT = "client";
     public static final String STATE_SAVING_METHOD_SERVER = "server";
     
     /**
-     * Indicate the viewId(s) separated by commas that should be saved and restored fully, without use Partial State Saving (PSS). 
+     * Indicate the viewId(s) separated by commas that should be saved and restored fully,
+     * without use Partial State Saving (PSS).
      */
     @JSFWebConfigParam(since="2.0", group="state")
     public static final String FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME = "javax.faces.FULL_STATE_SAVING_VIEW_IDS";
@@ -96,7 +99,8 @@ public abstract class StateManager
      * state of the view.</p>
      * <p>If the webapp faces-config file version is 2.0 or upper the default value is true, otherwise is false.</p>   
      */
-    @JSFWebConfigParam(expectedValues="true,false", since="2.0", defaultValue="true (false with 1.2 webapps)", tags="performance", group="state")
+    @JSFWebConfigParam(expectedValues="true,false", since="2.0", defaultValue="true (false with 1.2 webapps)",
+                       tags="performance", group="state")
     public static final String PARTIAL_STATE_SAVING_PARAM_NAME = "javax.faces.PARTIAL_STATE_SAVING";
     private Boolean _savingStateInClient = null;
 
@@ -139,7 +143,9 @@ public abstract class StateManager
     {
         StateManager.SerializedView serializedView = saveSerializedView(context);
         if (serializedView == null)
+        {
             return null;
+        }
 
         Object[] structureAndState = new Object[2];
         structureAndState[0] = serializedView.getStructure();
@@ -221,10 +227,14 @@ public abstract class StateManager
     public void writeState(FacesContext context, Object state) throws IOException
     {
         if (!(state instanceof Object[]))
+        {
             return;
+        }
         Object[] structureAndState = (Object[]) state;
         if (structureAndState.length < 2)
+        {
             return;
+        }
 
         writeState(context, new StateManager.SerializedView(structureAndState[0], structureAndState[1]));
     }
@@ -264,9 +274,14 @@ public abstract class StateManager
     public boolean isSavingStateInClient(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         if (_savingStateInClient != null)
+        {
             return _savingStateInClient.booleanValue();
+        }
+
         String stateSavingMethod = context.getExternalContext().getInitParameter(STATE_SAVING_METHOD_PARAM_NAME);
         if (stateSavingMethod == null)
         {

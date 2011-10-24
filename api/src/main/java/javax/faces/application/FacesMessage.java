@@ -22,7 +22,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -33,11 +37,11 @@ import java.util.*;
  * </p>
  * 
  *<ui>The implementation must take the following steps when creating FacesMessage instances given a messageId: <li>Call
- * {@link Application.getMessageBundle()}. If <code>non-null</code>, locate the named <code>ResourceBundle</code>, using
+ * {@link Application#getMessageBundle()}. If <code>non-null</code>, locate the named <code>ResourceBundle</code>, using
  * the <code>Locale</code> from the current {@linkUIViewRoot} and see if it has a value for the argument
  * <code>messageId</code>. If it does, treat the value as the <code>summary</code> of the {@link FacesMessage}. If it
- * does not, or if {@link Application.getMessageBundle()} returned null, look in the ResourceBundle named by the value
- * of the constant {@link FACES_MESSAGES} and see if it has a value for the argument messageId. If it does, treat the
+ * does not, or if {@link Application#getMessageBundle()} returned null, look in the ResourceBundle named by the value
+ * of the constant {@link #FACES_MESSAGES} and see if it has a value for the argument messageId. If it does, treat the
  * value as the summary of the <code>FacesMessage</code>. If it does not, there is no initialization information for the
  * <code>FacesMessage</code> instance.</li> <li>In all cases, if a <code>ResourceBundle</code> hit is found for the
  * <code>{messageId}</code>, look for further hits under the key <code>{messageId}_detail</code>. Use this value, if
@@ -92,14 +96,14 @@ public class FacesMessage implements Serializable
 
     static
     {
-        Map<String, FacesMessage.Severity> map = new HashMap<String, FacesMessage.Severity>(7);
+        Map<String, FacesMessage.Severity> map = new HashMap<String, Severity>(7);
         map.put(SEVERITY_INFO.toString(), SEVERITY_INFO);
         map.put(SEVERITY_WARN.toString(), SEVERITY_WARN);
         map.put(SEVERITY_ERROR.toString(), SEVERITY_ERROR);
         map.put(SEVERITY_FATAL.toString(), SEVERITY_FATAL);
         VALUES_MAP = Collections.unmodifiableMap(map);
 
-        List<FacesMessage.Severity> severityList = new ArrayList<FacesMessage.Severity>(map.values());
+        List<FacesMessage.Severity> severityList = new ArrayList<Severity>(map.values());
         Collections.sort(severityList); // the JSF spec requires it to be sorted
         VALUES = Collections.unmodifiableList(severityList);
     }

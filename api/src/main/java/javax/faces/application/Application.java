@@ -548,7 +548,8 @@ public abstract class Application
      * <li>The <code>processAction()</code> method must first call <code>FacesContext.renderResponse()</code>in order to
      * bypass any intervening lifecycle phases, once the method returns.</li>
      * 
-     * <li>The <code>processAction()</code> method must next determine the logical outcome of this event, as follows:</li>
+     * <li>The <code>processAction()</code> method must next determine the logical 
+     * outcome of this event, as follows:</li>
      * 
      * <ul>
      * <li>If the originating component has a non-<code>null action</code> property, retrieve the <code>
@@ -840,7 +841,8 @@ public abstract class Application
      * <li>The <code>ResourceHandler</code> implementation is declared in the application configuration resources by
      * giving the fully qualified class name as the value of the <code><resource-handler></code> element within the
      * <code>application</code> element.</li>
-     * <li>RELEASE_PENDING(edburns) It can also be declared via an annotation as specified in [287-ConfigAnnotations].</li>
+     * <li>RELEASE_PENDING(edburns) It can also be declared via an annotation as 
+     * specified in [287-ConfigAnnotations].</li>
      * </ul>
      * 
      * <p>
