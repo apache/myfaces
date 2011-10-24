@@ -31,11 +31,8 @@ import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -44,11 +41,9 @@ import javax.faces.el.PropertyResolver;
 import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
-import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
-import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.validator.Validator;
 
 /**
@@ -184,10 +179,10 @@ public abstract class Application
      * Register a new mapping of converter id to the name of the corresponding {@link Converter} class. This allows
      * subsequent calls to createConverter() to serve as a factory for {@link Converter} instances.
      * 
-     * @param componentType
-     *            - The component type to be registered
-     * @param componentClass
-     *            - The fully qualified class name of the corresponding {@link UIComponent} implementation
+     * @param converterId
+     *            - The converterId to be registered
+     * @param converterClass
+     *            - The fully qualified class name of the corresponding {@link Converter} implementation
      * 
      * @throws NullPointerException
      *             if <code>componentType</code> or <code>componentClass</code> is <code>null</code>
@@ -271,8 +266,8 @@ public abstract class Application
      *Register a new mapping of validator id to the name of the corresponding <code>Validator</code> class. This allows
      * subsequent calls to <code>createValidator()</code> to serve as a factory for <code>Validator</code> instances.
      * 
-     *@param <code>validatorId</code> - The validator id to be registered
-     *@param <code>validatorClass</code> - The fully qualified class name of the corresponding Validator implementation
+     *@param validatorId  The validator id to be registered
+     *@param validatorClass The fully qualified class name of the corresponding Validator implementation
      * 
      *@throws NullPointerException
      *             if <code>validatorId</code> or <code>validatorClass</code> is <code>null</code>
@@ -445,7 +440,7 @@ public abstract class Application
      * 
      * <p>
      * If the <code>{@link Converter}</code> has a single argument constructor that accepts a Class, instantiate the
-     * <code>{@link Converter}</code> using that constructor, passing the argument <code>{@link targetClass}</code> as
+     * <code>{@link Converter}</code> using that constructor, passing the argument <code>targetClass</code> as
      * the sole argument. Otherwise, simply use the zero-argument constructor.
      * 
      * @param targetClass
@@ -489,7 +484,7 @@ public abstract class Application
      * Instantiate and return a new <code>{@link Validator}</code> instance of the class specified by a previous call to
      * <code>addValidator()</code> for the specified validator id.
      * 
-     * @param <code>validatorId</code>- The <code>{@link Validator}</code> id for which to create and return a new
+     * @param validatorId The <code>{@link Validator}</code> id for which to create and return a new
      *        Validator instance
      * 
      * @throws FacesException
@@ -517,7 +512,7 @@ public abstract class Application
      * </p>
      * 
      * <p>
-     * Call <code>{@link getExpressionFactory()}</code> then call
+     * Call <code>{@link #getExpressionFactory()}</code> then call
      * <code>ExpressionFactory.createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)</code>
      * passing the argument <code>expression</code> and <code>expectedType</code>. Call
      * <code>{@link FacesContext#getELContext()}</code> and pass it to
@@ -568,7 +563,7 @@ public abstract class Application
      * <ul>
      * <li>the {@link FacesContext} for the current request</li>
      * <li>If there is a <code>MethodBinding</code> instance for the <code>action</code> property of this component, the
-     * result of calling {@link MethodBinding.getExpressionString()} on it, null otherwise</li>
+     * result of calling {@link MethodBinding#getExpressionString()} on it, null otherwise</li>
      * <li>the logical outcome as determined above</li>
      * <ul>
      * </ul>
@@ -576,7 +571,7 @@ public abstract class Application
      * Note that the specification for the default <code>ActionListener</code> contiues to call for the use of a
      * deprecated property (<code>action</code>) and class (<code>MethodBinding</code>). Unfortunately, this is
      * necessary because the default ActionListener must continue to work with components that do not implement
-     * {@link ActionSource2}, and only implement {@link ActionSource}.
+     * {@link javax.faces.component.ActionSource2}, and only implement {@link javax.faces.component.ActionSource}.
      */
     public abstract ActionListener getActionListener();
     
@@ -808,7 +803,7 @@ public abstract class Application
      * <p>
      * Find a <code>ResourceBundle</code> as defined in the application configuration resources under the specified
      * name. If a <code>ResourceBundle</code> was defined for the name, return an instance that uses the locale of the
-     * current <code>{@link UIViewRoot}</code>.
+     * current <code>{@link javax.faces.component.UIViewRoot}</code>.
      * </p>
      * 
      * <p>
@@ -925,7 +920,7 @@ public abstract class Application
      * possible in determining whether or not a listener for the given <code>systemEventClass</code> and
      * <code>source</code> has been installed, and should return immediately once such a determination has been made.
      * The implementation of <code>publishEvent</code> must honor the requirements stated in
-     * <code>{@link subscribeToEvent(java.lang.Class, java.lang.Class,
+     * <code>{@link #subscribeToEvent(java.lang.Class, java.lang.Class,
      *                                               javax.faces.event.SystemEventListener)}</code>
      * <p>
      * <p>
@@ -933,23 +928,26 @@ public abstract class Application
      * listener instances and to invoke them.
      * <p>
      * <ul>
-     * <li>If the <code>source</code> argument implements <code>{@link SystemEventListenerHolder}</code>, call
-     * <code>{@link SystemEventListenerHolder.getListenersForEventClass(java.lang.Class)}</code> on it, passing the
+     * <li>If the <code>source</code> argument implements
+     * <code>{@link javax.faces.event.SystemEventListenerHolder}</code>, call
+     * <code>{@link javax.faces.event.SystemEventListenerHolder#getListenersForEventClass(java.lang.Class)}</code>
+     * on it, passing the
      * <code>systemEventClass</code> argument. If the list is not empty, perform algorithm
      * <code>traverseListenerList</code> on the list.</li>
      * 
      * <li>If any <code>Application</code> level listeners have been installed by previous calls to </code>{@link
-     * subscribeToEvent(java.lang.Class, java.lang.Class, SystemEventListener)}</code>, perform algorithm
+     * #subscribeToEvent(java.lang.Class, java.lang.Class, SystemEventListener)}</code>, perform algorithm
      * <code>traverseListenerList</code> on the list.</li>
      * 
      * <li>If any <code>Application</code> level listeners have been installed by previous calls to
-     * <code>{@link subscribeToEvent(java.lang.Class, SystemEventListener)}</code>, perform algorithm
+     * <code>{@link #subscribeToEvent(java.lang.Class, SystemEventListener)}</code>, perform algorithm
      * <code>traverseListenerList</code> on the list.</li>
      * </ul>
      * 
      * <p>
-     * If the act of invoking the <code>processListener</code> method causes an </code>{@link AbortProcessingException}
-     * </code> to be thrown, processing of the listeners must be aborted.
+     * If the act of invoking the <code>processListener</code> method causes an
+     * </code>{@link javax.faces.event.AbortProcessingException}</code> to be thrown,
+     * processing of the listeners must be aborted.
      * </p>
      * 
      * <p>
@@ -958,7 +956,7 @@ public abstract class Application
      * 
      * <ul>
      * <li>Call
-     * <code>{@link SystemEventListener.isListenerForSource(java.lang.Object)}<code>, passing the <code>source</code>
+     * <code>{@link SystemEventListener#isListenerForSource(java.lang.Object)}<code>, passing the <code>source</code>
      * argument. If this returns <code>false</code>, take no action on the listener.</li>
      * 
      * <li>Otherwise, if the event to be passed to the listener instances has not yet been constructed, construct the
@@ -966,10 +964,10 @@ public abstract class Application
      * <code>Object</code>. This same event instance must be passed to all listener instances.</li>
      * 
      * <li>Call
-     * <code>{@link SystemEvent.isAppropriateListener(javax.faces.event.FacesListener)}<code>, passing the listener 
+     * <code>{@link SystemEvent#isAppropriateListener(javax.faces.event.FacesListener)}<code>, passing the listener
      *         instance as the argument. If this returns <code>false</code>, take no action on the listener.</li>
      * 
-     * <li>Call <code>{@link SystemEvent.processListener(javax.faces.event.FacesListener)}</code>, passing the listener
+     * <li>Call <code>{@link SystemEvent#processListener(javax.faces.event.FacesListener)}</code>, passing the listener
      * instance.</li>
      * 
      * @param systemEventClass
@@ -977,7 +975,7 @@ public abstract class Application
      * 
      * @param source
      *            - The <code>source</code> for the event of type systemEventClass. Must be non- <code>null</code>, and
-     *            must implement <code>{@link SystemEventListenerHolder}</code>.
+     *            must implement <code>{@link javax.faces.event.SystemEventListenerHolder}</code>.
      * 
      * @since 2.0
      */
@@ -1017,7 +1015,8 @@ public abstract class Application
     }
 
     /**
-     * Set the default <code>{@link ActionListener}</code> to be registered for all <code>{@link ActionSource}</code>
+     * Set the default <code>{@link ActionListener}</code> to be registered for all
+     * <code>{@link javax.faces.component.ActionSource}</code>
      * components.
      * 
      * @param listener
@@ -1100,7 +1099,7 @@ public abstract class Application
      *Set the {@link StateManager} instance that will be utilized during the <code>Restore View and Render Response
      * </code> phases of the request processing lifecycle.
      * 
-     * @param <code>manager</code> - The new {@link StateManager}instance
+     * @param manager The new {@link StateManager}instance
      * 
      * @throws IllegalStateException
      *             if this method is called after at least one request has been processed by the <code>Lifecycle</code>
@@ -1113,7 +1112,7 @@ public abstract class Application
     /**
      * Set the <code>Locale</code> instances representing the supported <code>Locales</code> for this application.
      * 
-     * @param <code>Locale</code>- The set of supported <code>Locales</code> for this application
+     * @param locales The set of supported <code>Locales</code> for this application
      * 
      * @throws NullPointerException
      *             if the argument newLocales is <code>null</code>.
