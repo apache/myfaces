@@ -61,7 +61,7 @@ public class ResourceUtils {
 
     private final static String RENDERED_STYLESHEET_RESOURCES_SET = "org.apache.myfaces.RENDERED_STYLESHEET_RESOURCES_SET";
     private final static String RENDERED_SCRIPT_RESOURCES_SET = "org.apache.myfaces.RENDERED_SCRIPT_RESOURCES_SET";
-    public final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
+    private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
     public final static String HEAD_TARGET = "head";
     public final static String BODY_TARGET = "body";
     public final static String FORM_TARGET = "form";
