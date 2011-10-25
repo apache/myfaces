@@ -31,6 +31,8 @@ import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.html.HtmlBody;
+import javax.faces.component.html.HtmlHead;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
@@ -46,6 +48,9 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
+import org.apache.myfaces.context.RequestViewContext;
+import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 
 public class PartialViewContextImpl extends PartialViewContext {
@@ -434,8 +439,70 @@ public class PartialViewContextImpl extends PartialViewContext {
                     }
                     else
                     {
+                        List<UIComponent> updatedComponents = null;
+                        if (!ExternalContextUtils.isPortlet(_facesContext.getExternalContext()) &&
+                             MyfacesConfig.getCurrentInstance(externalContext).isStrictJsf2RefreshTargetAjax())
+                        {
+                            RequestViewContext rvc = RequestViewContext.getCurrentInstance(_facesContext);
+                            if (rvc.isRenderTarget("head"))
+                            {
+                                UIComponent head = findHeadComponent(viewRoot);
+                                if (head != null)
+                                {
+                                    writer.startUpdate("javax.faces.ViewHead");
+                                    head.encodeAll(_facesContext);
+                                    writer.endUpdate();
+                                    if (updatedComponents == null)
+                                    {
+                                        updatedComponents = new ArrayList<UIComponent>();
+                                    }
+                                    updatedComponents.add(head);
+                                }
+                            }
+                            if (rvc.isRenderTarget("body") || rvc.isRenderTarget("form"))
+                            {
+                                UIComponent body = findBodyComponent(viewRoot);
+                                if (body != null)
+                                {
+                                    writer.startUpdate("javax.faces.ViewBody");
+                                    body.encodeAll(_facesContext);
+                                    writer.endUpdate();
+                                    if (updatedComponents == null)
+                                    {
+                                        updatedComponents = new ArrayList<UIComponent>();
+                                    }
+                                    updatedComponents.add(body);
+                                }
+                            }
+                        }
+
                         VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
-                        viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
+                        viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId, updatedComponents));
+                    }
+                }
+                else if (!ExternalContextUtils.isPortlet(_facesContext.getExternalContext()) &&
+                        MyfacesConfig.getCurrentInstance(externalContext).isStrictJsf2RefreshTargetAjax())
+                {
+                    RequestViewContext rvc = RequestViewContext.getCurrentInstance(_facesContext);
+                    if (rvc.isRenderTarget("head"))
+                    {
+                        UIComponent head = findHeadComponent(viewRoot);
+                        if (head != null)
+                        {
+                            writer.startUpdate("javax.faces.ViewHead");
+                            head.encodeAll(_facesContext);
+                            writer.endUpdate();
+                        }
+                    }
+                    if (rvc.isRenderTarget("body") || rvc.isRenderTarget("form"))
+                    {
+                        UIComponent body = findBodyComponent(viewRoot);
+                        if (body != null)
+                        {
+                            writer.startUpdate("javax.faces.ViewBody");
+                            body.encodeAll(_facesContext);
+                            writer.endUpdate();
+                        }
                     }
                 }
             }
@@ -527,15 +594,67 @@ public class PartialViewContextImpl extends PartialViewContext {
         _facesContext = null;
         _released = true;
     }
+    
+    private UIComponent findHeadComponent(UIViewRoot root)
+    {
+        for (UIComponent child : root.getChildren())
+        {
+            if (child instanceof HtmlHead)
+            {
+                return child;
+            }
+            else
+            {
+                for (UIComponent grandchild : child.getChildren())
+                {
+                    if (child instanceof HtmlHead)
+                    {
+                        return child;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    private UIComponent findBodyComponent(UIViewRoot root)
+    {
+        for (UIComponent child : root.getChildren())
+        {
+            if (child instanceof HtmlBody)
+            {
+                return child;
+            }
+            else
+            {
+                for (UIComponent grandchild : child.getChildren())
+                {
+                    if (child instanceof HtmlBody)
+                    {
+                        return child;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     private class PhaseAwareVisitCallback implements VisitCallback {
 
         private PhaseId _phaseId;
         private FacesContext _facesContext;
+        private List<UIComponent> _alreadyUpdatedComponents;
 
         public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId) {
             this._phaseId = phaseId;
             this._facesContext = facesContext;
+            this._alreadyUpdatedComponents = null;
+        }
+        
+        public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId, List<UIComponent> alreadyUpdatedComponents) {
+            this._phaseId = phaseId;
+            this._facesContext = facesContext;
+            this._alreadyUpdatedComponents = alreadyUpdatedComponents;
         }
 
         public VisitResult visit(VisitContext context, UIComponent target) {
@@ -565,6 +684,19 @@ public class PartialViewContextImpl extends PartialViewContext {
         private void processRenderComponent(UIComponent target) {
             boolean inUpdate = false;
             PartialResponseWriter writer = (PartialResponseWriter) _facesContext.getResponseWriter();
+            if (this._alreadyUpdatedComponents != null)
+            {
+                //Check if the parent was already updated.
+                UIComponent parent = target;
+                while (parent != null)
+                {
+                    if (this._alreadyUpdatedComponents.contains(parent))
+                    {
+                        return;
+                    }
+                    parent = parent.getParent();
+                }
+            }
             try {
                 writer.startUpdate(target.getClientId(_facesContext));
                 inUpdate = true;

@@ -20,6 +20,7 @@ package org.apache.myfaces.context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.application.ResourceDependency;
 import javax.faces.component.UIViewRoot;
@@ -39,6 +40,8 @@ public class RequestViewContext
     private Map<ResourceDependency, Boolean> addedResources = new HashMap<ResourceDependency,Boolean>();
     
     private Map<Class<?>, Boolean> processedClasses = new HashMap<Class<?>,Boolean>();
+    
+    private Map<String, Boolean> renderTargetMap = null;
 
     static public RequestViewContext getCurrentInstance()
     {
@@ -94,5 +97,23 @@ public class RequestViewContext
     public void setClassProcessed(Class<?> inspectedClass)
     {
         processedClasses.put(inspectedClass, Boolean.TRUE);
+    }
+    
+    public boolean isRenderTarget(String target)
+    {
+        if (renderTargetMap != null)
+        {
+            return Boolean.TRUE.equals(renderTargetMap.get(target));
+        }
+        return false;
+    }
+    
+    public void setRenderTarget(String target, boolean value)
+    {
+        if (renderTargetMap == null)
+        {
+            renderTargetMap = new HashMap<String, Boolean>(8);
+        }
+        renderTargetMap.put(target, value);
     }
 }
