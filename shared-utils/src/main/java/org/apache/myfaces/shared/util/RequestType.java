@@ -24,8 +24,6 @@ package org.apache.myfaces.shared.util;
  * all of the other RequestTypes will be portlet type requests.  There
  * are a number of convenience methods on the RequestType enumeration
  * which can be used to determine the capabilities of the current request.
- * 
- * @version $Revision$ $Date$
  */
 public enum RequestType
 {

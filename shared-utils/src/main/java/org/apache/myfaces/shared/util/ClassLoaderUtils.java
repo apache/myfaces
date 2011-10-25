@@ -45,7 +45,7 @@ import javax.faces.FacesException;
  * Utility methods for accessing classes and resources using an appropriate
  * class loader.
  *
- * @version $Revision$ $Date$
+ * @version $Revision: 1187700 $ $Date: 2011-10-22 07:19:37 -0500 (Sáb, 22 Oct 2011) $
  */
 public final class ClassLoaderUtils
 {

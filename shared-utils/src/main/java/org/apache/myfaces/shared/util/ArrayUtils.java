@@ -26,7 +26,7 @@ import java.lang.reflect.Array;
  * @author Anton Koinov (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ArrayUtils
+public final class ArrayUtils
 {
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -205,8 +205,6 @@ public class ArrayUtils
 
         return concat(toArray, totalLen, arrs);
     }
-
-
 
     public static boolean contains(Object[] array, Object value)
     {

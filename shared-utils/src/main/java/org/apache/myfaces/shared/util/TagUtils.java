@@ -16,19 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.commons.util;
+package org.apache.myfaces.shared.util;
 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
@@ -43,7 +41,8 @@ import javax.faces.context.FacesContext;
  */
 public final class TagUtils
 {
-  private static final Log LOG = LogFactory.getLog(TagUtils.class);
+  //private static final Log LOG = LogFactory.getLog(TagUtils.class);
+  private static final Logger LOG = Logger.getLogger(TagUtils.class.getName());
 
   private TagUtils()
   {
@@ -301,9 +300,9 @@ public final class TagUtils
     }
     catch (ParseException pe)
     {
-      if (LOG.isInfoEnabled())
+      if (LOG.isLoggable(Level.INFO))
       {
-        LOG.info("CANNOT_PARSE_VALUE_INTO_DATE_WITH_YYYY_MM_DD_PATTERN "+ stringValue, pe);
+        LOG.log(Level.INFO, "CANNOT_PARSE_VALUE_INTO_DATE_WITH_YYYY_MM_DD_PATTERN "+ stringValue, pe);
       }
       return null;
     }
@@ -392,9 +391,9 @@ public final class TagUtils
     }
     else
     {
-      if(LOG.isWarnEnabled())
+      if(LOG.isLoggable(Level.WARNING))
       {
-          LOG.warn("tokens length should not be greater than 3.");
+          LOG.log(Level.WARNING, "tokens length should not be greater than 3.");
       }
     }
     return locl;

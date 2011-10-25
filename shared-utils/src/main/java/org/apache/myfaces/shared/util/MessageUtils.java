@@ -233,7 +233,9 @@ public final class MessageUtils
     {
         String localizedStr = null;
         if(params == null || msgtext == null)
+        {
             return msgtext;
+        }
 
         if(locale != null)
         {
@@ -257,8 +259,11 @@ public final class MessageUtils
         {
             locale = context.getViewRoot().getLocale();
             if(locale == null)
+            {
                 locale = Locale.getDefault();
-        } else
+            }
+        }
+        else
         {
             locale = Locale.getDefault();
         }
@@ -279,7 +284,8 @@ public final class MessageUtils
                 bundle = ResourceBundle.getBundle(bundleName, locale, org.apache.myfaces.shared.util.ClassUtils.getCurrentLoader(bundleName));
                 summary = bundle.getString(messageId);
             }
-            catch (MissingResourceException e) {
+            catch (MissingResourceException e)
+            {
                 // NoOp
             }
         }
@@ -295,7 +301,8 @@ public final class MessageUtils
                 }
                 summary = bundle.getString(messageId);
             }
-            catch(MissingResourceException e) {
+            catch(MissingResourceException e)
+            {
                 // NoOp
             }
         }
@@ -316,7 +323,8 @@ public final class MessageUtils
             {
                 detail = bundle.getString(messageId + DETAIL_SUFFIX);
             }
-            catch(MissingResourceException e) {
+            catch(MissingResourceException e)
+            {
                 // NoOp
             }
             return new ParametrizableFacesMessage(summary, detail, params, locale);
@@ -329,14 +337,16 @@ public final class MessageUtils
                 detail = substituteParams(locale,
                     bundle.getString(messageId + DETAIL_SUFFIX), params);
             }
-            catch(MissingResourceException e) {
+            catch(MissingResourceException e)
+            {
                 // NoOp
             }
             return new FacesMessage(summary, detail);
         }
     }
     
-    public static FacesMessage getMessageFromBundle(String bundleBaseName, FacesContext context, Locale locale, String messageId, Object params[])
+    public static FacesMessage getMessageFromBundle(String bundleBaseName, FacesContext context,
+                                                    Locale locale, String messageId, Object params[])
     {
         String summary = null;
         String detail = null;
@@ -350,7 +360,8 @@ public final class MessageUtils
                 bundle = ResourceBundle.getBundle(bundleName, locale, org.apache.myfaces.shared.util.ClassUtils.getCurrentLoader(bundleName));
                 summary = bundle.getString(messageId);
             }
-            catch (MissingResourceException e) {
+            catch (MissingResourceException e)
+            {
                 // NoOp
             }
         }
@@ -366,7 +377,8 @@ public final class MessageUtils
                 }
                 summary = bundle.getString(messageId);
             }
-            catch(MissingResourceException e) {
+            catch(MissingResourceException e)
+            {
                 // NoOp
             }
         }
@@ -382,7 +394,8 @@ public final class MessageUtils
                 }
                 summary = bundle.getString(messageId);
             }
-            catch(MissingResourceException e) {
+            catch(MissingResourceException e)
+            {
                 // NoOp
             }
         }
@@ -404,7 +417,8 @@ public final class MessageUtils
             {
                 detail = bundle.getString(messageId + DETAIL_SUFFIX);
             }
-            catch(MissingResourceException e) {
+            catch(MissingResourceException e)
+            {
                 // NoOp
             }
             return new ParametrizableFacesMessage(summary, detail, params, locale);
@@ -417,7 +431,8 @@ public final class MessageUtils
                 detail = substituteParams(locale,
                     bundle.getString(messageId + DETAIL_SUFFIX), params);
             }
-            catch(MissingResourceException e) {
+            catch(MissingResourceException e)
+            {
                 // NoOp
             }
             return new FacesMessage(summary, detail);
@@ -442,17 +457,21 @@ public final class MessageUtils
      * 
      * @return  currently applicable Locale for this request.
      */
-    public static Locale getCurrentLocale() {
+    public static Locale getCurrentLocale()
+    {
         return getCurrentLocale(FacesContext.getCurrentInstance());
     }
     
-    public static Locale getCurrentLocale(FacesContext context) {
+    public static Locale getCurrentLocale(FacesContext context)
+    {
         Locale locale;
         if(context != null && context.getViewRoot() != null)
         {
             locale = context.getViewRoot().getLocale();
             if(locale == null)
+            {
                 locale = Locale.getDefault();
+            }
         }
         else
         {
@@ -469,7 +488,8 @@ public final class MessageUtils
      * @param params parameters to set at localized message
      * @return generated FacesMessage
      */
-    public static FacesMessage getMessage(FacesMessage.Severity severity, String bundleBaseName, String messageId, Object params[])
+    public static FacesMessage getMessage(FacesMessage.Severity severity, String bundleBaseName,
+                                          String messageId, Object params[])
     {
       FacesMessage msg = getMessage(bundleBaseName, messageId, params);
       msg.setSeverity(severity);
@@ -515,7 +535,8 @@ public final class MessageUtils
       {
           summary = bundle.getString(messageId);
       }
-      catch (MissingResourceException e) {
+      catch (MissingResourceException e)
+      {
         // NoOp
       }
 
@@ -532,7 +553,8 @@ public final class MessageUtils
           detail = substituteParams(bundle.getLocale(),
               bundle.getString(messageId + DETAIL_SUFFIX), params);
       }
-      catch(MissingResourceException e) {
+      catch(MissingResourceException e)
+      {
         // NoOp
       }
 
@@ -565,15 +587,22 @@ public final class MessageUtils
     public static FacesMessage getMessage(FacesContext context, String messageId, Object params[])
     {
         if(context == null || messageId == null)
+        {
             throw new NullPointerException(" context " + context + " messageId " + messageId);
+        }
+
         Locale locale = getCurrentLocale(context);
         if(null == locale)
+        {
             throw new NullPointerException(" locale " + locale);
+        }
+
         FacesMessage message = getMessage(locale, messageId, params);
         if(message != null)
         {
             return message;
-        } else
+        }
+        else
         {
             // TODO /FIX:  Note that this has fallback behavior to default Locale for message,
             // but similar behavior above does not.  The methods should probably behave
@@ -582,18 +611,26 @@ public final class MessageUtils
         }
     }
     
-    public static FacesMessage getMessage(String bundleBaseName, FacesContext context, String messageId, Object params[])
+    public static FacesMessage getMessage(String bundleBaseName, FacesContext context,
+                                          String messageId, Object params[])
     {
         if(context == null || messageId == null)
+        {
             throw new NullPointerException(" context " + context + " messageId " + messageId);
+        }
+
         Locale locale = getCurrentLocale(context);
         if(null == locale)
+        {
             throw new NullPointerException(" locale " + locale);
+        }
+
         FacesMessage message = getMessageFromBundle(bundleBaseName, context, locale, messageId, params);
         if(message != null)
         {
             return message;
-        } else
+        }
+        else
         {
             // TODO /FIX:  Note that this has fallback behavior to default Locale for message,
             // but similar behavior above does not.  The methods should probably behave
@@ -602,14 +639,19 @@ public final class MessageUtils
         }
     }
     
-    public static Object getLabel(FacesContext facesContext, UIComponent component) {
+    public static Object getLabel(FacesContext facesContext, UIComponent component)
+    {
         Object label = component.getAttributes().get("label");
         if(label != null)
+        {
             return label;
-        
+        }
+
         ValueExpression expression = component.getValueExpression("label");
         if(expression != null)
+        {
             return expression;
+        }
         
         //If no label is not specified, use clientId
         return component.getClientId( facesContext );
@@ -621,9 +663,11 @@ public final class MessageUtils
         if(context != null)
         {
             return context.getApplication();
-        } else
+        }
+        else
         {
-            ApplicationFactory afactory = (ApplicationFactory)FactoryFinder.getFactory("javax.faces.application.ApplicationFactory");
+            ApplicationFactory afactory = (ApplicationFactory)
+                    FactoryFinder.getFactory("javax.faces.application.ApplicationFactory");
             return afactory.getApplication();
         }
     }

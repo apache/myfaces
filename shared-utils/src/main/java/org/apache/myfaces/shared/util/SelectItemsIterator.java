@@ -35,8 +35,7 @@ import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-import org.apache.myfaces.shared.renderkit.JSFAttr;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.util.renderkit.JsfProperties;
 
 // ATTENTION
 // This class is associated with javax.faces.component._SelectItemsIterator.
@@ -51,13 +50,13 @@ public class SelectItemsIterator implements Iterator<SelectItem>
 {
     private static final Logger log = Logger.getLogger(SelectItemsIterator.class.getName());
     
-    private static final String VAR_ATTR = JSFAttr.VAR_ATTR;
-    private static final String ITEM_VALUE_ATTR = JSFAttr.ITEM_VALUE_ATTR;
-    private static final String ITEM_LABEL_ATTR = JSFAttr.ITEM_LABEL_ATTR;
-    private static final String ITEM_DESCRIPTION_ATTR = JSFAttr.ITEM_DESCRIPTION_ATTR;
-    private static final String ITEM_DISABLED_ATTR = JSFAttr.ITEM_DISABLED_ATTR;
-    private static final String ITEM_LABEL_ESCAPED_ATTR = JSFAttr.ITEM_LABEL_ESCAPED_ATTR;
-    private static final String NO_SELECTION_VALUE_ATTR = JSFAttr.NO_SELECTION_VALUE_ATTR;
+    private static final String VAR_PROP = JsfProperties.VAR_PROP;
+    private static final String ITEM_VALUE_PROP = JsfProperties.ITEM_VALUE_PROP;
+    private static final String ITEM_LABEL_PROP = JsfProperties.ITEM_LABEL_PROP;
+    private static final String ITEM_DESCRIPTION_PROP = JsfProperties.ITEM_DESCRIPTION_PROP;
+    private static final String ITEM_DISABLED_PROP = JsfProperties.ITEM_DISABLED_PROP;
+    private static final String ITEM_LABEL_ESCAPED_PROP = JsfProperties.ITEM_LABEL_ESCAPED_PROP;
+    private static final String NO_SELECTION_VALUE_PROP = JsfProperties.NO_SELECTION_VALUE_PROP;
     
     private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = new _EmptyIterator<UIComponent>();
     
@@ -69,7 +68,9 @@ public class SelectItemsIterator implements Iterator<SelectItem>
 
     public SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
     {
-        _children = selectItemsParent.getChildCount() > 0 ? selectItemsParent.getChildren().iterator() : _EMPTY_UICOMPONENT_ITERATOR; 
+        _children = selectItemsParent.getChildCount() > 0
+                ? selectItemsParent.getChildren().iterator()
+                : _EMPTY_UICOMPONENT_ITERATOR;
         _facesContext = facesContext;
     }
 
@@ -136,7 +137,8 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     ValueExpression expression = uiSelectItem.getValueExpression("value");
                     throw new IllegalArgumentException("ValueExpression '"
                             + (expression == null ? null : expression.getExpressionString()) + "' of UISelectItem : "
-                            + RendererUtils.getPathToComponent(child) + " does not reference an Object of type SelectItem");
+                            + DebugUtils.getPathToComponent(child)
+                            + " does not reference an Object of type SelectItem");
                 }
                 _nextItem = (SelectItem) item;
                 return true;
@@ -198,7 +200,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                                 + " array, Iterable or Map, but of type: {2}",
                                 new Object[] {
                                     (expression == null ? null : expression.getExpressionString()),
-                                    RendererUtils.getPathToComponent(child),
+                                    DebugUtils.getPathToComponent(child),
                                     (value == null ? null : value.getClass().getName()) 
                                 });
                     }
@@ -234,7 +236,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 // write the current item into the request map under the key listed in var, if available
                 boolean wroteRequestMapVarValue = false;
                 Object oldRequestMapVarValue = null;
-                final String var = (String) attributeMap.get(VAR_ATTR);
+                final String var = (String) attributeMap.get(VAR_PROP);
                 if(var != null && !"".equals(var))
                 {
                     // save the current value of the key listed in var from the request map
@@ -243,7 +245,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 }
                 
                 // check the itemValue attribute
-                Object itemValue = attributeMap.get(ITEM_VALUE_ATTR);
+                Object itemValue = attributeMap.get(ITEM_VALUE_PROP);
                 if (itemValue == null)
                 {
                     // the itemValue attribute was not provided
@@ -253,7 +255,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 
                 // Spec: When iterating over the select items, toString() 
                 // must be called on the string rendered attribute values
-                Object itemLabel = attributeMap.get(ITEM_LABEL_ATTR);
+                Object itemLabel = attributeMap.get(ITEM_LABEL_PROP);
                 if (itemLabel == null)
                 {
                     itemLabel = itemValue.toString();
@@ -262,14 +264,14 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 {
                     itemLabel = itemLabel.toString();
                 }
-                Object itemDescription = attributeMap.get(ITEM_DESCRIPTION_ATTR);
+                Object itemDescription = attributeMap.get(ITEM_DESCRIPTION_PROP);
                 if (itemDescription != null)
                 {
                     itemDescription = itemDescription.toString();
                 }
-                Boolean itemDisabled = getBooleanAttribute(_currentUISelectItems, ITEM_DISABLED_ATTR, false);
-                Boolean itemLabelEscaped = getBooleanAttribute(_currentUISelectItems, ITEM_LABEL_ESCAPED_ATTR, true);
-                Object noSelectionValue = attributeMap.get(NO_SELECTION_VALUE_ATTR);
+                Boolean itemDisabled = getBooleanAttribute(_currentUISelectItems, ITEM_DISABLED_PROP, false);
+                Boolean itemLabelEscaped = getBooleanAttribute(_currentUISelectItems, ITEM_LABEL_ESCAPED_PROP, true);
+                Object noSelectionValue = attributeMap.get(NO_SELECTION_VALUE_PROP);
                 item = new SelectItem(itemValue,
                         (String) itemLabel,
                         (String) itemDescription,

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.commons.util.renderkit;
+package org.apache.myfaces.shared.util.renderkit;
 
-import org.apache.myfaces.commons.util.ArrayUtils;
+import org.apache.myfaces.shared.util.ArrayUtils;
 
 
 /**

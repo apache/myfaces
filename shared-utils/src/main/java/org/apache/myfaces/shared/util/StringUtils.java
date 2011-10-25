@@ -267,31 +267,33 @@ public final class StringUtils
             return "";
         }
 
-        int end_ = str.indexOf(quote, begin);
+        int endPos = str.indexOf(quote, begin);
 
         // If no quotes, return the original string
         // and save StringBuffer allocation/char copying
-        if (end_ < 0)
+        if (endPos < 0)
         {
             return str.substring(begin, end);
         }
 
-        StringBuffer sb     = new StringBuffer(end - begin);
-        int          begin_ = begin; // need begin later
-        for (; (end_ >= 0) && (end_ < end);
-            end_ = str.indexOf(quote, begin_ = end_ + 2))
+        StringBuffer sb       = new StringBuffer(end - begin);
+        int          beginPos = begin; // need begin later
+        while ((endPos >= 0) && (endPos < end))
         {
-            if (((end_ + 1) >= end) || (str.charAt(end_ + 1) != quote))
+            if (((endPos + 1) >= end) || (str.charAt(endPos + 1) != quote))
             {
                 throw new IllegalArgumentException(
                     "Internal quote not doubled in string '"
                     + str.substring(begin, end) + "'");
             }
 
-            sb.append(substring(str, begin_, end_)).append(quote);
+            sb.append(substring(str, beginPos, endPos)).append(quote);
+
+            beginPos = endPos + 2;
+            endPos = str.indexOf(quote, beginPos);
         }
 
-        return sb.append(substring(str, begin_, end)).toString();
+        return sb.append(substring(str, beginPos, end)).toString();
     }
 
     /**
@@ -330,15 +332,15 @@ public final class StringUtils
             return str.substring(begin, end);
         }
 
-        int _end = end - 1;
-        if ((str.length() < 2) || (str.charAt(_end) != quote))
+        int lastCharPos = end - 1;
+        if ((str.length() < 2) || (str.charAt(lastCharPos) != quote))
         {
             throw new IllegalArgumentException(
                 "Closing quote missing in string '"
                 + substring(str, begin, end) + "'");
         }
 
-        return dequote(str, begin + 1, _end, quote);
+        return dequote(str, begin + 1, lastCharPos, quote);
     }
 
     public static String replace(String str, String repl, String with)
@@ -358,9 +360,12 @@ public final class StringUtils
         StringBuffer out     =
             new StringBuffer((lendiff <= 0) ? str.length()
                 : (str.length() + (10 * lendiff)));
-        for (; pos >= 0; pos = str.indexOf(repl, lastindex = pos + len))
+        while (pos >= 0)
         {
             out.append(substring(str, lastindex, pos)).append(with);
+
+            lastindex = pos + len;
+            pos = str.indexOf(repl, lastindex);
         }
 
         return out.append(substring(str, lastindex, str.length())).toString();
@@ -383,9 +388,12 @@ public final class StringUtils
             new StringBuffer((lendiff <= 0) ? str.length()
                 : (str.length() + (10 * lendiff)));
         int          lastindex = 0;
-        for (; pos >= 0; pos = str.indexOf(repl, lastindex = pos + 1))
+        while (pos >= 0)
         {
             out.append(substring(str, lastindex, pos)).append(with);
+
+            lastindex = pos + 1;
+            pos = str.indexOf(repl, lastindex);
         }
 
         return out.append(substring(str, lastindex, len)).toString();
@@ -396,11 +404,14 @@ public final class StringUtils
     {
         int lastindex = 0;
         int len = repl.length();
-        for (int index = s.indexOf(repl); index >= 0;
-                    index = s.indexOf(repl, lastindex = index + len))
+        int index = s.indexOf(repl);
+        while (index >= 0)
         {
             // we have search string at position index
             out.append(substring(s, lastindex, index)).append(with);
+
+            lastindex = index + len;
+            index = s.indexOf(repl, lastindex);
         }
 
         return out.append(substring(s, lastindex, len));
@@ -417,19 +428,21 @@ public final class StringUtils
      */
     public static String[] splitLongString(String str, char separator)
     {
-        int len;
-        if (str == null || (len = str.length()) == 0)
+        if (str == null || str.length() == 0)
         {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
+        int len = str.length();
 
         int       oldPos = 0;
         ArrayList list = new ArrayList();
-        for (
-            int pos = str.indexOf(separator); pos >= 0;
-                    pos = str.indexOf(separator, (oldPos = (pos + 1))))
+        int pos = str.indexOf(separator);
+        while (pos >= 0)
         {
             list.add(substring(str, oldPos, pos));
+
+            oldPos = (pos + 1);
+            pos = str.indexOf(separator, oldPos);
         }
 
         list.add(substring(str, oldPos, len));
@@ -453,12 +466,12 @@ public final class StringUtils
     public static String[] splitLongString(
         String str, char separator, char quote)
     {
-        int len;
-        if (str == null || (len = str.length()) == 0)
+        if (str == null || str.length() == 0)
         {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
 
+        int len = str.length();
         int       oldPos = 0;
         ArrayList list = new ArrayList();
         for (int pos = 0; pos < len; oldPos = ++pos)
@@ -518,12 +531,12 @@ public final class StringUtils
      */
     public static String[] splitShortString(String str, char separator)
     {
-        int len;
-        if (str == null || (len = str.length()) == 0)
+        if (str == null || str.length() == 0)
         {
-            return org.apache.myfaces.shared.util.ArrayUtils.EMPTY_STRING_ARRAY;
+            return ArrayUtils.EMPTY_STRING_ARRAY;
         }
 
+        int len = str.length();
         int lastTokenIndex = 0;
 
         // Step 1: how many substrings?
@@ -540,11 +553,14 @@ public final class StringUtils
         int      oldPos = 0;
 
         // Step 3: retrieve substrings
-        for (
-            int pos = str.indexOf(separator), i = 0; pos >= 0;
-                    pos = str.indexOf(separator, (oldPos = (pos + 1))))
+        int pos = str.indexOf(separator);
+        int i = 0;
+        while (pos >= 0)
         {
             list[i++] = substring(str, oldPos, pos);
+
+            oldPos = pos + 1;
+            pos = str.indexOf(separator, oldPos);
         }
 
         list[lastTokenIndex] = substring(str, oldPos, len);
@@ -569,11 +585,12 @@ public final class StringUtils
     public static String[] splitShortString(
         String str, char separator, char quote)
     {
-        int len;
-        if (str == null || (len = str.length()) == 0)
+        if (str == null || str.length() == 0)
         {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
+
+        int len = str.length();
 
         // Step 1: how many substrings?
         //      We exchange double scan time for less memory allocation

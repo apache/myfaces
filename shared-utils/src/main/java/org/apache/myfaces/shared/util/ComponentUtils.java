@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.commons.util;
+package org.apache.myfaces.shared.util;
 
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;

@@ -18,36 +18,21 @@
  */
 package org.apache.myfaces.shared.util;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-
-import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
-
 /**
- * @author Mathias Br&ouml;kelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * Extends the existing with a new loading mechanism
+ *
+ * @author Werner Punz
  */
-public final class _ComponentUtils
+public class ClassLoaderExtension
 {
-
-    private _ComponentUtils()
+    /**
+     * standard forName for the loader
+     *
+     * @param name
+     * @return
+     */
+    public Class forName(String name)
     {
-    }
-
-    public static String getStringValue(FacesContext context, ValueBinding vb)
-    {
-        Object value = vb.getValue(context);
-        if (value != null)
-        {
-            return value.toString();
-        }
         return null;
-    }
-
-    public static FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)
-    {
-      return RendererUtils.findNestingForm(uiComponent, facesContext);
     }
 }
