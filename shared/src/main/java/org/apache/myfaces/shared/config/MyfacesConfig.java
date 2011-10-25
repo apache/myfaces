@@ -26,6 +26,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * Holds all configuration init parameters (from web.xml) that are independent
@@ -297,6 +298,15 @@ public class MyfacesConfig
     public final static String INIT_PARAM_DEBUG_PHASE_LISTENER = "org.apache.myfaces.DEBUG_PHASE_LISTENER";
     public final static boolean INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT = false;
     
+    /**
+     * Detect if a target (usually head) should be update for the current view in an ajax render operation. This is activated if a css or js resource
+     * is added dynamically by effect of a refresh (c:if, ui:include src="#{...}" or a manipulation of the tree). This ensures ajax updates of content 
+     * using ui:include will be consistent. 
+     */
+    @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false")
+    public final static String INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX = "org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX";
+    public final static boolean INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT = false;
+    
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -320,6 +330,7 @@ public class MyfacesConfig
     private boolean _wrapScriptContentWithXmlCommentTag;
     private boolean _renderFormSubmitScriptInline;
     private boolean _debugPhaseListenerEnabled;
+    private boolean _strictJsf2RefreshTargetAjax;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -412,6 +423,7 @@ public class MyfacesConfig
         setCheckExtensionsFilter(false);
         setRenderFormSubmitScriptInline(INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT);
         setDebugPhaseListenerEnabled(INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT);
+        setStrictJsf2RefreshTargetAjax(INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx) {
@@ -486,6 +498,9 @@ public class MyfacesConfig
         
         myfacesConfig.setDebugPhaseListenerEnabled(getBooleanInitParameter(extCtx, INIT_PARAM_DEBUG_PHASE_LISTENER,
                 INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT));
+        
+        myfacesConfig.setStrictJsf2RefreshTargetAjax(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX, INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT));
 
         if (TOMAHAWK_AVAILABLE)
         {
@@ -902,5 +917,15 @@ public class MyfacesConfig
     public void setDebugPhaseListenerEnabled(boolean debugPhaseListener)
     {
         this._debugPhaseListenerEnabled = debugPhaseListener;
+    }
+
+    public boolean isStrictJsf2RefreshTargetAjax()
+    {
+        return _strictJsf2RefreshTargetAjax;
+    }
+
+    public void setStrictJsf2RefreshTargetAjax(boolean strictJsf2RefreshTargetAjax)
+    {
+        this._strictJsf2RefreshTargetAjax = strictJsf2RefreshTargetAjax;
     }
 }

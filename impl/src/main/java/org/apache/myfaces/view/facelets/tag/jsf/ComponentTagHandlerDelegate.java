@@ -195,6 +195,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // grab our component
         UIComponent c = null;
         //boolean componentFoundInserted = false;
+
+        //Used to preserve the original parent. Note when the view is being refreshed, the real parent could be
+        //another component.
+        UIComponent oldParent = parent;
         
         if (mctx.isRefreshingTransientBuild())
         {
@@ -335,7 +339,13 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             //{
                 if (mctx.isRefreshingTransientBuild())
                 {
-                    facesContext.setProcessingEvents(false); 
+                    facesContext.setProcessingEvents(false);
+                    if (_relocatableResourceHandler != null &&
+                        parent != null && !parent.equals(c.getParent()))
+                    {
+                        // Replace parent with the relocated parent.
+                        parent = c.getParent();
+                    }
                 }
                 if (facetName == null)
                 {
@@ -414,7 +424,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
         }
         
-        _delegate.onComponentPopulated(ctx, c, parent);
+        _delegate.onComponentPopulated(ctx, c, oldParent);
 
         //if (!componentFoundInserted)
         //{
