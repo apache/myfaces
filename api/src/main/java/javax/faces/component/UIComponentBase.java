@@ -223,18 +223,14 @@ public abstract class UIComponentBase extends UIComponent
             // (h:outputScript, h:outputStylesheet, composite:insertChildren, composite:insertFacet)
             // so we need to check if the component was relocated or not
           
-            // is this all really needed ?
             List<UIComponent> children = component.getChildren();
-            UIComponent child = null;
-            UIComponent currentChild = null;
-            int i = 0;
-            while (i < children.size())
+            for (int i = 0; i < children.size(); i++)
             {
-                child = children.get(i);
-                // Iterate over the same index if the component was removed
-                // This prevents skip components when processing
-                do 
+                // spin on same index while component removed/replaced
+                // to prevent skipping components:
+                while (true)
                 {
+                    UIComponent child = children.get(i);
                     child.pushComponentToEL(context, child);
                     try
                     {
@@ -244,10 +240,12 @@ public abstract class UIComponentBase extends UIComponent
                     {
                         child.popComponentFromEL(context);
                     }
-                    currentChild = child;
+                    if (i < children.size() && children.get(i) != child)
+                    {
+                        continue;
+                    }
+                    break;
                 }
-                while ((i < children.size()) && ((child = children.get(i)) != currentChild) );
-                i++;
             }
         }
         if (component.getFacetCount() > 0)
