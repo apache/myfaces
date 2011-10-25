@@ -67,30 +67,37 @@ import javax.faces.context.ResponseWriter;
  * @version $Revision$ $Date$
  */
 
-public class PartialResponseWriterImpl extends PartialResponseWriter {
+public class PartialResponseWriterImpl extends PartialResponseWriter
+{
 
-    class StackEntry {
+    class StackEntry
+    {
         ResponseWriter writer;
         StringWriter _doubleBuffer;
 
-        StackEntry(ResponseWriter writer, StringWriter doubleBuffer) {
+        StackEntry(ResponseWriter writer, StringWriter doubleBuffer)
+        {
             this.writer = writer;
             _doubleBuffer = doubleBuffer;
         }
 
-        public ResponseWriter getWriter() {
+        public ResponseWriter getWriter()
+        {
             return writer;
         }
 
-        public void setWriter(ResponseWriter writer) {
+        public void setWriter(ResponseWriter writer)
+        {
             this.writer = writer;
         }
 
-        public StringWriter getDoubleBuffer() {
+        public StringWriter getDoubleBuffer()
+        {
             return _doubleBuffer;
         }
 
-        public void setDoubleBuffer(StringWriter doubleBuffer) {
+        public void setDoubleBuffer(StringWriter doubleBuffer)
+        {
             _doubleBuffer = doubleBuffer;
         }
     }
@@ -99,21 +106,27 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     StringWriter _doubleBuffer = null;
     List<StackEntry> _nestingStack = new LinkedList<StackEntry>();
 
-    public PartialResponseWriterImpl(ResponseWriter writer) {
+    public PartialResponseWriterImpl(ResponseWriter writer)
+    {
         super(writer);
     }
 
     @Override
-    public void startCDATA() throws IOException {
-        if (!isDoubleBufferEnabled()) {
+    public void startCDATA() throws IOException
+    {
+        if (!isDoubleBufferEnabled())
+        {
             super.startCDATA();
-        } else {
+        }
+        else
+        {
             _cdataDoubleBufferWriter.write("<![CDATA[");
         }
         openDoubleBuffer();
     }
 
-    private void openDoubleBuffer() {
+    private void openDoubleBuffer()
+    {
         _doubleBuffer = new StringWriter();
         //_cdataDoubleBufferWriter = new HtmlResponseWriterImpl(_doubleBuffer, super.getContentType(), super.getCharacterEncoding());
         _cdataDoubleBufferWriter = getWrapped().cloneWithWriter(_doubleBuffer);
@@ -124,11 +137,15 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     }
 
     @Override
-    public void endCDATA() throws IOException {
+    public void endCDATA() throws IOException
+    {
         closeDoubleBuffer(false);
-        if (isDoubleBufferEnabled()) {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.write("]]>");
-        } else {
+        }
+        else
+        {
             super.endCDATA();
         }
     }
@@ -146,7 +163,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
      *              internal CDATA nesting counter is at the nesting depth 1
      * @throws IOException
      */
-    private void closeDoubleBuffer(boolean force) throws IOException {
+    private void closeDoubleBuffer(boolean force) throws IOException
+    {
         if (!isDoubleBufferEnabled())
         {
             return;
@@ -156,26 +174,34 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
         * to 1 to reach the underlying closing block
         */
 
-        if (force) {
-            while (!_nestingStack.isEmpty()) {
+        if (force)
+        {
+            while (!_nestingStack.isEmpty())
+            {
                 popAndEncodeCurrentStackEntry();
 
             }
-        } else {
+        }
+        else
+        {
             popAndEncodeCurrentStackEntry();
         }
     }
 
-    private void popAndEncodeCurrentStackEntry() throws IOException {
+    private void popAndEncodeCurrentStackEntry() throws IOException
+    {
         StackEntry elem = _nestingStack.remove(0);
         StackEntry parent = (_nestingStack.isEmpty()) ? null : _nestingStack.get(0);
         String result = postProcess(elem);
-        if (parent != null) {
+        if (parent != null)
+        {
             _cdataDoubleBufferWriter = parent.getWriter();
             _doubleBuffer = parent.getDoubleBuffer();
 
             _cdataDoubleBufferWriter.write(result);
-        } else {
+        }
+        else
+        {
             _cdataDoubleBufferWriter = null;
             _doubleBuffer = null;
 
@@ -194,7 +220,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
      * @return the post processed string
      * @throws IOException in case of an error
      */
-    private String postProcess(StackEntry currentElement) throws IOException {
+    private String postProcess(StackEntry currentElement) throws IOException
+    {
 
         currentElement.getWriter().flush();
         StringBuffer buffer = currentElement.getDoubleBuffer().getBuffer();
@@ -204,10 +231,10 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
         {
             do
             {
-                buffer.replace(i, i+3, "]]><![CDATA[]]]]><![CDATA[>");
-                i=i+27; //27 is "]]><![CDATA[]]]]><![CDATA[>".length();
+                buffer.replace(i, i + 3, "]]><![CDATA[]]]]><![CDATA[>");
+                i = i + 27; //27 is "]]><![CDATA[]]]]><![CDATA[>".length();
             }
-            while ( (i = buffer.indexOf("]]>",i)) >= 0 );
+            while ((i = buffer.indexOf("]]>", i)) >= 0);
         }
         return buffer.toString();
         /*
@@ -239,7 +266,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     //--- we need to override ppr specifics to cover the case
 
     @Override
-    public void endInsert() throws IOException {
+    public void endInsert() throws IOException
+    {
         //we use a force close here to fix possible user CDATA corrections
         //under normal conditions the force close just processes the same
         //the underlying close cdata does, but nevertheless
@@ -249,7 +277,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     }
 
     @Override
-    public void endUpdate() throws IOException {
+    public void endUpdate() throws IOException
+    {
         //we use a force close here to fix possible user CDATA corrections
         //under normal conditions the force close just processes the same
         //the underlying close cdata does, but nevertheless
@@ -259,7 +288,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     }
 
     @Override
-    public void endExtension() throws IOException {
+    public void endExtension() throws IOException
+    {
         //we use a force close here to fix possible user CDATA corrections
         //under normal conditions the force close just processes the same
         //the underlying close cdata does, but nevertheless
@@ -269,7 +299,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     }
 
     @Override
-    public void endEval() throws IOException {
+    public void endEval() throws IOException
+    {
         //we use a force close here to fix possible user CDATA corrections
         //under normal conditions the force close just processes the same
         //the underlying close cdata does, but nevertheless
@@ -279,7 +310,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     }
 
     @Override
-    public void endError() throws IOException {
+    public void endError() throws IOException
+    {
         //we use a force close here to fix possible user CDATA corrections
         //under normal conditions the force close just processes the same
         //the underlying close cdata does, but nevertheless
@@ -291,85 +323,117 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     //--- optional delegation method ---
 
     @Override
-    public void endElement(String name) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void endElement(String name) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.endElement(name);
-        } else {
+        }
+        else
+        {
             super.endElement(name);
         }
     }
 
     @Override
-    public void writeComment(Object comment) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void writeComment(Object comment) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.writeComment(comment);
-        } else {
+        }
+        else
+        {
             super.writeComment(comment);
         }
     }
 
-    private boolean isDoubleBufferEnabled() {
+    private boolean isDoubleBufferEnabled()
+    {
         return !_nestingStack.isEmpty();
     }
 
     @Override
-    public void startElement(String name, UIComponent component) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void startElement(String name, UIComponent component) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.startElement(name, component);
-        } else {
+        }
+        else
+        {
             super.startElement(name, component);
         }
     }
 
     @Override
-    public void writeText(Object text, String property) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void writeText(Object text, String property) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.writeText(text, property);
-        } else {
+        }
+        else
+        {
             super.writeText(text, property);
         }
     }
 
     @Override
-    public void writeText(char[] text, int off, int len) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void writeText(char[] text, int off, int len) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.writeText(text, off, len);
-        } else {
+        }
+        else
+        {
             super.writeText(text, off, len);
         }
     }
 
     @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void write(char[] cbuf, int off, int len) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.write(cbuf, off, len);
-        } else {
+        }
+        else
+        {
             super.write(cbuf, off, len);
         }
     }
 
     @Override
-    public ResponseWriter cloneWithWriter(Writer writer) {
+    public ResponseWriter cloneWithWriter(Writer writer)
+    {
         return super.cloneWithWriter(writer);
     }
 
     @Override
-    public void writeURIAttribute(String name, Object value, String property) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void writeURIAttribute(String name, Object value, String property) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.writeURIAttribute(name, value, property);
-        } else {
+        }
+        else
+        {
             super.writeURIAttribute(name, value, property);
         }
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         //in case of a close
         //we have a user error of a final CDATA block
         //we do some error correction here
         //since a close is issued we do not care about
         //a proper closure of the cdata block here anymore
-        if (isDoubleBufferEnabled()) {
+        if (isDoubleBufferEnabled())
+        {
             //we have to properly close all nested cdata stacks
             //end end our cdata block if open
             closeDoubleBuffer(true);
@@ -380,93 +444,131 @@ public class PartialResponseWriterImpl extends PartialResponseWriter {
     }
 
     @Override
-    public void flush() throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void flush() throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.flush();
         }
         super.flush();
     }
 
     @Override
-    public void writeAttribute(String name, Object value, String property) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void writeAttribute(String name, Object value, String property) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.writeAttribute(name, value, property);
-        } else {
+        }
+        else
+        {
             super.writeAttribute(name, value, property);
         }
     }
 
     @Override
-    public void writeText(Object object, UIComponent component, String string) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void writeText(Object object, UIComponent component, String string) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.writeText(object, component, string);
-        } else {
+        }
+        else
+        {
             super.writeText(object, component, string);
         }
     }
 
     @Override
-    public Writer append(char c) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public Writer append(char c) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.append(c);
             return this;
-        } else {
+        }
+        else
+        {
             return super.append(c);
         }
     }
 
     @Override
-    public Writer append(CharSequence csq, int start, int end) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public Writer append(CharSequence csq, int start, int end) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.append(csq, start, end);
             return this;
-        } else {
+        }
+        else
+        {
             return super.append(csq, start, end);
         }
     }
 
     @Override
-    public Writer append(CharSequence csq) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public Writer append(CharSequence csq) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.append(csq);
             return this;
-        } else {
+        }
+        else
+        {
             return super.append(csq);
         }
     }
 
     @Override
-    public void write(char[] cbuf) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void write(char[] cbuf) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.write(cbuf);
-        } else {
+        }
+        else
+        {
             super.write(cbuf);
         }
     }
 
     @Override
-    public void write(int c) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void write(int c) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.write(c);
-        } else {
+        }
+        else
+        {
             super.write(c);
         }
     }
 
     @Override
-    public void write(String str, int off, int len) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void write(String str, int off, int len) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.write(str, off, len);
-        } else {
+        }
+        else
+        {
             super.write(str, off, len);
         }
     }
 
     @Override
-    public void write(String str) throws IOException {
-        if (isDoubleBufferEnabled()) {
+    public void write(String str) throws IOException
+    {
+        if (isDoubleBufferEnabled())
+        {
             _cdataDoubleBufferWriter.write(str);
-        } else {
+        }
+        else
+        {
             super.write(str);
         }
     }

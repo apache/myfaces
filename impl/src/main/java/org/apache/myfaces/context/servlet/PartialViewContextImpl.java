@@ -53,7 +53,8 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 
-public class PartialViewContextImpl extends PartialViewContext {
+public class PartialViewContextImpl extends PartialViewContext
+{
 
     private static final String FACES_REQUEST = "Faces-Request";
     private static final String PARTIAL_AJAX = "partial/ajax";
@@ -87,22 +88,26 @@ public class PartialViewContextImpl extends PartialViewContext {
     private Boolean _renderAll = null;
     private PartialResponseWriter _partialResponseWriter = null;
 
-    public PartialViewContextImpl(FacesContext context) {
+    public PartialViewContextImpl(FacesContext context)
+    {
         _facesContext = context;
     }
 
     @Override
-    public boolean isAjaxRequest() {
+    public boolean isAjaxRequest()
+    {
         assertNotReleased();
         /*
          * Internal extension for
          * https://issues.apache.org/jira/browse/MYFACES-2841
          * will be changed for 2.1 to the official marker
          */
-        if (_iframeRequest == null) {
+        if (_iframeRequest == null)
+        {
             isIFrameRequest();
         }
-        if (_ajaxRequest == null) {
+        if (_ajaxRequest == null)
+        {
             String requestType = _facesContext.getExternalContext().
                     getRequestHeaderMap().get(FACES_REQUEST);
             _ajaxRequest = (requestType != null && PARTIAL_AJAX.equals(requestType));
@@ -112,14 +117,17 @@ public class PartialViewContextImpl extends PartialViewContext {
     }
 
     @Override
-    public boolean isExecuteAll() {
+    public boolean isExecuteAll()
+    {
         assertNotReleased();
 
-        if (isAjaxRequest()) {
+        if (isAjaxRequest())
+        {
             String executeMode = _facesContext.getExternalContext().
                     getRequestParameterMap().get(
                     PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
-            if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode)) {
+            if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
+            {
                 return true;
             }
         }
@@ -127,31 +135,38 @@ public class PartialViewContextImpl extends PartialViewContext {
     }
 
     @Override
-    public boolean isPartialRequest() {
+    public boolean isPartialRequest()
+    {
         assertNotReleased();
 
-        if (_partialRequest == null) {
+        if (_partialRequest == null)
+        {
             String requestType = _facesContext.getExternalContext().
                     getRequestHeaderMap().get(FACES_REQUEST);
             _partialRequest = (requestType != null && PARTIAL_PROCESS.equals(requestType));
         }
-        return isAjaxRequest()  || _partialRequest;
+        return isAjaxRequest() || _partialRequest;
     }
 
     @Override
-    public boolean isRenderAll() {
+    public boolean isRenderAll()
+    {
         assertNotReleased();
 
-        if (_renderAll == null) {
-            if (isAjaxRequest()) {
+        if (_renderAll == null)
+        {
+            if (isAjaxRequest())
+            {
                 String executeMode = _facesContext.getExternalContext().
                         getRequestParameterMap().get(
                         PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
-                if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode)) {
+                if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
+                {
                     _renderAll = true;
                 }
             }
-            if (_renderAll == null) {
+            if (_renderAll == null)
+            {
                 _renderAll = false;
             }
         }
@@ -166,15 +181,18 @@ public class PartialViewContextImpl extends PartialViewContext {
      *
      * @return true if the current request is an iframe based ajax request
      */
-    public boolean isIFrameRequest() {
-        if(_iframeRequest == null) {
+    public boolean isIFrameRequest()
+    {
+        if (_iframeRequest == null)
+        {
             _iframeRequest = _facesContext.getExternalContext().getRequestParameterMap().containsKey(PARTIAL_IFRAME);
         }
         return _iframeRequest;
     }
 
     @Override
-    public void setPartialRequest(boolean isPartialRequest) {
+    public void setPartialRequest(boolean isPartialRequest)
+    {
         assertNotReleased();
 
         _partialRequest = isPartialRequest;
@@ -182,25 +200,29 @@ public class PartialViewContextImpl extends PartialViewContext {
     }
 
     @Override
-    public void setRenderAll(boolean renderAll) {
+    public void setRenderAll(boolean renderAll)
+    {
         assertNotReleased();
 
         _renderAll = renderAll;
     }
 
     @Override
-    public Collection<String> getExecuteIds() {
+    public Collection<String> getExecuteIds()
+    {
         assertNotReleased();
 
-        if (_executeClientIds == null) {
+        if (_executeClientIds == null)
+        {
             String executeMode = _facesContext.getExternalContext().
                     getRequestParameterMap().get(
                     PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
 
             if (executeMode != null && !"".equals(executeMode) &&
                     //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
-                    !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode)) {
-                
+                    !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
+            {
+
                 String[] clientIds = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(executeMode), ' ');
 
                 //The collection must be mutable
@@ -215,35 +237,37 @@ public class PartialViewContextImpl extends PartialViewContext {
                 // The "javax.faces.source" parameter needs to be added to the list of
                 // execute ids if missing (otherwise, we'd never execute an action associated
                 // with, e.g., a button).
-                
+
                 String source = _facesContext.getExternalContext().getRequestParameterMap().get
-                    (PartialViewContextImpl.SOURCE_PARAM_NAME);
-                
+                        (PartialViewContextImpl.SOURCE_PARAM_NAME);
+
                 if (source != null)
                 {
                     source = source.trim();
-                    
-                    if (!tempList.contains (source))
+
+                    if (!tempList.contains(source))
                     {
-                        tempList.add (source);
+                        tempList.add(source);
                     }
                 }
-                
+
                 _executeClientIds = tempList;
-            } else {
+            }
+            else
+            {
                 _executeClientIds = new ArrayList<String>();
             }
         }
         return _executeClientIds;
     }
-    
+
     private String _replaceTabOrEnterCharactersWithSpaces(String mode)
     {
         StringBuilder builder = new StringBuilder(mode.length());
         for (int i = 0; i < mode.length(); i++)
         {
-            if (mode.charAt(i) == '\t' || 
-                mode.charAt(i) == '\n')
+            if (mode.charAt(i) == '\t' ||
+                    mode.charAt(i) == '\n')
             {
                 builder.append(' ');
             }
@@ -256,10 +280,12 @@ public class PartialViewContextImpl extends PartialViewContext {
     }
 
     @Override
-    public Collection<String> getRenderIds() {
+    public Collection<String> getRenderIds()
+    {
         assertNotReleased();
 
-        if (_renderClientIds == null) {
+        if (_renderClientIds == null)
+        {
             String renderMode = _facesContext.getExternalContext().
                     getRequestParameterMap().get(
                     PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
@@ -280,12 +306,14 @@ public class PartialViewContextImpl extends PartialViewContext {
                     }
                 }
                 _renderClientIds = tempList;
-            } else {
+            }
+            else
+            {
                 _renderClientIds = new ArrayList<String>();
-                
-                if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals (renderMode))
+
+                if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode))
                 {
-                    _renderClientIds.add (PartialResponseWriter.RENDER_ALL_MARKER);
+                    _renderClientIds.add(PartialResponseWriter.RENDER_ALL_MARKER);
                 }
             }
         }
@@ -293,9 +321,10 @@ public class PartialViewContextImpl extends PartialViewContext {
     }
 
     @Override
-    public PartialResponseWriter getPartialResponseWriter() {
+    public PartialResponseWriter getPartialResponseWriter()
+    {
         assertNotReleased();
-        
+
         if (_partialResponseWriter == null)
         {
             ResponseWriter responseWriter = _facesContext.getResponseWriter();
@@ -314,7 +343,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                         // so we have to try to calculate the renderKitId and return a 
                         // RenderKit instance, to send the response.
                         String renderKitId = _facesContext.getApplication().getViewHandler().calculateRenderKitId(_facesContext);
-                        RenderKitFactory rkf = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+                        RenderKitFactory rkf = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
                         renderKit = rkf.getRenderKit(_facesContext, renderKitId);
                     }
                     responseWriter = renderKit.createResponseWriter(
@@ -323,7 +352,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                 }
                 catch (IOException e)
                 {
-                    throw new IllegalStateException("Cannot create Partial Response Writer",e);
+                    throw new IllegalStateException("Cannot create Partial Response Writer", e);
                 }
             }
             // It is possible that the RenderKit return a PartialResponseWriter instance when 
@@ -347,28 +376,29 @@ public class PartialViewContextImpl extends PartialViewContext {
      *
      */
     @Override
-    public void processPartial(PhaseId phaseId) {
+    public void processPartial(PhaseId phaseId)
+    {
         assertNotReleased();
 
         UIViewRoot viewRoot = _facesContext.getViewRoot();
 
-        if (phaseId == PhaseId.APPLY_REQUEST_VALUES 
-                || phaseId == PhaseId.PROCESS_VALIDATIONS 
-                || phaseId == PhaseId.UPDATE_MODEL_VALUES) 
+        if (phaseId == PhaseId.APPLY_REQUEST_VALUES
+                || phaseId == PhaseId.PROCESS_VALIDATIONS
+                || phaseId == PhaseId.UPDATE_MODEL_VALUES)
         {
             processPartialExecute(viewRoot, phaseId);
-        } 
-        else if (phaseId == PhaseId.RENDER_RESPONSE) 
+        }
+        else if (phaseId == PhaseId.RENDER_RESPONSE)
         {
             processPartialRendering(viewRoot, phaseId);
         }
     }
 
-    private void processPartialExecute(UIViewRoot viewRoot, PhaseId phaseId) 
+    private void processPartialExecute(UIViewRoot viewRoot, PhaseId phaseId)
     {
         PartialViewContext pvc = _facesContext.getPartialViewContext();
         Collection<String> executeIds = pvc.getExecuteIds();
-        if (executeIds == null || executeIds.isEmpty()) 
+        if (executeIds == null || executeIds.isEmpty())
         {
             return;
         }
@@ -379,12 +409,12 @@ public class PartialViewContextImpl extends PartialViewContext {
         viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
     }
 
-    private void processPartialRendering(UIViewRoot viewRoot, PhaseId phaseId) 
+    private void processPartialRendering(UIViewRoot viewRoot, PhaseId phaseId)
     {
         //TODO process partial rendering
         //https://issues.apache.org/jira/browse/MYFACES-2118
         //Collection<String> renderIds = getRenderIds();
-        
+
         // We need to always update the view state marker when processing partial
         // rendering, because there is no way to check when the state has been changed
         // or not. Anyway, if we return empty response, according to the spec a javascript
@@ -397,7 +427,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         // this could cause problems if PartialResponseWriter is wrapped
         PartialResponseWriter writer = _facesContext.getPartialViewContext().getPartialResponseWriter();
         PartialViewContext pvc = _facesContext.getPartialViewContext();
-        
+
         ResponseWriter oldWriter = _facesContext.getResponseWriter();
         boolean inDocument = false;
 
@@ -412,7 +442,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         //http://support.microsoft.com/kb/234067
         externalContext.addResponseHeader("Expires", "-1");
 
-        try 
+        try
         {
             writer.startDocument();
             inDocument = true;
@@ -431,9 +461,9 @@ public class PartialViewContextImpl extends PartialViewContext {
                     Set<VisitHint> hints = new HashSet<VisitHint>();
                     // unrendered have to be skipped, transient definitely must be added to our list!
                     hints.add(VisitHint.SKIP_UNRENDERED);
-                    
+
                     // render=@all, so output the body.
-                    if (renderIds.contains (PartialResponseWriter.RENDER_ALL_MARKER))
+                    if (renderIds.contains(PartialResponseWriter.RENDER_ALL_MARKER))
                     {
                         processRenderAll(viewRoot, writer);
                     }
@@ -441,7 +471,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                     {
                         List<UIComponent> updatedComponents = null;
                         if (!ExternalContextUtils.isPortlet(_facesContext.getExternalContext()) &&
-                             MyfacesConfig.getCurrentInstance(externalContext).isStrictJsf2RefreshTargetAjax())
+                                MyfacesConfig.getCurrentInstance(externalContext).isStrictJsf2RefreshTargetAjax())
                         {
                             RequestViewContext rvc = RequestViewContext.getCurrentInstance(_facesContext);
                             if (rvc.isRenderTarget("head"))
@@ -506,12 +536,12 @@ public class PartialViewContextImpl extends PartialViewContext {
                     }
                 }
             }
-            
+
             // invoke encodeAll() on every UIViewParameter in the view to 
             // enable every UIViewParameter to save its value in the state
             // just like UIViewRoot.encodeEnd() does on a normal request
             // (see MYFACES-2645 for details)
-            Collection<UIViewParameter> viewParams = ViewMetadata.getViewParameters(viewRoot);    
+            Collection<UIViewParameter> viewParams = ViewMetadata.getViewParameters(viewRoot);
             if (!viewParams.isEmpty())
             {
                 for (UIViewParameter param : viewParams)
@@ -519,7 +549,7 @@ public class PartialViewContextImpl extends PartialViewContext {
                     param.encodeAll(_facesContext);
                 }
             }
-            
+
             //Retrieve the state and apply it if it is not null.
             String viewState = _facesContext.getApplication().getStateManager().getViewState(_facesContext);
             if (viewState != null)
@@ -528,22 +558,32 @@ public class PartialViewContextImpl extends PartialViewContext {
                 writer.write(viewState);
                 writer.endUpdate();
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             Logger log = Logger.getLogger(PartialViewContextImpl.class.getName());
-            if (log.isLoggable(Level.SEVERE)) {
-                log.log(Level.SEVERE, "" , ex);
+            if (log.isLoggable(Level.SEVERE))
+            {
+                log.log(Level.SEVERE, "", ex);
             }
 
-        } finally {
-            try {
-                if (inDocument) {
+        }
+        finally
+        {
+            try
+            {
+                if (inDocument)
+                {
                     writer.endDocument();
                 }
                 writer.flush();
-            } catch (IOException ex) {
+            }
+            catch (IOException ex)
+            {
                 Logger log = Logger.getLogger(PartialViewContextImpl.class.getName());
-                if (log.isLoggable(Level.SEVERE)) {
-                    log.log(Level.SEVERE, "" , ex);
+                if (log.isLoggable(Level.SEVERE))
+                {
+                    log.log(Level.SEVERE, "", ex);
                 }
             }
 
@@ -551,26 +591,26 @@ public class PartialViewContextImpl extends PartialViewContext {
         }
 
     }
-    
+
     private void processRenderAll(UIViewRoot viewRoot, PartialResponseWriter writer) throws IOException
     {
         //java.util.Iterator<UIComponent> iter = viewRoot.getFacetsAndChildren();
-        writer.startUpdate (PartialResponseWriter.RENDER_ALL_MARKER);
+        writer.startUpdate(PartialResponseWriter.RENDER_ALL_MARKER);
         //while (iter.hasNext()) 
         //{ 
-            //UIComponent comp = iter.next();
-            
-            //TODO: Do not check for a specific instance, 
-            //just render all children.
-            //if (comp instanceof javax.faces.component.html.HtmlBody)
-            //{
-                //comp.encodeAll (_facesContext);
-            //}
+        //UIComponent comp = iter.next();
+
+        //TODO: Do not check for a specific instance,
+        //just render all children.
+        //if (comp instanceof javax.faces.component.html.HtmlBody)
+        //{
+        //comp.encodeAll (_facesContext);
+        //}
         //}
         for (int i = 0, childCount = viewRoot.getChildCount(); i < childCount; i++)
         {
             UIComponent comp = viewRoot.getChildren().get(i);
-            comp.encodeAll (_facesContext);
+            comp.encodeAll(_facesContext);
         }
         writer.endUpdate();
     }
@@ -578,14 +618,17 @@ public class PartialViewContextImpl extends PartialViewContext {
     /**
      * has to be thrown in many of the methods if the method is called after the instance has been released!
      */
-    private void assertNotReleased() {
-        if (_released) {
+    private void assertNotReleased()
+    {
+        if (_released)
+        {
             throw new IllegalStateException("Error the FacesContext is already released!");
         }
     }
 
     @Override
-    public void release() {
+    public void release()
+    {
         assertNotReleased();
         _executeClientIds = null;
         _renderClientIds = null;
@@ -595,7 +638,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         _facesContext = null;
         _released = true;
     }
-    
+
     private UIComponent findHeadComponent(UIViewRoot root)
     {
         for (UIComponent child : root.getChildren())
@@ -617,7 +660,7 @@ public class PartialViewContextImpl extends PartialViewContext {
         }
         return null;
     }
-    
+
     private UIComponent findBodyComponent(UIViewRoot root)
     {
         for (UIComponent child : root.getChildren())
@@ -640,34 +683,47 @@ public class PartialViewContextImpl extends PartialViewContext {
         return null;
     }
 
-    private class PhaseAwareVisitCallback implements VisitCallback {
+    private class PhaseAwareVisitCallback implements VisitCallback
+    {
 
         private PhaseId _phaseId;
         private FacesContext _facesContext;
         private List<UIComponent> _alreadyUpdatedComponents;
 
-        public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId) {
+        public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId)
+        {
             this._phaseId = phaseId;
             this._facesContext = facesContext;
             this._alreadyUpdatedComponents = null;
         }
-        
-        public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId, List<UIComponent> alreadyUpdatedComponents) {
+
+        public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId, List<UIComponent> alreadyUpdatedComponents)
+        {
             this._phaseId = phaseId;
             this._facesContext = facesContext;
             this._alreadyUpdatedComponents = alreadyUpdatedComponents;
         }
 
-        public VisitResult visit(VisitContext context, UIComponent target) {
-            if (_phaseId == PhaseId.APPLY_REQUEST_VALUES) {
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (_phaseId == PhaseId.APPLY_REQUEST_VALUES)
+            {
                 target.processDecodes(_facesContext);
-            } else if (_phaseId == PhaseId.PROCESS_VALIDATIONS) {
+            }
+            else if (_phaseId == PhaseId.PROCESS_VALIDATIONS)
+            {
                 target.processValidators(_facesContext);
-            } else if (_phaseId == PhaseId.UPDATE_MODEL_VALUES) {
+            }
+            else if (_phaseId == PhaseId.UPDATE_MODEL_VALUES)
+            {
                 target.processUpdates(_facesContext);
-            } else if (_phaseId == PhaseId.RENDER_RESPONSE) {
+            }
+            else if (_phaseId == PhaseId.RENDER_RESPONSE)
+            {
                 processRenderComponent(target);
-            } else {
+            }
+            else
+            {
                 throw new IllegalStateException("PPR Response, illegale phase called");
             }
 
@@ -682,7 +738,8 @@ public class PartialViewContextImpl extends PartialViewContext {
          *
          * @param target the target component to be handled!
          */
-        private void processRenderComponent(UIComponent target) {
+        private void processRenderComponent(UIComponent target)
+        {
             boolean inUpdate = false;
             PartialResponseWriter writer = (PartialResponseWriter) _facesContext.getResponseWriter();
             if (this._alreadyUpdatedComponents != null)
@@ -698,22 +755,33 @@ public class PartialViewContextImpl extends PartialViewContext {
                     parent = parent.getParent();
                 }
             }
-            try {
+            try
+            {
                 writer.startUpdate(target.getClientId(_facesContext));
                 inUpdate = true;
                 target.encodeAll(_facesContext);
-            } catch (IOException ex) {
+            }
+            catch (IOException ex)
+            {
                 Logger log = Logger.getLogger(PartialViewContextImpl.class.getName());
-                if (log.isLoggable(Level.SEVERE)) {
+                if (log.isLoggable(Level.SEVERE))
+                {
                     log.log(Level.SEVERE, "IOException for rendering component", ex);
                 }
-            } finally {
-                if (inUpdate) {
-                    try {
+            }
+            finally
+            {
+                if (inUpdate)
+                {
+                    try
+                    {
                         writer.endUpdate();
-                    } catch (IOException ex) {
+                    }
+                    catch (IOException ex)
+                    {
                         Logger log = Logger.getLogger(PartialViewContextImpl.class.getName());
-                        if (log.isLoggable(Level.SEVERE)) {
+                        if (log.isLoggable(Level.SEVERE))
+                        {
                             log.log(Level.SEVERE, "IOException for rendering component, stopping update rendering", ex);
                         }
                     }

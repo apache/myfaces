@@ -194,10 +194,12 @@ public class StartupServletContextListener implements ServletContextListener,
      * @param event
      * @param operation
      */
-    private void dispatchInitializationEvent(ServletContextEvent event, int operation) {
+    private void dispatchInitializationEvent(ServletContextEvent event, int operation)
+    {
         String [] pluginEntries = (String []) _servletContext.getAttribute(FACES_INIT_PLUGINS);
 
-        if(pluginEntries == null) {
+        if(pluginEntries == null)
+        {
             String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
             if(plugins == null)
             {
@@ -209,7 +211,8 @@ public class StartupServletContextListener implements ServletContextListener,
         }
 
         //now we process the plugins
-        for(String plugin: pluginEntries) {
+        for(String plugin: pluginEntries)
+        {
             log.info("Processing plugin:"+plugin);
             try {
                 //for now the initializers have to be stateless to
@@ -222,7 +225,8 @@ public class StartupServletContextListener implements ServletContextListener,
                 }
                 StartupListener initializer = (StartupListener) pluginClass.newInstance();
                 
-                switch(operation) {
+                switch(operation)
+                {
                     case FACES_INIT_PHASE_PREINIT:
                         initializer.preInit(event);
                         break;
@@ -238,11 +242,17 @@ public class StartupServletContextListener implements ServletContextListener,
                 }
 
                
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e)
+            {
                 log.log(Level.SEVERE, e.getMessage(), e);
-            } catch (IllegalAccessException e) {
+            }
+            catch (IllegalAccessException e)
+            {
                 log.log(Level.SEVERE, e.getMessage(), e);
-            } catch (InstantiationException e) {
+            }
+            catch (InstantiationException e)
+            {
                 log.log(Level.SEVERE, e.getMessage(), e);
             }
 
