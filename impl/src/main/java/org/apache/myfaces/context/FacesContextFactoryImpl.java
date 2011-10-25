@@ -72,7 +72,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         try
         {
             Class clazz = ClassUtils.classForName("javax.faces.context._MyFacesExternalContextHelper");
-            Field externalContextFirstInstance = clazz.getDeclaredField("_firstInstance");
+            Field externalContextFirstInstance = clazz.getDeclaredField("firstInstance");
             externalContextFirstInstance.setAccessible(true);
             
             if (externalContextFirstInstance != null)
@@ -89,7 +89,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory
             // It could happen, but we can ignore it.
             if (log.isLoggable(Level.FINE))
             {
-                log.log(Level.FINE, "Cannot access field _firstInstance"
+                log.log(Level.FINE, "Cannot access field firstInstance"
                         + "from _MyFacesExternalContextHelper ", e);
             }
         }
@@ -97,7 +97,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         {
             if (log.isLoggable(Level.SEVERE))
             {
-                log.log(Level.SEVERE, "Cannot find field _firstInstance"
+                log.log(Level.SEVERE, "Cannot find field firstInstance"
                         + "from _MyFacesExternalContextHelper ", e);
             }
         }
