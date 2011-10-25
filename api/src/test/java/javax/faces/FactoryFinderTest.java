@@ -86,7 +86,7 @@ public class FactoryFinderTest
         Field field = null;
         for (int i = 0; i < fields.length; i++)
         {
-            if (fields[i].getName().equals("_registeredFactoryNames"))
+            if (fields[i].getName().equals("registeredFactoryNames"))
             {
                 field = fields[i];
                 field.setAccessible(true);
