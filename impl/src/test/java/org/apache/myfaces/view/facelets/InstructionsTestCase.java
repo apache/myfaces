@@ -20,7 +20,6 @@
 package org.apache.myfaces.view.facelets;
 
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.util.FastWriter;

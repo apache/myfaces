@@ -20,8 +20,6 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -32,8 +30,6 @@ import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
-import org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler;
-import org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 

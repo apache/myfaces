@@ -34,8 +34,6 @@ import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
 
 import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.myfaces.util.DebugUtils;
 

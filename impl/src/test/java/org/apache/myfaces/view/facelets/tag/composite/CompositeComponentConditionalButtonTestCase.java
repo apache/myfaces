@@ -23,7 +23,6 @@ import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
-import javax.faces.event.ActionEvent;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.mock.MockExternalContext;

@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.el.MethodExpression;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;

@@ -25,7 +25,6 @@ import javax.faces.component.html.HtmlBody;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.html.HTML;
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.junit.Assert;
 
 /**

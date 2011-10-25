@@ -19,17 +19,8 @@
 package org.apache.myfaces.view.facelets;
 
 import javax.faces.application.StateManager;
-import javax.faces.component.UIViewRoot;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.application.StateManagerImpl;
-import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
-import org.apache.myfaces.shared.util.StateUtils;
-import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
-import org.apache.myfaces.test.mock.MockRenderKit;
-import org.junit.Test;
-import org.testng.Assert;
 
 public class StateManagerWithFaceletsClientSideTest extends StateManagerWithFaceletsTest
 {

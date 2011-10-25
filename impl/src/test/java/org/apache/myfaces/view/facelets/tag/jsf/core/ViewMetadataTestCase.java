@@ -33,8 +33,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.view.ViewMetadata;
 
-import org.apache.myfaces.application.ViewHandlerImpl;
-import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;

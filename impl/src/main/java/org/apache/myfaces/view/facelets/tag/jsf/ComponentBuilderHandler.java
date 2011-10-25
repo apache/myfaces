@@ -18,9 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf;
 
-import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 
 /**

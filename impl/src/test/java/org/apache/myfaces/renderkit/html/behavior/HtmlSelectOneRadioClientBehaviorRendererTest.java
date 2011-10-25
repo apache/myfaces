@@ -24,7 +24,6 @@ import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlSelectOneRadio;
 
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.junit.Assert;
 
 /**

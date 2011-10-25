@@ -21,10 +21,7 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 import java.io.PrintWriter;
 
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Test;

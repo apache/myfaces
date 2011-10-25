@@ -121,6 +121,9 @@ import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
 @SuppressWarnings("deprecation")
 public class FacesConfigurator
 {
+    private final Class<?>[] NO_PARAMETER_TYPES = new Class[]{};
+    private final Object[] NO_PARAMETERS = new Object[]{};
+
     //private static final Log log = LogFactory.getLog(FacesConfigurator.class);
     private static final Logger log = Logger.getLogger(FacesConfigurator.class.getName());
 
@@ -370,8 +373,6 @@ public class FacesConfigurator
 
     private void purgeConfiguration() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
     {
-        final Class<?>[] NO_PARAMETER_TYPES = new Class[]{};
-        final Object[] NO_PARAMETERS = new Object[]{};
 
         Method appFactoryPurgeMethod;
         Method renderKitPurgeMethod;
@@ -557,7 +558,8 @@ public class FacesConfigurator
             {
                 //note here used to be an instantiation to deal with the explicit source type in the registration,
                 // that cannot work because all system events need to have the source being passed in the constructor
-                //instead we now  rely on the standard system event types and map them to their appropriate constructor types
+                //instead we now  rely on the standard system event types and map them to their appropriate
+                // constructor types
                 Class eventClass = ClassUtils.classForName((systemEventListener.getSystemEventClass() != null)
                         ? systemEventListener.getSystemEventClass()
                         : SystemEvent.class.getName());
@@ -940,7 +942,8 @@ public class FacesConfigurator
     private void configureLifecycle()
     {
         // create the lifecycle used by the app
-        LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        LifecycleFactory lifecycleFactory
+                = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
 
         // add phase listeners
@@ -948,7 +951,8 @@ public class FacesConfigurator
         {
             try
             {
-                lifecycle.addPhaseListener((PhaseListener) ClassUtils.newInstance(listenerClassName, PhaseListener.class));
+                lifecycle.addPhaseListener((PhaseListener)
+                        ClassUtils.newInstance(listenerClassName, PhaseListener.class));
             }
             catch (ClassCastException e)
             {

@@ -18,20 +18,13 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.same;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
 
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.FacesTestCase;

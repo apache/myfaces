@@ -33,7 +33,6 @@ import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.utils.MockTestViewHandler;
 
 public class HtmlFormRendererTest extends AbstractJsfTestCase
 {

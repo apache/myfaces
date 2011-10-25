@@ -19,8 +19,6 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.el.MethodExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
@@ -29,8 +27,6 @@ import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.TagAttribute;
-
-import org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule;
 
 public class SimpleComponentTagHandler extends ComponentHandler
 {

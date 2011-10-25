@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.element.Application;
-import org.apache.myfaces.config.element.ConfigOthersSlot;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesConfigNameSlot;
 import org.apache.myfaces.config.element.LocaleConfig;

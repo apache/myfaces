@@ -23,7 +23,6 @@ import java.util.List;
 import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.element.FacesConfigData;
 
 /**
  * This interface provide a way to merge and store all JSF config information retrieved

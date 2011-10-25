@@ -20,7 +20,6 @@ package org.apache.myfaces.renderkit.html.behavior;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputLabel;
-import javax.faces.component.html.HtmlPanelGrid;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.html.HTML;

@@ -24,18 +24,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.event.PreDestroyCustomScopeEvent;
 import javax.faces.event.PreDestroyViewMapEvent;
 import javax.faces.event.ScopeContext;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
-import javax.servlet.ServletContext;
 
 import org.apache.myfaces.config.annotation.LifecycleProvider;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
-import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 
 /**
  * Destroyes managed beans with the current LifecycleProvider.

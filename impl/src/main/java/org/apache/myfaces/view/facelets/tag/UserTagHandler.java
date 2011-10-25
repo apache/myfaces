@@ -40,7 +40,6 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
-import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
 

@@ -26,7 +26,6 @@ import java.io.ObjectOutput;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
-import javax.el.ValueExpression;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;

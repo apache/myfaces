@@ -42,7 +42,6 @@ import javax.faces.view.ViewMetadata;
 import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.shared.util.ExternalContextUtils;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)

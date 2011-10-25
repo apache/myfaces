@@ -22,7 +22,6 @@ package org.apache.myfaces.view.facelets;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.util.FastWriter;

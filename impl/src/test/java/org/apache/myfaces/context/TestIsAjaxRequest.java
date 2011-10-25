@@ -16,7 +16,6 @@
 
 package org.apache.myfaces.context;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.faces.FactoryFinder;

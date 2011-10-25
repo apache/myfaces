@@ -22,13 +22,11 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
@@ -39,7 +37,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;

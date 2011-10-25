@@ -20,9 +20,6 @@ package org.apache.myfaces.renderkit.html.behavior;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlDataTable;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlGraphicImage;
-import javax.faces.component.html.HtmlPanelGrid;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

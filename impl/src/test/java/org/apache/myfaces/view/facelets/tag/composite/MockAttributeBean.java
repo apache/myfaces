@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.faces.component.UIComponent;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;

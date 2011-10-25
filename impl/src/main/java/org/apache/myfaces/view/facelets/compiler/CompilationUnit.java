@@ -29,8 +29,6 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 
-import org.apache.myfaces.view.facelets.tag.CompositeFaceletHandler;
-
 /**
  * 
  * @author Jacob Hookom

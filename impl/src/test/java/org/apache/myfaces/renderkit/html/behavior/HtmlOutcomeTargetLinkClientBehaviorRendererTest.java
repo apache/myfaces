@@ -20,7 +20,6 @@ package org.apache.myfaces.renderkit.html.behavior;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutcomeTargetLink;
-import javax.faces.component.html.HtmlOutputLink;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;

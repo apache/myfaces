@@ -24,7 +24,6 @@ import javax.faces.FacesWrapper;
 import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.element.FacesConfigData;
 
 /**
  * To wrap the default FacesConfigurationProvider, use a constructor like 

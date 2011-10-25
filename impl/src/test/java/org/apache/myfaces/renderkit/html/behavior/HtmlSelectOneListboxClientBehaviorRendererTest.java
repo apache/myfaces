@@ -21,9 +21,6 @@ package org.apache.myfaces.renderkit.html.behavior;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UISelectItem;
 import javax.faces.component.html.HtmlSelectOneListbox;
-import javax.faces.component.html.HtmlSelectOneMenu;
-
-import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

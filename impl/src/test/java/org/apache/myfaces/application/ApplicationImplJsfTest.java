@@ -41,7 +41,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.el.MockVariableMapper;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.apache.myfaces.test.mock.resource.MockResource;
 import org.apache.myfaces.test.mock.resource.MockSimpleResource;
 import org.apache.myfaces.view.facelets.MockFaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;

@@ -20,7 +20,6 @@ package org.apache.myfaces.context;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.faces.application.ResourceDependency;
 import javax.faces.component.UIViewRoot;

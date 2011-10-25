@@ -20,10 +20,6 @@ package org.apache.myfaces.webapp;
 
 import java.util.Enumeration;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PreDestroyCustomScopeEvent;
-import javax.faces.event.PreDestroyViewMapEvent;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextAttributeListener;
@@ -34,15 +30,12 @@ import javax.servlet.ServletRequestAttributeEvent;
 import javax.servlet.ServletRequestAttributeListener;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.myfaces.config.ManagedBeanDestroyer;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.annotation.LifecycleProvider;
 
 /**
  * Listens to

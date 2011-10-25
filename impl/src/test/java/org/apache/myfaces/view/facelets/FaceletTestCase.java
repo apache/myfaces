@@ -52,8 +52,6 @@ import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
-import org.apache.myfaces.test.mock.MockPropertyResolver;
-import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;

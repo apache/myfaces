@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;

@@ -19,7 +19,6 @@
 package org.apache.myfaces.spi;
 
 import java.io.IOException;
-import java.io.ObjectInputStream.GetField;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Map;
