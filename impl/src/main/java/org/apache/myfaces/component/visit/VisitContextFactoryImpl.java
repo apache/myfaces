@@ -30,17 +30,22 @@ import javax.faces.context.FacesContext;
  * @version $Rev$ $Date$ 
  * Implementation of the VisitContextFactory!
  */
-public class VisitContextFactoryImpl extends VisitContextFactory {
+public class VisitContextFactoryImpl extends VisitContextFactory
+{
 
     public VisitContextFactoryImpl()
     {
     }
 
     @Override
-    public VisitContext getVisitContext(FacesContext context, Collection<String> ids, Set<VisitHint> hints) {
-        if (ids == null || ids.isEmpty()) {
+    public VisitContext getVisitContext(FacesContext context, Collection<String> ids, Set<VisitHint> hints)
+    {
+        if (ids == null || ids.isEmpty())
+        {
             return new FullVisitContext(context, hints);
-        } else {
+        }
+        else
+        {
             return new PartialVisitContext(context, ids, hints);
         }
     }

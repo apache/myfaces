@@ -43,7 +43,9 @@ public class TomcatAnnotationLifecycleProvider implements
 
 
     public Object newInstance(String className)
-            throws InstantiationException, IllegalAccessException, InvocationTargetException, NamingException, ClassNotFoundException {
+            throws InstantiationException, IllegalAccessException, InvocationTargetException,
+            NamingException, ClassNotFoundException
+    {
         Class<?> clazz = ClassUtils.classForName(className);
         log.info("Creating instance of " + className);
         Object object = clazz.newInstance();
@@ -66,7 +68,9 @@ public class TomcatAnnotationLifecycleProvider implements
             annotationProcessor =  (org.apache.AnnotationProcessor) ((ServletContext)
                      externalContext.getContext()).getAttribute(org.apache.AnnotationProcessor.class.getName());
             return annotationProcessor != null;
-        } catch (Throwable e) {
+        }
+        catch (Throwable e)
+        {
             // ignore
         }
         return false;

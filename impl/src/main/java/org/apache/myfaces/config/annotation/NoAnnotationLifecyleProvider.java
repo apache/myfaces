@@ -31,7 +31,8 @@ public class NoAnnotationLifecyleProvider implements LifecycleProvider2
 
     }
 
-    public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
+    public Object newInstance(String className)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
     {
         return ClassUtils.classForName(className).newInstance();
     }

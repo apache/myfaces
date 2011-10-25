@@ -18,20 +18,8 @@
  */
 package org.apache.myfaces.config;
 
-import java.util.Collection;
-
-import javax.el.ELResolver;
-
-import org.apache.myfaces.config.element.Behavior;
-import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.FacesConfigData;
-import org.apache.myfaces.config.element.ManagedBean;
-import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.config.element.Renderer;
-import org.apache.myfaces.config.element.Converter;
-import org.apache.myfaces.config.element.NamedEvent;
-import org.apache.myfaces.config.element.ResourceBundle;
-import org.apache.myfaces.config.element.SystemEventListener;
+
 
 /**
  * Subsumes several unmarshalled faces config objects and presents a simple interface

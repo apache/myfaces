@@ -23,7 +23,6 @@ import java.io.Serializable;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 
-import org.apache.myfaces.config.element.ListEntries;
 
 
 /**
@@ -34,7 +33,8 @@ import org.apache.myfaces.config.element.ListEntries;
  */
 public abstract class ManagedProperty implements Serializable
 {
-    // <!ELEMENT managed-property (description*, display-name*, icon*, property-name, property-class?, (map-entries|null-value|value|list-entries))>
+    // <!ELEMENT managed-property (description*, display-name*, icon*,
+    // property-name, property-class?, (map-entries|null-value|value|list-entries))>
 
     public static final int TYPE_UNKNOWN = 0;
     public static final int TYPE_MAP = 1;

@@ -154,26 +154,32 @@ public class ConfigFilesXmlValidationUtils
         {
             if ("http://www.w3.org/TR/REC-xml".equals(type) && "datatypes.dtd".equals(systemId))
             {
-                return new LSInputImpl(publicId, systemId, baseURI, ClassUtils.getResourceAsStream("org/apache/myfaces/resource/datatypes.dtd"));
+                return new LSInputImpl(publicId, systemId, baseURI,
+                        ClassUtils.getResourceAsStream("org/apache/myfaces/resource/datatypes.dtd"));
             }
             if ("-//W3C//DTD XMLSCHEMA 200102//EN".equals(publicId) && "XMLSchema.dtd".equals(systemId))
             {
-                return new LSInputImpl(publicId, systemId, baseURI, ClassUtils.getResourceAsStream("org/apache/myfaces/resource/XMLSchema.dtd"));
+                return new LSInputImpl(publicId, systemId, baseURI,
+                        ClassUtils.getResourceAsStream("org/apache/myfaces/resource/XMLSchema.dtd"));
             }
             if ("http://java.sun.com/xml/ns/javaee".equals(namespaceURI))
             {
                 if ("javaee_5.xsd".equals(systemId))
                 {
-                    return new LSInputImpl(publicId, systemId, baseURI, ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_5.xsd"));
+                    return new LSInputImpl(publicId, systemId, baseURI,
+                            ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_5.xsd"));
                 }
                 else if ("javaee_web_services_client_1_2.xsd".equals(systemId))
                 {
-                    return new LSInputImpl(publicId, systemId, baseURI, ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_web_services_client_1_2.xsd"));
+                    return new LSInputImpl(publicId, systemId, baseURI,
+                            ClassUtils.getResourceAsStream(
+                                    "org/apache/myfaces/resource/javaee_web_services_client_1_2.xsd"));
                 }
             }
             if ("http://www.w3.org/XML/1998/namespace".equals(namespaceURI))
             {
-                return new LSInputImpl(publicId, systemId, baseURI, ClassUtils.getResourceAsStream("org/apache/myfaces/resource/xml.xsd")); 
+                return new LSInputImpl(publicId, systemId, baseURI,
+                        ClassUtils.getResourceAsStream("org/apache/myfaces/resource/xml.xsd"));
             }
             return null;
         }
@@ -226,7 +232,9 @@ public class ConfigFilesXmlValidationUtils
 
     private static Source getFacesConfigSchemaFileAsSource(ExternalContext externalContext, String version)
     {
-        String xmlSchema = "1.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_12 : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 : FACES_CONFIG_SCHEMA_PATH_21) ; 
+        String xmlSchema = "1.2".equals(version)
+                            ? FACES_CONFIG_SCHEMA_PATH_12
+                            : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 : FACES_CONFIG_SCHEMA_PATH_21);
         
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
         
@@ -235,7 +243,8 @@ public class ConfigFilesXmlValidationUtils
            stream = externalContext.getResourceAsStream(xmlSchema);
         }
 
-        if (stream == null) {
+        if (stream == null)
+        {
             return null;
         }
         
@@ -396,7 +405,8 @@ public class ConfigFilesXmlValidationUtils
            stream = externalContext.getResourceAsStream(FACES_TAGLIB_SCHEMA_PATH);
         }
     
-        if (stream == null) {
+        if (stream == null)
+        {
             return null;
         }
         
@@ -501,7 +511,9 @@ public class ConfigFilesXmlValidationUtils
                 for (int i = 0; i < length; i++)
                 {
                     String attrName = attributes.getLocalName(i);
-                    attrName = (attrName != null) ? ( (attrName.length() > 0) ? attrName : attributes.getQName(i)) : attributes.getQName(i);
+                    attrName = (attrName != null)
+                            ? ( (attrName.length() > 0) ? attrName : attributes.getQName(i))
+                            : attributes.getQName(i);
                     if (attrName.equals ("version"))
                     {
                         // This document has a "version" attribute in the <facelet-taglib> element, so
@@ -513,7 +525,7 @@ public class ConfigFilesXmlValidationUtils
                 
                 // Throw a dummy parsing exception to terminate parsing as there really isn't any need to go any
                 // further.
-                // -= Leonardo Uribe =- THIS IS NOT GOOD PRACTICE! It is better to let the checker continue that                
+                // -= Leonardo Uribe =- THIS IS NOT GOOD PRACTICE! It is better to let the checker continue that
                 // throw an exception, and run this one only when project stage != production.
                 //throw new SAXException();
             }

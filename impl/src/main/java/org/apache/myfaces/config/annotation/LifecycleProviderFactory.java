@@ -28,7 +28,9 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 
-public abstract class LifecycleProviderFactory {
+
+public abstract class LifecycleProviderFactory
+{
     protected static final String FACTORY_DEFAULT = DefaultLifecycleProviderFactory.class.getName();
 
     private static final String FACTORY_KEY = LifecycleProviderFactory.class.getName();
@@ -53,7 +55,8 @@ public abstract class LifecycleProviderFactory {
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx; 
-                lpf = (LifecycleProviderFactory) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
+                lpf = (LifecycleProviderFactory)
+                        AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
                         {
                             public Object run() throws PrivilegedActionException
                             {
@@ -76,7 +79,8 @@ public abstract class LifecycleProviderFactory {
     }
 
 
-    public static void setLifecycleProviderFactory(LifecycleProviderFactory instance) {
+    public static void setLifecycleProviderFactory(LifecycleProviderFactory instance)
+    {
         FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put(FACTORY_KEY, instance);
     }
 

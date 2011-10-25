@@ -30,7 +30,8 @@ import javax.faces.context.FacesContext;
  */
 public abstract class ManagedBean implements Serializable
 {
-    // <!ELEMENT managed-bean (description*, display-name*, icon*, managed-bean-name, managed-bean-class, managed-bean-scope, (managed-property* | map-entries | list-entries))>
+    // <!ELEMENT managed-bean (description*, display-name*, icon*, managed-bean-name, managed-bean-class,
+    // managed-bean-scope, (managed-property* | map-entries | list-entries))>
 
     public static final int INIT_MODE_NO_INIT = 0;
     public static final int INIT_MODE_PROPERTIES = 1;

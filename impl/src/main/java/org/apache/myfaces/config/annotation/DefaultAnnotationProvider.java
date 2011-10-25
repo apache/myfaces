@@ -120,7 +120,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         byteCodeAnnotationsNames = Collections.unmodifiableSet(bcan);
     }
     
-    private static Set<Class<? extends Annotation>> JSF_ANNOTATION_CLASSES;
+    private static final Set<Class<? extends Annotation>> JSF_ANNOTATION_CLASSES;
     
     static
     {
@@ -166,7 +166,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         //2. Scan for annotations on classpath
         try
         {
-            AnnotationProvider provider = AnnotationProviderFactory.getAnnotationProviderFactory(ctx).getAnnotationProvider(ctx);
+            AnnotationProvider provider
+                    = AnnotationProviderFactory.getAnnotationProviderFactory(ctx).getAnnotationProvider(ctx);
             classes = getAnnotatedMetaInfClasses(ctx, provider.getBaseUrls());
         }
         catch (IOException e)
@@ -417,11 +418,11 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                 }
                 catch (NoClassDefFoundError e)
                 {
-                    ; // Skip this class - we cannot analyze classes we cannot load
+                    // Skip this class - we cannot analyze classes we cannot load
                 }
                 catch (Exception e)
                 {
-                    ; // Skip this class - we cannot analyze classes we cannot load
+                    // Skip this class - we cannot analyze classes we cannot load
                 }
                 if (clazz != null)
                 {
@@ -559,11 +560,11 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                         }
                         catch (NoClassDefFoundError e)
                         {
-                            ; // Skip this class - we cannot analyze classes we cannot load
+                            // Skip this class - we cannot analyze classes we cannot load
                         }
                         catch (Exception e)
                         {
-                            ; // Skip this class - we cannot analyze classes we cannot load
+                            // Skip this class - we cannot analyze classes we cannot load
                         }
                         if (clazz != null)
                         {

@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.el.ELResolver;
 
 
 /**
@@ -164,7 +163,8 @@ public abstract class FacesConfigData implements Serializable
     public abstract Collection<String> getRenderKitClasses(String renderKitId);
 
     /**
-     * @return Iterator over {@link org.apache.myfaces.config.element.ClientBehaviorRenderer ClientBehaviorRenderer}s for the given renderKitId
+     * @return Iterator over {@link org.apache.myfaces.config.element.ClientBehaviorRenderer ClientBehaviorRenderer}s
+     *         for the given renderKitId
      */
     public abstract Collection<ClientBehaviorRenderer> getClientBehaviorRenderers (String renderKitId);
     
@@ -185,7 +185,7 @@ public abstract class FacesConfigData implements Serializable
     public abstract Collection<ResourceBundle> getResourceBundles();
 
     /**
-     * @return Iterator over {@link ELResolver} implementation class names
+     * @return Iterator over {@link javax.el.ELResolver} implementation class names
      */
     public abstract Collection<String> getElResolvers();
     

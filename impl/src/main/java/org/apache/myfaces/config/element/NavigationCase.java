@@ -30,7 +30,8 @@ import java.io.Serializable;
  */
 public abstract class NavigationCase implements Serializable
 {
-    // <!ELEMENT navigation-case (description*, display-name*, icon*, from-action?, from-outcome?, to-view-id, redirect?)>
+    // <!ELEMENT navigation-case (description*, display-name*, icon*, from-action?,
+    // from-outcome?, to-view-id, redirect?)>
 
     public abstract String getFromAction();
     public abstract String getFromOutcome();

@@ -39,7 +39,8 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
 
 
     public Object newInstance(String className)
-           throws InstantiationException, IllegalAccessException, NamingException, InvocationTargetException, ClassNotFoundException
+           throws InstantiationException, IllegalAccessException, NamingException,
+            InvocationTargetException, ClassNotFoundException
     {
         Class clazz = ClassUtils.classForName(className);
         Object object = clazz.newInstance();

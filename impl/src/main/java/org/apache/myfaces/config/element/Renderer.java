@@ -26,7 +26,8 @@ import java.io.Serializable;
  */
 public abstract class Renderer implements Serializable
 {
-    // <!ELEMENT renderer (description*, display-name*, icon*, component-family, renderer-type, renderer-class, attribute*, renderer-extension*)>
+    // <!ELEMENT renderer (description*, display-name*, icon*, component-family,
+    // renderer-type, renderer-class, attribute*, renderer-extension*)>
 
     public abstract String getComponentFamily();
     public abstract String getRendererType();
