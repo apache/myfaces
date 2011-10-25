@@ -44,11 +44,11 @@ class _LocaleUtils
 {
 
     /** Concurrent map of language locales by country. */
-    private static ConcurrentMap<String, List<Locale>> languagesByCountry =
+    private static final ConcurrentMap<String, List<Locale>> languagesByCountry =
             new ConcurrentHashMap<String, List<Locale>>();
 
     /** Concurrent map of country locales by language. */
-    private static ConcurrentMap<String, List<Locale>> countriesByLanguage =
+    private static final ConcurrentMap<String, List<Locale>> countriesByLanguage =
             new ConcurrentHashMap<String, List<Locale>>();
 
     /**
@@ -331,9 +331,9 @@ class _LocaleUtils
     static class SyncAvoid
     {
         /** Unmodifiable list of available locales. */
-        private static final List<Locale> AVAILABLE_LOCALE_LIST;
+        private static List<Locale> AVAILABLE_LOCALE_LIST;
         /** Unmodifiable set of available locales. */
-        private static final Set<Locale> AVAILABLE_LOCALE_SET;
+        private static Set<Locale> AVAILABLE_LOCALE_SET;
 
         static
         {

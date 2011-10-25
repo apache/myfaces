@@ -314,7 +314,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             throw new NullPointerException();
         }
         
-        String baseClientId = getClientId(context);
+        final String baseClientId = getClientId(context);
 
         // searching for this component?
         boolean returnValue = baseClientId.equals(clientId);
@@ -1581,7 +1581,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             FacesEvent originalEvent = ((FacesEventWrapper) event).getWrappedFacesEvent();
             int eventRowIndex = ((FacesEventWrapper) event).getRowIndex();
-            int currentRowIndex = getRowIndex();
+            final int currentRowIndex = getRowIndex();
             UIComponent source = originalEvent.getComponent();
             UIComponent compositeParent = UIComponent.getCompositeComponentParent(source);
 
