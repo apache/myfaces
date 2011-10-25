@@ -99,14 +99,16 @@ public class FacesConfigEntityResolver
             }
             else
             {
-                if (systemId.startsWith("file:")) {
+                if (systemId.startsWith("file:"))
+                {
                     systemId = systemId.substring(7); // remove file://
                 }
                 stream = _externalContext.getResourceAsStream(systemId);
             }
         }
 
-        if (stream == null) {
+        if (stream == null)
+        {
             return null;
         }
         InputSource is = new InputSource(stream);

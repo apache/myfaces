@@ -80,7 +80,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     
             _isErrorPagePresent = webConfigProvider.isErrorPagePresent(facesContext.getExternalContext());
             _useMyFacesErrorHandling = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    ErrorPageWriter.ERROR_HANDLING_PARAMETER, facesContext.isProjectStage(ProjectStage.Development) ? true : false);
+                    ErrorPageWriter.ERROR_HANDLING_PARAMETER, facesContext.isProjectStage(ProjectStage.Development));
             _inited = true;
         }
     }
@@ -98,7 +98,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     
             _isErrorPagePresent = webConfigProvider.isErrorPagePresent(facesContext.getExternalContext());
             _useMyFacesErrorHandling = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    ErrorPageWriter.ERROR_HANDLING_PARAMETER, facesContext.isProjectStage(ProjectStage.Development) ? true : false);
+                    ErrorPageWriter.ERROR_HANDLING_PARAMETER, facesContext.isProjectStage(ProjectStage.Development));
             _inited = true;
         }
     }
@@ -199,7 +199,8 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
             {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
                 // save current view in the request map to access it on the error page
-                facesContext.getExternalContext().getRequestMap().put(ErrorPageWriter.VIEW_KEY, facesContext.getViewRoot());
+                facesContext.getExternalContext().getRequestMap().put(ErrorPageWriter.VIEW_KEY,
+                                                                      facesContext.getViewRoot());
             }
             try
             {
@@ -301,7 +302,8 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                 }
                 else if (throwableList.size() > 1)
                 {
-                    ErrorPageWriter.handle(facesContext, components, throwableList.toArray(new Throwable[throwableList.size()]));
+                    ErrorPageWriter.handle(facesContext, components,
+                                           throwableList.toArray(new Throwable[throwableList.size()]));
                 }
             }
         }

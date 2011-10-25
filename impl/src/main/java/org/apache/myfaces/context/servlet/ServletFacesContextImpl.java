@@ -25,7 +25,8 @@ import javax.servlet.ServletResponse;
 @Deprecated
 public final class ServletFacesContextImpl extends FacesContextImpl
 {
-    public ServletFacesContextImpl(ServletContext servletContext, ServletRequest servletRequest, ServletResponse servletResponse)
+    public ServletFacesContextImpl(ServletContext servletContext, ServletRequest servletRequest,
+                                   ServletResponse servletResponse)
     {
         super(servletContext, servletRequest, servletResponse);
     }

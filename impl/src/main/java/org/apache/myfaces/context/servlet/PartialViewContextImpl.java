@@ -214,7 +214,8 @@ public class PartialViewContextImpl extends PartialViewContext
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
             {
 
-                String[] clientIds = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(executeMode), ' ');
+                String[] clientIds
+                        = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(executeMode), ' ');
 
                 //The collection must be mutable
                 List<String> tempList = new ArrayList<String>();
@@ -285,7 +286,8 @@ public class PartialViewContextImpl extends PartialViewContext
                     //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode))
             {
-                String[] clientIds = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(renderMode), ' ');
+                String[] clientIds
+                        = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(renderMode), ' ');
 
                 //The collection must be mutable
                 List<String> tempList = new ArrayList<String>();
@@ -333,8 +335,10 @@ public class PartialViewContextImpl extends PartialViewContext
                         // renderKitId on that view, this could be still an ajax redirect,
                         // so we have to try to calculate the renderKitId and return a 
                         // RenderKit instance, to send the response.
-                        String renderKitId = _facesContext.getApplication().getViewHandler().calculateRenderKitId(_facesContext);
-                        RenderKitFactory rkf = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+                        String renderKitId
+                                = _facesContext.getApplication().getViewHandler().calculateRenderKitId(_facesContext);
+                        RenderKitFactory rkf
+                                = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
                         renderKit = rkf.getRenderKit(_facesContext, renderKitId);
                     }
                     responseWriter = renderKit.createResponseWriter(
@@ -498,7 +502,8 @@ public class PartialViewContextImpl extends PartialViewContext
                         }
 
                         VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
-                        viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId, updatedComponents));
+                        viewRoot.visitTree(visitCtx,
+                                           new PhaseAwareVisitCallback(_facesContext, phaseId, updatedComponents));
                     }
                 }
                 else if (!ExternalContextUtils.isPortlet(_facesContext.getExternalContext()) &&
@@ -688,7 +693,8 @@ public class PartialViewContextImpl extends PartialViewContext
             this._alreadyUpdatedComponents = null;
         }
 
-        public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId, List<UIComponent> alreadyUpdatedComponents)
+        public PhaseAwareVisitCallback(FacesContext facesContext, PhaseId phaseId,
+                                       List<UIComponent> alreadyUpdatedComponents)
         {
             this._phaseId = phaseId;
             this._facesContext = facesContext;

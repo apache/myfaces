@@ -240,7 +240,8 @@ public abstract class FacesContextImplBase extends FacesContext
         {
             throw new NullPointerException("viewRoot");
         }
-        // If the current UIViewRoot is non-null, and calling equals() on the argument root, passing the current UIViewRoot returns false
+        // If the current UIViewRoot is non-null, and calling equals() on the argument root,
+        // passing the current UIViewRoot returns false
         // the clear method must be called on the Map returned from UIViewRoot.getViewMap().
         if (_viewRoot != null && !_viewRoot.equals(viewRoot))
         {

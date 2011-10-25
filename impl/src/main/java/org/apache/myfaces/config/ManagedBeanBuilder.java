@@ -77,7 +77,8 @@ public class ManagedBeanBuilder
      * REQUEST VIEW SESSION APPLICATION NONE
      * @author Jakob Korherr
      */
-    private final static Comparator<String> scopeComparator = new Comparator<String>()
+    private final static Comparator<String> scopeComparator
+            = new Comparator<String>()
     {
 
         public int compare(String o1, String o2)
@@ -167,7 +168,8 @@ public class ManagedBeanBuilder
                                 e.getMessage()
                                         + " for bean '"
                                         + beanConfiguration.getManagedBeanName()
-                                        + "' check the configuration to make sure all properties correspond with get/set methods", e);
+                                        + "' check the configuration to make sure all properties "
+                                        + "correspond with get/set methods", e);
                     }
                     break;
 
@@ -697,7 +699,8 @@ public class ManagedBeanBuilder
                 Object value = entry.getValue();
                 if (ContainerUtils.isValueReference((String) value))
                 {
-                    ValueExpression valueExpression = expFactory.createValueExpression(elContext, (String) value, Object.class);
+                    ValueExpression valueExpression = expFactory.createValueExpression(elContext, (String) value,
+                                                                                       Object.class);
                     value = valueExpression.getValue(elContext);
                 }
                 

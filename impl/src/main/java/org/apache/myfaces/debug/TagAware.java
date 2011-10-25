@@ -27,7 +27,8 @@ import javax.faces.view.facelets.Tag;
  * 
  * @see Tag
  */
-public interface TagAware {
+public interface TagAware
+{
 
     Tag getTag();
 

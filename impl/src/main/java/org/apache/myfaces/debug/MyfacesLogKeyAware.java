@@ -27,7 +27,8 @@ import org.apache.myfaces.logging.MyfacesLogKey;
  * 
  * @see MyfacesLogKey
  */
-public interface MyfacesLogKeyAware {
+public interface MyfacesLogKeyAware
+{
 
     MyfacesLogKey getMyfacesLogKey();
 

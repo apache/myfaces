@@ -175,7 +175,8 @@ public class RuntimeConfig
     
     public org.apache.myfaces.config.element.Converter getConverterConfiguration(String converterClassName)
     {
-        return (org.apache.myfaces.config.element.Converter)_converterClassNameToConfigurationMap.get(converterClassName);
+        return (org.apache.myfaces.config.element.Converter)
+                _converterClassNameToConfigurationMap.get(converterClassName);
     }
     
     private void checkNull(final Object param, final String paramName)

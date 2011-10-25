@@ -157,11 +157,13 @@ public class FacesContextFactoryImpl extends FacesContextFactory
             FacesContext facesContext;
             if (externalContext instanceof ReleaseableExternalContext)
             {
-                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) externalContext, this);
+                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) externalContext,
+                                                    this);
             }
             else if (defaultExternalContext != null && defaultExternalContext instanceof ReleaseableExternalContext)
             {
-                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) defaultExternalContext, this);
+                facesContext = new FacesContextImpl(externalContext,
+                                                    (ReleaseableExternalContext) defaultExternalContext, this);
             }
             else
             {

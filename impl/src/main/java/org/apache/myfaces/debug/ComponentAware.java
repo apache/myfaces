@@ -25,7 +25,8 @@ import javax.faces.component.UIComponent;
  * 
  * @author martinkoci
  */
-public interface ComponentAware {
+public interface ComponentAware
+{
     
     UIComponent getComponent();
 

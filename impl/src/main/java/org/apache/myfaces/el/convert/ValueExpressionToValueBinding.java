@@ -34,7 +34,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
  * ATTENTION: If you make changes to this class, treat javax.faces.component.ValueExpressionToValueBinding accordingly.
  * 
  * @author Stan Silvert
- * @see javax.faces.component.ValueExpressionToValueBinding
+ * @see ValueExpressionToValueBinding
  */
 @SuppressWarnings("deprecation")
 public class ValueExpressionToValueBinding extends ValueBinding implements StateHolder
@@ -212,7 +212,8 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
             else
             {
                 Object[] stateArray = (Object[]) state;
-                _valueExpression = (ValueExpression) ClassUtils.newInstance((String) stateArray[0], ValueExpression.class);
+                _valueExpression
+                        = (ValueExpression) ClassUtils.newInstance((String) stateArray[0], ValueExpression.class);
                 ((StateHolder) _valueExpression).restoreState(facesContext, stateArray[1]);
             }
         }

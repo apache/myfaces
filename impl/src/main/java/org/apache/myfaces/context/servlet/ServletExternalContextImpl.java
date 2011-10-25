@@ -747,12 +747,15 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 ArrayList<String> value = new ArrayList<String>(1);
                 try
                 {
-                    value.add(currentPair.length > 1 ? URLDecoder.decode(currentPair[1], getResponseCharacterEncoding()) : "");
+                    value.add(currentPair.length > 1
+                                ? URLDecoder.decode(currentPair[1], getResponseCharacterEncoding())
+                                : "");
                 }
                 catch (UnsupportedEncodingException e)
                 {
                     //shouldn't ever get here
-                    throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding() + " not supported", e);
+                    throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding()
+                                                            + " not supported", e);
                 }
                 paramMap.put(currentPair[0], value);
             }
@@ -800,7 +803,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     catch (UnsupportedEncodingException e)
                     {
                         //shouldn't ever get here
-                        throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding() + " not supported", e);
+                        throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding()
+                                                                + " not supported", e);
                     }
                 }
             }

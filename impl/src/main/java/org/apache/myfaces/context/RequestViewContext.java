@@ -56,7 +56,8 @@ public class RequestViewContext
     @SuppressWarnings("unchecked")
     static public RequestViewContext getCurrentInstance(FacesContext ctx, UIViewRoot root)
     {
-        Map<UIViewRoot, RequestViewContext> map = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
+        Map<UIViewRoot, RequestViewContext> map
+                = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
         RequestViewContext rvc = null;        
         if (map == null)
         {

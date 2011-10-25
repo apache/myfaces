@@ -34,7 +34,8 @@ import javax.faces.event.PreValidateEvent;
  * annotated with @NamedEvent.
  */
 
-public class NamedEventManager {
+public class NamedEventManager
+{
     //private static final NamedEventManager instance = new NamedEventManager();
     
     private HashMap<String, Collection<Class<? extends ComponentSystemEvent>>> events;
@@ -72,13 +73,15 @@ public class NamedEventManager {
         
         // Per the spec, if the short name is missing, generate one.
         
-        if (shortName == null) {
+        if (shortName == null)
+        {
             key = getFixedName (cls);
         }
         
         eventList = events.get (key);
         
-        if (eventList == null) {
+        if (eventList == null)
+        {
             // First event registered to this short name.
             
             eventList = new LinkedList<Class<? extends ComponentSystemEvent>>();
@@ -120,13 +123,15 @@ public class NamedEventManager {
         
         // Strip the trailing "event" off the class name if present.
         
-        if (className.toLowerCase().endsWith ("event")) {
+        if (className.toLowerCase().endsWith ("event"))
+        {
             className = className.substring (0, result.length() - 5);
         }
         
         // Prepend the package name.
         
-        if (cls.getPackage() != null) {
+        if (cls.getPackage() != null)
+        {
             result.append (cls.getPackage().getName());
             result.append ('.');
         }

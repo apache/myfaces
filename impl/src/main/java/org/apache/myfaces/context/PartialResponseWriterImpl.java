@@ -128,7 +128,6 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     private void openDoubleBuffer()
     {
         _doubleBuffer = new StringWriter();
-        //_cdataDoubleBufferWriter = new HtmlResponseWriterImpl(_doubleBuffer, super.getContentType(), super.getCharacterEncoding());
         _cdataDoubleBufferWriter = getWrapped().cloneWithWriter(_doubleBuffer);
 
         StackEntry entry = new StackEntry(_cdataDoubleBufferWriter, _doubleBuffer);
@@ -237,30 +236,6 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
             while ((i = buffer.indexOf("]]>", i)) >= 0);
         }
         return buffer.toString();
-        /*
-        String resultString = buffer.toString();
-        //section http://www.w3.org/TR/REC-xml/#sec-cdata-sect everything is parsed
-        //until it hits a ]]> hence we need to do some mapping here
-
-        //ok since our maximum string size is Integer.MAX_VALUE (most JVMs use char [] as
-        //representations
-        //we can work on strings directly, instead of having to go through streams
-        //it is absolutely unlikely that we will ever have a buffered stream bigger than that
-        //for our writer!
-        if (resultString.contains("]]>")) {
-
-            //we now first remove pending javascript CDATA blocks
-            //the reason is if we leave them the ppr chokes on them
-            //the syntax from the auto generated CDATA usually is //\s+<![CDATA[
-            // -= Leonardo Uribe =- Do this cause a bug on the client side, because
-            // scripts containing '&' will be considered invalid xml. 
-            //resultString = resultString.replaceAll("//\\s*((\\<\\!\\[CDATA\\[)|(\\]\\]\\>))", "");
-
-            //now to fullfill the xml spec we have to replace all ]] with blocks of cdata
-            resultString = resultString.replaceAll("\\]\\]\\>", "]]><![CDATA[]]]]><![CDATA[>");
-        }
-        return resultString;
-        */
     }
 
     //--- we need to override ppr specifics to cover the case

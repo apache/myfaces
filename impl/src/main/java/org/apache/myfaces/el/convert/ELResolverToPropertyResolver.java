@@ -44,7 +44,8 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
     }
 
     @Override
-    public boolean isReadOnly(final Object base, final int index) throws EvaluationException, PropertyNotFoundException
+    public boolean isReadOnly(final Object base, final int index)
+            throws EvaluationException, PropertyNotFoundException
     {
 
         try
@@ -63,7 +64,8 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
     }
 
     @Override
-    public boolean isReadOnly(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
+    public boolean isReadOnly(final Object base, final Object property)
+            throws EvaluationException, PropertyNotFoundException
     {
 
         try
@@ -101,7 +103,8 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
     }
 
     @Override
-    public Object getValue(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
+    public Object getValue(final Object base, final Object property)
+            throws EvaluationException, PropertyNotFoundException
     {
 
         try
@@ -137,7 +140,8 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
     }
 
     @Override
-    public Class getType(final Object base, final Object property) throws EvaluationException, PropertyNotFoundException
+    public Class getType(final Object base, final Object property)
+            throws EvaluationException, PropertyNotFoundException
     {
 
         try
@@ -155,8 +159,8 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
     }
 
     @Override
-    public void setValue(final Object base, final Object property, final Object value) throws EvaluationException,
-                                                                                      PropertyNotFoundException
+    public void setValue(final Object base, final Object property, final Object value)
+            throws EvaluationException, PropertyNotFoundException
     {
 
         try
@@ -174,7 +178,8 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
     }
 
     @Override
-    public void setValue(final Object base, int index, final Object value) throws EvaluationException, PropertyNotFoundException
+    public void setValue(final Object base, int index, final Object value)
+            throws EvaluationException, PropertyNotFoundException
     {
 
         try

@@ -105,7 +105,8 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
         if (_initParameterMap == null)
         {
             // We cache it as an attribute in ServletContext itself (is this circular reference a problem?)
-            if ((_initParameterMap = (Map<String, String>) _servletContext.getAttribute(INIT_PARAMETER_MAP_ATTRIBUTE)) == null)
+            _initParameterMap = (Map<String, String>) _servletContext.getAttribute(INIT_PARAMETER_MAP_ATTRIBUTE);
+            if (_initParameterMap == null)
             {
                 _initParameterMap = new InitParameterMap(_servletContext);
                 _servletContext.setAttribute(INIT_PARAMETER_MAP_ATTRIBUTE, _initParameterMap);

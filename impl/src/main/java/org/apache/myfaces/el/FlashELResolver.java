@@ -106,7 +106,8 @@ public class FlashELResolver extends ELResolver
             context.setPropertyResolved(true);
             return true;
         }
-        else if (base instanceof Flash) {
+        else if (base instanceof Flash)
+        {
             context.setPropertyResolved(true);
         }
 
@@ -277,7 +278,8 @@ public class FlashELResolver extends ELResolver
         {
             context.setPropertyResolved(true);
         }
-        else if (base instanceof Flash) {
+        else if (base instanceof Flash)
+        {
             context.setPropertyResolved(true);
             Object obj = ((Flash) base).get(property);
             return (obj != null) ? obj.getClass() : null;
@@ -290,17 +292,18 @@ public class FlashELResolver extends ELResolver
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context,
             Object base)
     {
-        ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(
-                1);
+        ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(1);
 
         descriptors.add(makeDescriptor(FLASH,
                 "Represents the current flash scope", Object.class));
 
-        if (base instanceof Flash) {
+        if (base instanceof Flash)
+        {
             Iterator itr = ((Flash) base).keySet().iterator();
             Object key;
             FeatureDescriptor desc;
-            while (itr.hasNext()) {
+            while (itr.hasNext())
+            {
                 key = itr.next();
                 desc = makeDescriptor(key.toString(), key.toString(), key.getClass());
                 descriptors.add(desc);

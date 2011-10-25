@@ -49,7 +49,7 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
     private static final long serialVersionUID = 8071429285360496554L;
 
     //private static final Log logger = LogFactory.getLog(ValueBindingToValueExpression.class);
-    private static final Logger logger = Logger.getLogger(ValueBindingToValueExpression.class.getName());
+    private static final Logger log = Logger.getLogger(ValueBindingToValueExpression.class.getName());
 
     private ValueBinding _valueBinding;
 
@@ -208,8 +208,9 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
             }
             catch (Throwable e)
             {
-                logger.log(Level.WARNING, "Could not determine expected type for '" + _valueBinding.getExpressionString() + "': "
-                        + e.getMessage(), e);
+                log.log(Level.WARNING, "Could not determine expected type for '"
+                                       + _valueBinding.getExpressionString() + "': "
+                                       + e.getMessage(), e);
             }
         }
         return null;

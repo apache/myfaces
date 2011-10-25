@@ -27,7 +27,8 @@ import org.apache.myfaces.logging.MyfacesLogMessage;
  * 
  * @see MyfacesLogMessage
  */
-public interface MyfacesLogMessageAware {
+public interface MyfacesLogMessageAware
+{
     
     MyfacesLogMessage getMyfacesLogMessage();
 

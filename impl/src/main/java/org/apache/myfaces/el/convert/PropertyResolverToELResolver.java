@@ -70,7 +70,8 @@ public final class PropertyResolverToELResolver extends ELResolver
             if (needsCoersion(base))
             {
                 propertyResolver.setValue(base, coerceToInt(property), value);
-            } else
+            }
+            else
             {
                 propertyResolver.setValue(base, property, value);
             }
@@ -97,8 +98,8 @@ public final class PropertyResolverToELResolver extends ELResolver
     }
 
     @Override
-    public boolean isReadOnly(final ELContext context, final Object base, final Object property) throws NullPointerException,
-        PropertyNotFoundException, ELException
+    public boolean isReadOnly(final ELContext context, final Object base, final Object property)
+            throws NullPointerException, PropertyNotFoundException, ELException
     {
         if (base == null || property == null)
         {
@@ -112,7 +113,8 @@ public final class PropertyResolverToELResolver extends ELResolver
             if (needsCoersion(base))
             {
                 result = propertyResolver.isReadOnly(base, coerceToInt(property));
-            } else
+            }
+            else
             {
                 result = propertyResolver.isReadOnly(base, property);
             }
@@ -140,8 +142,8 @@ public final class PropertyResolverToELResolver extends ELResolver
     }
 
     @Override
-    public Object getValue(final ELContext context, final Object base, final Object property) throws NullPointerException,
-        PropertyNotFoundException, ELException
+    public Object getValue(final ELContext context, final Object base, final Object property)
+            throws NullPointerException, PropertyNotFoundException, ELException
     {
         if (base == null || property == null)
         {
@@ -155,7 +157,8 @@ public final class PropertyResolverToELResolver extends ELResolver
             if (needsCoersion(base))
             {
                 value = propertyResolver.getValue(base, coerceToInt(property));
-            } else
+            }
+            else
             {
                 value = propertyResolver.getValue(base, property);
             }
@@ -184,8 +187,8 @@ public final class PropertyResolverToELResolver extends ELResolver
     }
 
     @Override
-    public Class<?> getType(final ELContext context, final Object base, final Object property) throws NullPointerException,
-        PropertyNotFoundException, ELException
+    public Class<?> getType(final ELContext context, final Object base, final Object property)
+            throws NullPointerException, PropertyNotFoundException, ELException
     {
         if (base == null || property == null)
         {
@@ -199,7 +202,8 @@ public final class PropertyResolverToELResolver extends ELResolver
             if (needsCoersion(base))
             {
                 value = propertyResolver.getType(base, coerceToInt(property));
-            } else
+            }
+            else
             {
                 value = propertyResolver.getType(base, property);
             }
