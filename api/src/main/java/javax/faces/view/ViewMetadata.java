@@ -46,7 +46,8 @@ public abstract class ViewMetadata
         UIComponent metadataFacet = root.getFacet (UIViewRoot.METADATA_FACET_NAME);
         Iterator<UIComponent> children;
         
-        if (metadataFacet == null) {
+        if (metadataFacet == null)
+        {
              // No metadata, so return an empty collection.
              
              return Collections.emptyList();
@@ -58,7 +59,8 @@ public abstract class ViewMetadata
         {
             children = metadataFacet.getChildren().iterator();
             
-            while (children.hasNext()) {
+            while (children.hasNext())
+            {
                  UIComponent component = children.next();
                  
                  if (result == null)
@@ -66,7 +68,8 @@ public abstract class ViewMetadata
                      result = new LinkedList<UIViewParameter>();
                  }
                  
-                 if (component instanceof UIViewParameter) {
+                 if (component instanceof UIViewParameter)
+                 {
                       result.add ((UIViewParameter) component);
                  }
             }

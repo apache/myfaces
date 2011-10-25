@@ -21,7 +21,6 @@ package javax.faces.validator;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -99,7 +98,8 @@ class _MessageUtils
                     else
                     {
                         //Neither detail nor summary found
-                        facesContext.getExternalContext().log("No message with id " + messageId + " found in any bundle");
+                        facesContext.getExternalContext().log("No message with id " + messageId
+                                                              + " found in any bundle");
                         return new FacesMessage(severity, messageId, null);
                     }
                 }
@@ -167,19 +167,26 @@ class _MessageUtils
                 {
                     //Last resort is the context class loader
                     if (System.getSecurityManager() != null) {
-                        Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                        Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction()
+                        {
                             public Object run() throws PrivilegedActionException {
                                 return Thread.currentThread().getContextClassLoader();
                             }
                         });
                         return ResourceBundle.getBundle(bundleName,locale,(ClassLoader)cl);
 
-                    }else{
+                    }
+                    else
+                    {
                         return ResourceBundle.getBundle(bundleName,locale, Thread.currentThread().getContextClassLoader()); 
                     }                   
-                }catch(PrivilegedActionException pae){
+                }
+                catch(PrivilegedActionException pae)
+                {
                     throw new FacesException(pae);
-                }catch (MissingResourceException damned){
+                }
+                catch (MissingResourceException damned)
+                {
                     facesContext.getExternalContext().log("resource bundle " + bundleName + " could not be found");
                     return null;
                 }

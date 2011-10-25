@@ -25,16 +25,19 @@ package javax.faces.event;
  * @version $Revision$ $Date$
  */
 
-public class PreDestroyCustomScopeEvent extends SystemEvent  {
+public class PreDestroyCustomScopeEvent extends SystemEvent
+{
     
-    public PreDestroyCustomScopeEvent(ScopeContext source) {
+    public PreDestroyCustomScopeEvent(ScopeContext source)
+    {
         super(source);
     }
 
     /**
      * @return the source as scope context representation for this event
      */
-    public ScopeContext getContext() {
+    public ScopeContext getContext()
+    {
         return (ScopeContext) source;
     }
 }

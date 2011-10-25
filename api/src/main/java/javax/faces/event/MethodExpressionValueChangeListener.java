@@ -27,7 +27,8 @@ import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 
 /**
- * See Javadoc of <a href="https://javaserverfaces.dev.java.net/nonav/docs/2.0/javadocs/javax/faces/event/MethodExpressionValueChangeListener.html">JSF Specification</a>
+ * See Javadoc of <a href="https://javaserverfaces.dev.java.net/nonav/docs/2.0/javadocs/javax/faces/event/
+ * MethodExpressionValueChangeListener.html">JSF Specification</a>
  * 
  * @author Stan Silvert
  * @author Jakob Korherr
@@ -55,7 +56,8 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
         _createZeroArgsMethodExpression(methodExpressionOneArg); 
     }
 
-    public MethodExpressionValueChangeListener(MethodExpression methodExpressionOneArg, MethodExpression methodExpressionZeroArg)
+    public MethodExpressionValueChangeListener(MethodExpression methodExpressionOneArg,
+                                               MethodExpression methodExpressionZeroArg)
     {
         this.methodExpressionOneArg = methodExpressionOneArg;
         if (methodExpressionZeroArg != null) 
@@ -86,10 +88,12 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
         }
         catch (ELException e)
         {
-            // "... If that fails for any reason, throw an AbortProcessingException, including the cause of the failure ..."
+            // "... If that fails for any reason, throw an AbortProcessingException,
+            // including the cause of the failure ..."
             // -= Leonardo Uribe =- after discussing this topic on MYFACES-3199, the conclusion is the part is an advice
             // for the developer implementing a listener in a method expressions that could be wrapped by this class.
-            // The spec wording is poor but, to keep this coherently with ExceptionHandler API, the spec and code on UIViewRoot we need:
+            // The spec wording is poor but, to keep this coherently with ExceptionHandler API,
+            // the spec and code on UIViewRoot we need:
             // 2a) "exception is instance of APE or any of the causes of the exception are an APE, 
             // DON'T publish ExceptionQueuedEvent and terminate processing for current event".
             // 2b) for any other exception publish ExceptionQueuedEvent and continue broadcast processing.
@@ -170,7 +174,8 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
      * Creates a {@link MethodExpression} with no params and with the same Expression as 
      * param <code>methodExpression</code>
      * <b>WARNING!</b> This method creates new {@link MethodExpression} with expressionFactory.createMethodExpression.
-     * That means is not decorating MethodExpression passed as parameter - support for EL VariableMapper will not be available!
+     * That means is not decorating MethodExpression passed as parameter -
+     * support for EL VariableMapper will not be available!
      * This is a problem when using facelets and <ui:decorate/> with EL params (see MYFACES-2541 for details).
      */
     private void _createZeroArgsMethodExpression(MethodExpression methodExpression)

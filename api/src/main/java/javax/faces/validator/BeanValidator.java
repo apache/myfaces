@@ -94,7 +94,8 @@ public class BeanValidator implements Validator, PartialStateHolder
      * Explicitly adding a BeanValidator to an UIInput is possible though.
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false", since="2.0", group="validation")
-    public static final String DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME = "javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR";
+    public static final String DISABLE_DEFAULT_BEAN_VALIDATOR_PARAM_NAME
+            = "javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR";
 
     /**
      * The key in the ServletContext where the Bean Validation Factory can be found.
@@ -127,7 +128,8 @@ public class BeanValidator implements Validator, PartialStateHolder
     /**
      * {@inheritDoc}
      */
-    public void validate(final FacesContext context, final UIComponent component, final Object value) throws ValidatorException
+    public void validate(final FacesContext context, final UIComponent component, final Object value)
+            throws ValidatorException
     {
         if (context == null)
         {
@@ -618,11 +620,30 @@ final class _ValueReferenceResolver extends ELResolver
     }
 
     // ############################ Standard delegating implementations ############################
-    public final Class<?> getType(final ELContext ctx, final Object base, final Object property){return resolver.getType(ctx, base, property);}
-    public final void setValue(final ELContext ctx, final Object base, final Object property, final Object value){resolver.setValue(ctx, base, property, value);}
-    public final boolean isReadOnly(final ELContext ctx, final Object base, final Object property){return resolver.isReadOnly(ctx, base, property);}
-    public final Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base){return resolver.getFeatureDescriptors(ctx, base);}
-    public final Class<?> getCommonPropertyType(final ELContext ctx, final Object base){return resolver.getCommonPropertyType(ctx, base);}
+    public final Class<?> getType(final ELContext ctx, final Object base, final Object property)
+    {
+        return resolver.getType(ctx, base, property);
+    }
+
+    public final void setValue(final ELContext ctx, final Object base, final Object property, final Object value)
+    {
+        resolver.setValue(ctx, base, property, value);
+    }
+
+    public final boolean isReadOnly(final ELContext ctx, final Object base, final Object property)
+    {
+        return resolver.isReadOnly(ctx, base, property);
+    }
+
+    public final Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base)
+    {
+        return resolver.getFeatureDescriptors(ctx, base);
+    }
+
+    public final Class<?> getCommonPropertyType(final ELContext ctx, final Object base)
+    {
+        return resolver.getCommonPropertyType(ctx, base);
+    }
 }
 
 /**
@@ -657,12 +678,43 @@ final class _ELContextDecorator extends ELContext
     }
 
     // ############################ Standard delegating implementations ############################
-    public final FunctionMapper getFunctionMapper(){return ctx.getFunctionMapper();}
-    public final VariableMapper getVariableMapper(){return ctx.getVariableMapper();}
-    public final void setPropertyResolved(final boolean resolved){ctx.setPropertyResolved(resolved);}
-    public final boolean isPropertyResolved(){return ctx.isPropertyResolved();}
-    public final void putContext(final Class key, Object contextObject){ctx.putContext(key, contextObject);}
-    public final Object getContext(final Class key){return ctx.getContext(key);}
-    public final Locale getLocale(){return ctx.getLocale();}
-    public final void setLocale(final Locale locale){ctx.setLocale(locale);}
+    public final FunctionMapper getFunctionMapper()
+    {
+        return ctx.getFunctionMapper();
+    }
+
+    public final VariableMapper getVariableMapper()
+    {
+        return ctx.getVariableMapper();
+    }
+
+    public final void setPropertyResolved(final boolean resolved)
+    {
+        ctx.setPropertyResolved(resolved);
+    }
+
+    public final boolean isPropertyResolved()
+    {
+        return ctx.isPropertyResolved();
+    }
+
+    public final void putContext(final Class key, Object contextObject)
+    {
+        ctx.putContext(key, contextObject);
+    }
+
+    public final Object getContext(final Class key)
+    {
+        return ctx.getContext(key);
+    }
+
+    public final Locale getLocale()
+    {
+        return ctx.getLocale();
+    }
+
+    public final void setLocale(final Locale locale)
+    {
+        ctx.setLocale(locale);
+    }
 }

@@ -67,8 +67,8 @@ public class FloatConverter
                 catch (NumberFormatException e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               FLOAT_ID,
-                                                                               new Object[]{value,"50000",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                                   FLOAT_ID,
+                                   new Object[]{value,"50000",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }
@@ -100,7 +100,8 @@ public class FloatConverter
         }
         catch (Exception e)
         {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID, new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                    new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
 }

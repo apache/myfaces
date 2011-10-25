@@ -38,9 +38,9 @@ import javax.faces.render.RenderKit;
  */
 public abstract class FacesContext
 {
-    private static ThreadLocal<FacesContext> _currentInstance = new ThreadLocal<FacesContext>();
+    private static ThreadLocal<FacesContext> currentInstance = new ThreadLocal<FacesContext>();
 
-    private static ThreadLocal<FacesContext> _firstInstance = new ThreadLocal<FacesContext>();
+    private static ThreadLocal<FacesContext> firstInstance = new ThreadLocal<FacesContext>();
 
     public abstract void addMessage(String clientId, FacesMessage message);
 
@@ -54,7 +54,7 @@ public abstract class FacesContext
      */
     public Map<Object, Object> getAttributes()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -68,7 +68,7 @@ public abstract class FacesContext
 
     public static FacesContext getCurrentInstance()
     {
-        return _currentInstance.get();
+        return currentInstance.get();
     }
 
     /**
@@ -79,7 +79,7 @@ public abstract class FacesContext
      */
     public PhaseId getCurrentPhaseId()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -129,7 +129,7 @@ public abstract class FacesContext
         // method call on to the first-registered FacesContext instance. That
         // instance will never be "this", as the real original FacesContext
         // object will provide a proper implementation of this method.
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
 
         if (ctx == null)
         {
@@ -153,7 +153,7 @@ public abstract class FacesContext
      */
     public ExceptionHandler getExceptionHandler()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -175,7 +175,7 @@ public abstract class FacesContext
      */
     public List<FacesMessage> getMessageList()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -194,7 +194,7 @@ public abstract class FacesContext
      */
     public List<FacesMessage> getMessageList(String clientId)
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -224,7 +224,7 @@ public abstract class FacesContext
      */
     public PartialViewContext getPartialViewContext()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -252,7 +252,7 @@ public abstract class FacesContext
      */
     public boolean isValidationFailed()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -272,7 +272,7 @@ public abstract class FacesContext
      */
     public boolean isPostback()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -290,7 +290,7 @@ public abstract class FacesContext
      */
     public boolean isProcessingEvents()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -310,16 +310,16 @@ public abstract class FacesContext
     {
         if (context == null)
         {
-            _currentInstance.remove();
-            _firstInstance.remove();
+            currentInstance.remove();
+            firstInstance.remove();
         }
         else
         {
-            _currentInstance.set(context);
+            currentInstance.set(context);
 
-            if (_firstInstance.get() == null)
+            if (firstInstance.get() == null)
             {
-                _firstInstance.set(context);
+                firstInstance.set(context);
             }
         }
     }
@@ -332,7 +332,7 @@ public abstract class FacesContext
      */
     public void setCurrentPhaseId(PhaseId currentPhaseId)
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -350,7 +350,7 @@ public abstract class FacesContext
      */
     public void setExceptionHandler(ExceptionHandler exceptionHandler)
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -368,7 +368,7 @@ public abstract class FacesContext
      */
     public void setProcessingEvents(boolean processingEvents)
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -391,7 +391,7 @@ public abstract class FacesContext
      */
     public void validationFailed()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {
@@ -422,7 +422,7 @@ public abstract class FacesContext
      */
     public boolean isReleased()
     {
-        FacesContext ctx = _firstInstance.get();
+        FacesContext ctx = firstInstance.get();
         
         if (ctx == null)
         {

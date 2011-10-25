@@ -23,10 +23,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 
-import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
 
 /**
@@ -74,8 +71,8 @@ public class DoubleConverter
                 catch (NumberFormatException e)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                                                               DOUBLE_ID,
-                                                                               new Object[]{value,"4214",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                                   DOUBLE_ID,
+                                   new Object[]{value,"4214",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
 
             }

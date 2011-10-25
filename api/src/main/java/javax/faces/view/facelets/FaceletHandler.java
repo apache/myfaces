@@ -20,8 +20,6 @@ package javax.faces.view.facelets;
 
 import java.io.IOException;
 
-import javax.el.ELException;
-import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 
 /**
@@ -40,9 +38,9 @@ public interface FaceletHandler
      * @param ctx the current FaceletContext instance for this execution
      * @param parent the parent UIComponent to operate upon
      * @throws IOException
-     * @throws FacesException
+     * @throws javax.faces.FacesException
      * @throws FaceletException
-     * @throws ELException
+     * @throws javax.el.ELException
      */
     public void apply(FaceletContext ctx, UIComponent parent)throws IOException;
 }

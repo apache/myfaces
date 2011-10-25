@@ -57,7 +57,8 @@ public class BehaviorHandler extends FaceletsAttachedObjectHandler implements Be
 
     public String getEventName ()
     {
-        if (event == null) {
+        if (event == null)
+        {
             return null;
         }
         

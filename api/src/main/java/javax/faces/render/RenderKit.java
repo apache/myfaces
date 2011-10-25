@@ -45,11 +45,13 @@ public abstract class RenderKit
     
     public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
     {
-        if (type == null) {
+        if (type == null)
+        {
             throw new NullPointerException ("type is null");
         }
         
-        if (renderer == null) {
+        if (renderer == null)
+        {
             throw new NullPointerException ("renderer is null");
         }
         
@@ -60,11 +62,13 @@ public abstract class RenderKit
 
     public abstract ResponseStream createResponseStream(OutputStream out);
 
-    public abstract ResponseWriter createResponseWriter(Writer writer, String contentTypeList, String characterEncoding);
+    public abstract ResponseWriter createResponseWriter(Writer writer, String contentTypeList,
+                                                        String characterEncoding);
     
     public ClientBehaviorRenderer getClientBehaviorRenderer(String type)
     {
-        if (type == null) {
+        if (type == null)
+        {
             throw new NullPointerException ("type is null");
         }
         

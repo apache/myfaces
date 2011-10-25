@@ -20,7 +20,6 @@ package javax.faces.event;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.Behavior;
-import javax.faces.component.behavior.ClientBehavior;
 
 /**
  * @author Simon Lessard (latest modification by $Author$)

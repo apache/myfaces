@@ -65,7 +65,8 @@ public final class FactoryFinder
      * used as a monitor for itself and _factories. Maps in this map are used as monitors for themselves and the
      * corresponding maps in _factories.
      */
-    private static Map<ClassLoader, Map<String, List<String>>> _registeredFactoryNames = new HashMap<ClassLoader, Map<String, List<String>>>();
+    private static Map<ClassLoader, Map<String, List<String>>> registeredFactoryNames
+            = new HashMap<ClassLoader, Map<String, List<String>>>();
 
     /**
      * Maps from classLoader to another map, the container (i.e. Tomcat) will create a class loader for each web app
@@ -75,7 +76,8 @@ public final class FactoryFinder
      * created via getFactory. The instances will be of the class specified in the setFactory method for the factory
      * name, i.e. FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MyFactory.class).
      */
-    private static Map<ClassLoader, Map<String, Object>> _factories = new HashMap<ClassLoader, Map<String, Object>>();
+    private static Map<ClassLoader, Map<String, Object>> _factories
+            = new HashMap<ClassLoader, Map<String, Object>>();
 
     private static final Set<String> VALID_FACTORY_NAMES = new HashSet<String>();
     private static final Map<String, Class<?>> ABSTRACT_FACTORY_CLASSES = new HashMap<String, Class<?>>();
@@ -138,16 +140,16 @@ public final class FactoryFinder
 
     // ~ Start FactoryFinderProvider Support
     
-    private static Object _factoryFinderProviderFactoryInstance;
+    private static Object factoryFinderProviderFactoryInstance;
     
-    private static volatile boolean _initialized = false;
+    private static volatile boolean initialized = false;
     
     private static void initializeFactoryFinderProviderFactory()
     {
-        if (!_initialized)
+        if (!initialized)
         {
-            _factoryFinderProviderFactoryInstance = _FactoryFinderProviderFactory.getInstance();
-            _initialized = true;
+            factoryFinderProviderFactoryInstance = _FactoryFinderProviderFactory.getInstance();
+            initialized = true;
         }
     }
 
@@ -198,7 +200,7 @@ public final class FactoryFinder
         
         initializeFactoryFinderProviderFactory();
         
-        if (_factoryFinderProviderFactoryInstance == null)
+        if (factoryFinderProviderFactoryInstance == null)
         {
             // Do the typical stuff
             return _getFactory(factoryName);
@@ -210,12 +212,13 @@ public final class FactoryFinder
                 //Obtain the FactoryFinderProvider instance for this context.
                 Object ffp = _FactoryFinderProviderFactory
                         .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
-                        .invoke(_factoryFinderProviderFactoryInstance, null);
+                        .invoke(factoryFinderProviderFactoryInstance, null);
                 
                 //Call getFactory method and pass the params
                 return _FactoryFinderProviderFactory
                         .FACTORY_FINDER_PROVIDER_GET_FACTORY_METHOD.invoke(ffp, factoryName);
-            } catch (InvocationTargetException e)
+            }
+            catch (InvocationTargetException e)
             {
                 Throwable targetException = e.getCause();
                 if (targetException instanceof NullPointerException)
@@ -261,9 +264,9 @@ public final class FactoryFinder
         Map<String, List<String>> factoryClassNames = null;
         Map<String, Object> factoryMap = null;
 
-        synchronized (_registeredFactoryNames)
+        synchronized (registeredFactoryNames)
         {
-            factoryClassNames = _registeredFactoryNames.get(classLoader);
+            factoryClassNames = registeredFactoryNames.get(classLoader);
 
             if (factoryClassNames == null)
             {
@@ -336,9 +339,12 @@ public final class FactoryFinder
             {
                 String implClassName = classNamesIterator.next();
                 Class<?> implClass = null;
-                try {
+                try
+                {
                     implClass = classLoader.loadClass(implClassName);
-                } catch (ClassNotFoundException e) {
+                }
+                catch (ClassNotFoundException e)
+                {
                     implClass = myFacesClassLoader.loadClass(implClassName);
                 }
 
@@ -411,7 +417,7 @@ public final class FactoryFinder
         
         initializeFactoryFinderProviderFactory();
         
-        if (_factoryFinderProviderFactoryInstance == null)
+        if (factoryFinderProviderFactoryInstance == null)
         {
             // Do the typical stuff
             _setFactory(factoryName, implName);
@@ -423,7 +429,7 @@ public final class FactoryFinder
                 //Obtain the FactoryFinderProvider instance for this context.
                 Object ffp = _FactoryFinderProviderFactory
                         .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
-                        .invoke(_factoryFinderProviderFactoryInstance,null);
+                        .invoke(factoryFinderProviderFactoryInstance, null);
                 
                 //Call getFactory method and pass the params
                 _FactoryFinderProviderFactory
@@ -468,7 +474,7 @@ public final class FactoryFinder
 
         ClassLoader classLoader = getClassLoader();
         Map<String, List<String>> factoryClassNames = null;
-        synchronized (_registeredFactoryNames)
+        synchronized (registeredFactoryNames)
         {
             Map<String, Object> factories = _factories.get(classLoader);
 
@@ -479,12 +485,12 @@ public final class FactoryFinder
                 return;
             }
 
-            factoryClassNames = _registeredFactoryNames.get(classLoader);
+            factoryClassNames = registeredFactoryNames.get(classLoader);
 
             if (factoryClassNames == null)
             {
                 factoryClassNames = new HashMap<String, List<String>>();
-                _registeredFactoryNames.put(classLoader, factoryClassNames);
+                registeredFactoryNames.put(classLoader, factoryClassNames);
             }
         }
 
@@ -506,7 +512,7 @@ public final class FactoryFinder
     {
         initializeFactoryFinderProviderFactory();
         
-        if (_factoryFinderProviderFactoryInstance == null)
+        if (factoryFinderProviderFactoryInstance == null)
         {
             // Do the typical stuff
             _releaseFactories();
@@ -518,20 +524,29 @@ public final class FactoryFinder
                 //Obtain the FactoryFinderProvider instance for this context.
                 Object ffp = _FactoryFinderProviderFactory
                         .FACTORY_FINDER_PROVIDER_FACTORY_GET_FACTORY_FINDER_METHOD
-                        .invoke(_factoryFinderProviderFactoryInstance, null);
+                        .invoke(factoryFinderProviderFactoryInstance, null);
                 
                 //Call getFactory method and pass the params
                 _FactoryFinderProviderFactory.FACTORY_FINDER_PROVIDER_RELEASE_FACTORIES_METHOD.invoke(ffp, null);
-            } catch (InvocationTargetException e) {
+            }
+            catch (InvocationTargetException e)
+            {
                 Throwable targetException = e.getCause();
-                if (targetException instanceof FacesException) {
+                if (targetException instanceof FacesException)
+                {
                     throw (FacesException) targetException;
-                } else if (targetException == null) {
+                }
+                else if (targetException == null)
+                {
                     throw new FacesException(e);
-                } else {
+                }
+                else
+                {
                     throw new FacesException(targetException);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 //No Op
                 throw new FacesException(e);
             }
@@ -544,19 +559,19 @@ public final class FactoryFinder
         ClassLoader classLoader = getClassLoader();
 
         // This code must be synchronized
-        synchronized (_registeredFactoryNames)
+        synchronized (registeredFactoryNames)
         {
             _factories.remove(classLoader);
 
             // _registeredFactoryNames has as value type Map<String,List> and this must
             // be cleaned before release (for gc).
-            Map<String, List<String>> factoryClassNames = _registeredFactoryNames.get(classLoader);
+            Map<String, List<String>> factoryClassNames = registeredFactoryNames.get(classLoader);
             if (factoryClassNames != null)
             {
                 factoryClassNames.clear();
             }
 
-            _registeredFactoryNames.remove(classLoader);
+            registeredFactoryNames.remove(classLoader);
         }
     }
 

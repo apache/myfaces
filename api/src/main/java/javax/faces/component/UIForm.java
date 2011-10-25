@@ -302,7 +302,8 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                         
                         if (subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty())
                         {
-                            if (getFacetCount() > 0) {
+                            if (getFacetCount() > 0)
+                            {
                                 for (UIComponent facet : getFacets().values())
                                 {
                                     if (facet.visitTree(context, callback))

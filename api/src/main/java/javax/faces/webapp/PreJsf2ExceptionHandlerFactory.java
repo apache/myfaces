@@ -163,8 +163,10 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
          * 
          * Differs from ExceptionHandlerImpl.handle() in three points:
          *  - Any exceptions thrown before or after phase execution will be logged and swallowed.
-         *  - If the Exception is an instance of UpdateModelException, extract the FacesMessage from the UpdateModelException.
-         *    Log a SEVERE message to the log and queue the FacesMessage on the FacesContext, using the clientId of the source
+         *  - If the Exception is an instance of UpdateModelException, extract the
+         *  FacesMessage from the UpdateModelException.
+         *    Log a SEVERE message to the log and queue the FacesMessage on the
+         *    FacesContext, using the clientId of the source
          *    component in a call to FacesContext.addMessage(java.lang.String, javax.faces.application.FacesMessage).
          *  - Checks org.apache.myfaces.ERROR_HANDLER for backwards compatibility to myfaces-1.2's error handling
          */
@@ -208,13 +210,15 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
 
                                 Object errorHandler = clazz.newInstance();
 
-                                Method m = clazz.getMethod("handleException", new Class[] { FacesContext.class, Exception.class });
+                                Method m = clazz.getMethod("handleException",
+                                                           new Class[] { FacesContext.class, Exception.class });
                                 m.invoke(errorHandler, new Object[] { context.getContext(), exception });
                             }
                             catch (ClassNotFoundException ex)
                             {
                                 throw new FacesException("Error-Handler : " + errorHandlerClass
-                                        + " was not found. Fix your web.xml-parameter : " + ERROR_HANDLER_PARAMETER, ex);
+                                        + " was not found. Fix your web.xml-parameter : "
+                                        + ERROR_HANDLER_PARAMETER, ex);
                             }
                             catch (IllegalAccessException ex)
                             {
@@ -225,8 +229,8 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
                             catch (InstantiationException ex)
                             {
                                 throw new FacesException("Error-Handler : " + errorHandlerClass
-                                        + " could not be instantiated. Error-Handler is specified in web.xml-parameter : "
-                                        + ERROR_HANDLER_PARAMETER, ex);
+                                    + " could not be instantiated. Error-Handler is specified in web.xml-parameter : "
+                                    + ERROR_HANDLER_PARAMETER, ex);
                             }
                             catch (NoSuchMethodException ex)
                             {
@@ -267,9 +271,11 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
                                 // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event
                                 handledAndThrown = event;
                                 
-                                // Re-wrap toThrow in a ServletException or (PortletException, if in a portlet environment) 
+                                // Re-wrap toThrow in a ServletException or
+                                // (PortletException, if in a portlet environment)
                                 // and throw it
-                                // FIXME: The spec says to NOT use a FacesException to propagate the exception, but I see
+                                // FIXME: The spec says to NOT use a FacesException
+                                // to propagate the exception, but I see
                                 //        no other way as ServletException is not a RuntimeException
                                 toThrow = wrap(getRethrownException(exception));
                                 break;

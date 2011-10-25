@@ -70,11 +70,11 @@ public class PhaseEvent extends EventObject
     @Override
     public int hashCode()
     {
-        int PRIME = 31;
+        int prime = 31;
         int result = 1;
-        result = PRIME * result + ((source == null) ? 0 : source.hashCode());
-        result = PRIME * result + ((_facesContext == null) ? 0 : _facesContext.hashCode());
-        result = PRIME * result + ((_phaseId == null) ? 0 : _phaseId.hashCode());
+        result = prime * result + ((source == null) ? 0 : source.hashCode());
+        result = prime * result + ((_facesContext == null) ? 0 : _facesContext.hashCode());
+        result = prime * result + ((_phaseId == null) ? 0 : _phaseId.hashCode());
         return result;
     }
 
