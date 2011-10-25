@@ -148,7 +148,7 @@ public abstract class FactoryFinderProviderFactory
         try
         {
             Class clazz = ClassUtils.classForName("javax.faces.FactoryFinder");
-            Field field = clazz.getDeclaredField("_initialized");
+            Field field = clazz.getDeclaredField("initialized");
             field.setAccessible(true);
             
             if (field.getBoolean(null))
