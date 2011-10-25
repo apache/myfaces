@@ -44,11 +44,11 @@ class _LocaleUtils
 {
 
     /** Concurrent map of language locales by country. */
-    private static final ConcurrentMap<String, List<Locale>> languagesByCountry =
+    private static final ConcurrentMap<String, List<Locale>> LANGUAGES_BY_COUNTRY =
             new ConcurrentHashMap<String, List<Locale>>();
 
     /** Concurrent map of country locales by language. */
-    private static final ConcurrentMap<String, List<Locale>> countriesByLanguage =
+    private static final ConcurrentMap<String, List<Locale>> COUNTRIES_BY_LANGUAGE =
             new ConcurrentHashMap<String, List<Locale>>();
 
     /**
@@ -266,7 +266,7 @@ class _LocaleUtils
         {
             return Collections.emptyList();
         }
-        List<Locale> langs = languagesByCountry.get(countryCode);
+        List<Locale> langs = LANGUAGES_BY_COUNTRY.get(countryCode);
         if (langs == null)
         {
             langs = new ArrayList<Locale>();
@@ -281,8 +281,8 @@ class _LocaleUtils
                 }
             }
             langs = Collections.unmodifiableList(langs);
-            languagesByCountry.putIfAbsent(countryCode, langs);
-            langs = languagesByCountry.get(countryCode);
+            LANGUAGES_BY_COUNTRY.putIfAbsent(countryCode, langs);
+            langs = LANGUAGES_BY_COUNTRY.get(countryCode);
         }
         return langs;
     }
@@ -304,7 +304,7 @@ class _LocaleUtils
         {
             return Collections.emptyList();
         }
-        List<Locale> countries = countriesByLanguage.get(languageCode);
+        List<Locale> countries = COUNTRIES_BY_LANGUAGE.get(languageCode);
         if (countries == null)
         {
             countries = new ArrayList<Locale>();
@@ -320,8 +320,8 @@ class _LocaleUtils
                 }
             }
             countries = Collections.unmodifiableList(countries);
-            countriesByLanguage.putIfAbsent(languageCode, countries);
-            countries = countriesByLanguage.get(languageCode);
+            COUNTRIES_BY_LANGUAGE.putIfAbsent(languageCode, countries);
+            countries = COUNTRIES_BY_LANGUAGE.get(languageCode);
         }
         return countries;
     }
@@ -331,9 +331,9 @@ class _LocaleUtils
     static class SyncAvoid
     {
         /** Unmodifiable list of available locales. */
-        private static List<Locale> AVAILABLE_LOCALE_LIST;
+        private static final List<Locale> AVAILABLE_LOCALE_LIST;
         /** Unmodifiable set of available locales. */
-        private static Set<Locale> AVAILABLE_LOCALE_SET;
+        private static final Set<Locale> AVAILABLE_LOCALE_SET;
 
         static
         {

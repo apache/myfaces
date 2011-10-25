@@ -80,7 +80,8 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler
 
     public boolean isDisabled(FaceletContext ctx)
     {
-        if (disabled == null) {
+        if (disabled == null)
+        {
             return false;
         }
         

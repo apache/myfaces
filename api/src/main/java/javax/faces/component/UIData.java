@@ -1921,6 +1921,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             case PROCESS_UPDATES:
                 component.processUpdates(context);
                 break;
+            default:
+                // do nothing
         }
     }
 

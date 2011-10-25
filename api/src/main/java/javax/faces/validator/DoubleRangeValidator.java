@@ -19,7 +19,6 @@
 package javax.faces.validator;
 
 import javax.faces.component.PartialStateHolder;
-import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
@@ -108,7 +107,8 @@ public class DoubleRangeValidator
                 dvalue > _maximum.doubleValue())
             {
                 Object[] args = {_minimum, _maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
-                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, NOT_IN_RANGE_MESSAGE_ID, args));
+                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, NOT_IN_RANGE_MESSAGE_ID,
+                                                                           args));
             }
         }
         else if (_minimum != null)

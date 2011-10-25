@@ -517,7 +517,8 @@ final class _FacesMessageInterpolatorHolder
  */
 final class _ValueReferenceWrapper
 {
-    private final Object base, property;
+    private final Object base;
+    private final Object property;
 
     /**
      * Full constructor.

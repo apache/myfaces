@@ -42,7 +42,8 @@ final class _BeanValidatorUELUtils
      * @param elCtx
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
-    public static _ValueReferenceWrapper getUELValueReferenceWrapper(ValueExpression valueExpression, final ELContext elCtx)
+    public static _ValueReferenceWrapper getUELValueReferenceWrapper(ValueExpression valueExpression,
+                                                                     final ELContext elCtx)
     {
         ValueReference valueReference = valueExpression.getValueReference(elCtx);
         

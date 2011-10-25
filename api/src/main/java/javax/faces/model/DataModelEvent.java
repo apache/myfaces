@@ -32,11 +32,11 @@ public class DataModelEvent extends java.util.EventObject
     private Object _data;
 
 
-    public DataModelEvent(DataModel _model, int _index, Object _data)
+    public DataModelEvent(DataModel model, int index, Object data)
     {
-        super(_model);
-        this._index = _index;
-        this._data = _data;
+        super(model);
+        this._index = index;
+        this._data = data;
     }
 
 

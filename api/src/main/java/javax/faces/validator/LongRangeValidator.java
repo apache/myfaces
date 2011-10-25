@@ -107,7 +107,8 @@ public class LongRangeValidator
                 dvalue > _maximum.longValue())
             {
                 Object[] args = {_minimum, _maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
-                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, NOT_IN_RANGE_MESSAGE_ID, args));
+                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext,
+                                                                           NOT_IN_RANGE_MESSAGE_ID, args));
             }
         }
         else if (_minimum != null)

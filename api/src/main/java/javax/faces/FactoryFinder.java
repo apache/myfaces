@@ -76,12 +76,12 @@ public final class FactoryFinder
      * created via getFactory. The instances will be of the class specified in the setFactory method for the factory
      * name, i.e. FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MyFactory.class).
      */
-    private static Map<ClassLoader, Map<String, Object>> _factories
+    private static Map<ClassLoader, Map<String, Object>> factories
             = new HashMap<ClassLoader, Map<String, Object>>();
 
     private static final Set<String> VALID_FACTORY_NAMES = new HashSet<String>();
     private static final Map<String, Class<?>> ABSTRACT_FACTORY_CLASSES = new HashMap<String, Class<?>>();
-    private static final ClassLoader myFacesClassLoader;
+    private static final ClassLoader MYFACES_CLASSLOADER;
 
     static
     {
@@ -130,7 +130,7 @@ public final class FactoryFinder
             {
                 throw new FacesException("jsf api class loader cannot be identified", null);
             }
-            myFacesClassLoader = classLoader;
+            MYFACES_CLASSLOADER = classLoader;
         }
         catch (Exception e)
         {
@@ -291,12 +291,12 @@ public final class FactoryFinder
                 throw new IllegalArgumentException("no factory " + factoryName + " configured for this application.");
             }
 
-            factoryMap = _factories.get(classLoader);
+            factoryMap = factories.get(classLoader);
 
             if (factoryMap == null)
             {
                 factoryMap = new HashMap<String, Object>();
-                _factories.put(classLoader, factoryMap);
+                factories.put(classLoader, factoryMap);
             }
         }
 
@@ -345,7 +345,7 @@ public final class FactoryFinder
                 }
                 catch (ClassNotFoundException e)
                 {
-                    implClass = myFacesClassLoader.loadClass(implClassName);
+                    implClass = MYFACES_CLASSLOADER.loadClass(implClassName);
                 }
 
                 // check, if class is of expected interface type
@@ -476,7 +476,7 @@ public final class FactoryFinder
         Map<String, List<String>> factoryClassNames = null;
         synchronized (registeredFactoryNames)
         {
-            Map<String, Object> factories = _factories.get(classLoader);
+            Map<String, Object> factories = FactoryFinder.factories.get(classLoader);
 
             if (factories != null && factories.containsKey(factoryName))
             {
@@ -561,7 +561,7 @@ public final class FactoryFinder
         // This code must be synchronized
         synchronized (registeredFactoryNames)
         {
-            _factories.remove(classLoader);
+            factories.remove(classLoader);
 
             // _registeredFactoryNames has as value type Map<String,List> and this must
             // be cleaned before release (for gc).

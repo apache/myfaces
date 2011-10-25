@@ -166,10 +166,12 @@ class _MessageUtils
                 try
                 {
                     //Last resort is the context class loader
-                    if (System.getSecurityManager() != null) {
+                    if (System.getSecurityManager() != null)
+                    {
                         Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction()
                         {
-                            public Object run() throws PrivilegedActionException {
+                            public Object run() throws PrivilegedActionException
+                            {
                                 return Thread.currentThread().getContextClassLoader();
                             }
                         });
@@ -178,7 +180,8 @@ class _MessageUtils
                     }
                     else
                     {
-                        return ResourceBundle.getBundle(bundleName,locale, Thread.currentThread().getContextClassLoader()); 
+                        return ResourceBundle.getBundle(bundleName,locale,
+                                                        Thread.currentThread().getContextClassLoader());
                     }                   
                 }
                 catch(PrivilegedActionException pae)
@@ -194,7 +197,8 @@ class _MessageUtils
         }
     }
     
-    static Object getLabel(FacesContext facesContext, UIComponent component) {
+    static Object getLabel(FacesContext facesContext, UIComponent component)
+    {
         Object label = component.getAttributes().get("label");
         if(label != null)
         {
