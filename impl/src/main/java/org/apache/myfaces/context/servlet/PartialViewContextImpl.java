@@ -97,15 +97,6 @@ public class PartialViewContextImpl extends PartialViewContext
     public boolean isAjaxRequest()
     {
         assertNotReleased();
-        /*
-         * Internal extension for
-         * https://issues.apache.org/jira/browse/MYFACES-2841
-         * will be changed for 2.1 to the official marker
-         */
-        if (_iframeRequest == null)
-        {
-            isIFrameRequest();
-        }
         if (_ajaxRequest == null)
         {
             String requestType = _facesContext.getExternalContext().
@@ -113,7 +104,7 @@ public class PartialViewContextImpl extends PartialViewContext
             _ajaxRequest = (requestType != null && PARTIAL_AJAX.equals(requestType));
         }
         //for now we have to treat the partial iframe request also as ajax request
-        return _ajaxRequest || _iframeRequest;
+        return _ajaxRequest || isIFrameRequest();
     }
 
     @Override
@@ -145,7 +136,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     getRequestHeaderMap().get(FACES_REQUEST);
             _partialRequest = (requestType != null && PARTIAL_PROCESS.equals(requestType));
         }
-        return isAjaxRequest() || _partialRequest;
+        return _partialRequest || isAjaxRequest();
     }
 
     @Override
