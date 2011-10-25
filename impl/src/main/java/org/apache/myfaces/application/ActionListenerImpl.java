@@ -77,11 +77,16 @@ public class ActionListenerImpl implements ActionListener
             }
             catch (ELException e)
             {
-                // "... If that fails for any reason, throw an AbortProcessingException, including the cause of the failure ..."
-                // -= Leonardo Uribe =- after discussing this topic on MYFACES-3199, the conclusion is the part is an advice
-                // for the developer implementing a listener in a method expressions that could be wrapped by this class.
-                // The spec wording is poor but, to keep this coherently with ExceptionHandler API, the spec and code on UIViewRoot we need:
-                // 2a) "exception is instance of APE or any of the causes of the exception are an APE, 
+                // "... If that fails for any reason, throw an AbortProcessingException,
+                // including the cause of the failure ..."
+                // -= Leonardo Uribe =- after discussing this topic on MYFACES-3199,
+                // the conclusion is the part is an advice
+                // for the developer implementing a listener in a method expressions
+                // that could be wrapped by this class.
+                // The spec wording is poor but, to keep this coherently with
+                // ExceptionHandler API, the spec and code on UIViewRoot we need:
+                // 2a) "exception is instance of APE or any of the causes of
+                // the exception are an APE,
                 // DON'T publish ExceptionQueuedEvent and terminate processing for current event".
                 // 2b) for any other exception publish ExceptionQueuedEvent and continue broadcast processing.
                 Throwable cause = e.getCause();
@@ -111,15 +116,18 @@ public class ActionListenerImpl implements ActionListener
                 
                 // Since this ActionListener is the one who handles navigation, if we have another different exception
                 // here we can't queue it on ExceptionHandler stack, instead throw it as a FacesException.
-                throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
+                throw new FacesException("Error calling action method of component with id "
+                                         + actionEvent.getComponent().getClientId(facesContext), e);
             }
             catch (RuntimeException e)
             {
-                throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
+                throw new FacesException("Error calling action method of component with id "
+                                         + actionEvent.getComponent().getClientId(facesContext), e);
             }
         }
         
-        else if (methodBinding != null) {
+        else if (methodBinding != null)
+        {
             fromAction = methodBinding.getExpressionString();
             try
             {
@@ -138,12 +146,14 @@ public class ActionListenerImpl implements ActionListener
                     throw (AbortProcessingException)cause;
                 }
    
-                throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
+                throw new FacesException("Error calling action method of component with id "
+                                         + actionEvent.getComponent().getClientId(facesContext), e);
                 
             }
             catch (RuntimeException e)
             {
-                throw new FacesException("Error calling action method of component with id " + actionEvent.getComponent().getClientId(facesContext), e);
+                throw new FacesException("Error calling action method of component with id "
+                                         + actionEvent.getComponent().getClientId(facesContext), e);
             }
         }
         

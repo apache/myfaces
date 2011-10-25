@@ -51,32 +51,37 @@ import javax.servlet.http.HttpSession;
  */
 
 
-public class _SystemEventServletRequest extends HttpServletRequestWrapper{
+public class _SystemEventServletRequest extends HttpServletRequestWrapper
+{
 
     Map<String, Object> _attributesMap = new HashMap<String, Object>();
+
     public _SystemEventServletRequest()
     {
-        super( (HttpServletRequest) Proxy.newProxyInstance(
+        super((HttpServletRequest) Proxy.newProxyInstance(
                 HttpServletRequest.class.getClassLoader(),
-                new Class[] { HttpServletRequest.class },
+                new Class[]{HttpServletRequest.class},
                 new InvocationHandler()
                 {
-                    public Object invoke(Object proxy, Method m, Object[] args) 
+                    public Object invoke(Object proxy, Method m, Object[] args)
                     {
                         throw new UnsupportedOperationException("This request class is an empty placeholder");
                     }
                 }));
     }
 
-    public Object getAttribute(String s) {
-       return  _attributesMap.get(s);
+    public Object getAttribute(String s)
+    {
+        return _attributesMap.get(s);
     }
 
-    public void setAttribute(String s, Object o) {
+    public void setAttribute(String s, Object o)
+    {
         _attributesMap.put(s, o);
     }
 
-    public void removeAttribute(String s) {
+    public void removeAttribute(String s)
+    {
         _attributesMap.remove(s);
     }
 

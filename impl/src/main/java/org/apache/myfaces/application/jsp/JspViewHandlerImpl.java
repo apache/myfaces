@@ -350,7 +350,8 @@ public class JspViewHandlerImpl extends ViewHandler
         response.setLocale(locale);
         Config.set(request, Config.FMT_LOCALE, facesContext.getViewRoot().getLocale());
 
-        if(!buildView(response, externalContext, viewId)) {
+        if(!buildView(response, externalContext, viewId))
+        {
             //building the view was unsuccessful - an exception occurred during rendering
             //we need to jump out
             return;
@@ -414,8 +415,8 @@ public class JspViewHandlerImpl extends ViewHandler
 
         // Final step - we output any content in the wrappedResponse response from above to the response,
         // removing the wrappedResponse response from the request, we don't need it anymore
-        ServletViewResponseWrapper afterViewTagResponse = (ServletViewResponseWrapper) externalContext.getRequestMap().get(
-                AFTER_VIEW_TAG_CONTENT_PARAM);
+        ServletViewResponseWrapper afterViewTagResponse
+                = (ServletViewResponseWrapper) externalContext.getRequestMap().get(AFTER_VIEW_TAG_CONTENT_PARAM);
         externalContext.getRequestMap().remove(AFTER_VIEW_TAG_CONTENT_PARAM);
 
         if (afterViewTagResponse != null)
@@ -430,8 +431,8 @@ public class JspViewHandlerImpl extends ViewHandler
     /**
      * Render the view now - properly setting and resetting the response writer
      */
-    private void actuallyRenderView(FacesContext facesContext,
-                                    UIViewRoot viewToRender) throws IOException {
+    private void actuallyRenderView(FacesContext facesContext, UIViewRoot viewToRender) throws IOException
+    {
         // Set the new ResponseWriter into the FacesContext, saving the old one aside.
         ResponseWriter responseWriter = facesContext.getResponseWriter();
 
@@ -462,23 +463,12 @@ public class JspViewHandlerImpl extends ViewHandler
      * @param externalContext
      * @return
      */
-    private ResponseWriter hookInStateAwareWriter(ResponseWriter oldResponseWriter, StateMarkerAwareWriter stateAwareWriter, RenderKit renderKit, ExternalContext externalContext) {
+    private ResponseWriter hookInStateAwareWriter(ResponseWriter oldResponseWriter,
+                                                  StateMarkerAwareWriter stateAwareWriter,
+                                                  RenderKit renderKit,
+                                                  ExternalContext externalContext)
+    {
         return oldResponseWriter.cloneWithWriter(stateAwareWriter);
-        /*
-        ResponseWriter newResponseWriter;
-        if (oldResponseWriter != null)
-        {
-            newResponseWriter = oldResponseWriter.cloneWithWriter(stateAwareWriter);
-        }
-        else
-        {
-            if (log.isTraceEnabled())
-                log.trace("Creating new ResponseWriter");
-            newResponseWriter = renderKit.createResponseWriter(stateAwareWriter, null,
-                    ((HttpServletRequest) externalContext.getRequest()).getCharacterEncoding());
-        }
-        return newResponseWriter;
-        */
     }
 
     /**Build the view-tree before rendering.
@@ -487,13 +477,16 @@ public class JspViewHandlerImpl extends ViewHandler
      * will happen later while rendering), attaching these components
      * to the component tree, and buffering any content after the view-root.
      *
-     * @param response The current response - it will be replaced while the view-building happens (we want the text in the component tree, not on the actual servlet output stream)
+     * @param response The current response - it will be replaced while the view-building happens
+     * (we want the text in the component tree, not on the actual servlet output stream)
      * @param externalContext The external context where the response will be replaced while building
      * @param viewId The view-id to dispatch to
      * @return true if successfull, false if an error occurred during rendering
      * @throws IOException
      */
-    private boolean buildView(ServletResponse response, ExternalContext externalContext, String viewId) throws IOException {
+    private boolean buildView(ServletResponse response, ExternalContext externalContext, String viewId)
+            throws IOException
+    {
         ServletViewResponseWrapper wrappedResponse = new ServletViewResponseWrapper((HttpServletResponse) response);
 
         externalContext.setResponse(wrappedResponse);
@@ -565,7 +558,9 @@ public class JspViewHandlerImpl extends ViewHandler
         {
         // Only write state marker if javascript view state is disabled
         ExternalContext extContext = facesContext.getExternalContext();
-        if (!(JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())) {
+        if (!(JavascriptUtils.isJavascriptAllowed(extContext) &&
+                MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()))
+        {
             facesContext.getResponseWriter().write(FORM_STATE_MARKER);
         }
         }
@@ -601,9 +596,12 @@ public class JspViewHandlerImpl extends ViewHandler
         public void write(char[] cbuf, int off, int len) throws IOException
         {
             if ((off < 0) || (off > cbuf.length) || (len < 0) ||
-                    ((off + len) > cbuf.length) || ((off + len) < 0)) {
+                    ((off + len) > cbuf.length) || ((off + len) < 0))
+            {
                 throw new IndexOutOfBoundsException();
-            } else if (len == 0) {
+            }
+            else if (len == 0)
+            {
                 return;
             }
             buf.append(cbuf, off, len);
@@ -632,11 +630,15 @@ public class JspViewHandlerImpl extends ViewHandler
             String state = stateWriter.getBuffer().toString();
 
             ExternalContext extContext = facesContext.getExternalContext();
-            if (JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()) {
+            if (JavascriptUtils.isJavascriptAllowed(extContext) &&
+                    MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())
+            {
                 // If javascript viewstate is enabled no state markers were written
                 write(contentBuffer, 0, contentBuffer.length(), writer);
                 writer.write(state);
-            } else {
+            }
+            else
+            {
                 // If javascript viewstate is disabled state markers must be replaced
                 int lastFormMarkerPos = 0;
                 int formMarkerPos = 0;
@@ -651,7 +653,8 @@ public class JspViewHandlerImpl extends ViewHandler
                     lastFormMarkerPos = formMarkerPos;
                 }
                 // Write content after last state marker
-                if (lastFormMarkerPos < contentBuffer.length()) {
+                if (lastFormMarkerPos < contentBuffer.length())
+                {
                     write(contentBuffer, lastFormMarkerPos, contentBuffer.length(), writer);
                 }
             }
@@ -668,7 +671,8 @@ public class JspViewHandlerImpl extends ViewHandler
          * @param writer  the <code>Writer</code> to write to
          * @throws IOException  if an error occurs writing to specified <code>Writer</code>
          */
-        private void write(StringBuilder contentBuffer, int beginIndex, int endIndex, Writer writer) throws IOException {
+        private void write(StringBuilder contentBuffer, int beginIndex, int endIndex, Writer writer) throws IOException
+        {
             int index = beginIndex;
             int bufferSize = 2048;
             char[] bufToWrite = new char[bufferSize];

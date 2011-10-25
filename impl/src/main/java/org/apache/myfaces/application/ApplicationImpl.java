@@ -177,13 +177,15 @@ public class ApplicationImpl extends Application
     // synchronize, uses ConcurrentHashMap to allow concurrent read of map
     private final Map<String, Object> _converterIdToClassMap = new ConcurrentHashMap<String, Object>();
 
-    private final Map<Class<?>, Object> _converterTargetClassToConverterClassMap = new ConcurrentHashMap<Class<?>, Object>();
+    private final Map<Class<?>, Object> _converterTargetClassToConverterClassMap
+            = new ConcurrentHashMap<Class<?>, Object>();
     
     private final Map<String, Object> _componentClassMap = new ConcurrentHashMap<String, Object>();
 
     private final Map<String, Object> _validatorClassMap = new ConcurrentHashMap<String, Object>();
 
-    private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
+    private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap
+            = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
     private final Map<String, String> _defaultValidatorsIds = new HashMap<String, String>();
     
@@ -201,8 +203,11 @@ public class ApplicationImpl extends Application
 
     private volatile boolean _firstRequestProcessed = false;
     
-    private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap = new HashMap<Class<?>, List<ListenerFor>>() ;
-    private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap = new HashMap<Class<?>, List<ResourceDependency>>() ;
+    private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap
+            = new HashMap<Class<?>, List<ListenerFor>>() ;
+
+    private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap
+            = new HashMap<Class<?>, List<ResourceDependency>>() ;
     
     private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
             = new ArrayList<Class<? extends Converter>>();
@@ -259,7 +264,8 @@ public class ApplicationImpl extends Application
             log.finest("New Application instance created");
         }
         
-        String configParam = getFaceContext().getExternalContext().getInitParameter(DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
+        String configParam = getFaceContext().getExternalContext().
+                getInitParameter(DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
         if (configParam != null && configParam.toLowerCase().equals("true"))
         {
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
@@ -398,7 +404,8 @@ public class ApplicationImpl extends Application
             }
             catch (MissingResourceException e1)
             {            
-                throw new FacesException("Could not load resource bundle for name '" + name + "': " + e.getMessage(), e1);
+                throw new FacesException("Could not load resource bundle for name '"
+                                         + name + "': " + e.getMessage(), e1);
             }
         }
     }
@@ -519,7 +526,8 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
+    public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
+                             Class<?> sourceBaseType, Object source)
     {
         checkNull(systemEventClass, "systemEventClass");
         checkNull(source, "source");
@@ -774,7 +782,8 @@ public class ApplicationImpl extends Application
                     //On Google App Engine, javax.naming.Context is a restricted class.
                     //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
                     //below by context parameter.
-                    //It can be done with changing the order to look first at context param, but it is defined in the spec.
+                    //It can be done with changing the order to look first at
+                    // context param, but it is defined in the spec.
                     //http://java.sun.com/javaee/6/docs/api/javax/faces/application/Application.html#getProjectStage()
                     //no-op
                 }
@@ -843,7 +852,8 @@ public class ApplicationImpl extends Application
 
         if(isFirstRequestProcessed())
         {
-            throw new IllegalStateException("setResourceHandler may not be executed after a lifecycle request has been completed");
+            throw new IllegalStateException(
+                    "setResourceHandler may not be executed after a lifecycle request has been completed");
         }
         _resourceHandler = resourceHandler;
     }
@@ -917,7 +927,8 @@ public class ApplicationImpl extends Application
 
         if(isFirstRequestProcessed())
         {
-            throw new IllegalStateException("setViewHandler may not be executed after a lifecycle request has been completed");
+            throw new IllegalStateException(
+                    "setViewHandler may not be executed after a lifecycle request has been completed");
         }
         _viewHandler = viewHandler;
         if (log.isLoggable(Level.FINEST))
@@ -1084,7 +1095,8 @@ public class ApplicationImpl extends Application
             }
             else
             {
-                _converterTargetClassToConverterClassMap.put(targetClass, ClassUtils.simpleClassForName(converterClass));
+                _converterTargetClassToConverterClassMap.put(targetClass,
+                                                             ClassUtils.simpleClassForName(converterClass));
             }
 
             if (log.isLoggable(Level.FINEST))
@@ -1186,7 +1198,8 @@ public class ApplicationImpl extends Application
          */
         UIViewRoot view = context.getViewRoot();
         Application application = context.getApplication();
-        ViewDeclarationLanguage vdl = application.getViewHandler().getViewDeclarationLanguage(context, view.getViewId());
+        ViewDeclarationLanguage vdl
+                = application.getViewHandler().getViewDeclarationLanguage(context, view.getViewId());
 
         /*
          * Obtain a reference to the composite component metadata for this composite component by calling
@@ -1251,27 +1264,32 @@ public class ApplicationImpl extends Application
                 String className = name.substring(0, name.lastIndexOf('.'));
                 fqcn = componentResource.getLibraryName() + "." + className;
                 
-                if (isProduction) {
+                if (isProduction)
+                {
                     componentClass = (Class<? extends UIComponent>) _componentClassMap.get(fqcn);
                 }
-                if (componentClass == null) {
+                if (componentClass == null)
+                {
                     try
                     {
                         componentClass = ClassUtils.classForName(fqcn);
-                        if (isProduction) {
+                        if (isProduction)
+                        {
                             _componentClassMap.put(fqcn, componentClass);
                         }
                     }
                     catch (ClassNotFoundException e)
                     {
                         // Remember here that classForName did not find Class
-                        if (isProduction) {
+                        if (isProduction)
+                        {
                             _componentClassMap.put(fqcn, NOTHING.getClass());
                         }
                     }
                 }
 
-                if (componentClass != null && NOTHING.getClass() != componentClass)                {
+                if (componentClass != null && NOTHING.getClass() != componentClass)
+                {
                     try
                     {
                         component = componentClass.newInstance();
@@ -1485,7 +1503,8 @@ public class ApplicationImpl extends Application
 
         // Get EnumConverter for enum classes with no special converter, check
         // here as recursive call with java.lang.Enum will not work
-        if (converterClassOrClassName == null && targetClass.isEnum()) {
+        if (converterClassOrClassName == null && targetClass.isEnum())
+        {
             converterClassOrClassName = _converterTargetClassToConverterClassMap.get(Enum.class);
         }
 
@@ -1625,7 +1644,8 @@ public class ApplicationImpl extends Application
     
     private void _handleAttachedResourceDependencyAnnotations(FacesContext context, Object inspected)
     {
-        if (inspected == null) {
+        if (inspected == null)
+        {
             return;
         }
         
@@ -1670,7 +1690,8 @@ public class ApplicationImpl extends Application
             String name = annotation.name();
             if (name != null && name.length() > 0)
             {
-                name = ELText.parse(getExpressionFactory(), context.getELContext(), name).toString(context.getELContext());
+                name = ELText.parse(getExpressionFactory(),
+                                    context.getELContext(), name).toString(context.getELContext());
             }
             
             // Obtain the renderer-type for the resource name by passing name to 
@@ -1690,7 +1711,8 @@ public class ApplicationImpl extends Application
             String library = annotation.library();
             if (library != null && library.length() > 0)
             {
-                library = ELText.parse(getExpressionFactory(), context.getELContext(), library).toString(context.getELContext());
+                library = ELText.parse(getExpressionFactory(),
+                                       context.getELContext(), library).toString(context.getELContext());
                 // If library is non-null, store it under the key "library".
                 attributes.put("library", library);
             }
@@ -1699,7 +1721,8 @@ public class ApplicationImpl extends Application
             String target = annotation.target();
             if (target != null && target.length() > 0)
             {
-                target = ELText.parse(getExpressionFactory(), context.getELContext(), target).toString(context.getELContext());
+                target = ELText.parse(getExpressionFactory(),
+                                      context.getELContext(), target).toString(context.getELContext());
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
                 context.getViewRoot().addComponentResource(context, output, target);
@@ -1835,7 +1858,8 @@ public class ApplicationImpl extends Application
 
         if(isFirstRequestProcessed())
         {
-            throw new IllegalStateException("setStateManager may not be executed after a lifecycle request has been completed");
+            throw new IllegalStateException(
+                    "setStateManager may not be executed after a lifecycle request has been completed");
         }
         
         _stateManager = stateManager;
@@ -1903,7 +1927,8 @@ public class ApplicationImpl extends Application
         _handleResourceDependencyAnnotations(context, inspectedClass, component, isProduction);
     }
     
-    private void _handleListenerForAnnotations(FacesContext context, Object inspected, Class<?> inspectedClass, UIComponent component, boolean isProduction)
+    private void _handleListenerForAnnotations(FacesContext context, Object inspected, Class<?> inspectedClass,
+                                               UIComponent component, boolean isProduction)
     {
         List<ListenerFor> listenerForList = null;
         boolean isCachedList = false;
@@ -1951,7 +1976,8 @@ public class ApplicationImpl extends Application
         
         if(isProduction && !isCachedList) //if we're in production and the list is not yet cached, store it
         {
-            _classToListenerForMap.put(inspectedClass, listenerForList); //null value stored for listenerForList means no annotations were found
+            //null value stored for listenerForList means no annotations were found
+            _classToListenerForMap.put(inspectedClass, listenerForList);
         }
     }
 
@@ -2021,10 +2047,12 @@ public class ApplicationImpl extends Application
         }
     }
 
-    private void _handleResourceDependencyAnnotations(FacesContext context, Class<?> inspectedClass, UIComponent component, boolean isProduction)
+    private void _handleResourceDependencyAnnotations(FacesContext context, Class<?> inspectedClass,
+                                                      UIComponent component, boolean isProduction)
     {
         // This and only this method handles @ResourceDependency and @ResourceDependencies annotations
-        // The source of these annotations is Class<?> inspectedClass. Because Class<?> and its annotations cannot change 
+        // The source of these annotations is Class<?> inspectedClass.
+        // Because Class<?> and its annotations cannot change
         // during request/response, it is sufficient to process Class<?> only once per view.
         RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);
         if (rvc.isClassAlreadyProcessed(inspectedClass))
@@ -2084,10 +2112,12 @@ public class ApplicationImpl extends Application
         
         if(isProduction && !isCachedList)   //if we're in production and the list is not yet cached, store it
         {
-            _classToResourceDependencyMap.put(inspectedClass, dependencyList);  //null value stored for dependencyList means no annotations were found
+            //null value stored for dependencyList means no annotations were found
+            _classToResourceDependencyMap.put(inspectedClass, dependencyList);
         }
         
-        if (!classAlreadyProcessed) { 
+        if (!classAlreadyProcessed)
+        {
             rvc.setClassProcessed(inspectedClass);
         }
     }
@@ -2106,7 +2136,8 @@ public class ApplicationImpl extends Application
             String name = annotation.name();
             if (name != null && name.length() > 0)
             {
-                name = ELText.parse(getExpressionFactory(), context.getELContext(), name).toString(context.getELContext());
+                name = ELText.parse(getExpressionFactory(),
+                                    context.getELContext(), name).toString(context.getELContext());
             }
 
             // Obtain the renderer-type for the resource name by passing name to
@@ -2127,7 +2158,8 @@ public class ApplicationImpl extends Application
             String library = annotation.library();
             if (library != null && library.length() > 0)
             {
-                library = ELText.parse(getExpressionFactory(), context.getELContext(), library).toString(context.getELContext());
+                library = ELText.parse(getExpressionFactory(),
+                                       context.getELContext(), library).toString(context.getELContext());
                 // If library is non-null, store it under the key "library".
                 if ("this".equals(library))
                 {
@@ -2148,7 +2180,8 @@ public class ApplicationImpl extends Application
             String target = annotation.target();
             if (target != null && target.length() > 0)
             {
-                target = ELText.parse(getExpressionFactory(), context.getELContext(), target).toString(context.getELContext());
+                target = ELText.parse(getExpressionFactory(),
+                                      context.getELContext(), target).toString(context.getELContext());
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
                 context.getViewRoot().addComponentResource(context, output, target);
@@ -2162,7 +2195,8 @@ public class ApplicationImpl extends Application
         }
     }
     
-    private void _inspectRenderer(FacesContext context, UIComponent component, String componentType, String rendererType)
+    private void _inspectRenderer(FacesContext context, UIComponent component,
+                                  String componentType, String rendererType)
     {
         /*
          * The Renderer instance to inspect must be obtained by calling FacesContext.getRenderKit() and calling
@@ -2248,7 +2282,8 @@ public class ApplicationImpl extends Application
                     if (listener.isListenerForSource(source))
                     {
                         // Otherwise, if the event to be passed to the listener instances has not yet been constructed,
-                        // construct the event, passing source as the argument to the one-argument constructor that takes
+                        // construct the event, passing source as the argument
+                        // to the one-argument constructor that takes
                         // an Object. This same event instance must be passed to all listener instances.
                         event = _createEvent(systemEventClass, source, event);
     
@@ -2463,14 +2498,17 @@ public class ApplicationImpl extends Application
     {
         Object obj = classMap.get(id);
         
-        if(obj == null){
+        if(obj == null)
+        {
             return null;    //object for this id wasn't found on the map
         }
         
         if(obj instanceof Class<?>)
         {
             return (Class<?>)obj;
-        }else if (obj instanceof String ){
+        }
+        else if (obj instanceof String )
+        {
             Class<?> clazz = ClassUtils.simpleClassForName((String)obj);
             classMap.put(id, clazz);
             return clazz;
@@ -2481,11 +2519,15 @@ public class ApplicationImpl extends Application
         return null;        
     }
     
-    private boolean isLazyLoadConfigObjects(){
+    private boolean isLazyLoadConfigObjects()
+    {
         if (_lazyLoadConfigObjects == null)
         {
-            String configParam = getFaceContext().getExternalContext().getInitParameter(LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME);
-            _lazyLoadConfigObjects =  configParam == null ? LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE : Boolean.parseBoolean(configParam);
+            String configParam
+                    = getFaceContext().getExternalContext().getInitParameter(LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME);
+            _lazyLoadConfigObjects = configParam == null
+                                     ? LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE
+                                     : Boolean.parseBoolean(configParam);
         }
         return _lazyLoadConfigObjects;
     }

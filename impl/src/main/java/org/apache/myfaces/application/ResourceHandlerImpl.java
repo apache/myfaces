@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.application;
 
-import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.shared.resource.ResourceHandlerCache;
 import org.apache.myfaces.shared.resource.ResourceHandlerCache.ResourceValue;
 import org.apache.myfaces.shared.resource.ResourceHandlerSupport;

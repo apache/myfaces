@@ -158,7 +158,7 @@ public class TreeStructureManager
         private String _componentClass;
         private String _componentId;
         private TreeStructComponent[] _children = null;    // Array of children
-        private Object[] _facets = null;                   // Array of Array-tuples with Facetname and TreeStructComponent
+        private Object[] _facets = null;            // Array of Array-tuples with Facetname and TreeStructComponent
 
         TreeStructComponent(String componentClass, String componentId)
         {

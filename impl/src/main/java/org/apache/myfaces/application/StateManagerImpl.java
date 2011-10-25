@@ -20,7 +20,6 @@ package org.apache.myfaces.application;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -137,12 +136,14 @@ public class StateManagerImpl extends StateManager
 
             Object state = responseStateManager.getState(facesContext, viewId);
 
-            if (state != null) {
+            if (state != null)
+            {
                 Object[] stateArray = (Object[])state;
                 TreeStructureManager tsm = new TreeStructureManager();
                 uiViewRoot = tsm.restoreTreeStructure(stateArray[0]);
 
-                if (uiViewRoot != null) {
+                if (uiViewRoot != null)
+                {
                     facesContext.setViewRoot (uiViewRoot);
                     uiViewRoot.processRestoreState(facesContext, stateArray[1]);
                 }
@@ -191,7 +192,8 @@ public class StateManagerImpl extends StateManager
                     // additional operations for save the state if is necessary.
                     if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
                     {
-                        StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
+                        StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).
+                                saveState(facesContext, serializedView);
                     }
                     
                     return serializedView; 
@@ -248,7 +250,8 @@ public class StateManagerImpl extends StateManager
             // additional operations for save the state if is necessary.
             if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
             {
-                StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
+                StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).
+                        saveState(facesContext, serializedView);
             }
     
             if (log.isLoggable(Level.FINEST))

@@ -34,7 +34,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * hence we have to provide dummy objects
  */
 
-public class _SystemEventServletResponse extends HttpServletResponseWrapper {
+public class _SystemEventServletResponse extends HttpServletResponseWrapper
+{
 
     public _SystemEventServletResponse()
     {

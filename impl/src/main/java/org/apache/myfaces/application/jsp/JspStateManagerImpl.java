@@ -105,7 +105,8 @@ public class JspStateManagerImpl extends MyfacesStateManager
     private static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
     /**
-     * Only applicable if state saving method is "server" (= default) and if <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
+     * Only applicable if state saving method is "server" (= default) and if
+     * <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
      * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
      * If <code>false</code> the state will not be compressed.
      */
@@ -270,9 +271,13 @@ public class JspStateManagerImpl extends MyfacesStateManager
         }
         else
         {
-            Integer serverStateId = getServerStateId((Object[]) responseStateManager.getState(facesContext, uiViewRoot.getViewId()));
+            Integer serverStateId = getServerStateId((Object[])
+                    responseStateManager.getState(facesContext, uiViewRoot.getViewId()));
 
-            Object[] stateObj = (Object[])( (serverStateId == null)? null : getSerializedViewFromServletSession(facesContext, uiViewRoot.getViewId(), serverStateId) );
+            Object[] stateObj = (Object[])( (serverStateId == null)
+                    ? null
+                    : getSerializedViewFromServletSession(facesContext, uiViewRoot.getViewId(), serverStateId) );
+
             if (stateObj == null)
             {
                  log.severe("No serialized view found in server session!");
@@ -359,7 +364,10 @@ public class JspStateManagerImpl extends MyfacesStateManager
             //reconstruct tree structure from ServletSession
             Integer serverStateId = getServerStateId((Object[]) responseStateManager.getState(facesContext, viewId));
 
-            Object[] stateObj = (Object[])( (serverStateId == null)? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId) );
+            Object[] stateObj = (Object[])( (serverStateId == null)
+                    ? null
+                    : getSerializedViewFromServletSession(facesContext, viewId, serverStateId) );
+
             if (stateObj == null)
             {
                 if (log.isLoggable(Level.FINE))
@@ -375,7 +383,8 @@ public class JspStateManagerImpl extends MyfacesStateManager
             {
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("Exiting restoreTreeStructure - No tree structure state found in server session, former UIViewRoot must have been transient");
+                    log.fine("Exiting restoreTreeStructure - No tree structure state found "
+                             + "in server session, former UIViewRoot must have been transient");
                 }
                 return null;
             }
@@ -444,17 +453,22 @@ public class JspStateManagerImpl extends MyfacesStateManager
                     log.finest("Restoring view from session");
                 }
 
-                Integer serverStateId = getServerStateId((Object[]) responseStateManager.getState(facesContext, viewId));
+                Integer serverStateId
+                        = getServerStateId((Object[]) responseStateManager.getState(facesContext, viewId));
 
-                state = (serverStateId == null) ? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
+                state = (serverStateId == null)
+                        ? null
+                        : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
             }
 
-            if (state != null) {
+            if (state != null)
+            {
                 Object[] stateArray = (Object[])state;
                 TreeStructureManager tsm = new TreeStructureManager();
                 uiViewRoot = tsm.restoreTreeStructure(stateArray[0]);
 
-                if (uiViewRoot != null) {
+                if (uiViewRoot != null)
+                {
                     facesContext.setViewRoot (uiViewRoot);
                     uiViewRoot.processRestoreState(facesContext, stateArray[1]);
                 }
@@ -698,7 +712,8 @@ public class JspStateManagerImpl extends MyfacesStateManager
     {
         UIViewRoot uiViewRoot = facesContext.getViewRoot();
         String viewId = uiViewRoot.getViewId();
-        ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
+        ViewDeclarationLanguage vdl
+                = facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(facesContext,viewId);
         if (vdl != null)
         {
             StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
@@ -707,10 +722,12 @@ public class JspStateManagerImpl extends MyfacesStateManager
             {
                 if (log.isLoggable(Level.FINEST))
                 {
-                    log.finest("Calling saveView of StateManagementStrategy from getViewState: " + sms.getClass().getName());
+                    log.finest("Calling saveView of StateManagementStrategy from getViewState: "
+                               + sms.getClass().getName());
                 }
                 
-                return facesContext.getRenderKit().getResponseStateManager().getViewState(facesContext, saveView(facesContext));
+                return facesContext.getRenderKit().getResponseStateManager().
+                        getViewState(facesContext, saveView(facesContext));
             }
         }
         Object[] savedState = (Object[]) saveView(facesContext);
@@ -760,7 +777,8 @@ public class JspStateManagerImpl extends MyfacesStateManager
             }
             else
             {
-                log.severe("ResponseStateManager of render kit " + uiViewRoot.getRenderKitId() + " is no MyfacesResponseStateManager and does not support saving state in url parameters.");
+                log.severe("ResponseStateManager of render kit " + uiViewRoot.getRenderKitId()
+                        + " is no MyfacesResponseStateManager and does not support saving state in url parameters.");
             }
         }
 
@@ -948,7 +966,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
     /**
      * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
-     * @see SERIALIZE_STATE_IN_SESSION_PARAM
+     * @see #SERIALIZE_STATE_IN_SESSION_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state should be serialized in the session
      */
@@ -966,7 +984,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
     /**
      * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
-     * @see COMPRESS_SERVER_STATE_PARAM
+     * @see #COMPRESS_SERVER_STATE_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state steam should be compressed
      */
@@ -993,7 +1011,8 @@ public class JspStateManagerImpl extends MyfacesStateManager
         {
             if (log.isLoggable(Level.FINEST))
             {
-                log.finest("Processing deserializeView - deserializing serialized state. Bytes : " + ((byte[]) state).length);
+                log.finest("Processing deserializeView - deserializing serialized state. Bytes : "
+                           + ((byte[]) state).length);
             }
 
             try
@@ -1016,7 +1035,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
                         {
                             public Object[] run() throws PrivilegedActionException, IOException, ClassNotFoundException
                             {
-                                return new Object[] {in.readObject(), in.readObject()};                                    
+                                return new Object[] {in.readObject(), in.readObject()};
                             }
                         });
                     }
@@ -1067,12 +1086,14 @@ public class JspStateManagerImpl extends MyfacesStateManager
         }
         else
         {
-            log.severe("Exiting deserializeView - this method should not be called with a state of type : "+state.getClass());
+            log.severe("Exiting deserializeView - this method should not be called with a state of type : "
+                       + state.getClass());
             return null;
         }
     }
 
-    private boolean isLegacyResponseStateManager(ResponseStateManager instance) {
+    private boolean isLegacyResponseStateManager(ResponseStateManager instance)
+    {
 
         Method[] methods = instance.getClass().getMethods();
         for (Method m : methods)
@@ -1105,7 +1126,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
             while (_keys.remove(key))
             {
-                ;
+                // nothing to do
             }
             _keys.add(key);
 
@@ -1124,7 +1145,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
 
         /**
          * Reads the amount (default = 20) of views to be stored in session.
-         * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
+         * @see #NUMBER_OF_VIEWS_IN_SESSION_PARAM
          * @param context FacesContext for the current request, we are processing
          * @return Number vf views stored in the session
          */
@@ -1193,7 +1214,7 @@ public class JspStateManagerImpl extends MyfacesStateManager
          * @since 1.2.5
          * @param context
          * @return constant indicating caching mode
-         * @see CACHE_OLD_VIEWS_IN_SESSION_MODE
+         * @see #CACHE_OLD_VIEWS_IN_SESSION_MODE
          */
         protected String getCacheOldViewsInSessionMode(FacesContext context)
         {
@@ -1263,10 +1284,10 @@ public class JspStateManagerImpl extends MyfacesStateManager
         @Override
         public int hashCode()
         {
-            final int PRIME = 31;
+            final int prime = 31;
             int result = 1;
-            result = PRIME * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
-            result = PRIME * result + ((_viewId == null) ? 0 : _viewId.hashCode());
+            result = prime * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
+            result = prime * result + ((_viewId == null) ? 0 : _viewId.hashCode());
             return result;
         }
 

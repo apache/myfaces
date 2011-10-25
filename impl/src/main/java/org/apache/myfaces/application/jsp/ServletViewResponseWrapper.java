@@ -206,7 +206,8 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
          * @param encoding
          * @throws IOException
          */
-        private void writeTo(Writer out, String encoding) throws IOException{
+        private void writeTo(Writer out, String encoding) throws IOException
+        {
             //Get the charset based on the encoding or return the default if 
             //encoding == null
             Charset charset = (encoding == null) ? 
@@ -215,7 +216,8 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
             CharBuffer decodedBuffer = decoder.decode(
                     ByteBuffer.wrap(_byteArrayOutputStream.getInnerArray(),
                             0,_byteArrayOutputStream.getInnerCount()));
-            if (decodedBuffer.hasArray()){
+            if (decodedBuffer.hasArray())
+            {
                 out.write(decodedBuffer.array());
             }
         }
@@ -231,21 +233,26 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
          * in WrappedServletOutputStream.writeTo and avoid buffer
          * duplication.
          */
-        static class WrappedByteArrayOutputStream extends ByteArrayOutputStream{
+        static class WrappedByteArrayOutputStream extends ByteArrayOutputStream
+        {
             
-            public WrappedByteArrayOutputStream(){
+            public WrappedByteArrayOutputStream()
+            {
                 super();
             }
             
-            public WrappedByteArrayOutputStream(int size){
+            public WrappedByteArrayOutputStream(int size)
+            {
                 super(size);                
             }
             
-            private byte[] getInnerArray(){
+            private byte[] getInnerArray()
+            {
                 return buf; 
             }
             
-            private int getInnerCount(){
+            private int getInnerCount()
+            {
                 return count;
             }
         }
