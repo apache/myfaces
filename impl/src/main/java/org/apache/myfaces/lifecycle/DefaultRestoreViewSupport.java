@@ -70,12 +70,15 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     //private final Log log = LogFactory.getLog(DefaultRestoreViewSupport.class);
     private final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
 
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", classType="java.lang.Integer")
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler",
+                       tags="performance", classType="java.lang.Integer")
     private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
     private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
 
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="viewhandler", expectedValues="true,false", tags="performance")
-    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="viewhandler",
+                       expectedValues="true,false", tags="performance")
+    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE
+            = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
     
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
@@ -150,8 +153,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             {
                 if (traceEnabled)
                 {
-                    log.finest("Calculated viewId '" + viewId + "' from request param '" + JAVAX_SERVLET_INCLUDE_PATH_INFO
-                            + "'");
+                    log.finest("Calculated viewId '" + viewId + "' from request param '"
+                               + JAVAX_SERVLET_INCLUDE_PATH_INFO + "'");
                 }
             }
             else
@@ -195,7 +198,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
         String renderkitId = viewHandler.calculateRenderKitId(facesContext);
-        ResponseStateManager rsm = getRenderKitFactory().getRenderKit(facesContext, renderkitId).getResponseStateManager();
+        ResponseStateManager rsm
+                = getRenderKitFactory().getRenderKit(facesContext, renderkitId).getResponseStateManager();
         return rsm.isPostback(facesContext);
     }
     
@@ -296,7 +300,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     
     protected String[] getFaceletsViewMappings(FacesContext context)
     {
-        String faceletsViewMappings= context.getExternalContext().getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
+        String faceletsViewMappings
+                = context.getExternalContext().getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
         if(faceletsViewMappings == null)    //consider alias facelets.VIEW_MAPPINGS
         {
             faceletsViewMappings= context.getExternalContext().getInitParameter("facelets.VIEW_MAPPINGS");
@@ -314,7 +319,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
      */
     protected String handlePrefixMapping(String viewId, String prefix)
     {
-        /*  If prefix mapping (such as "/faces/*") is used for FacesServlet, normalize the viewId according to the following
+        /*  If prefix mapping (such as "/faces/*") is used for FacesServlet,
+        normalize the viewId according to the following
             algorithm, or its semantic equivalent, and return it.
                
             Remove any number of occurrences of the prefix mapping from the viewId. For example, if the incoming value
@@ -326,11 +332,13 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         {
             if(uri.startsWith(prefix))
             {
-                uri = uri.substring(prefix.length() - 1);    //cut off only /faces, leave the trailing '/' char for the next iteration
+                //cut off only /faces, leave the trailing '/' char for the next iteration
+                uri = uri.substring(prefix.length() - 1);
             }
             else //uri starts with '//'
             {
-                uri = uri.substring(1); //cut off the leading slash, leaving the second slash to compare for the next iteration
+                //cut off the leading slash, leaving the second slash to compare for the next iteration
+                uri = uri.substring(1);
             }
         }
         //now delete any remaining leading '/'
@@ -550,7 +558,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         if (_checkedViewIdMap == null)
         {
-            _checkedViewIdMap = Collections.synchronizedMap(new _CheckedViewIDMap<String, Boolean>(getViewIDCacheMaxSize(context)));
+            _checkedViewIdMap = Collections.synchronizedMap(
+                    new _CheckedViewIDMap<String, Boolean>(getViewIDCacheMaxSize(context)));
         }
         return _checkedViewIdMap;
     }

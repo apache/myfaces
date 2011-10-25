@@ -244,7 +244,8 @@ public final class ErrorPageWriter
      * Indicate if myfaces is responsible to handle errors. 
      * See http://wiki.apache.org/myfaces/Handling_Server_Errors for details.
      */
-    @JSFWebConfigParam(defaultValue="false, on Development Project stage: true",expectedValues="true,false", since="1.2.4")
+    @JSFWebConfigParam(defaultValue="false, on Development Project stage: true",
+                       expectedValues="true,false", since="1.2.4")
     public static final String ERROR_HANDLING_PARAMETER = "org.apache.myfaces.ERROR_HANDLING";
 
     public ErrorPageWriter()
@@ -265,56 +266,8 @@ public final class ErrorPageWriter
         debugHtml(writer, faces, faces.getViewRoot(), null,  e);
     }
     
-    /*
-    private static void debugHtml(Writer writer, FacesContext faces, Throwable e, UIViewRoot view) throws IOException
-    {
-        _init(faces);
-        Date now = new Date();
-        for (int i = 0; i < ERROR_PARTS.length; i++)
-        {
-            if ("message".equals(ERROR_PARTS[i]))
-            {
-                String msg = e.getMessage();
-                if (msg != null)
-                {
-                    writer.write(msg.replaceAll("<", TS));
-                }
-                else
-                {
-                    writer.write(e.getClass().getName());
-                }
-            }
-            else if ("trace".equals(ERROR_PARTS[i]))
-            {
-                _writeException(writer, e);
-            }
-            else if ("now".equals(ERROR_PARTS[i]))
-            {
-                writer.write(DateFormat.getDateTimeInstance().format(now));
-            }
-            else if ("tree".equals(ERROR_PARTS[i]))
-            {
-                if (view != null)
-                {
-                    _writeComponent(faces, writer, view, _getErrorId(e));
-                }
-            }
-            else if ("vars".equals(ERROR_PARTS[i]))
-            {
-                _writeVariables(writer, faces, view);
-            }
-            else if ("cause".equals(ERROR_PARTS[i]))
-            {
-                _writeCause(writer, e);
-            }
-            else
-            {
-                writer.write(ERROR_PARTS[i]);
-            }
-        }
-    }*/
-    
-    private static void debugHtml(Writer writer, FacesContext faces, UIViewRoot view, Collection<UIComponent> components, Throwable... exs) throws IOException
+    private static void debugHtml(Writer writer, FacesContext faces, UIViewRoot view,
+                                  Collection<UIComponent> components, Throwable... exs) throws IOException
     {
         _init(faces);
         Date now = new Date();
@@ -362,13 +315,6 @@ public final class ErrorPageWriter
                     {
                         writer.write("<br/>");
                     }
-                    //if (iterator != null)
-                    //{
-                    //    UIComponent uiComponent = iterator.next();
-                    //    if (uiComponent != null) {
-                    //        _writeComponent(faces, writer, uiComponent, null, /* writeChildren */false);
-                    //    }
-                    //}
                     if (msg != null)
                     {
                         writer.write(msg.replaceAll("<", TS));
@@ -484,7 +430,8 @@ public final class ErrorPageWriter
         }
     }
     
-    public static void handle(FacesContext facesContext, Collection<UIComponent> components, Throwable... exs) throws FacesException
+    public static void handle(FacesContext facesContext, Collection<UIComponent> components,
+                              Throwable... exs) throws FacesException
     {
         for (Throwable ex : exs)
         {

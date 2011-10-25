@@ -45,11 +45,13 @@ public class FacesConfigValidator
     @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false")
     public static final String VALIDATE_CONTEXT_PARAM = "org.apache.myfaces.VALIDATE";
     
-    private FacesConfigValidator(){
+    private FacesConfigValidator()
+    {
         // hidden 
     }
 
-    public static List<String> validate(ExternalContext ctx){
+    public static List<String> validate(ExternalContext ctx)
+    {
         
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(ctx);
         
@@ -86,7 +88,8 @@ public class FacesConfigValidator
         return list;
     }
 
-    private static void validateNavRules(Collection<? extends NavigationRule> navRules, List<String> list, ExternalContext ctx)
+    private static void validateNavRules(Collection<? extends NavigationRule> navRules, List<String> list,
+                                         ExternalContext ctx)
     {
         for (NavigationRule navRule : navRules)
         {
@@ -94,8 +97,8 @@ public class FacesConfigValidator
         }
     }
     
-    private static void validateNavRule(NavigationRule navRule, List<String> list, ExternalContext ctx){
-        
+    private static void validateNavRule(NavigationRule navRule, List<String> list, ExternalContext ctx)
+    {
         String fromId = navRule.getFromViewId();
         URL filePath;
         try

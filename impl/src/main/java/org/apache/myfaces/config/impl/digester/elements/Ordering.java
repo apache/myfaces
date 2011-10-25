@@ -25,8 +25,10 @@ import java.util.List;
 public class Ordering extends org.apache.myfaces.config.element.Ordering implements Serializable
 {
     
-    private List<org.apache.myfaces.config.element.OrderSlot> beforeList = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
-    private List<org.apache.myfaces.config.element.OrderSlot> afterList = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
+    private List<org.apache.myfaces.config.element.OrderSlot> beforeList
+            = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
+    private List<org.apache.myfaces.config.element.OrderSlot> afterList
+            = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
 
     public void addBeforeSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {

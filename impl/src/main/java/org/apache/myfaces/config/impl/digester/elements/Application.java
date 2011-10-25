@@ -39,10 +39,13 @@ public class Application extends org.apache.myfaces.config.element.Application i
     private final List<String> stateManager = new ArrayList<String>();
     private final List<String> propertyResolver = new ArrayList<String>();
     private final List<String> variableResolver = new ArrayList<String>();
-    private final List<org.apache.myfaces.config.element.LocaleConfig> localeConfig = new ArrayList<org.apache.myfaces.config.element.LocaleConfig>();
+    private final List<org.apache.myfaces.config.element.LocaleConfig> localeConfig
+            = new ArrayList<org.apache.myfaces.config.element.LocaleConfig>();
     private final List<String> elResolver = new ArrayList<String>();
-    private final List<org.apache.myfaces.config.element.ResourceBundle> resourceBundle = new ArrayList<org.apache.myfaces.config.element.ResourceBundle>();
-    private final List<org.apache.myfaces.config.element.SystemEventListener> systemEventListeners = new ArrayList<org.apache.myfaces.config.element.SystemEventListener>();
+    private final List<org.apache.myfaces.config.element.ResourceBundle> resourceBundle
+            = new ArrayList<org.apache.myfaces.config.element.ResourceBundle>();
+    private final List<org.apache.myfaces.config.element.SystemEventListener> systemEventListeners
+            = new ArrayList<org.apache.myfaces.config.element.SystemEventListener>();
     private boolean defaultValidatorsPresent = false;
     
     public void addActionListener(String listener)

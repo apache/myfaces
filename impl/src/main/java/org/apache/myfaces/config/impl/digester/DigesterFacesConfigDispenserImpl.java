@@ -83,7 +83,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
     
-    private Map<String, org.apache.myfaces.config.impl.digester.elements.RenderKit> renderKits = new LinkedHashMap<String, org.apache.myfaces.config.impl.digester.elements.RenderKit>();
+    private Map<String, org.apache.myfaces.config.impl.digester.elements.RenderKit> renderKits
+            = new LinkedHashMap<String, org.apache.myfaces.config.impl.digester.elements.RenderKit>();
     
     private List<String> actionListeners = new ArrayList<String>();
     private List<String> elResolvers = new ArrayList<String>();
@@ -106,7 +107,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private List<NamedEvent> namedEvents = new ArrayList<NamedEvent>();
     
-    private Map<String, FaceletsProcessing> faceletsProcessingByFileExtension = new HashMap<String, FaceletsProcessing>();
+    private Map<String, FaceletsProcessing> faceletsProcessingByFileExtension
+            = new HashMap<String, FaceletsProcessing>();
     
     /**
      * Add another unmarshalled faces config object.
@@ -617,7 +619,9 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     }
 
     /**
-     * @return Iterator over {@link org.apache.myfaces.config.element.ClientBehaviorRenderer ClientBehaviorRenderer}s for the given renderKitId
+     * @return Iterator over
+     * {@link org.apache.myfaces.config.element.ClientBehaviorRenderer ClientBehaviorRenderer}s
+     * for the given renderKitId
      */
     public Collection<ClientBehaviorRenderer> getClientBehaviorRenderers (String renderKitId)
     {

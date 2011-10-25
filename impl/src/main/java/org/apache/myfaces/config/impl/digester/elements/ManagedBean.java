@@ -41,7 +41,8 @@ public class ManagedBean extends org.apache.myfaces.config.element.ManagedBean i
     private String beanClassName;
     private Class<?> beanClass;
     private String scope;
-    private List<org.apache.myfaces.config.element.ManagedProperty> property = new ArrayList<org.apache.myfaces.config.element.ManagedProperty>();
+    private List<org.apache.myfaces.config.element.ManagedProperty> property
+            = new ArrayList<org.apache.myfaces.config.element.ManagedProperty>();
     private org.apache.myfaces.config.element.MapEntries mapEntries;
     private org.apache.myfaces.config.element.ListEntries listEntries;
     private ValueExpression scopeValueExpression;
@@ -49,13 +50,16 @@ public class ManagedBean extends org.apache.myfaces.config.element.ManagedBean i
 
     public int getInitMode()
     {
-        if (mapEntries != null) {
+        if (mapEntries != null)
+        {
             return INIT_MODE_MAP;
         }
-        if (listEntries != null) {
+        if (listEntries != null)
+        {
             return INIT_MODE_LIST;
         }
-        if (! property.isEmpty()) {
+        if (! property.isEmpty())
+        {
             return INIT_MODE_PROPERTIES;
         }
         return INIT_MODE_NO_INIT;
@@ -87,11 +91,13 @@ public class ManagedBean extends org.apache.myfaces.config.element.ManagedBean i
     }
 
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
     
-    public void setDescription(String description) {
+    public void setDescription(String description)
+    {
         this.description = description;
     }
     

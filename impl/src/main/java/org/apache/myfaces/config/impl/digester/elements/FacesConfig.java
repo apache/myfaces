@@ -30,18 +30,27 @@ import java.util.Map;
 public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig implements Serializable
 {
 
-    private List<org.apache.myfaces.config.element.Application> applications = new ArrayList<org.apache.myfaces.config.element.Application>();
-    private List<org.apache.myfaces.config.element.Factory> factories = new ArrayList<org.apache.myfaces.config.element.Factory>();
+    private List<org.apache.myfaces.config.element.Application> applications
+            = new ArrayList<org.apache.myfaces.config.element.Application>();
+    private List<org.apache.myfaces.config.element.Factory> factories
+            = new ArrayList<org.apache.myfaces.config.element.Factory>();
     private Map<String, String> components = new HashMap<String, String>();
-    private List<org.apache.myfaces.config.element.Converter> converters = new ArrayList<org.apache.myfaces.config.element.Converter>();
-    private List<org.apache.myfaces.config.element.ManagedBean> managedBeans = new ArrayList<org.apache.myfaces.config.element.ManagedBean>();
-    private List<org.apache.myfaces.config.element.NavigationRule> navigationRules = new ArrayList<org.apache.myfaces.config.element.NavigationRule>();
-    private List<org.apache.myfaces.config.element.RenderKit> renderKits = new ArrayList<org.apache.myfaces.config.element.RenderKit>();
+    private List<org.apache.myfaces.config.element.Converter> converters
+            = new ArrayList<org.apache.myfaces.config.element.Converter>();
+    private List<org.apache.myfaces.config.element.ManagedBean> managedBeans
+            = new ArrayList<org.apache.myfaces.config.element.ManagedBean>();
+    private List<org.apache.myfaces.config.element.NavigationRule> navigationRules
+            = new ArrayList<org.apache.myfaces.config.element.NavigationRule>();
+    private List<org.apache.myfaces.config.element.RenderKit> renderKits
+            = new ArrayList<org.apache.myfaces.config.element.RenderKit>();
     private List<String> lifecyclePhaseListener = new ArrayList<String>();
     private Map<String, String> validators = new HashMap<String, String>();
-    private List<org.apache.myfaces.config.element.Behavior> behaviors = new ArrayList<org.apache.myfaces.config.element.Behavior>();
-    private List<org.apache.myfaces.config.element.NamedEvent> namedEvents = new ArrayList<org.apache.myfaces.config.element.NamedEvent>();
-    private List<org.apache.myfaces.config.element.FacesConfigExtension> facesConfigExtensions = new ArrayList<org.apache.myfaces.config.element.FacesConfigExtension>();
+    private List<org.apache.myfaces.config.element.Behavior> behaviors
+            = new ArrayList<org.apache.myfaces.config.element.Behavior>();
+    private List<org.apache.myfaces.config.element.NamedEvent> namedEvents
+            = new ArrayList<org.apache.myfaces.config.element.NamedEvent>();
+    private List<org.apache.myfaces.config.element.FacesConfigExtension> facesConfigExtensions
+            = new ArrayList<org.apache.myfaces.config.element.FacesConfigExtension>();
     
     private String metadataComplete;
     private String version;

@@ -18,12 +18,8 @@
  */
 package org.apache.myfaces.el.unified.resolver;
 
-import org.apache.myfaces.el.VariableResolverImpl;
-
 import javax.el.ELContext;
-import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
-import javax.servlet.jsp.JspApplicationContext;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,9 +27,11 @@ import java.util.Arrays;
 
 /**
  * <p>
- * This composite el resolver will be used at the top level resolver for faces ({@link Application#getELResolver()})
- * and jsp (the one we add with {@link JspApplicationContext#addELResolver(javax.el.ELResolver)}. It keeps track of its
- * scope to let the variable resolver {@link VariableResolverImpl} know in which scope it is executed. This is
+ * This composite el resolver will be used at the top level resolver for faces
+ * ({@link javax.faces.application.Application#getELResolver()})
+ * and jsp (the one we add with {@link javax.servlet.jsp.JspApplicationContext#addELResolver(javax.el.ELResolver)}.
+ * It keeps track of its scope to let the variable resolver {@link org.apache.myfaces.el.VariableResolverImpl}
+ * know in which scope it is executed. This is
  * necessarry to call either the faces or the jsp resolver head.
  * </p>
  * <p>

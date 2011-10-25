@@ -29,60 +29,72 @@ import javax.faces.el.PropertyResolver;
  *
  * @author Stan Silvert
  */
-public final class NullPropertyResolver extends PropertyResolver {
-    
+public final class NullPropertyResolver extends PropertyResolver
+{
+
     /** Creates a new instance of NullPropertyResolver */
-    public NullPropertyResolver() {
+    public NullPropertyResolver()
+    {
     }
 
     @Override
-    public boolean isReadOnly(Object base, int index) throws EvaluationException, PropertyNotFoundException {
-        elContext().setPropertyResolved(false);
-        return false;
-    }
-    
-    @Override
-    public boolean isReadOnly(Object base, Object property) throws EvaluationException, PropertyNotFoundException {
+    public boolean isReadOnly(Object base, int index) throws EvaluationException, PropertyNotFoundException
+    {
         elContext().setPropertyResolved(false);
         return false;
     }
 
     @Override
-    public Object getValue(Object base, int index) throws EvaluationException, PropertyNotFoundException {
+    public boolean isReadOnly(Object base, Object property) throws EvaluationException, PropertyNotFoundException
+    {
         elContext().setPropertyResolved(false);
-        return null;
-    }
-    
-    @Override
-    public Object getValue(Object base, Object property) throws EvaluationException, PropertyNotFoundException {
-        elContext().setPropertyResolved(false);
-        return null;
+        return false;
     }
 
     @Override
-    public Class getType(Object base, int index) throws EvaluationException, PropertyNotFoundException {
-        elContext().setPropertyResolved(false);
-        return null;
-    }
-    
-     @Override
-    public Class getType(Object base, Object property) throws EvaluationException, PropertyNotFoundException {
+    public Object getValue(Object base, int index) throws EvaluationException, PropertyNotFoundException
+    {
         elContext().setPropertyResolved(false);
         return null;
     }
 
     @Override
-    public void setValue(Object base, Object property, Object value) throws EvaluationException, PropertyNotFoundException {
+    public Object getValue(Object base, Object property) throws EvaluationException, PropertyNotFoundException
+    {
+        elContext().setPropertyResolved(false);
+        return null;
+    }
+
+    @Override
+    public Class getType(Object base, int index) throws EvaluationException, PropertyNotFoundException
+    {
+        elContext().setPropertyResolved(false);
+        return null;
+    }
+
+    @Override
+    public Class getType(Object base, Object property) throws EvaluationException, PropertyNotFoundException
+    {
+        elContext().setPropertyResolved(false);
+        return null;
+    }
+
+    @Override
+    public void setValue(Object base, Object property, Object value)
+            throws EvaluationException, PropertyNotFoundException
+    {
         elContext().setPropertyResolved(false);
     }
 
     @Override
-    public void setValue(Object base, int index, Object value) throws EvaluationException, PropertyNotFoundException {
+    public void setValue(Object base, int index, Object value) throws EvaluationException, PropertyNotFoundException
+    {
         elContext().setPropertyResolved(false);
     }
 
-    private ELContext elContext() {
+    private ELContext elContext()
+    {
         return FacesContext.getCurrentInstance().getELContext();
     }
-    
+
 }

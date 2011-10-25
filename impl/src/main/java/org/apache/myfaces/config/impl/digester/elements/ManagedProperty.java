@@ -23,7 +23,6 @@ import java.io.Serializable;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 
-import org.apache.myfaces.config.impl.digester.elements.ListEntries;
 import org.apache.myfaces.util.ContainerUtils;
 
 

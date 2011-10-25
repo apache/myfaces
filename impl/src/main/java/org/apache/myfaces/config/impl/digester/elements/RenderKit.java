@@ -30,8 +30,10 @@ public class RenderKit extends org.apache.myfaces.config.element.RenderKit imple
 
     private String id;
     private List<String> renderKitClasses = new ArrayList<String>();
-    private List<org.apache.myfaces.config.element.Renderer> renderer = new ArrayList<org.apache.myfaces.config.element.Renderer>();
-    private List<org.apache.myfaces.config.element.ClientBehaviorRenderer> clientBehaviorRenderers = new ArrayList<org.apache.myfaces.config.element.ClientBehaviorRenderer>();
+    private List<org.apache.myfaces.config.element.Renderer> renderer
+            = new ArrayList<org.apache.myfaces.config.element.Renderer>();
+    private List<org.apache.myfaces.config.element.ClientBehaviorRenderer> clientBehaviorRenderers
+            = new ArrayList<org.apache.myfaces.config.element.ClientBehaviorRenderer>();
     
     public String getId()
     {

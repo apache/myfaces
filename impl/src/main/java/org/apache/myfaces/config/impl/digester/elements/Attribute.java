@@ -34,7 +34,8 @@ import java.util.List;
      Attribute names must be unique within the scope of the parent (or related)
      component.
 
-     <!ELEMENT attribute       (description*, display-name*, icon*, attribute-name, attribute-class, default-value?, suggested-value?, attribute-extension*)>
+     <!ELEMENT attribute       (description*, display-name*, icon*, attribute-name,
+attribute-class, default-value?, suggested-value?, attribute-extension*)>
 
  *          <p/>
  */

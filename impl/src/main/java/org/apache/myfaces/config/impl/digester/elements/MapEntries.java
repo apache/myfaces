@@ -32,7 +32,8 @@ public class MapEntries extends org.apache.myfaces.config.element.MapEntries imp
 
     private String keyClass;
     private String valueClass;
-    private List<org.apache.myfaces.config.element.MapEntry> entries = new ArrayList<org.apache.myfaces.config.element.MapEntry>();
+    private List<org.apache.myfaces.config.element.MapEntry> entries
+            = new ArrayList<org.apache.myfaces.config.element.MapEntry>();
 
 
     public String getKeyClass()
@@ -58,7 +59,8 @@ public class MapEntries extends org.apache.myfaces.config.element.MapEntries imp
         this.valueClass = valueClass;
     }
 
-    public void addEntry(Entry entry) {
+    public void addEntry(Entry entry)
+    {
         entries.add(entry);
     }
 
@@ -69,7 +71,8 @@ public class MapEntries extends org.apache.myfaces.config.element.MapEntries imp
     }
 
 
-    public static class Entry extends org.apache.myfaces.config.element.MapEntry {
+    public static class Entry extends org.apache.myfaces.config.element.MapEntry
+    {
        String key;
         boolean nullValue = false;
         String value;

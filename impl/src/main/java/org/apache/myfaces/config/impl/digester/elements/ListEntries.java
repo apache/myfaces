@@ -31,7 +31,8 @@ public class ListEntries extends org.apache.myfaces.config.element.ListEntries i
 {
 
     private String valueClass;
-    private List<org.apache.myfaces.config.element.ListEntry> entries = new ArrayList<org.apache.myfaces.config.element.ListEntry>();
+    private List<org.apache.myfaces.config.element.ListEntry> entries
+            = new ArrayList<org.apache.myfaces.config.element.ListEntry>();
 
 
     public String getValueClass()
@@ -59,7 +60,8 @@ public class ListEntries extends org.apache.myfaces.config.element.ListEntries i
     }
 
 
-    public static class Entry extends org.apache.myfaces.config.element.ListEntry {
+    public static class Entry extends org.apache.myfaces.config.element.ListEntry
+    {
         private boolean nullValue;
         private String value;
 

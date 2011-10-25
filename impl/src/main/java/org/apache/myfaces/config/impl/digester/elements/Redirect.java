@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.myfaces.config.impl.digester.elements.ViewParam;
 
 public class Redirect extends org.apache.myfaces.config.element.Redirect implements Serializable
 {

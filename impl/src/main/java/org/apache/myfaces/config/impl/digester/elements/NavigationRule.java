@@ -31,7 +31,8 @@ public class NavigationRule extends org.apache.myfaces.config.element.Navigation
 {
 
     private String fromViewId;
-    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases = new ArrayList<org.apache.myfaces.config.element.NavigationCase>();
+    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases
+            = new ArrayList<org.apache.myfaces.config.element.NavigationCase>();
 
 
     public String getFromViewId()

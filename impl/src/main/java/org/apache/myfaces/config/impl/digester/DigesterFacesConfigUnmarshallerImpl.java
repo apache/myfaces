@@ -107,8 +107,10 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         // 2.0 specific start
         digester.addObjectCreate("faces-config/application/system-event-listener", SystemEventListener.class);
         digester.addSetNext("faces-config/application/system-event-listener", "addSystemEventListener");
-        digester.addCallMethod("faces-config/application/system-event-listener/system-event-listener-class", "setSystemEventListenerClass",0);
-        digester.addCallMethod("faces-config/application/system-event-listener/system-event-class", "setSystemEventClass",0);
+        digester.addCallMethod("faces-config/application/system-event-listener/system-event-listener-class",
+                               "setSystemEventListenerClass",0);
+        digester.addCallMethod("faces-config/application/system-event-listener/system-event-class",
+                               "setSystemEventClass",0);
         digester.addCallMethod("faces-config/application/system-event-listener/source-class", "setSourceClass",0);
         digester.addCallMethod("faces-config/application/resource-handler", "addResourceHandler", 0);
         digester.addCallMethod("faces-config/factory/exception-handler-factory", "addExceptionHandlerFactory", 0);
@@ -177,8 +179,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addObjectCreate("faces-config/managed-bean/managed-property/map-entries", MapEntries.class);
         digester.addSetNext("faces-config/managed-bean/managed-property/map-entries", "setMapEntries");
         digester.addCallMethod("faces-config/managed-bean/managed-property/map-entries/key-class", "setKeyClass", 0);
-        digester
-                .addCallMethod("faces-config/managed-bean/managed-property/map-entries/value-class", "setValueClass", 0);
+        digester.addCallMethod("faces-config/managed-bean/managed-property/map-entries/value-class",
+                               "setValueClass", 0);
         digester.addObjectCreate("faces-config/managed-bean/managed-property/map-entries/map-entry",
                                  MapEntries.Entry.class);
         digester.addSetNext("faces-config/managed-bean/managed-property/map-entries/map-entry", "addEntry");
@@ -227,7 +229,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/navigation-rule/navigation-case/if", "setIf", 0);
         digester.addCallMethod("faces-config/navigation-rule/navigation-case/to-view-id", "setToViewId", 0);
         digester.addObjectCreate("faces-config/navigation-rule/navigation-case/redirect", Redirect.class);
-        digester.addSetProperties("faces-config/navigation-rule/navigation-case/redirect", "include-view-params", "includeViewParams");
+        digester.addSetProperties("faces-config/navigation-rule/navigation-case/redirect", "include-view-params",
+                                  "includeViewParams");
         digester.addSetNext("faces-config/navigation-rule/navigation-case/redirect", "setRedirect");
         digester.addObjectCreate("faces-config/navigation-rule/navigation-case/redirect/view-param", ViewParam.class);
         digester.addSetNext("faces-config/navigation-rule/navigation-case/redirect/view-param", "addViewParam");
@@ -247,8 +250,10 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/render-kit/renderer/renderer-class", "setRendererClass", 0);
         digester.addObjectCreate("faces-config/render-kit/client-behavior-renderer", ClientBehaviorRenderer.class);
         digester.addSetNext("faces-config/render-kit/client-behavior-renderer", "addClientBehaviorRenderer");
-        digester.addCallMethod("faces-config/render-kit/client-behavior-renderer/client-behavior-renderer-type", "setRendererType", 0);
-        digester.addCallMethod("faces-config/render-kit/client-behavior-renderer/client-behavior-renderer-class", "setRendererClass", 0);
+        digester.addCallMethod("faces-config/render-kit/client-behavior-renderer/client-behavior-renderer-type",
+                               "setRendererType", 0);
+        digester.addCallMethod("faces-config/render-kit/client-behavior-renderer/client-behavior-renderer-class",
+                               "setRendererClass", 0);
         
         // 2.0 behavior start
         digester.addObjectCreate("faces-config/behavior", Behavior.class);
@@ -288,7 +293,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/faces-config-extension", "addFacesConfigExtension");
         digester.addObjectCreate("faces-config/faces-config-extension/facelets-processing", FaceletsProcessing.class);
         digester.addSetNext("faces-config/faces-config-extension/facelets-processing", "addFaceletsProcessing");
-        digester.addCallMethod("faces-config/faces-config-extension/facelets-processing/file-extension", "setFileExtension", 0);
+        digester.addCallMethod("faces-config/faces-config-extension/facelets-processing/file-extension",
+                               "setFileExtension", 0);
         digester.addCallMethod("faces-config/faces-config-extension/facelets-processing/process-as", "setProcessAs", 0);
 
         // 2.1 facelets-processing end

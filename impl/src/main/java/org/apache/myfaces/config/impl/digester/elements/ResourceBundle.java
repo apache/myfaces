@@ -64,11 +64,13 @@ public class ResourceBundle extends org.apache.myfaces.config.element.ResourceBu
         this.var = var;
     }
 
-    public String getDisplayName() {
+    public String getDisplayName()
+    {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) {
+    public void setDisplayName(String displayName)
+    {
         this.displayName = displayName;
     }
 }

@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javax.faces.application.Resource;
 
 /**
  * MyfacesLogger wraps JDK 1.4 logging to provided a large number of 
@@ -46,52 +45,68 @@ public class MyfacesLogger
     private static final String LOGGER_NAME_PREFIX = "org.apache.myfaces.";
 
     /** for javax.faces.application and related  */
-    public static final MyfacesLogger APPLICATION_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "application");
+    public static final MyfacesLogger APPLICATION_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "application");
 
     /** for javax.faces.component and related  */
-    public static final MyfacesLogger COMPONENT_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "component");
+    public static final MyfacesLogger COMPONENT_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "component");
 
     /** for javax.faces.component.html and related  */
-    public static final MyfacesLogger COMPONENT_HTML_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "component.html");
+    public static final MyfacesLogger COMPONENT_HTML_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "component.html");
 
     /** for javax.faces.component.behavior and related  */
-    public static final MyfacesLogger COMPONENT_BEHAVIOR_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "component.behavior");
+    public static final MyfacesLogger COMPONENT_BEHAVIOR_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "component.behavior");
 
     /** for javax.faces.component.visit and related  */
-    public static final MyfacesLogger COMPONENT_VISIT_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "component.visit");
+    public static final MyfacesLogger COMPONENT_VISIT_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "component.visit");
 
     /** for javax.faces.context and related  */
-    public static final MyfacesLogger CONTEXT_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "context");
+    public static final MyfacesLogger CONTEXT_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "context");
 
     /** for javax.faces.convert and related  */
-    public static final MyfacesLogger CONVERT_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "convert");
+    public static final MyfacesLogger CONVERT_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "convert");
 
     /** for javax.faces.event and related  */
-    public static final MyfacesLogger EVENT_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "event");
+    public static final MyfacesLogger EVENT_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "event");
 
     /** for javax.faces.lifecycle and related  */
-    public static final MyfacesLogger LIFECYCLE_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "lifecycle");
+    public static final MyfacesLogger LIFECYCLE_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "lifecycle");
 
     /** for javax.faces.model and related  */
-    public static final MyfacesLogger MODEL_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "model");
+    public static final MyfacesLogger MODEL_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "model");
 
     /** for javax.faces.render and related  */
-    public static final MyfacesLogger RENDER_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "render");
+    public static final MyfacesLogger RENDER_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "render");
 
     /** for javax.faces.validator and related  */
-    public static final MyfacesLogger VALIDATOR_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "validator");
+    public static final MyfacesLogger VALIDATOR_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "validator");
 
     /** for javax.faces.view and related  */
-    public static final MyfacesLogger VIEW_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "view");
+    public static final MyfacesLogger VIEW_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "view");
 
     /** for javax.faces.view.facelets and related  */
-    public static final MyfacesLogger VIEW_FACELETS_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "view.facelets");
+    public static final MyfacesLogger VIEW_FACELETS_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "view.facelets");
 
-    /** for {@link Resource} and related  (does not have own javax.faces. package) */
-    public static final MyfacesLogger RESOURCE_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "resource");
+    /** for {@link javax.faces.application.Resource} and related  (does not have own javax.faces. package) */
+    public static final MyfacesLogger RESOURCE_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "resource");
 
     /** for myfaces config */ 
-    public static final MyfacesLogger CONFIG_LOGGER = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "config");
+    public static final MyfacesLogger CONFIG_LOGGER
+            = MyfacesLogger.createMyfacesLogger(LOGGER_NAME_PREFIX + "config");
 
 
     private MyfacesLogger(Logger log)
@@ -1782,7 +1797,9 @@ public class MyfacesLogger
             {
                 String detail = _log.getResourceBundle().getString(name +"_detail");
                 facesMessage.setDetail(detail);
-            } catch (MissingResourceException e) {
+            }
+            catch (MissingResourceException e)
+            {
                 facesMessage.setDetail(name);
             }
 
@@ -1790,7 +1807,9 @@ public class MyfacesLogger
             {
                 String related = _log.getResourceBundle().getString(name +"_related");
                 facesMessage.setRelated(related);
-            } catch (MissingResourceException e) {
+            }
+            catch (MissingResourceException e)
+            {
                 /// ignore
             }
             return facesMessage;

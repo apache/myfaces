@@ -40,7 +40,8 @@ public final class ResolverForJSPInitializer implements PhaseListener
     private boolean initialized;
     private final javax.el.CompositeELResolver _resolverForJSP;
 
-    public ResolverForJSPInitializer(final ELResolverBuilder resolverBuilder, final javax.el.CompositeELResolver resolverForJSP)
+    public ResolverForJSPInitializer(final ELResolverBuilder resolverBuilder,
+                                     final javax.el.CompositeELResolver resolverForJSP)
     {
         _resolverBuilder = resolverBuilder;
         _resolverForJSP = resolverForJSP;
