@@ -70,7 +70,8 @@ public class LifecycleImpl extends Lifecycle
      * we can expect only 2 calls for getPhaseListeners() per request (so only two copy 
      * operations of a very small list).
      */
-    private final List<PhaseListener> _phaseListenerList = new CopyOnWriteArrayList<PhaseListener>(); // new ArrayList();
+    private final List<PhaseListener> _phaseListenerList
+            = new CopyOnWriteArrayList<PhaseListener>(); // new ArrayList();
 
     /**
      * This variable should be marked as volatile to ensure all threads can see it
@@ -172,7 +173,8 @@ public class LifecycleImpl extends Lifecycle
             }
         }
         
-        catch (Throwable e) {
+        catch (Throwable e)
+        {
             // JSF 2.0: publish the executor's exception (if any).
             
             publishException (e, currentPhaseId, context);
@@ -239,7 +241,8 @@ public class LifecycleImpl extends Lifecycle
                 renderExecutor.execute(facesContext);
             }
             
-            catch (Throwable e) {
+            catch (Throwable e)
+            {
                 // JSF 2.0: publish the executor's exception (if any).
                 
                 publishException (e, renderExecutor.getPhase(), facesContext);

@@ -102,7 +102,8 @@ class PhaseListenerManager
             PhaseListener phaseListener = phaseListeners[i];
             if (isListenerForThisPhase(phaseListener, phaseId) && beforePhaseSuccess[i])
             {
-                if (event == null) {
+                if (event == null)
+                {
                     event = new PhaseEvent(facesContext, phaseId, lifecycle);
                 }
                 try

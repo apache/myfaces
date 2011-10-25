@@ -58,7 +58,8 @@ public class HeaderImplicitObject extends ImplicitObject
     @Override
     public FeatureDescriptor getDescriptor()
     {
-        return makeDescriptor(NAME, "Map whose keys are a set of request header names in the current request", Map.class);
+        return makeDescriptor(NAME, "Map whose keys are a set of request header names in the current request",
+                              Map.class);
     }
 
 }

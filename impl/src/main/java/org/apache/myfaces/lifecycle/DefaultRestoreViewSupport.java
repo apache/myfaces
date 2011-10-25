@@ -571,7 +571,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             //first, check to make sure that ProjectStage is production, if not, skip caching
             if (!context.isProjectStage(ProjectStage.Production))
             {
-                return _checkedViewIdCacheEnabled = Boolean.FALSE;
+                _checkedViewIdCacheEnabled = Boolean.FALSE;
+                return _checkedViewIdCacheEnabled;
             }
 
             //if in production, make sure that the cache is not explicitly disabled via context param

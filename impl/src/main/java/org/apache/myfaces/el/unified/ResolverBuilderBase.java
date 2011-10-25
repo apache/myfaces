@@ -58,9 +58,10 @@ public class ResolverBuilderBase
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
     
     @JSFWebConfigParam(since = "2.1.0", group="EL",
-            desc="The Class of an org.apache.commons.collections.Predicate&lt;ELResolver&gt; implementation." +
-            "If used and returns true for a ELResolver instance, such resolver will not be installed in ELResolvers chain." +
-            "Use with caution - can break functionality defined in JSF specification 'ELResolver Instances Provided by Faces'")
+        desc="The Class of an org.apache.commons.collections.Predicate&lt;ELResolver&gt; implementation."
+             + "If used and returns true for a ELResolver instance, such resolver will not be installed in "
+             + "ELResolvers chain. Use with caution - can break functionality defined in JSF specification "
+             + "'ELResolver Instances Provided by Faces'")
     public static final String EL_RESOLVER_PREDICATE = "org.apache.myfaces.EL_RESOLVER_PREDICATE";
     
     private final RuntimeConfig _config;
@@ -130,7 +131,8 @@ public class ResolverBuilderBase
                 // sort the resolvers
                 Collections.sort(resolvers, _config.getELResolverComparator());
                 
-                if (log.isLoggable(Level.INFO)) {
+                if (log.isLoggable(Level.INFO))
+                {
                     log.log(Level.INFO, "Chain of EL resolvers for {0} sorted with: {1} and the result order is {2}", 
                             new Object [] {scope, _config.getELResolverComparator(), resolvers});
                 }
@@ -153,13 +155,15 @@ public class ResolverBuilderBase
     {
         
         Predicate predicate = _config.getELResolverPredicate();
-        if (predicate != null) {
+        if (predicate != null)
+        {
             try
             {
                 // filter the resolvers
                 CollectionUtils.filter(resolvers, predicate);
                 
-                if (log.isLoggable(Level.INFO)) {
+                if (log.isLoggable(Level.INFO))
+                {
                     log.log(Level.INFO, "Chain of EL resolvers for {0} filtered with: {1} and the result is {2}", 
                             new Object [] {scope, predicate, resolvers});
                 }

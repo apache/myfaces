@@ -52,15 +52,16 @@ public class ManagedBeanResolver extends ELResolver
     private static final Logger log = Logger.getLogger(ManagedBeanResolver.class.getName());
     private static final String BEANS_UNDER_CONSTRUCTION =
             "org.apache.myfaces.el.unified.resolver.managedbean.beansUnderConstruction";
+
     private static final String CUSTOM_SCOPE_CYCLIC_REFERENCE_DETECTION =
             "org.apache.myfaces.el.unified.resolver.managedbean.customScopeCyclicReferenceDetection";
 
     // adapted from Manfred's JSF 1.1 VariableResolverImpl
-    protected static final Map<String, Scope> s_standardScopes = new HashMap<String, Scope>(16);
+    protected static final Map<String, Scope> STANDARD_SCOPES = new HashMap<String, Scope>(16);
 
     static
     {
-        s_standardScopes.put("request", new Scope()
+        STANDARD_SCOPES.put("request", new Scope()
         {
             public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
@@ -68,7 +69,7 @@ public class ManagedBeanResolver extends ELResolver
             }
         });
 
-        s_standardScopes.put("session", new Scope()
+        STANDARD_SCOPES.put("session", new Scope()
         {
             public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
@@ -76,7 +77,7 @@ public class ManagedBeanResolver extends ELResolver
             }
         });
 
-        s_standardScopes.put("application", new Scope()
+        STANDARD_SCOPES.put("application", new Scope()
         {
             public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
@@ -84,7 +85,7 @@ public class ManagedBeanResolver extends ELResolver
             }
         });
 
-        s_standardScopes.put("none", new Scope()
+        STANDARD_SCOPES.put("none", new Scope()
         {
             public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
@@ -93,7 +94,7 @@ public class ManagedBeanResolver extends ELResolver
         });
         
         // jsf 2.0 view scope
-        s_standardScopes.put("view", new Scope()
+        STANDARD_SCOPES.put("view", new Scope()
         {
             public void put(FacesContext facesContext, ExternalContext extContext, String name, Object obj)
             {
@@ -116,7 +117,7 @@ public class ManagedBeanResolver extends ELResolver
      */
     protected final Map<String, Scope> _scopes = new HashMap<String, Scope>(16);
     {
-        _scopes.putAll(s_standardScopes);
+        _scopes.putAll(STANDARD_SCOPES);
     }
 
     /**

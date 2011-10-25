@@ -117,7 +117,8 @@ public final class VariableResolverToELResolver extends ELResolver
         try
         {
             // only call the resolver if we haven't done it in current stack
-            if(!propertyGuard.contains(strProperty)) {
+            if(!propertyGuard.contains(strProperty))
+            {
                 propertyGuard.add(strProperty);
                 result = variableResolver.resolveVariable(facesContext(context), strProperty);
             }

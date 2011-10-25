@@ -102,9 +102,9 @@ public class SetPropertyActionListener implements ActionListener, StateHolder
         return _transient;
     }
 
-    public void setTransient(boolean _transient)
+    public void setTransient(boolean trans)
     {
-        this._transient = _transient;
+        this._transient = trans;
     }
 
     public ValueExpression getTarget()

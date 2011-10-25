@@ -60,6 +60,7 @@ public class ComponentImplicitObject extends ImplicitObject
     @Override
     public FeatureDescriptor getDescriptor()
     {
-        return makeDescriptor(NAME, "Represents the component most recently pushed using UIComponent.pushComponentToEL", UIComponent.class);
+        return makeDescriptor(NAME, "Represents the component most recently pushed using UIComponent.pushComponentToEL",
+                              UIComponent.class);
     }
 }

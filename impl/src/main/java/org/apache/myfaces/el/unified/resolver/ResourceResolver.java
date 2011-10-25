@@ -78,23 +78,27 @@ public final class ResourceResolver extends ELResolver
         {
             String reference = (String) property;
             int colonIndex = (reference).indexOf(':');
-            Resource resource = null;
+            Resource resource;
             
-            if (colonIndex == -1) {
+            if (colonIndex == -1)
+            {
                 // No library name, just create as a simple resource.
                 
                 resource = ((ResourceHandler) base).createResource (reference);
             }
             
-            else {
-                if (reference.lastIndexOf (':') != colonIndex) {
+            else
+            {
+                if (reference.lastIndexOf (':') != colonIndex)
+                {
                     // Max of one ":" allowed, so throw an exception.
                     
                     throw new ELException ("Malformed resource reference found when " +
                         "resolving " + property);
                 }
                 
-                else {
+                else
+                {
                     // Otherwise, portion before the ":" is the library name.
                     
                     String libraryName = reference.substring (0, colonIndex);
@@ -108,8 +112,7 @@ public final class ResourceResolver extends ELResolver
                         libraryName = ccResource.getLibraryName();
                     }
                     
-                    resource = ((ResourceHandler) base).createResource
-                        ( reference.substring(colonIndex + 1), libraryName);
+                    resource = ((ResourceHandler) base).createResource(reference.substring(colonIndex+1), libraryName);
                 }
             }
             

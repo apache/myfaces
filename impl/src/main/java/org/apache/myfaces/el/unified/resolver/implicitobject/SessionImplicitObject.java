@@ -57,7 +57,8 @@ public class SessionImplicitObject extends ImplicitObject
     @Override
     public FeatureDescriptor getDescriptor()
     {
-        return makeDescriptor(NAME, "Session instance for the current request or null if no session exists", Object.class);
+        return makeDescriptor(NAME, "Session instance for the current request or null if no session exists",
+                              Object.class);
     }
 
 }
