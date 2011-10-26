@@ -29,6 +29,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -944,31 +945,37 @@ public class FacesConfigurator
         // create the lifecycle used by the app
         LifecycleFactory lifecycleFactory
                 = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
-
-        // add phase listeners
-        for (String listenerClassName : getDispenser().getLifecyclePhaseListeners())
+        
+        //Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
+        for (Iterator<String> it = lifecycleFactory.getLifecycleIds(); it.hasNext();)
         {
-            try
+            Lifecycle lifecycle = lifecycleFactory.getLifecycle(it.next());
+            
+            // add phase listeners
+            for (String listenerClassName : getDispenser().getLifecyclePhaseListeners())
             {
-                lifecycle.addPhaseListener((PhaseListener)
-                        ClassUtils.newInstance(listenerClassName, PhaseListener.class));
+                try
+                {
+                    lifecycle.addPhaseListener((PhaseListener)
+                            ClassUtils.newInstance(listenerClassName, PhaseListener.class));
+                }
+                catch (ClassCastException e)
+                {
+                    log.severe("Class " + listenerClassName + " does not implement PhaseListener");
+                }
             }
-            catch (ClassCastException e)
-            {
-                log.severe("Class " + listenerClassName + " does not implement PhaseListener");
-            }
-        }
 
-        // if ProjectStage is Development, install the DebugPhaseListener
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext.isProjectStage(ProjectStage.Development) &&
-                MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isDebugPhaseListenerEnabled())
-        {
-            lifecycle.addPhaseListener(new DebugPhaseListener());
+            // if ProjectStage is Development, install the DebugPhaseListener
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext.isProjectStage(ProjectStage.Development) &&
+                    MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isDebugPhaseListenerEnabled())
+            {
+                lifecycle.addPhaseListener(new DebugPhaseListener());
+            }
         }
     }
 
+    /*
     private String getLifecycleId()
     {
         String id = _externalContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
@@ -979,7 +986,7 @@ public class FacesConfigurator
         }
 
         return LifecycleFactory.DEFAULT_LIFECYCLE;
-    }
+    }*/
 
     private void handleSerialFactory()
     {
