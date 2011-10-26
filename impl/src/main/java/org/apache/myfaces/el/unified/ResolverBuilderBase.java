@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELResolver;
-import javax.faces.application.Application;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
@@ -73,7 +72,8 @@ public class ResolverBuilderBase
 
     /**
      * add the el resolvers from the faces config, the el resolver wrapper for variable resolver, the el resolver
-     * wrapper for the property resolver and the el resolvers added by {@link Application#addELResolver(ELResolver)}.
+     * wrapper for the property resolver and the el resolvers added by
+     * {@link javax.faces.application.Application#addELResolver(ELResolver)}.
      * The resolvers where only added if they are not null
      * 
      * @param resolvers

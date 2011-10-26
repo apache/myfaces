@@ -49,15 +49,17 @@ public class HtmlFormRenderer
     //private static final Log log = LogFactory.getLog(HtmlFormRenderer.class);
     
     @Override
-    protected void afterFormElementsEnd(FacesContext facesContext,
-            UIComponent component) throws IOException {
+    protected void afterFormElementsEnd(FacesContext facesContext, UIComponent component) throws IOException
+    {
         super.afterFormElementsEnd(facesContext, component);
         
         ResponseWriter writer = facesContext.getResponseWriter();
         ExternalContext extContext = facesContext.getExternalContext();
         
         // If javascript viewstate is enabled write empty hidden input in forms 
-        if (JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()) {
+        if (JavascriptUtils.isJavascriptAllowed(extContext)
+            && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())
+        {
             writer.startElement(HTML.INPUT_ELEM, null);
             writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
             writer.writeAttribute(HTML.NAME_ATTR, HtmlResponseStateManager.VIEW_STATE_PARAM, null);

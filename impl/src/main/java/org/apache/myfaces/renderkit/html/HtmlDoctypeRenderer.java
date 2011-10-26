@@ -54,7 +54,8 @@ public class HtmlDoctypeRenderer extends Renderer
         ResponseWriter writer = context.getResponseWriter();
         
         Map<String, Object> attributes = component.getAttributes();
-        //<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        //<!DOCTYPE html PUBLIC
+        // "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         writer.write("<!DOCTYPE ");
         writer.write((String) attributes.get("rootElement"));
         String publicValue = (String) attributes.get("public"); 

@@ -194,7 +194,8 @@ public class HtmlFormatRenderer extends HtmlRenderer
         }
         catch (Exception e)
         {
-            log.log(Level.SEVERE, "Error formatting message of component " + htmlOutputFormat.getClientId(facesContext));
+            log.log(Level.SEVERE, "Error formatting message of component "
+                                  + htmlOutputFormat.getClientId(facesContext));
             return "";
         }
     }

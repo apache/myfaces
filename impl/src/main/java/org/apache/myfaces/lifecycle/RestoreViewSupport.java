@@ -18,9 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 /**
@@ -37,10 +35,10 @@ public interface RestoreViewSupport
      * </p>
      * <ul>
      * <li>lookup the viewid from the request attribute "javax.servlet.include.path_info"
-     * <li>if null lookup the value for viewid by {@link ExternalContext#getRequestPathInfo()}
+     * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestPathInfo()}
      * <li>if null lookup the value for viewid from the request attribute "javax.servlet.include.servlet_path"
-     * <li>if null lookup the value for viewid by {@link ExternalContext#getRequestServletPath()}
-     * <li>if null throw a {@link FacesException}
+     * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestServletPath()}
+     * <li>if null throw a {@link javax.faces.FacesException}
      * </ul>
      */
     String calculateViewId(FacesContext facesContext);

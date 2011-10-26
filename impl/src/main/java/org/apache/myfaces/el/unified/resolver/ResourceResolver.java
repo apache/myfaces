@@ -107,7 +107,8 @@ public final class ResourceResolver extends ELResolver
                     {
                         FacesContext facesContext = facesContext(context);
                         Location location = ResourceELUtils.getResourceLocationForResolver(facesContext);
-                        UIComponent cc = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location);
+                        UIComponent cc = CompositeComponentELUtils.
+                                getCompositeComponentBasedOnLocation(facesContext, location);
                         Resource ccResource = (Resource) cc.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY); 
                         libraryName = ccResource.getLibraryName();
                     }

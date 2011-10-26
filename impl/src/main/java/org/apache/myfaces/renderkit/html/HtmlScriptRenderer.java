@@ -57,23 +57,27 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.resource.Script")
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
-public class HtmlScriptRenderer extends Renderer implements ComponentSystemEventListener {
+public class HtmlScriptRenderer extends Renderer implements ComponentSystemEventListener
+{
     //private static final Log log = LogFactory.getLog(HtmlScriptRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlScriptRenderer.class.getName());
 
     private static final String IS_BUILDING_INITIAL_STATE = "javax.faces.IS_BUILDING_INITIAL_STATE";
 
-    public void processEvent(ComponentSystemEvent event) {
-        if (event instanceof PostAddToViewEvent) {
+    public void processEvent(ComponentSystemEvent event)
+    {
+        if (event instanceof PostAddToViewEvent)
+        {
             UIComponent component = event.getComponent();
             String target = (String) component.getAttributes().get(JSFAttr.TARGET_ATTR);
-            if (target != null) {
+            if (target != null)
+            {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
 
                 Location location = (Location) component.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
                 if (location != null)
                 {
-                    UIComponent ccParent = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location); 
+                    UIComponent ccParent = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location);
                     if (ccParent != null)
                     {
                         component.getAttributes().put(
@@ -86,7 +90,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                 // was propagated to relocate this resource, means the header must be refreshed.
                 // Note ajax request does not occur 
                 if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()) &&
-                    facesContext.getPartialViewContext().isAjaxRequest() && 
+                    facesContext.getPartialViewContext().isAjaxRequest() &&
                     !facesContext.getAttributes().containsKey(IS_BUILDING_INITIAL_STATE) &&
                     MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isStrictJsf2RefreshTargetAjax())
                 {
@@ -106,10 +110,12 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             //TODO target check here
             UIComponent component = event.getComponent();
             String target = (String) component.getAttributes().get(JSFAttr.TARGET_ATTR);
-            if (target != null) {
+            if (target != null)
+            {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
                 UIComponent uiTarget = facesContext.getViewRoot().getFacet(target);
-                if (uiTarget == null) {
+                if (uiTarget == null)
+                {
                     throw new FacesException("Target for component not found");
                 }
             }
@@ -117,13 +123,15 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
     }
 
     @Override
-    public boolean getRendersChildren() {
+    public boolean getRendersChildren()
+    {
         return true;
     }
 
     @Override
     public void encodeChildren(FacesContext facesContext, UIComponent component)
-            throws IOException {
+            throws IOException
+    {
         if (facesContext == null)
         {
             throw new NullPointerException("context");
@@ -137,13 +145,18 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
         String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
         boolean hasChildren = component.getChildCount() > 0;
 
-        if (resourceName != null && (!"".equals(resourceName))) {
-            if (hasChildren) {
+        if (resourceName != null && (!"".equals(resourceName)))
+        {
+            if (hasChildren)
+            {
                 log.info("Component with resourceName " + resourceName +
                         " and child components found. Child components will be ignored.");
             }
-        } else {
-            if (hasChildren) {
+        }
+        else
+        {
+            if (hasChildren)
+            {
                 // Children are encoded as usual. Usually the layout is
                 // <script type="text/javascript">
                 // ...... some javascript .......
@@ -153,9 +166,12 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                 writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
                 RendererUtils.renderChildren(facesContext, component);
                 writer.endElement(HTML.SCRIPT_ELEM);
-            } else {
+            }
+            else
+            {
                 if (!facesContext.getApplication().getProjectStage().equals(
-                        ProjectStage.Production)) {
+                        ProjectStage.Production))
+                {
                     facesContext.addMessage(component.getClientId(),
                             new FacesMessage("Component with no name and no body content, so nothing rendered."));
                 }
@@ -165,25 +181,28 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
 
     @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException {
+            throws IOException
+    {
         super.encodeEnd(facesContext, component); //check for NP
 
         Map<String, Object> componentAttributesMap = component.getAttributes();
         String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
         String libraryName = (String) componentAttributesMap.get(JSFAttr.LIBRARY_ATTR);
 
-        if (resourceName == null) {
+        if (resourceName == null)
+        {
             //log.warn("Trying to encode resource represented by component" +
             //        component.getClientId() + " without resourceName."+
             //        " It will be silenty ignored.");
             return;
         }
-        if ("".equals(resourceName)) {
+        if ("".equals(resourceName))
+        {
             return;
         }
-        
+
         String additionalQueryParams = null;
-        int index = resourceName.indexOf('?'); 
+        int index = resourceName.indexOf('?');
         if (index >= 0)
         {
             additionalQueryParams = resourceName.substring(index + 1);
@@ -191,15 +210,20 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
         }
 
         Resource resource;
-        if (libraryName == null) {
-            if (ResourceUtils.isRenderedScript(facesContext, libraryName, resourceName)) {
+        if (libraryName == null)
+        {
+            if (ResourceUtils.isRenderedScript(facesContext, libraryName, resourceName))
+            {
                 //Resource already founded
                 return;
             }
             resource = facesContext.getApplication().getResourceHandler()
                     .createResource(resourceName);
-        } else {
-            if (ResourceUtils.isRenderedScript(facesContext, libraryName, resourceName)) {
+        }
+        else
+        {
+            if (ResourceUtils.isRenderedScript(facesContext, libraryName, resourceName))
+            {
                 //Resource already founded
                 return;
             }
@@ -208,19 +232,23 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
 
         }
 
-        if (resource == null) {
+        if (resource == null)
+        {
             //no resource found
             log.warning("Resource referenced by resourceName " + resourceName +
                     (libraryName == null ? "" : " and libraryName " + libraryName) +
                     " not found in call to ResourceHandler.createResource." +
                     " It will be silenty ignored.");
             return;
-        } else {
-            if (ResourceUtils.isRenderedScript(facesContext, resource.getLibraryName(), resource.getResourceName())) {
+        }
+        else
+        {
+            if (ResourceUtils.isRenderedScript(facesContext, resource.getLibraryName(), resource.getResourceName()))
+            {
                 //Resource already founded
                 return;
             }
-            
+
             // Rendering resource
             ResourceUtils.markScriptAsRendered(facesContext, libraryName, resourceName);
             ResourceUtils.markStylesheetAsRendered(facesContext, resource.getLibraryName(), resource.getResourceName());
@@ -232,7 +260,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             String path = resource.getRequestPath();
             if (additionalQueryParams != null)
             {
-                path = path + ( (path.indexOf('?') >= 0) ? "&amp;" : "?" ) + additionalQueryParams; 
+                path = path + ((path.indexOf('?') >= 0) ? "&amp;" : "?") + additionalQueryParams;
             }
             writer.writeURIAttribute(HTML.SRC_ATTR, facesContext.getExternalContext().encodeResourceURL(path), null);
             writer.endElement(HTML.SCRIPT_ELEM);

@@ -247,9 +247,11 @@ public class WebXml
 
     protected boolean isOld(ExternalContext context)
     {
-        if (refreshPeriod > 0) {
+        if (refreshPeriod > 0)
+        {
             long ttl = this.parsingTime + refreshPeriod;
-            if (System.currentTimeMillis() > ttl) {
+            if (System.currentTimeMillis() > ttl)
+            {
                 long lastModified = WebXmlParser.getWebXmlLastModified(context);
                 return lastModified == 0 || lastModified > ttl;
             }
@@ -287,7 +289,8 @@ public class WebXml
 
     public static void update(ExternalContext context)
     {
-        if (getWebXml(context).isOld(context)){
+        if (getWebXml(context).isOld(context))
+        {
             WebXml.init(context);
         }
     }

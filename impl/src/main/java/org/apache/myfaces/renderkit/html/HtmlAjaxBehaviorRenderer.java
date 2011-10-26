@@ -70,10 +70,12 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     private static final String IDENTIFYER_MARKER = "@";
 
     public void decode(FacesContext context, UIComponent component,
-                       ClientBehavior behavior) {
+                       ClientBehavior behavior)
+    {
         assertBehavior(behavior);
         AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
-        if (ajaxBehavior.isDisabled() || !component.isRendered()) {
+        if (ajaxBehavior.isDisabled() || !component.isRendered())
+        {
             return;
         }
 
@@ -82,24 +84,27 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
 
     public String getScript(ClientBehaviorContext behaviorContext,
-                            ClientBehavior behavior) {
+                            ClientBehavior behavior)
+    {
         assertBehavior(behavior);
         AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
-        
-        if (ajaxBehavior.isDisabled()) {
+
+        if (ajaxBehavior.isDisabled())
+        {
             return null;
         }
-        
+
         return makeAjax(behaviorContext, ajaxBehavior).toString();
     }
 
 
-    private final void dispatchBehaviorEvent(UIComponent component, AjaxBehavior ajaxBehavior) {
+    private final void dispatchBehaviorEvent(UIComponent component, AjaxBehavior ajaxBehavior)
+    {
         AjaxBehaviorEvent event = new AjaxBehaviorEvent(component, ajaxBehavior);
 
         PhaseId phaseId = ajaxBehavior.isImmediate() || isComponentImmediate(component) ?
-                          PhaseId.APPLY_REQUEST_VALUES :
-                          PhaseId.INVOKE_APPLICATION;
+                PhaseId.APPLY_REQUEST_VALUES :
+                PhaseId.INVOKE_APPLICATION;
 
         event.setPhaseId(phaseId);
 
@@ -107,31 +112,40 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     }
 
 
-    private final boolean isComponentImmediate(UIComponent component) {
+    private final boolean isComponentImmediate(UIComponent component)
+    {
         /**
          * Currently implemented by ActionSource and EditableValueHolder
          * but we cannot be sure about both interfaces so
          * lets make introspection calls here
          */
         Method immediate = null;
-        try {
+        try
+        {
             immediate = component.getClass().getMethod("isImmediate", new Class[]{});
             //public isImmediate must be present
             if (Modifier.isPublic(immediate.getModifiers()) ||
-                immediate.getReturnType().equals(boolean.class) ||
-                immediate.getReturnType().equals(Boolean.class)) /*autoboxing*/ {
+                    immediate.getReturnType().equals(boolean.class) ||
+                    immediate.getReturnType().equals(Boolean.class)) /*autoboxing*/
+            {
                 return (Boolean) immediate.invoke(component, new Object[]{});
             }
 
             return false;
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e)
+        {
             //not implemented at all we can return, this is
             //not really a programmatic exception but we do not have an
             //hasMethod, and iterating over all methods is way slower
             return false;
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e)
+        {
             throw new FacesException(e);
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e)
+        {
             throw new FacesException(e);
         }
     }
@@ -145,7 +159,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
      * @param behavior the behavior
      * @return a fully working javascript with calls into jsf.js
      */
-    private final StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior) {
+    private final StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior)
+    {
 
         StringBuilder retVal = new StringBuilder();
 
@@ -157,7 +172,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         String onEvent = behavior.getOnevent();
         onEvent = (onEvent != null && !onEvent.trim().equals(EMPTY)) ? AJAX_KEY_ONEVENT + COLON + onEvent : null;
 
-        String sourceId = (context.getSourceId() == null) ? AJAX_VAL_THIS : '\''+context.getSourceId()+'\'';
+        String sourceId = (context.getSourceId() == null) ? AJAX_VAL_THIS : '\'' + context.getSourceId() + '\'';
         String event = context.getEventName();
 
         retVal.append(JS_AJAX_REQUEST);
@@ -171,24 +186,30 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         int paramSize = (params != null) ? params.size() : 0;
 
         List<String> parameterList = new ArrayList<String>(paramSize + 2);
-        if (executes != null) {
+        if (executes != null)
+        {
             parameterList.add(executes.toString());
         }
-        if (render != null) {
+        if (render != null)
+        {
             parameterList.add(render.toString());
         }
-        if (onError != null) {
-            parameterList.add (onError);
+        if (onError != null)
+        {
+            parameterList.add(onError);
         }
-        if (onEvent != null) {
-            parameterList.add (onEvent);
+        if (onEvent != null)
+        {
+            parameterList.add(onEvent);
         }
-        if (paramSize > 0) {
+        if (paramSize > 0)
+        {
             /**
              * see ClientBehaviorContext.html of the spec
              * the param list has to be added in the post back
              */
-            for (ClientBehaviorContext.Parameter param : params) {
+            for (ClientBehaviorContext.Parameter param : params)
+            {
                 //TODO we may need a proper type handling in this part
                 //lets leave it for now as it is
                 //quotes etc.. should be transferred directly
@@ -221,18 +242,24 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     }
 
 
-    private StringBuilder buildOptions(List<String> options) {
+    private StringBuilder buildOptions(List<String> options)
+    {
         StringBuilder retVal = new StringBuilder();
         retVal.append("{");
 
         boolean first = true;
-        
-        for (int i = 0, size = options.size(); i < size; i++) {
+
+        for (int i = 0, size = options.size(); i < size; i++)
+        {
             String option = options.get(i);
-            if (option != null && !option.trim().equals(EMPTY)) {
-                if (!first) {
+            if (option != null && !option.trim().equals(EMPTY))
+            {
+                if (!first)
+                {
                     retVal.append(COMMA);
-                } else {
+                }
+                else
+                {
                     first = false;
                 }
                 retVal.append(option);
@@ -242,30 +269,39 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         return retVal;
     }
 
-    private final StringBuilder mapToString(ClientBehaviorContext context, String target, Collection<String> dataHolder) {
+    private final StringBuilder mapToString(ClientBehaviorContext context, String target, Collection<String> dataHolder)
+    {
         StringBuilder retVal = new StringBuilder(20);
 
-        if (dataHolder == null) {
+        if (dataHolder == null)
+        {
             dataHolder = Collections.emptyList();
         }
         int executeSize = dataHolder.size();
-        if (executeSize > 0) {
+        if (executeSize > 0)
+        {
 
             retVal.append(target);
             retVal.append(COLON);
             retVal.append(QUOTE);
 
             int cnt = 0;
-            for (String strVal : dataHolder) {
+            for (String strVal : dataHolder)
+            {
                 cnt++;
                 strVal = strVal.trim();
-                if (!strVal.equals("")) {
-                    if (!strVal.startsWith(IDENTIFYER_MARKER)) {
+                if (!strVal.equals(""))
+                {
+                    if (!strVal.startsWith(IDENTIFYER_MARKER))
+                    {
                         retVal.append(getComponentId(context, strVal));
-                    } else {
+                    }
+                    else
+                    {
                         retVal.append(strVal);
                     }
-                    if (cnt < dataHolder.size()) {
+                    if (cnt < dataHolder.size())
+                    {
                         retVal.append(BLANK);
                     }
                 }
@@ -279,21 +315,26 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     }
 
 
-    private final String getComponentId(ClientBehaviorContext context, String id) {
+    private final String getComponentId(ClientBehaviorContext context, String id)
+    {
 
         UIComponent contextComponent = context.getComponent();
         UIComponent target = contextComponent.findComponent(id);
-        if (target == null) {
+        if (target == null)
+        {
             target = contextComponent.findComponent(UINamingContainer.getSeparatorChar(context.getFacesContext()) + id);
         }
-        if (target != null) {
+        if (target != null)
+        {
             return target.getClientId();
         }
         throw new FacesException("Component with id:" + id + " not found");
     }
 
-    private final void assertBehavior(ClientBehavior behavior) {
-        if (!(behavior instanceof AjaxBehavior)) {
+    private final void assertBehavior(ClientBehavior behavior)
+    {
+        if (!(behavior instanceof AjaxBehavior))
+        {
             throw new FacesException(ERR_NO_AJAX_BEHAVIOR);
         }
     }

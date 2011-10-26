@@ -79,7 +79,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     {
         if (_handleStateCachingMechanics == null)
         {
-            _handleStateCachingMechanics = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(), INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS, true);
+            _handleStateCachingMechanics = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
+                    INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS, true);
         }
         return _handleStateCachingMechanics.booleanValue();
     }
@@ -242,11 +243,12 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * 
      * @return the reconstructed state, or <code>null</code> if there was no saved state
      */
-    private Object[] getSavedState(FacesContext facesContext) {
+    private Object[] getSavedState(FacesContext facesContext)
+    {
         Object encodedState = 
-            facesContext.getExternalContext().
-                getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
-        if(encodedState==null || (((String) encodedState).length() == 0)) { 
+            facesContext.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
+        if(encodedState==null || (((String) encodedState).length() == 0))
+        {
             return null;
         }
 
@@ -255,7 +257,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         if (savedState == null)
         {
-            if (log.isLoggable(Level.FINEST)) {
+            if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("No saved state");
             }
             return null;

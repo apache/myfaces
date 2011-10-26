@@ -34,7 +34,8 @@ import java.util.logging.Logger;
  * Packages or Classes (not arbitrary names) to force
  * proper logging hierarchies.
  * 
- * Has predefined Logger for javax.faces related packages, like {@link MyfacesLogger#APPLICATION_LOGGER} for javax.faces.application and related
+ * Has predefined Logger for javax.faces related packages, like
+ * {@link MyfacesLogger#APPLICATION_LOGGER} for javax.faces.application and related
  * 
  * Original code copied from TrinidadLogger
  * 

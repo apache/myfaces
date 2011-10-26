@@ -229,7 +229,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             {
                 if (isUseFlashScopePurgeViewsInSession(context.getExternalContext()) && 
                     Boolean.TRUE.equals(context.getExternalContext().getRequestMap()
-                                               .get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
+                            .get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
                 {
                     key = (SerializedViewKey)
                             context.getExternalContext().getFlash().get(RESTORED_VIEW_KEY_REQUEST_ATTR);
@@ -418,7 +418,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     /**
      * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
-     * @see SERIALIZE_STATE_IN_SESSION_PARAM
+     * @see #SERIALIZE_STATE_IN_SESSION_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state should be serialized in the session
      */
@@ -436,7 +436,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     /**
      * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
-     * @see COMPRESS_SERVER_STATE_PARAM
+     * @see #COMPRESS_SERVER_STATE_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state steam should be compressed
      */
@@ -595,7 +595,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
             while (_keys.remove(key))
             {
-                ;
+                // do nothing
             }
             _keys.add(key);
 
@@ -619,7 +619,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     {
                         while (_keys.remove(keyToRemove))
                         {
-                            ;
+                            // do nothing
                         }
 
                         Object oldView = _serializedViews.remove(keyToRemove);
@@ -668,7 +668,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         
         /**
          * Reads the amount (default = 20) of views to be stored in session.
-         * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
+         * @see #NUMBER_OF_VIEWS_IN_SESSION_PARAM
          * @param context FacesContext for the current request, we are processing
          * @return Number vf views stored in the session
          */
@@ -737,7 +737,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
          * @since 1.2.5
          * @param context
          * @return constant indicating caching mode
-         * @see CACHE_OLD_VIEWS_IN_SESSION_MODE
+         * @see #CACHE_OLD_VIEWS_IN_SESSION_MODE
          */
         protected String getCacheOldViewsInSessionMode(FacesContext context)
         {
@@ -808,10 +808,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         @Override
         public int hashCode()
         {
-            final int PRIME = 31;
+            final int prime = 31;
             int result = 1;
-            result = PRIME * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
-            result = PRIME * result + ((_viewId == null) ? 0 : _viewId.hashCode());
+            result = prime * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
+            result = prime * result + ((_viewId == null) ? 0 : _viewId.hashCode());
             return result;
         }
 

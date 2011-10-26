@@ -91,7 +91,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
         encodeBefore(facesContext, writer, uiComponent);
 
         writer.startElement(HTML.LABEL_ELEM, uiComponent);
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder
+            && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
         {
             if (!behaviors.isEmpty())
             {
@@ -102,7 +103,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
             }
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, uiComponent, behaviors);
+            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer,
+                                                                                             uiComponent, behaviors);
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderLabelPassthroughPropertiesWithoutEvents(writer, 
@@ -110,7 +112,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                                                       HTML.LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
             }
         }
         else
@@ -156,7 +159,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(uiComponent, org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
+                    escape = RendererUtils.getBooleanAttribute(uiComponent,
+                                                               org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
                                                                true); //default is to escape
                 }                
                 if (escape)

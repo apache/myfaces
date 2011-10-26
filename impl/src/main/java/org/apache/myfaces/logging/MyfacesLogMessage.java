@@ -23,7 +23,8 @@ import javax.faces.application.FacesMessage;
 /**
  * Normal logging or/and exception handling works with one String message (like {@link Throwable#getMessage()}.
  *  
- * The purpose of this class is to provide object oriented representation of message - useful properties can be added later.
+ * The purpose of this class is to provide object oriented representation
+ * of message - useful properties can be added later.
  * 
  */
 public class MyfacesLogMessage extends FacesMessage

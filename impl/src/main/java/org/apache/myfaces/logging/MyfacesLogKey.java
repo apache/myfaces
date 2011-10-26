@@ -21,12 +21,14 @@ package org.apache.myfaces.logging;
 /**
  * Object representation of log key. 
  */
-public interface MyfacesLogKey {
+public interface MyfacesLogKey
+{
     
     /**
      * Returns String representation of this log key. 
      * 
-     * Q: why is this method name(), not getName()? A: java enum can out of the box implement this interface - {@link Enum#name()}
+     * Q: why is this method name(), not getName()? A: java enum can out of the box
+     * implement this interface - {@link Enum#name()}
      * 
      * @return String reprezentation of log key
      */
