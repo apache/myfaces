@@ -2268,7 +2268,8 @@ public abstract class UIComponentBase extends UIComponent
     {
         return __getSharedStringBuilder(FacesContext.getCurrentInstance());
     }
-    
+
+    // TODO checkstyle complains; does this have to lead with __ ?
     static StringBuilder __getSharedStringBuilder(FacesContext facesContext)
     {
         Map<Object, Object> attributes = facesContext.getAttributes();
@@ -2280,9 +2281,12 @@ public abstract class UIComponentBase extends UIComponent
             sb = new StringBuilder();
             attributes.put(_STRING_BUILDER_KEY, sb);
         }
+        else
+        {
 
-        // clear out the stringBuilder by setting the length to 0
-        sb.setLength(0);
+            // clear out the stringBuilder by setting the length to 0
+            sb.setLength(0);
+        }
 
         return sb;
     }
