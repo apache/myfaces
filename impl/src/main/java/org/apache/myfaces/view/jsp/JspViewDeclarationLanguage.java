@@ -143,9 +143,9 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
                 {
                     // check facelets-only namespaces
                     String namespace = null;
-                    if (message.contains(UILibrary.Namespace))
+                    if (message.contains(UILibrary.NAMESPACE))
                     {
-                        namespace = UILibrary.Namespace;
+                        namespace = UILibrary.NAMESPACE;
                     }
                     else if (message.contains(CompositeLibrary.NAMESPACE))
                     {

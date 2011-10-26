@@ -123,7 +123,8 @@ public class AjaxHandler extends TagHandler implements
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression", deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) throws javax.faces.event.AbortProcessingException")
+    @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression",
+            deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) throws javax.faces.event.AbortProcessingException")
     private final TagAttribute _listener;
 
     /**
@@ -498,7 +499,8 @@ public class AjaxHandler extends TagHandler implements
             _expr = (MethodExpression) state;
         }
 
-        public Object saveState(FacesContext context) {
+        public Object saveState(FacesContext context)
+        {
             if (initialStateMarked())
             {
                 return null;

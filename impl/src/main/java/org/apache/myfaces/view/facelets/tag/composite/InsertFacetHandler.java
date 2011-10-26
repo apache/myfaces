@@ -54,13 +54,13 @@ public class InsertFacetHandler extends TagHandler
     //public static String INSERT_FACET_TARGET_ID = "org.apache.myfaces.INSERT_FACET_TARGET_ID.";
     //public static String INSERT_FACET_ORDERING = "org.apache.myfaces.INSERT_FACET_ORDERING.";
     
-    public static String INSERT_FACET_USED = "org.apache.myfaces.INSERT_FACET_USED";
+    public static final String INSERT_FACET_USED = "org.apache.myfaces.INSERT_FACET_USED";
     
     /**
      * Key used to save on bean descriptor a map containing the metadata
      * information related to this tag. It will be used later to check "required" property.
      */
-    public static String INSERT_FACET_KEYS = "org.apache.myfaces.INSERT_FACET_KEYS";
+    public static final String INSERT_FACET_KEYS = "org.apache.myfaces.INSERT_FACET_KEYS";
     
     private static final Logger log = Logger.getLogger(InsertFacetHandler.class.getName());
     

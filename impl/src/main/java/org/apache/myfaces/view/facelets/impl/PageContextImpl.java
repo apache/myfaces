@@ -25,7 +25,8 @@ import javax.el.ValueExpression;
 
 import org.apache.myfaces.view.facelets.PageContext;
 
-public class PageContextImpl extends PageContext {
+public class PageContextImpl extends PageContext
+{
     
     private Map<String, ValueExpression> _attributes = null;
     

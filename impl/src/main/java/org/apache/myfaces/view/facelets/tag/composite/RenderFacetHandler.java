@@ -48,7 +48,7 @@ public class RenderFacetHandler extends ComponentHandler
 {
     private static final Logger log = Logger.getLogger(RenderFacetHandler.class.getName());
     
-    public static String RENDER_FACET_USED = "org.apache.myfaces.RENDER_FACET_USED";
+    public static final String RENDER_FACET_USED = "org.apache.myfaces.RENDER_FACET_USED";
     
     /**
      * The name that identify the current facet.

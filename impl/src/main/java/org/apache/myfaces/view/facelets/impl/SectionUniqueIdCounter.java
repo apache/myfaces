@@ -133,7 +133,8 @@ public class SectionUniqueIdCounter
         }
     }
     
-    private static class Section {
+    private static class Section
+    {
         
         private String prefix;
         private long counter;

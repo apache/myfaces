@@ -428,14 +428,14 @@ public class FaceletViewHandler extends ViewHandler
         // is really going to ask for
         try
         {
-            writer = renderKit.createResponseWriter(NullWriter.Instance, contentType, encoding);
+            writer = renderKit.createResponseWriter(NullWriter.INSTANCE, contentType, encoding);
         }
         catch (IllegalArgumentException e)
         {
             // Added because of an RI bug prior to 1.2_05-b3. Might as well leave it in case other
             // impls have the same problem. https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=613
             log.fine("The impl didn't correctly handled '*/*' in the content type list.  Trying '*/*' directly.");
-            writer = renderKit.createResponseWriter(NullWriter.Instance, "*/*", encoding);
+            writer = renderKit.createResponseWriter(NullWriter.INSTANCE, "*/*", encoding);
         }
 
         // Override the JSF provided content type if necessary
@@ -879,7 +879,7 @@ public class FaceletViewHandler extends ViewHandler
     protected static class NullWriter extends Writer
     {
 
-        static final NullWriter Instance = new NullWriter();
+        static final NullWriter INSTANCE = new NullWriter();
 
         public void write(char[] buffer)
         {

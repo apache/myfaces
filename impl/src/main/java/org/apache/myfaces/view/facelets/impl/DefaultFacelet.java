@@ -118,7 +118,8 @@ final class DefaultFacelet extends AbstractFacelet
     {
         FaceletCompositionContext myFaceletContext = null;
         boolean faceletCompositionContextInitialized = false;
-        if ( (myFaceletContext = FaceletCompositionContext.getCurrentInstance(facesContext)) == null)
+        myFaceletContext = FaceletCompositionContext.getCurrentInstance(facesContext);
+        if (myFaceletContext == null)
         {
             myFaceletContext = new FaceletCompositionContextImpl(_factory, facesContext);
             myFaceletContext.init(facesContext);
@@ -343,8 +344,9 @@ final class DefaultFacelet extends AbstractFacelet
 
     /**
      * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
-     * getRelativePath(String)}, then calls {@link #include(FaceletContext, UIComponent, URL) include(FaceletContext,
-     * UIComponent, URL)}.
+     * getRelativePath(String)}, then calls
+     * {@link #include(org.apache.myfaces.view.facelets.AbstractFaceletContext,
+     * javax.faces.component.UIComponent, java.net.URL)}.
      * 
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx

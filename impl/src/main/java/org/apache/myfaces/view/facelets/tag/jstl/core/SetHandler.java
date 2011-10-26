@@ -131,7 +131,9 @@ public class SetHandler extends TagHandler
                 ValueExpression expr = ctx.getExpressionFactory().createValueExpression(
                         elCtx, expStr.toString(), Object.class);
                 expr.setValue(elCtx, veObj.getValue(elCtx));
-            } else {
+            }
+            else
+            {
                 //ctx.getVariableMapper().setVariable(varStr, veObj);
                 AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
                 actx.getPageContext().getAttributes().put(varStr, veObj);

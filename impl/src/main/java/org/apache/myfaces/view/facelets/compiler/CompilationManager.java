@@ -450,13 +450,13 @@ final class CompilationManager
 
     protected static boolean isRemove(String ns, String name)
     {
-        return UILibrary.Namespace.equals(ns) && "remove".equals(name);
+        return UILibrary.NAMESPACE.equals(ns) && "remove".equals(name);
     }
 
     protected static boolean isTrimmed(String ns, String name)
     {
-        return UILibrary.Namespace.equals(ns)
-                && (CompositionHandler.Name.equals(name) || ComponentRefHandler.Name.equals(name));
+        return UILibrary.NAMESPACE.equals(ns)
+                && (CompositionHandler.NAME.equals(name) || ComponentRefHandler.NAME.equals(name));
     }
     
     protected static boolean isCompositeComponentInterface(String ns, String name)

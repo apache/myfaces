@@ -73,8 +73,10 @@ public class Jsp20FacesInitializer extends AbstractFacesInitializer
         // are available).
         ExpressionFactory expressionFactory = getUserDefinedExpressionFactory(externalContext);
 
-        if (expressionFactory == null) {
-            if (log.isLoggable(Level.INFO)) {
+        if (expressionFactory == null)
+        {
+            if (log.isLoggable(Level.INFO))
+            {
                 log.info("Either you haven't specified the ExpressionFactory implementation, or an " 
                         + "error occured while instantiating the implementation you've specified. "
                         + "However, attempting to load a known implementation.");

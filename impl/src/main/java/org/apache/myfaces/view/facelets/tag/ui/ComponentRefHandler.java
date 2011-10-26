@@ -38,7 +38,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 public final class ComponentRefHandler extends ComponentHandler
 {
 
-    public final static String Name = "component";
+    public final static String NAME = "component";
 
     public ComponentRefHandler(ComponentConfig config)
     {

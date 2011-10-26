@@ -24,13 +24,15 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.BehaviorHolderAttachedObjectHandler;
 
 /**
- * This wrapper is used in FaceletViewDeclarationLanguage.retargetAttachedObjects(FacesContext, UIComponent, List&lt;AttachedObjectHandler&gt;)
+ * This wrapper is used in
+ * FaceletViewDeclarationLanguage#retargetAttachedObjects(FacesContext, UIComponent, List&lt;AttachedObjectHandler&gt;)
  * to redirect the client behavior attached object when there is a chain of composite components.  
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper implements BehaviorHolderAttachedObjectHandler, FacesWrapper<BehaviorHolderAttachedObjectHandler>
+public class ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper
+        implements BehaviorHolderAttachedObjectHandler, FacesWrapper<BehaviorHolderAttachedObjectHandler>
 {
     
     private final BehaviorHolderAttachedObjectHandler _delegate;

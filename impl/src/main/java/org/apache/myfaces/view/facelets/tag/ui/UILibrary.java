@@ -28,13 +28,13 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 public final class UILibrary extends AbstractTagLibrary
 {
 
-    public final static String Namespace = "http://java.sun.com/jsf/facelets";
+    public final static String NAMESPACE = "http://java.sun.com/jsf/facelets";
 
-    public final static UILibrary Instance = new UILibrary();
+    public final static UILibrary INSTANCE = new UILibrary();
 
     public UILibrary()
     {
-        super(Namespace);
+        super(NAMESPACE);
 
         this.addTagHandler("include", IncludeHandler.class);
 

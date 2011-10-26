@@ -47,7 +47,8 @@ import org.apache.myfaces.view.facelets.util.ParameterCheck;
  * @since 2.1.0
  *
  */
-class FaceletCacheImpl extends FaceletCache<DefaultFacelet> {
+class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
+{
 
     private static final long INFINITE_DELAY = -1;
     private static final long NO_CACHE_DELAY = 0;

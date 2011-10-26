@@ -31,7 +31,8 @@ import javax.faces.view.Location;
  * 
  * @author martinkoci
  */
-public interface LocationAware {
+public interface LocationAware
+{
     
     /**
      * @return the {@link Location} instance where this object exists/is related to

@@ -79,11 +79,13 @@ public final class Classpath
             JarFile jar = null;
             if (conn instanceof JarURLConnection)
             {
-                try {
+                try
+                {
                     jar = ((JarURLConnection) conn).getJarFile();
                 }
                 
-                catch (Throwable e) {
+                catch (Throwable e)
+                {
                     // This can happen if the classloader provided us a URL that it thinks exists
                     // but really doesn't.  In particular, if a JAR contains META-INF/MANIFEST.MF
                     // but not META-INF/, some classloaders may incorrectly report that META-INF/
@@ -310,28 +312,39 @@ public final class Classpath
             }
         }
     }
-    
-    private static String decodeFilesystemUrl(String url) {
+
+    private static String decodeFilesystemUrl(String url)
+    {
         //borrowed from commons-io FileUtils.
         String decoded = url;
-        if (url != null && url.indexOf('%') >= 0) {
+        if (url != null && url.indexOf('%') >= 0)
+        {
             int n = url.length();
             StringBuffer buffer = new StringBuffer();
             ByteBuffer bytes = ByteBuffer.allocate(n);
-            for (int i = 0; i < n;) {
-                if (url.charAt(i) == '%') {
-                    try {
-                        do {
+            for (int i = 0; i < n; )
+            {
+                if (url.charAt(i) == '%')
+                {
+                    try
+                    {
+                        do
+                        {
                             byte octet = (byte) Integer.parseInt(url.substring(i + 1, i + 3), 16);
                             bytes.put(octet);
                             i += 3;
                         } while (i < n && url.charAt(i) == '%');
                         continue;
-                    } catch (RuntimeException e) {
+                    }
+                    catch (RuntimeException e)
+                    {
                         // malformed percent-encoded octet, fall through and
                         // append characters literally
-                    } finally {
-                        if (bytes.position() > 0) {
+                    }
+                    finally
+                    {
+                        if (bytes.position() > 0)
+                        {
                             bytes.flip();
                             buffer.append(UTF8.decode(bytes).toString());
                             bytes.clear();

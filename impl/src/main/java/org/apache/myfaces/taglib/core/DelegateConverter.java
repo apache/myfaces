@@ -50,7 +50,8 @@ public class DelegateConverter implements Converter, StateHolder
     private ValueExpression _binding;
     private String _converterIdString = null;
     
-    public DelegateConverter(){
+    public DelegateConverter()
+    {
         
     }
     
@@ -139,7 +140,8 @@ public class DelegateConverter implements Converter, StateHolder
                 if (null != _converterIdString)
                 {
                     converter = facesContext.getApplication().createConverter(_converterIdString);
-                } else 
+                }
+                else
                 {
                     String converterId = (String) _converterId.getValue(elContext);
                     converter = facesContext.getApplication().createConverter(converterId);

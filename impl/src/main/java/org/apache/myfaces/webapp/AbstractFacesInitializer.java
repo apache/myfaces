@@ -55,7 +55,8 @@ import java.util.logging.Logger;
 /**
  * Performs common initialization tasks.
  */
-public abstract class AbstractFacesInitializer implements FacesInitializer {
+public abstract class AbstractFacesInitializer implements FacesInitializer
+{
     /**
      * The logger instance for this class.
      */
@@ -95,9 +96,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * Performs all necessary initialization tasks like configuring this JSF
      * application.
      */
-    public void initFaces(ServletContext servletContext) {
-        try {
-            if (log.isLoggable(Level.FINEST)) {
+    public void initFaces(ServletContext servletContext)
+    {
+        try
+        {
+            if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("Initializing MyFaces");
             }
 
@@ -117,7 +121,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
                         facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
 
-                if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty()) {
+                if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty())
+                {
                     // check if the FacesServlet has been added dynamically
                     // in a Servlet 3.0 environment by MyFacesContainerInitializer
                     Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
@@ -135,7 +140,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
             initContainerIntegration(servletContext, externalContext);
 
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
-            if (!"false".equals(useEncryption)) { // the default value is true
+            if (!"false".equals(useEncryption)) // the default value is true
+            {
                 StateUtils.initSecret(servletContext);
             }
 
@@ -186,7 +192,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 log.log(Level.WARNING, message.toString());
             }
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             log.log(Level.SEVERE, "An error occured while initializing MyFaces: "
                       + ex.getMessage(), ex);
         }
@@ -265,7 +273,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * @param eventClass     the class to be passed down into the dispatching
      *                       code
      */
-    private void _dispatchApplicationEvent(ServletContext servletContext, Class<? extends SystemEvent> eventClass) {
+    private void _dispatchApplicationEvent(ServletContext servletContext, Class<? extends SystemEvent> eventClass)
+    {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
         application.publishEvent(facesContext, eventClass, Application.class, application);
@@ -274,17 +283,19 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
     /**
      * Cleans up all remaining resources (well, theoretically).
      */
-    public void destroyFaces(ServletContext servletContext) {
-        
+    public void destroyFaces(ServletContext servletContext)
+    {
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        
+
         if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(), INITIALIZE_ALWAYS_STANDALONE, false))
         {
             //We need to check if the current application was initialized by myfaces
             WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
                     facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
-            
-            if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty()) {
+
+            if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty())
+            {
                 // check if the FacesServlet has been added dynamically
                 // in a Servlet 3.0 environment by MyFacesContainerInitializer
                 Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
@@ -298,7 +309,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
                 }
             }
         }
-        
+
         _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
 
         // clear the cache of MetaRulesetImpl in order to prevent a memory leak
@@ -306,7 +317,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
 
         // TODO is it possible to make a real cleanup?
     }
-    
+
     /**
      * Configures this JSF application. It's required that every
      * FacesInitializer (i.e. every subclass) calls this method during
@@ -318,7 +329,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * @return the current runtime configuration
      */
     protected RuntimeConfig buildConfiguration(ServletContext servletContext,
-                                               ExternalContext externalContext, ExpressionFactory expressionFactory) {
+                                               ExternalContext externalContext, ExpressionFactory expressionFactory)
+    {
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         runtimeConfig.setExpressionFactory(expressionFactory);
 
@@ -330,13 +342,16 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
         return runtimeConfig;
     }
 
-    protected void validateFacesConfig(ServletContext servletContext, ExternalContext externalContext) {
+    protected void validateFacesConfig(ServletContext servletContext, ExternalContext externalContext)
+    {
         String validate = servletContext.getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM);
-        if ("true".equals(validate) && log.isLoggable(Level.WARNING)) { // the default value is false
+        if ("true".equals(validate) && log.isLoggable(Level.WARNING))
+        { // the default value is false
             List<String> warnings = FacesConfigValidator.validate(
                     externalContext);
 
-            for (String warning : warnings) {
+            for (String warning : warnings)
+            {
                 log.warning(warning);
             }
         }
@@ -350,13 +365,16 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * @return User-specified ExpressionFactory, or
      *         <code>null</code>, if no no custom implementation was specified
      */
-    protected static ExpressionFactory getUserDefinedExpressionFactory(ExternalContext externalContext) {
+    protected static ExpressionFactory getUserDefinedExpressionFactory(ExternalContext externalContext)
+    {
         String expressionFactoryClassName = WebConfigParamUtils.getStringInitParameter(externalContext, EXPRESSION_FACTORY);
         if (expressionFactoryClassName != null
-            && expressionFactoryClassName.trim().length() > 0) {
-            if (log.isLoggable(Level.FINE)) {
+                && expressionFactoryClassName.trim().length() > 0)
+        {
+            if (log.isLoggable(Level.FINE))
+            {
                 log.fine("Attempting to load the ExpressionFactory implementation "
-                          + "you've specified: '" + expressionFactoryClassName + "'.");
+                        + "you've specified: '" + expressionFactoryClassName + "'.");
             }
 
             return loadExpressionFactory(expressionFactoryClassName);
@@ -372,20 +390,25 @@ public abstract class AbstractFacesInitializer implements FacesInitializer {
      * @return the newly created ExpressionFactory implementation, or
      *         <code>null</code>, if an error occurred
      */
-    protected static ExpressionFactory loadExpressionFactory(String expressionFactoryClassName) {
-        try {
+    protected static ExpressionFactory loadExpressionFactory(String expressionFactoryClassName)
+    {
+        try
+        {
             Class<?> expressionFactoryClass = Class.forName(expressionFactoryClassName);
             return (ExpressionFactory) expressionFactoryClass.newInstance();
-        } catch (Exception ex) {
-            if (log.isLoggable(Level.FINE)) {
+        }
+        catch (Exception ex)
+        {
+            if (log.isLoggable(Level.FINE))
+            {
                 log.log(Level.FINE, "An error occured while instantiating a new ExpressionFactory. "
-                          + "Attempted to load class '" + expressionFactoryClassName + "'.", ex);
+                        + "Attempted to load class '" + expressionFactoryClassName + "'.", ex);
             }
         }
 
         return null;
     }
-    
+
     public FacesContext initStartupFacesContext(ServletContext servletContext)
     {
         // We cannot use FacesContextFactory, because it is necessary to initialize 

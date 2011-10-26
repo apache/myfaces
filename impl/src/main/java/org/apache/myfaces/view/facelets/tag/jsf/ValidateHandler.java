@@ -126,7 +126,8 @@ public class ValidateHandler extends MetaTagHandlerImpl
         {
             throw new TagException(
                                    this.tag,
-                                   "Default behavior invoked of requiring a validator-id passed in the constructor, must override ValidateHandler(ValidatorConfig)");
+                                   "Default behavior invoked of requiring a validator-id passed in the "
+                                   + "constructor, must override ValidateHandler(ValidatorConfig)");
         }
         return ctx.getFacesContext().getApplication().createValidator(this.validatorId);
     }

@@ -120,7 +120,7 @@ public final class EditableValueHolderRule extends MetaRule
     
     private final static Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
 
-    public final static EditableValueHolderRule Instance = new EditableValueHolderRule();
+    public final static EditableValueHolderRule INSTANCE = new EditableValueHolderRule();
 
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {

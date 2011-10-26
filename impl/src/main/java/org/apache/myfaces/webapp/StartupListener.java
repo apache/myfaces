@@ -30,7 +30,8 @@ import javax.servlet.ServletContextEvent;
  *
  * @author Werner Punz
  */
-public interface StartupListener {
+public interface StartupListener
+{
     /**
      * This method is called before myfaces initializes
      *

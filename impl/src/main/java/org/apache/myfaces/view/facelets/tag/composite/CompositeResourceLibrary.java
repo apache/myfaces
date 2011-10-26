@@ -65,7 +65,8 @@ public class CompositeResourceLibrary implements TagLibrary
 
         _extension = loadFaceletExtension(externalContext);
         
-        String defaultSuffixes = WebConfigParamUtils.getStringInitParameter(externalContext, ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX );
+        String defaultSuffixes = WebConfigParamUtils.getStringInitParameter(externalContext,
+                ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX );
         
         _defaultSuffixesArray = StringUtils.splitShortString(defaultSuffixes, ' ');
         
@@ -268,8 +269,9 @@ public class CompositeResourceLibrary implements TagLibrary
         }
         return null;
     }
-    
-    private static class ComponentConfigWrapper implements ComponentConfig {
+
+    private static class ComponentConfigWrapper implements ComponentConfig
+    {
 
         protected final TagConfig parent;
 
@@ -278,29 +280,35 @@ public class CompositeResourceLibrary implements TagLibrary
         protected final String rendererType;
 
         public ComponentConfigWrapper(TagConfig parent, String componentType,
-                String rendererType) {
+                                      String rendererType)
+        {
             this.parent = parent;
             this.componentType = componentType;
             this.rendererType = rendererType;
         }
 
-        public String getComponentType() {
+        public String getComponentType()
+        {
             return this.componentType;
         }
 
-        public String getRendererType() {
+        public String getRendererType()
+        {
             return this.rendererType;
         }
 
-        public FaceletHandler getNextHandler() {
+        public FaceletHandler getNextHandler()
+        {
             return this.parent.getNextHandler();
         }
 
-        public Tag getTag() {
+        public Tag getTag()
+        {
             return this.parent.getTag();
         }
 
-        public String getTagId() {
+        public String getTagId()
+        {
             return this.parent.getTagId();
         }
     }

@@ -59,7 +59,8 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 @JSFFaceletTag(
         name = "f:event",
         bodyContent = "empty")
-public final class EventHandler extends TagHandler {
+public final class EventHandler extends TagHandler
+{
     
     private static final Class<?>[] COMPONENT_SYSTEM_EVENT_PARAMETER = new Class<?>[] { ComponentSystemEvent.class };
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
@@ -427,7 +428,9 @@ public final class EventHandler extends TagHandler {
                     }
                 }
                 
-                _targetComponent.subscribeToEvent(eventClass, new CompositeComponentRelativeListener(methodExpOneArg, methodExpZeroArg, findComponentExpression));
+                _targetComponent.subscribeToEvent(eventClass,
+                        new CompositeComponentRelativeListener(methodExpOneArg, methodExpZeroArg,
+                                                               findComponentExpression));
             }
         }
         

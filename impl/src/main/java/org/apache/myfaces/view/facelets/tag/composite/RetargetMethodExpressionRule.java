@@ -55,7 +55,7 @@ final class RetargetMethodExpressionRule extends MetaRule
         }
     }
 
-    public final static RetargetMethodExpressionRule Instance = new RetargetMethodExpressionRule();
+    public final static RetargetMethodExpressionRule INSTANCE = new RetargetMethodExpressionRule();
 
     public RetargetMethodExpressionRule()
     {

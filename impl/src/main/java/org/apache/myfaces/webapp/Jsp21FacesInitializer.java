@@ -79,14 +79,20 @@ public class Jsp21FacesInitializer extends AbstractFacesInitializer
     
     protected JspFactory getJspFactory()
     {
-        if (jspFactory == null) {
+        if (jspFactory == null)
+        {
             // TODO: this Class.forName will be removed when Tomcat fixes a bug
             // also, we should then be able to remove jasper.jar from the deployment
-            try {
+            try
+            {
                 Class.forName("org.apache.jasper.compiler.JspRuntimeContext");
-            } catch (ClassNotFoundException e) {
-                ; // ignore
-            } catch (Exception ex) {
+            }
+            catch (ClassNotFoundException e)
+            {
+                // ignore
+            }
+            catch (Exception ex)
+            {
                 log.log(Level.FINE, "An unexpected exception occured "
                         + "while loading the JspRuntimeContext.", ex);
             }

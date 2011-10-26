@@ -54,13 +54,13 @@ public final class CompositeResouceWrapper extends Resource
         super();
     }
     
-    public CompositeResouceWrapper(Resource _delegate)
+    public CompositeResouceWrapper(Resource delegate)
     {
         super();
-        this._delegate = _delegate;
-        setResourceName(_delegate.getResourceName());
-        setLibraryName(_delegate.getLibraryName());
-        setContentType(_delegate.getContentType());
+        this._delegate = delegate;
+        setResourceName(delegate.getResourceName());
+        setLibraryName(delegate.getLibraryName());
+        setContentType(delegate.getContentType());
     }
 
 

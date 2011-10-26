@@ -389,25 +389,25 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         m.ignore("binding").ignore("id");
 
         // add auto wiring for attributes
-        m.addRule(CompositeComponentRule.Instance);
+        m.addRule(CompositeComponentRule.INSTANCE);
         
         // add retarget method expression rules
-        m.addRule(RetargetMethodExpressionRule.Instance);
+        m.addRule(RetargetMethodExpressionRule.INSTANCE);
         
         if (ActionSource.class.isAssignableFrom(type))
         {
-            m.addRule(ActionSourceRule.Instance);
+            m.addRule(ActionSourceRule.INSTANCE);
         }
 
         if (ValueHolder.class.isAssignableFrom(type))
         {
-            m.addRule(ValueHolderRule.Instance);
+            m.addRule(ValueHolderRule.INSTANCE);
 
             if (EditableValueHolder.class.isAssignableFrom(type))
             {
                 m.ignore("submittedValue");
                 m.ignore("valid");
-                m.addRule(EditableValueHolderRule.Instance);
+                m.addRule(EditableValueHolderRule.INSTANCE);
             }
         }
         

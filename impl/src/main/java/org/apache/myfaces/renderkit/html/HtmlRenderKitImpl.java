@@ -173,7 +173,8 @@ public class HtmlRenderKitImpl extends RenderKit
         }
         else
         {
-            if (familyRendererMap.get(rendererType) != null) {
+            if (familyRendererMap.get(rendererType) != null)
+            {
                 // this is not necessarily an error, but users do need to be
                 // very careful about jar processing order when overriding
                 // some component's renderer with an alternate renderer.

@@ -257,7 +257,8 @@ public class TemplateContextImpl extends TemplateContext
     }
 
     @Override
-    public void setParameter(String key, ValueExpression value) {
+    public void setParameter(String key, ValueExpression value)
+    {
         if (_lastClient != null)
         {
             _lastClient.getParametersMap().put(key, value);
@@ -265,7 +266,8 @@ public class TemplateContextImpl extends TemplateContext
     }
 
     @Override
-    public boolean isParameterEmpty() {
+    public boolean isParameterEmpty()
+    {
         TemplateManagerImpl client;
         Iterator<TemplateManagerImpl> itr = _clients.iterator();
         while (itr.hasNext())
@@ -284,7 +286,8 @@ public class TemplateContextImpl extends TemplateContext
         return new TemplateClientAttributeMap();
     }
 
-    private final class TemplateClientAttributeMap extends AbstractAttributeMap<ValueExpression> {
+    private final class TemplateClientAttributeMap extends AbstractAttributeMap<ValueExpression>
+    {
 
         public TemplateClientAttributeMap()
         {
@@ -379,8 +382,8 @@ public class TemplateContextImpl extends TemplateContext
     public static final class InitialTemplateClient implements TemplateClient
     {
         public boolean apply(FaceletContext ctx, UIComponent parent, String name)
-                throws IOException, FacesException, FaceletException,
-                ELException {
+                throws IOException, FacesException, FaceletException, ELException
+        {
             return false;
         }
     }

@@ -77,7 +77,8 @@ public final class IterationStatus implements Serializable
     
     public Integer getCount()
     {
-        if ((step == null) || (step == 1)) {
+        if ((step == null) || (step == 1))
+        {
             return (index + 1);
         }
         

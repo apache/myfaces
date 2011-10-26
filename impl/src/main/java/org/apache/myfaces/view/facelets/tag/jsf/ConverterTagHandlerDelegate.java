@@ -112,9 +112,9 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
     {
         if (_delegate.getConverterId(ctx) == null)
         {
-            throw new TagException(
-                                   _delegate.getTag(),
-                                   "Default behavior invoked of requiring a converter-id passed in the constructor, must override ConvertHandler(ConverterConfig)");
+            throw new TagException(_delegate.getTag(),
+                                    "Default behavior invoked of requiring a converter-id passed in the "
+                                    + "constructor, must override ConvertHandler(ConverterConfig)");
         }
         return ctx.getFacesContext().getApplication().createConverter(_delegate.getConverterId(ctx));
     }

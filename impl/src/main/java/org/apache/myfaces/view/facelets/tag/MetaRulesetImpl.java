@@ -59,7 +59,7 @@ public final class MetaRulesetImpl extends MetaRuleset
      * most certainly cause a memory leak! Furthermore we can manually cleanup the Map when
      * the webapp is undeployed just by removing the Map for the current ClassLoader. 
      */
-    private final static WeakHashMap<ClassLoader, Map<String, MetadataTarget>> _metadata
+    private volatile static WeakHashMap<ClassLoader, Map<String, MetadataTarget>> metadata
             = new WeakHashMap<ClassLoader, Map<String, MetadataTarget>>();
 
     /**
@@ -67,7 +67,7 @@ public final class MetaRulesetImpl extends MetaRuleset
      */
     public static void clearMetadataTargetCache()
     {
-        _metadata.remove(ClassUtils.getContextClassLoader());
+        metadata.remove(ClassUtils.getContextClassLoader());
     }
 
     private static Map<String, MetadataTarget> getMetaData()
@@ -75,19 +75,19 @@ public final class MetaRulesetImpl extends MetaRuleset
         ClassLoader cl = ClassUtils.getContextClassLoader();
         
         Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>)
-                _metadata.get(cl);
+                MetaRulesetImpl.metadata.get(cl);
 
         if (metadata == null)
         {
             // Ensure thread-safe put over _metadata, and only create one map
             // per classloader to hold metadata.
-            synchronized (_metadata)
+            synchronized (MetaRulesetImpl.metadata)
             {
-                metadata = (Map<String, MetadataTarget>) _metadata.get(cl);
+                metadata = (Map<String, MetadataTarget>) MetaRulesetImpl.metadata.get(cl);
                 if (metadata == null)
                 {
                     metadata = new HashMap<String, MetadataTarget>();
-                    _metadata.put(cl, metadata);
+                    MetaRulesetImpl.metadata.put(cl, metadata);
                 }
             }
         }
@@ -120,7 +120,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         }
 
         // add default rules
-        _rules.add(BeanPropertyTagRule.Instance);
+        _rules.add(BeanPropertyTagRule.INSTANCE);
     }
 
     public MetaRuleset add(Metadata mapper)

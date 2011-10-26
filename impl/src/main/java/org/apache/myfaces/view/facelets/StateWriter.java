@@ -101,7 +101,8 @@ public final class StateWriter extends Writer
         {
             this.writtenState = true;
             this.writtenStateWithoutWrapper = false;
-            this.out = this.fast = new FastWriter(this.initialSize);
+            this.fast = new FastWriter(this.initialSize);
+            this.out = this.fast;
         }
     }
     

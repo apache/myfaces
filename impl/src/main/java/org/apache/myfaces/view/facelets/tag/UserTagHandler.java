@@ -27,7 +27,6 @@ import java.util.Map;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
@@ -88,7 +87,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient
      * Facelet. Finally, replace the old VariableMapper.
      * 
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
-     * @see VariableMapper
+     * @see javax.el.VariableMapper
      * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,

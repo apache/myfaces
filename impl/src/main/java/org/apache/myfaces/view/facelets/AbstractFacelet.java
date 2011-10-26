@@ -28,7 +28,6 @@ import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletException;
 
-import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -66,7 +65,7 @@ public abstract class AbstractFacelet extends Facelet
     /**
      * Grabs a DefaultFacelet from referenced DefaultFaceletFacotry
      * 
-     * @see DefaultFaceletFactory#getFacelet(URL)
+     * @see org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory#getFacelet(URL)
      * @param ctx
      *            FaceletContext to pass to the included Facelet
      * @param parent

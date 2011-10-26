@@ -86,7 +86,10 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
     {
         if (_sourceEvent.equals(eventName))
         {
-            ((ClientBehaviorHolder)_delegate).addClientBehavior(_targetEvent == null ? ((ClientBehaviorHolder)_delegate).getDefaultEventName(): _targetEvent , behavior);
+            String targetEventName = _targetEvent == null
+                    ? ((ClientBehaviorHolder)_delegate).getDefaultEventName()
+                    : _targetEvent;
+            ((ClientBehaviorHolder)_delegate).addClientBehavior(targetEventName , behavior);
         }
     }
 

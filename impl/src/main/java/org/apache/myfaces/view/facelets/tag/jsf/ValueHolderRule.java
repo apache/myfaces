@@ -100,7 +100,7 @@ public final class ValueHolderRule extends MetaRule
         }
     }
 
-    public final static ValueHolderRule Instance = new ValueHolderRule();
+    public final static ValueHolderRule INSTANCE = new ValueHolderRule();
 
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {

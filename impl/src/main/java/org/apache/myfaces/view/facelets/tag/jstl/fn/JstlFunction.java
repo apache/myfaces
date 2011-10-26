@@ -113,6 +113,7 @@ public final class JstlFunction
                             app = "&amp;";
                         }
                         break;
+                    default: // all fine
                 }
             } 
             if (app != null)
@@ -122,7 +123,9 @@ public final class JstlFunction
                     sb = new StringBuilder(value.substring(0, i));
                 }
                 sb.append(app);
-            } else {
+            }
+            else
+            {
                 if (sb != null)
                 {
                     sb.append(c);
@@ -258,7 +261,8 @@ public final class JstlFunction
         }
         String[] array = new String[numTokens];
         int i = 0;
-        while (st.hasMoreTokens()){
+        while (st.hasMoreTokens())
+        {
             array[i] = st.nextToken();
             i++;
         }

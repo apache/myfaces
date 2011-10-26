@@ -128,7 +128,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         // the code first check for "suppressAccessChecks" permission).
         try
         {
-            Method setMemberFactoriesMethod = FaceletCache.class.getDeclaredMethod("setMemberFactories", new Class[]{FaceletCache.MemberFactory.class, FaceletCache.MemberFactory.class});
+            Method setMemberFactoriesMethod = FaceletCache.class.getDeclaredMethod("setMemberFactories",
+                    new Class[]{FaceletCache.MemberFactory.class, FaceletCache.MemberFactory.class});
             setMemberFactoriesMethod.setAccessible(true);
             setMemberFactoriesMethod.invoke(_faceletCache, faceletFactory, viewMetadataFaceletFactory);
         } 

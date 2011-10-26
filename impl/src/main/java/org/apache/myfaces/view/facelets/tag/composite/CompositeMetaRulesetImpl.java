@@ -96,7 +96,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         }
 
         // add default rules
-        _rules.add(BeanPropertyTagRule.Instance);
+        _rules.add(BeanPropertyTagRule.INSTANCE);
         
         try
         {

@@ -100,7 +100,7 @@ public abstract class Compiler
             TagLibraryConfig cfg = new TagLibraryConfig();
             cfg.loadImplicit(this);
 
-            if (!this.createTagLibrary().containsNamespace(UILibrary.Namespace))
+            if (!this.createTagLibrary().containsNamespace(UILibrary.NAMESPACE))
             {
                 log
                         .severe("Missing Built-in Tag Libraries! Make sure they are included within the META-INF directory of Facelets' Jar");

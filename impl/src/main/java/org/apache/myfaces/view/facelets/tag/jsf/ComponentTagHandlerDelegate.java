@@ -44,7 +44,6 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -150,17 +149,19 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * <ol>
      * <li>First determines this UIComponent's id by calling {@link #getId(FaceletContext) getId(FaceletContext)}.</li>
      * <li>Search the parent for an existing UIComponent of the id we just grabbed</li>
-     * <li>If found, {@link #FaceletCompositionContext.markForDeletion(UIComponent) mark} its children for deletion.</li>
+     * <li>If found, {@link FaceletCompositionContext#markForDeletion(UIComponent) mark} its children for deletion.</li>
      * <li>If <i>not</i> found, call {@link #createComponent(FaceletContext) createComponent}.
      * <ol>
-     * <li>Only here do we apply {@link TagHandler#setAttributes(FaceletCompositionContext, Object) attributes}</li>
+     * <li>Only here do we apply
+     * {@link TagHandler#setAttributes(FaceletCompositionContext, Object) attributes}</li>
      * <li>Set the UIComponent's id</li>
      * <li>Set the RendererType of this instance</li>
      * </ol>
      * </li>
      * <li>Now apply the nextHandler, passing the UIComponent we've created/found.</li>
      * <li>Now add the UIComponent to the passed parent</li>
-     * <li>Lastly, if the UIComponent already existed (found), then {@link #finalizeForDeletion(FaceletCompositionContext, UIComponent) finalize}
+     * <li>Lastly, if the UIComponent already existed (found),
+     * then {@link #finalizeForDeletion(FaceletCompositionContext, UIComponent) finalize}
      * for deletion.</li>
      * </ol>
      * 
@@ -572,25 +573,25 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         m.ignore("binding").ignore("id");
 
         // add auto wiring for attributes
-        m.addRule(ComponentRule.Instance);
+        m.addRule(ComponentRule.INSTANCE);
 
         // if it's an ActionSource
         if (ActionSource.class.isAssignableFrom(type))
         {
-            m.addRule(ActionSourceRule.Instance);
+            m.addRule(ActionSourceRule.INSTANCE);
         }
 
         // if it's a ValueHolder
         if (ValueHolder.class.isAssignableFrom(type))
         {
-            m.addRule(ValueHolderRule.Instance);
+            m.addRule(ValueHolderRule.INSTANCE);
 
             // if it's an EditableValueHolder
             if (EditableValueHolder.class.isAssignableFrom(type))
             {
                 m.ignore("submittedValue");
                 m.ignore("valid");
-                m.addRule(EditableValueHolderRule.Instance);
+                m.addRule(EditableValueHolderRule.INSTANCE);
             }
         }
         

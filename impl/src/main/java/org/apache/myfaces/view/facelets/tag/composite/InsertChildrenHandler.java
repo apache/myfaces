@@ -42,7 +42,7 @@ public class InsertChildrenHandler extends TagHandler
     //public static String INSERT_CHILDREN_TARGET_ID = "org.apache.myfaces.INSERT_CHILDREN_TARGET_ID";
     //public static String INSERT_CHILDREN_ORDERING = "org.apache.myfaces.INSERT_CHILDREN_ORDERING";
     
-    public static String INSERT_CHILDREN_USED = "org.apache.myfaces.INSERT_CHILDREN_USED";
+    public static final String INSERT_CHILDREN_USED = "org.apache.myfaces.INSERT_CHILDREN_USED";
     
     private static final Logger log = Logger.getLogger(InsertChildrenHandler.class.getName());
 

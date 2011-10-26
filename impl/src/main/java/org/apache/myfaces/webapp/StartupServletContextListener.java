@@ -214,7 +214,8 @@ public class StartupServletContextListener implements ServletContextListener,
         for(String plugin: pluginEntries)
         {
             log.info("Processing plugin:"+plugin);
-            try {
+            try
+            {
                 //for now the initializers have to be stateless to
                 //so that we do not have to enforce that the initializer
                 //must be serializable

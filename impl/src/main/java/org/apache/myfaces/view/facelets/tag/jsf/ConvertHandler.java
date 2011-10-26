@@ -145,9 +145,9 @@ public class ConvertHandler extends MetaTagHandlerImpl
     {
         if (this.converterId == null)
         {
-            throw new TagException(
-                                   this.tag,
-                                   "Default behavior invoked of requiring a converter-id passed in the constructor, must override ConvertHandler(ConverterConfig)");
+            throw new TagException(this.tag,
+                                   "Default behavior invoked of requiring a converter-id passed in the constructor, "
+                                   + "must override ConvertHandler(ConverterConfig)");
         }
         return ctx.getFacesContext().getApplication().createConverter(this.converterId);
     }

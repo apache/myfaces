@@ -53,7 +53,7 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
     //private static final Logger log = Logger.getLogger("facelets.tag.ui.composition");
     private static final Logger log = Logger.getLogger(CompositionHandler.class.getName());
 
-    public final static String Name = "composition";
+    public final static String NAME = "composition";
 
     /**
      * The resolvable URI of the template to use. The content within the composition tag will 

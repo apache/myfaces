@@ -43,18 +43,20 @@ public final class ActionSourceRule extends MetaRule
 
     public final static Class<?>[] ACTION_LISTENER_SIG = new Class<?>[] { ActionEvent.class };
 
-    final static class ActionMapper extends Metadata {
+    final static class ActionMapper extends Metadata
+    {
 
         private final TagAttribute attr;
 
-        public ActionMapper(TagAttribute attr) {
+        public ActionMapper(TagAttribute attr)
+        {
             this.attr = attr;
         }
 
-        public void applyMetadata(FaceletContext ctx, Object instance) {
+        public void applyMetadata(FaceletContext ctx, Object instance)
+        {
             ((ActionSource) instance).setAction(new LegacyMethodBinding(
-                    this.attr.getMethodExpression(ctx, null,
-                            ActionSourceRule.ACTION_SIG)));
+                    this.attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG)));
         }
     }
     
@@ -74,15 +76,18 @@ public final class ActionSourceRule extends MetaRule
         }
     }
 
-    final static class ActionListenerMapper extends Metadata {
+    final static class ActionListenerMapper extends Metadata
+    {
 
         private final TagAttribute attr;
 
-        public ActionListenerMapper(TagAttribute attr) {
+        public ActionListenerMapper(TagAttribute attr)
+        {
             this.attr = attr;
         }
 
-        public void applyMetadata(FaceletContext ctx, Object instance) {
+        public void applyMetadata(FaceletContext ctx, Object instance)
+        {
             ((ActionSource) instance)
                     .setActionListener(new LegacyMethodBinding(this.attr
                             .getMethodExpression(ctx, null,
@@ -123,7 +128,7 @@ public final class ActionSourceRule extends MetaRule
         }
     }
 
-    public final static ActionSourceRule Instance = new ActionSourceRule();
+    public final static ActionSourceRule INSTANCE = new ActionSourceRule();
 
     public ActionSourceRule()
     {
