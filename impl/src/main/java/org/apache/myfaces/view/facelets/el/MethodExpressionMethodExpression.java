@@ -33,7 +33,8 @@ import javax.el.PropertyNotFoundException;
  *
  * @author Leonardo Uribe
  */
-public class MethodExpressionMethodExpression extends MethodExpression implements Externalizable {
+public class MethodExpressionMethodExpression extends MethodExpression implements Externalizable
+{
     
     private static final Object[] EMPTY_PARAMS = new Object[0];
     
@@ -44,7 +45,8 @@ public class MethodExpressionMethodExpression extends MethodExpression implement
     {
     }
     
-    public MethodExpressionMethodExpression(MethodExpression methodExpressionOneArg, MethodExpression methodExpressionZeroArg) {
+    public MethodExpressionMethodExpression(MethodExpression methodExpressionOneArg, MethodExpression methodExpressionZeroArg)
+    {
         this.methodExpressionOneArg = methodExpressionOneArg;
         this.methodExpressionZeroArg = methodExpressionZeroArg;
     }

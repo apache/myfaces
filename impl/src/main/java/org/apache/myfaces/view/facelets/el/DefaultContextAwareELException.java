@@ -22,10 +22,11 @@ import javax.faces.view.Location;
 
 /**
  * Default implementation of {@link ContextAwareExceptionWrapper}, used for delegation
- * 
+ *
  * @author martinkoci
  */
-public class DefaultContextAwareELException implements ContextAwareExceptionWrapper {
+public class DefaultContextAwareELException implements ContextAwareExceptionWrapper
+{
 
     private Location _location;
 
@@ -36,27 +37,32 @@ public class DefaultContextAwareELException implements ContextAwareExceptionWrap
     private Throwable _wrapped;
 
     public DefaultContextAwareELException(Location location,
-            String expressionString, String qName,
-            Throwable wrapped) {
+                                          String expressionString, String qName,
+                                          Throwable wrapped)
+    {
         _location = location;
         _expressionString = expressionString;
         _qName = qName;
         _wrapped = wrapped;
     }
 
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return _location;
     }
 
-    public String getExpressionString() {
+    public String getExpressionString()
+    {
         return _expressionString;
     }
 
-    public String getQName() {
+    public String getQName()
+    {
         return _qName;
     }
 
-    public Throwable getWrapped() {
+    public Throwable getWrapped()
+    {
         return _wrapped;
     }
 }

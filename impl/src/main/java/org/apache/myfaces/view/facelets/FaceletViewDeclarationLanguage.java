@@ -160,7 +160,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * servlet environment to HttpServletResponse.setBufferSize().
      */
     @JSFWebConfigParam(since = "2.0", alias = "facelets.BUFFER_SIZE", classType = "java.lang.Integer", tags = "performance",
-            desc = "Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a servlet environment to HttpServletResponse.setBufferSize()")
+            desc = "Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in "
+                   + "a servlet environment to HttpServletResponse.setBufferSize()")
     public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
 
     /**
@@ -631,9 +632,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 {
                     _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
                     currentChild = child;
+                    child = children.get(i);
                 }
-                while ((i < children.size()) &&
-                        ((child = children.get(i)) != currentChild));
+                while ((i < children.size()) && child != currentChild);
                 i++;
             }
         }

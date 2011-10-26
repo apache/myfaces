@@ -166,15 +166,18 @@ public final class ContextAwareTagMethodExpression extends MethodExpression impl
         return _location + ": " + _wrapped;
     }
     
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return _location;
     }
     
-    public String getQName() {
+    public String getQName()
+    {
         return _qName;
     }
     
-    public MethodExpression getWrapped() {
+    public MethodExpression getWrapped()
+    {
         return _wrapped;
     }
 

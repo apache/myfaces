@@ -28,7 +28,8 @@ import javax.faces.view.Location;
  * 
  * @author Leonardo Uribe
  */
-public class ResourceELUtils {
+public class ResourceELUtils
+{
 
     // TODO: check this expression, maybe we can make it simpler, because "resource" implicit object
     // cannot be preceded by anything.

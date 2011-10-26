@@ -213,11 +213,13 @@ public class ContextAwareTagValueExpression extends ValueExpression implements E
         return _wrapped;
     }
 
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return _location;
     }
     
-    public String getQName() {
+    public String getQName()
+    {
         return _qName;
     }
 }

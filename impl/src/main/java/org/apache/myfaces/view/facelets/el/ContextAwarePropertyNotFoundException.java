@@ -18,12 +18,11 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.PropertyNotFoundException;
-import javax.faces.FacesWrapper;
 import javax.faces.view.Location;
 
 /**
- * Implementation of types {@link PropertyNotFoundException}, {@link ContextAware} and {@link FacesWrapper}
+ * Implementation of types {@link javax.el.PropertyNotFoundException},
+ * {@link ContextAware} and {@link javax.faces.FacesWrapper}
  *
  * @author martinkoci
  *
