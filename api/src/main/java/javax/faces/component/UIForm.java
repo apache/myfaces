@@ -21,12 +21,15 @@ package javax.faces.component;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
+import javax.faces.FacesException;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostValidateEvent;
 import javax.faces.event.PreValidateEvent;
+import javax.faces.view.Location;
+
 import java.util.Collection;
 
 /**
@@ -50,7 +53,40 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      */
     public String createUniqueId(FacesContext context, String seed)
     {
-        StringBuilder bld = __getSharedStringBuilder(context);
+        StringBuilder bld = null;
+        
+        if (!isPrependId())
+        {
+            bld = new StringBuilder();
+            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.findParentUniqueIdVendor(this);
+            if (parentUniqueIdVendor == null)
+            {
+                UIViewRoot viewRoot = context.getViewRoot();
+                if (viewRoot != null)
+                {
+                    bld.append(viewRoot.createUniqueId());
+                    bld.append('_');
+                }
+                else
+                {
+                    // The RI throws a NPE
+                    String location = getComponentLocation(this);
+                    throw new FacesException("Cannot create clientId. No id is assigned for component"
+                            + " to create an id and UIViewRoot is not defined: "
+                            + getPathToComponent(this)
+                            + (location != null ? " created from: " + location : ""));
+                }
+            }
+            else
+            {
+                bld.append(parentUniqueIdVendor.createUniqueId(context, null));
+                bld.append('_');
+            }
+        }
+        else
+        {
+            bld = __getSharedStringBuilder(context);
+        }
 
         Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
         uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
@@ -68,7 +104,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(seed).toString();
         }
     }
-
+    
     public boolean isSubmitted()
     {
         //return _submitted;
@@ -355,6 +391,64 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     public String getFamily()
     {
         return COMPONENT_FAMILY;
+    }
+
+    private String getComponentLocation(UIComponent component)
+    {
+        Location location = (Location) component.getAttributes()
+                .get(UIComponent.VIEW_LOCATION_KEY);
+        if (location != null)
+        {
+            return location.toString();
+        }
+        return null;
+    }
+    
+    private String getPathToComponent(UIComponent component)
+    {
+        StringBuffer buf = new StringBuffer();
+
+        if (component == null)
+        {
+            buf.append("{Component-Path : ");
+            buf.append("[null]}");
+            return buf.toString();
+        }
+
+        getPathToComponent(component, buf);
+
+        buf.insert(0, "{Component-Path : ");
+        buf.append("}");
+
+        return buf.toString();
+    }
+    
+    private void getPathToComponent(UIComponent component, StringBuffer buf)
+    {
+        if (component == null)
+        {
+            return;
+        }
+
+        StringBuffer intBuf = new StringBuffer();
+
+        intBuf.append("[Class: ");
+        intBuf.append(component.getClass().getName());
+        if (component instanceof UIViewRoot)
+        {
+            intBuf.append(",ViewId: ");
+            intBuf.append(((UIViewRoot) component).getViewId());
+        }
+        else
+        {
+            intBuf.append(",Id: ");
+            intBuf.append(component.getId());
+        }
+        intBuf.append("]");
+
+        buf.insert(0, intBuf.toString());
+
+        getPathToComponent(component.getParent(), buf);
     }
 
     // ------------------ GENERATED CODE END ---------------------------------------
