@@ -1038,25 +1038,32 @@ public class FacesConfigurator
     private void configureLifecycle()
     {
         // create the lifecycle used by the app
-        LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
-                .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
-
-        // add phase listeners
-        for (Iterator iterator = getDispenser().getLifecyclePhaseListeners(); iterator.hasNext();)
+        LifecycleFactory lifecycleFactory
+                = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        
+        //Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
+        for (Iterator<String> it = lifecycleFactory.getLifecycleIds(); it.hasNext();)
         {
-            String listenerClassName = (String) iterator.next();
-            try
+            Lifecycle lifecycle = lifecycleFactory.getLifecycle(it.next());
+            
+            // add phase listeners
+            for (Iterator iterator = getDispenser().getLifecyclePhaseListeners(); iterator.hasNext();)
             {
-                lifecycle.addPhaseListener((PhaseListener) ClassUtils.newInstance(listenerClassName));
-            }
-            catch (ClassCastException e)
-            {
-                log.error("Class " + listenerClassName + " does not implement PhaseListener");
+                String listenerClassName = (String) iterator.next();
+                try
+                {
+                    lifecycle.addPhaseListener((PhaseListener)
+                            ClassUtils.newInstance(listenerClassName, PhaseListener.class));
+                }
+                catch (ClassCastException e)
+                {
+                    log.error("Class " + listenerClassName + " does not implement PhaseListener");
+                }
             }
         }
     }
 
+    /*
     private String getLifecycleId()
     {
         String id = _externalContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
@@ -1067,7 +1074,7 @@ public class FacesConfigurator
         }
 
         return LifecycleFactory.DEFAULT_LIFECYCLE;
-    }
+    }*/
 /*
     public static class VersionInfo
     {
