@@ -18,45 +18,50 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.ELException;
-import javax.faces.FacesWrapper;
 import javax.faces.view.Location;
 
 /**
- * Implementation of types {@link ELException}, {@link ContextAware} and {@link FacesWrapper}
- * 
+ * Implementation of types {@link javax.el.ELException}, {@link ContextAware}
+ * and {@link javax.faces.FacesWrapper}
+ *
  * @author martinkoci
- * 
+ *
  * @see ContextAware
  */
-public class ContextAwareException extends RuntimeException implements ContextAwareExceptionWrapper {
+public class ContextAwareException extends RuntimeException implements ContextAwareExceptionWrapper
+{
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 7239367504106332588L;
-    
+
     private ContextAwareExceptionWrapper _delegate;
 
     public ContextAwareException(Location location, String expressionString,
-            String qName, Throwable wrapped) {
+                                 String qName, Throwable wrapped)
+    {
         super(wrapped);
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 
-    public String getExpressionString() {
+    public String getExpressionString()
+    {
         return _delegate.getExpressionString();
     }
 
-    public String getQName() {
+    public String getQName()
+    {
         return _delegate.getQName();
     }
 
-    public Throwable getWrapped() {
+    public Throwable getWrapped()
+    {
         return _delegate.getWrapped();
     }
 
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return _delegate.getLocation();
     }
 }

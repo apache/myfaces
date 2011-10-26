@@ -56,7 +56,8 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
     public FacesConfigurationProvider getFacesConfigurationProvider(
             ExternalContext externalContext)
     {
-        FacesConfigurationProvider returnValue = (FacesConfigurationProvider) externalContext.getApplicationMap().get(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY);
+        FacesConfigurationProvider returnValue = (FacesConfigurationProvider)
+                externalContext.getApplicationMap().get(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY);
         if (returnValue == null)
         {
             final ExternalContext extContext = externalContext;

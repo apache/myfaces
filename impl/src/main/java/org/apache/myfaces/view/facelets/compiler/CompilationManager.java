@@ -479,7 +479,8 @@ final class CompilationManager
                 log.fine(attr + " JSF Facelet Compile Directive Found");
             }
             String value = attr.getValue();
-            String namespace, localName;
+            String namespace;
+            String localName;
             int c = value.indexOf(':');
             if (c == -1)
             {

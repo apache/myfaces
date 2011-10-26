@@ -126,9 +126,9 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public final V remove(final Object key)
     {
-        final String key_ = key.toString();
-        final V retval = getAttribute(key_);
-        removeAttribute(key_);
+        final String keyString = key.toString();
+        final V retval = getAttribute(keyString);
+        removeAttribute(keyString);
         return retval;
     }
 

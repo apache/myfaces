@@ -57,7 +57,7 @@ public class ContainerUtils
         } 
         catch (ClassNotFoundException ex) 
         {
-            ; // expected exception in a JSP 2.0 (or less) environment
+            // expected exception in a JSP 2.0 (or less) environment
         }
         
         return false;
@@ -68,7 +68,7 @@ public class ContainerUtils
      * 
      * <p>
      * <strong>NOTICE</strong> This method is just a copy of
-     * {@link UIComponentTag#isValueReference(String)}, but it's required
+     * {@link javax.faces.webapp.UIComponentTag#isValueReference(String)}, but it's required
      * because the class UIComponentTag depends on a JSP 2.1 container 
      * (for example, it indirectly implements the interface JspIdConsumer)
      * and therefore internal classes shouldn't access this class. That's
@@ -78,12 +78,14 @@ public class ContainerUtils
      */
     public static boolean isValueReference(String value) 
     {
-        if (value == null) {
+        if (value == null)
+        {
             throw new NullPointerException("value");
         }
 
         int start = value.indexOf("#{");
-        if (start < 0) {
+        if (start < 0)
+        {
             return false;
         }
 

@@ -18,27 +18,26 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.Expression;
-import javax.faces.view.Location;
-import javax.faces.view.facelets.TagAttribute;
 
 /**
- * Identification inferface for types that know about {@link Location} and XML attribute name/value pair.
+ * Identification inferface for types that know about {@link javax.faces.view.Location}
+ * and XML attribute name/value pair.
  * 
  *  <ol>
  *      <li>Location -  location instance - see {@link LocationAware}</li>
- *      <li>expressionString - expression String {@link Expression#getExpressionString()}</li>
- *      <li>qName - the qualified name for attribute {@link TagAttribute#getQName()}</li>
+ *      <li>expressionString - expression String {@link javax.el.Expression#getExpressionString()}</li>
+ *      <li>qName - the qualified name for attribute
+ *      {@link javax.faces.view.facelets.TagAttribute#getQName()}</li>
  *  </ol>   
  * 
- *  If type implements this interface, we can say that it knows where instance implementing this interface is located in facelets view (line/column)
+ *  If type implements this interface, we can say that it knows where instance
+ *  implementing this interface is located in facelets view (line/column)
  *  and what XML attribute (name/value pair) makes it.
  *  
  * @author martinkoci
  */
-public interface ContextAware extends LocationAware {
-
-    
+public interface ContextAware extends LocationAware
+{
     /**
      * @return expression string, for example "#{bean.actionMethod}" or "success"
      */

@@ -24,26 +24,28 @@ import javax.faces.view.Location;
 
 /**
  * Implementation of types {@link PropertyNotFoundException}, {@link ContextAware} and {@link FacesWrapper}
- * 
+ *
  * @author martinkoci
- * 
+ *
  * @see ContextAware
  */
-public class ContextAwarePropertyNotFoundException extends javax.el.PropertyNotFoundException implements ContextAwareExceptionWrapper {
-    
+public class ContextAwarePropertyNotFoundException extends javax.el.PropertyNotFoundException implements ContextAwareExceptionWrapper
+{
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -4194177998555929451L;
-    
+
     private ContextAwareExceptionWrapper _delegate;
     //private Throwable _wrappedException;
     //private String _localizedMessage;
 
 
     public ContextAwarePropertyNotFoundException(Location location,
-            String expressionString, String qName,
-            Throwable wrapped) {
+                                                 String expressionString, String qName,
+                                                 Throwable wrapped)
+    {
         super(wrapped);
         //super(wrapped.getMessage());
         //_localizedMessage = wrapped.getLocalizedMessage();
@@ -51,22 +53,26 @@ public class ContextAwarePropertyNotFoundException extends javax.el.PropertyNotF
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return _delegate.getLocation();
     }
 
-    public String getExpressionString() {
+    public String getExpressionString()
+    {
         return _delegate.getExpressionString();
     }
 
-    public String getQName() {
+    public String getQName()
+    {
         return _delegate.getQName();
     }
 
-    public Throwable getWrapped() {
+    public Throwable getWrapped()
+    {
         return _delegate.getWrapped();
     }
-    
+
     /*
     @Override
     public String getLocalizedMessage()

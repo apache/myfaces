@@ -29,15 +29,15 @@ public final class FaceletsProcessingInstructions
     public static final String PROCESS_AS_XHTML = "xhtml";
     public static final String PROCESS_AS_XML = "xml";
     
-    private static final FaceletsProcessingInstructions processAsXHTML= 
+    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XHTML =
         new FaceletsProcessingInstructions(
                 false, false, false, false, true, false);
 
-    private static final FaceletsProcessingInstructions processAsXML= 
+    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XML =
         new FaceletsProcessingInstructions(
                 true, true, true, true, true, true);
 
-    private static final FaceletsProcessingInstructions processAsJSPX= 
+    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_JSPX =
         new FaceletsProcessingInstructions(
                 true, true, true, true, false, true);
 
@@ -57,23 +57,23 @@ public final class FaceletsProcessingInstructions
     {
         if (processAs == null)
         {
-            return processAsXHTML;
+            return FACELETS_PROCESSING_XHTML;
         }
         else if (PROCESS_AS_XHTML.equals(processAs))
         {
-            return processAsXHTML;
+            return FACELETS_PROCESSING_XHTML;
         }
         else if (PROCESS_AS_XML.equals(processAs))
         {
-            return processAsXML;
+            return FACELETS_PROCESSING_XML;
         }
         else if (PROCESS_AS_JSPX.equals(processAs))
         {
-            return processAsJSPX;
+            return FACELETS_PROCESSING_JSPX;
         }
         else
         {
-            return processAsXHTML;
+            return FACELETS_PROCESSING_XHTML;
         }
     }
     

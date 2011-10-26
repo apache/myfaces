@@ -175,7 +175,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             Object[] fullState = (Object[]) state[1]; 
             view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent)fullState[0]);
 
-            if (view != null) {
+            if (view != null)
+            {
                 context.setViewRoot (view);
                 view.processRestoreState(context, fullState[1]);
             }
@@ -185,7 +186,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             // Per the spec: build the view.
             ViewDeclarationLanguage vdl = _vdlFactory.getViewDeclarationLanguage(viewId);
             Object faceletViewState = null;
-            try {
+            try
+            {
                 ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
                 
                 Collection<UIViewParameter> viewParameters = null;
@@ -238,7 +240,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     context.setProcessingEvents (oldContextEventState);
                 }
             }
-            catch (Throwable e) {
+            catch (Throwable e)
+            {
                 throw new FacesException ("unable to create view \"" + viewId + "\"", e);
             }
 
@@ -444,13 +447,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         UIViewRoot view = context.getViewRoot();
         Object states;
         
-        if (view == null) {
+        if (view == null)
+        {
             // Not much that can be done.
             
             return null;
         }
         
-        if (view.isTransient()) {
+        if (view.isTransient())
+        {
             // Must return null immediately per spec.
             
             return null;
@@ -701,7 +706,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     FacesContext facesContext = context.getFacesContext();
                     Object state;
                     
-                    if ((target == null) || target.isTransient()) {
+                    if ((target == null) || target.isTransient())
+                    {
                         // No need to bother with these components or their children.
                         
                         return VisitResult.REJECT;
@@ -765,7 +771,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     {
                         state = target.saveState (facesContext);
                         
-                        if (state != null) {
+                        if (state != null)
+                        {
                             // Save by client ID into our map.
                             
                             states.put (target.getClientId (facesContext), state);
@@ -787,7 +794,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
         
         Object state = uiViewRoot.saveState (facesContext);
-        if (state != null) {
+        if (state != null)
+        {
             // Save by client ID into our map.
             
             states.put (uiViewRoot.getClientId (facesContext), state);
@@ -943,7 +951,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         String id;
         Iterator<UIComponent> children;
         
-        if (component == null) {
+        if (component == null)
+        {
             return;
         }
         
@@ -951,7 +960,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         
         id = component.getClientId (context);
         
-        if (existingIds.contains (id)) {
+        if (existingIds.contains (id))
+        {
             throw new IllegalStateException ("component with duplicate id \"" + id + "\" found");
         }
         
@@ -980,87 +990,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
         return _renderKitFactory;
     }
-    
-    /*
-    private static class RestoreStateCallback implements VisitCallback
-    {
-        private PostRestoreStateEvent event;
 
-        public VisitResult visit(VisitContext context, UIComponent target)
-        {
-            if (event == null)
-            {
-                event = new PostRestoreStateEvent(target);
-            }
-            else
-            {
-                event.setComponent(target);
-            }
-
-            // call the processEvent method of the current component.
-            // The argument event must be an instance of AfterRestoreStateEvent whose component
-            // property is the current component in the traversal.
-            target.processEvent(event);
-            
-            return VisitResult.ACCEPT;
-        }
-    }*/
-    
-    /*
-    private class RestoreStateVisitor implements VisitCallback {
-        private Map<String, Object> states;
-        
-        private RestoreStateVisitor (Map<String, Object> states)
-        {
-            this.states = states;
-        }
-        
-        @Override
-        public VisitResult visit (VisitContext context, UIComponent target)
-        {
-            FacesContext facesContext = context.getFacesContext();
-            Object state = states.get (target.getClientId (facesContext));
-            
-            if (state != null) {
-                target.restoreState (facesContext, state);
-            }
-            
-            return VisitResult.ACCEPT;
-        }
-    }
-    
-    private class SaveStateVisitor implements VisitCallback {
-        private Map<String, Object> states;
-        
-        private SaveStateVisitor (Map<String, Object> states)
-        {
-            this.states = states;
-        }
-        
-        @Override
-        public VisitResult visit (VisitContext context, UIComponent target)
-        {
-            FacesContext facesContext = context.getFacesContext();
-            Object state;
-            
-            if ((target == null) || target.isTransient()) {
-                // No need to bother with these components or their children.
-                
-                return VisitResult.REJECT;
-            }
-            
-            state = target.saveState (facesContext);
-            
-            if (state != null) {
-                // Save by client ID into our map.
-                
-                states.put (target.getClientId (facesContext), state);
-            }
-            
-            return VisitResult.ACCEPT;
-        }
-    }
-    */
     
     public static class PostAddPreRemoveFromViewListener implements SystemEventListener
     {

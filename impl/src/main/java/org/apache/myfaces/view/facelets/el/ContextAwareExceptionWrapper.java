@@ -28,6 +28,7 @@ import javax.faces.FacesWrapper;
  * @see ContextAware
  * @see FacesWrapper 
  */
-public interface ContextAwareExceptionWrapper extends FacesWrapper<Throwable>, ContextAware {
+public interface ContextAwareExceptionWrapper extends FacesWrapper<Throwable>, ContextAware
+{
 
 }

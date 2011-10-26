@@ -82,20 +82,20 @@ public class DebugUtils
         // hide from public access
     }
 
-    public static void assertError(boolean condition, Logger log_, String msg) throws FacesException
+    public static void assertError(boolean condition, Logger logger, String msg) throws FacesException
     {
         if (!condition)
         {
-            log_.severe(msg);
+            logger.severe(msg);
             throw new FacesException(msg);
         }
     }
 
-    public static void assertFatal(boolean condition, Logger log_, String msg) throws FacesException
+    public static void assertFatal(boolean condition, Logger logger, String msg) throws FacesException
     {
         if (!condition)
         {
-            log_.severe(msg);
+            logger.severe(msg);
             throw new FacesException(msg);
         }
     }

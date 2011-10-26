@@ -18,41 +18,46 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.PropertyNotWritableException;
-import javax.faces.FacesWrapper;
 import javax.faces.view.Location;
 
 /**
- * Implementation of types {@link PropertyNotWritableException}, {@link ContextAware} and {@link FacesWrapper}
- * 
+ * Implementation of types {@link javax.el.PropertyNotWritableException},
+ * {@link ContextAware} and {@link javax.faces.FacesWrapper}
+ *
  * @author martinkoci
- * 
+ *
  * @see ContextAware
  */
-public class ContextAwarePropertyNotWritableException extends javax.el.PropertyNotWritableException implements ContextAwareExceptionWrapper {
-    
+public class ContextAwarePropertyNotWritableException extends javax.el.PropertyNotWritableException implements ContextAwareExceptionWrapper
+{
+
     private ContextAwareExceptionWrapper _delegate;
 
     public ContextAwarePropertyNotWritableException(Location location,
-            String expressionString, String qName,
-            Throwable wrapped) {
+                                                    String expressionString, String qName,
+                                                    Throwable wrapped)
+    {
         super(wrapped);
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 
-    public String getExpressionString() {
+    public String getExpressionString()
+    {
         return _delegate.getExpressionString();
     }
 
-    public String getQName() {
+    public String getQName()
+    {
         return _delegate.getQName();
     }
 
-    public Throwable getWrapped() {
+    public Throwable getWrapped()
+    {
         return _delegate.getWrapped();
     }
 
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return _delegate.getLocation();
     }
 

@@ -232,8 +232,10 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
             {
                 buffer.replace(i, i + 3, "]]><![CDATA[]]]]><![CDATA[>");
                 i = i + 27; //27 is "]]><![CDATA[]]]]><![CDATA[>".length();
+
+                i = buffer.indexOf("]]>", i);
             }
-            while ((i = buffer.indexOf("]]>", i)) >= 0);
+            while (i >= 0);
         }
         return buffer.toString();
     }

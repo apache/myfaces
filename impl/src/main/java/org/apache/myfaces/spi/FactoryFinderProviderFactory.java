@@ -124,7 +124,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
  */
 public abstract class FactoryFinderProviderFactory
 {
-    private static volatile FactoryFinderProviderFactory _instance = null;
+    private static volatile FactoryFinderProviderFactory instance = null;
     
     /**
      * Set the instance to be used by {@link javax.faces.FactoryFinder} to resolve
@@ -166,7 +166,7 @@ public abstract class FactoryFinderProviderFactory
             }
             else
             {
-                _instance = instance;
+                FactoryFinderProviderFactory.instance = instance;
             }
             
             field.setBoolean(null, false);
@@ -191,7 +191,7 @@ public abstract class FactoryFinderProviderFactory
      */
     public static FactoryFinderProviderFactory getInstance()
     {
-        return _instance;
+        return instance;
     }
 
     /**

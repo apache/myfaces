@@ -65,7 +65,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public final class SAXCompiler extends Compiler
 {
 
-    private final static Pattern XmlDeclaration = Pattern
+    private final static Pattern XML_DECLARATION = Pattern
             .compile("^<\\?xml.+?version=['\"](.+?)['\"](.+?encoding=['\"]((.+?))['\"])?.*?\\?>");
 
     private static class CompilationHandler extends DefaultHandler implements LexicalHandler
@@ -839,7 +839,7 @@ public final class SAXCompiler extends Compiler
             if (is.read(b) > 0)
             {
                 String r = new String(b);
-                Matcher m = XmlDeclaration.matcher(r);
+                Matcher m = XML_DECLARATION.matcher(r);
                 if (m.find())
                 {
                     if (!mngr.getFaceletsProcessingInstructions().isConsumeXmlDeclaration())
@@ -870,7 +870,7 @@ public final class SAXCompiler extends Compiler
             if (is.read(b) > 0)
             {
                 String r = new String(b);
-                Matcher m = XmlDeclaration.matcher(r);
+                Matcher m = XML_DECLARATION.matcher(r);
                 if (m.find())
                 {
                     //mngr.writeInstruction(m.group(0) + "\n");

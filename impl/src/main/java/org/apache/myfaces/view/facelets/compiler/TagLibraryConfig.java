@@ -220,7 +220,8 @@ public final class TagLibraryConfig
         }
     }
     
-    private static class ComponentConfigWrapper implements ComponentConfig {
+    private static class ComponentConfigWrapper implements ComponentConfig
+    {
 
         protected final TagConfig parent;
 
@@ -229,29 +230,35 @@ public final class TagLibraryConfig
         protected final String rendererType;
 
         public ComponentConfigWrapper(TagConfig parent, String componentType,
-                String rendererType) {
+                String rendererType)
+        {
             this.parent = parent;
             this.componentType = componentType;
             this.rendererType = rendererType;
         }
 
-        public String getComponentType() {
+        public String getComponentType()
+        {
             return this.componentType;
         }
 
-        public String getRendererType() {
+        public String getRendererType()
+        {
             return this.rendererType;
         }
 
-        public FaceletHandler getNextHandler() {
+        public FaceletHandler getNextHandler()
+        {
             return this.parent.getNextHandler();
         }
 
-        public Tag getTag() {
+        public Tag getTag()
+        {
             return this.parent.getTag();
         }
 
-        public String getTagId() {
+        public String getTagId()
+        {
             return this.parent.getTagId();
         }
     }    
@@ -305,7 +312,7 @@ public final class TagLibraryConfig
             {
                 if ("facelet-taglib".equals(qName))
                 {
-                    ; // Nothing to do
+                    // Nothing to do
                 }                
                 else if ("library-class".equals(qName))
                 {
@@ -617,7 +624,8 @@ public final class TagLibraryConfig
             if (MyfacesConfig.getCurrentInstance(externalContext).isValidateXML())
             {
                 String version = ConfigFilesXmlValidationUtils.getFaceletTagLibVersion(url);
-                if (schemaValidating = "2.0".equals(version))
+                schemaValidating = "2.0".equals(version);
+                if (schemaValidating)
                 {
                     ConfigFilesXmlValidationUtils.validateFaceletTagLibFile(url, externalContext, version);
                 }
@@ -698,7 +706,8 @@ public final class TagLibraryConfig
             factory.setFeature("http://xml.org/sax/features/validation", true);
             factory.setValidating(true);
         }
-        else {
+        else
+        {
             //Just parse it and do not validate, because it is not necessary.
             factory.setNamespaceAware(true);
             factory.setFeature("http://xml.org/sax/features/validation", false);

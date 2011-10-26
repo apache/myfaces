@@ -53,7 +53,8 @@ public class DelegateValidator implements Validator, StateHolder
     private ValueExpression _binding;
     private String _validatorIdString = null;
     
-    public DelegateValidator(){
+    public DelegateValidator()
+    {
         
     }
     
@@ -107,7 +108,8 @@ public class DelegateValidator implements Validator, StateHolder
             try
             {
                 validator = _binding.getValue(elContext);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw new ValidatorException(new FacesMessage("Error while creating the Validator"), e);
             }
@@ -124,12 +126,14 @@ public class DelegateValidator implements Validator, StateHolder
             if (null != _validatorIdString)
             {
                 validator = application.createValidator(_validatorIdString);
-            } else if (null != _validatorId)
+            }
+            else if (null != _validatorId)
             {
                 String validatorId = (String) _validatorId.getValue(elContext);
                 validator = application.createValidator(validatorId);
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             throw new ValidatorException(new FacesMessage("Error while creating the Validator"), e);
         }

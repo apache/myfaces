@@ -71,7 +71,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     private final static DataModel<?> EMPTY_MODEL = new ListDataModel<Object>(Collections.emptyList());
 
-    private final static SavedState NullState = new SavedState();
+    private final static SavedState NULL_STATE = new SavedState();
 
     private Map<String, SavedState> _childState;
 
@@ -427,7 +427,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             else
             {
-                NullState.apply(evh);
+                NULL_STATE.apply(evh);
             }
         }
 
@@ -529,54 +529,63 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         return (index - getOffset()) / getStep();
     }
-    
-    private void _validateAttributes () throws FacesException {
+
+    private void _validateAttributes() throws FacesException
+    {
         int begin = getOffset();
         int end = getDataModel().getRowCount();
         int size = getSize();
         int step = getStep();
         boolean sizeIsEnd = false;
-        
-        if (size == -1) {
+
+        if (size == -1)
+        {
             size = end;
             sizeIsEnd = true;
         }
-        
-        if (end >= 0) {
-            if (size < 0) {
-                throw new FacesException ("iteration size cannot be less " +
-                    "than zero");
+
+        if (end >= 0)
+        {
+            if (size < 0)
+            {
+                throw new FacesException("iteration size cannot be less " +
+                        "than zero");
             }
-            
-            else if (!sizeIsEnd && (begin + size) > end) {
-                throw new FacesException ("iteration size cannot be greater " +
+
+            else if (!sizeIsEnd && (begin + size) > end)
+            {
+                throw new FacesException("iteration size cannot be greater " +
+                        "than collection size");
+            }
+        }
+
+        if ((size > -1) && (begin > end))
+        {
+            throw new FacesException("iteration offset cannot be greater " +
                     "than collection size");
-            }
         }
-        
-        if ((size > -1) && (begin > end)) {
-            throw new FacesException ("iteration offset cannot be greater " +
-                "than collection size");
-        }
-        
-        if (step == -1) {
+
+        if (step == -1)
+        {
             step = 1;
         }
-        
-        if (step < 0) {
-            throw new FacesException ("iteration step size cannot be less " +
-                "than zero");
+
+        if (step < 0)
+        {
+            throw new FacesException("iteration step size cannot be less " +
+                    "than zero");
         }
-        
-        else if (step == 0) {
-            throw new FacesException ("iteration step size cannot be equal " +
-                "to zero");
+
+        else if (step == 0)
+        {
+            throw new FacesException("iteration step size cannot be equal " +
+                    "to zero");
         }
-        
+
         _end = size;
         _step = step;
     }
-    
+
     public void process(FacesContext faces, PhaseId phase)
     {
         // stop if not rendered
@@ -772,7 +781,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     if (this.getChildCount() > 0)
                     {
                         // Searching for this component's children/facets
-                        for (Iterator<UIComponent> it = this.getChildren().iterator(); !returnValue && it.hasNext();) {
+                        for (Iterator<UIComponent> it = this.getChildren().iterator(); !returnValue && it.hasNext();)
+                        {
                             returnValue = it.next().invokeOnComponent(context, clientId, callback);
                         }
                     }

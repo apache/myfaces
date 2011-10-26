@@ -19,49 +19,55 @@
 package org.apache.myfaces.view.facelets.el;
 
 import javax.el.MethodNotFoundException;
-import javax.faces.FacesWrapper;
 import javax.faces.view.Location;
 
 /**
- * Implementation of types {@link MethodNotFoundException}, {@link ContextAware} and {@link FacesWrapper}
- * 
+ * Implementation of types {@link MethodNotFoundException}, {@link ContextAware}
+ * and {@link javax.faces.FacesWrapper}
+ *
  * @author martinkoci
- * 
+ *
  * @see ContextAware
  */
-public class ContextAwareMethodNotFoundException extends MethodNotFoundException implements ContextAwareExceptionWrapper {
-    
+public class ContextAwareMethodNotFoundException extends MethodNotFoundException implements ContextAwareExceptionWrapper
+{
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -8172862923048615707L;
-    
+
     private ContextAwareExceptionWrapper _delegate;
     //private Throwable _wrappedException;
     //private String _localizedMessage;
 
     public ContextAwareMethodNotFoundException(Location location,
-            String expressionString, String qName, Throwable wrapped) {
+                                               String expressionString, String qName, Throwable wrapped)
+    {
         super(wrapped);
         //super(wrapped.getMessage());
         //_localizedMessage = wrapped.getLocalizedMessage();
         //_wrappedException = wrapped;
-         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
+        _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 
-    public Throwable getWrapped() {
+    public Throwable getWrapped()
+    {
         return _delegate.getWrapped();
     }
 
-    public Location getLocation() {
+    public Location getLocation()
+    {
         return _delegate.getLocation();
     }
 
-    public String getExpressionString() {
+    public String getExpressionString()
+    {
         return _delegate.getExpressionString();
     }
 
-    public String getQName() {
+    public String getQName()
+    {
         return _delegate.getQName();
     }
 

@@ -74,7 +74,8 @@ public final class RepeatStatus implements Serializable
         return ((count % 2) == 0);
     }
     
-    public boolean isOdd () {
+    public boolean isOdd ()
+    {
         return !isEven();
     }
     

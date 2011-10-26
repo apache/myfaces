@@ -26,7 +26,6 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
@@ -47,11 +46,9 @@ public abstract class AbstractFacelet extends Facelet
     public abstract ExpressionFactory getExpressionFactory();
     
     /**
-     * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
-     * getRelativePath(String)}, then calls {@link #include(FaceletContext, UIComponent, URL) include(FaceletContext,
-     * UIComponent, URL)}.
+     * Used for delegation by the DefaultFaceletContext.
      * 
-     * @see FaceletContext#includeFacelet(UIComponent, String)
+     * @see javax.faces.view.facelets.FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx
      *            FaceletContext to pass to the included Facelet
      * @param parent

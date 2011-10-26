@@ -90,7 +90,8 @@ class DefaultFaceletsStateManagementHelper
     private static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
     /**
-     * Only applicable if state saving method is "server" (= default) and if <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
+     * Only applicable if state saving method is "server" (= default) and if
+     * <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
      * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
      * If <code>false</code> the state will not be compressed.
      */
@@ -331,7 +332,7 @@ class DefaultFaceletsStateManagementHelper
 
     /**
      * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
-     * @see SERIALIZE_STATE_IN_SESSION_PARAM
+     * @see #SERIALIZE_STATE_IN_SESSION_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state should be serialized in the session
      */
@@ -349,7 +350,7 @@ class DefaultFaceletsStateManagementHelper
 
     /**
      * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
-     * @see COMPRESS_SERVER_STATE_PARAM
+     * @see #COMPRESS_SERVER_STATE_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state steam should be compressed
      */
@@ -473,7 +474,7 @@ class DefaultFaceletsStateManagementHelper
 
             while (_keys.remove(key))
             {
-                ;
+                // do nothing
             }
             _keys.add(key);
 
@@ -492,7 +493,7 @@ class DefaultFaceletsStateManagementHelper
 
         /**
          * Reads the amount (default = 20) of views to be stored in session.
-         * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
+         * @see #NUMBER_OF_VIEWS_IN_SESSION_PARAM
          * @param context FacesContext for the current request, we are processing
          * @return Number vf views stored in the session
          */
@@ -561,7 +562,7 @@ class DefaultFaceletsStateManagementHelper
          * @since 1.2.5
          * @param context
          * @return constant indicating caching mode
-         * @see CACHE_OLD_VIEWS_IN_SESSION_MODE
+         * @see #CACHE_OLD_VIEWS_IN_SESSION_MODE
          */
         protected String getCacheOldViewsInSessionMode(FacesContext context)
         {
@@ -631,10 +632,10 @@ class DefaultFaceletsStateManagementHelper
         @Override
         public int hashCode()
         {
-            final int PRIME = 31;
+            final int prime = 31;
             int result = 1;
-            result = PRIME * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
-            result = PRIME * result + ((_viewId == null) ? 0 : _viewId.hashCode());
+            result = prime * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
+            result = prime * result + ((_viewId == null) ? 0 : _viewId.hashCode());
             return result;
         }
 
