@@ -103,7 +103,11 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public Set<String> keySet()
     {
-        return (_keySet != null) ? _keySet : (_keySet = new KeySet());
+        if (_keySet == null)
+        {
+            _keySet = new KeySet();
+        }
+        return _keySet;
     }
 
     @Override
@@ -147,7 +151,11 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public Collection<V> values()
     {
-        return (_values != null) ? _values : (_values = new Values());
+        if (_values == null)
+        {
+            _values = new Values();
+        }
+        return _values;
     }
 
     abstract protected V getAttribute(String key);
@@ -225,7 +233,8 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 
         public E next()
         {
-            return getValue(_currentKey = _e.nextElement());
+            _currentKey = _e.nextElement();
+            return getValue(_currentKey);
         }
 
         protected abstract E getValue(String attributeName);
