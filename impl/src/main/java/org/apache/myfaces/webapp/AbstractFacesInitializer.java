@@ -154,8 +154,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                   facesContext.isProjectStage(ProjectStage.Production)) &&
                  log.isLoggable(Level.INFO))
             {
-                String contextPath = servletContext.getContextPath();
-                log.info("ServletContext '" + (contextPath == null ? "/" : contextPath) + "' initialized.");
+                log.info("ServletContext initialized.");
             }
 
             WebConfigParamsLogger.logWebContextParams(facesContext);
