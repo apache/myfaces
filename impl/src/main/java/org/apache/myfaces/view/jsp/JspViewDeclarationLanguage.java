@@ -27,6 +27,7 @@ import javax.faces.FacesException;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PostAddToViewEvent;
 import javax.faces.render.ResponseStateManager;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -187,6 +188,9 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
             // store the wrapped response in the request, so it is thread-safe
             setAfterViewTagResponseWrapper(externalContext, wrappedResponse);
         }
+        
+        // Publish PostAddToView over UIViewRoot, because this is not done automatically.
+        context.getApplication().publishEvent(context, PostAddToViewEvent.class, UIViewRoot.class, view);
     }
 
     /**

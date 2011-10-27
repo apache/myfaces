@@ -59,6 +59,7 @@ import javax.faces.event.ActionListener;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
@@ -287,7 +288,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * partial state saving and it is necessary to call UIComponent.markInitialState
      * after component instances are populated. 
      */
-    public final static String MARK_INITIAL_STATE_KEY = "javax.faces.view.ViewDeclarationLanguage.IS_BUILDING_INITIAL_STATE";
+    public final static String MARK_INITIAL_STATE_KEY = "org.apache.myfaces.MARK_INITIAL_STATE";
+    
+    public final static String IS_BUILDING_INITIAL_STATE_KEY_ALIAS = "javax.faces.view.ViewDeclarationLanguage.IS_BUILDING_INITIAL_STATE"; 
 
     public final static String CLEAN_TRANSIENT_BUILD_ON_RESTORE = "org.apache.myfaces.CLEAN_TRANSIENT_BUILD_ON_RESTORE";
 
@@ -393,10 +396,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             context.getAttributes().put(USING_PSS_ON_THIS_VIEW, Boolean.TRUE);
             //Add a key to indicate ComponentTagHandlerDelegate to 
             //call UIComponent.markInitialState after it is populated
+            if (!refreshTransientBuild)
+            {
+                context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                context.getAttributes().put(IS_BUILDING_INITIAL_STATE_KEY_ALIAS, Boolean.TRUE);
+            }
             if (!refreshTransientBuild && _markInitialStateWhenApplyBuildView)
             {
                 context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
-                context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
             }
             if (refreshTransientBuildOnPSS)
             {
@@ -444,6 +451,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
                 context.getAttributes().remove(REFRESHING_TRANSIENT_BUILD);
             }
+            else
+            {
+                // Publish PostAddToView over UIViewRoot, because this is not done automatically.
+                context.getApplication().publishEvent(context, PostAddToViewEvent.class, UIViewRoot.class, view);
+            }
         }
 
         // set this view as filled
@@ -485,16 +497,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     //Remove the key that indicate we need to call UIComponent.markInitialState
                     //on the current tree
                     context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
-                    context.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
                 }
                 else
                 {
                     context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
-                    context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
                     _markInitialStateOnView(view, refreshTransientBuildOnPSS);
-                    context.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
                     context.getAttributes().remove(MARK_INITIAL_STATE_KEY);
                 }
+                context.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+                context.getAttributes().remove(IS_BUILDING_INITIAL_STATE_KEY_ALIAS);
             }
 
             // We need to suscribe the listeners of changes in the component tree
@@ -776,8 +787,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     public static boolean isMarkInitialState(FacesContext context)
     {
-        //return context.getAttributes().containsKey(MARK_INITIAL_STATE_KEY);
-        return Boolean.TRUE.equals(context.getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE));
+        return Boolean.TRUE.equals(context.getAttributes().get(MARK_INITIAL_STATE_KEY));
     }
 
     public static boolean isRefreshTransientBuildOnPSS(FacesContext context)
