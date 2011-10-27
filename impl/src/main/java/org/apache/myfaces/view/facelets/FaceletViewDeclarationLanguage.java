@@ -59,6 +59,7 @@ import javax.faces.event.ActionListener;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
