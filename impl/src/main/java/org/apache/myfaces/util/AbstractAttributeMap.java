@@ -85,7 +85,11 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public Set<Entry<String, V>> entrySet()
     {
-        return (_entrySet != null) ? _entrySet : (_entrySet = new EntrySet());
+        if (_entrySet == null)
+        {
+            _entrySet = new EntrySet();
+        }
+        return _entrySet;
     }
 
     @Override
