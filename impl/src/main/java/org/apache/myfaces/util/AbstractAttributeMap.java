@@ -37,9 +37,9 @@ import java.util.Set;
  */
 public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
 {
-    private Set<String> _keySet = new KeySet();
-    private Collection<V> _values = new Values();
-    private Set<Entry<String, V>> _entrySet = new EntrySet();
+    private Set<String> _keySet;
+    private Collection<V> _values;
+    private Set<Entry<String, V>> _entrySet;
 
     @Override
     public void clear()
@@ -85,7 +85,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public Set<Entry<String, V>> entrySet()
     {
-        return _entrySet;
+        return (_entrySet != null) ? _entrySet : (_entrySet = new EntrySet());
     }
 
     @Override
@@ -103,7 +103,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public Set<String> keySet()
     {
-        return _keySet;
+        return (_keySet != null) ? _keySet : (_keySet = new KeySet());
     }
 
     @Override
@@ -147,7 +147,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public Collection<V> values()
     {
-        return _values;
+        return (_values != null) ? _values : (_values = new Values());
     }
 
     abstract protected V getAttribute(String key);
