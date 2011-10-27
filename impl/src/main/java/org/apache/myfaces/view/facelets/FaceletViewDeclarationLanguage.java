@@ -962,8 +962,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     }
 
     @Override
-    public void retargetMethodExpressions(FacesContext context,
-                                          UIComponent topLevelComponent)
+    public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
     {
         checkNull(context, "context");
 

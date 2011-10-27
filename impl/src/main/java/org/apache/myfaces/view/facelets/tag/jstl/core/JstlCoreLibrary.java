@@ -27,13 +27,13 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 public final class JstlCoreLibrary extends AbstractTagLibrary
 {
 
-    public final static String Namespace = "http://java.sun.com/jsp/jstl/core";
+    public final static String NAMESPACE = "http://java.sun.com/jsp/jstl/core";
 
-    public final static JstlCoreLibrary Instance = new JstlCoreLibrary();
+    public final static JstlCoreLibrary INSTANCE = new JstlCoreLibrary();
 
     public JstlCoreLibrary()
     {
-        super(Namespace);
+        super(NAMESPACE);
 
         this.addTagHandler("if", IfHandler.class);
 

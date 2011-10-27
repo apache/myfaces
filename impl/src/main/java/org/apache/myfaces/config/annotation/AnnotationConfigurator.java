@@ -503,10 +503,11 @@ public class AnnotationConfigurator
                     fields.put(field.getName(), field);
                 }
             }
+            clazz = clazz.getSuperclass();
         }
-        while ((clazz = clazz.getSuperclass()) != Object.class);
+        while (clazz != Object.class);
 
-        return (Field[]) fields.values().toArray(new Field[fields.size()]);
+        return fields.values().toArray(new Field[fields.size()]);
 
     }
 }

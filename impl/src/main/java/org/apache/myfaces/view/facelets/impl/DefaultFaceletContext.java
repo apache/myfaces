@@ -742,6 +742,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             return this._owner == o || this._target == o;
         }
 
+        @Override
+        public int hashCode()
+        {
+            int result = _owner != null ? _owner.hashCode() : 0;
+            result = 31 * result + (_target != null ? _target.hashCode() : 0);
+            return result;
+        }
     }
     
     @Override

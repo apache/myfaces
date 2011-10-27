@@ -32,9 +32,9 @@ import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 public final class HtmlDecorator implements TagDecorator
 {
 
-    public final static String XhtmlNamespace = "http://www.w3.org/1999/xhtml";
+    public final static String XHTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
 
-    public final static HtmlDecorator Instance = new HtmlDecorator();
+    public final static HtmlDecorator INSTANCE = new HtmlDecorator();
 
     /**
      * 
@@ -51,17 +51,17 @@ public final class HtmlDecorator implements TagDecorator
      */
     public Tag decorate(Tag tag)
     {
-        if (XhtmlNamespace.equals(tag.getNamespace()))
+        if (XHTML_NAMESPACE.equals(tag.getNamespace()))
         {
             String n = tag.getLocalName();
             if ("a".equals(n))
             {
-                return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "commandLink", tag.getQName(), tag
+                return new Tag(tag.getLocation(), HtmlLibrary.NAMESPACE, "commandLink", tag.getQName(), tag
                         .getAttributes());
             }
             if ("form".equals(n))
             {
-                return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "form", tag.getQName(), tag.getAttributes());
+                return new Tag(tag.getLocation(), HtmlLibrary.NAMESPACE, "form", tag.getQName(), tag.getAttributes());
             }
             if ("input".equals(n))
             {
@@ -72,19 +72,19 @@ public final class HtmlDecorator implements TagDecorator
                     TagAttributes na = removeType(tag.getAttributes());
                     if ("text".equals(t))
                     {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputText", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.NAMESPACE, "inputText", tag.getQName(), na);
                     }
                     if ("password".equals(t))
                     {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputSecret", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.NAMESPACE, "inputSecret", tag.getQName(), na);
                     }
                     if ("hidden".equals(t))
                     {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "inputHidden", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.NAMESPACE, "inputHidden", tag.getQName(), na);
                     }
                     if ("submit".equals(t))
                     {
-                        return new Tag(tag.getLocation(), HtmlLibrary.Namespace, "commandButton", tag.getQName(), na);
+                        return new Tag(tag.getLocation(), HtmlLibrary.NAMESPACE, "commandButton", tag.getQName(), na);
                     }
                 }
             }

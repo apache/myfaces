@@ -48,7 +48,7 @@ import org.apache.commons.collections.iterators.EmptyIterator;
 class UILeaf extends UIComponentBase
 {
 
-    private final static Map<String, UIComponent> facets = new HashMap<String, UIComponent>()
+    private static Map<String, UIComponent> facets = new HashMap<String, UIComponent>()
     {
 
         @Override

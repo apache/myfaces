@@ -77,7 +77,7 @@ public class ManagedBeanBuilder
      * REQUEST VIEW SESSION APPLICATION NONE
      * @author Jakob Korherr
      */
-    private final static Comparator<String> scopeComparator
+    private final static Comparator<String> SCOPE_COMPARATOR
             = new Comparator<String>()
     {
 
@@ -324,6 +324,8 @@ public class ManagedBeanBuilder
                     }
                     value = property.getRuntimeValue(facesContext);
                     break;
+                default:
+                    throw new FacesException("unknown ManagedProperty type: "+ property.getType());
             }
             
             Class<?> propertyClass = null;
@@ -441,7 +443,7 @@ public class ManagedBeanBuilder
         }
         
         // the target scope needs to have a shorter (or equal) lifetime than the value scope
-        return (scopeComparator.compare(targetScope, valueScope) <= 0);
+        return (SCOPE_COMPARATOR.compare(targetScope, valueScope) <= 0);
     }
 
     /**
@@ -466,7 +468,7 @@ public class ManagedBeanBuilder
             }
             // we have found at least one valid scope at this point
             scopeFound = true;
-            if (scopeComparator.compare(valueScope, narrowestScope) < 0)
+            if (SCOPE_COMPARATOR.compare(valueScope, narrowestScope) < 0)
             {
                 narrowestScope = valueScope;
             }

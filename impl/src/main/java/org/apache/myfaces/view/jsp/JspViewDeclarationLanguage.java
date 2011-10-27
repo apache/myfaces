@@ -111,7 +111,7 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
                 // does the message contain "f" (prefix f of tags)
                 // or the related uri http://java.sun.com/jsf/core
                 if (message.contains("\"f\"") 
-                        || message.contains("\"" + CoreLibrary.Namespace + "\""))
+                        || message.contains("\"" + CoreLibrary.NAMESPACE + "\""))
                 {
                     // check facelets-only f tags
                     for (String tag : FACELETS_ONLY_F_TAGS)
@@ -126,7 +126,7 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
                     }
                 }  
                 else if (message.contains("\"h\"") 
-                        || message.contains("\"" + HtmlLibrary.Namespace + "\""))
+                        || message.contains("\"" + HtmlLibrary.NAMESPACE + "\""))
                 {
                     // check facelets-only h tags
                     for (String tag : FACELETS_ONLY_H_TAGS)

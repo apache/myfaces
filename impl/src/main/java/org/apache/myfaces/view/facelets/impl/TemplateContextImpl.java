@@ -208,8 +208,6 @@ public class TemplateContextImpl extends TemplateContext
 
         public boolean equals(Object o)
         {
-            // System.out.println(this.owner.getAlias() + " == " +
-            // ((DefaultFacelet) o).getAlias());
             if (this._owner != null)
             {
                 return this._owner == o || this._target == o;
@@ -218,6 +216,14 @@ public class TemplateContextImpl extends TemplateContext
             {
                 return this._target == o;
             }
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int result = _owner != null ? _owner.hashCode() : 0;
+            result = 31 * result + (_target != null ? _target.hashCode() : 0);
+            return result;
         }
 
         public boolean isRoot()

@@ -354,7 +354,7 @@ public final class SAXCompiler extends Compiler
             {
                 this.unit.popTag();
             }
-            if (CoreLibrary.Namespace.equals(uri) && "metadata".equals(localName))
+            if (CoreLibrary.NAMESPACE.equals(uri) && "metadata".equals(localName))
             {
                 this.inMetadata=false;
             }            
@@ -433,7 +433,7 @@ public final class SAXCompiler extends Compiler
 
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-            if (CoreLibrary.Namespace.equals(uri) && "metadata".equals(localName))
+            if (CoreLibrary.NAMESPACE.equals(uri) && "metadata".equals(localName))
             {
                 this.inMetadata=true;
             }

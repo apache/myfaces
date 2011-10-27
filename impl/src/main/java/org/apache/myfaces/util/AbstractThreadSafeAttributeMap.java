@@ -122,9 +122,9 @@ public abstract class AbstractThreadSafeAttributeMap<V> extends AbstractMap<Stri
     @Override
     public final V remove(final Object key)
     {
-        final String key_ = key.toString();
-        final V retval = getAttribute(key_);
-        removeAttribute(key_);
+        final String keyString = key.toString();
+        final V retval = getAttribute(keyString);
+        removeAttribute(keyString);
         return retval;
     }
 
@@ -224,7 +224,8 @@ public abstract class AbstractThreadSafeAttributeMap<V> extends AbstractMap<Stri
 
         public E next()
         {
-            return getValue(_currentKey = _i.next());
+            _currentKey = _i.next();
+            return getValue(_currentKey);
         }
 
         protected abstract E getValue(String attributeName);
