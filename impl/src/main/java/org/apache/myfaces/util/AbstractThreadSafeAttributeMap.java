@@ -38,7 +38,7 @@ import java.util.Set;
 public abstract class AbstractThreadSafeAttributeMap<V> extends AbstractMap<String, V>
 {
     private Set<String> _keySet = new KeySet();
-    private Collection<V> _values;
+    private Collection<V> _values =  new Values();
     private Set<Entry<String, V>> _entrySet = new EntrySet();
 
     @Override
@@ -143,7 +143,7 @@ public abstract class AbstractThreadSafeAttributeMap<V> extends AbstractMap<Stri
     @Override
     public Collection<V> values()
     {
-        return (_values != null) ? _values : (_values = new Values());
+        return _values;
     }
 
     abstract protected V getAttribute(String key);
