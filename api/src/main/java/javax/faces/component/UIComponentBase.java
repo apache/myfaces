@@ -183,6 +183,10 @@ public abstract class UIComponentBase extends UIComponent
                 {
                     _publishPreRemoveFromViewEvent(facesContext, this);
                 }
+                else
+                {
+                    _updateInView(this, false);
+                }
             }
             _parent = parent;
         }
@@ -200,6 +204,10 @@ public abstract class UIComponentBase extends UIComponent
                 if (facesContext.isProcessingEvents())
                 {
                     _publishPostAddToViewEvent(facesContext, this);
+                }
+                else
+                {
+                    _updateInView(this, true);
                 }
             }
         }
@@ -292,6 +300,27 @@ public abstract class UIComponentBase extends UIComponent
             }
         }        
     }    
+    
+    private static void _updateInView(UIComponent component, boolean isInView)
+    {
+        component.setInView(isInView);
+        
+        if (component.getChildCount() > 0)
+        {
+            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            {
+                UIComponent child = component.getChildren().get(i);
+                _updateInView(child, isInView);
+            }
+        }
+        if (component.getFacetCount() > 0)
+        {
+            for (UIComponent child : component.getFacets().values())
+            {
+                _updateInView(child, isInView);
+            }
+        }        
+    }  
     
     /**
      * 
