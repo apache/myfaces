@@ -126,9 +126,9 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public final V remove(final Object key)
     {
-        final String key_ = key.toString();
-        final V retval = getAttribute(key_);
-        removeAttribute(key_);
+        final String keyString = key.toString();
+        final V retval = getAttribute(keyString);
+        removeAttribute(keyString);
         return retval;
     }
 
@@ -397,19 +397,29 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         public boolean equals(final Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             final EntrySetEntry other = (EntrySetEntry)obj;
             if (_currentKey == null)
             {
                 if (other._currentKey != null)
+                {
                     return false;
+                }
             }
             else if (!_currentKey.equals(other._currentKey))
+            {
                 return false;
+            }
             return true;
         }
 
