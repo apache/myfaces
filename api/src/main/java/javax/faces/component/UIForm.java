@@ -85,7 +85,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         }
         else
         {
-            bld = __getSharedStringBuilder(context);
+            bld = _getSharedStringBuilder(context);
         }
 
         Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);

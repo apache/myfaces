@@ -1529,7 +1529,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             return clientId;
         }
 
-        StringBuilder bld = __getSharedStringBuilder();
+        StringBuilder bld = _getSharedStringBuilder();
         return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
     }*/
 
@@ -1545,7 +1545,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             return clientId;
         }
 
-        StringBuilder bld = __getSharedStringBuilder(context);
+        StringBuilder bld = _getSharedStringBuilder(context);
         return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
     }
 
@@ -1619,7 +1619,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      */
     public String createUniqueId(FacesContext context, String seed)
     {
-        StringBuilder bld = __getSharedStringBuilder(context);
+        StringBuilder bld = _getSharedStringBuilder(context);
 
         Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
         uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;

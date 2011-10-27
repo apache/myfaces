@@ -480,7 +480,8 @@ final class _FacesMessageInterpolatorHolder
         if (ret == null)
         {
             MessageInterpolator interpolator = validatorFactory.getMessageInterpolator();
-            instance = ret = new FacesMessageInterpolator(interpolator);
+            ret = new FacesMessageInterpolator(interpolator);
+            instance = ret;
         }
         return ret;
     }

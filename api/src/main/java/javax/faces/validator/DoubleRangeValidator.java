@@ -245,6 +245,8 @@ public class DoubleRangeValidator
         return true;
     }
 
+
+
     private boolean _initialStateMarked = false;
 
     public void clearInitialState()
@@ -272,5 +274,13 @@ public class DoubleRangeValidator
     private String getFor()
     {
         return null;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = _minimum != null ? _minimum.hashCode() : 0;
+        result = 31 * result + (_maximum != null ? _maximum.hashCode() : 0);
+        return result;
     }
 }

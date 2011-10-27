@@ -244,7 +244,15 @@ public class LongRangeValidator
 
         return true;
     }
-    
+
+    @Override
+    public int hashCode()
+    {
+        int result = _minimum != null ? _minimum.hashCode() : 0;
+        result = 31 * result + (_maximum != null ? _maximum.hashCode() : 0);
+        return result;
+    }
+
     private boolean _initialStateMarked = false;
 
     public void clearInitialState()

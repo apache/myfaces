@@ -812,7 +812,7 @@ public abstract class UIComponentBase extends UIComponent
             String containerClientId = namingContainer.getContainerClientId(context);
             if (containerClientId != null)
             {
-                StringBuilder bld = __getSharedStringBuilder(context);
+                StringBuilder bld = _getSharedStringBuilder(context);
                 _clientId = bld.append(containerClientId).append(
                                       UINamingContainer.getSeparatorChar(context)).append(id).toString();
             }
@@ -2234,27 +2234,27 @@ public abstract class UIComponentBase extends UIComponent
 /**
      * <p>
      * This gets a single FacesContext-local shared stringbuilder instance, each time you call
-     * __getSharedStringBuilder it sets the length of the stringBuilder instance to 0.
+     * _getSharedStringBuilder it sets the length of the stringBuilder instance to 0.
      * </p><p>
      * This allows you to use the same StringBuilder instance over and over.
-     * You must call toString on the instance before calling __getSharedStringBuilder again.
+     * You must call toString on the instance before calling _getSharedStringBuilder again.
      * </p>
      * Example that works
      * <pre><code>
-     * StringBuilder sb1 = __getSharedStringBuilder();
+     * StringBuilder sb1 = _getSharedStringBuilder();
      * sb1.append(a).append(b);
      * String c = sb1.toString();
      *
-     * StringBuilder sb2 = __getSharedStringBuilder();
+     * StringBuilder sb2 = _getSharedStringBuilder();
      * sb2.append(b).append(a);
      * String d = sb2.toString();
      * </code></pre>
      * <br><br>
      * Example that doesn't work, you must call toString on sb1 before
-     * calling __getSharedStringBuilder again.
+     * calling _getSharedStringBuilder again.
      * <pre><code>
-     * StringBuilder sb1 = __getSharedStringBuilder();
-     * StringBuilder sb2 = __getSharedStringBuilder();
+     * StringBuilder sb1 = _getSharedStringBuilder();
+     * StringBuilder sb2 = _getSharedStringBuilder();
      *
      * sb1.append(a).append(b);
      * String c = sb1.toString();
@@ -2264,13 +2264,13 @@ public abstract class UIComponentBase extends UIComponent
      * </code></pre>
      *
      */
-    static StringBuilder __getSharedStringBuilder()
+    static StringBuilder _getSharedStringBuilder()
     {
-        return __getSharedStringBuilder(FacesContext.getCurrentInstance());
+        return _getSharedStringBuilder(FacesContext.getCurrentInstance());
     }
 
     // TODO checkstyle complains; does this have to lead with __ ?
-    static StringBuilder __getSharedStringBuilder(FacesContext facesContext)
+    static StringBuilder _getSharedStringBuilder(FacesContext facesContext)
     {
         Map<Object, Object> attributes = facesContext.getAttributes();
 
