@@ -57,6 +57,19 @@ _MF_SINGLTN(_PFX_UTIL+"DomQuirks", myfaces._impl._util._Dom, /**
         this._callSuper("constructor_");
         myfaces._impl._util._Dom = this;
 
+        var _Lang = this._Lang;
+        //by w3c spec the script eval is turned off it is only
+        //on on legacy browsers
+        var scriptEval = _Lang.hitch(this, this.isManualScriptEval);
+
+        if(window){
+			this._RT.addOnLoad(window,scriptEval);
+        }
+        //safety fallback if the window onload handler is overwritten and not chained
+        if (document.body) {
+            this._RT.addOnLoad(document.body, scriptEval);
+        }
+
         //we register ourselves into the existing classes lazily
         var _T = this;
         if (myfaces._impl.core.Impl) {
@@ -134,6 +147,17 @@ _MF_SINGLTN(_PFX_UTIL+"DomQuirks", myfaces._impl._util._Dom, /**
             dummyPlaceHolder.innerHTML = "";
         }
 
+    },
+
+     replaceElement: function(item, evalNode) {
+
+        var _Browser = this._RT.browser;
+        if (!_Browser.isIE || _Browser.isIE >= 8) {
+            //standards conform no leaking browser
+            item.parentNode.replaceChild(evalNode, item);
+        } else {
+            this._callSuper("replaceElement", item, evalNode);
+        }
     },
 
     /**

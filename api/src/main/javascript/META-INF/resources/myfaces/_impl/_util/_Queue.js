@@ -86,8 +86,7 @@ _MF_CLS(_PFX_UTIL+"_Queue", _MF_OBJECT,
 
     _readjust: function() {
         var size = this._size;
-        while (null != size && 'undefined' != typeof size &&
-                size > -1 && this.length() > size) {
+        while (size && size > -1 && this.length() > size) {
             this.dequeue();
         }
     },

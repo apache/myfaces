@@ -121,16 +121,16 @@ if (!myfaces._impl.core._EvalHandlers) {
             //is embedded in an iframe
             //We lazy init the eval type upon the browsers
             //capabilities   
-            var _et = "_evalType";
+            var _e = "_evalType";
             var _w = window;
             var _b = myfaces._impl.core._Runtime.browser;
-            if (!_T[_et]) {
-                _T[_et] = _w.execScript ? "_evalExecScript" : null;
-                _T[_et] = _T[_et] ||(( _w.eval && (!_b.isBlackBerry ||_b.isBlackBerry >= 6)) ? "_standardGlobalEval" : null);
-                _T[_et] = _T[_et] ||((_w.eval ) ? "_evalBBOld" : null);
+            if (!_T[_e]) {
+                _T[_e] = _w.execScript ? "_evalExecScript" : null;
+                _T[_e] = _T[_e] ||(( _w.eval && (!_b.isBlackBerry ||_b.isBlackBerry >= 6)) ? "_standardGlobalEval" : null);
+                _T[_e] = _T[_e] ||((_w.eval ) ? "_evalBBOld" : null);
             }
-            if (_T[_et]) {
-                return _T[_T[_et]](c);
+            if (_T[_e]) {
+                return _T[_T[_e]](c);
             }
             //we probably have covered all browsers, but this is a safety net which might be triggered
             //by some foreign browser which is not covered by the above cases

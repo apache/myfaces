@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /**
  * @class
@@ -25,11 +25,8 @@
  */
 
 /** @namespace myfaces._impl._util._HtmlStripper */
-_MF_CLS(_PFX_UTIL+"_HtmlStripper", Object,
-/** @lends myfaces._impl._util._HtmlStripper.prototype */
-{
-    BEGIN_TAG: "html",
-    END_TAG: "lmth",
+_MF_CLS(_PFX_UTIL + "_HtmlStripper", _MF_OBJECT, /** @lends myfaces._impl._util._HtmlStripper.prototype */ {
+
     /**
      * main parse routine parses the document for a given tag name
      *
@@ -38,89 +35,92 @@ _MF_CLS(_PFX_UTIL+"_HtmlStripper", Object,
      * @param tagNameStart the tag name to be parsed for
      */
     parse : function(theString, tagNameStart) {
-        this.tokens = theString.split("");
-        this.tagAttributes = {};
 
-        this._tagStart = -1;
-        this._tagEnd = -1;
+        var BEGIN_TAG = "html",
+                _tagStart = -1,
+                _tagEnd = -1,
+                _contentStart = -1,
+                _contentEnd = -1,
+                _tokenPos = 0,
+                _tokenForward = 1,
+                tagNameStart = (!tagNameStart) ? BEGIN_TAG : tagNameStart;
 
-        this._contentStart = -1;
-        this._contentEnd = -1;
-        this._tokenPos = 0;
+        var proposedTagStartPos = theString.indexOf("<" + tagNameStart);
+        var _T = this;
 
-        this._tokenForward = 1;
+        //we use closures instead of private methods to improve the compressability
 
-        this.tagNameStart = (!tagNameStart) ? this.BEGIN_TAG : tagNameStart;
+        var isValidPositionCombination = function(pos1, pos2, pos3, pos4) {
+            return pos1 <= pos2 && pos3 <= pos4;
+        };
+
+        /**
+         * trace for a forward comment
+         *
+         * @param theStr the string to be checked
+         * @param tagPos the tag position from which the check onwards has to be perfomed
+         * @return true in case a comment is found
+         */
+        var checkForwardForComment = function(theStr, tagPos) {
+            var toCheck = theStr.substring(tagPos),
+                    indexOf = _T._Lang.hitch(toCheck, toCheck.indexOf),
+                    firstBeginComment = indexOf("<!--"),
+                    firstEndComment = indexOf("-->"),
+
+                    firstBeginCDATA = indexOf("<[CDATA["),
+                    firstEndCDATA = indexOf("]]>");
+
+            if (isValidPositionCombination(firstBeginComment, firstEndComment, firstBeginCDATA, firstEndCDATA)) {
+                return true;
+            }
+
+            return firstBeginComment <= firstEndComment && firstBeginCDATA <= firstEndCDATA;
+        };
+
+        /**
+         * check backwards for a comment
+         *
+         * @param theStr the check string
+         * @param tagPos the tag position from which the check should be performed
+         * @return true in case a comment is found
+         */
+        var checkBackForComment = function(theStr, tagPos) {
+            var toCheck = theStr.substring(tagPos),
+                    indexOf = _T._Lang.hitch(toCheck, toCheck.indexOf),
+                    lastBeginComment = indexOf("<!--"),
+                    lastEndComment = indexOf("-->"),
+                    lastBeginCDATA = indexOf("<[CDATA["),
+                    lastEndCDATA = indexOf("]]>");
+
+            if (isValidPositionCombination(lastBeginComment, lastEndComment, lastBeginCDATA, lastEndCDATA)) {
+                //TODO we have to handle the embedded cases, for now we leave them out
+                return true;
+            }
+        };
 
         //no need for ll parsing a handful of indexofs instead of slower regepx suffices
-
-        var proposedTagStartPos = theString.indexOf("<"+tagNameStart);
-
-        while(this._contentStart == -1 && proposedTagStartPos != -1) {
-            if(this.checkBackForComment(theString, proposedTagStartPos))  {
-                this._tagStart = proposedTagStartPos;
-                this._contentStart = proposedTagStartPos+theString.substring(proposedTagStartPos).indexOf(">")+1;
+        var theSubStr = this._Lang.hitch(theString, theString.substring);
+        while (_contentStart == -1 && proposedTagStartPos != -1) {
+            if (checkBackForComment(theString, proposedTagStartPos)) {
+                _tagStart = proposedTagStartPos;
+                _contentStart = proposedTagStartPos + theSubStr(proposedTagStartPos).indexOf(">") + 1;
             }
-            proposedTagStartPos = theString.substring(proposedTagStartPos+tagNameStart.length+2).indexOf("<"+tagNameStart);
+            proposedTagStartPos = theSubStr(proposedTagStartPos + tagNameStart.length + 2).indexOf("<" + tagNameStart);
         }
 
-        var proposedEndTagPos = theString.lastIndexOf("</"+tagNameStart);
-        while(this._contentEnd == -1 && proposedEndTagPos > 0) {
-            if(this.checkForwardForComment(theString, proposedEndTagPos))  {
-                this._tagEnd = proposedEndTagPos;
-                this._contentEnd = proposedEndTagPos;
+        var proposedEndTagPos = theString.lastIndexOf("</" + tagNameStart);
+        while (_contentEnd == -1 && proposedEndTagPos > 0) {
+            if (checkForwardForComment(theString, proposedEndTagPos)) {
+                _tagEnd = proposedEndTagPos;
+                _contentEnd = proposedEndTagPos;
             }
-            proposedTagStartPos = theString.substring(proposedTagStartPos-tagNameStart.length-2).lastIndexOf("</"+tagNameStart);
+            proposedTagStartPos = theSubStr(proposedTagStartPos - tagNameStart.length - 2).lastIndexOf("</" + tagNameStart);
         }
-        if(this._contentStart != -1 && this._contentEnd != -1) {
-            return theString.substring(this._contentStart, this._contentEnd);
+        if (_contentStart != -1 && _contentEnd != -1) {
+            return theSubStr(_contentStart, _contentEnd);
         }
         return null;
-    },
-    
-    checkForwardForComment: function(theStr, tagPos) {
-        var toCheck = theStr.substring(tagPos);
-        var firstBeginComment = toCheck.indexOf("<!--");
-        var firstEndComment = toCheck.indexOf("-->");
-
-        var firstBeginCDATA = toCheck.indexOf("<[CDATA[");
-        var firstEndCDATA = toCheck.indexOf("]]>");
-        
-        if(this.isValidPositionCombination(firstBeginComment, firstEndComment, firstBeginCDATA, firstEndCDATA)) {
-            return true;
-        }
-
-        return firstBeginComment <= firstEndComment && firstBeginCDATA <= firstEndCDATA;
-    },
-
-    checkBackForComment: function(theStr, tagPos) {
-        var toCheck = theStr.substring(tagPos);
-        var lastBeginComment = toCheck.lastIndexOf("<!--");
-        var lastEndComment = toCheck.lastIndexOf("-->");
-
-        var lastBeginCDATA = toCheck.lastIndexOf("<[CDATA[");
-        var lastEndCDATA = toCheck.lastIndexOf("]]>");
-
-
-        if(this.isValidPositionCombination(lastBeginComment, lastEndComment, lastBeginCDATA, lastEndCDATA)) {
-            //TODO we have to handle the embedded cases, for now we leave them out
-            return true;
-        }
-
-    },
-
-    isValidPositionCombination: function(pos1, pos2, pos3, pos4) {
-        return pos1 <= pos2 && pos3 <= pos4;
-    },
-
-    isFullyEmbedded: function(pos1, pos2, embedPos1, embedPos2) {
-        return embedPos1 < pos1 < pos2 < embedPos2;
-    },
-
-    isPartiallyEmbedded: function(pos1, pos2, embedPos1, embedPos2) {
-        return embedPos1 < pos1 <  embedPos2 < pos2 || pos1 < embedPos1 < pos2 <  embedPos2  ;    
     }
-
 });
 
 

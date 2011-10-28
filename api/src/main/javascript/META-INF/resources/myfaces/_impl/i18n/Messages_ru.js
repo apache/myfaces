@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+if (_MF_CLS) {
 /**
  * System messages kyrillic/russian version
  *
@@ -78,3 +78,4 @@ _MF_CLS && _MF_CLS(_PFX_I18N + "Messages_ru", myfaces._impl.i18n.Messages,
             ERR_RED_URL:            "{0}: Перенаправление (Redirect) без url"
 
         });
+}

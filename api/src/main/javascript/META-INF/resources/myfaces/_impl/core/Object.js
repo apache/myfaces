@@ -85,7 +85,7 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
 
     updateSingletons: function(key) {
         var _T = this;
-        this._RT.iterateSingletons(function(namespace) {
+        _T._RT.iterateSingletons(function(namespace) {
             if(namespace[key]) namespace[key] = _T;
         });
     }

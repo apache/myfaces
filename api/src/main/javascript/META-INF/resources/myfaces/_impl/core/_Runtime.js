@@ -484,7 +484,8 @@ if (!myfaces._impl.core._Runtime) {
             //a correct order of scripts being loaded
             //if you use script source on the head, we  have to revert
             //to xhr+ globalEval for those
-            if (!_T.browser.isFF && !_T.browser.isWebkit && !_T.browser.isOpera >= 10) {
+            var b = _T.browser;
+            if (!b.isFF && !b.isWebkit && !b.isOpera >= 10) {
                 _T.loadScriptEval(src, type, defer, charSet);
             } else {
                 //only firefox keeps the order, sorry ie...
@@ -760,29 +761,9 @@ if (!myfaces._impl.core._Runtime) {
         //only detection we still need for the minimal case
         //TODO determine how to eliminate this check
         //with a direct capabilities check
-        var pf = parseFloat,
-                n = navigator,
-                dua = n.userAgent,
-                dav = n.appVersion,
-                tv = pf(dav);
-        var dua = n.userAgent;
         _T.browser = {};
         var d  = _T.browser;
-        d.isWebKit = pf(dua.split("WebKit/")[1]) || undefined;
-        d.isChrome = pf(dua.split("Chrome/")[1]) || undefined;
-        if (dua.indexOf("Opera") >= 0) {
-            d.isOpera = pf(n.appVersion);
-        }
-
-        //only needed for the loadscript, todo check how to replace it
-        //with browser capabilities detection
-        if (dua.indexOf("Gecko") >= 0 && !d.isKhtml && !d.isWebKit) {
-            d.isMozilla = d.isMoz = tv;
-        }
-        if (d.isMoz) {
-            //We really need to get away from _T. Consider a sane isGecko approach for the future.
-            d.isFF = pf(dua.split("Firefox/")[1] || dua.split("Minefield/")[1] || dua.split("Shiretoko/")[1]) || undefined;
-        }
+        d.isWebKit = parseFloat(navigator.userAgent.split("WebKit/")[1]) || undefined;
     };
 }
 

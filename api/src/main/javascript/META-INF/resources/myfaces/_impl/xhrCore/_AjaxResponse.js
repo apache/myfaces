@@ -28,7 +28,7 @@
  * The singleton approach also improves performance
  * due to less object gc compared to the old instance approach.
  */
-_MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
+_MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT,
         /** @lends myfaces._impl.xhrCore._AjaxResponse.prototype */
         {
 
@@ -76,8 +76,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                 mfInternal.appliedViewState = null;
 
                 try {
-                    var _Impl = this.attr("impl");
-                    var _Lang = this._Lang;
+                    var _Impl = this.attr("impl"), _Lang = this._Lang;
                     // TODO:
                     // Solution from
                     // http://www.codingforums.com/archive/index.php/t-47018.html
@@ -99,19 +98,19 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                     //while the rest of the world keeps it as element under the first node
 
                     if (_Lang.isXMLParseError(xmlContent)) {
-                        this._errMalFormedXML(request, context,"");
+                        this._errMalFormedXML(request, context, "");
                         return;
                     }
                     var partials = xmlContent.childNodes[0];
                     if ('undefined' == typeof partials || partials == null) {
-                        this._errMalFormedXML(request, context,"");
+                        this._errMalFormedXML(request, context, "");
                         return;
                     } else {
                         if (partials.tagName != this.RESP_PARTIAL) {
                             // IE 8 sees XML Header as first sibling ...
                             partials = partials.nextSibling;
                             if (!partials || partials.tagName != this.RESP_PARTIAL) {
-                                this._errMalFormedXML(request, context,"");
+                                this._errMalFormedXML(request, context, "");
                                 return;
                             }
                         }
@@ -153,8 +152,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                     delete mfInternal._updateForms;
                     delete mfInternal.appliedViewState;
                 }
-            }
-            ,
+            },
 
             /**
              * fixes the viewstates in the current page
@@ -164,11 +162,11 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
             fixViewStates : function(context) {
                 var _Lang = this._Lang;
                 var mfInternal = context._mfInternal;
-                
+
                 if (null == mfInternal.appliedViewState) {
                     return;
                 }
-               
+
                 //if we set our no portlet env we safely can update all forms with
                 //the new viewstate
                 if (this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
@@ -185,12 +183,12 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
 
                 //set the viewstates of all outer forms parents of our updated elements
 
-                _Lang.arrForEach(mfInternal._updateForms,_Lang.hitch(this, function(elem) {
+                _Lang.arrForEach(mfInternal._updateForms, _Lang.hitch(this, function(elem) {
                     this._setVSTForm(context, elem);
                 }), 0, this);
 
                 //set the viewstate of all forms within our updated elements
-                _Lang.arrForEach(mfInternal._updateElems,_Lang.hitch(this, function(elem) {
+                _Lang.arrForEach(mfInternal._updateElems, _Lang.hitch(this, function(elem) {
                     this._setVSTInnerForms(context, elem);
                 }), 0, this);
             }
@@ -205,7 +203,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
             _setVSTForm: function(context, theForm) {
                 theForm = this._Lang.byId(theForm);
                 var mfInternal = context._mfInternal;
-                
+
                 if (!theForm) return;
 
                 var viewStateField = (theForm.elements) ? theForm.elements[this.P_VIEWSTATE] : null;//this._Dom.findFormElement(elem, this.P_VIEWSTATE);
@@ -228,7 +226,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
             _setVSTInnerForms: function(context, elem) {
                 elem = this._Dom.byIdOrName(elem);
                 var _Lang = this._Lang;
-                
+
                 var replacedForms = this._Dom.findByTagName(elem, "form", false);
                 var applyVST = _Lang.hitch(this, function(elem) {
                     this._setVSTForm(context, elem);
@@ -330,7 +328,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                         case this.CMD_EXTENSION:
                             break;
                         default:
-                            this._errMalFormedXML(request, context,"");
+                            this._errMalFormedXML(request, context, "");
                             return false;
                     }
                 }
@@ -351,12 +349,12 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                     //update the submitting forms viewstate to the new value
                     // The source form has to be pulled out of the CURRENT document first because the context object
                     // may refer to an invalid document if an update of the entire body has occurred before this point.
-                    var viewStateValue = node.firstChild.nodeValue;
-                    var mfInternal = context._mfInternal;
-                    var fuzzyFormDetection = this._Lang.hitch(this._Dom, this._Dom.fuzzyFormDetection);
-                    
-                    var elementId = (mfInternal) ? mfInternal["_mfSourceControlId"] : context.source.id;
-                    var sourceForm = (mfInternal) ? (document.forms[mfInternal["_mfSourceFormId"]] || fuzzyFormDetection(elementId)) : fuzzyFormDetection(elementId);
+                    var viewStateValue = node.firstChild.nodeValue,
+                            mfInternal = context._mfInternal,
+                            fuzzyFormDetection = this._Lang.hitch(this._Dom, this._Dom.fuzzyFormDetection),
+                            elementId = (mfInternal) ? mfInternal["_mfSourceControlId"] : context.source.id,
+                            sourceForm = (mfInternal) ? (document.forms[mfInternal["_mfSourceFormId"]] || fuzzyFormDetection(elementId)) : fuzzyFormDetection(elementId);
+
                     mfInternal.appliedViewState = viewStateValue;
                     //source form could not be determined either over the form identifer or the element
                     //we now skip this phase and just add everything we need for the fixup code
@@ -372,10 +370,10 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                 }
                 else {
                     // response may contain several blocks
-                    var cDataBlock = this._Dom.concatCDATABlocks(node);
-                    var resultNode = null;
-                    var pushOpRes = this._Lang.hitch(this, this._pushOperationResult);
-                    
+                    var cDataBlock = this._Dom.concatCDATABlocks(node),
+                            resultNode = null,
+                            pushOpRes = this._Lang.hitch(this, this._pushOperationResult);
+
                     switch (node.getAttribute('id')) {
                         case this.P_VIEWROOT:
 
@@ -454,15 +452,14 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
              */
             _replaceHead: function(request, context, newData) {
 
-                var _Lang = this._Lang;
-                var _Dom = this._Dom;
-                var isWebkit = this._RT.browser.isWebKit;
+                var _Lang = this._Lang,
+                        _Dom = this._Dom,
+                        isWebkit = this._RT.browser.isWebKit,
+                    //we have to work around an xml parsing bug in Webkit
+                    //see https://issues.apache.org/jira/browse/MYFACES-3061
+                        doc = (!isWebkit) ? _Lang.parseXML(newData) : null,
+                        newHead = null;
 
-                //we have to work around an xml parsing bug in Webkit
-                //see https://issues.apache.org/jira/browse/MYFACES-3061
-                var doc = (!isWebkit) ? _Lang.parseXML(newData) : null;
-
-                var newHead = null;
                 if (!isWebkit && _Lang.isXMLParseError(doc)) {
                     doc = _Lang.parseXML(newData.replace(/<!\-\-[\s\n]*<!\-\-/g, "<!--").replace(/\/\/-->[\s\n]*\/\/-->/g, "//-->"));
                 }
@@ -499,7 +496,6 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                 //_Dom.deleteScripts(oldTags);
                 _Dom.runScripts(newHead, true);
 
-
                 return doc;
             },
 
@@ -516,13 +512,13 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
              * @param {Node} parsedData (optional) preparsed XML representation data of the current document
              */
             _replaceBody : function(request, context, newData /*varargs*/) {
-                var _RT = this._RT;
-                var _Dom = this._Dom;
-                var _Lang = this._Lang;
+                var _RT = this._RT,
+                        _Dom = this._Dom,
+                        _Lang = this._Lang,
 
-                var oldBody = document.getElementsByTagName("body")[0];
-                var placeHolder = document.createElement("div");
-                var isWebkit = _RT.browser.isWebKit;
+                        oldBody = document.getElementsByTagName("body")[0],
+                        placeHolder = document.createElement("div"),
+                        isWebkit = _RT.browser.isWebKit;
 
                 placeHolder.id = "myfaces_bodyplaceholder";
 
@@ -530,7 +526,6 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                 oldBody.innerHTML = "";
                 var newBody = oldBody;
 
-                
                 newBody.appendChild(placeHolder);
 
                 var bodyData = null;
@@ -595,8 +590,8 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
              * @param {String} markup - the new tag
              */
             replaceHtmlItem : function(request, context, itemIdToReplace, markup) {
-                var _Lang = this._Lang;
-                var _Dom = this._Dom;
+                var _Lang = this._Lang, _Dom = this._Dom;
+
                 try {
                     var item = (!_Lang.isString(itemIdToReplace)) ? itemIdToReplace :
                             _Dom.byIdOrName(itemIdToReplace);
@@ -624,11 +619,11 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
              **/
             processInsert: function(request, context, node) {
                 /*remapping global namespaces for speed and readability reasons*/
-                var _Dom    = this._Dom;
-                //determine which path to go:
+                var _Dom = this._Dom,
+                    //determine which path to go:
+                        insertData = this._parseInsertData(request, context, node);
 
-                var insertData = this._parseInsertData(request, context, node);
-                if(!insertData) return false;
+                if (!insertData) return false;
 
                 var opNode = this._Dom.byIdOrName(insertData.opId);
                 if (!opNode) {
@@ -638,7 +633,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
 
                 //call insertBefore or insertAfter in our dom routines
                 var replacementFragment = _Dom[insertData.insertType](opNode, insertData.cDataBlock);
-                if(replacementFragment) {
+                if (replacementFragment) {
                     this._pushOperationResult(context, replacementFragment);
                 }
                 return true;
@@ -651,9 +646,9 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
              * @param request request
              * @param context context
              * @param node the current node pointing to the insert tag
-             * @return false if the parsing failed, otherwise a map with the following attributes:
+             * @return false if the parsing failed, otherwise a map with follwing attributes
              * <ul>
-             *     <li>insertType - a pointer to a constant which maps the direct function name for the insert operation </li>
+             *     <li>inserType - a ponter to a constant which maps the direct function name for the insert operation </li>
              *     <li>opId - the before or after id </li>
              *     <li>cDataBlock - the html cdata block which needs replacement </li>
              * </ul>
@@ -662,17 +657,17 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
              * which we then can use for cleaner error code handling
              */
             _parseInsertData: function(request, context, node) {
-                var _Lang = this._Lang;
-                var _Dom = this._Dom;
-                var concatCDATA = _Dom.concatCDATABlocks;
+                var _Lang = this._Lang,
+                        _Dom = this._Dom,
+                        concatCDATA = _Dom.concatCDATABlocks,
 
-                var INSERT_TYPE_BEFORE = "insertBefore";
-                var INSERT_TYPE_AFTER = "insertAfter";
+                        INSERT_TYPE_BEFORE = "insertBefore",
+                        INSERT_TYPE_AFTER = "insertAfter",
 
-                var id = node.getAttribute("id");
-                var beforeId = node.getAttribute("before");
-                var afterId = node.getAttribute("after");
-                var ret = {};
+                        id = node.getAttribute("id"),
+                        beforeId = node.getAttribute("before"),
+                        afterId = node.getAttribute("after"),
+                        ret = {};
 
                 //now we have to make a distinction between two different parsing paths
                 //due to a spec malalignment
@@ -707,8 +702,8 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                 } else {
                     this._errMalFormedXML(request, context,
                             [_Lang.getMessage("ERR_PPR_IDREQ"),
-                            "\n ",
-                            _Lang.getMessage("ERR_PPR_INSERTBEFID")].join(""));
+                             "\n ",
+                             _Lang.getMessage("ERR_PPR_INSERTBEFID")].join(""));
                     return false;
                 }
                 ret.opId = _Lang.trim(ret.opId);
@@ -717,10 +712,10 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
 
             processDelete : function(request, context, node) {
 
-                var _Lang = this._Lang;
-                var _Dom = this._Dom;
+                var _Lang = this._Lang,
+                        _Dom = this._Dom,
+                        deleteId = node.getAttribute('id');
 
-                var deleteId = node.getAttribute('id');
                 if (!deleteId) {
                     this._errMalFormedXML(request, context, _Lang.getMessage("ERR_PPR_DELID", null, "_AjaxResponse.processDelete"));
                     return false;
@@ -748,9 +743,10 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                 //behaves as usual not like the official standard
                 //myfaces._impl._util.this._Dom.setAttribute(domNode, attribute, value;
 
-                var _Lang = this._Lang;
-                //<attributes id="id of element"> <attribute name="attribute name" value="attribute value" />* </attributes>
-                var elemId = node.getAttribute('id');
+                var _Lang = this._Lang,
+                    //<attributes id="id of element"> <attribute name="attribute name" value="attribute value" />* </attributes>
+                        elemId = node.getAttribute('id');
+
                 if (!elemId) {
                     this._errMalFormedXML(request, context, "Error in attributes, id not in xml markup");
                     return false;
@@ -761,10 +757,9 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
                     return false;
                 }
                 for (var loop2 = 0; loop2 < childNodes.length; loop2++) {
-                    var attributesNode = childNodes[loop2];
-
-                    var attrName = attributesNode.getAttribute("name");
-                    var attrValue = attributesNode.getAttribute("value");
+                    var attributesNode = childNodes[loop2],
+                            attrName = attributesNode.getAttribute("name"),
+                            attrValue = attributesNode.getAttribute("value");
 
                     if (!attrName) {
                         continue;
@@ -802,7 +797,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxResponse", _MF_OBJECT,
             _errMalFormedXML: function(request, context, msg) {
                 var _Impl = this._Impl;
                 _Impl.sendError(request, context, _Impl.MALFORMEDXML
-                            , _Impl.MALFORMEDXML, msg);
+                        , _Impl.MALFORMEDXML, msg);
             }
 
         })

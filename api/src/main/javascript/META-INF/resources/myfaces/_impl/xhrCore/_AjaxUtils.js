@@ -39,10 +39,8 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
                                        parentItem, partialIds) {
 
         //try {
-            if (!parentItem) {
-            //    context._mfInternal._onWarning(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields " + "Html-Component is not nested in a Form-Tag");
-                throw "NO_PARITEM";
-            }
+            if (!parentItem) throw "NO_PARITEM";
+
 
             if (partialIds ) {
                 this.encodePartialSubmit(parentItem, false, partialIds, targetBuf);
@@ -59,14 +57,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         //}
     },
 
-    _assertParItem: function(parItem) {
-        if (!parItem) {
-            throw "NO_PARITEM";
-        }
-    },
-
-
-    /**
+     /**
      * appends the issuing item if not given already
      * @param item
      * @param targetBuf
@@ -93,7 +84,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
             return;
         }
 
-        var _RT = myfaces._impl.core._Runtime;
+        var _RT = this._RT;
         var name = element.name;
         var tagName = element.tagName.toLowerCase();
         var elemType = element.type;

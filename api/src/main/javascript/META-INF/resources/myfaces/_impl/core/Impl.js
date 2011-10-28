@@ -146,9 +146,9 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
          *a local function variable so that we do not have to write the entire namespace
          *all the time
          **/
-        var _Lang = this._Lang;
-        var _Dom =  this._Dom;
-
+        var _Lang = this._Lang,
+             _Dom =  this._Dom,
+             WINDOW_ID = "javax.faces.windowId";
         /*assert if the onerror is set and once if it is set it must be of type function*/
         _Lang.assertType(options.onerror, "function");
         /*assert if the onevent is set and once if it is set it must be of type function*/
@@ -161,9 +161,9 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
         //pass the window id into the options if not set already
         if(!options.windowId) {
             var windowId = _Dom.getWindowId();
-            (windowId) ? options["javax.faces.windowId"] = windowId: null;
+            (windowId) ? options[WINDOW_ID] = windowId: null;
         } else {
-            options["javax.faces.windowId"] = options.windowId;
+            options[WINDOW_ID] = options.windowId;
             delete options.windowId;
         }
 
@@ -256,9 +256,9 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
         context._mfInternal = {};
         var mfInternal = context._mfInternal;
 
-        mfInternal["_mfSourceFormId"] =     form.id;
+        mfInternal["_mfSourceFormId"]    =  form.id;
         mfInternal["_mfSourceControlId"] =  elementId;
-        mfInternal["_mfTransportType"] =    transportType;
+        mfInternal["_mfTransportType"]   =  transportType;
 
         //mojarra compatibility, mojarra is sending the form id as well
         //this is not documented behavior but can be determined by running
@@ -311,9 +311,9 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
          */
         //for now we turn off the transport auto selection, to enable 2.0 backwards compatibility
         //on protocol level, the file upload only can be turned on if the auto selection is set to true
-        var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig;
-        var _Lang     = this._Lang;
-        var _Dom      = this._Dom;
+        var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig,
+            _Lang     = this._Lang,
+            _Dom      = this._Dom;
 
         var transportAutoSelection = getConfig(context, "transportAutoSelection", false);
         var isMultipart = (transportAutoSelection && _Dom.getAttribute(form, "enctype") == "multipart/form-data") ?
@@ -465,23 +465,25 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
         this._errListeners.broadcastEvent(eventData);
 
         if (jsf.getProjectStage() === "Development" && this._errListeners.length() == 0) {
-            var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert);
-            var finalMessage = [];
+            var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert),
+                finalMessage = [],
+                //we remap the function to achieve a better compressability
+                finalMessagePush = _Lang.hitch(finalMessage, finalMessage.push);
 
-            finalMessage.push((name) ? name : "");
+            finalMessagePush((name) ? name : "");
             if (name)
             {
-                finalMessage.push(": ");
+                finalMessagePush(": ");
             }
-            finalMessage.push((serverErrorName) ? serverErrorName : "");
+            finalMessagePush((serverErrorName) ? serverErrorName : "");
             if (serverErrorName)
             {
-                finalMessage.push(" ");
+                finalMessagePush(" ");
             }
-            finalMessage.push((serverErrorMessage) ? serverErrorMessage : "");
-            finalMessage.push(malFormedMessage());
-            finalMessage.push("\n\n");
-            finalMessage.push( _Lang.getMessage("MSG_DEV_MODE"));
+            finalMessagePush((serverErrorMessage) ? serverErrorMessage : "");
+            finalMessagePush(malFormedMessage());
+            finalMessagePush("\n\n");
+            finalMessagePush( _Lang.getMessage("MSG_DEV_MODE"));
             defaultErrorOutput(finalMessage.join(""));
         }
     },
@@ -558,14 +560,14 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
     getProjectStage : function() {
         //since impl is a singleton we only have to do it once at first access
         if(!this._projectStage) {
-            var PRJ_STAGE = "projectStage";
-            var STG_PROD ="Production";
+            var  PRJ_STAGE  = "projectStage",
+                 STG_PROD   = "Production",
 
-            var scriptTags = document.getElementsByTagName("script");
-            var getConfig  = myfaces._impl.core._Runtime.getGlobalConfig;
-            var projectStage = null;
-            var found = false;
-            var allowedProjectStages = {STG_PROD:1,"Development":1, "SystemTest":1,"UnitTest":1};
+                 scriptTags = document.getElementsByTagName("script"),
+                 getConfig  = myfaces._impl.core._Runtime.getGlobalConfig,
+                 projectStage = null,
+                 found      = false,
+                 allowedProjectStages = {STG_PROD:1,"Development":1, "SystemTest":1,"UnitTest":1};
 
              /* run through all script tags and try to find the one that includes jsf.js */
             for (var i = 0; i < scriptTags.length && !found; i++) {
@@ -613,16 +615,17 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
     chain : function(source, event) {
         var len   = arguments.length;
         var _Lang = this._Lang;
-
+        var throwErr = function(msgKey) {
+            throw Error(_Lang.getMessage(msgKey));
+        };
         //the spec is contradicting here, it on one hand defines event, and on the other
         //it says it is optional, I have cleared this up now
         //the spec meant the param must be passed down, but can be 'undefined'
         if (len < 2) {
-            throw new Error(_Lang.getMessage("ERR_EV_OR_UNKNOWN"));
+            throwErr("ERR_EV_OR_UNKNOWN");
         } else if (len < 3) {
             if ('function' == typeof event || this._Lang.isString(event)) {
-
-                throw new Error(_Lang.getMessage("ERR_EVT_PASS"));
+                throwErr("ERR_EVT_PASS");
             }
             //nothing to be done here, move along
             return true;
@@ -633,21 +636,22 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
 
         //assertions source either null or set as dom element:
 
+
         if ('undefined' == typeof source) {
-            throw new Error(_Lang.getMessage("ERR_SOURCE_DEF_NULL"));
+            throwErr("ERR_SOURCE_DEF_NULL");
             //allowed chain datatypes
         } else if ('function' == typeof source) {
-            throw new Error(_Lang.getMessage("ERR_SOURCE_FUNC"));
+            throwErr("ERR_SOURCE_FUNC");
         }
         if (this._Lang.isString(source)) {
-            throw new Error(_Lang.getMessage("ERR_SOURCE_NOSTR"));
+            throwErr("ERR_SOURCE_NOSTR");
         }
 
         //assertion if event is a function or a string we already are in our function elements
         //since event either is undefined, null or a valid event object
 
         if ('function' == typeof event || this._Lang.isString(event)) {
-            throw new Error(_Lang.getMessage("ERR_EV_OR_UNKNOWN"));
+            throwErr("ERR_EV_OR_UNKNOWN");
         }
 
         for (var cnt = 2; cnt < len; cnt++) {
