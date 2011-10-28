@@ -627,7 +627,7 @@
                 type="javaee:fully-qualified-classType"/>
             <xsd:element name="system-event-class"
                 type="javaee:fully-qualified-classType"/>
-            <xsd:element name="source-class"
+            <xsd:element name="source-class" minOccurs="0"
                 type="javaee:fully-qualified-classType"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:ID"/>
