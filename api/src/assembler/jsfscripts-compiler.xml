@@ -64,6 +64,7 @@
                 <include>**/_impl/_util/_Queue.js</include>
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
+                <include>**/_impl/_util/_DomExperimental.js</include>
                 <include>**/_impl/_util/_DomQuirks.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
                 <include>**/_impl/_util/_OamSubmit.js</include>

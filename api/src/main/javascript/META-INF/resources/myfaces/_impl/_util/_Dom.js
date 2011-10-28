@@ -31,11 +31,7 @@
  *
  * <p>This class provides the proper fallbacks for ie8- and Firefox 3.6-</p>
  */
-_MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
-/**
- * @lends myfaces._impl._util._Dom.prototype
- */
-{
+_MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prototype */ {
 
     /*table elements which are used in various parts */
     TABLE_ELEMS:  {
@@ -55,60 +51,46 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * standard constructor
      */
     constructor_: function() {
-        //we have to trigger it upfront because mozilla runs the eval
-        //after the dom updates and hence causes a race conditon if used on demand
-        //under normal circumstances this works, if there are no normal ones
-        //then this also will work at the second time, but the onload handler
-        //should cover 99% of all use cases to avoid a loading race condition
-        this._RT.addOnLoad(window, function() {
-            myfaces._impl._util._Dom.isManualScriptEval();
-        });
-        //safety fallback if the window onload handler is overwritten and not chained
-        if (document.body) {
-            this._RT.addOnLoad(document.body, function() {
-                myfaces._impl._util._Dom.isManualScriptEval();
-            });
-        }
-        //now of the onload handler also is overwritten we have a problem
     },
 
     runCss: function(item, xmlData) {
 
-        var stylesheets = document.styleSheets;
-        var finalCss    = [];
+        var stylesheets = document.styleSheets,
+                finalCss = [],
+                UDEF = "undefined",
+                applyStyle = this._Lang.hitch(this, function(item, style) {
+                    var newSS = document.createElement("style");
 
-        var applyStyle = this._Lang.hitch(this, function(item, style) {
-            var newSS = document.createElement("style");
+                    newSS.setAttribute("rel", item.getAttribute("rel") || "stylesheet");
+                    newSS.setAttribute("type", item.getAttribute("type") || "text/css");
+                    document.getElementsByTagName("head")[0].appendChild(newSS);
+                    //ie merrily again goes its own way
+                    if (window.attachEvent && !this._RT.isOpera && UDEF != typeof newSS.styleSheet && UDEF != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
+                    else newSS.appendChild(document.createTextNode(style));
+                }),
 
-            newSS.setAttribute("rel",item.getAttribute("rel") || "stylesheet");
-            newSS.setAttribute("type",item.getAttribute("type") || "text/css");
-            document.getElementsByTagName("head")[0].appendChild(newSS);
-            //ie merrily again goes its own way
-            if(window.attachEvent && !this._RT.isOpera  && 'undefined' != typeof newSS.styleSheet && 'undefined' != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
-            else newSS.appendChild(document.createTextNode(style));
-        });
+                execCss = this._Lang.hitch(this, function(item) {
+                    var equalsIgnoreCase = this._Lang.equalsIgnoreCase;
+                    var tagName = item.tagName;
+                    if (tagName && equalsIgnoreCase(tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
+                        applyStyle(item, "@import url('" + item.getAttribute("href") + "');");
+                    } else if (tagName && equalsIgnoreCase(tagName, "style") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
+                        var innerText = [];
+                        //compliant browsers know child nodes
+                        var childNodes = item.childNodes;
+                        if (childNodes) {
+                            var len = childNodes.length;
+                            for (var cnt = 0; cnt < len; cnt++) {
+                                innerText.push(childNodes[cnt].innerHTML || childNodes[cnt].data);
+                            }
+                            //non compliant ones innerHTML
+                        } else if (item.innerHTML) {
+                            innerText.push(item.innerHTML);
+                        }
 
-        var execCss = this._Lang.hitch(this, function(item) {
-            var equalsIgnoreCase = this._Lang.equalsIgnoreCase;
-
-            if (item.tagName && equalsIgnoreCase(item.tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
-                applyStyle(item, "@import url('"+item.getAttribute("href")+"');");
-            } else if(item.tagName && equalsIgnoreCase(item.tagName, "style") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
-                var innerText = [];
-                //compliant browsers know child nodes
-                if(item.childNodes) {
-                    var len = item.childNodes.length;
-                    for(var cnt = 0; cnt < len; cnt++) {
-                        innerText.push(item.childNodes[cnt].innerHTML || item.childNodes[cnt].data);
+                        applyStyle(item, innerText.join(""));
                     }
-                //non compliant ones innerHTML
-                } else if(item.innerHTML) {
-                    innerText.push(item.innerHTML);
-                }
-
-                applyStyle(item, innerText.join(""));
-            }
-        });
+                });
 
         try {
             var scriptElements = this.findByTagNames(item, {"link":1,"style":1}, true);
@@ -130,15 +112,15 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
 
 
     deleteScripts: function(nodeList) {
-        if(!nodeList || !nodeList.length) return;
+        if (!nodeList || !nodeList.length) return;
         var len = nodeList.length;
-        for(var cnt = 0; cnt < len; cnt++) {
-             var item = nodeList[cnt];
-             var src = item.getAttribute('src');
-             if (src  && src.length > 0 && (src.indexOf("/jsf.js") != -1 || src.indexOf("/jsf-uncompressed.js") != -1))  {
-                        continue;
-             }
-             this.deleteItem(item);
+        for (var cnt = 0; cnt < len; cnt++) {
+            var item = nodeList[cnt];
+            var src = item.getAttribute('src');
+            if (src && src.length > 0 && (src.indexOf("/jsf.js") != -1 || src.indexOf("/jsf-uncompressed.js") != -1)) {
+                continue;
+            }
+            this.deleteItem(item);
         }
     },
 
@@ -148,57 +130,60 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * @param {Node} item
      */
     runScripts: function(item, xmlData) {
-        var finalScripts    = [];
-        var execScrpt       = this._Lang.hitch(this, function(item) {
-            if (item.tagName && this._Lang.equalsIgnoreCase(item.tagName, "script")) {
-                var src = item.getAttribute('src');
-                if ('undefined' != typeof src
-                        && null != src
-                        && src.length > 0
-                        ) {
-                    //we have to move this into an inner if because chrome otherwise chokes
-                    //due to changing the and order instead of relying on left to right
-                    if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
-                            && src.indexOf("/jsf-uncompressed.js") == -1))  {
-                        if (finalScripts.length) {
-                            //script source means we have to eval the existing
-                            //scripts before running the include
-                            this._RT.globalEval(finalScripts.join("\n"));
+        var _Lang = this._Lang;
+        var finalScripts = [],
 
-                            finalScripts = [];
-                        }
-                        //if jsf.js is already registered we do not replace it anymore
-                        if(!window.jsf) {
-                            this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
+                execScrpt = _Lang.hitch(this, function(item) {
+                    var tagName = item.tagName;
+                    if (tagName && _Lang.equalsIgnoreCase(tagName, "script")) {
+                        var src = item.getAttribute('src');
+                        if ('undefined' != typeof src
+                                && null != src
+                                && src.length > 0
+                                ) {
+                            //we have to move this into an inner if because chrome otherwise chokes
+                            //due to changing the and order instead of relying on left to right
+                            if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
+                                    && src.indexOf("/jsf-uncompressed.js") == -1)) {
+                                if (finalScripts.length) {
+                                    //script source means we have to eval the existing
+                                    //scripts before running the include
+                                    this._RT.globalEval(finalScripts.join("\n"));
+
+                                    finalScripts = [];
+                                }
+                                //if jsf.js is already registered we do not replace it anymore
+                                if (!window.jsf) {
+                                    this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
+                                }
+                            }
+                            //TODO handle embedded scripts
+                        } else {
+                            // embedded script auto eval
+                            var test = (!xmlData) ? item.text : _Lang.serializeChilds(item);
+                            var go = true;
+                            while (go) {
+                                go = false;
+                                if (test.substring(0, 1) == " ") {
+                                    test = test.substring(1);
+                                    go = true;
+                                }
+                                if (test.substring(0, 4) == "<!--") {
+                                    test = test.substring(4);
+                                    go = true;
+                                }
+                                if (test.substring(0, 11) == "//<![CDATA[") {
+                                    test = test.substring(11);
+                                    go = true;
+                                }
+                            }
+                            // we have to run the script under a global context
+                            //we store the script for less calls to eval
+                            finalScripts.push(test);
+
                         }
                     }
-                    //TODO handle embedded scripts
-                } else {
-                    // embedded script auto eval
-                    var test = (!xmlData) ? item.text : this._Lang.serializeChilds(item);
-                    var go = true;
-                    while (go) {
-                        go = false;
-                        if (test.substring(0, 1) == " ") {
-                            test = test.substring(1);
-                            go = true;
-                        }
-                        if (test.substring(0, 4) == "<!--") {
-                            test = test.substring(4);
-                            go = true;
-                        }
-                        if (test.substring(0, 11) == "//<![CDATA[") {
-                            test = test.substring(11);
-                            go = true;
-                        }
-                    }
-                    // we have to run the script under a global context
-                    //we store the script for less calls to eval
-                    finalScripts.push(test);
-
-                }
-            }
-        });
+                });
         try {
             var scriptElements = this.findByTagName(item, "script", true);
             if (scriptElements == null) return;
@@ -226,13 +211,14 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * @param {String} elem
      */
     byIdOrName: function(elem) {
-        if(!this._Lang.isString(elem)) return elem;
-        if(!elem) return null;
+        if (!elem) return null;
+        if (!this._Lang.isString(elem)) return elem;
+
         var ret = this.byId(elem);
-        if(ret) return ret;
+        if (ret) return ret;
         //we try the unique name fallback
         var items = document.getElementsByName(elem);
-        return ((items.length == 1)? items[0]: null);
+        return ((items.length == 1) ? items[0] : null);
     },
 
     /**
@@ -251,7 +237,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
             //just to make sure that the pas
 
             elem = this.byId(elem);
-            if(!elem) return null;
+            if (!elem) return null;
             //detached element handling, we also store the element name
             //to get a fallback option in case the identifier is not determinable
             // anymore, in case of a framework induced detachment the element.name should
@@ -263,7 +249,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
                 elementId = elem.name;
 
                 //last check for uniqueness
-                if(this.getElementsByName(elementId).length > 1) {
+                if (this.getElementsByName(elementId).length > 1) {
                     //no unique element name so we need to perform
                     //a return null to let the caller deal with this issue
                     return null;
@@ -275,8 +261,8 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
     },
 
     deleteItems: function(items) {
-        if(! items || ! items.length) return;
-        for(var cnt = 0; cnt < items.length; cnt++) {
+        if (! items || ! items.length) return;
+        for (var cnt = 0; cnt < items.length; cnt++) {
             this.deleteItem(items[cnt]);
         }
     },
@@ -300,8 +286,8 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      */
     createElement: function(nodeName, attrs) {
         var ret = document.createElement(nodeName);
-        if(attrs) {
-            for(var key in attrs) {
+        if (attrs) {
+            for (var key in attrs) {
                 this.setAttribute(ret, key, attrs[key]);
             }
         }
@@ -340,11 +326,11 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         markup = this._Lang.trim(markup);
         if (markup === "") return null;
 
-        var evalNodes = this._buildEvalNodes(item, markup);
-        var currentRef = item;
-        var parentNode = item.parentNode;
-        var ret = [];
-        for(var cnt = evalNodes.length -1; cnt >= 0; cnt--) {
+        var evalNodes = this._buildEvalNodes(item, markup),
+                currentRef = item,
+                parentNode = item.parentNode,
+                ret = [];
+        for (var cnt = evalNodes.length - 1; cnt >= 0; cnt--) {
             currentRef = parentNode.insertBefore(evalNodes[cnt], currentRef);
             ret.push(currentRef);
         }
@@ -364,12 +350,13 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         markup = this._Lang.trim(markup);
         if (markup === "") return null;
 
-        var evalNodes = this._buildEvalNodes(item, markup);
-        var currentRef = item;
-        var parentNode = item.parentNode;
-        var ret = [];
-        for(var cnt = 0; cnt < evalNodes.length; cnt++) {
-            if(currentRef.nextSibling) {
+        var evalNodes = this._buildEvalNodes(item, markup),
+                currentRef = item,
+                parentNode = item.parentNode,
+                ret = [];
+
+        for (var cnt = 0; cnt < evalNodes.length; cnt++) {
+            if (currentRef.nextSibling) {
                 //TODO winmobile6 has problems with this strategy
                 currentRef = parentNode.insertBefore(evalNodes[cnt], currentRef.nextSibling);
             } else {
@@ -423,8 +410,8 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      */
     detach: function(items) {
         var ret = [];
-        if('undefined' != typeof items.nodeType) {
-            if(items.parentNode) {
+        if ('undefined' != typeof items.nodeType) {
+            if (items.parentNode) {
                 ret.push(items.parentNode.removeChild(items));
             } else {
                 ret.push(items);
@@ -434,14 +421,13 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         //all ies treat node lists not as arrays so we have to take
         //an intermediate step
         var nodeArr = this._Lang.objToArray(items);
-        for(var cnt = 0; cnt < nodeArr.length; cnt++) {
+        for (var cnt = 0; cnt < nodeArr.length; cnt++) {
             ret.push(nodeArr[cnt].parentNode.removeChild(nodeArr[cnt]));
         }
         return ret;
     },
 
     _outerHTMLCompliant: function(item, markup) {
-        var evalNodes;
         //table element replacements like thead, tbody etc... have to be treated differently
         var evalNodes = this._buildEvalNodes(item, markup);
 
@@ -455,8 +441,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
     },
 
     _isTable: function(item) {
-        var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
-        return itemNodeName == "table";
+        return "table" == (item.nodeName || item.tagName).toLowerCase();
     },
 
     /**
@@ -464,8 +449,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * @param itemNodeName
      */
     _isTableElement: function(item) {
-      var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
-      return !!this.TABLE_ELEMS[itemNodeName];
+        return !!this.TABLE_ELEMS[(item.nodeName || item.tagName).toLowerCase()];
     },
 
     /**
@@ -493,13 +477,14 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * @param markup
      */
     _buildTableNodes: function(item, markup) {
-        var evalNodes;
-        var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
-        var probe = this.getDummyPlaceHolder(); //document.createElement("div");
+        var evalNodes,
+                itemNodeName = (item.nodeName || item.tagName).toLowerCase(),
+                probe = this.getDummyPlaceHolder(); //document.createElement("div");
+
         if (itemNodeName == "td") {
             probe.innerHTML = "<table><tbody><tr><td></td></tr></tbody></table>";
         } else {
-            probe.innerHTML = "<table><" + itemNodeName + "></" + itemNodeName + ">" + "</table>";
+            probe.innerHTML = ["<table><" , itemNodeName , "></" , itemNodeName , ">" , "</table>"].join("");
         }
         var depth = this._determineDepth(probe);
 
@@ -528,10 +513,10 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
     _determineDepth: function(probe) {
         var depth = 0;
         var newProbe = probe;
-        for (;newProbe &&
-                newProbe.childNodes &&
-                newProbe.childNodes.length &&
-                newProbe.nodeType == 1; depth++) {
+        for (; newProbe &&
+                       newProbe.childNodes &&
+                       newProbe.childNodes.length &&
+                       newProbe.nodeType == 1; depth++) {
             newProbe = newProbe.childNodes[0];
         }
         return depth;
@@ -539,8 +524,9 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
 
     _removeNode: function(node, breakEventsOpen) {
         if (!node) return;
-        if ('undefined' != typeof node.parentNode && null != node.parentNode) //if the node has a parent
-            node.parentNode.removeChild(node);
+        var parentNode = node.parentNode;
+        if (parentNode) //if the node has a parent
+            parentNode.removeChild(node);
         return;
     },
 
@@ -557,7 +543,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         if (this._isTableElement(item)) {
             evalNodes = this._buildTableNodes(item, markup);
         } else {
-            evalNodes = (this.isDomCompliant()) ? this._buildNodesCompliant(markup): this._buildNodesNonCompliant(markup);
+            evalNodes = (this.isDomCompliant()) ? this._buildNodesCompliant(markup) : this._buildNodesNonCompliant(markup);
         }
         return evalNodes;
     },
@@ -571,18 +557,17 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * @param caller
      */
     _assertStdParams: function(item, markup, caller, params) {
-         //internal error
-         if(!caller) throw Error("Caller must be set for assertion");
-         var _Lang = this._Lang;
-         var ERR_PROV = "ERR_MUST_BE_PROVIDED1";
-         var DOM = "myfaces._impl._util._Dom.";
-         var finalParams = params || ["item", "markup"];
-         if (!item) {
-            throw Error(_Lang.getMessage(ERR_PROV,null,DOM+caller, params[0]));
+        //internal error
+        if (!caller) throw Error("Caller must be set for assertion");
+        var _Lang = this._Lang,
+                ERR_PROV = "ERR_MUST_BE_PROVIDED1",
+                DOM = "myfaces._impl._util._Dom.",
+                finalParams = params || ["item", "markup"];
+
+        if (!item || !markup) {
+            throw Error(_Lang.getMessage(ERR_PROV, null, DOM + caller, (!item) ? params[0] : params[1]));
         }
-        if (!markup) {
-            throw Error(_Lang.getMessage(ERR_PROV,null, DOM+caller, params[1]));
-        }
+
     },
 
     /**
@@ -614,18 +599,10 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * @param evalNodes
      */
     replaceElement: function(item, evalNode) {
-
-        var _Browser = this._RT.browser;
-        if (!_Browser.isIE || _Browser.isIE >= 8) {
-            //standards conform no leaking browser
-            item.parentNode.replaceChild(evalNode, item);
-        } else {
-            //browsers with defect garbage collection
-            item.parentNode.insertBefore(evalNode, item);
-            this._removeNode(item, false);
-        }
-    }
-    ,
+        //browsers with defect garbage collection
+        item.parentNode.insertBefore(evalNode, item);
+        this._removeNode(item, false);
+    },
 
 
     /**
@@ -641,10 +618,10 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
             throw new Error(this._Lang.getMessage("ERR_REPLACE_EL"));
         }
 
-        var parentNode = item.parentNode;
+        var parentNode = item.parentNode,
 
-        var sibling = item.nextSibling;
-        var resultArr = this._Lang.objToArray(evalNodes);
+                sibling = item.nextSibling,
+                resultArr = this._Lang.objToArray(evalNodes);
 
         for (var cnt = 0; cnt < resultArr.length; cnt++) {
             if (cnt == 0) {
@@ -654,41 +631,37 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
                     parentNode.insertBefore(resultArr[cnt], sibling);
                 } else {
                     parentNode.appendChild(resultArr[cnt]);
-
                 }
             }
         }
-
         return resultArr;
-    }
-    ,
+    },
 
     /**
      * optimized search for an array of tag names
      * deep scan will always be performed.
      * @param fragment the fragment which should be searched for
      * @param tagNames an map indx of tag names which have to be found
-     * 
+     *
      */
     findByTagNames: function(fragment, tagNames) {
-        this._assertStdParams(fragment, tagNames, "findByTagNames",["fragment", "tagNames"]);
+        this._assertStdParams(fragment, tagNames, "findByTagNames", ["fragment", "tagNames"]);
 
         var nodeType = fragment.nodeType;
-        if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
+        if (nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
         //we can use the shortcut
-        if(fragment.querySelectorAll) {
-           var query = [];
-           for(var key in tagNames) {
-               query.push(key);
-           }
-           var res = [];
-           if(fragment.tagName && tagNames[fragment.tagName.toLowerCase()]) {
-               res.push(fragment);
-           }
-           return res.concat(this._Lang.objToArray( fragment.querySelectorAll(query.join(", "))));
+        if (fragment.querySelectorAll) {
+            var query = [];
+            for (var key in tagNames) {
+                query.push(key);
+            }
+            var res = [];
+            if (fragment.tagName && tagNames[fragment.tagName.toLowerCase()]) {
+                res.push(fragment);
+            }
+            return res.concat(this._Lang.objToArray(fragment.querySelectorAll(query.join(", "))));
         }
-
 
         //now the filter function checks case insensitively for the tag names needed
         var filter = function(node) {
@@ -719,13 +692,11 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      */
     findByTagName : function(fragment, tagName) {
         this._assertStdParams(fragment, tagName, "findByTagName", ["fragment", "tagName"]);
-
-        var nodeType = fragment.nodeType;
-        if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
-
+        var _Lang = this._Lang,
+                nodeType = fragment.nodeType;
+        if (nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
         //remapping to save a few bytes
-        var _Lang = this._Lang;
 
         var ret = _Lang.objToArray(fragment.getElementsByTagName(tagName));
         if (fragment.tagName && _Lang.equalsIgnoreCase(fragment.tagName, tagName)) ret.unshift(fragment);
@@ -736,11 +707,9 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         this._assertStdParams(fragment, name, "findByName", ["fragment", "name"]);
 
         var nodeType = fragment.nodeType;
-        if(nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
+        if (nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
-        var _Lang = this._Lang;
-
-        var ret = _Lang.objToArray(fragment.getElementsByName(name));
+        var ret = this._Lang.objToArray(fragment.getElementsByName(name));
         if (fragment.name == name) ret.unshift(fragment);
         return ret;
     },
@@ -795,20 +764,24 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         }
         //we use the reject mechanism to prevent a deep scan reject means any
         //child elements will be omitted from the scan
+        var FILTER_ACCEPT = NodeFilter.FILTER_ACCEPT,
+                FILTER_SKIP = NodeFilter.FILTER_SKIP,
+                FILTER_REJECT = NodeFilter.FILTER_REJECT;
+
         var walkerFilter = function (node) {
-            var retCode = (filter(node)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
-            retCode = (!deepScan && retCode == NodeFilter.FILTER_ACCEPT) ? NodeFilter.FILTER_REJECT : retCode;
-            if (retCode == NodeFilter.FILTER_ACCEPT || retCode == NodeFilter.FILTER_REJECT) {
+            var retCode = (filter(node)) ? FILTER_ACCEPT : FILTER_SKIP;
+            retCode = (!deepScan && retCode == FILTER_ACCEPT) ? FILTER_REJECT : retCode;
+            if (retCode == FILTER_ACCEPT || retCode == FILTER_REJECT) {
                 retVal.push(node);
             }
             return retCode;
         };
+
         var treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, walkerFilter, false);
         //noinspection StatementWithEmptyBodyJS
         while (treeWalker.nextNode());
         return retVal;
-    }
-    ,
+    },
 
     /**
      * bugfixing for ie6 which does not cope properly with setAttribute
@@ -855,9 +828,13 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * @param {Node} elem - element as source, can be detached, undefined or null
      *
      * @return either null or a form node if it could be determined
+     *
+     * TODO move this into extended and replace it with a simpler algorithm
      */
     fuzzyFormDetection : function(elem) {
-        if (!document.forms || !document.forms.length) {
+        var forms = document.forms, _Lang = this._Lang;
+
+        if (!forms || !forms.length) {
             return null;
         }
 
@@ -866,71 +843,33 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         //we can cover that case by simply adding one of our config params
         //the default is the weaker, but more correct portlet code
         //you can override it with myfaces_config.no_portlet_env = true globally
-        else if (1 == document.forms.length && this._RT.getGlobalConfig("no_portlet_env", false)) {
-            return document.forms[0];
-        }
-        if (!elem) {
-            return null;
+        else if (1 == forms.length && this._RT.getGlobalConfig("no_portlet_env", false)) {
+            return forms[0];
         }
 
         //before going into the more complicated stuff we try the simple approach
-        var ret = null;
-        var elemForm =  null;
-        if (!this._Lang.isString(elem)) {
-
-            //html 5 allows finally the detachement of elements
-            //by introducing a form attribute
-
-            elemForm = this.html5FormDetection(elem);
-            if (elemForm) {
-                return elemForm;
-            }
-
+        var finalElem = this.byId(elem);
+        var fetchForm = _Lang.hitch(this, function(elem) {
             //element of type form then we are already
             //at form level for the issuing element
             //https://issues.apache.org/jira/browse/MYFACES-2793
 
-            if (this._Lang.equalsIgnoreCase(elem.tagName, "form")) {
-                return elem;
-            }
-            ret = this.getParent(elem, "form");
-            if (ret) return ret;
-        } else {
-            elem = this.byId(elem);
-            // element might have removed from DOM in method processUpdate
-            if (!elem){
-            	return null;
-            }
-            ret = this.getParent(elem, "form");
-            if (ret) return ret;
-        }
+            return (_Lang.equalsIgnoreCase(elem.tagName, "form")) ? elem :
+                    ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
+        });
 
-        var id = elem.id || null;
-        var name = elem.name || null;
-        //a framework in a detachment case also can replace an existing identifier element
-        // with a name element
-        name = name || id;
-        var foundForm;
-
-        if (id && '' != id) {
-            //we have to assert that the element passed down is detached
-            var domElement = this.byId(id);
-            elemForm = this.html5FormDetection(domElement);
-            if (elemForm) {
-                return elemForm;
-            }
-
-            if (domElement) {
-                foundForm = this.getParent(domElement, "form");
-                if (null != foundForm) return foundForm;
-            }
+        if (finalElem) {
+            var elemForm = fetchForm(finalElem);
+            if (elemForm) return elemForm;
         }
 
         /**
          * name check
          */
         var foundElements = [];
-
+        var name = (_Lang.isString(elem)) ? elem : elem.name;
+        //id detection did not work
+        if (!name) return null;
         /**
          * the lesser chance is the elements which have the same name
          * (which is the more likely case in case of a brute dom replacement)
@@ -939,29 +878,20 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         if (nameElems) {
             for (var cnt = 0; cnt < nameElems.length && foundElements.length < 2; cnt++) {
                 // we already have covered the identifier case hence we only can deal with names,
-                foundForm = this.getParent(nameElems[cnt], "form");
-                if (null != foundForm) {
+                var foundForm = fetchForm(nameElems[cnt]);
+                if (foundForm) {
                     foundElements.push(foundForm);
                 }
             }
         }
 
         return (1 == foundElements.length ) ? foundElements[0] : null;
-    }
-    ,
+    },
 
     html5FormDetection: function(item) {
-        var browser =  this._RT.browser;
-        if (browser.isIEMobile && browser.isIEMobile <= 7) {
-            return null;
-        }
-        var elemForm = this.getAttribute(item, "form");
-        if (elemForm) {
-            return this.byId(elemForm);
-        }
         return null;
-    }
-    ,
+    },
+
 
     /**
      * gets a parent of an item with a given tagname
@@ -971,7 +901,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
     getParent : function(item, tagName) {
 
         if (!item) {
-            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1",null, "_Dom.getParent", "item {DomNode}"));
+            throw Error(this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
         }
 
         var _Lang = this._Lang;
@@ -985,8 +915,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
             searchClosure = null;
             _Lang = null;
         }
-    }
-    ,
+    },
 
     /**
      * A parent walker which uses
@@ -996,7 +925,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
      * @param {function} filter the filter closure
      */
     getFilteredParent : function(item, filter) {
-        this._assertStdParams(item, filter, "getFilteredParent",["item", "filter"]);
+        this._assertStdParams(item, filter, "getFilteredParent", ["item", "filter"]);
 
         //search parent tag parentName
         var parentItem = (item.parentNode) ? item.parentNode : null;
@@ -1046,22 +975,14 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
         return cDataBlock.join('');
     },
 
+    //all modern browsers evaluate the scripts
+    //manually this is a w3d recommendation
     isManualScriptEval: function() {
         return true;
     },
 
     isMultipartCandidate: function(executes) {
-        if (this._Lang.isString(executes)) {
-            executes = this._Lang.strToArray(executes, /\s+/);
-        }
-
-        for (var exec in executes) {
-            var element = this.byId(executes[exec]);
-            var inputs = this.findByTagName(element, "input", true);
-            for (var key in inputs) {
-                if (this.getAttribute(inputs[key], "type") == "file") return true;
-            }
-        }
+        //implementation in the experimental part
         return false;
     },
 
@@ -1081,7 +1002,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
     getDummyPlaceHolder: function() {
         var created = false;
         if (!this._dummyPlaceHolder) {
-            this._dummyPlaceHolder = document.createElement("div");
+            this._dummyPlaceHolder = this.createElement("div");
             created = true;
         }
         return this._dummyPlaceHolder;
@@ -1090,15 +1011,13 @@ _MF_SINGLTN(_PFX_UTIL+"_Dom", Object,
     /**
      * fetches the window id for the current request
      * note, this is a preparation method for jsf 2.2
+     *
+     * todo move this into the experimental part
      */
     getWindowId: function() {
-        var href = window.location.href;
-        var windowId = "windowId";
-        var regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
-        var results = regex.exec(href);
-        return (results != null) ? results[1] : null;
+        //implementation in the experimental part
+        return null;
     }
-
 });
 
 

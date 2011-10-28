@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 /*
  theoretically we could save some code
  by
@@ -26,16 +24,11 @@
  But for now we are not doing it the little bit of saved
  space is not worth the loss of readability
  */
-
-
 /**
  * @memberOf myfaces._impl
  * @namespace
  * @name _util
  */
-
-
-
 /**
  * @class
  * @name _Lang
@@ -46,20 +39,10 @@
  * decorates the namespace myfaces._impl.core._Runtime and adds a bunch of new methods to
  * what _Runtime provided
  * */
-_MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
-        /**
-         * @lends myfaces._impl._util._Lang.prototype
-         */
-        {
-
+_MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.prototype */ {
     _processedExceptions: {},
-
     _installedLocale: null,
-
     _RT: myfaces._impl.core._Runtime,
-
-
-
     /**
      * returns a given localized message upon a given key
      * basic java log like templating functionality is included
@@ -73,20 +56,18 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      * @param key
      */
     getMessage: function(key, defaultMessage /*,vararg templateParams*/) {
-        if(!this._installedLocale) {
+        if (!this._installedLocale) {
             //we first try to install language and variant, if that one fails
             //we try to install the language only, and if that one fails
             //we install the base messages
             this.initLocale();
         }
-
         var msg = this._installedLocale[key] || defaultMessage || key + " - undefined message";
-        for(var cnt = 2; cnt < arguments.length; cnt++) {
-          msg = msg.replace(new RegExp(["\\{",cnt-2,"\\}"].join(""),"g"),new String(arguments[cnt]));
+        for (var cnt = 2; cnt < arguments.length; cnt++) {
+            msg = msg.replace(new RegExp(["\\{",cnt - 2,"\\}"].join(""), "g"), new String(arguments[cnt]));
         }
         return msg;
     },
-
     /**
      * (re)inits the currently installed
      * messages so that after loading the main scripts
@@ -96,38 +77,31 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      * @param newLocale locale override
      */
     initLocale: function(newLocale) {
-        if(newLocale) {
+        if (newLocale) {
             this._installedLocale = new newLocale();
             return;
         }
         var language_Variant = this._RT.getLanguage(this._RT.getGlobalConfig("locale"));
-        var langStr = language_Variant ? language_Variant.language:"";
-        var variantStr = language_Variant ? [language_Variant.language,"_",language_Variant.variant||""].join(""):"";
-
+        var langStr = language_Variant ? language_Variant.language : "";
+        var variantStr = language_Variant ? [language_Variant.language,"_",language_Variant.variant || ""].join("") : "";
         var i18nRoot = myfaces._impl.i18n;
-        var i18nHolder = i18nRoot["Messages_"+variantStr] ||
-                         i18nRoot["Messages_"+langStr]    ||
-                         i18nRoot["Messages"];
-
+        var i18nHolder = i18nRoot["Messages_" + variantStr] ||
+                i18nRoot["Messages_" + langStr] ||
+                i18nRoot["Messages"];
         this._installedLocale = new i18nHolder();
     },
-
     assertType: function(probe, theType) {
-       return this._RT.assertType(probe, theType);
+        return this._RT.assertType(probe, theType);
     },
-
-     exists: function(nms, theType) {
-       return this._RT.exists(nms, theType);
+    exists: function(nms, theType) {
+        return this._RT.exists(nms, theType);
     },
-
     isExceptionProcessed: function(e) {
         return !! this._processedExceptions[e.toString()];
     },
-
     setExceptionProcessed: function(e) {
         this._processedExceptions[e.toString()] = true;
     },
-
     clearExceptionProcessed: function() {
         //ie again
         for (var key in this._processedExceptions) {
@@ -135,29 +109,18 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         }
         this._processedExceptions = {};
     },
-
     fetchNamespace : function(namespace) {
-        if (!namespace || !this.isString(namespace)) {
-            throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.fetchNamespace","namespace"));
-        }
+        this._assertStr(namespace, "fetchNamespace", "namespace");
         return this._RT.fetchNamespace(namespace);
     },
-
     reserveNamespace : function(namespace) {
-        if (!this.isString(namespace)) {
-            throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.reserveNamespace", "namespace"));
-        }
+        this._assertStr(namespace, "reserveNamespace", "namespace");
         return this._RT.reserveNamespace(namespace);
     },
-
     globalEval : function(code) {
-        if (!this.isString(code)) {
-            throw Error(this.getMessage("ERR_MUST_STRING",null,"_Lang.globalEval", "code"));
-        }
+        this._assertStr(code, "globalEval", "code");
         return  this._RT.globalEval(code);
     },
-
-
     /**
      * determines the correct event depending
      * on the browsers state
@@ -171,7 +134,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         evt = (!evt) ? window.event || {} : evt;
         return evt;
     },
-
     /**
      * cross port from the dojo lib
      * browser save event resolution
@@ -196,7 +158,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         }
         return t;
     },
-
     /**
      * consume event in a browser independend manner
      * @param event the event which should not be propagated anymore
@@ -206,7 +167,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         event = event || window.event;
         (event.stopPropagation) ? event.stopPropagation() : event.cancelBubble = true;
     },
-
     /**
      * equalsIgnoreCase, case insensitive comparison of two strings
      *
@@ -220,11 +180,9 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         }
         //source or dest is set while the other is not
         if (!source || !destination) return false;
-
         //in any other case we do a strong string comparison
         return source.toLowerCase() === destination.toLowerCase();
     },
-
     /**
      * escapes a strings special chars (crossported from dojo 1.3+)
      *
@@ -237,7 +195,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         //		Adds escape sequences for special characters in regular expressions
         // except:
         //		a String with special characters to be left unescaped
-
         return str.replace(/([\.$?*|:{}\(\)\[\]\\\/\+^])/g, function(ch) {
             if (except && except.indexOf(ch) != -1) {
                 return ch;
@@ -245,7 +202,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
             return "\\" + ch;
         }); // String
     },
-
     /**
      * Save document.getElementById (this code was ported over from dojo)
      * the idea is that either a string or domNode can be passed
@@ -253,11 +209,10 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      */
     byId : function(/*object*/ reference) {
         if (!reference) {
-            throw Error(this.getMessage("ERR_REF_OR_ID",null,"_Lang.byId","reference"));
+            throw Error(this.getMessage("ERR_REF_OR_ID", null, "_Lang.byId", "reference"));
         }
         return (this.isString(reference)) ? document.getElementById(reference) : reference;
     },
-
     /**
      * Helper function to provide a trim with a given splitter regular expression
      * @param {String} it the string to be trimmed
@@ -268,7 +223,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
     trimStringInternal : function(it, splitter) {
         return this.strToArray(it, splitter).join(splitter);
     },
-
     /**
      * String to array function performs a string to array transformation
      * @param {String} it the string which has to be changed into an array
@@ -278,12 +232,9 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
     strToArray : function(/*string*/ it, /*regexp*/ splitter) {
         //	summary:
         //		Return true if it is a String
-
-        if (!this.isString(it)) {
-            throw Error(this.getMessage("ERR_PARAM_STR",null, "myfaces._impl._util._Lang.strToArray", "it"));
-        }
+        this._assertStr(it, "strToArray", "it");
         if (!splitter) {
-            throw Error(this.getMessage("ERR_PARAM_STR_RE",null, "myfaces._impl._util._Lang.strToArray", "splitter"));
+            throw Error(this.getMessage("ERR_PARAM_STR_RE", null, "myfaces._impl._util._Lang.strToArray", "splitter"));
         }
         var retArr = it.split(splitter);
         var len = retArr.length;
@@ -292,25 +243,26 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         }
         return retArr;
     },
-
+    _assertStr: function(it, functionName, paramName) {
+        if (!this.isString(it)) {
+            throw Error(this.getMessage("ERR_PARAM_STR", null, "myfaces._impl._util._Lang." + functionName, paramName));
+        }
+    },
     /**
      * hyperfast trim
      * http://blog.stevenlevithan.com/archives/faster-trim-javascript
      * crossported from dojo
      */
     trim : function(/*string*/ str) {
-        if (!this.isString(str)) {
-            throw Error(this.getMessage("ERR_PARAM_STR",null,"_Lang.trim", "str"));
-        }
+        this._assertStr(str, "trim", "str");
         str = str.replace(/^\s\s*/, '');
         var ws = /\s/;
         var i = str.length;
-        while (ws.test(str.charAt(--i))){
+        while (ws.test(str.charAt(--i))) {
             //do nothing
         }
         return str.slice(0, i + 1);
     },
-
     /**
      * Backported from dojo
      * a failsafe string determination method
@@ -340,7 +292,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
             return method.apply(scope, arguments || []);
         }; // Function
     },
-
     /**
      * Helper function to merge two maps
      * into one
@@ -349,19 +300,18 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      * @param {boolean} overwrite if set to true the destination is overwritten if the keys exist in both maps
      **/
     mixMaps: function(dest, src, overwrite, blockFilter, whitelistFilter) {
-      if (!dest || !src) {
-            throw Error(this.getMessage("ERR_PARAM_MIXMAPS",null,"_Lang.mixMaps"));
-      }
-      var _undef = "undefined";
-      for (var key in src) {
-         if(blockFilter && blockFilter[key]) {
-            continue;
-         }
-         if(whitelistFilter && !whitelistFilter[key]) {
-            continue;
-         }
-         if (!overwrite) {
-
+        if (!dest || !src) {
+            throw Error(this.getMessage("ERR_PARAM_MIXMAPS", null, "_Lang.mixMaps"));
+        }
+        var _undef = "undefined";
+        for (var key in src) {
+            if (blockFilter && blockFilter[key]) {
+                continue;
+            }
+            if (whitelistFilter && !whitelistFilter[key]) {
+                continue;
+            }
+            if (!overwrite) {
                 /**
                  *we use exists instead of booleans because we cannot rely
                  *on all values being non boolean, we would need an elvis
@@ -371,10 +321,9 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
             } else {
                 dest[key] = (_undef != typeof src[key]) ? src[key] : dest[key];
             }
-      }
+        }
         return dest;
     },
-
     /**
      * checks if an array contains an element
      * @param {Array} arr   array
@@ -382,54 +331,26 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      */
     contains : function(arr, str) {
         if (!arr || !str) {
-            throw Error(this.getMessage("ERR_MUST_BE_PROVIDED",null,"_Lang.contains", "arr {array}", "str {string}"));
+            throw Error(this.getMessage("ERR_MUST_BE_PROVIDED", null, "_Lang.contains", "arr {array}", "str {string}"));
         }
-
         return this.arrIndexOf(arr, str) != -1;
     },
-
-
     arrToMap: function(arr, offset) {
         var ret = new Array(arr.length);
         var len = arr.length;
         offset = (offset) ? offset : 0;
-
         for (var cnt = 0; cnt < len; cnt++) {
             ret[arr[cnt]] = cnt + offset;
         }
         return ret;
     },
-
-    /**
-     * Concatenates an array to a string
-     * @param {Array} arr the array to be concatenated
-     * @param {String} delimiter the concatenation delimiter if none is set \n is used
-     *
-     * @return the concatenated array, one special behavior to enable j4fry compatibility has been added
-     * if no delimiter is used the [entryNumber]+entry is generated for a single entry
-     * TODO check if this is still needed it is somewhat outside of the scope of the function
-     * and functionality wise dirty
-     */
-    arrToString : function(/*String or array*/ arr, /*string*/ delimiter) {
-        if (!arr) {
-            throw Error(this.getMessage("ERR_MUST_BE_PROVIDED1",null, "arr {array}"));
-        }
-        if (this.isString(arr)) {
-            return arr;
-        }
-
-        delimiter = delimiter || "\n";
-        return arr.join(delimiter);
-    },
-
     objToArray: function(obj, offset, pack) {
         if (!obj) {
             return null;
         }
         //since offset is numeric we cannot use the shortcut due to 0 being false
         //special condition array delivered no offset no pack
-        if(obj instanceof Array && !offset && !pack)  return obj;
-
+        if (obj instanceof Array && !offset && !pack)  return obj;
         var finalOffset = ('undefined' != typeof offset || null != offset) ? offset : 0;
         var finalPack = pack || [];
         try {
@@ -446,9 +367,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
             }
             return finalPack;
         }
-
     },
-
     /**
      * foreach implementation utilizing the
      * ECMAScript wherever possible
@@ -466,18 +385,14 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      * </ul>
      */
     arrForEach: function(arr, func /*startPos, scope*/) {
-        if(!arr || !arr.length ) return;
-
+        if (!arr || !arr.length) return;
         var startPos = Number(arguments[2]) || 0;
         var thisObj = arguments[3];
-
         //check for an existing foreach mapping on array prototypes
         //IE9 still does not pass array objects as result for dom ops
         arr = this.objToArray(arr);
         (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
     },
-
-
     /**
      * foreach implementation utilizing the
      * ECMAScript wherever possible
@@ -494,11 +409,10 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      * </ul>
      */
     arrFilter: function(arr, func /*startPos, scope*/) {
-        if(!arr || !arr.length ) return [];
+        if (!arr || !arr.length) return [];
         arr = this.objToArray(arr);
         return ((startPos) ? arr.slice(startPos).filter(func, thisObj) : arr.filter(func, thisObj));
     },
-
     /**
      * adds a EcmaScript optimized indexOf to our mix,
      * checks for the presence of an indexOf functionality
@@ -514,8 +428,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         arr = this.objToArray(arr);
         return arr.indexOf(element, pos);
     },
-
-
     /**
      * helper to automatically apply a delivered arguments map or array
      * to its destination which has a field "_"<key> and a full field
@@ -525,29 +437,28 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      * @param argNames the argument names to be transferred
      */
     applyArgs: function(dest, args, argNames) {
-        var _undef = 'undefined';
+        var UDEF = 'undefined';
         if (argNames) {
             for (var cnt = 0; cnt < args.length; cnt++) {
                 //dest can be null or 0 hence no shortcut
-                if (_undef != typeof dest["_" + argNames[cnt]]) {
+                if (UDEF != typeof dest["_" + argNames[cnt]]) {
                     dest["_" + argNames[cnt]] = args[cnt];
                 }
-                if (_undef != typeof dest[ argNames[cnt]]) {
+                if (UDEF != typeof dest[ argNames[cnt]]) {
                     dest[argNames[cnt]] = args[cnt];
                 }
             }
         } else {
             for (var key in args) {
-                if (_undef != typeof dest["_" + key]) {
+                if (UDEF != typeof dest["_" + key]) {
                     dest["_" + key] = args[key];
                 }
-                if (_undef != typeof dest[key]) {
+                if (UDEF != typeof dest[key]) {
                     dest[key] = args[key];
                 }
             }
         }
-    }
-    ,
+    },
     /**
      * creates a standardized error message which can be reused by the system
      *
@@ -557,33 +468,27 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      */
     createErrorMsg: function(sourceClass, func, error) {
         var ret = [];
-
-        var keyValToStr = this.hitch(this, this.keyValToStr);
-        var getMsg = this.hitch(this, this.getMessage);
-
-        ret.push(keyValToStr(getMsg("MSG_AFFECTED_CLASS"), sourceClass));
-        ret.push(keyValToStr(getMsg("MSG_AFFECTED_METHOD"), func));
-
+        var keyValToStr = this.hitch(this, this.keyValToStr),
+                getMsg = this.hitch(this, this.getMessage),
+                pushRet = this.hitch(ret, ret.push);
+        pushRet(keyValToStr(getMsg("MSG_AFFECTED_CLASS"), sourceClass));
+        pushRet(keyValToStr(getMsg("MSG_AFFECTED_METHOD"), func));
         /*we push the values into separate vars to improve the compression*/
         var errName = error.name;
         var errMsg = error.message;
         var errDesc = error.description;
         var errNum = error.number;
         var errLineNo = error.lineNumber;
-
         if (error) {
             var _UDEF = "undefined";
-
-            ret.push(keyValToStr(getMsg("MSG_ERROR_NAME"), errName ? errName : _UDEF));
-            ret.push(keyValToStr(getMsg("MSG_ERROR_MESSAGE"), errMsg ? errMsg : _UDEF));
-            ret.push(keyValToStr(getMsg("MSG_ERROR_DESC"), errDesc ? errDesc : _UDEF));
-            ret.push(keyValToStr(getMsg("MSG_ERROR_NO"), _UDEF != typeof errNum ? errNum : _UDEF));
-            ret.push(keyValToStr(getMsg("MSG_ERROR_LINENO"), _UDEF != typeof errLineNo ? errLineNo : _UDEF));
+            pushRet(keyValToStr(getMsg("MSG_ERROR_NAME"), errName ? errName : _UDEF));
+            pushRet(keyValToStr(getMsg("MSG_ERROR_MESSAGE"), errMsg ? errMsg : _UDEF));
+            pushRet(keyValToStr(getMsg("MSG_ERROR_DESC"), errDesc ? errDesc : _UDEF));
+            pushRet(keyValToStr(getMsg("MSG_ERROR_NO"), _UDEF != typeof errNum ? errNum : _UDEF));
+            pushRet(keyValToStr(getMsg("MSG_ERROR_LINENO"), _UDEF != typeof errLineNo ? errLineNo : _UDEF));
         }
         return ret.join("");
-    }
-    ,
-
+    },
     /**
      * transforms a key value pair into a string
      * @param key the key
@@ -592,17 +497,13 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      */
     keyValToStr: function(key, val, delimiter) {
         var ret = [];
-        ret.push(key);
-        ret.push(val);
-        if ('undefined' == typeof delimiter) {
-            delimiter = "\n";
-        }
-        ret.push(delimiter);
+        pushRet = this.hitch(ret, ret.push);
+        pushRet(key);
+        pushRet(val);
+        delimiter = delimiter || "\n";
+		pushRet(delimiter);
         return ret.join("");
-    }
-    ,
-
-
+    },
     parseXML: function(txt) {
         try {
             var parser = new DOMParser();
@@ -612,15 +513,13 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
             return null;
         }
     },
-
     serializeXML: function(xmlNode, escape) {
-        if(!escape) {
+        if (!escape) {
             if (xmlNode.data) return xmlNode.data; //CDATA block has raw data
             if (xmlNode.textContent) return xmlNode.textContent; //textNode has textContent
         }
         return (new XMLSerializer()).serializeToString(xmlNode);
     },
-
     serializeChilds: function(xmlNode) {
         var buffer = [];
         if (!xmlNode.childNodes) return "";
@@ -629,12 +528,10 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         }
         return buffer.join("");
     },
-
     isXMLParseError: function(xmlContent) {
         //TODO determine the ie specific part here
         //no xml content
         if (xmlContent == null) return true;
-
         var findParseError = function(node) {
             if (!node || !node.childNodes) return false;
             for (var cnt = 0; cnt < node.childNodes.length; cnt++) {
@@ -646,10 +543,7 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         return !xmlContent ||
                 (this.exists(xmlContent, "parseError.errorCode") && xmlContent.parseError.errorCode != 0) ||
                 findParseError(xmlContent);
-
-
     },
-
     /**
      * creates a neutral form data wrapper over an existing form Data element
      * the wrapper delegates following methods, append
@@ -662,7 +556,6 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
         //we simulate the dom level 2 form element here
         var _newCls = null;
         var bufInstance = null;
-
         if (!this.FormDataDecoratorArray) {
             this.FormDataDecoratorArray = function (theFormData) {
                 this._valBuf = theFormData;
@@ -679,14 +572,12 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
             _newCls.prototype.makeFinal = function() {
                 return this._valBuf.join("&");
             };
-
         }
         if (!this.FormDataDecoratorString) {
             this.FormDataDecoratorString = function (theFormData) {
                 this._preprocessedData = theFormData;
                 this._valBuf = [];
                 this._idx = {};
-
             };
             _newCls = this.FormDataDecoratorString;
             _newCls.prototype.append = function(key, val) {
@@ -698,10 +589,10 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
                 return !!this._idx[key];
             };
             _newCls.prototype.makeFinal = function() {
-                if(this._preprocessedData != "") {
-                  return this._preprocessedData + "&"+ this._valBuf.join("&")
+                if (this._preprocessedData != "") {
+                    return this._preprocessedData + "&" + this._valBuf.join("&")
                 } else {
-                  return this._valBuf.join("&");
+                    return this._valBuf.join("&");
                 }
             };
         }
@@ -722,18 +613,15 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
                 return this._valBuf;
             };
         }
-
         if (formData instanceof Array) {
             bufInstance = new this.FormDataDecoratorArray(formData);
-        } else if(this.isString(formData)) {
+        } else if (this.isString(formData)) {
             bufInstance = new this.FormDataDecoratorString(formData);
         } else {
             bufInstance = new this.FormDataDecoratorOther(formData);
         }
-
         return bufInstance;
     },
-
     /**
      * define a property mechanism which is browser neutral
      * we cannot use the existing setter and getter mechanisms
@@ -749,37 +637,35 @@ _MF_SINGLTN(_PFX_UTIL+"_Lang", Object,
      * @param value
      */
     attr: function(obj, name, value) {
-        var findAccessor =  function(theObj, theName) {
+        var findAccessor = function(theObj, theName) {
             return (theObj["_" + theName]) ? "_" + theName : ( (theObj[theName]) ? theName : null)
         };
         var applyAttr = function(theObj, theName, value, isFunc) {
-             if (value) {
-                 if(isFunc) {
+            if (value) {
+                if (isFunc) {
                     theObj[theName](value);
-                 } else {
-                     theObj[theName] = value;
-                 }
+                } else {
+                    theObj[theName] = value;
+                }
                 return null;
             }
-            return (isFunc)?theObj[theName]() : theObj[theName];
+            return (isFunc) ? theObj[theName]() : theObj[theName];
         };
         try {
             var finalAttr = findAccessor(obj, name);
             //simple attibute no setter and getter overrides
-            if(finalAttr) {
-              return applyAttr(obj, finalAttr, value);
+            if (finalAttr) {
+                return applyAttr(obj, finalAttr, value);
             }
             //lets check for setter and getter overrides
             var found = false;
-
-            var prefix = (value)?"set":"get";
-            finalAttr = [prefix,name.substr(0,1).toUpperCase(),name.substr(1)].join("");
+            var prefix = (value) ? "set" : "get";
+            finalAttr = [prefix,name.substr(0, 1).toUpperCase(),name.substr(1)].join("");
             finalAttr = findAccessor(obj, finalAttr);
-            if(finalAttr) {
-              return applyAttr(obj, finalAttr, value, true);
+            if (finalAttr) {
+                return applyAttr(obj, finalAttr, value, true);
             }
-
-            throw Error("property "+name+" not found");
+            throw Error("property " + name + " not found");
         } finally {
             findAccessor = null;
             applyAttr = null;

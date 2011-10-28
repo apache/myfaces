@@ -20,7 +20,6 @@
  * @name i18n
  */
 
-
 /**
  * System messages base version    <p />
  * (note the base version is basically the en_US) version
@@ -30,7 +29,7 @@
  * @name Messages
  * @memberOf myfaces._impl.i18n
  */
-_MF_CLS(_PFX_I18N+"Messages", Object,
+_MF_CLS && _MF_CLS(_PFX_I18N+"Messages", Object,
 /**
  * @lends myfaces._impl.i18n.Messages.prototype
  */
@@ -134,3 +133,4 @@ _MF_CLS(_PFX_I18N+"Messages", Object,
     /** @constant */
     UNKNOWN: "UNKNOWN"
 });
+

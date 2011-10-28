@@ -124,21 +124,21 @@ _MF_SINGLTN(_PFX_XHR + "_Transports", _MF_OBJECT,
      * @param passThrgh the passThrough values to be blended into the response
      */
     _getArguments: function(source, sourceForm, context, passThrgh) {
-        var _RT = myfaces._impl.core._Runtime;
+        var _RT = myfaces._impl.core._Runtime,
         /** @ignore */
-        var _Lang = myfaces._impl._util._Lang;
-        var applyCfg = _Lang.hitch(this, this._applyConfig);
-        //RT does not have this references, hence no hitch needed
-        var getCfg = _RT.getLocalOrGlobalConfig;
+             _Lang = myfaces._impl._util._Lang,
+             applyCfg = _Lang.hitch(this, this._applyConfig),
+            //RT does not have this references, hence no hitch needed
+             getCfg = _RT.getLocalOrGlobalConfig,
 
 
-        var ret = {
-            "source": source,
-            "sourceForm": sourceForm,
-            "context": context,
-            "passThrough": passThrgh,
-            "xhrQueue": this._q
-        };
+            ret = {
+                "source": source,
+                "sourceForm": sourceForm,
+                "context": context,
+                "passThrough": passThrgh,
+                "xhrQueue": this._q
+            };
 
         //we now mix in the config settings which might either be set globally
         //or pushed in under the context myfaces.<contextValue> into the current request

@@ -17,13 +17,13 @@
  * A drop in replacement which replaces the original ajax utils with added ppr functionality
  * we use it to strip down the code for the minimal version to the core
  */
-_MF_SINGLTN(_PFX_XHR+"_PartialSubmitUtils", myfaces._impl.xhrCore._AjaxUtils, {
+_MF_SINGLTN(_PFX_XHR + "_PartialSubmitUtils", myfaces._impl.xhrCore._AjaxUtils, {
     _AjaxUtils: myfaces._impl.xhrCore._AjaxUtils,
 
     constructor_: function() {
-       this._callSuper("constructor_");
-       //we replace the original class with our new implementation
-       myfaces._impl.xhrCore._AjaxUtils = this;
+        this._callSuper("constructor_");
+        //we replace the original class with our new implementation
+        myfaces._impl.xhrCore._AjaxUtils = this;
     },
 
     /**
@@ -33,7 +33,7 @@ _MF_SINGLTN(_PFX_XHR+"_PartialSubmitUtils", myfaces._impl.xhrCore._AjaxUtils, {
      * @param {Array} partialIds - ids fo PPS
      */
     encodeSubmittableFields : function(targetBuf, parentItem, partialIds) {
-        this._assertParItem(parentItem);
+        if (!parentItem) throw "NO_PARITEM";
 
         if (partialIds) {
             this.encodePartialSubmit(parentItem, false, partialIds, targetBuf);
@@ -42,6 +42,9 @@ _MF_SINGLTN(_PFX_XHR+"_PartialSubmitUtils", myfaces._impl.xhrCore._AjaxUtils, {
         }
 
     },
+
+
+
 
     /**
      * checks recursively if contained in PPS

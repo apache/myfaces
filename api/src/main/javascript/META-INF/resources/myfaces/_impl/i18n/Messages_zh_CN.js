@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+if (_MF_CLS) {
     /**
      * System messages Simplified Chinese version
      *
@@ -22,7 +22,7 @@
      * @extends myfaces._impl.i18n.Messages
      * @memberOf myfaces._impl.i18n
      */
-    _MF_CLS && _MF_CLS(_PFX_I18N+"Messages_zh_CN", myfaces._impl.i18n.Messages,
+_MF_CLS && _MF_CLS(_PFX_I18N+"Messages_zh_CN", myfaces._impl.i18n.Messages,
     /** @lends myfaces._impl.i18n.Messages_zh_CN.prototype */
     {
 
@@ -123,4 +123,4 @@
         /** @constant */
         UNKNOWN: "不明"
     });
-
+}

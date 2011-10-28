@@ -207,6 +207,28 @@ _MF_SINGLTN(_PFX_UTIL+"_LangQuirks", myfaces._impl._util._Lang, {
     serializeXML: function(xmlNode, escape) {
         if (xmlNode.xml) return xmlNode.xml; //IE
         return this._callSuper("serializeXML", xmlNode, escape);
+    },
+
+     /**
+     * Concatenates an array to a string
+     * @param {Array} arr the array to be concatenated
+     * @param {String} delimiter the concatenation delimiter if none is set \n is used
+     *
+     * @return the concatenated array, one special behavior to enable j4fry compatibility has been added
+     * if no delimiter is used the [entryNumber]+entry is generated for a single entry
+     * TODO check if this is still needed it is somewhat outside of the scope of the function
+     * and functionality wise dirty
+     */
+    arrToString : function(/*String or array*/ arr, /*string*/ delimiter) {
+        if (!arr) {
+            throw Error(this.getMessage("ERR_MUST_BE_PROVIDED1",null, "arr {array}"));
+        }
+        if (this.isString(arr)) {
+            return arr;
+        }
+
+        delimiter = delimiter || "\n";
+        return arr.join(delimiter);
     }
 });
 
