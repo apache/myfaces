@@ -80,7 +80,7 @@ public final class EditableValueHolderRule extends MetaRule
             if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
             {
                 ((EditableValueHolder) instance).addValueChangeListener(
-                        new PartialMethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
+                      new PartialMethodExpressionValueChangeListener(methodExpressionOneArg, methodExpressionZeroArg));
             }
             else
             {

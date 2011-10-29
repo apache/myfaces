@@ -53,7 +53,8 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
      * Define the mode used for jsf.js file:
      * <ul>
      * <li>normal : contains everything, including jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
-     * <li>minimal-modern : is the core jsf with a baseline of ie9+, without jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
+     * <li>minimal-modern : is the core jsf with a baseline of ie9+,
+     * without jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
      * <li>minimal: which is the same with a baseline of ie6, without jsf-i18n.js, jsf-experimental.js</li>
      * </ul>
      * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage

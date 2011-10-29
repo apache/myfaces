@@ -85,7 +85,8 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
         }
         else
         {
-            throw new TagException(_delegate.getTag(), "Parent not composite component or an instance of ClientBehaviorHolder: " + parent);
+            throw new TagException(_delegate.getTag(),
+                    "Parent not composite component or an instance of ClientBehaviorHolder: " + parent);
         }
         
     }
@@ -163,11 +164,13 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
             }
             if (eventName == null)
             {
-                throw new TagAttributeException(_delegate.getEvent(), "eventName could not be defined for client behavior "+ behavior.toString());
+                throw new TagAttributeException(_delegate.getEvent(),
+                        "eventName could not be defined for client behavior "+ behavior.toString());
             }
             else if (!cvh.getEventNames().contains(eventName))
             {
-                throw new TagAttributeException(_delegate.getEvent(), "eventName "+eventName+" not found on component instance");
+                throw new TagAttributeException(_delegate.getEvent(),
+                        "eventName "+eventName+" not found on component instance");
             }
             else
             {

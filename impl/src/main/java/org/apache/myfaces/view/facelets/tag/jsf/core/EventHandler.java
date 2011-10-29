@@ -68,7 +68,8 @@ public final class EventHandler extends TagHandler
     @JSFFaceletAttribute(name="listener",
             className="javax.el.MethodExpression",
             deferredMethodSignature=
-            "public void listener(javax.faces.event.ComponentSystemEvent evt) throws javax.faces.event.AbortProcessingException")
+            "public void listener(javax.faces.event.ComponentSystemEvent evt) "
+            + "throws javax.faces.event.AbortProcessingException")
     private TagAttribute listener;
     
     @JSFFaceletAttribute(name="type",
@@ -85,7 +86,8 @@ public final class EventHandler extends TagHandler
         listener = getRequiredAttribute("listener");
         if (!listener.isLiteral())
         {
-            listenerIsCompositeComponentME = CompositeComponentELUtils.isCompositeComponentExpression(listener.getValue());
+            listenerIsCompositeComponentME
+                    = CompositeComponentELUtils.isCompositeComponentExpression(listener.getValue());
         }
         else
         {
@@ -94,7 +96,8 @@ public final class EventHandler extends TagHandler
         type = getRequiredAttribute("type");
     }
     
-    public void apply (FaceletContext ctx, UIComponent parent) throws ELException, FacesException, FaceletException, IOException
+    public void apply (FaceletContext ctx, UIComponent parent)
+            throws ELException, FacesException, FaceletException, IOException
     {
         //Apply only if we are creating a new component
         if (!ComponentHandler.isNew(parent))
@@ -130,11 +133,14 @@ public final class EventHandler extends TagHandler
             UIViewRoot viewRoot = ComponentSupport.getViewRoot(ctx, parent);
             if (listenerIsCompositeComponentME)
             {
-                // Subscribe after the view is built, so we can calculate a findComponent valid expression, and then use it to
+                // Subscribe after the view is built, so we can calculate a
+                // findComponent valid expression, and then use it to
                 // put the expression in context.
-                UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+                UIComponent parentCompositeComponent
+                        = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
                 parentCompositeComponent.subscribeToEvent(PostAddToViewEvent.class, 
-                        new SubscribeEventListener(eventClass, methodExpOneArg, methodExpZeroArg, (eventClass == PreRenderViewEvent.class) ? null : parent));
+                        new SubscribeEventListener(eventClass, methodExpOneArg, methodExpZeroArg,
+                                                   (eventClass == PreRenderViewEvent.class) ? null : parent));
             }
             else
             {
@@ -402,7 +408,8 @@ public final class EventHandler extends TagHandler
             UIComponent parentCompositeComponent = event.getComponent();
             FacesContext facesContext = FacesContext.getCurrentInstance();
             //Calculate a findComponent expression to locate the right instance so PreRenderViewEvent could be called
-            String findComponentExpression = ComponentSupport.getFindComponentExpression(facesContext, parentCompositeComponent);
+            String findComponentExpression
+                    = ComponentSupport.getFindComponentExpression(facesContext, parentCompositeComponent);
             
             //Note in practice this is only used for PreRenderViewEvent, but in the future it could be more events that
             //require this hack.
@@ -410,7 +417,8 @@ public final class EventHandler extends TagHandler
             {
                 // ensure ViewRoot for PreRenderViewEvent
                 UIViewRoot viewRoot = facesContext.getViewRoot();
-                viewRoot.subscribeToEvent(eventClass, new CompositeComponentRelativeListener(methodExpOneArg, methodExpZeroArg, findComponentExpression));
+                viewRoot.subscribeToEvent(eventClass, new CompositeComponentRelativeListener(methodExpOneArg,
+                                                                        methodExpZeroArg, findComponentExpression));
             }
             else
             {

@@ -94,55 +94,64 @@ public class AjaxHandler extends TagHandler implements
      * library. It is necessary to remove this key from facesContext attribute map after build, to keep
      * working this code for next views to be built.
      */
-    public final static String STANDARD_JSF_AJAX_LIBRARY_LOADED = "org.apache.myfaces.STANDARD_JSF_AJAX_LIBRARY_LOADED"; 
+    public final static String STANDARD_JSF_AJAX_LIBRARY_LOADED
+            = "org.apache.myfaces.STANDARD_JSF_AJAX_LIBRARY_LOADED";
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "disabled", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Boolean")
+    @JSFFaceletAttribute(name = "disabled", className = "javax.el.ValueExpression",
+                         deferredValueType = "java.lang.Boolean")
     private final TagAttribute _disabled;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "event", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
+    @JSFFaceletAttribute(name = "event", className = "javax.el.ValueExpression",
+                         deferredValueType = "java.lang.String")
     private final TagAttribute _event;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "execute", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Object")
+    @JSFFaceletAttribute(name = "execute", className = "javax.el.ValueExpression",
+                         deferredValueType = "java.lang.Object")
     private final TagAttribute _execute;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "immediate", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Boolean")
+    @JSFFaceletAttribute(name = "immediate", className = "javax.el.ValueExpression",
+                         deferredValueType = "java.lang.Boolean")
     private final TagAttribute _immediate;
 
     /**
      * 
      */
     @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression",
-            deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) throws javax.faces.event.AbortProcessingException")
+            deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) "
+                                      + "throws javax.faces.event.AbortProcessingException")
     private final TagAttribute _listener;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "onevent", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
+    @JSFFaceletAttribute(name = "onevent", className = "javax.el.ValueExpression",
+                         deferredValueType = "java.lang.String")
     private final TagAttribute _onevent;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "onerror", className = "javax.el.ValueExpression", deferredValueType = "java.lang.String")
+    @JSFFaceletAttribute(name = "onerror", className = "javax.el.ValueExpression",
+                         deferredValueType = "java.lang.String")
     private final TagAttribute _onerror;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression", deferredValueType = "java.lang.Object")
+    @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression",
+                         deferredValueType = "java.lang.Object")
     private final TagAttribute _render;
     
     private final boolean _wrapMode;
@@ -334,7 +343,8 @@ public class AjaxHandler extends TagHandler implements
                 }
                 else
                 {
-                    throw new TagAttributeException(_event, "eventName could not be defined for f:ajax tag with no wrap mode.");
+                    throw new TagAttributeException(_event,
+                            "eventName could not be defined for f:ajax tag with no wrap mode.");
                 }
             }
         }
@@ -350,7 +360,8 @@ public class AjaxHandler extends TagHandler implements
             }
             else
             {
-                throw new TagAttributeException(_event, "event it is not a valid eventName defined for this component");
+                throw new TagAttributeException(_event,
+                        "event it is not a valid eventName defined for this component");
             }
         }
         

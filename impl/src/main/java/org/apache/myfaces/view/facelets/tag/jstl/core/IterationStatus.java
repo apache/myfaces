@@ -49,7 +49,8 @@ public final class IterationStatus implements Serializable
     /**
      * 
      */
-    public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end, Integer step, Object value)
+    public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end,
+                           Integer step, Object value)
     {
         this.index = index;
         this.begin = begin;

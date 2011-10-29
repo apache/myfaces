@@ -69,10 +69,12 @@ public class HtmlOutputStylesheetHandler extends HtmlComponentHandler implements
     public void onComponentCreated(FaceletContext ctx, UIComponent c,
             UIComponent parent)
     {
-        UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+        UIComponent parentCompositeComponent
+                = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
         if (parentCompositeComponent != null)
         {
-            c.getAttributes().put(CompositeComponentELUtils.LOCATION_KEY, parentCompositeComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY));
+            c.getAttributes().put(CompositeComponentELUtils.LOCATION_KEY,
+                    parentCompositeComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY));
         }
     }
 

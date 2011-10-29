@@ -141,15 +141,16 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
      */
     private void logWarningIfLegacyFaceletViewHandlerIsPresent(FacesContext context)
     {
-        boolean facelets1ViewHandlerPresent  = context.getApplication().getViewHandler().getClass().getName().equals(FACELETS_1_VIEW_HANDLER);
+        boolean facelets1ViewHandlerPresent
+                = context.getApplication().getViewHandler().getClass().getName().equals(FACELETS_1_VIEW_HANDLER);
 
         if (facelets1ViewHandlerPresent)
         {
             if (LOGGER.isLoggable(Level.WARNING))
             {
-                LOGGER.log(Level.WARNING, "Your faces-config.xml contains the " + FACELETS_1_VIEW_HANDLER + " class." + 
-                    "\nYou need to remove it since you have not disabled the \"new\" Facelets-2 version with the " + PARAM_DISABLE_JSF_FACELET +
-                    " context parameter");
+                LOGGER.log(Level.WARNING, "Your faces-config.xml contains the " + FACELETS_1_VIEW_HANDLER + " class."
+                    + "\nYou need to remove it since you have not disabled the \"new\" Facelets-2 version with the "
+                    + PARAM_DISABLE_JSF_FACELET + " context parameter");
             }
         }
     }

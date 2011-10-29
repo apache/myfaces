@@ -62,8 +62,8 @@ public class SetPropertyActionListenerHandler extends TagHandler
         this._target = this.getRequiredAttribute("target");
     }
 
-    public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
-            ELException
+    public void apply(FaceletContext ctx, UIComponent parent)
+            throws IOException, FacesException, FaceletException, ELException
     {
         //Apply only if we are creating a new component
         if (!ComponentHandler.isNew(parent))
@@ -81,7 +81,8 @@ public class SetPropertyActionListenerHandler extends TagHandler
         }
         else
         {
-            throw new TagException(this.tag, "Parent is not composite component or of type ActionSource, type is: " + parent);
+            throw new TagException(this.tag,
+                    "Parent is not composite component or of type ActionSource, type is: " + parent);
         }
     }
 
@@ -121,7 +122,8 @@ public class SetPropertyActionListenerHandler extends TagHandler
                 // Spec says: "all getType() on the "value" to determine  property type" but it is not necessary
                 // beacuse type we have objValue already
 
-                //   Coerce the value of the "value" expression to the "target" expression value type following the Expression
+                //   Coerce the value of the "value" expression to
+                // the "target" expression value type following the Expression
                 // Language coercion rules. 
                 ExpressionFactory expressionFactory = facesContext.getApplication().getExpressionFactory();
                 value = expressionFactory.coerceToType(value, targetType);

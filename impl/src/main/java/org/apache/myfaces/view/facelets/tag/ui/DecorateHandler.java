@@ -168,7 +168,8 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
         {
             fcc.endComponentUniqueIdSection();
         }
-        if ( !_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
+        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
+            !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
@@ -198,7 +199,8 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
         }
     }
     
-    private String getTemplateValue(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId)
+    private String getTemplateValue(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent,
+                                    String uniqueId)
     {
         String template = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
         if (template != null)

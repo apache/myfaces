@@ -56,15 +56,17 @@ public abstract class TemplateContext
      * @param client
      * @see TemplateClient
      */
-    public abstract void pushClient(final AbstractFaceletContext actx, final AbstractFacelet owner, final TemplateClient client);
+    public abstract void pushClient(final AbstractFaceletContext actx, final AbstractFacelet owner,
+                                    final TemplateClient client);
     
     /**
      * Pop the last added extended TemplateClient
-     * @param client
+     * @param actx
      */
     public abstract TemplateManager popExtendedClient(final AbstractFaceletContext actx);
     
-    public abstract void extendClient(final AbstractFaceletContext actx, final AbstractFacelet owner, final TemplateClient client);
+    public abstract void extendClient(final AbstractFaceletContext actx, final AbstractFacelet owner,
+                                      final TemplateClient client);
     
     /**
      * This method will walk through the TemplateClient stack to resolve and
@@ -114,7 +116,6 @@ public abstract class TemplateContext
      * Check if no parameters are set.
      * 
      * @since 2.0.8
-     * @param key
      * @return
      */
     public abstract boolean isParameterEmpty();
@@ -122,7 +123,6 @@ public abstract class TemplateContext
     /**
      * 
      * @since 2.0.8
-     * @param key
      * @return
      */
     public abstract Map<String, ValueExpression> getParameterMap();

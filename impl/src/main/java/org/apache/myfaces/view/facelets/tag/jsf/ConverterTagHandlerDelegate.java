@@ -97,7 +97,8 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
         }
         else
         {
-            throw new TagException(_delegate.getTag(), "Parent not composite component or an instance of ValueHolder: " + parent);
+            throw new TagException(_delegate.getTag(),
+                    "Parent not composite component or an instance of ValueHolder: " + parent);
         }      
     }
 

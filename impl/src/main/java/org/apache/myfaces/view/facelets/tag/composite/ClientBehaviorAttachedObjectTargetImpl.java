@@ -79,13 +79,16 @@ public class ClientBehaviorAttachedObjectTargetImpl
                 
                 if (innerComponent != null)
                 {
-                    if (innerComponent instanceof ClientBehaviorHolder || UIComponent.isCompositeComponent(innerComponent))
+                    if (innerComponent instanceof ClientBehaviorHolder ||
+                        UIComponent.isCompositeComponent(innerComponent))
                     {
-                        targetsList.add(new ClientBehaviorRedirectEventComponentWrapper(innerComponent, getName(), getEvent()));
+                        targetsList.add(
+                                new ClientBehaviorRedirectEventComponentWrapper(innerComponent, getName(), getEvent()));
                     }
                     else
                     {
-                        throw new FacesException("Component with clientId "+innerComponent.getClientId()+ "should be instance of ClientBehaviorHolder");
+                        throw new FacesException("Component with clientId " + innerComponent.getClientId()
+                                                 + "should be instance of ClientBehaviorHolder");
                     }
                 }
             }
@@ -103,15 +106,18 @@ public class ClientBehaviorAttachedObjectTargetImpl
                 UIComponent innerComponent = topLevelComponent.findComponent(getName());
                 if (innerComponent != null)
                 {
-                    if (innerComponent instanceof ClientBehaviorHolder || UIComponent.isCompositeComponent(innerComponent))
+                    if (innerComponent instanceof ClientBehaviorHolder ||
+                        UIComponent.isCompositeComponent(innerComponent))
                     {
                         List<UIComponent> targetsList = new ArrayList<UIComponent>(1);
-                        targetsList.add(new ClientBehaviorRedirectEventComponentWrapper(innerComponent, getName(), getEvent()));
+                        targetsList.add(
+                                new ClientBehaviorRedirectEventComponentWrapper(innerComponent, getName(), getEvent()));
                         return targetsList;
                     }
                     else
                     {
-                        throw new FacesException("Component with clientId "+innerComponent.getClientId()+ "should be instance of ClientBehaviorHolder");
+                        throw new FacesException("Component with clientId "+ innerComponent.getClientId()
+                                                 + "should be instance of ClientBehaviorHolder");
                     }
                 }
             }

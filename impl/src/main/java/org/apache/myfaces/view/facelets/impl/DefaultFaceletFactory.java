@@ -460,7 +460,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
             f = this._createCompositeComponentMetadataFacelet(url);
             if (_refreshPeriod != NO_CACHE_DELAY)
             {
-                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_compositeComponentMetadataFacelets);
+                Map<String, DefaultFacelet> newLoc
+                        = new HashMap<String, DefaultFacelet>(_compositeComponentMetadataFacelets);
                 newLoc.put(key, f);
                 _compositeComponentMetadataFacelets = newLoc;
             }

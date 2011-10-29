@@ -113,8 +113,10 @@ public final class ActionSourceRule extends MetaRule
             // This is a problem when using facelets and <ui:decorate/> with EL params (see MYFACES-2541 for details).
             // So we must create two MethodExpressions here - both are created from the current 
             // facelets context and thus varibale mapping will work.
-            final MethodExpression methodExpressionOneArg = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
-            final MethodExpression methodExpressionZeroArg = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
+            final MethodExpression methodExpressionOneArg
+                    = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_LISTENER_SIG);
+            final MethodExpression methodExpressionZeroArg
+                    = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
             if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
             {
                 ((ActionSource2) instance).addActionListener(

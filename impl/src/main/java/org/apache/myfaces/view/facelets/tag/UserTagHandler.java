@@ -88,24 +88,12 @@ final class UserTagHandler extends TagHandler implements TemplateClient
      * 
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
      * @see javax.el.VariableMapper
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
+     *        javax.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-        //VariableMapper orig = ctx.getVariableMapper();
-
-        // setup a variable map
-        //if (this._vars.length > 0)
-        //{
-            //VariableMapper varMapper = new VariableMapperWrapper(orig);
-            //for (int i = 0; i < this._vars.length; i++)
-            //{
-            //    varMapper.setVariable(this._vars[i].getLocalName(), this._vars[i].getValueExpression(ctx, Object.class));
-            //}
-            //ctx.setVariableMapper(varMapper);
-        //}
-
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         // eval include
         try

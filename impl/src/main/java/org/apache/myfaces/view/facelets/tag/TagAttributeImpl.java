@@ -207,7 +207,8 @@ public final class TagAttributeImpl extends TagAttribute
         //volatile reads are atomic, so take the tuple to later comparison.
         Object[] localCachedExpression = cachedExpression; 
         
-        if (actx.isAllowCacheELExpressions() && localCachedExpression != null && (localCachedExpression.length % 3 == 0))
+        if (actx.isAllowCacheELExpressions() && localCachedExpression != null &&
+            (localCachedExpression.length % 3 == 0))
         {
             //If the expected type and paramTypes are the same return the cached one
             for (int i = 0; i < (localCachedExpression.length/3); i++)

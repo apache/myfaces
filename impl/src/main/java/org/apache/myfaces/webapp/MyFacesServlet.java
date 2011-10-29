@@ -98,7 +98,8 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
         _facesInitializer.destroyStartupFacesContext(facesContext);
         
         delegate.init(servletConfig);
-        log.info("MyFacesServlet for context '" + servletConfig.getServletContext().getRealPath("/") + "' initialized.");
+        log.info("MyFacesServlet for context '" + servletConfig.getServletContext().getRealPath("/")
+                 + "' initialized.");
     }
     
     public void service(ServletRequest request, ServletResponse response)

@@ -198,7 +198,8 @@ public final class IncludeHandler extends TagHandler
                 fcc.endComponentUniqueIdSection();
             }
         }
-        if ( !src.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
+        if (!src.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
+            !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);

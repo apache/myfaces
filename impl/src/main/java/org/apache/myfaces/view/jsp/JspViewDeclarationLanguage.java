@@ -202,7 +202,8 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         ResponseStateManager responseStateManager = context.getRenderKit().getResponseStateManager();
         if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
         {
-            if (StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).isWriteStateAfterRenderViewRequired(context))
+            if (StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).
+                    isWriteStateAfterRenderViewRequired(context))
             {
                 return false;
             }

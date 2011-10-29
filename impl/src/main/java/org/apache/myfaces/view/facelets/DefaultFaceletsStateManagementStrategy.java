@@ -643,7 +643,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     {
         if (_saveStateWithVisitTreeOnPSS == null)
         {
-            _saveStateWithVisitTreeOnPSS = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
+            _saveStateWithVisitTreeOnPSS
+                    = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
                     SAVE_STATE_WITH_VISIT_TREE_ON_PSS, Boolean.TRUE);
         }
         return Boolean.TRUE.equals(_saveStateWithVisitTreeOnPSS);

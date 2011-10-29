@@ -73,9 +73,11 @@ public final class HtmlLibrary extends AbstractHtmlLibrary
 
         this.addHtmlComponent("outputLink", "javax.faces.HtmlOutputLink", "javax.faces.Link");
         
-        this.addComponent ("outputScript", "javax.faces.Output", "javax.faces.resource.Script", HtmlOutputScriptHandler.class);
+        this.addComponent("outputScript", "javax.faces.Output", "javax.faces.resource.Script",
+                          HtmlOutputScriptHandler.class);
         
-        this.addComponent ("outputStylesheet", "javax.faces.Output", "javax.faces.resource.Stylesheet", HtmlOutputStylesheetHandler.class);
+        this.addComponent("outputStylesheet", "javax.faces.Output", "javax.faces.resource.Stylesheet",
+                          HtmlOutputStylesheetHandler.class);
         
         this.addHtmlComponent("outputText", "javax.faces.HtmlOutputText", "javax.faces.Text");
 

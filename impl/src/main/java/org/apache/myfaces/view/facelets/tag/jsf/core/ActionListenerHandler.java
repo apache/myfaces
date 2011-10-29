@@ -179,7 +179,8 @@ public final class ActionListenerHandler extends TagHandler
         }
         else
         {
-            throw new TagException(this.tag, "Parent is not composite component or of type ActionSource, type is: " + parent);
+            throw new TagException(this.tag,
+                    "Parent is not composite component or of type ActionSource, type is: " + parent);
         }
     }
 

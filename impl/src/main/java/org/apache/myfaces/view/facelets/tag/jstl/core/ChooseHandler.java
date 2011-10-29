@@ -125,7 +125,8 @@ public final class ChooseHandler extends TagHandler
         }
     }
     
-    private Integer getSavedOption(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId)
+    private Integer getSavedOption(FaceletContext ctx, FaceletCompositionContext fcc,
+                                   UIComponent parent, String uniqueId)
     {
         return (Integer) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
     }

@@ -168,7 +168,8 @@ public final class ValueChangeListenerHandler extends TagHandler
         }
         else
         {
-            throw new TagException(this.tag, "Parent not composite component or an instance of EditableValueHolder: " + parent);
+            throw new TagException(this.tag,
+                    "Parent not composite component or an instance of EditableValueHolder: " + parent);
         }
     }
 

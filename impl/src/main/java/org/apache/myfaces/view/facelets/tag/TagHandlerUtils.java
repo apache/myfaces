@@ -28,7 +28,7 @@ import javax.faces.view.facelets.FaceletHandler;
  * This class was created to gather some code from latest Facelets not existing in latest JSF 2.0 spec.
  * Also, since it was created on the fly while converting, it's highly possible that methods in this class
  * should be moved in a more logical location and/or removed.
- * 
+ *
  * @author Simon Lessard (latest modification by $Author$)
  * @version $Revision$ $Date$
  *
@@ -36,10 +36,10 @@ import javax.faces.view.facelets.FaceletHandler;
  */
 public final class TagHandlerUtils
 {
- 
+
     /**
      * Find the first occurence of a tag handler that is instanceof T
-     * 
+     *
      * @since 2.0.1
      * @param <T>
      * @param nextHandler
@@ -54,7 +54,8 @@ public final class TagHandlerUtils
         }
         else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
-            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            for (FaceletHandler handler :
+                    ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
             {
                 if (type.isAssignableFrom(handler.getClass()))
                 {
@@ -63,12 +64,12 @@ public final class TagHandlerUtils
             }
         }
         return null;
-    }    
+    }
 
     /**
-     * From TagHandler: 
+     * From TagHandler:
      * protected final <T> Iterator<T> findNextByType(Class<T> type)
-     * 
+     *
      * @param type
      * @return
      */
@@ -82,7 +83,8 @@ public final class TagHandlerUtils
         }
         else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
-            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            for (FaceletHandler handler :
+                    ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
             {
                 if (type.isAssignableFrom(handler.getClass()))
                 {
@@ -90,13 +92,13 @@ public final class TagHandlerUtils
                 }
             }
         }
-        
+
         return found;
     }
 
     private TagHandlerUtils()
     {
-        
+
     }
 
     public static  Collection<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> ... type1)
@@ -105,20 +107,21 @@ public final class TagHandlerUtils
         boolean isAssignable = false;
         for (int i = 0; i < type1.length && !isAssignable; i++)
         {
-            isAssignable = type1[i].isAssignableFrom(nextHandler.getClass()); 
+            isAssignable = type1[i].isAssignableFrom(nextHandler.getClass());
         }
         if (isAssignable)
         {
             found.add((FaceletHandler)nextHandler);
         }
         else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
-        {            
-            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+        {
+            for (FaceletHandler handler :
+                    ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
             {
                 isAssignable = false;
                 for (int i = 0; i < type1.length && !isAssignable; i++)
                 {
-                    isAssignable = type1[i].isAssignableFrom(handler.getClass()); 
+                    isAssignable = type1[i].isAssignableFrom(handler.getClass());
                 }
                 if (isAssignable)
                 {
@@ -126,7 +129,7 @@ public final class TagHandlerUtils
                 }
             }
         }
-        
+
         return found;
     }
 
@@ -139,7 +142,8 @@ public final class TagHandlerUtils
         }
         else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
-            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            for (FaceletHandler handler :
+                    ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
             {
                 if (type1.isAssignableFrom(handler.getClass()) || type2.isAssignableFrom(handler.getClass()))
                 {

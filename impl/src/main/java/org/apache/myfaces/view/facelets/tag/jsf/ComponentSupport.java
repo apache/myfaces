@@ -431,7 +431,8 @@ public final class ComponentSupport
     {
         if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
         {
-            component.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.REMOVE_ADD);
+            component.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
+                                          ComponentState.REMOVE_ADD);
         }
         //component.subscribeToEvent(PostAddToViewEvent.class, new RestoreComponentFullyListener());
         if (FaceletViewDeclarationLanguage.isRefreshTransientBuildOnPSSAuto(context))
@@ -538,12 +539,14 @@ public final class ComponentSupport
         return sb.toString();
     }
     
-    public static Object restoreInitialTagState(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId)
+    public static Object restoreInitialTagState(FaceletContext ctx, FaceletCompositionContext fcc,
+                                                UIComponent parent, String uniqueId)
     {
         Object value = null;
         if (fcc.isUsingPSSOnThisView() &&
-                PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()) &&
-                !MyfacesConfig.getCurrentInstance(ctx.getFacesContext().getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
+            PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()) &&
+            !MyfacesConfig.getCurrentInstance(
+                    ctx.getFacesContext().getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
         {
             UIViewRoot root = getViewRoot(ctx, parent);
             FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);
@@ -559,7 +562,8 @@ public final class ComponentSupport
         return value;
     }
     
-    public static void saveInitialTagState(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent, String uniqueId, Object value)
+    public static void saveInitialTagState(FaceletContext ctx, FaceletCompositionContext fcc,
+                                           UIComponent parent, String uniqueId, Object value)
     {
         if (fcc.isUsingPSSOnThisView())
         {
@@ -567,7 +571,8 @@ public final class ComponentSupport
             // work correctly. If preserve state is enabled, just ignore it, because this tag will
             // force full restore over the parent
             if (!fcc.isRefreshingTransientBuild() && !ctx.getFacesContext().isPostback()
-                && !MyfacesConfig.getCurrentInstance(ctx.getFacesContext().getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
+                && !MyfacesConfig.getCurrentInstance(
+                    ctx.getFacesContext().getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
             {
                 UIViewRoot root = getViewRoot(ctx, parent);
                 FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);

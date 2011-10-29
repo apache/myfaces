@@ -138,8 +138,8 @@ public final class ConvertDateTimeHandler extends ConverterHandler
                 else
                 {
                     throw new TagAttributeException(this.tag, this.timeZone,
-                                                    "Illegal TimeZone, must evaluate to either a java.util.TimeZone or String, is type: "
-                                                            + t.getClass());
+                                "Illegal TimeZone, must evaluate to either a java.util.TimeZone or String, is type: "
+                                + t.getClass());
                 }
             }
         }

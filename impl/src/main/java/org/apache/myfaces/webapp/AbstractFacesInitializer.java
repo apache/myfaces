@@ -287,7 +287,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
-        if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(), INITIALIZE_ALWAYS_STANDALONE, false))
+        if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
+                                                         INITIALIZE_ALWAYS_STANDALONE, false))
         {
             //We need to check if the current application was initialized by myfaces
             WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
@@ -366,7 +367,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      */
     protected static ExpressionFactory getUserDefinedExpressionFactory(ExternalContext externalContext)
     {
-        String expressionFactoryClassName = WebConfigParamUtils.getStringInitParameter(externalContext, EXPRESSION_FACTORY);
+        String expressionFactoryClassName
+                = WebConfigParamUtils.getStringInitParameter(externalContext, EXPRESSION_FACTORY);
         if (expressionFactoryClassName != null
                 && expressionFactoryClassName.trim().length() > 0)
         {

@@ -68,7 +68,8 @@ public class ImplementationHandler extends TagHandler
         }
         else
         {
-            UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            UIComponent compositeBaseParent
+                    = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             // Register the facet UIComponent.COMPOSITE_FACET_NAME
             CompositeComponentBeanInfo beanInfo = 
                 (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()

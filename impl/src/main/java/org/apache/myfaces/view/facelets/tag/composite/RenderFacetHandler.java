@@ -84,7 +84,8 @@ public class RenderFacetHandler extends ComponentHandler
         {
             String facetName = _name.getValue(ctx);
             
-            UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            UIComponent compositeBaseParent
+                    = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             
             CompositeComponentBeanInfo beanInfo = 
                 (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
@@ -123,7 +124,8 @@ public class RenderFacetHandler extends ComponentHandler
     {
         if (!((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
-            UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            UIComponent parentCompositeComponent
+                    = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             
             String facetName = _name.getValue(ctx);
     

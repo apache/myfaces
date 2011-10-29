@@ -74,7 +74,8 @@ public class ParamHandler extends TagHandler
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
+     *        javax.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
@@ -85,11 +86,10 @@ public class ParamHandler extends TagHandler
         apply(ctx, parent, nameStr, valueVE);
     }
     
-    public void apply(FaceletContext ctx, UIComponent parent, String nameStr, ValueExpression valueVE) throws IOException, FacesException, FaceletException,
-            ELException
+    public void apply(FaceletContext ctx, UIComponent parent, String nameStr, ValueExpression valueVE)
+            throws IOException, FacesException, FaceletException, ELException
     {
-        //((AbstractFaceletContext) ctx).getTemplateContext().getAttributes().put(nameStr, valueVE);
-        AbstractFaceletContext actx = ((AbstractFaceletContext) ctx); 
+        AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
         actx.getTemplateContext().setParameter(nameStr, valueVE);
         
         if (actx.getTemplateContext().isAllowCacheELExpressions())

@@ -158,7 +158,8 @@ public final class ForEachHandler extends TagHandler
         if (this.items == null && this.begin != null && this.end == null)
         {
             throw new TagAttributeException(this.tag, this.begin,
-                                            "If the 'items' attribute is not specified, but the 'begin' attribute is, then the 'end' attribute is required");
+                                            "If the 'items' attribute is not specified, but the 'begin' attribute is, "
+                                            + "then the 'end' attribute is required");
         }
     }
 
@@ -388,7 +389,8 @@ public final class ForEachHandler extends TagHandler
         }
         else
         {
-            throw new TagAttributeException(this.tag, this.items, "Must evaluate to a Collection, Map, Array, or null.");
+            throw new TagAttributeException(this.tag, this.items,
+                    "Must evaluate to a Collection, Map, Array, or null.");
         }
     }
 

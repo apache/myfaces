@@ -61,7 +61,8 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
      * its validatorId will be added to the exclusion list stored under
      * this key on the parent UIComponent.
      */
-    public final static String VALIDATOR_ID_EXCLUSION_LIST_KEY = "org.apache.myfaces.validator.VALIDATOR_ID_EXCLUSION_LIST";
+    public final static String VALIDATOR_ID_EXCLUSION_LIST_KEY
+            = "org.apache.myfaces.validator.VALIDATOR_ID_EXCLUSION_LIST";
     
     private ValidatorHandler _delegate;
     
@@ -187,7 +188,8 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             }
             else
             {
-                throw new TagException(_delegate.getTag(), "Parent not composite component or an instance of EditableValueHolder: " + parent);
+                throw new TagException(_delegate.getTag(),
+                        "Parent not composite component or an instance of EditableValueHolder: " + parent);
             }
         }
     }

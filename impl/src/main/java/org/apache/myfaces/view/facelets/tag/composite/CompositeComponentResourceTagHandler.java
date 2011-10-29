@@ -207,7 +207,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         
         if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
-            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            for (FaceletHandler handler :
+                    ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
             {
                 if (handler instanceof javax.faces.view.facelets.FacetHandler)
                 {
@@ -384,7 +385,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             if (_mapper == null || !_lastType.equals(type))
             {
                 _lastType = type;
-                BeanInfo beanInfo = (BeanInfo)((UIComponent) component).getAttributes().get(UIComponent.BEANINFO_KEY);    
+                BeanInfo beanInfo = (BeanInfo)component.getAttributes().get(UIComponent.BEANINFO_KEY);
                 _mapper = createMetaRuleset(type , beanInfo).finish();
             }
             
