@@ -237,7 +237,8 @@ final class TextUnit extends CompilationUnit
             for (Iterator<Object> it = messages.iterator(); it.hasNext();)
             {
                 Object[] message = (Object[])it.next();
-                this.addInstruction(new AddFacesMessageInstruction((FacesMessage.Severity) message[0], (String)message[1], (String)message[2]));
+                this.addInstruction(new AddFacesMessageInstruction((FacesMessage.Severity) message[0],
+                                                                   (String)message[1], (String)message[2]));
                 it.remove();
             }
         }

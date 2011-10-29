@@ -38,7 +38,8 @@ public final class SpiUtils
     
     public static Object build(ExternalContext ectx, Class spiClass, String defaultImpl)
     {
-        List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(ectx).getServiceProviderList(spiClass.getName());
+        List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(ectx).
+                getServiceProviderList(spiClass.getName());
         
         if (classList != null && !classList.isEmpty())
         {

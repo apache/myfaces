@@ -125,8 +125,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
      * 
      * This param is just provided to preserve backwards behavior. 
      */
-    @JSFWebConfigParam(since="2.0.8, 2.1.2", defaultValue="true", expectedValues="true, false", group="state", tags="performance")
-    public static final String SAVE_STATE_WITH_VISIT_TREE_ON_PSS = "org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS";
+    @JSFWebConfigParam(since="2.0.8, 2.1.2", defaultValue="true", expectedValues="true, false",
+                       group="state", tags="performance")
+    public static final String SAVE_STATE_WITH_VISIT_TREE_ON_PSS
+            = "org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS";
     
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
     
@@ -141,7 +143,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     public DefaultFaceletsStateManagementStrategy ()
     {
-        _vdlFactory = (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
+        _vdlFactory = (ViewDeclarationLanguageFactory)
+                FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
         //TODO: This object should be application scoped and shared
         //between jsp and facelets
     }
@@ -161,7 +164,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         // Get previous state from ResponseStateManager.
         manager = getRenderKitFactory().getRenderKit(context, renderKitId).getResponseStateManager();
         
-        //state = (Object[]) getStateCache().restoreSerializedView(context, viewId, manager.getState(context, viewId));
         state = (Object[]) manager.getState(context, viewId);
         
         if (state == null)
@@ -211,7 +213,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 if (state != null && state[1] != null)
                 {
                     states = (Map<String, Object>) state[1];
-                    faceletViewState = UIComponentBase.restoreAttachedState(context,states.get(ComponentSupport.FACELET_STATE_INSTANCE));
+                    faceletViewState = UIComponentBase.restoreAttachedState(
+                            context,states.get(ComponentSupport.FACELET_STATE_INSTANCE));
                     if (faceletViewState != null)
                     {
                         view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
@@ -286,7 +289,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                                                     String key = null;
                                                     if (target.getParent().getFacetCount() > 0)
                                                     {
-                                                        for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
+                                                        for (Map.Entry<String, UIComponent> entry :
+                                                                target.getParent().getFacets().entrySet())
                                                         {
                                                             if (entry.getValue()==target)
                                                             {
@@ -331,7 +335,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                                 {
                                     if (addedState.length == 2)
                                     {
-                                        view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
+                                        view = (UIViewRoot)
+                                                internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
                                         view.processRestoreState(context, addedState[1]);
                                         break;
                                     }
@@ -346,14 +351,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                                                 if (addedState[1] != null)
                                                 {
                                                     String facetName = (String) addedState[1];
-                                                    UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                                    UIComponent child
+                                                            = internalRestoreTreeStructure((TreeStructComponent)
+                                                                                           addedState[3]);
                                                     child.processRestoreState(context, addedState[4]);
                                                     target.getFacets().put(facetName,child);
                                                 }
                                                 else
                                                 {
                                                     Integer childIndex = (Integer) addedState[2];
-                                                    UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
+                                                    UIComponent child
+                                                            = internalRestoreTreeStructure((TreeStructComponent)
+                                                                                           addedState[3]);
                                                     child.processRestoreState(context, addedState[4]);
                                                     try
                                                     {
@@ -403,43 +412,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         return view;
     }
     
-    /*
-    private static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
-    {
-        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, UIComponent.class, component);
-        
-        if (component.getChildCount() > 0)
-        {
-            // PostAddToViewEvent could cause component relocation
-            // (h:outputScript, h:outputStylesheet, composite:insertChildren, composite:insertFacet)
-            // so we need to check if the component was relocated or not
-            List<UIComponent> children = component.getChildren();
-            UIComponent child = null;
-            UIComponent currentChild = null;
-            int i = 0;
-            while (i < children.size())
-            {
-                child = children.get(i);
-                // Iterate over the same index if the component was removed
-                // This prevents skip components when processing
-                do 
-                {
-                    _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
-                    currentChild = child;
-                }
-                while ((i < children.size()) &&
-                       ((child = children.get(i)) != currentChild) );
-                i++;
-            }
-        }
-        if (component.getFacetCount() > 0)
-        {
-            for (UIComponent child : component.getFacets().values())
-            {
-                _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
-            }
-        }        
-    }*/
 
     @Override
     public Object saveView (FacesContext context)
@@ -493,7 +465,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 Object faceletViewState = view.getAttributes().get(ComponentSupport.FACELET_STATE_INSTANCE);
                 if (faceletViewState != null)
                 {
-                    ((Map<String, Object>)states).put(ComponentSupport.FACELET_STATE_INSTANCE, UIComponentBase.saveAttachedState(context, faceletViewState));
+                    ((Map<String, Object>)states).put(ComponentSupport.FACELET_STATE_INSTANCE,
+                            UIComponentBase.saveAttachedState(context, faceletViewState));
                     //Do not save on UIViewRoot
                     view.getAttributes().remove(ComponentSupport.FACELET_STATE_INSTANCE);
                 }
@@ -524,22 +497,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
             externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
 
-            /*
-            if (context.getApplication().getStateManager().isSavingStateInClient(context))
-            {
-                serializedView = new Object[] { null, states };
-            }
-            else
-            {
-                // On server side state saving, the structure field is used to save the view sequence.
-                // Originally, on JspStateManagerImpl this is done in writeState method, not in saveView,
-                // but note that on ajax case the state is both saved and written using StateManager.getViewState,
-                // so we must save it early
-                serializedView = new Object[] {Integer.toString(helper.getNextViewSequence(context), Character.MAX_RADIX), states};
-            }
-            externalContext.getRequestMap().put(DefaultFaceletsStateManagementHelper.SERIALIZED_VIEW_REQUEST_ATTR,
-                    serializedView);
-            */
         }
         
         //if (!context.getApplication().getStateManager().isSavingStateInClient(context))
@@ -713,7 +670,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         return VisitResult.REJECT;
                     }
                     
-                    ComponentState componentAddedAfterBuildView = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                    ComponentState componentAddedAfterBuildView
+                            = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
                     
                     //Note if UIViewRoot has this marker, JSF 1.2 like state saving is used.
                     if (componentAddedAfterBuildView != null && (target.getParent() != null))
@@ -821,7 +779,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     UIComponent child = children.get(i);
                     if (child != null && !child.isTransient())
                     {
-                        componentAddedAfterBuildView = (ComponentState) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                        componentAddedAfterBuildView
+                                = (ComponentState) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
                         if (componentAddedAfterBuildView != null)
                         {
                             if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
@@ -869,7 +828,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     if (child != null && !child.isTransient())
                     {
                         String facetName = entry.getKey();
-                        componentAddedAfterBuildView = (ComponentState) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+                        componentAddedAfterBuildView
+                                = (ComponentState) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
                         if (componentAddedAfterBuildView != null)
                         {
                             if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))

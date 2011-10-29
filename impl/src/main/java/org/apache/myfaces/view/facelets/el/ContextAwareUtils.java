@@ -27,16 +27,19 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 public class ContextAwareUtils
 {
     /**
-     * Wrap exception caused by calls to EL expressions, so information like the location, expression string and tag name can be retrieved by
+     * Wrap exception caused by calls to EL expressions, so information like
+     * the location, expression string and tag name can be retrieved by
      * the ExceptionHandler implementation and used to output meaningful information about itself.
      * 
-     * <p>Note in some cases this will wrap the original javax.el.ELException, so the information will not be on the stack trace unless ExceptionHandler
+     * <p>Note in some cases this will wrap the original javax.el.ELException, so the
+     * information will not be on the stack trace unless ExceptionHandler
      * retrieve checking if the exception implements ContextAware interface and calling getWrapped() method.
      * </p>
      * 
      */
     @JSFWebConfigParam(since="2.0.9, 2.1.3" , defaultValue="true", expectedValues="true, false")
-    public static final String INIT_PARAM_WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE = "org.apache.myfaces.WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE";
+    public static final String INIT_PARAM_WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE
+            = "org.apache.myfaces.WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE";
     
     public static boolean isWrapTagExceptionsAsContextAware(ELContext context)
     {

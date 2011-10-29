@@ -53,7 +53,8 @@ public class RedirectMethodExpressionValueExpressionValidator
     public void validate(FacesContext context, UIComponent component,
             Object value) throws ValidatorException
     {
-        getMethodExpression().invoke(FacesContext.getCurrentInstance().getELContext(), new Object[]{context,component,value});
+        getMethodExpression().invoke(FacesContext.getCurrentInstance().getELContext(),
+                                     new Object[]{context,component,value});
     }
 
     private MethodExpression getMethodExpression()

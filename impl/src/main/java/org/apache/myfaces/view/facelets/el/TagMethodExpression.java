@@ -38,7 +38,9 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id$
  */
-public final class TagMethodExpression extends MethodExpression implements Externalizable, FacesWrapper<MethodExpression>
+public final class TagMethodExpression
+        extends MethodExpression
+        implements Externalizable, FacesWrapper<MethodExpression>
 {
 
     private static final long serialVersionUID = 1L;

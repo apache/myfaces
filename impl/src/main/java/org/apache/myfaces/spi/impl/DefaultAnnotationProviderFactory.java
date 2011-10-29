@@ -29,6 +29,7 @@ import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,7 +55,8 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
     @Override
     public AnnotationProvider getAnnotationProvider(ExternalContext externalContext)
     {
-        AnnotationProvider annotationProvider = (AnnotationProvider) externalContext.getApplicationMap().get(ANNOTATION_PROVIDER_INSTANCE);
+        AnnotationProvider annotationProvider
+                = (AnnotationProvider) externalContext.getApplicationMap().get(ANNOTATION_PROVIDER_INSTANCE);
         if (annotationProvider == null)
         {
             annotationProvider = createAnnotationProvider(externalContext);
@@ -73,7 +75,7 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<AnnotationProvider>()
+                returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<AnnotationProvider>()
                         {
                             public AnnotationProvider run() throws ClassNotFoundException,
                                     NoClassDefFoundError,
@@ -129,7 +131,8 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(ANNOTATION_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(ANNOTATION_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).
+                    getServiceProviderList(ANNOTATION_PROVIDER);
             externalContext.getApplicationMap().put(ANNOTATION_PROVIDER_LIST, classList);
         }
         return ClassUtils.buildApplicationObject(AnnotationProvider.class, classList, new DefaultAnnotationProvider());

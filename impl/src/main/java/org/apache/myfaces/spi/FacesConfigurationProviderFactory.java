@@ -43,7 +43,8 @@ public abstract class FacesConfigurationProviderFactory
 
     public static FacesConfigurationProviderFactory getFacesConfigurationProviderFactory(ExternalContext ctx)
     {
-        FacesConfigurationProviderFactory factory = (FacesConfigurationProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+        FacesConfigurationProviderFactory factory
+                = (FacesConfigurationProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
         if (factory != null)
         {
             // use cached instance
@@ -71,8 +72,8 @@ public abstract class FacesConfigurationProviderFactory
             }
             else
             {
-                //factory = (FacesConfigurationProviderFactory) DiscoverSingleton.find(FacesConfigurationProviderFactory.class, FACTORY_DEFAULT);
-                factory = (FacesConfigurationProviderFactory) SpiUtils.build(ctx, FacesConfigurationProviderFactory.class, FACTORY_DEFAULT);
+                factory = (FacesConfigurationProviderFactory)
+                        SpiUtils.build(ctx, FacesConfigurationProviderFactory.class, FACTORY_DEFAULT);
             }
         }
         catch (PrivilegedActionException pae)
@@ -89,7 +90,8 @@ public abstract class FacesConfigurationProviderFactory
         return factory;
     }
 
-    public static void setFacesConfigurationProviderFactory(ExternalContext ctx, FacesConfigurationProviderFactory factory)
+    public static void setFacesConfigurationProviderFactory(ExternalContext ctx,
+                                                            FacesConfigurationProviderFactory factory)
     {
         ctx.getApplicationMap().put(FACTORY_KEY, factory);
     }

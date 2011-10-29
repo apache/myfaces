@@ -84,7 +84,8 @@ public abstract class AnnotationProvider implements FacesWrapper<AnnotationProvi
     public abstract Map<Class<? extends Annotation>,Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx);
 
     /**
-     * <p>The returned Set&lt;URL&gt; urls are calculated in this way ( see JSF 2.0 spec section 11.4.2 for definitions )    
+     * <p>The returned Set&lt;URL&gt; urls are calculated in this way
+     * ( see JSF 2.0 spec section 11.4.2 for definitions )
      * </p>
      * <ol>
      * <li>All resources that match either "META-INF/faces-config.xml" or end with ".facesconfig.xml" directly in 

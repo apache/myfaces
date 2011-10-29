@@ -57,7 +57,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
  * Default FaceletContext implementation.
  * 
  * A single FaceletContext is used for all Facelets involved in an invocation of
- * {@link org.apache.myfaces.view.facelets.Facelet#apply(FacesContext, UIComponent) Facelet#apply(FacesContext, UIComponent)}. This
+ * {@link org.apache.myfaces.view.facelets.Facelet#apply(FacesContext, UIComponent)
+ * Facelet#apply(FacesContext, UIComponent)}. This
  * means that included Facelets are treated the same as the JSP include directive.
  * 
  * @author Jacob Hookom
@@ -318,65 +319,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _uniqueIdBuilder.append("_");
         _uniqueIdBuilder.append(base);
         return _uniqueIdBuilder.toString();
-        /*
-        if (_prefix == null)
-        {
-            StringBuilder builder = new StringBuilder(
-                    _faceletHierarchy.size() * 30);
-            for (int i = 0; i < _faceletHierarchy.size(); i++)
-            {
-                AbstractFacelet facelet = _faceletHierarchy.get(i);
-                builder.append(facelet.getAlias());
-            }
-
-            // Integer prefixInt = new Integer(builder.toString().hashCode());
-            // -= Leonardo Uribe =- if the previous formula is used, it is possible that
-            // negative values are introduced. The presence of '-' char causes problems
-            // with htmlunit 2.4 or lower, so in order to prevent it it is better to use
-            // only positive values instead.
-            // Take into account CompilationManager.nextTagId() uses Math.abs too.
-            Integer prefixInt = new Integer(Math.abs(builder.toString().hashCode()));
-
-            Integer cnt = _prefixes.get(prefixInt);
-            if (cnt == null)
-            {
-                _prefixes.put(prefixInt, Integer.valueOf(0));
-                _prefix = prefixInt.toString();
-            }
-            else
-            {
-                int i = cnt.intValue() + 1;
-                _prefixes.put(prefixInt, Integer.valueOf(i));
-                _prefix = prefixInt + "_" + i;
-            }
-        }
-
-        Integer cnt = _ids.get(base);
-        if (cnt == null)
-        {
-            _ids.put(base, Integer.valueOf(0));
-            _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
-            _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(_prefix);
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(base);
-            return _uniqueIdBuilder.toString();
-        }
-        else
-        {
-            int i = cnt.intValue() + 1;
-            _ids.put(base, Integer.valueOf(i));
-            _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
-            _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(_prefix);
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(base);
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(i);
-            return _uniqueIdBuilder.toString();
-        }*/
     }
 
     /**

@@ -77,7 +77,8 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                 Location location = (Location) component.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
                 if (location != null)
                 {
-                    UIComponent ccParent = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location);
+                    UIComponent ccParent
+                            = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location);
                     if (ccParent != null)
                     {
                         component.getAttributes().put(

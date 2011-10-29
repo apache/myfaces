@@ -64,7 +64,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * </p> 
      */
     @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true", group="state")
-    public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
+    public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS
+            = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
     
     private Boolean _handleStateCachingMechanics;
     
@@ -79,8 +80,9 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     {
         if (_handleStateCachingMechanics == null)
         {
-            _handleStateCachingMechanics = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS, true);
+            _handleStateCachingMechanics
+                    = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
+                        INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS, true);
         }
         return _handleStateCachingMechanics.booleanValue();
     }

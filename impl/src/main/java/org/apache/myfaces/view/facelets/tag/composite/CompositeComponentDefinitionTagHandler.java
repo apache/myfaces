@@ -164,7 +164,8 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                             {
                                 declaredDefaultValues = Collections.emptyList();
                             }
-                            _cachedBeanInfo.getBeanDescriptor().setValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES, declaredDefaultValues);
+                            _cachedBeanInfo.getBeanDescriptor().
+                                    setValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES, declaredDefaultValues);
                         }
                         finally
                         {
@@ -208,7 +209,8 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                         {
                             declaredDefaultValues = Collections.emptyList();
                         }
-                        tempBeanInfo.getBeanDescriptor().setValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES, declaredDefaultValues);
+                        tempBeanInfo.getBeanDescriptor().
+                                setValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES, declaredDefaultValues);
                     }
                     finally
                     {

@@ -103,7 +103,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
         
         // facelet cache. Lookup here, because after all this is a "part" of the facelet factory implementation.
-        FaceletCacheFactory cacheFactory = (FaceletCacheFactory) FactoryFinder.getFactory(FactoryFinder.FACELET_CACHE_FACTORY);
+        FaceletCacheFactory cacheFactory
+                = (FaceletCacheFactory) FactoryFinder.getFactory(FactoryFinder.FACELET_CACHE_FACTORY);
         _faceletCache = (FaceletCache<Facelet>) cacheFactory.getFaceletCache();
         
         FaceletCache.MemberFactory<Facelet> faceletFactory = new FaceletCache.MemberFactory<Facelet>()
@@ -135,7 +136,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         } 
         catch (Exception e)
         {
-            throw new FacesException("Cannot call setMemberFactories method, Initialization of FaceletCache failed.", e);
+            throw new FacesException("Cannot call setMemberFactories method, Initialization of FaceletCache failed.",
+                                     e);
         }
 
         if (log.isLoggable(Level.FINE))
@@ -195,25 +197,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
     public Facelet getFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
     {
         return _faceletCache.getFacelet(url);
-        /*
-        ParameterCheck.notNull("url", url);
-        
-        String key = url.toString();
-        
-        DefaultFacelet f = _facelets.get(key);
-        
-        if (f == null || this.needsToBeRefreshed(f))
-        {
-            f = this._createFacelet(url);
-            if (_refreshPeriod != NO_CACHE_DELAY)
-            {
-                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_facelets);
-                newLoc.put(key, f);
-                _facelets = newLoc;
-            }
-        }
-        
-        return f;*/
     }
 
     public long getRefreshPeriod()
@@ -341,7 +324,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    private DefaultFacelet _createViewMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
+    private DefaultFacelet _createViewMetadataFacelet(URL url)
+            throws IOException, FaceletException, FacesException, ELException
     {
         if (log.isLoggable(Level.FINE))
         {
@@ -373,7 +357,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    private DefaultFacelet _createCompositeComponentMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
+    private DefaultFacelet _createCompositeComponentMetadataFacelet(URL url)
+            throws IOException, FaceletException, FacesException, ELException
     {
         if (log.isLoggable(Level.FINE))
         {
@@ -429,26 +414,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
             FaceletException, FacesException, ELException
     {
         return _faceletCache.getViewMetadataFacelet(url);
-        /*
-        ParameterCheck.notNull("url", url);
-        
-        String key = url.toString();
-        
-        DefaultFacelet f = _viewMetadataFacelets.get(key);
-        
-        if (f == null || this.needsToBeRefreshed(f))
-        {
-            f = this._createViewMetadataFacelet(url);
-            if (_refreshPeriod != NO_CACHE_DELAY)
-            {
-                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_viewMetadataFacelets);
-                newLoc.put(key, f);
-                _viewMetadataFacelets = newLoc;
-            }
-        }
-        
-        return f;
-        */
     }
     
     /**

@@ -251,17 +251,17 @@ public class CompositeResourceLibrary implements TagLibrary
                     String resourceName = localName + defaultSuffix;
                     if (handles(resourceName))
                     {
-                        Resource compositeComponentResourceWrapped = resourceHandler.createResource(resourceName, libraryName);
+                        Resource compositeComponentResourceWrapped
+                                = resourceHandler.createResource(resourceName, libraryName);
                         if (compositeComponentResourceWrapped != null)
                         {
-                            Resource compositeComponentResource = new CompositeResouceWrapper(compositeComponentResourceWrapped);
-                            if (compositeComponentResource != null)
-                            {
-                                ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
-                                        "javax.faces.NamingContainer", null);
-                                
-                                return new CompositeComponentResourceTagHandler(componentConfig, compositeComponentResource);
-                            }
+                            Resource compositeComponentResource
+                                    = new CompositeResouceWrapper(compositeComponentResourceWrapped);
+                            ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
+                                    "javax.faces.NamingContainer", null);
+
+                            return new CompositeComponentResourceTagHandler(componentConfig,
+                                                                            compositeComponentResource);
                         }
                     }
                 }

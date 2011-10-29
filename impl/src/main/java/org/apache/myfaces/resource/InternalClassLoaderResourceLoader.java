@@ -46,7 +46,8 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
      * debugging of the default jsf javascript file more simple.
      */
     @JSFWebConfigParam(since = "2.0.1", defaultValue = "false", expectedValues = "true,false", group = "render")
-    public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
+    public static final String USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS
+            = "org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS";
 
     /**
      * Define the mode used for jsf.js file:
@@ -58,8 +59,8 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
      * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
      * is Development, this param is ignored.</p>
      */
-    @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal", expectedValues = "normal, minimal-modern, minimal",
-            group = "render")
+    @JSFWebConfigParam(since = "2.0.10,2.1.4", defaultValue = "normal",
+                       expectedValues = "normal, minimal-modern, minimal", group = "render")
     public static final String MYFACES_JSF_MODE = "org.apache.myfaces.JSF_JS_MODE";
     
     private final boolean _useMultipleJsFilesForJsfUncompressedJs;
@@ -69,11 +70,12 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     public InternalClassLoaderResourceLoader(String prefix)
     {
         super(prefix);
-        _useMultipleJsFilesForJsfUncompressedJs = WebConfigParamUtils.getBooleanInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
-                USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, false);
+        _useMultipleJsFilesForJsfUncompressedJs
+                = WebConfigParamUtils.getBooleanInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
+                    USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS, false);
 
-        _jsfMode = WebConfigParamUtils.getStringInitParameter(FacesContext.getCurrentInstance().getExternalContext(), MYFACES_JSF_MODE, 
-                ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
+        _jsfMode = WebConfigParamUtils.getStringInitParameter(FacesContext.getCurrentInstance().getExternalContext(),
+                    MYFACES_JSF_MODE, ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
         _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
     }
 
@@ -161,9 +163,11 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                 else
                 {
                     //normall we would have to take care about the standard jsf.js case also
-                    //but our standard resource loader takes care of it, because this part is only called in debugging mode
+                    //but our standard resource loader takes care of it,
+                    // because this part is only called in debugging mode
                     //in production only in debugging
-                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion, "jsf-uncompressed-full.js", false);
+                    return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
+                                                     "jsf-uncompressed-full.js", false);
                 }
             }
             else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL) )

@@ -107,7 +107,8 @@ public class TemplateContextImpl extends TemplateContext
     }
     
     @Override
-    public void extendClient(final AbstractFaceletContext actx, final AbstractFacelet owner, final TemplateClient client)
+    public void extendClient(final AbstractFaceletContext actx, final AbstractFacelet owner,
+                             final TemplateClient client)
     {
         _clients.addLast(new TemplateManagerImpl(owner, client, false, actx.getPageContext()));
         _lastClient = _clients.getLast();

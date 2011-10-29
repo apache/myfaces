@@ -377,7 +377,8 @@ class DefaultFaceletsStateManagementHelper
         {
             if (log.isLoggable(Level.FINEST))
             {
-                log.finest("Processing deserializeView - deserializing serialized state. Bytes : " + ((byte[]) state).length);
+                log.finest("Processing deserializeView - deserializing serialized state. Bytes : "
+                           + ((byte[]) state).length);
             }
 
             try
@@ -400,7 +401,7 @@ class DefaultFaceletsStateManagementHelper
                         {
                             public Object[] run() throws PrivilegedActionException, IOException, ClassNotFoundException
                             {
-                                return new Object[] {in.readObject(), in.readObject()};                                    
+                                return new Object[] {in.readObject(), in.readObject()};
                             }
                         });
                     }
@@ -451,7 +452,8 @@ class DefaultFaceletsStateManagementHelper
         }
         else
         {
-            log.severe("Exiting deserializeView - this method should not be called with a state of type : "+state.getClass());
+            log.severe("Exiting deserializeView - this method should not be called with a state of type : "
+                       + state.getClass());
             return null;
         }
     }

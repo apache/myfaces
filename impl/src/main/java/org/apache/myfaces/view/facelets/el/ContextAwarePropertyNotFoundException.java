@@ -28,7 +28,9 @@ import javax.faces.view.Location;
  *
  * @see ContextAware
  */
-public class ContextAwarePropertyNotFoundException extends javax.el.PropertyNotFoundException implements ContextAwareExceptionWrapper
+public class ContextAwarePropertyNotFoundException
+        extends javax.el.PropertyNotFoundException
+        implements ContextAwareExceptionWrapper
 {
 
     /**

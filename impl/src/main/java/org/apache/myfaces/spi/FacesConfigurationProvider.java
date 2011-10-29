@@ -69,7 +69,8 @@ public abstract class FacesConfigurationProvider
     public abstract FacesConfig getAnnotationsFacesConfig(ExternalContext ectx, boolean metadataComplete);
     
     /**
-     * Return the FacesConfig object model retrieved from resources under the path META-INF/faces-config.xml and META-INF/[prefix].faces-config.xml
+     * Return the FacesConfig object model retrieved from resources under the path
+     * META-INF/faces-config.xml and META-INF/[prefix].faces-config.xml
      * 
      * @param ectx
      * @return

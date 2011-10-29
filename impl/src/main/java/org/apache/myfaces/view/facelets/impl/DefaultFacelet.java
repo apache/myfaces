@@ -111,7 +111,8 @@ final class DefaultFacelet extends AbstractFacelet
     }    
 
     /**
-     * @see org.apache.myfaces.view.facelets.Facelet#apply(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+     * @see org.apache.myfaces.view.facelets.Facelet#apply(javax.faces.context.FacesContext,
+     *      javax.faces.component.UIComponent)
      */
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
@@ -138,7 +139,8 @@ final class DefaultFacelet extends AbstractFacelet
             // push the parent as a UniqueIdVendor to the stack here,
             // if there is no UniqueIdVendor on the stack yet
             boolean pushedUniqueIdVendor = false;
-            if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+            if (parent instanceof UniqueIdVendor
+                && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
             {
                 ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
                 pushedUniqueIdVendor = true;
@@ -360,8 +362,8 @@ final class DefaultFacelet extends AbstractFacelet
      * @throws FaceletException
      * @throws ELException
      */
-    public void include(AbstractFaceletContext ctx, UIComponent parent, String path) throws IOException, FacesException,
-            FaceletException, ELException
+    public void include(AbstractFaceletContext ctx, UIComponent parent, String path)
+            throws IOException, FacesException, FaceletException, ELException
     {
         URL url = this.getRelativePath(path);
         this.include(ctx, parent, url);
@@ -389,8 +391,8 @@ final class DefaultFacelet extends AbstractFacelet
         f.include(ctx, parent);
     }
     
-    public void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource) throws IOException, FacesException,
-            FaceletException, ELException
+    public void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource)
+            throws IOException, FacesException, FaceletException, ELException
     {
         // Here we are creating a facelet using the url provided by the resource.
         // It works, but the Resource API provides getInputStream() for that. But the default
@@ -407,7 +409,8 @@ final class DefaultFacelet extends AbstractFacelet
             // if there is no UniqueIdVendor on the stack yet
             boolean pushedUniqueIdVendor = false;
             FaceletCompositionContext mctx = ctx.getFaceletCompositionContext();
-            if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+            if (parent instanceof UniqueIdVendor
+                && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
             {
                 mctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
                 pushedUniqueIdVendor = true;

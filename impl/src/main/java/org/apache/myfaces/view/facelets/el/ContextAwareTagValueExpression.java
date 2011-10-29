@@ -38,7 +38,9 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id$
  */
-public class ContextAwareTagValueExpression extends ValueExpression implements Externalizable, FacesWrapper<ValueExpression>, ContextAware
+public class ContextAwareTagValueExpression
+        extends ValueExpression
+        implements Externalizable, FacesWrapper<ValueExpression>, ContextAware
 {
 
     private static final long serialVersionUID = 1L;
@@ -74,7 +76,7 @@ public class ContextAwareTagValueExpression extends ValueExpression implements E
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(),pnfe);
         }
         catch (ELException e)
         {
@@ -95,7 +97,7 @@ public class ContextAwareTagValueExpression extends ValueExpression implements E
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(),pnfe);
         }
         catch (ELException e)
         {
@@ -130,7 +132,7 @@ public class ContextAwareTagValueExpression extends ValueExpression implements E
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(),pnfe);
         }
         catch (ELException e)
         {
@@ -152,11 +154,12 @@ public class ContextAwareTagValueExpression extends ValueExpression implements E
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(),pnfe);
         }
         catch (PropertyNotWritableException pnwe)
         {
-            throw new ContextAwarePropertyNotWritableException(getLocation(), getLocalExpressionString(), getQName(), pnwe);
+            throw new ContextAwarePropertyNotWritableException(getLocation(), getLocalExpressionString(),
+                                                               getQName(), pnwe);
         }
         catch (ELException e)
         {

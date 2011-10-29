@@ -52,8 +52,6 @@ final class CompositeComponentRule extends MetaRule
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((UIComponent) instance).getAttributes().put(_name, _value);
-            //((UIComponent) instance).setValueExpression(_name,
-            //        ctx.getFacesContext().getApplication().getExpressionFactory().createValueExpression(_value, Object.class));
         }
     }
     

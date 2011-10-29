@@ -29,6 +29,7 @@ import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +46,8 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
     
     public static final String FACES_CONFIGURATION_PROVIDER_LIST = FacesConfigurationProvider.class.getName()+".LIST";
     
-    public static final String FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY = FacesConfigurationProvider.class.getName() + ".INSTANCE";
+    public static final String FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY
+            = FacesConfigurationProvider.class.getName() + ".INSTANCE";
 
     private Logger getLogger()
     {
@@ -65,7 +67,8 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
             {
                 if (System.getSecurityManager() != null)
                 {
-                    returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<FacesConfigurationProvider>()
+                    returnValue
+                            = AccessController.doPrivileged(new PrivilegedExceptionAction<FacesConfigurationProvider>()
                             {
                                 public FacesConfigurationProvider run() throws ClassNotFoundException,
                                         NoClassDefFoundError,
@@ -122,13 +125,16 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
             InvocationTargetException,
             PrivilegedActionException
     {
-        List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACES_CONFIGURATION_PROVIDER_LIST);
+        List<String> classList = (List<String>)
+                externalContext.getApplicationMap().get(FACES_CONFIGURATION_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(FACES_CONFIGURATION_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).
+                    getServiceProviderList(FACES_CONFIGURATION_PROVIDER);
             externalContext.getApplicationMap().put(FACES_CONFIGURATION_PROVIDER_LIST, classList);
         }
 
-        return ClassUtils.buildApplicationObject(FacesConfigurationProvider.class, classList, new DefaultFacesConfigurationProvider());
+        return ClassUtils.buildApplicationObject(FacesConfigurationProvider.class, classList,
+                                                 new DefaultFacesConfigurationProvider());
     }
 }

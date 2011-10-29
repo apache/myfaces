@@ -144,9 +144,7 @@ public class WebXml
                     for (Iterator it2 = urlPatterns.iterator(); it2.hasNext(); )
                     {
                         String urlpattern = (String)it2.next();
-                        tempFacesServletMappings.add(new org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping(servletName,
-                                                                                                             servletClass,
-                                                                                                             urlpattern));
+                        tempFacesServletMappings.add(new ServletMapping(servletName, servletClass, urlpattern));
                         if (log.isLoggable(Level.FINEST))
                         {
                             log.finest("adding mapping for servlet + " + servletName + " urlpattern = " + urlpattern);

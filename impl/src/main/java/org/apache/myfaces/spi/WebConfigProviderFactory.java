@@ -72,8 +72,8 @@ public abstract class WebConfigProviderFactory
             }
             else
             {
-                //factory = (WebConfigProviderFactory) DiscoverSingleton.find(WebConfigProviderFactory.class, FACTORY_DEFAULT);
-                factory = (WebConfigProviderFactory) SpiUtils.build(ctx, WebConfigProviderFactory.class, FACTORY_DEFAULT);
+                factory = (WebConfigProviderFactory)
+                        SpiUtils.build(ctx, WebConfigProviderFactory.class, FACTORY_DEFAULT);
             }
         }
         catch (PrivilegedActionException pae)

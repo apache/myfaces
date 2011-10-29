@@ -568,7 +568,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     {
         private static final long serialVersionUID = -3734849062185115847L;
 
-        private final List<SerializedViewKey> _keys = new ArrayList<SerializedViewKey>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
+        private final List<SerializedViewKey> _keys
+                = new ArrayList<SerializedViewKey>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
         private final Map<SerializedViewKey, Object> _serializedViews = new HashMap<SerializedViewKey, Object>();
         
         private final Map<SerializedViewKey, SerializedViewKey> _precedence = 

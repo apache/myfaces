@@ -59,8 +59,8 @@ public abstract class AbstractFacelet extends Facelet
      * @throws FaceletException
      * @throws ELException
      */
-    public abstract void include(AbstractFaceletContext ctx, UIComponent parent, String path) throws IOException, FacesException,
-            FaceletException, ELException;
+    public abstract void include(AbstractFaceletContext ctx, UIComponent parent, String path)
+            throws IOException, FacesException, FaceletException, ELException;
     
     /**
      * Grabs a DefaultFacelet from referenced DefaultFaceletFacotry
@@ -77,8 +77,8 @@ public abstract class AbstractFacelet extends Facelet
      * @throws FaceletException
      * @throws ELException
      */
-    public abstract void include(AbstractFaceletContext ctx, UIComponent parent, URL url) throws IOException, FacesException,
-            FaceletException, ELException;
+    public abstract void include(AbstractFaceletContext ctx, UIComponent parent, URL url)
+            throws IOException, FacesException, FaceletException, ELException;
     
     /**
      * Return the alias name for error messages and logging
@@ -87,8 +87,8 @@ public abstract class AbstractFacelet extends Facelet
      */
     public abstract String getAlias();
     
-    public abstract void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource) throws IOException, FacesException,
-            FaceletException, ELException;
+    public abstract void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource)
+            throws IOException, FacesException, FaceletException, ELException;
     
     public abstract boolean isBuildingCompositeComponentMetadata();
 }

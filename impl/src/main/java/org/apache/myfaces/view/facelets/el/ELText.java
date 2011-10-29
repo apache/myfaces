@@ -35,7 +35,8 @@ import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 
 /**
- * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>
+ * Handles parsing EL Strings in accordance with the EL-API Specification.
+ * The parser accepts either <code>${..}</code>
  * or <code>#{..}</code>.
  * 
  * @author Jacob Hookom
@@ -240,7 +241,8 @@ public class ELText
         {
             super(ve.getExpressionString());
             this.ve = ve;
-            boolean compositeComponentExpression = CompositeComponentELUtils.isCompositeComponentExpression(ve.getExpressionString());
+            boolean compositeComponentExpression
+                    = CompositeComponentELUtils.isCompositeComponentExpression(ve.getExpressionString());
             boolean resourceExpression = ResourceELUtils.isResourceExpression(ve.getExpressionString());
             this.capabilities = (compositeComponentExpression ? EL_CC : 0) | ( resourceExpression ? EL_RESOURCE : 0);
         }
@@ -262,7 +264,8 @@ public class ELText
             actx.beforeConstructELExpression();
             try
             {
-                ValueExpression valueExpression = factory.createValueExpression(ctx, this.ve.getExpressionString(), String.class);
+                ValueExpression valueExpression
+                        = factory.createValueExpression(ctx, this.ve.getExpressionString(), String.class);
               
                 if ((this.capabilities & EL_CC) != 0)
                 {

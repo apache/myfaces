@@ -62,9 +62,9 @@ final class UITextHandler extends AbstractUIHandler
             {
                 ELText nt = this.txt.apply(ctx.getExpressionFactory(), ctx);
                 UIComponent c = new UIText(this.alias, nt);
-                //c.setId(ComponentSupport.getViewRoot(ctx, parent).createUniqueId());
 
-                UniqueIdVendor uniqueIdVendor = FaceletCompositionContext.getCurrentInstance(ctx).getUniqueIdVendorFromStack();
+                UniqueIdVendor uniqueIdVendor
+                        = FaceletCompositionContext.getCurrentInstance(ctx).getUniqueIdVendorFromStack();
                 if (uniqueIdVendor == null)
                 {
                     uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);

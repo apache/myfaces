@@ -45,14 +45,16 @@ public class MethodExpressionMethodExpression extends MethodExpression implement
     {
     }
     
-    public MethodExpressionMethodExpression(MethodExpression methodExpressionOneArg, MethodExpression methodExpressionZeroArg)
+    public MethodExpressionMethodExpression(MethodExpression methodExpressionOneArg,
+                                            MethodExpression methodExpressionZeroArg)
     {
         this.methodExpressionOneArg = methodExpressionOneArg;
         this.methodExpressionZeroArg = methodExpressionZeroArg;
     }
 
     @Override
-    public MethodInfo getMethodInfo(ELContext context) throws NullPointerException, PropertyNotFoundException, MethodNotFoundException, ELException
+    public MethodInfo getMethodInfo(ELContext context)
+            throws NullPointerException, PropertyNotFoundException, MethodNotFoundException, ELException
     {
         try
         {
@@ -67,7 +69,8 @@ public class MethodExpressionMethodExpression extends MethodExpression implement
     }
 
     @Override
-    public Object invoke(ELContext context, Object[] params) throws NullPointerException, PropertyNotFoundException, MethodNotFoundException, ELException 
+    public Object invoke(ELContext context, Object[] params)
+            throws NullPointerException, PropertyNotFoundException, MethodNotFoundException, ELException
     {
         try
         {
@@ -120,7 +123,8 @@ public class MethodExpressionMethodExpression extends MethodExpression implement
         if (obj instanceof MethodExpressionMethodExpression)
         {
             MethodExpressionMethodExpression me = (MethodExpressionMethodExpression) obj;
-            return methodExpressionOneArg.equals(me.methodExpressionOneArg) && methodExpressionZeroArg.equals(me.methodExpressionZeroArg);
+            return methodExpressionOneArg.equals(me.methodExpressionOneArg) &&
+                   methodExpressionZeroArg.equals(me.methodExpressionZeroArg);
         }
         return false;
     }
@@ -128,7 +132,7 @@ public class MethodExpressionMethodExpression extends MethodExpression implement
     @Override
     public int hashCode()
     {
-        int hash = 3;
+        int hash = 31;
         hash = 19 * hash + (this.methodExpressionOneArg != null ? this.methodExpressionOneArg.hashCode() : 0);
         hash = 19 * hash + (this.methodExpressionZeroArg != null ? this.methodExpressionZeroArg.hashCode() : 0);
         return hash;

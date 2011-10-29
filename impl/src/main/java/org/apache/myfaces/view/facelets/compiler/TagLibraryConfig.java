@@ -61,7 +61,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary} from a {@link java.net.URL URL} source.
+ * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary}
+ * from a {@link java.net.URL URL} source.
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -694,8 +695,9 @@ public final class TagLibraryConfig
         }
     }
 
-    private static final SAXParser createSAXParser(LibraryHandler handler, ExternalContext externalContext, boolean schemaValidating) throws SAXException,
-            ParserConfigurationException
+    private static final SAXParser createSAXParser(LibraryHandler handler, ExternalContext externalContext,
+                                                   boolean schemaValidating)
+            throws SAXException, ParserConfigurationException
     {
         SAXParserFactory factory = SAXParserFactory.newInstance();
 

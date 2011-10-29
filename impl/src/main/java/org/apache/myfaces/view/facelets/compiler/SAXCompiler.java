@@ -439,7 +439,7 @@ public final class SAXCompiler extends Compiler
             }
             if (inMetadata)
             {
-                this.unit.pushTag(new Tag(this.createLocation(), uri, localName, qName, this.createAttributes(attributes)));
+                this.unit.pushTag(new Tag(createLocation(), uri, localName, qName, createAttributes(attributes)));
             }
         }
 
@@ -454,11 +454,11 @@ public final class SAXCompiler extends Compiler
 
         public void processingInstruction(String target, String data) throws SAXException
         {
-            if (this.inDocument && inMetadata && !this.unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
+            if (inDocument && inMetadata && !unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
                 StringBuffer sb = new StringBuffer(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
-                this.unit.writeInstruction(sb.toString());
+                unit.writeInstruction(sb.toString());
             }
         }        
     }
@@ -504,7 +504,7 @@ public final class SAXCompiler extends Compiler
 
         public void comment(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && inCompositeInterface && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
+            if (inDocument && inCompositeInterface && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
             {
                 this.unit.writeComment(new String(ch, start, length));
             }
@@ -669,7 +669,7 @@ public final class SAXCompiler extends Compiler
             
             if (inCompositeInterface)
             {
-                this.unit.pushTag(new Tag(this.createLocation(), uri, localName, qName, this.createAttributes(attributes)));
+                this.unit.pushTag(new Tag(createLocation(), uri, localName, qName, createAttributes(attributes)));
             }
             else if (inCompositeImplementation && CompositeLibrary.NAMESPACE.equals(uri))
             {
@@ -678,7 +678,7 @@ public final class SAXCompiler extends Compiler
                     "insertChildren".equals(localName) ||
                     ImplementationHandler.NAME.equals(localName)   )
                 {
-                    this.unit.pushTag(new Tag(this.createLocation(), uri, localName, qName, this.createAttributes(attributes)));
+                    this.unit.pushTag(new Tag(createLocation(), uri, localName, qName, createAttributes(attributes)));
                 }
             }
         }
@@ -694,7 +694,8 @@ public final class SAXCompiler extends Compiler
 
         public void processingInstruction(String target, String data) throws SAXException
         {
-            if (this.inDocument && inCompositeInterface && !this.unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
+            if (inDocument && inCompositeInterface
+                && !unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
                 StringBuffer sb = new StringBuffer(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
@@ -708,8 +709,8 @@ public final class SAXCompiler extends Compiler
         super();
     }
 
-    public FaceletHandler doCompile(URL src, String alias) throws IOException, FaceletException, ELException,
-            FacesException
+    public FaceletHandler doCompile(URL src, String alias)
+            throws IOException, FaceletException, ELException, FacesException
     {
         CompilationManager mngr = null;
         InputStream is = null;

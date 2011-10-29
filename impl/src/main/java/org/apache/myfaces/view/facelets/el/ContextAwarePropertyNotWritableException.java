@@ -28,7 +28,9 @@ import javax.faces.view.Location;
  *
  * @see ContextAware
  */
-public class ContextAwarePropertyNotWritableException extends javax.el.PropertyNotWritableException implements ContextAwareExceptionWrapper
+public class ContextAwarePropertyNotWritableException
+        extends javax.el.PropertyNotWritableException
+        implements ContextAwareExceptionWrapper
 {
 
     private ContextAwareExceptionWrapper _delegate;

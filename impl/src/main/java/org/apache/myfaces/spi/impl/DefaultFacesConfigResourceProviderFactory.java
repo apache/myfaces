@@ -29,6 +29,7 @@ import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +60,7 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<FacesConfigResourceProvider>()
+                returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<FacesConfigResourceProvider>()
                         {
                             public FacesConfigResourceProvider run() throws ClassNotFoundException,
                                     NoClassDefFoundError,
@@ -115,11 +116,13 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACES_CONFIG_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(FACES_CONFIG_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).
+                    getServiceProviderList(FACES_CONFIG_PROVIDER);
             externalContext.getApplicationMap().put(FACES_CONFIG_PROVIDER_LIST, classList);
         }
 
-        return ClassUtils.buildApplicationObject(FacesConfigResourceProvider.class, classList, new DefaultFacesConfigResourceProvider());
+        return ClassUtils.buildApplicationObject(FacesConfigResourceProvider.class, classList,
+                                                 new DefaultFacesConfigResourceProvider());
     }
 
 }

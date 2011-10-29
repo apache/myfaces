@@ -99,7 +99,8 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
-        UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+        UIComponent compositeBaseParent
+                = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
 
         CompositeComponentBeanInfo beanInfo = 
             (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()

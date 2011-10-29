@@ -322,8 +322,8 @@ final class CompilationManager
                             " and uses the tag " + qName + " , but no TagLibrary associated to namespace. "+
                             "Please check the namespace name and if it is correct, it is probably that your " +
                             "library .taglib.xml cannot be found on the current classpath, or if you are " +
-                            "referencing a composite component library check your library folder match with the namespace and " +
-                            "can be located by the installed ResourceHandler.");
+                            "referencing a composite component library check your library folder match with the " +
+                            "namespace and can be located by the installed ResourceHandler.");
                 }
             }
             

@@ -39,7 +39,9 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id$
  */
-public final class ContextAwareTagMethodExpression extends MethodExpression implements Externalizable, FacesWrapper<MethodExpression>, ContextAware
+public final class ContextAwareTagMethodExpression
+        extends MethodExpression
+        implements Externalizable, FacesWrapper<MethodExpression>, ContextAware
 {
 
     private static final long serialVersionUID = 1L;
@@ -70,7 +72,7 @@ public final class ContextAwareTagMethodExpression extends MethodExpression impl
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(),pnfe);
         }
         catch (MethodNotFoundException mnfe)
         {
@@ -95,7 +97,7 @@ public final class ContextAwareTagMethodExpression extends MethodExpression impl
         }
         catch (PropertyNotFoundException pnfe)
         {
-            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(), pnfe);
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getLocalExpressionString(), getQName(),pnfe);
         }
         catch (MethodNotFoundException mnfe)
         {

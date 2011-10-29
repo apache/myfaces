@@ -29,6 +29,7 @@ import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +60,8 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<FaceletConfigResourceProvider>()
+                returnValue
+                        = AccessController.doPrivileged(new PrivilegedExceptionAction<FaceletConfigResourceProvider>()
                         {
                             public FaceletConfigResourceProvider run() throws ClassNotFoundException,
                                     NoClassDefFoundError,
@@ -115,11 +117,13 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
         List<String> classList = (List<String>) externalContext.getApplicationMap().get(FACELET_CONFIG_PROVIDER_LIST);
         if (classList == null)
         {
-            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).getServiceProviderList(FACELET_CONFIG_PROVIDER);
+            classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).
+                    getServiceProviderList(FACELET_CONFIG_PROVIDER);
             externalContext.getApplicationMap().put(FACELET_CONFIG_PROVIDER_LIST, classList);
         }
         
-        return ClassUtils.buildApplicationObject(FaceletConfigResourceProvider.class, classList, new DefaultFaceletConfigResourceProvider());        
+        return ClassUtils.buildApplicationObject(FaceletConfigResourceProvider.class, classList,
+                                                 new DefaultFaceletConfigResourceProvider());
     }
 
 }

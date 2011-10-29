@@ -90,7 +90,8 @@ public abstract class FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    public abstract Facelet getViewMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException;
+    public abstract Facelet getViewMetadataFacelet(URL url)
+            throws IOException, FaceletException, FacesException, ELException;
 
     /**
      * Return a Facelet instance as specified by the file at the passed URI. The returned facelet is used
@@ -118,7 +119,8 @@ public abstract class FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    public abstract Facelet getCompositeComponentMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException;
+    public abstract Facelet getCompositeComponentMetadataFacelet(URL url)
+            throws IOException, FaceletException, FacesException, ELException;
     
     /**
      * Set the static instance
