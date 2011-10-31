@@ -80,11 +80,15 @@ public class ValidateBeanTestCase extends FaceletTestCase
     @SuppressWarnings("unchecked")
     private <T> T _getValidator(UIInput input, Class<T> validatorClass)
     {
-        for (Validator validator : input.getValidators())
+        Validator[] validators = input.getValidators();
+        if (validators != null)
         {
-            if (validatorClass.isAssignableFrom(validator.getClass()))
+            for (Validator validator : validators)
             {
-                return (T) validator;
+                if (validatorClass.isAssignableFrom(validator.getClass()))
+                {
+                    return (T) validator;
+                }
             }
         }
         
@@ -515,5 +519,43 @@ public class ValidateBeanTestCase extends FaceletTestCase
         // because bean validation is not available
         Assert.assertFalse(_hasValidator(input, BeanValidator.class));
     }
-    
+
+    /**
+     * 
+     * @throws IOException
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testValidateBeanValidationDisabledDoubleNesting() throws IOException
+    {
+        final String validationGroupsOuter = "org.apache.myfaces.beanvalidation.OuterGroup";
+        final String validationGroupsInner = "org.apache.myfaces.beanvalidation.InnerGroup";
+        
+        // add the BeanValidator as default-validator
+        application.addDefaultValidatorId(BeanValidator.VALIDATOR_ID);
+        
+        // put the validationGroups on the request scope
+        externalContext.getRequestMap().put("validationGroupsOuter", validationGroupsOuter);
+        externalContext.getRequestMap().put("validationGroupsInner", validationGroupsInner);
+        
+        // build testValidateBeanDoubleNesting.xhtml
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testValidateBeanDisableDoubleNesting.xhtml");
+        
+        // get the component instances
+        UIInput nestedinput = (UIInput) root.findComponent("form:nestedinput");
+        UIInput doublenestedinput = (UIInput) root.findComponent("form:doublenestedinput");
+        UIInput nonnestedinput = (UIInput) root.findComponent("form:nonnestedinput");
+        UIInput nesteouterdisabledinput = (UIInput) root.findComponent("form:nesteouterdisabledinput");
+        
+        // the nested component must get the outer wrapping validationGroups,
+        // the double-nested component must get the inner wrapping validationGroups
+        // and the non-nested component must get the Default validationGroups.
+        Assert.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
+        Assert.assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
+        Assert.assertEquals(validationGroupsInner, _getValidationGroups(nesteouterdisabledinput));
+        Assert.assertEquals(javax.validation.groups.Default.class.getName(),
+                _getValidationGroups(nonnestedinput));
+    }
+
 }

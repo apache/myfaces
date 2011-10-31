@@ -18,6 +18,19 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.component.UIComponent;
+import javax.faces.component.UniqueIdVendor;
+import javax.faces.context.FacesContext;
+import javax.faces.view.AttachedObjectHandler;
+import javax.faces.view.EditableValueHolderAttachedObjectHandler;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
@@ -25,17 +38,6 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-
-import javax.faces.component.UIComponent;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectHandler;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @since 2.0.1
@@ -90,7 +92,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private LinkedList<String> _excludedValidatorIdsStack;
     
-    private LinkedList<String> _enclosingValidatorIdsStack;
+    private LinkedList<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> _enclosingValidatorIdsStack;
     
     private Boolean _isRefreshingTransientBuild;
     
@@ -311,7 +313,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     {
         if (_enclosingValidatorIdsStack != null && !_enclosingValidatorIdsStack.isEmpty())
         {
-            return _enclosingValidatorIdsStack.iterator(); 
+            return new KeyEntryIterator<String, EditableValueHolderAttachedObjectHandler>(_enclosingValidatorIdsStack.iterator()); 
         }
         return null;
     }
@@ -337,12 +339,42 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @Override
     public void pushEnclosingValidatorIdToStack(String validatorId)
     {
+        pushEnclosingValidatorIdToStack(validatorId, null);
+    }
+    
+    @Override
+    public void pushEnclosingValidatorIdToStack(String validatorId, EditableValueHolderAttachedObjectHandler attachedObjectHandler)
+    {
         if (_enclosingValidatorIdsStack == null)
         {
-            _enclosingValidatorIdsStack = new LinkedList<String>();
+            _enclosingValidatorIdsStack = new LinkedList<Map.Entry<String, EditableValueHolderAttachedObjectHandler>>();
         }
 
-        _enclosingValidatorIdsStack.addFirst(validatorId);
+        _enclosingValidatorIdsStack.addFirst(new SimpleEntry<String, EditableValueHolderAttachedObjectHandler>(validatorId, attachedObjectHandler));
+    }
+
+    public Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> getEnclosingValidatorIdsAndHandlers()
+    {
+        if (_enclosingValidatorIdsStack != null && !_enclosingValidatorIdsStack.isEmpty())
+        {
+            return _enclosingValidatorIdsStack.iterator(); 
+        }
+        return null;
+    }
+    
+    public boolean containsEnclosingValidatorId(String id)
+    {
+        if (_enclosingValidatorIdsStack != null && !_enclosingValidatorIdsStack.isEmpty())
+        {
+            for (Map.Entry<String, EditableValueHolderAttachedObjectHandler> entry : _enclosingValidatorIdsStack)
+            {
+                if (entry.getKey().equals(id))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -693,5 +725,106 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     {
         _sectionUniqueIdCounter.endUniqueIdSection();
         _sectionUniqueComponentIdCounter.endUniqueIdSection();
+    }
+    
+    private static class KeyEntryIterator<K, V> implements Iterator<K>
+    {
+        private Iterator<Map.Entry<K, V>> _delegateIterator;
+        
+        public KeyEntryIterator(Iterator<Map.Entry<K, V>> delegate)
+        {
+            _delegateIterator = delegate;
+        }
+        
+        public boolean hasNext()
+        {
+            if (_delegateIterator != null)
+            {
+                return _delegateIterator.hasNext();
+            }
+            return false;
+        }
+
+        public K next()
+        {
+            if (_delegateIterator != null)
+            {
+                return _delegateIterator.next().getKey();
+            }
+            return null;
+        }
+
+        public void remove()
+        {
+            if (_delegateIterator != null)
+            {
+                _delegateIterator.remove();
+            }
+        }
+        
+    }
+    
+    private static class SimpleEntry<K, V> implements Map.Entry<K, V>
+    {
+        private final K _key;
+        private final V _value;
+
+        public SimpleEntry(K key, V value)
+        {
+            _key = key;
+            _value = value;
+        }
+        
+        public K getKey()
+        {
+            return _key;
+        }
+
+        public V getValue()
+        {
+            return _value;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((_key == null) ? 0 : _key.hashCode());
+            result = prime * result + ((_value == null) ? 0 : _value.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            SimpleEntry other = (SimpleEntry) obj;
+            if (_key == null)
+            {
+                if (other._key != null)
+                    return false;
+            }
+            else if (!_key.equals(other._key))
+                return false;
+            if (_value == null)
+            {
+                if (other._value != null)
+                    return false;
+            }
+            else if (!_value.equals(other._value))
+                return false;
+            return true;
+        }
+
+        public V setValue(V value)
+        {
+            throw new UnsupportedOperationException();
+        }
     }
 }
