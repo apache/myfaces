@@ -20,11 +20,13 @@ package org.apache.myfaces.view.facelets;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectHandler;
+import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 import javax.faces.view.facelets.FaceletContext;
 
 /**
@@ -134,12 +136,14 @@ abstract public class FaceletCompositionContext
      * @return
      * @since 2.0.1
      */
+    @Deprecated
     public abstract String getFirstValidationGroupFromStack();
     
     /**
      * Removes top of stack.
      * @since 2.0.1
      */
+    @Deprecated
     public abstract void popValidationGroupsToStack();
     
     /**
@@ -147,6 +151,7 @@ abstract public class FaceletCompositionContext
      * @param validationGroups
      * @since 2.0.1
      */
+    @Deprecated
     public abstract void pushValidationGroupsToStack(String validationGroups);
     
     /**
@@ -154,12 +159,14 @@ abstract public class FaceletCompositionContext
      * @return
      * @since 2.0.1
      */
+    @Deprecated
     public abstract Iterator<String> getExcludedValidatorIds();
     
     /**
      * Removes top of stack.
      * @since 2.0.1
      */
+    @Deprecated
     public abstract void popExcludedValidatorIdToStack();
     
     /**
@@ -167,6 +174,7 @@ abstract public class FaceletCompositionContext
      * @param validatorId
      * @since 2.0.1
      */
+    @Deprecated
     public abstract void pushExcludedValidatorIdToStack(String validatorId);
     
     /**
@@ -174,6 +182,7 @@ abstract public class FaceletCompositionContext
      * @return
      * @since 2.0.1
      */
+    @Deprecated
     public abstract Iterator<String> getEnclosingValidatorIds();
     
     /**
@@ -187,7 +196,33 @@ abstract public class FaceletCompositionContext
      * @param validatorId
      * @since 2.0.1
      */
+    @Deprecated
     public abstract void pushEnclosingValidatorIdToStack(String validatorId);
+    
+    /**
+     * Pushes validatorId to the stack of all enclosing validatorIds.
+     * 
+     * @param validatorId
+     * @param attachedObjectHandler
+     * @since 2.0.8
+     */
+    public abstract void pushEnclosingValidatorIdToStack(String validatorId, EditableValueHolderAttachedObjectHandler attachedObjectHandler);
+
+    /**
+     * Gets all validationIds with its associated EditableValueHolderAttachedObjectHandler from the stack.
+     * 
+     * @return
+     * @since 2.0.8
+     */
+    public abstract Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> getEnclosingValidatorIdsAndHandlers();
+    
+    /**
+     * 
+     * @param id
+     * @return
+     * @since 2.0.8
+     */
+    public abstract boolean containsEnclosingValidatorId(String id);
     
     /**
      * Check if this build is being refreshed, adding transient components

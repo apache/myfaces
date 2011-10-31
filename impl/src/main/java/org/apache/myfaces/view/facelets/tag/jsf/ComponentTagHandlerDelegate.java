@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
+import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
@@ -46,6 +48,7 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.TagHandlerDelegate;
+import javax.faces.view.facelets.ValidatorHandler;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
@@ -420,7 +423,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 // add default validators here, because this feature 
                 // is only available in facelets (see MYFACES-2362 for details)
-                addDefaultValidators(mctx, facesContext, (EditableValueHolder) c);
+                addEnclosingAndDefaultValidators(ctx, mctx, facesContext, (EditableValueHolder) c);
             }
         }
         
@@ -606,34 +609,34 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @param mctx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validators should be added
      */
-    private void addDefaultValidators(FaceletCompositionContext mctx, FacesContext context, 
+    private void addEnclosingAndDefaultValidators(FaceletContext ctx, FaceletCompositionContext mctx, FacesContext context, 
                                       EditableValueHolder component)
     {
+        // add all enclosing validators, because they have precedence over default validators.
+        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds = mctx.getEnclosingValidatorIdsAndHandlers();
+        if (enclosingValidatorIds != null)
+        {
+            while (enclosingValidatorIds.hasNext())
+            {
+                Map.Entry<String, EditableValueHolderAttachedObjectHandler> entry = enclosingValidatorIds.next();
+                addEnclosingValidator(ctx, mctx, context, component, entry.getKey(), entry.getValue());
+            }
+        }
         // add all defaultValidators
         Map<String, String> defaultValidators = context.getApplication().getDefaultValidatorInfo();
         if (defaultValidators != null && defaultValidators.size() != 0)
         {
             for (Map.Entry<String, String> entry : defaultValidators.entrySet())
             {
-                addDefaultValidator( mctx, context, component, entry.getKey(), entry.getValue());
-            }
-        }
-        // add all enclosing validators
-        Iterator<String> enclosingValidatorIds = mctx.getEnclosingValidatorIds();
-        if (enclosingValidatorIds != null)
-        {
-            while (enclosingValidatorIds.hasNext())
-            {
-                String validatorId = enclosingValidatorIds.next();
-                if (!defaultValidators.containsKey(validatorId))
+                if (!mctx.containsEnclosingValidatorId(entry.getKey()))
                 {
-                    addDefaultValidator(mctx, context, component, validatorId, null);
+                    addDefaultValidator(ctx, mctx, context, component, entry.getKey(), entry.getValue());
                 }
             }
         }
     }
-    
-    private void addDefaultValidator(FaceletCompositionContext mctx, FacesContext context, 
+
+    private void addDefaultValidator(FaceletContext ctx, FaceletCompositionContext mctx, FacesContext context, 
             EditableValueHolder component, String validatorId, String validatorClassName)
     {
         Validator enclosingValidator = null;
@@ -662,7 +665,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         
         if (validator == null)
         {
-            if (shouldAddDefaultValidator(mctx, context, component, validatorId))
+            if (shouldAddDefaultValidator(ctx, mctx, context, component, validatorId))
             {
                 if (enclosingValidator != null)
                 {
@@ -696,24 +699,24 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 // no validationGroups available
                 // --> get the validationGroups from the stack
-                String stackGroup = mctx.getFirstValidationGroupFromStack();
-                if (stackGroup != null)
-                {
-                    validationGroups = stackGroup;
-                }
-                else
-                {
+                //String stackGroup = mctx.getFirstValidationGroupFromStack();
+                //if (stackGroup != null)
+                //{
+                //    validationGroups = stackGroup;
+                //}
+                //else
+                //{
                     // no validationGroups on the stack
                     // --> set the default validationGroup
                     validationGroups = javax.validation.groups.Default.class.getName();
-                }
+                //}
                 beanValidator.setValidationGroups(validationGroups);
             }
         }
     }
 
     /**
-     * Determine if the default Validator with the given validatorId should be added.
+     * Determine if the validator with the given validatorId should be added.
      *
      * @param validatorId The validatorId.
      * @param facesContext The FacesContext.
@@ -722,7 +725,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @return true if the Validator should be added, false otherwise.
      */
     @SuppressWarnings("unchecked")
-    private boolean shouldAddDefaultValidator(FaceletCompositionContext mctx,
+    private boolean shouldAddDefaultValidator(FaceletContext ctx, FaceletCompositionContext mctx,
                                               FacesContext facesContext,
                                               EditableValueHolder component, 
                                               String validatorId)
@@ -743,6 +746,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         
         // check if the validatorId is on the exclusion list on the stack
+        /*
         Iterator<String> it = mctx.getExcludedValidatorIds();
         if (it != null)
         {            
@@ -752,6 +756,22 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 if (excludedId.equals(validatorId))
                 {
                     return false;
+                }
+            }
+        }*/
+        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds = mctx.getEnclosingValidatorIdsAndHandlers();
+        if (enclosingValidatorIds != null)
+        {
+            while (enclosingValidatorIds.hasNext())
+            {
+                Map.Entry<String, EditableValueHolderAttachedObjectHandler> entry = enclosingValidatorIds.next();
+                boolean validatorIdAvailable = entry.getKey() != null && !"".equals(entry.getKey());
+                if (validatorIdAvailable && entry.getKey().equals(validatorId))
+                {
+                    if (((ValidatorHandler)((FacesWrapper<ValidatorHandler>)entry.getValue()).getWrapped()).isDisabled(ctx))
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -767,6 +787,108 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 log.log(Level.WARNING, "Bean validation is not available on the " +
                         "classpath, thus the BeanValidator will not be added for " +
                         "the component " + component);
+                return false;
+            }
+        }
+
+        // By default, all default validators should be added
+        return true;
+    }
+
+    private void addEnclosingValidator(FaceletContext ctx, FaceletCompositionContext mctx, FacesContext context, 
+            EditableValueHolder component, String validatorId, EditableValueHolderAttachedObjectHandler attachedObjectHandler)
+    {
+        if (shouldAddEnclosingValidator(mctx, context, component, validatorId))
+        {
+            if (attachedObjectHandler != null)
+            {
+                attachedObjectHandler.applyAttachedObject(context, (UIComponent) component);
+            }
+            else
+            {
+                Validator validator = null;
+                // create it
+                validator = context.getApplication().createValidator(validatorId);
+
+                // special things to configure for a BeanValidator
+                if (validator instanceof BeanValidator)
+                {
+                    BeanValidator beanValidator = (BeanValidator) validator;
+                    
+                    // check the validationGroups
+                    String validationGroups =  beanValidator.getValidationGroups();
+                    if (validationGroups == null 
+                            || validationGroups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN))
+                    {
+                        // no validationGroups available
+                        // --> get the validationGroups from the stack
+                        //String stackGroup = mctx.getFirstValidationGroupFromStack();
+                        //if (stackGroup != null)
+                        //{
+                        //    validationGroups = stackGroup;
+                        //}
+                        //else
+                        //{
+                            // no validationGroups on the stack
+                            // --> set the default validationGroup
+                            validationGroups = javax.validation.groups.Default.class.getName();
+                        //}
+                        beanValidator.setValidationGroups(validationGroups);
+                    }
+                }
+                
+                // add the validator to the component
+                component.addValidator(validator);
+            }
+        }
+    }
+
+    /**
+     * Determine if the validator with the given validatorId should be added.
+     * 
+     * The difference here with shouldAddEnclosingValidator is the inner one has
+     * precedence over the outer one, so a disable="true" over the same outer 
+     * validator, the inner one should ignore this condition. 
+     * 
+     * @param mctx
+     * @param facesContext
+     * @param component
+     * @param validatorId
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private boolean shouldAddEnclosingValidator(FaceletCompositionContext mctx,
+            FacesContext facesContext,
+            EditableValueHolder component, 
+            String validatorId)
+    {
+        // check if the validatorId is on the exclusion list on the component
+        List<String> exclusionList = (List<String>) ((UIComponent) component)
+                .getAttributes()
+                .get(ValidatorTagHandlerDelegate.VALIDATOR_ID_EXCLUSION_LIST_KEY);
+        if (exclusionList != null)
+        {
+            for (String excludedId : exclusionList)
+            {
+                if (excludedId.equals(validatorId))
+                {
+                    return false;
+                }
+            }
+        }
+
+        // Some extra rules are required for Bean Validation.
+        if (validatorId.equals(BeanValidator.VALIDATOR_ID))
+        {
+            if (!ExternalSpecifications.isBeanValidationAvailable())
+            {
+                // the BeanValidator was added as a default-validator, but
+                // bean validation is not available on the classpath.
+                // --> log a warning about this scenario.
+                log.log(Level.WARNING,
+                        "Bean validation is not available on the "
+                                + "classpath, thus the BeanValidator will not be added for "
+                                + "the component " + component);
                 return false;
             }
         }

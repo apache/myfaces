@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.el.ValueExpression;
+import javax.faces.FacesWrapper;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -53,7 +54,7 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
  *
  * @since 2.0
  */
-public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements EditableValueHolderAttachedObjectHandler
+public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements EditableValueHolderAttachedObjectHandler, FacesWrapper<ValidatorHandler>
 {
     
     /**
@@ -108,7 +109,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             // So I use the same way as f:ajax for this problem. -=Jakob Korherr=-
             
             String validatorId = _delegate.getValidatorConfig().getValidatorId();
-            
+            /*
             boolean disabled = _delegate.isDisabled(ctx);
             if (disabled)
             {
@@ -131,37 +132,37 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                 }
             }
             else
-            {
+            {*/
                 // the validator is enabled 
                 // --> add the validation groups and the validatorId to the stack
-                String groups = getValidationGroups(ctx);
+                //String groups = getValidationGroups(ctx);
                 // spec: don't save the validation groups string if it is null or empty string
-                boolean groupsAvailable = groups != null 
-                        && !groups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN);
-                try
-                {
-                    if (groupsAvailable)
-                    {
-                        mctx.pushValidationGroupsToStack(groups);
-                    }
+                //boolean groupsAvailable = groups != null 
+                        //&& !groups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN);
+                //try
+                //{
+                    //if (groupsAvailable)
+                    //{
+                    //    mctx.pushValidationGroupsToStack(groups);
+                    //}
                     try
                     {
-                        mctx.pushEnclosingValidatorIdToStack(validatorId);
+                        mctx.pushEnclosingValidatorIdToStack(validatorId, this);
                         _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
                     }
                     finally
                     {
                         mctx.popEnclosingValidatorIdToStack();
                     }
-                }
-                finally
-                {
-                    if (groupsAvailable)
-                    {
-                        mctx.popValidationGroupsToStack();
-                    }
-                }
-            }
+                //}
+                //finally
+                //{
+                    //if (groupsAvailable)
+                    //{
+                        //mctx.popValidationGroupsToStack();
+                    //}
+                //}
+            /*}*/
         }
         else
         {
@@ -304,6 +305,11 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
         {
             return attribute.getValue(ctx);
         }
+    }
+
+    public ValidatorHandler getWrapped()
+    {
+        return _delegate;
     }
 
 }
