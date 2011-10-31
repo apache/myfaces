@@ -77,11 +77,6 @@ public class AnnotationConfigurator
     //private static final Log log = LogFactory.getLog(AnnotationConfigurator.class);
     private static final Logger log = Logger.getLogger(AnnotationConfigurator.class.getName());
 
-    /**
-     * <p>The render kit factory for this application.</p>
-     */
-    private RenderKitFactory rkFactory = null;
-
     public AnnotationConfigurator()
     {
     }
@@ -98,6 +93,12 @@ public class AnnotationConfigurator
         return null;
     }
 
+    /**
+     * TODO: Implement strategy pattern over this method.
+     * 
+     * @param map
+     * @return
+     */
     protected FacesConfig createFacesConfig(Map<Class<? extends Annotation>, Set<Class<?>>> map)
     {
         FacesConfig facesConfig = new FacesConfig();
@@ -240,247 +241,267 @@ public class AnnotationConfigurator
         classes = map.get(ManagedBean.class);
         if (classes != null && !classes.isEmpty())
         {
-            for (Class<?> clazz : classes)
-            {
-                javax.faces.bean.ManagedBean bean =
-                        (javax.faces.bean.ManagedBean) clazz.getAnnotation(javax.faces.bean.ManagedBean.class);
-
-                if (bean != null)
-                {
-                    if (log.isLoggable(Level.FINE))
-                    {
-                        log.fine("Class '" + clazz.getName() + "' has an @ManagedBean annotation");
-                    }
-
-                    org.apache.myfaces.config.impl.digester.elements.ManagedBean mbc =
-                            new org.apache.myfaces.config.impl.digester.elements.ManagedBean();
-                    String beanName = bean.name();
-
-                    if ((beanName == null) || beanName.equals(""))
-                    {
-                        int index;
-
-                        // Missing name attribute algorithm: take the unqualified name and make the
-                        // first character lowercase.
-
-                        beanName = clazz.getName();
-                        index = beanName.lastIndexOf(".");
-
-                        if (index != -1)
-                        {
-                            beanName = beanName.substring(index + 1);
-                        }
-
-                        beanName = Character.toLowerCase(beanName.charAt(0)) +
-                                beanName.substring(1);
-                    }
-
-                    mbc.setName(beanName);
-                    mbc.setEager(Boolean.toString(bean.eager()));
-                    mbc.setBeanClass(clazz.getName());
-
-                    ApplicationScoped appScoped = (ApplicationScoped) clazz.getAnnotation(ApplicationScoped.class);
-                    if (appScoped != null)
-                    {
-                        mbc.setScope("application");
-                    }
-
-                    else
-                    {
-                        NoneScoped noneScoped = (NoneScoped) clazz.getAnnotation(NoneScoped.class);
-                        if (noneScoped != null)
-                        {
-                            mbc.setScope("none");
-                        }
-
-                        else
-                        {
-                            RequestScoped requestScoped = (RequestScoped) clazz.getAnnotation(RequestScoped.class);
-                            if (requestScoped != null)
-                            {
-                                mbc.setScope("request");
-                            }
-
-                            else
-                            {
-                                SessionScoped sessionScoped = (SessionScoped) clazz.getAnnotation(SessionScoped.class);
-                                if (sessionScoped != null)
-                                {
-                                    mbc.setScope("session");
-                                }
-
-                                else
-                                {
-                                    ViewScoped viewScoped = (ViewScoped) clazz.getAnnotation(ViewScoped.class);
-                                    if (viewScoped != null)
-                                    {
-                                        mbc.setScope("view");
-                                    }
-
-                                    else
-                                    {
-                                        CustomScoped customScoped
-                                                = (CustomScoped) clazz.getAnnotation(CustomScoped.class);
-                                        if (customScoped != null)
-                                        {
-                                            mbc.setScope(customScoped.value());
-                                        }
-
-                                        else
-                                        {
-                                            // No scope annotation means default of "request".
-
-                                            mbc.setScope("request");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Field[] fields = fields(clazz);
-                    for (Field field : fields)
-                    {
-                        if (log.isLoggable(Level.FINEST))
-                        {
-                            log.finest("  Scanning field '" + field.getName() + "'");
-                        }
-                        javax.faces.bean.ManagedProperty property = (javax.faces.bean.ManagedProperty) field
-                                .getAnnotation(javax.faces.bean.ManagedProperty.class);
-                        if (property != null)
-                        {
-                            if (log.isLoggable(Level.FINE))
-                            {
-                                log.fine("  Field '" + field.getName()
-                                        + "' has a @ManagedProperty annotation");
-                            }
-                            org.apache.myfaces.config.impl.digester.elements.ManagedProperty mpc =
-                                    new org.apache.myfaces.config.impl.digester.elements.ManagedProperty();
-                            String name = property.name();
-                            if ((name == null) || "".equals(name))
-                            {
-                                name = field.getName();
-                            }
-                            mpc.setPropertyName(name);
-                            mpc.setPropertyClass(field.getType().getName()); // FIXME - primitives, arrays, etc.
-                            mpc.setValue(property.value());
-                            mbc.addProperty(mpc);
-                            continue;
-                        }
-                    }
-                    facesConfig.addManagedBean(mbc);
-                }
-            }
+            handleManagedBean(facesConfig, classes);
         }
 
         classes = map.get(NamedEvent.class);
         if (classes != null && !classes.isEmpty())
         {
-            for (Class<?> clazz : classes)
-            {
-                NamedEvent namedEvent = (NamedEvent) clazz.getAnnotation(NamedEvent.class);
-
-                if (namedEvent != null)
-                {
-                    // Can only apply @NamedEvent to ComponentSystemEvent subclasses.
-
-                    if (!ComponentSystemEvent.class.isAssignableFrom(clazz))
-                    {
-                        // Just log this.  We'll catch it later in the runtime.
-
-                        if (log.isLoggable(Level.WARNING))
-                        {
-                            log.warning(clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does "
-                                        + "not extend javax.faces.event.ComponentSystemEvent");
-                        }
-                    }
-                    // Have to register @NamedEvent annotations with the NamedEventManager class since
-                    // we need to get access to this info later and can't from the dispenser (it's not a
-                    // singleton).
-                    org.apache.myfaces.config.impl.digester.elements.NamedEvent namedEventConfig =
-                            new org.apache.myfaces.config.impl.digester.elements.NamedEvent();
-                    namedEventConfig.setEventClass(clazz.getName());
-                    namedEventConfig.setShortName(namedEvent.shortName());
-                    facesConfig.addNamedEvent(namedEventConfig);
-                }
-            }
+            handleNamedEvent(facesConfig, classes);
         }
 
         classes = map.get(FacesBehavior.class);
         if (classes != null && !classes.isEmpty())
         {
-            for (Class<?> clazz : classes)
-            {
-                FacesBehavior facesBehavior = (FacesBehavior) clazz.getAnnotation(FacesBehavior.class);
-
-                if (facesBehavior != null)
-                {
-                    // Can only apply @FacesBehavior to Behavior implementors.
-
-                    if (!javax.faces.component.behavior.Behavior.class.isAssignableFrom(clazz))
-                    {
-                        // Just log this.  We'll catch it later in the runtime.
-
-                        if (log.isLoggable(Level.WARNING))
-                        {
-                            log.warning(clazz.getName()
-                                        + " is annotated with @javax.faces.component.behavior.FacesBehavior, "
-                                        + "but does not implement javax.faces.component.behavior.Behavior");
-                        }
-                    }
-
-                    if (log.isLoggable(Level.FINEST))
-                    {
-                        log.finest("addBehavior(" + facesBehavior.value() + ", " + clazz.getName() + ")");
-                    }
-
-                    Behavior behavior = new Behavior();
-                    behavior.setBehaviorId(facesBehavior.value());
-                    behavior.setBehaviorClass(clazz.getName());
-                    facesConfig.addBehavior(behavior);
-                }
-
-            }
+            handleFacesBehavior(facesConfig, classes);
         }
 
         classes = map.get(FacesBehaviorRenderer.class);
         if (classes != null && !classes.isEmpty())
         {
-            for (Class<?> clazz : classes)
-            {
-                FacesBehaviorRenderer facesBehaviorRenderer
-                        = (FacesBehaviorRenderer) clazz.getAnnotation(FacesBehaviorRenderer.class);
-
-                if (facesBehaviorRenderer != null)
-                {
-                    String renderKitId = facesBehaviorRenderer.renderKitId();
-                    //RenderKit renderKit;
-
-                    if (log.isLoggable(Level.FINEST))
-                    {
-                        log.finest("addClientBehaviorRenderer(" + renderKitId + ", "
-                                   + facesBehaviorRenderer.rendererType() + ", "
-                                   + clazz.getName() + ")");
-                    }
-
-                    org.apache.myfaces.config.impl.digester.elements.RenderKit renderKit =
-                            (org.apache.myfaces.config.impl.digester.elements.RenderKit)
-                                    facesConfig.getRenderKit(renderKitId);
-                    if (renderKit == null)
-                    {
-                        renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
-                        facesConfig.addRenderKit(renderKit);
-                    }
-
-                    org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRenderer cbr =
-                            new org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRenderer();
-                    cbr.setRendererType(facesBehaviorRenderer.rendererType());
-                    cbr.setRendererClass(clazz.getName());
-                    renderKit.addClientBehaviorRenderer(cbr);
-                }
-            }
+            handleFacesBehaviorRenderer(facesConfig, classes);
         }
         return facesConfig;
+    }
+    
+    private void handleManagedBean(FacesConfig facesConfig, Set<Class<?>> classes)
+    {
+        for (Class<?> clazz : classes)
+        {
+            javax.faces.bean.ManagedBean bean =
+                    (javax.faces.bean.ManagedBean) clazz.getAnnotation(javax.faces.bean.ManagedBean.class);
+
+            if (bean != null)
+            {
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("Class '" + clazz.getName() + "' has an @ManagedBean annotation");
+                }
+
+                org.apache.myfaces.config.impl.digester.elements.ManagedBean mbc =
+                        new org.apache.myfaces.config.impl.digester.elements.ManagedBean();
+                String beanName = bean.name();
+
+                if ((beanName == null) || beanName.equals(""))
+                {
+                    int index;
+
+                    // Missing name attribute algorithm: take the unqualified name and make the
+                    // first character lowercase.
+
+                    beanName = clazz.getName();
+                    index = beanName.lastIndexOf(".");
+
+                    if (index != -1)
+                    {
+                        beanName = beanName.substring(index + 1);
+                    }
+
+                    beanName = Character.toLowerCase(beanName.charAt(0)) +
+                            beanName.substring(1);
+                }
+
+                mbc.setName(beanName);
+                mbc.setEager(Boolean.toString(bean.eager()));
+                mbc.setBeanClass(clazz.getName());
+
+                ApplicationScoped appScoped = (ApplicationScoped) clazz.getAnnotation(ApplicationScoped.class);
+                if (appScoped != null)
+                {
+                    mbc.setScope("application");
+                }
+
+                else
+                {
+                    NoneScoped noneScoped = (NoneScoped) clazz.getAnnotation(NoneScoped.class);
+                    if (noneScoped != null)
+                    {
+                        mbc.setScope("none");
+                    }
+
+                    else
+                    {
+                        RequestScoped requestScoped = (RequestScoped) clazz.getAnnotation(RequestScoped.class);
+                        if (requestScoped != null)
+                        {
+                            mbc.setScope("request");
+                        }
+
+                        else
+                        {
+                            SessionScoped sessionScoped = (SessionScoped) clazz.getAnnotation(SessionScoped.class);
+                            if (sessionScoped != null)
+                            {
+                                mbc.setScope("session");
+                            }
+
+                            else
+                            {
+                                ViewScoped viewScoped = (ViewScoped) clazz.getAnnotation(ViewScoped.class);
+                                if (viewScoped != null)
+                                {
+                                    mbc.setScope("view");
+                                }
+
+                                else
+                                {
+                                    CustomScoped customScoped
+                                            = (CustomScoped) clazz.getAnnotation(CustomScoped.class);
+                                    if (customScoped != null)
+                                    {
+                                        mbc.setScope(customScoped.value());
+                                    }
+
+                                    else
+                                    {
+                                        // No scope annotation means default of "request".
+
+                                        mbc.setScope("request");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Field[] fields = fields(clazz);
+                for (Field field : fields)
+                {
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("  Scanning field '" + field.getName() + "'");
+                    }
+                    javax.faces.bean.ManagedProperty property = (javax.faces.bean.ManagedProperty) field
+                            .getAnnotation(javax.faces.bean.ManagedProperty.class);
+                    if (property != null)
+                    {
+                        if (log.isLoggable(Level.FINE))
+                        {
+                            log.fine("  Field '" + field.getName()
+                                    + "' has a @ManagedProperty annotation");
+                        }
+                        org.apache.myfaces.config.impl.digester.elements.ManagedProperty mpc =
+                                new org.apache.myfaces.config.impl.digester.elements.ManagedProperty();
+                        String name = property.name();
+                        if ((name == null) || "".equals(name))
+                        {
+                            name = field.getName();
+                        }
+                        mpc.setPropertyName(name);
+                        mpc.setPropertyClass(field.getType().getName()); // FIXME - primitives, arrays, etc.
+                        mpc.setValue(property.value());
+                        mbc.addProperty(mpc);
+                        continue;
+                    }
+                }
+                facesConfig.addManagedBean(mbc);
+            }
+        }
+    }
+    
+    private void handleNamedEvent(FacesConfig facesConfig, Set<Class<?>> classes)
+    {
+        for (Class<?> clazz : classes)
+        {
+            NamedEvent namedEvent = (NamedEvent) clazz.getAnnotation(NamedEvent.class);
+
+            if (namedEvent != null)
+            {
+                // Can only apply @NamedEvent to ComponentSystemEvent subclasses.
+
+                if (!ComponentSystemEvent.class.isAssignableFrom(clazz))
+                {
+                    // Just log this.  We'll catch it later in the runtime.
+
+                    if (log.isLoggable(Level.WARNING))
+                    {
+                        log.warning(clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does "
+                                    + "not extend javax.faces.event.ComponentSystemEvent");
+                    }
+                }
+                // Have to register @NamedEvent annotations with the NamedEventManager class since
+                // we need to get access to this info later and can't from the dispenser (it's not a
+                // singleton).
+                org.apache.myfaces.config.impl.digester.elements.NamedEvent namedEventConfig =
+                        new org.apache.myfaces.config.impl.digester.elements.NamedEvent();
+                namedEventConfig.setEventClass(clazz.getName());
+                namedEventConfig.setShortName(namedEvent.shortName());
+                facesConfig.addNamedEvent(namedEventConfig);
+            }
+        }
+    }
+
+    private void handleFacesBehavior(FacesConfig facesConfig, Set<Class<?>> classes)
+    {
+        for (Class<?> clazz : classes)
+        {
+            FacesBehavior facesBehavior = (FacesBehavior) clazz.getAnnotation(FacesBehavior.class);
+
+            if (facesBehavior != null)
+            {
+                // Can only apply @FacesBehavior to Behavior implementors.
+
+                if (!javax.faces.component.behavior.Behavior.class.isAssignableFrom(clazz))
+                {
+                    // Just log this.  We'll catch it later in the runtime.
+
+                    if (log.isLoggable(Level.WARNING))
+                    {
+                        log.warning(clazz.getName()
+                                    + " is annotated with @javax.faces.component.behavior.FacesBehavior, "
+                                    + "but does not implement javax.faces.component.behavior.Behavior");
+                    }
+                }
+
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("addBehavior(" + facesBehavior.value() + ", " + clazz.getName() + ")");
+                }
+
+                Behavior behavior = new Behavior();
+                behavior.setBehaviorId(facesBehavior.value());
+                behavior.setBehaviorClass(clazz.getName());
+                facesConfig.addBehavior(behavior);
+            }
+
+        }
+    }
+    
+    private void handleFacesBehaviorRenderer(FacesConfig facesConfig, Set<Class<?>> classes)
+    {
+        for (Class<?> clazz : classes)
+        {
+            FacesBehaviorRenderer facesBehaviorRenderer
+                    = (FacesBehaviorRenderer) clazz.getAnnotation(FacesBehaviorRenderer.class);
+
+            if (facesBehaviorRenderer != null)
+            {
+                String renderKitId = facesBehaviorRenderer.renderKitId();
+                //RenderKit renderKit;
+
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("addClientBehaviorRenderer(" + renderKitId + ", "
+                               + facesBehaviorRenderer.rendererType() + ", "
+                               + clazz.getName() + ")");
+                }
+
+                org.apache.myfaces.config.impl.digester.elements.RenderKit renderKit =
+                        (org.apache.myfaces.config.impl.digester.elements.RenderKit)
+                                facesConfig.getRenderKit(renderKitId);
+                if (renderKit == null)
+                {
+                    renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
+                    facesConfig.addRenderKit(renderKit);
+                }
+
+                org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRenderer cbr =
+                        new org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRenderer();
+                cbr.setRendererType(facesBehaviorRenderer.rendererType());
+                cbr.setRendererClass(clazz.getName());
+                renderKit.addClientBehaviorRenderer(cbr);
+            }
+        }
     }
 
     /**

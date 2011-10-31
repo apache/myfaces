@@ -435,7 +435,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         //    found = client.apply(this, parent, name);
         //}
         //return found;
-        return _isolatedTemplateContext.get(_currentTemplateContext).includeDefinition(this, this._facelet, parent, name);
+        return _isolatedTemplateContext.get(_currentTemplateContext).includeDefinition(
+                this, this._facelet, parent, name);
     }
 
     /*
@@ -533,7 +534,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             _isolatedTemplateContext.add(new IsolatedTemplateContextImpl());
         }
         _currentTemplateContext++;
-        _isolatedTemplateContext.get(_currentTemplateContext).setCompositeComponentClient( new CompositeComponentTemplateManager(this._facelet, client));
+        _isolatedTemplateContext.get(_currentTemplateContext).setCompositeComponentClient(
+            new CompositeComponentTemplateManager(this._facelet, client));
     }
     
     @Override
@@ -557,7 +559,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public void pushCompositeComponentClient(final TemplateClient client)
     {
         TemplateContext itc = new TemplateContextImpl();
-        itc.setCompositeComponentClient(new CompositeComponentTemplateManager(this._facelet, client, getPageContext()));
+        itc.setCompositeComponentClient(
+                new CompositeComponentTemplateManager(this._facelet, client, getPageContext()));
         _isolatedTemplateContext.add(itc);
         _currentTemplateContext++;
         _defaultVarMapper.setTemplateContext(itc);
@@ -808,7 +811,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     
     public boolean isAllowCacheELExpressions()
     {
-        return _isCacheELExpressions && getTemplateContext().isAllowCacheELExpressions() && getPageContext().isAllowCacheELExpressions();
+        return _isCacheELExpressions && getTemplateContext().isAllowCacheELExpressions() 
+                && getPageContext().isAllowCacheELExpressions();
     }
     
     public void beforeConstructELExpression()

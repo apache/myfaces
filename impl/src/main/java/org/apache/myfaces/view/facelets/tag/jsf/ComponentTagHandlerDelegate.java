@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -508,11 +507,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @param mctx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validators should be added
      */
-    private void addEnclosingAndDefaultValidators(FaceletContext ctx, FaceletCompositionContext mctx, FacesContext context, 
+    private void addEnclosingAndDefaultValidators(FaceletContext ctx, 
+                                      FaceletCompositionContext mctx, 
+                                      FacesContext context, 
                                       EditableValueHolder component)
     {
         // add all enclosing validators, because they have precedence over default validators.
-        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds = mctx.getEnclosingValidatorIdsAndHandlers();
+        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds =
+            mctx.getEnclosingValidatorIdsAndHandlers();
         if (enclosingValidatorIds != null)
         {
             while (enclosingValidatorIds.hasNext())
@@ -658,7 +660,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
         }*/
-        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds = mctx.getEnclosingValidatorIdsAndHandlers();
+        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds =
+            mctx.getEnclosingValidatorIdsAndHandlers();
         if (enclosingValidatorIds != null)
         {
             while (enclosingValidatorIds.hasNext())
@@ -667,7 +670,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 boolean validatorIdAvailable = entry.getKey() != null && !"".equals(entry.getKey());
                 if (validatorIdAvailable && entry.getKey().equals(validatorId))
                 {
-                    if (((ValidatorHandler)((FacesWrapper<ValidatorHandler>)entry.getValue()).getWrapped()).isDisabled(ctx))
+                    if (((ValidatorHandler)((FacesWrapper<ValidatorHandler>)entry.getValue()).getWrapped())
+                            .isDisabled(ctx))
                     {
                         return false;
                     }
@@ -695,7 +699,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     }
 
     private void addEnclosingValidator(FaceletContext ctx, FaceletCompositionContext mctx, FacesContext context, 
-            EditableValueHolder component, String validatorId, EditableValueHolderAttachedObjectHandler attachedObjectHandler)
+            EditableValueHolder component, String validatorId, 
+            EditableValueHolderAttachedObjectHandler attachedObjectHandler)
     {
         if (shouldAddEnclosingValidator(mctx, context, component, validatorId))
         {

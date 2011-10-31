@@ -27,7 +27,6 @@ import javax.faces.FacesWrapper;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 import javax.faces.view.facelets.ComponentHandler;
@@ -54,7 +53,8 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
  *
  * @since 2.0
  */
-public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements EditableValueHolderAttachedObjectHandler, FacesWrapper<ValidatorHandler>
+public class ValidatorTagHandlerDelegate extends TagHandlerDelegate 
+    implements EditableValueHolderAttachedObjectHandler, FacesWrapper<ValidatorHandler>
 {
     
     /**

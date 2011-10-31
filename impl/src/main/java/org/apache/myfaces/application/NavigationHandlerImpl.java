@@ -653,65 +653,67 @@ public class NavigationHandlerImpl
 
         if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
         {
-            synchronized (this)
-            {
-                if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
-                {
-                    Collection<? extends NavigationRule> rules = runtimeConfig.getNavigationRules();
-                    int rulesSize = rules.size();
-
-                    Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
-                            HashMapUtils.calcCapacity(rulesSize));
-
-                    List<String> wildcardKeys = new ArrayList<String>();
-
-                    for (NavigationRule rule : rules)
-                    {
-                        String fromViewId = rule.getFromViewId();
-
-                        //specification 7.4.2 footnote 4 - missing fromViewId is allowed:
-                        if (fromViewId == null)
-                        {
-                            fromViewId = ASTERISK;
-                        }
-                        else
-                        {
-                            fromViewId = fromViewId.trim();
-                        }
-
-                        Set<NavigationCase> set = cases.get(fromViewId);
-                        if (set == null)
-                        {
-                            set = new HashSet<NavigationCase>(convertNavigationCasesToAPI(rule));
-                            cases.put(fromViewId, set);
-                            if (fromViewId.endsWith(ASTERISK))
-                            {
-                                wildcardKeys.add(fromViewId);
-                            }
-                        }
-                        else
-                        {
-                            set.addAll(convertNavigationCasesToAPI(rule));
-                        }
-                    }
-
-                    Collections.sort(wildcardKeys, new KeyComparator());
-
-                    synchronized (cases)
-                    {
-                        // We do not really need this sychronization at all, but this
-                        // gives us the peace of mind that some good optimizing compiler
-                        // will not rearrange the execution of the assignment to an
-                        // earlier time, before all init code completes
-                        _navigationCases = cases;
-                        _wildcardKeys = wildcardKeys;
-
-                        runtimeConfig.setNavigationRulesChanged(false);
-                    }
-                }
-            }
+            calculateNavigationCases(facesContext, runtimeConfig);
         }
         return _navigationCases;
+    }
+    
+    private synchronized void calculateNavigationCases(FacesContext facesContext, RuntimeConfig runtimeConfig)
+    {
+        if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
+        {
+            Collection<? extends NavigationRule> rules = runtimeConfig.getNavigationRules();
+            int rulesSize = rules.size();
+
+            Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
+                    HashMapUtils.calcCapacity(rulesSize));
+
+            List<String> wildcardKeys = new ArrayList<String>();
+
+            for (NavigationRule rule : rules)
+            {
+                String fromViewId = rule.getFromViewId();
+
+                //specification 7.4.2 footnote 4 - missing fromViewId is allowed:
+                if (fromViewId == null)
+                {
+                    fromViewId = ASTERISK;
+                }
+                else
+                {
+                    fromViewId = fromViewId.trim();
+                }
+
+                Set<NavigationCase> set = cases.get(fromViewId);
+                if (set == null)
+                {
+                    set = new HashSet<NavigationCase>(convertNavigationCasesToAPI(rule));
+                    cases.put(fromViewId, set);
+                    if (fromViewId.endsWith(ASTERISK))
+                    {
+                        wildcardKeys.add(fromViewId);
+                    }
+                }
+                else
+                {
+                    set.addAll(convertNavigationCasesToAPI(rule));
+                }
+            }
+
+            Collections.sort(wildcardKeys, new KeyComparator());
+
+            synchronized (cases)
+            {
+                // We do not really need this sychronization at all, but this
+                // gives us the peace of mind that some good optimizing compiler
+                // will not rearrange the execution of the assignment to an
+                // earlier time, before all init code completes
+                _navigationCases = cases;
+                _wildcardKeys = wildcardKeys;
+
+                runtimeConfig.setNavigationRulesChanged(false);
+            }
+        }
     }
 
     private static final class KeyComparator implements Comparator<String>

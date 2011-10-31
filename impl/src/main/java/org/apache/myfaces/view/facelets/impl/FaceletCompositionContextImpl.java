@@ -313,7 +313,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     {
         if (_enclosingValidatorIdsStack != null && !_enclosingValidatorIdsStack.isEmpty())
         {
-            return new KeyEntryIterator<String, EditableValueHolderAttachedObjectHandler>(_enclosingValidatorIdsStack.iterator()); 
+            return new KeyEntryIterator<String, EditableValueHolderAttachedObjectHandler>
+                (_enclosingValidatorIdsStack.iterator()); 
         }
         return null;
     }
@@ -343,14 +344,18 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     }
     
     @Override
-    public void pushEnclosingValidatorIdToStack(String validatorId, EditableValueHolderAttachedObjectHandler attachedObjectHandler)
+    public void pushEnclosingValidatorIdToStack(String validatorId, 
+            EditableValueHolderAttachedObjectHandler attachedObjectHandler)
     {
         if (_enclosingValidatorIdsStack == null)
         {
-            _enclosingValidatorIdsStack = new LinkedList<Map.Entry<String, EditableValueHolderAttachedObjectHandler>>();
+            _enclosingValidatorIdsStack = 
+                new LinkedList<Map.Entry<String, EditableValueHolderAttachedObjectHandler>>();
         }
 
-        _enclosingValidatorIdsStack.addFirst(new SimpleEntry<String, EditableValueHolderAttachedObjectHandler>(validatorId, attachedObjectHandler));
+        _enclosingValidatorIdsStack.addFirst(
+                new SimpleEntry<String, EditableValueHolderAttachedObjectHandler>
+                    (validatorId, attachedObjectHandler));
     }
 
     public Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> getEnclosingValidatorIdsAndHandlers()
@@ -795,30 +800,46 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
             return result;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             SimpleEntry other = (SimpleEntry) obj;
             if (_key == null)
             {
                 if (other._key != null)
+                {
                     return false;
+                }
             }
             else if (!_key.equals(other._key))
+            {
                 return false;
+            }
+            
             if (_value == null)
             {
                 if (other._value != null)
+                {
                     return false;
+                }
             }
             else if (!_value.equals(other._value))
+            {
                 return false;
+            }
             return true;
         }
 

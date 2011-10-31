@@ -83,15 +83,21 @@ public final class MetaRulesetImpl extends MetaRuleset
             // per classloader to hold metadata.
             synchronized (MetaRulesetImpl.metadata)
             {
-                metadata = (Map<String, MetadataTarget>) MetaRulesetImpl.metadata.get(cl);
-                if (metadata == null)
-                {
-                    metadata = new HashMap<String, MetadataTarget>();
-                    MetaRulesetImpl.metadata.put(cl, metadata);
-                }
+                metadata = createMetaData(cl, metadata);
             }
         }
 
+        return metadata;
+    }
+    
+    private static Map<String, MetadataTarget> createMetaData(ClassLoader cl, Map<String, MetadataTarget> metadata)
+    {
+        metadata = (Map<String, MetadataTarget>) MetaRulesetImpl.metadata.get(cl);
+        if (metadata == null)
+        {
+            metadata = new HashMap<String, MetadataTarget>();
+            MetaRulesetImpl.metadata.put(cl, metadata);
+        }
         return metadata;
     }
 
