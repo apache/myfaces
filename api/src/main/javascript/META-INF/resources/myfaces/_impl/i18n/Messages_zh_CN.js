@@ -22,9 +22,7 @@ if (_MF_CLS) {
      * @extends myfaces._impl.i18n.Messages
      * @memberOf myfaces._impl.i18n
      */
-_MF_CLS && _MF_CLS(_PFX_I18N+"Messages_zh_CN", myfaces._impl.i18n.Messages,
-    /** @lends myfaces._impl.i18n.Messages_zh_CN.prototype */
-    {
+    _MF_CLS(_PFX_I18N + "Messages_zh_CN", myfaces._impl.i18n.Messages, /** @lends myfaces._impl.i18n.Messages_zh_CN.prototype */ {
 
         MSG_TEST:               "测试信息",
 
