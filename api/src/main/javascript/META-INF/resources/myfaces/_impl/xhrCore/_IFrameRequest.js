@@ -17,7 +17,7 @@
 
 /**
  * @class
- * @name _AjaxRequest
+ * @name _IFrameRequest
  * @memberOf myfaces._impl.xhrCore
  * @extends myfaces._impl.xhrCore._AjaxRequest
  * @description specialized implementation of the jsf js ajax request class
