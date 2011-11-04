@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletFunction;
+
 /**
  * Implementations of JSTL Functions
  * 
@@ -35,6 +37,7 @@ public final class JstlFunction
     {
     }
 
+    @JSFFaceletFunction(name="fn:contains")
     public static boolean contains(String name, String searchString)
     {
         if (name == null || searchString == null)
@@ -45,6 +48,7 @@ public final class JstlFunction
         return -1 != name.indexOf(searchString);
     }
 
+    @JSFFaceletFunction(name="fn:containsIgnoreCase")
     public static boolean containsIgnoreCase(String name, String searchString)
     {
         if (name == null || searchString == null)
@@ -55,6 +59,7 @@ public final class JstlFunction
         return -1 != name.toUpperCase().indexOf(searchString.toUpperCase());
     }
 
+    @JSFFaceletFunction(name="fn:endsWith")
     public static boolean endsWith(String name, String searchString)
     {
         if (name == null || searchString == null)
@@ -65,6 +70,7 @@ public final class JstlFunction
         return name.endsWith(searchString);
     }
 
+    @JSFFaceletFunction(name="fn:escapeXml")
     public static String escapeXml(String value)
     {
         if (value == null)
@@ -143,6 +149,7 @@ public final class JstlFunction
         }
     }
 
+    @JSFFaceletFunction(name="fn:indexOf")
     public static int indexOf(String name, String searchString)
     {
         if (name == null || searchString == null)
@@ -153,6 +160,7 @@ public final class JstlFunction
         return name.indexOf(searchString);
     }
 
+    @JSFFaceletFunction(name="fn:join")
     public static String join(String[] a, String delim)
     {
         if (a == null || delim == null)
@@ -178,6 +186,7 @@ public final class JstlFunction
         return sb.toString();
     }
 
+    @JSFFaceletFunction(name="fn:length")
     public static int length(Object obj)
     {
         if (obj == null)
@@ -208,6 +217,7 @@ public final class JstlFunction
         throw new IllegalArgumentException("Object type not supported: " + obj.getClass().getName());
     }
 
+    @JSFFaceletFunction(name="fn:replace")
     public static String replace(String value, String a, String b)
     {
         if (value == null)
@@ -234,6 +244,7 @@ public final class JstlFunction
         return value.replaceAll(a, b);
     }
 
+    @JSFFaceletFunction(name="fn:split")
     public static String[] split(String value, String d)
     {
         if (value == null)
@@ -269,6 +280,7 @@ public final class JstlFunction
         return array;
     }
 
+    @JSFFaceletFunction(name="fn:startsWith")
     public static boolean startsWith(String value, String p)
     {
         if (value == null || p == null)
@@ -279,6 +291,7 @@ public final class JstlFunction
         return value.startsWith(p);
     }
 
+    @JSFFaceletFunction(name="fn:substring")
     public static String substring(String v, int s, int e)
     {
         if (v == null)
@@ -309,6 +322,7 @@ public final class JstlFunction
         return v.substring(s, e);
     }
 
+    @JSFFaceletFunction(name="fn:substringAfter")
     public static String substringAfter(String v, String p)
     {
         if (v == null)
@@ -329,6 +343,7 @@ public final class JstlFunction
         return "";
     }
 
+    @JSFFaceletFunction(name="fn:substringBefore")
     public static String substringBefore(String v, String s)
     {
         if (v == null)
@@ -349,6 +364,7 @@ public final class JstlFunction
         return "";
     }
 
+    @JSFFaceletFunction(name="fn:toLowerCase")
     public static String toLowerCase(String v)
     {
         if (v == null)
@@ -363,6 +379,7 @@ public final class JstlFunction
         return v.toLowerCase();
     }
 
+    @JSFFaceletFunction(name="fn:toUpperCase")
     public static String toUpperCase(String v)
     {
         if (v == null)
@@ -377,6 +394,7 @@ public final class JstlFunction
         return v.toUpperCase();
     }
 
+    @JSFFaceletFunction(name="fn:trim")
     public static String trim(String v)
     {
         if (v == null)
