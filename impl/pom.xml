@@ -290,29 +290,32 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
-
-            <!-- copy src/main/conf using ant -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
+                    
                     <execution>
-                        <id>copy_fn_tld</id>
-                        <phase>process-resources</phase>
+                        <id>make_fn_facelet_tld</id>
                         <configuration>
-                            <tasks>
-                                <copy todir="${project.build.directory}/tlddoc-facelets" flatten="true" overwrite="true" verbose="true" failonerror="true">
-                                    <fileset dir="${basedir}/src/main/conf/META-INF" includes="myfaces_facelet_fn.tld" />
-                                </copy>
-                            </tasks>
+                            <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
+                            <xmlFile>myfaces_facelet_fn.tld</xmlFile>
+                            <templateFile>myfaces_facelet_html20.vm</templateFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
+                            </modelIds>
+                            <params>
+                               <shortname>fn</shortname>
+                               <uri>http://java.sun.com/jsp/jstl/functions</uri>
+                               <displayname>JSTL Facelets Function Library.</displayname>
+                               <description>JSTL Facelets Function Library.</description>
+                            </params>
                         </configuration>
                         <goals>
-                            <goal>run</goal>
+                            <goal>make-config</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
             
             <!-- generate a -tests.jar too -->
             <plugin>
@@ -638,6 +641,9 @@
                                     <taglibs>
                                         <f>http://java.sun.com/jsf/core</f>
                                         <h>http://java.sun.com/jsf/html</h>
+                                        <ui>http://java.sun.com/jsf/facelets</ui>
+                                        <c>http://java.sun.com/jsp/jstl/core</c>
+                                        <fn>http://java.sun.com/jsp/jstl/functions</fn>
                                     </taglibs>
                                 </configuration>
                                 <goals>
@@ -735,6 +741,9 @@
                                     <taglibs>
                                         <f>http://java.sun.com/jsf/core</f>
                                         <h>http://java.sun.com/jsf/html</h>
+                                        <ui>http://java.sun.com/jsf/facelets</ui>
+                                        <c>http://java.sun.com/jsp/jstl/core</c>
+                                        <fn>http://java.sun.com/jsp/jstl/functions</fn>
                                     </taglibs>
                                 </configuration>
                                 <reports>
