@@ -33,6 +33,7 @@
         </section>
         <section name="TLD Links">
             <ul>
+                <li><a href="myfaces-impl/tagdoc.html">Core: JSF Tag documentation.</a></li>
                 <li><a href="myfaces-impl/tlddoc/index.html">Core: Tlddoc for Jsp.</a></li>
                 <li><a href="myfaces-impl/tlddoc-facelets/index.html">Core: Tlddoc for Facelets.</a></li>
             </ul>
