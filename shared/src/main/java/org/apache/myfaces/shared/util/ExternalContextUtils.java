@@ -590,14 +590,16 @@ public final class ExternalContextUtils
     //Find bridge to tell if portal is supported
     if(context != null) 
     {
+      // Portlet 1.0 API found. In this case we have to consider that exists alternate
+      // bridge implementations like in WebSphere and others.
+      portlet10Supported = true;
+
       try
       {
         Class<?> bridge = ClassLoaderUtils.loadClass("javax.portlet.faces.Bridge");
         
         if(bridge != null)
         {
-          portlet10Supported = true;
-
           //Standard bridge defines a spec name which can be used to 
           //determine Portlet 2.0 Support.
           String specName = bridge.getPackage().getSpecificationTitle();
@@ -616,7 +618,13 @@ public final class ExternalContextUtils
       }
       catch (ClassNotFoundException e)
       {
-        _LOG.fine("Portlet API is present but bridge is not.  Portlet configurations are disabled.");
+        _LOG.fine("Portlet API is present but Standard Apache Portlet Bridge is not. " +
+                " This could happen if you are using an alternate Portlet Bridge solution.");
+        
+        if (resourceRequest != null)
+        {
+            portlet20Supported = true;
+        }
       }
     }
 
