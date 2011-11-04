@@ -22,33 +22,13 @@
 #if ($baseContent)
 $baseContent
 #end
-  <section name="Summary">
-  <p>Click on the name of each param to find detailed information about each one of them.</p>
-  <p>The "since" column means the version since the param was added. Note this param is not "lineal",
-  so please check the release dates on myfaces issue tracker to know if an specified version
-  has or not the selected param. For example, if a param was added on 2.0.7, it means that 2.1.1
-  has the parameter because it was released on the same time, but 2.1.0 will not have it, because
-  it was released before that date.
-  </p>
-#set ($webConfigList = ${model.getWebConfigs()})
-  <p><b>State Saving Configuration Params</b></p>
-<table>
- <tr>
-  <th>Name</th>
-  <th>Since</th>
-  <th>Default Value</th>
-  <th>Short Description</th>
- </tr>
-#foreach( $webConfig in $webConfigList )
-#if ($modelIds.contains($webConfig.modelId))
-#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
-#foreach( $webConfigParam in $webConfigParamList )
-#if ($webConfigParam.sourceClassName == "javax.faces.application.StateManager"
-     || $webConfigParam.sourceClassName == "org.apache.myfaces.shared.util.StateUtils"
-     || $webConfigParam.sourceClassName == "org.apache.myfaces.renderkit.ServerSideStateCacheImpl"
-     || $webConfigParam.sourceClassName == "org.apache.myfaces.renderkit.html.HtmlResponseStateManager"
-     || $webConfigParam.name == "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"
-     || $webConfigParam.name == "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE")
+## ----------------------------- PROPERTY MACROS -----------------------------
+##
+## -------------------------------
+## writeWebConfigParamRow
+## -------------------------------
+##
+#macro(writeWebConfigParamRow $webConfigParam) 
  <tr>
   <td><a href="#$webConfigParam.name.replace('.','_')">$webConfigParam.name</a></td>
 #if ($webConfigParam.since)
@@ -70,10 +50,54 @@ $baseContent
 #end
  </tr>
 #end
+##
+## ----------------------------- END PROPERTY MACROS -------------------------
+##
+
+  <section name="Summary">
+  <p>Click on the name of each param to find detailed information about each one of them.</p>
+  <p>The "since" column means the version since the param was added. Note this param is not "lineal",
+  so please check the release dates on myfaces issue tracker to know if an specified version
+  has or not the selected param. For example, if a param was added on 2.0.7, it means that 2.1.1
+  has the parameter because it was released on the same time, but 2.1.0 will not have it, because
+  it was released before that date.
+  </p>
+#set ($webConfigGroups = ${model.getWebConfigGroups($modelIds)})
+#set ($webConfigGroupsLabel = {"resources" : "Resources (resource)", 
+                               "validation" : "Conversion and Validation (validation)", 
+                               "state" : "State Saving (state)",
+                               "EL" : "Expression Language (EL)",
+                               "viewhandler" : "View Handling (viewhandler)",
+                               "render" : "Rendering (render)"} )
+#foreach( $webConfigGroup in $webConfigGroups )
+#if (${webConfigGroupsLabel.containsKey($webConfigGroup)})
+#set ($groupLabel = $webConfigGroupsLabel.get($webConfigGroup))
+#else
+#set ($groupLabel = $webConfigGroup)
+#end
+  <p><b>$groupLabel Configuration Params</b></p>
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Since</th>
+  <th>Default Value</th>
+  <th>Short Description</th>
+ </tr>
+#set ($webConfigList = ${model.getWebConfigs()})
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+#if (not $webConfigParam.containsTag('tomahawk'))
+#if ($webConfigParam.group == $webConfigGroup)
+#writeWebConfigParamRow($webConfigParam)
+#end
+#end
 #end
 #end
 #end
 </table>
+#end
 
   <p><b>Other Configuration Params</b></p>
 <table>
@@ -83,40 +107,22 @@ $baseContent
   <th>Default Value</th>
   <th>Short Description</th>
  </tr>
+#set ($webConfigList = ${model.getWebConfigs()})
 #foreach( $webConfig in $webConfigList )
 #if ($modelIds.contains($webConfig.modelId))
 #set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
 #foreach( $webConfigParam in $webConfigParamList )
-#if ($webConfigParam.sourceClassName != "javax.faces.application.StateManager"
-     && $webConfigParam.sourceClassName != "org.apache.myfaces.shared.util.StateUtils"
-     && $webConfigParam.sourceClassName != "org.apache.myfaces.renderkit.ServerSideStateCacheImpl"
-     && $webConfigParam.sourceClassName != "org.apache.myfaces.renderkit.html.HtmlResponseStateManager"
-     && $webConfigParam.name != "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"
-     && $webConfigParam.name != "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE")
- <tr>
-  <td><a href="#$webConfigParam.name.replace('.','_')">$webConfigParam.name</a></td>
-#if ($webConfigParam.since)
-  <td>$webConfigParam.since</td>
-#else
-  <td></td>
+#if (not $webConfigParam.containsTag('tomahawk'))
+#if (!$webConfigParam.group)
+#writeWebConfigParamRow($webConfigParam)
+#elseif ($webConfigParam.group == "")
+#writeWebConfigParamRow($webConfigParam)
 #end
-#if ($webConfigParam.defaultValue)
-  <td>$webConfigParam.defaultValue</td>
-#else
-  <td></td>
-#end
-#if ($webConfigParam.description)
-  <td>$webConfigParam.description</td>
-#else
-  <td></td>
-#end
- </tr>
 #end
 #end
 #end
 #end
 </table>
-
   </section>
   <section name="Detailed Information">
 
@@ -126,6 +132,7 @@ $baseContent
 <table>
 #set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
 #foreach( $webConfigParam in $webConfigParamList )
+#if (not $webConfigParam.containsTag('tomahawk'))
   <tr><td>
   <p>
     <b>Param Name:</b> <a name="$webConfigParam.name.replace('.','_')">$webConfigParam.name</a>
@@ -142,6 +149,10 @@ $baseContent
     <b>Since:</b> $webConfigParam.since
     <br/>
 #end
+    <b>Group:</b> #if ($webConfigParam.group)$webConfigParam.group#end
+    <br/>
+    <b>Tags:</b> #if ($webConfigParam.tags)$webConfigParam.tags#end
+    <br/>
 #if ($webConfigParam.sourceClassName.startsWith("javax.faces."))
 #set ($javadocPath = "../myfaces-api/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
 #elseif ($webConfigParam.sourceClassName.startsWith("org.apache.myfaces.shared."))
@@ -165,6 +176,7 @@ $baseContent
 #end
   </p>
   </td></tr>
+#end
 #end
 </table>
 #end
