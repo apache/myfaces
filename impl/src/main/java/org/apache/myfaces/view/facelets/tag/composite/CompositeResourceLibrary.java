@@ -108,6 +108,14 @@ public class CompositeResourceLibrary implements TagLibrary
             {
                 String libraryName = ns.substring(NAMESPACE_PREFIX.length());
                 String resourceName = localName + ".xhtml";
+                // MYFACES-3308 If a composite component exists, it requires to 
+                // be always resolved. In other words, it should always exists a default.
+                // The call here for resourceHandler.createResource, just try to get
+                // the Resource and if it does not exists, it just returns null.
+                // The intention of this code is just create an instance and pass to
+                // CompositeComponentResourceTagHandler. Then, its values 
+                // (resourceName, libraryName) will be used to derive the real instance
+                // to use in a view, based on the locale used.
                 Resource compositeComponentResource = new CompositeResouceWrapper(
                     resourceHandler.createResource(resourceName, libraryName));
                 if (compositeComponentResource != null)
@@ -121,8 +129,9 @@ public class CompositeResourceLibrary implements TagLibrary
         }
         return null;
     }
-    
-    private static class ComponentConfigWrapper implements ComponentConfig {
+
+    private static class ComponentConfigWrapper implements ComponentConfig
+    {
 
         protected final TagConfig parent;
 
@@ -131,29 +140,35 @@ public class CompositeResourceLibrary implements TagLibrary
         protected final String rendererType;
 
         public ComponentConfigWrapper(TagConfig parent, String componentType,
-                String rendererType) {
+                                      String rendererType)
+        {
             this.parent = parent;
             this.componentType = componentType;
             this.rendererType = rendererType;
         }
 
-        public String getComponentType() {
+        public String getComponentType()
+        {
             return this.componentType;
         }
 
-        public String getRendererType() {
+        public String getRendererType()
+        {
             return this.rendererType;
         }
 
-        public FaceletHandler getNextHandler() {
+        public FaceletHandler getNextHandler()
+        {
             return this.parent.getNextHandler();
         }
 
-        public Tag getTag() {
+        public Tag getTag()
+        {
             return this.parent.getTag();
         }
 
-        public String getTagId() {
+        public String getTagId()
+        {
             return this.parent.getTagId();
         }
     }

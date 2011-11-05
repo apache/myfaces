@@ -19,6 +19,7 @@
 package org.apache.myfaces.mc.test.core;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -38,6 +39,7 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -47,6 +49,7 @@ import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
 import org.apache.myfaces.test.el.MockExpressionFactory;
+import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
@@ -593,6 +596,12 @@ public abstract class AbstractMyFacesTestCase
         {
             throw new UnsupportedOperationException("Cannot execute phase on custom lifecycle instances");
         }
+    }
+    
+    protected String getRenderedContent(FacesContext facesContext) throws IOException
+    {
+        MockPrintWriter writer1 = (MockPrintWriter) (((HttpServletResponse) facesContext.getExternalContext().getResponse()).getWriter());
+        return String.valueOf(writer1.content());
     }
 
     // ------------------------------------------------------ Instance Variables

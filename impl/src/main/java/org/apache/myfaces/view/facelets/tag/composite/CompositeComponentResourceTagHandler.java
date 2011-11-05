@@ -97,9 +97,12 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     {
         super(config);
         _resource = resource;
-        _facetHandlers = TagHandlerUtils.findNextByType(nextHandler, javax.faces.view.facelets.FacetHandler.class, InsertFacetHandler.class);
-        _componentHandlers = TagHandlerUtils.findNextByType(nextHandler, javax.faces.view.facelets.ComponentHandler.class, 
-                InsertChildrenHandler.class, InsertHandler.class, DecorateHandler.class, IncludeHandler.class, TextHandler.class);
+        _facetHandlers = TagHandlerUtils.findNextByType(nextHandler, javax.faces.view.facelets.FacetHandler.class,
+                                                        InsertFacetHandler.class);
+        _componentHandlers = TagHandlerUtils.findNextByType(nextHandler,
+                javax.faces.view.facelets.ComponentHandler.class,
+                InsertChildrenHandler.class, InsertHandler.class,
+                DecorateHandler.class, IncludeHandler.class, TextHandler.class);
     }
 
     public UIComponent createComponent(FaceletContext ctx)
@@ -136,7 +139,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                         
                         if (attrValue == null)
                         {
-                            throw new TagException(this.tag, "Attribute '" + propertyDescriptor.getName() + "' is required");
+                            throw new TagException(this.tag, "Attribute '" + propertyDescriptor.getName()
+                                                             + "' is required");
                         }
                     }
                 }
@@ -203,18 +207,21 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         
         if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
-            for (FaceletHandler handler : ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+            for (FaceletHandler handler :
+                    ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
             {
                 if (handler instanceof javax.faces.view.facelets.FacetHandler)
                 {
-                    if (insertFacetList == null || !insertFacetList.contains( ((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx)))
+                    if (insertFacetList == null ||
+                        !insertFacetList.contains(((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx)))
                     {
                         handler.apply(ctx, c);
                     }
                 }
                 else if (handler instanceof InsertFacetHandler)
                 {
-                    if (insertFacetList == null || !insertFacetList.contains( ((InsertFacetHandler)handler).getFacetName(ctx)))
+                    if (insertFacetList == null ||
+                        !insertFacetList.contains( ((InsertFacetHandler)handler).getFacetName(ctx)))
                     {
                         handler.apply(ctx, c);
                     }
@@ -241,14 +248,16 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         {
             if (nextHandler instanceof javax.faces.view.facelets.FacetHandler)
             {
-                if (insertFacetList == null || !insertFacetList.contains( ((javax.faces.view.facelets.FacetHandler)nextHandler).getFacetName(ctx)) )
+                if (insertFacetList == null ||
+                    !insertFacetList.contains(((javax.faces.view.facelets.FacetHandler)nextHandler).getFacetName(ctx)))
                 {
                     nextHandler.apply(ctx, c);
                 }
             }
             else if (nextHandler instanceof InsertFacetHandler)
             {
-                if (insertFacetList == null || !insertFacetList.contains( ((InsertFacetHandler)nextHandler).getFacetName(ctx)) )
+                if (insertFacetList == null ||
+                    !insertFacetList.contains( ((InsertFacetHandler)nextHandler).getFacetName(ctx)) )
                 {
                     nextHandler.apply(ctx, c);
                 }
@@ -301,7 +310,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             }
             if (facetsRequiredNotFound != null && !facetsRequiredNotFound.isEmpty())
             {
-                throw new TagException(getTag(), "The following facets are required by the component: "+facetsRequiredNotFound);
+                throw new TagException(getTag(), "The following facets are required by the component: "
+                                                 + facetsRequiredNotFound);
             }
         }
     }
@@ -311,7 +321,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     {
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(faceletContext);
         AbstractFaceletContext actx = (AbstractFaceletContext) faceletContext;
-        UIPanel compositeFacetPanel = (UIPanel) compositeComponentBase.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
+        UIPanel compositeFacetPanel
+                = (UIPanel) compositeComponentBase.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (compositeFacetPanel == null)
         {
             compositeFacetPanel = (UIPanel)
@@ -354,7 +365,21 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         {
             faceletContext.setVariableMapper(new VariableMapperWrapper(orig));
             actx.pushCompositeComponentClient(this);
-            actx.applyCompositeComponent(compositeFacetPanel, _resource);
+            Resource resourceForCurrentView = faceletContext.getFacesContext().getApplication().
+                getResourceHandler().createResource(_resource.getResourceName(), _resource.getLibraryName());
+            if (resourceForCurrentView != null)
+            {
+                //Wrap it for serialization.
+                resourceForCurrentView = new CompositeResouceWrapper(resourceForCurrentView);
+            }
+            else
+            {
+                //If a resource cannot be resolved it means a default for the current 
+                //composite component does not exists.
+                throw new TagException(getTag(), "Composite Component " + getTag().getQName() 
+                        + " requires a default instance that can be found by the installed ResourceHandler.");
+            }
+            actx.applyCompositeComponent(compositeFacetPanel, resourceForCurrentView);
         }
         finally
         {
@@ -374,7 +399,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             if (_mapper == null || !_lastType.equals(type))
             {
                 _lastType = type;
-                BeanInfo beanInfo = (BeanInfo)((UIComponent) component).getAttributes().get(UIComponent.BEANINFO_KEY);    
+                BeanInfo beanInfo = (BeanInfo)component.getAttributes().get(UIComponent.BEANINFO_KEY);
                 _mapper = createMetaRuleset(type , beanInfo).finish();
             }
             
@@ -526,9 +551,11 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
 
         if (insertFacetPropertyDescriptorMap != null && insertFacetPropertyDescriptorMap.containsKey(name))
         {
-            ValueExpression requiredExpr = (ValueExpression) insertFacetPropertyDescriptorMap.get(name).getValue("required");
+            ValueExpression requiredExpr
+                    = (ValueExpression) insertFacetPropertyDescriptorMap.get(name).getValue("required");
             
-            if (requiredExpr != null && Boolean.TRUE.equals(requiredExpr.getValue(ctx.getFacesContext().getELContext())))
+            if (requiredExpr != null &&
+                Boolean.TRUE.equals(requiredExpr.getValue(ctx.getFacesContext().getELContext())))
             {
                 //Insert facet associated is required, but it was not applied.
                 throw new TagException(this.tag, "Cannot find facet with name '"+name+"' in composite component");

@@ -118,6 +118,14 @@ public final class TagLibraryConfig
                     FacesContext.getCurrentInstance().getApplication().getResourceHandler();
 
                 String resourceName = localName + ".xhtml";
+                // MYFACES-3308 If a composite component exists, it requires to 
+                // be always resolved. In other words, it should always exists a default.
+                // The call here for resourceHandler.createResource, just try to get
+                // the Resource and if it does not exists, it just returns null.
+                // The intention of this code is just create an instance and pass to
+                // CompositeComponentResourceTagHandler. Then, its values 
+                // (resourceName, libraryName) will be used to derive the real instance
+                // to use in a view, based on the locale used.
                 Resource compositeComponentResource = new CompositeResouceWrapper(
                     resourceHandler.createResource(resourceName, _compositeLibraryName));
                 
