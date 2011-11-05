@@ -365,7 +365,21 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         {
             faceletContext.setVariableMapper(new VariableMapperWrapper(orig));
             actx.pushCompositeComponentClient(this);
-            actx.applyCompositeComponent(compositeFacetPanel, _resource);
+            Resource resourceForCurrentView = faceletContext.getFacesContext().getApplication().
+                getResourceHandler().createResource(_resource.getResourceName(), _resource.getLibraryName());
+            if (resourceForCurrentView != null)
+            {
+                //Wrap it for serialization.
+                resourceForCurrentView = new CompositeResouceWrapper(resourceForCurrentView);
+            }
+            else
+            {
+                //If a resource cannot be resolved it means a default for the current 
+                //composite component does not exists.
+                throw new TagException(getTag(), "Composite Component " + getTag().getQName() 
+                        + " requires a default instance that can be found by the installed ResourceHandler.");
+            }
+            actx.applyCompositeComponent(compositeFacetPanel, resourceForCurrentView);
         }
         finally
         {

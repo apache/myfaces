@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.mc.test.core;
 
+import java.io.IOException;
+
 import javax.faces.application.Application;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
@@ -183,6 +185,11 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
     protected void processRemainingPhases() throws Exception
     {
         processRemainingPhases(facesContext);
+    }
+    
+    protected String getRenderedContent() throws IOException
+    {
+        return getRenderedContent(facesContext);
     }
     
     protected void inputText(UIComponent input, String text)
