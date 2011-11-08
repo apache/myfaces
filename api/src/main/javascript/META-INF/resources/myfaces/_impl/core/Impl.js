@@ -464,7 +464,7 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
         /*now we serve the queue as well*/
         this._errListeners.broadcastEvent(eventData);
 
-        if (jsf.getProjectStage() === "Development" && this._errListeners.length() == 0) {
+        if (jsf.getProjectStage() === "Development" && this._errListeners.length() == 0 && !context["onerror"]) {
             var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert),
                 finalMessage = [],
                 //we remap the function to achieve a better compressability
