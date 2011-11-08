@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-if (_MF_CLS) {
+
 
     /**
      * System messages french version version
@@ -25,7 +25,7 @@ if (_MF_CLS) {
      * @extends myfaces._impl.i18n.Messages
      * @memberOf myfaces._impl.i18n
      */
-     _MF_CLS(_PFX_I18N + "Messages_fr", myfaces._impl.i18n.Messages,
+_MF_CLS && _MF_CLS(_PFX_I18N + "Messages_fr", myfaces._impl.i18n.Messages,
             /** @lends myfaces._impl.i18n.Messages_fr.prototype */
             {
                 MSG_TEST:               "MessageTest FR",
@@ -79,4 +79,3 @@ if (_MF_CLS) {
                 ERR_NO_HEADATTR:        "{0}: Le changement d'attributs dans Head n'est pas supporté",
                 ERR_RED_URL:            "{0}: Redirection sans url"
             });
-}
