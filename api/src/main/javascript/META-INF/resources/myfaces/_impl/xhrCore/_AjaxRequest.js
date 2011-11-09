@@ -46,7 +46,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     /** queue control */
     _timeout: null,
     /** enqueuing delay */
-    _delay:null,
+    //_delay:null,
     /** queue size */
     _queueSize:-1,
 
