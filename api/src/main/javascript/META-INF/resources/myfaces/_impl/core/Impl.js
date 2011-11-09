@@ -141,7 +141,10 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
      * b) passThrough handling with a map copy with a filter map block map
      */
     request : function(elem, event, options) {
-
+        if(this._delayTimeout) {
+            clearTimeout(this._delayTimeout);
+            delete this._delayTimeout;
+        }
         /*namespace remap for our local function context we mix the entire function namespace into
          *a local function variable so that we do not have to write the entire namespace
          *all the time
@@ -267,8 +270,17 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
         //wont hurt but for the sake of compatibility we are going to add it
         passThrgh[form.id] = form.id;
 
-        this._transport[transportType](elem, form, context, passThrgh);
-
+        //delay handling is an experimental feature which will most likely
+        //make it into jsf 2.2
+        /* jsf2.2 only: options.delay || */
+        var delayTimeout = this._RT.getLocalOrGlobalConfig(context, "delay", false);
+        if(delayTimeout) {
+            this._delayTimeout = setTimeout(_Lang.hitch(this, function(){
+                 this._transport[transportType](elem, form, context, passThrgh);
+            } ), delayTimeout);
+        } else {
+            this._transport[transportType](elem, form, context, passThrgh);
+        }
     },
 
     /**
@@ -311,7 +323,7 @@ _MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
          */
         //for now we turn off the transport auto selection, to enable 2.0 backwards compatibility
         //on protocol level, the file upload only can be turned on if the auto selection is set to true
-        var getConfig = myfaces._impl.core._Runtime.getLocalOrGlobalConfig,
+        var getConfig = this._RT.getLocalOrGlobalConfig,
             _Lang     = this._Lang,
             _Dom      = this._Dom;
 

@@ -145,7 +145,7 @@ _MF_SINGLTN(_PFX_XHR + "_Transports", _MF_OBJECT,
         applyCfg(ret, context, "alarmThreshold", this._PAR_ERRORLEVEL);
         applyCfg(ret, context, "queueSize", this._PAR_QUEUESIZE);
         applyCfg(ret, context, "timeout", this._PAR_TIMEOUT);
-        applyCfg(ret, context, "delay", this._PAR_DELAY);
+        //applyCfg(ret, context, "delay", this._PAR_DELAY);
 
         //now partial page submit needs a different treatment
         //since pps == execute strings
