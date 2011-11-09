@@ -197,7 +197,10 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
 
             jsf.ajax.response((xhr.getXHRObject) ? xhr.getXHRObject() : xhr, context);
 
-            this._sendEvent("SUCCESS");
+            //an error in the processing has been raised
+            if(!context._mfInternal.internalError) {
+                this._sendEvent("SUCCESS");
+            }
         } catch (e) {
             this._onException(xhr, context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
         }
@@ -326,7 +329,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      * @param exception the embedded exception
      */
     _stdErrorHandler: function(request, context, sourceClass, func, exception) {
-
+        context._mfInternal.internalError = true;
         var xhrQueue = this._xhrQueue;
         try {
             this.attr("impl").stdErrorHandler(request, context, sourceClass, func, exception);

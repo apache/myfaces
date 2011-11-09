@@ -83,12 +83,9 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT,
                     // to solve IE error 1072896658 when a Java server sends iso88591
                     // istead of ISO-8859-1
 
-                    if (!request) {
-                        throw Exception(_Lang.getMessage("ERR_EMPTY_RESPONSE", null, "jsf.ajaxResponse"));
-                    }
-
-                    if (!_Lang.exists(request, "responseXML")) {
+                    if (!request || !_Lang.exists(request, "responseXML")) {
                         _Impl.sendError(request, context, _Impl.EMPTY_RESPONSE);
+                        context._mfInternal.internalError = true;
                         return;
                     }
                     //check for a parseError under certain browsers
@@ -798,6 +795,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT,
                 var _Impl = this._Impl;
                 _Impl.sendError(request, context, _Impl.MALFORMEDXML
                         , _Impl.MALFORMEDXML, msg);
+                context._mfInternal.internalError = true;
             }
 
         })
