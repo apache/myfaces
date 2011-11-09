@@ -64,7 +64,8 @@ public abstract class HtmlLinkRendererBase
 
     //private static final Log log = LogFactory.getLog(HtmlLinkRenderer.class);
     
-    public static final String END_LINK_OUTCOME_AS_SPAN = "org.apache.myfaces.shared.HtmlLinkRendererBase.END_LINK_OUTCOME_AS_SPAN";
+    public static final String END_LINK_OUTCOME_AS_SPAN = 
+        "org.apache.myfaces.shared.HtmlLinkRendererBase.END_LINK_OUTCOME_AS_SPAN";
 
     public boolean getRendersChildren()
     {
@@ -86,7 +87,8 @@ public abstract class HtmlLinkRendererBase
                 String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
                         HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo));
                 if (reqValue != null && reqValue.equals(clientId)
-                    || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId)) {
+                    || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId))
+                {
                     component.queueEvent(new ActionEvent(component));
 
                     RendererUtils.initPartialValidationAndModelUpdate(component, facesContext);
@@ -230,7 +232,8 @@ public abstract class HtmlLinkRendererBase
         if (HtmlRendererUtils.isDisabled(component) || formInfo == null)
         {
             writer.startElement(HTML.SPAN_ELEM, component);
-            if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                    facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -242,7 +245,8 @@ public abstract class HtmlLinkRendererBase
                     HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 }
                 HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
-                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, component, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, component, behaviors);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
                     CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
@@ -250,7 +254,8 @@ public abstract class HtmlLinkRendererBase
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
                 }
             }
             else
@@ -275,7 +280,8 @@ public abstract class HtmlLinkRendererBase
                 if (component instanceof ClientBehaviorHolder)
                 {
                     behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-                    renderBehaviorizedJavaScriptAnchorStart(facesContext, writer, component, clientId, behaviors, formInfo);
+                    renderBehaviorizedJavaScriptAnchorStart(
+                            facesContext, writer, component, clientId, behaviors, formInfo);
                     if (!behaviors.isEmpty())
                     {
                         HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
@@ -284,8 +290,10 @@ public abstract class HtmlLinkRendererBase
                     {
                         HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                     }
-                    HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, component, behaviors);
-                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, component, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
+                            facesContext, writer, component, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                            facesContext, writer, component, behaviors);
                     if (isCommonPropertiesOptimizationEnabled(facesContext))
                     {
                         CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutStyleAndEvents(writer, 
@@ -293,7 +301,8 @@ public abstract class HtmlLinkRendererBase
                     }
                     else
                     {
-                        HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE_AND_EVENTS);
+                        HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                                HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE_AND_EVENTS);
                     }
                 }
                 else
@@ -307,7 +316,8 @@ public abstract class HtmlLinkRendererBase
                     }
                     else
                     {
-                        HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE);
+                        HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                                HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE);
                     }
                 }
             }
@@ -322,7 +332,8 @@ public abstract class HtmlLinkRendererBase
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE);
                 }
             }
 
@@ -377,14 +388,16 @@ public abstract class HtmlLinkRendererBase
             onClick.append("var oamSF = function(){");
         }
 
-        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm())) {
+        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
+        {
             onClick.append("submitForm('");
             onClick.append(formInfo.getForm().getClientId(facesContext));
             onClick.append("',1,{source:'");
             onClick.append(component.getClientId(facesContext));
             onClick.append("'});return false;");
         }
-        else {
+        else
+        {
             HtmlRendererUtils.renderFormSubmitScript(facesContext);
 
             StringBuffer params = addChildParameters(facesContext, component, nestingForm);
@@ -406,7 +419,8 @@ public abstract class HtmlLinkRendererBase
                     append(clientId).append("'");
             }
 
-            if (params.length() > 2 || target != null) {
+            if (params.length() > 2 || target != null)
+            {
                 onClick.append(",").
                     append(target == null ? "null" : ("'" + target + "'")).append(",").
                     append(params);
@@ -415,7 +429,8 @@ public abstract class HtmlLinkRendererBase
 
             //Not necessary since we are using oamSetHiddenInput to create input hidden fields
             //render hidden field - todo: in here for backwards compatibility
-            if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
+            if (MyfacesConfig.getCurrentInstance(
+                    facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
             {
                 String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo);
                 addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
@@ -477,7 +492,8 @@ public abstract class HtmlLinkRendererBase
             }
             
             //render a javascript that chain the related code
-            Collection<ClientBehaviorContext.Parameter> paramList = HtmlRendererUtils.getClientBehaviorContextParameters(
+            Collection<ClientBehaviorContext.Parameter> paramList = 
+                HtmlRendererUtils.getClientBehaviorContextParameters(
                     HtmlRendererUtils.mapAttachedParamsToStringValues(facesContext, component));
             
             onclick = HtmlRendererUtils.buildBehaviorChain(facesContext, component,
@@ -493,9 +509,12 @@ public abstract class HtmlLinkRendererBase
     private boolean hasSubmittingBehavior(Map<String, List<ClientBehavior>> clientBehaviors, String eventName)
     {
         List<ClientBehavior> eventBehaviors = clientBehaviors.get(eventName);
-        if (eventBehaviors != null && !eventBehaviors.isEmpty()) {
-            for (ClientBehavior behavior : eventBehaviors) {
-                if (behavior.getHints().contains(ClientBehaviorHint.SUBMITTING)) {
+        if (eventBehaviors != null && !eventBehaviors.isEmpty())
+        {
+            for (ClientBehavior behavior : eventBehaviors)
+            {
+                if (behavior.getHints().contains(ClientBehaviorHint.SUBMITTING))
+                {
                     return true;
                 }
             }
@@ -511,21 +530,24 @@ public abstract class HtmlLinkRendererBase
 
         StringBuffer onClick = new StringBuffer();
 
-        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm())) {
+        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
+        {
             onClick.append("submitForm('");
             onClick.append(formInfo.getForm().getClientId(facesContext));
             onClick.append("',1,{source:'");
             onClick.append(component.getClientId(facesContext));
             onClick.append("'});return false;");
         }
-        else {
+        else
+        {
             HtmlRendererUtils.renderFormSubmitScript(facesContext);
 
             StringBuffer params = addChildParameters(facesContext, component, nestingForm);
 
             String target = getTarget(component);
 
-            if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRenderFormSubmitScriptInline())
+            if (MyfacesConfig.getCurrentInstance(
+                    facesContext.getExternalContext()).isRenderFormSubmitScriptInline())
             {
                 onClick.append("return ").
                     append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME).append("('").
@@ -540,7 +562,8 @@ public abstract class HtmlLinkRendererBase
                     append(clientId).append("'");
             }
 
-            if (params.length() > 2 || target != null) {
+            if (params.length() > 2 || target != null)
+            {
                 onClick.append(",").
                     append(target == null ? "null" : ("'" + target + "'")).append(",").
                     append(params);
@@ -556,19 +579,23 @@ public abstract class HtmlLinkRendererBase
         return onClick.toString();
     }
 
-    private String getTarget(UIComponent component) {
+    private String getTarget(UIComponent component)
+    {
         // for performance reason: double check for the target attribute
         String target;
-        if (component instanceof HtmlCommandLink) {
+        if (component instanceof HtmlCommandLink)
+        {
             target = ((HtmlCommandLink) component).getTarget();
         }
-        else {
+        else
+        {
             target = (String) component.getAttributes().get(HTML.TARGET_ATTR);
         }
         return target;
     }
 
-    private StringBuffer addChildParameters(FacesContext context, UIComponent component, UIComponent nestingForm) {
+    private StringBuffer addChildParameters(FacesContext context, UIComponent component, UIComponent nestingForm)
+    {
         //add child parameters
         StringBuffer params = new StringBuffer();
         params.append("[");
@@ -650,7 +677,8 @@ public abstract class HtmlLinkRendererBase
         return _ComponentUtils.findNestingForm(uiComponent, facesContext);
     }
 
-    protected void addHiddenCommandParameter(FacesContext facesContext, UIComponent nestingForm, String hiddenFieldName)
+    protected void addHiddenCommandParameter(
+            FacesContext facesContext, UIComponent nestingForm, String hiddenFieldName)
     {
         if (nestingForm != null)
         {
@@ -683,9 +711,12 @@ public abstract class HtmlLinkRendererBase
         }
         else
         {
-            if (strictXhtmlLinks) {
+            if (strictXhtmlLinks)
+            {
                 hrefBuf.append("&amp;");
-            } else {
+            }
+            else
+            {
                 hrefBuf.append('&');
             }
         }
@@ -738,7 +769,8 @@ public abstract class HtmlLinkRendererBase
         if (HtmlRendererUtils.isDisabled(output))
         {
             writer.startElement(HTML.SPAN_ELEM, output);
-            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                    facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -750,7 +782,8 @@ public abstract class HtmlLinkRendererBase
                     HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
                 }
                 HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, output, behaviors);
-                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, output, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, output, behaviors);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
                     CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
@@ -758,7 +791,8 @@ public abstract class HtmlLinkRendererBase
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, output, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
                 }
             }
             else
@@ -821,7 +855,8 @@ public abstract class HtmlLinkRendererBase
             //write anchor
             writer.startElement(HTML.ANCHOR_ELEM, output);
             writer.writeURIAttribute(HTML.HREF_ATTR, href, null);
-            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                    facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -833,7 +868,8 @@ public abstract class HtmlLinkRendererBase
                     HtmlRendererUtils.writeIdAndNameIfNecessary(writer, output, facesContext);
                 }
                 HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, output, behaviors);
-                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, output, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, output, behaviors);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
                     CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
@@ -841,7 +877,8 @@ public abstract class HtmlLinkRendererBase
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, output, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
                 }
             }
             else
@@ -874,7 +911,8 @@ public abstract class HtmlLinkRendererBase
         {
             output.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.TRUE);
             writer.startElement(HTML.SPAN_ELEM, output);
-            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                    facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -886,7 +924,8 @@ public abstract class HtmlLinkRendererBase
                     HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
                 }
                 HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, output, behaviors);
-                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, output, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, output, behaviors);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
                     CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
@@ -894,7 +933,8 @@ public abstract class HtmlLinkRendererBase
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, output, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
                 }
             }
             else
@@ -923,7 +963,8 @@ public abstract class HtmlLinkRendererBase
             //write anchor
             writer.startElement(HTML.ANCHOR_ELEM, output);
             writer.writeURIAttribute(HTML.HREF_ATTR, targetHref, null);
-            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                    facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -935,7 +976,8 @@ public abstract class HtmlLinkRendererBase
                     HtmlRendererUtils.writeIdAndNameIfNecessary(writer, output, facesContext);
                 }
                 HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, output, behaviors);
-                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, output, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, output, behaviors);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
                     CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
@@ -943,7 +985,8 @@ public abstract class HtmlLinkRendererBase
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, output, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
                 }
             }
             else
@@ -956,7 +999,8 @@ public abstract class HtmlLinkRendererBase
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, output, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES);
                 }
             }
 
@@ -978,7 +1022,8 @@ public abstract class HtmlLinkRendererBase
         onClick.append(jsForm);
         onClick.append(".elements['").append(name).append("']");
         //UIParameter is no ValueHolder, so no conversion possible
-        String strParamValue = value != null ? org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(value.toString(), false, false) : "";
+        String strParamValue = value != null ? org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
+                value.toString(), false, false) : "";
         onClick.append(".value='").append(strParamValue).append("';");
 
         addHiddenCommandParameter(FacesContext.getCurrentInstance(), nestingForm, name);
@@ -989,17 +1034,25 @@ public abstract class HtmlLinkRendererBase
                                            StringBuffer hrefBuf,
                                            boolean firstParameter,
                                            String charEncoding,
-                                           boolean strictXhtmlLinks) throws UnsupportedEncodingException {
-        if (name == null) {
+                                           boolean strictXhtmlLinks) throws UnsupportedEncodingException
+    {
+        if (name == null)
+        {
             throw new IllegalArgumentException("Unnamed parameter value not allowed within command link.");
         }
 
-        if (firstParameter) {
+        if (firstParameter)
+        {
             hrefBuf.append('?');
-        } else {
-            if (strictXhtmlLinks) {
+        }
+        else
+        {
+            if (strictXhtmlLinks)
+            {
                 hrefBuf.append("&amp;");
-            } else {
+            }
+            else
+            {
                 hrefBuf.append('&');
             }
         }
@@ -1018,7 +1071,8 @@ public abstract class HtmlLinkRendererBase
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         
-        if (HtmlRendererUtils.isDisabled(component) || component.getAttributes().remove(END_LINK_OUTCOME_AS_SPAN) != null)
+        if (HtmlRendererUtils.isDisabled(component) || component.getAttributes().remove(
+                END_LINK_OUTCOME_AS_SPAN) != null)
         {
             writer.endElement(HTML.SPAN_ELEM);
         }

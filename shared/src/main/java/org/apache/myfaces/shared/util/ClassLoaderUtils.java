@@ -130,7 +130,6 @@ public final class ClassLoaderUtils
     catch (ClassNotFoundException e)
     {
       // treat as though loader not set
-      ;
     }
 
     if (clazz == null)
@@ -240,7 +239,8 @@ public final class ClassLoaderUtils
   {
       if (System.getSecurityManager() != null) 
       {
-          try {
+          try 
+          {
               ClassLoader cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
                       {
                           public ClassLoader run() throws PrivilegedActionException

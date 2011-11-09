@@ -61,7 +61,8 @@ public class HtmlImageRendererBase
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, UIGraphic.class);
+        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
+                facesContext, uiComponent, UIGraphic.class);
 
         ResponseWriter writer = facesContext.getResponseWriter();
         
@@ -97,7 +98,9 @@ public class HtmlImageRendererBase
         {
           if (facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
           {
-              log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) + " has no attribute url, value, name or attribute resolves to null. Path to component " + RendererUtils.getPathToComponent(uiComponent));
+              log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
+                      + " has no attribute url, value, name or attribute resolves to null. Path to component " 
+                      + RendererUtils.getPathToComponent(uiComponent));
           }
         }
 
@@ -108,11 +111,14 @@ public class HtmlImageRendererBase
         {
             if(!facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
             {
-                log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) + " has no attribute alt or attribute resolves to null. Path to component " + RendererUtils.getPathToComponent(uiComponent));
+                log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
+                        + " has no attribute alt or attribute resolves to null. Path to component " 
+                        + RendererUtils.getPathToComponent(uiComponent));
             }
         }
 
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                facesContext.getExternalContext()))
         {
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
             if (isCommonPropertiesOptimizationEnabled(facesContext))
@@ -123,7 +129,8 @@ public class HtmlImageRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                        HTML.IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
             }
         }
         else
@@ -136,7 +143,8 @@ public class HtmlImageRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.IMG_PASSTHROUGH_ATTRIBUTES);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                        HTML.IMG_PASSTHROUGH_ATTRIBUTES);
             }
         }
 

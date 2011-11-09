@@ -102,7 +102,8 @@ public class HtmlSecretRendererBase
         }
         else
         {
-            isRedisplay = org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, JSFAttr.REDISPLAY_ATTR, false);
+            isRedisplay = org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, 
+                    JSFAttr.REDISPLAY_ATTR, false);
         }
         if (isRedisplay)
         {
@@ -111,13 +112,15 @@ public class HtmlSecretRendererBase
         }
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             
             HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
+            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                    facesContext, writer, uiComponent, behaviors);
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
@@ -125,7 +128,8 @@ public class HtmlSecretRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
             }
         }
         else
@@ -137,7 +141,8 @@ public class HtmlSecretRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
             }
         }
 
@@ -198,7 +203,8 @@ public class HtmlSecretRendererBase
         }
     }
 
-    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue) throws ConverterException
+    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
+        throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIOutput.class);
         return RendererUtils.getConvertedUIOutputValue(facesContext,

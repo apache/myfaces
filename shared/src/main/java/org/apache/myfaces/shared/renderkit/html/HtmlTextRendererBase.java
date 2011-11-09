@@ -101,7 +101,8 @@ public class HtmlTextRendererBase
         }
         else
         {
-            escape = RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
+            escape = RendererUtils.getBooleanAttribute(component, 
+                    org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
                                                        true); //default is to escape
         }
         if (text != null)
@@ -212,13 +213,15 @@ public class HtmlTextRendererBase
         }
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             
             HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, component, behaviors);
+            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                    facesContext, writer, component, behaviors);
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
@@ -226,7 +229,8 @@ public class HtmlTextRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
             }
         }
         else
@@ -238,7 +242,8 @@ public class HtmlTextRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
             }
         }
 
@@ -268,7 +273,8 @@ public class HtmlTextRendererBase
             return ((HtmlInputText)component).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
+                HTML.DISABLED_ATTR, false);
         
     }
 
@@ -314,7 +320,8 @@ public class HtmlTextRendererBase
     }
 
 
-    public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue) throws ConverterException
+    public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue)
+        throws ConverterException
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, UIOutput.class);
         return RendererUtils.getConvertedUIOutputValue(facesContext,

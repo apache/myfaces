@@ -120,13 +120,16 @@ public class WebXmlParser
 
     public static long getWebXmlLastModified(ExternalContext context)
     {
-        try {
+        try
+        {
             URL url = context.getResource(WEB_XML_PATH);
             if (url != null)
             {
                 return url.openConnection().getLastModified();
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             log.log(Level.SEVERE, "Could not find web.xml in path " + WEB_XML_PATH);
         }
         return 0L;
@@ -255,7 +258,8 @@ public class WebXmlParser
                 {
                     servletClass = org.apache.myfaces.shared.util.xml.XmlUtils.getElementText((Element)n).trim();
                 }
-                else if (n.getNodeName().equals("description") || n.getNodeName().equals("load-on-startup") || n.getNodeName().equals("init-param"))
+                else if (n.getNodeName().equals("description") || n.getNodeName().equals("load-on-startup") 
+                        || n.getNodeName().equals("init-param"))
                 {
                     //ignore
                 }
@@ -263,7 +267,8 @@ public class WebXmlParser
                 {
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + servletElem.getNodeName() + "'.");
+                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + 
+                                servletElem.getNodeName() + "'.");
                     }
                 }
             }
@@ -301,7 +306,8 @@ public class WebXmlParser
                 {
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + servletMappingElem.getNodeName() + "'.");
+                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + 
+                                servletMappingElem.getNodeName() + "'.");
                     }
                 }
             }
@@ -343,7 +349,8 @@ public class WebXmlParser
                 {
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + filterElem.getNodeName() + "'.");
+                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + 
+                                filterElem.getNodeName() + "'.");
                     }
                 }
             }
@@ -385,7 +392,8 @@ public class WebXmlParser
                 {
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + filterMappingElem.getNodeName() + "'.");
+                        log.fine("Ignored element '" + n.getNodeName() + "' as child of '" + 
+                                filterMappingElem.getNodeName() + "'.");
                     }
                 }
             }

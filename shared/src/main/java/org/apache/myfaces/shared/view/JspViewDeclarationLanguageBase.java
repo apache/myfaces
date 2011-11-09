@@ -22,7 +22,6 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -153,7 +152,8 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
       // handle character encoding as of section 2.5.2.2 of JSF 1.1
       if(null != externalContext.getSession(false))
       {
-        externalContext.getSessionMap().put(ViewHandler.CHARACTER_ENCODING_KEY, externalContext.getResponseCharacterEncoding());
+        externalContext.getSessionMap().put(ViewHandler.CHARACTER_ENCODING_KEY, 
+                externalContext.getResponseCharacterEncoding());
       }
   
       // render the view in this method (since JSF 1.2)
@@ -163,7 +163,8 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
       ResponseWriter responseWriter = context.getResponseWriter();
       if (responseWriter == null)
       {
-          responseWriter = renderKit.createResponseWriter(externalContext.getResponseOutputWriter(), null, externalContext.getRequestCharacterEncoding());
+          responseWriter = renderKit.createResponseWriter(externalContext.getResponseOutputWriter(), 
+                  null, externalContext.getRequestCharacterEncoding());
           context.setResponseWriter(responseWriter);
       }
       
@@ -233,7 +234,8 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
       // afterViewTagResponse is null if the current request is a partial request
       if (afterViewTagResponse != null)
       {
-          afterViewTagResponse.flushToWriter(externalContext.getResponseOutputWriter(), externalContext.getResponseCharacterEncoding());
+          afterViewTagResponse.flushToWriter(externalContext.getResponseOutputWriter(), 
+                  externalContext.getResponseCharacterEncoding());
       }
   
       //TODO sobryan: Is this right?
@@ -323,7 +325,8 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
     }
   }
   
-  protected void writePartialBuffer(StringBuffer contentBuffer, int beginIndex, int endIndex, Writer writer) throws IOException
+  protected void writePartialBuffer(StringBuffer contentBuffer, int beginIndex, 
+          int endIndex, Writer writer) throws IOException
   {
     int index = beginIndex;
     int bufferSize = 2048;

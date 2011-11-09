@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.shared.util.el;
 
-import org.apache.myfaces.shared.util.el.GenericMap;
 
 /**
  * You can use this class to perform tests.
@@ -28,18 +27,21 @@ import org.apache.myfaces.shared.util.el.GenericMap;
  * @version $Revision$ $Date$
  *
  */
-public abstract class StringMap extends GenericMap {
+public abstract class StringMap extends GenericMap
+{
 
     /**
      * This method should return the result of the test.
      */
     public abstract String getString(String testKey);
 
-    public Object getValue(Object testKey){
+    public Object getValue(Object testKey)
+    {
         return getString( (String) testKey );
     }
 
-    public Object get(Object key) {
+    public Object get(Object key)
+    {
         if( ! (key instanceof String) )
         {
             return null;

@@ -47,33 +47,32 @@ import org.apache.myfaces.shared.el.SimpleActionMethodBinding;
 public class UIComponentTagUtils
 {
     //private static final Log log = LogFactory.getLog(UIComponentTagUtils.class);
-    private static final Logger log = Logger.getLogger(UIComponentTagUtils.class.getName());
+    private static final Logger log = Logger
+            .getLogger(UIComponentTagUtils.class.getName());
 
-    private static final Class[] VALIDATOR_ARGS = {FacesContext.class,
-                                                   UIComponent.class,
-                                                   Object.class};
-    private static final Class[] ACTION_LISTENER_ARGS = {ActionEvent.class};
-    private static final Class[] VALUE_LISTENER_ARGS = {ValueChangeEvent.class};
+    private static final Class[] VALIDATOR_ARGS = { FacesContext.class,
+            UIComponent.class, Object.class };
+    private static final Class[] ACTION_LISTENER_ARGS = { ActionEvent.class };
+    private static final Class[] VALUE_LISTENER_ARGS = { ValueChangeEvent.class };
 
-    private UIComponentTagUtils() {}    //util class, no instantiation allowed
-
+    private UIComponentTagUtils()
+    {
+    } //util class, no instantiation allowed
 
     public static boolean isValueReference(String v)
     {
         return UIComponentTag.isValueReference(v);
     }
 
-
     public static void setIntegerProperty(FacesContext context,
-                                          UIComponent component,
-                                          String propName,
-                                          String value)
+            UIComponent component, String propName, String value)
     {
         if (value != null)
         {
             if (isValueReference(value))
             {
-                ValueBinding vb = context.getApplication().createValueBinding(value);
+                ValueBinding vb = context.getApplication().createValueBinding(
+                        value);
                 component.setValueBinding(propName, vb);
             }
             else
@@ -85,15 +84,14 @@ public class UIComponentTagUtils
     }
 
     public static void setLongProperty(FacesContext context,
-                                       UIComponent component,
-                                       String propName,
-                                       String value)
+            UIComponent component, String propName, String value)
     {
         if (value != null)
         {
             if (isValueReference(value))
             {
-                ValueBinding vb = context.getApplication().createValueBinding(value);
+                ValueBinding vb = context.getApplication().createValueBinding(
+                        value);
                 component.setValueBinding(propName, vb);
             }
             else
@@ -105,15 +103,14 @@ public class UIComponentTagUtils
     }
 
     public static void setStringProperty(FacesContext context,
-                                     UIComponent component,
-                                     String propName,
-                                     String value)
+            UIComponent component, String propName, String value)
     {
         if (value != null)
         {
             if (isValueReference(value))
             {
-                ValueBinding vb = context.getApplication().createValueBinding(value);
+                ValueBinding vb = context.getApplication().createValueBinding(
+                        value);
                 component.setValueBinding(propName, vb);
             }
             else
@@ -124,17 +121,15 @@ public class UIComponentTagUtils
         }
     }
 
-
     public static void setBooleanProperty(FacesContext context,
-                                      UIComponent component,
-                                      String propName,
-                                      String value)
+            UIComponent component, String propName, String value)
     {
         if (value != null)
         {
             if (isValueReference(value))
             {
-                ValueBinding vb = context.getApplication().createValueBinding(value);
+                ValueBinding vb = context.getApplication().createValueBinding(
+                        value);
                 component.setValueBinding(propName, vb);
             }
             else
@@ -145,51 +140,51 @@ public class UIComponentTagUtils
         }
     }
 
-
     public static void setValueProperty(FacesContext context,
-                                        UIComponent component,
-                                        String value)
+            UIComponent component, String value)
     {
         if (value != null)
         {
             if (isValueReference(value))
             {
-                ValueBinding vb = context.getApplication().createValueBinding(value);
-                component.setValueBinding(org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR, vb);
+                ValueBinding vb = context.getApplication().createValueBinding(
+                        value);
+                component.setValueBinding(
+                        org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR,
+                        vb);
             }
             else if (component instanceof UICommand)
             {
-                ((UICommand)component).setValue(value);
+                ((UICommand) component).setValue(value);
             }
             else if (component instanceof UIParameter)
             {
-                ((UIParameter)component).setValue(value);
+                ((UIParameter) component).setValue(value);
             }
             else if (component instanceof UISelectBoolean)
             {
-                ((UISelectBoolean)component).setValue(Boolean.valueOf(value));
+                ((UISelectBoolean) component).setValue(Boolean.valueOf(value));
             }
             else if (component instanceof UIGraphic)
             {
-                ((UIGraphic)component).setValue(value);
+                ((UIGraphic) component).setValue(value);
             }
             //Since many input components are ValueHolders the special components
             //must come first, ValueHolder is the last resort.
             else if (component instanceof ValueHolder)
             {
-                ((ValueHolder)component).setValue(value);
+                ((ValueHolder) component).setValue(value);
             }
             else
             {
-                log.severe("Component " + component.getClass().getName() + " is no ValueHolder, cannot set value.");
+                log.severe("Component " + component.getClass().getName()
+                        + " is no ValueHolder, cannot set value.");
             }
         }
     }
 
-
     public static void setConverterProperty(FacesContext context,
-                                        UIComponent component,
-                                        String value)
+            UIComponent component, String value)
     {
         if (value != null)
         {
@@ -197,75 +192,85 @@ public class UIComponentTagUtils
             {
                 if (isValueReference(value))
                 {
-                    ValueBinding vb = context.getApplication().createValueBinding(value);
-                    component.setValueBinding(org.apache.myfaces.shared.renderkit.JSFAttr.CONVERTER_ATTR, vb);
+                    ValueBinding vb = context.getApplication()
+                            .createValueBinding(value);
+                    component
+                            .setValueBinding(
+                                    org.apache.myfaces.shared.renderkit.JSFAttr.CONVERTER_ATTR,
+                                    vb);
                 }
                 else
                 {
-                    FacesContext facesContext = FacesContext.getCurrentInstance();
-                    Converter converter = facesContext.getApplication().createConverter(value);
-                    ((ValueHolder)component).setConverter(converter);
+                    FacesContext facesContext = FacesContext
+                            .getCurrentInstance();
+                    Converter converter = facesContext.getApplication()
+                            .createConverter(value);
+                    ((ValueHolder) component).setConverter(converter);
                 }
             }
             else
             {
-                log.severe("Component " + component.getClass().getName() + " is no ValueHolder, cannot set value.");
+                log.severe("Component " + component.getClass().getName()
+                        + " is no ValueHolder, cannot set value.");
             }
         }
     }
 
-
     public static void setValidatorProperty(FacesContext context,
-                                            UIComponent component,
-                                            String validator)
+            UIComponent component, String validator)
     {
         if (validator != null)
         {
             if (!(component instanceof EditableValueHolder))
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " is no EditableValueHolder");
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context)
+                        + " is no EditableValueHolder");
             }
             if (isValueReference(validator))
             {
-                MethodBinding mb = context.getApplication().createMethodBinding(validator,
-                                                                                VALIDATOR_ARGS);
-                ((EditableValueHolder)component).setValidator(mb);
+                MethodBinding mb = context.getApplication()
+                        .createMethodBinding(validator, VALIDATOR_ARGS);
+                ((EditableValueHolder) component).setValidator(mb);
             }
             else
             {
-                log.severe("Component " + component.getClientId(context) + " has invalid validation expression " + validator);
+                log.severe("Component " + component.getClientId(context)
+                        + " has invalid validation expression " + validator);
             }
         }
     }
 
     public static void setValueBinding(FacesContext context,
-                                       UIComponent component,
-                                       String propName,
-                                       String value)
+            UIComponent component, String propName, String value)
     {
         if (value != null)
         {
             if (isValueReference(value))
             {
-                ValueBinding vb = context.getApplication().createValueBinding(value);
+                ValueBinding vb = context.getApplication().createValueBinding(
+                        value);
                 component.setValueBinding(propName, vb);
             }
             else
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " attribute " + propName + " must be a value reference, was " + value);
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context) + " attribute "
+                        + propName + " must be a value reference, was " + value);
             }
         }
     }
 
     public static void setActionProperty(FacesContext context,
-                                         UIComponent component,
-                                         String action)
+            UIComponent component, String action)
     {
         if (action != null)
         {
             if (!(component instanceof ActionSource))
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " is no ActionSource");
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context)
+                        + " is no ActionSource");
             }
             MethodBinding mb;
             if (isValueReference(action))
@@ -276,24 +281,26 @@ public class UIComponentTagUtils
             {
                 mb = new SimpleActionMethodBinding(action);
             }
-            ((ActionSource)component).setAction(mb);
+            ((ActionSource) component).setAction(mb);
         }
     }
 
     public static void setActionListenerProperty(FacesContext context,
-                                                 UIComponent component,
-                                                 String actionListener)
+            UIComponent component, String actionListener)
     {
         if (actionListener != null)
         {
             if (!(component instanceof ActionSource))
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " is no ActionSource");
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context)
+                        + " is no ActionSource");
             }
             if (isValueReference(actionListener))
             {
-                MethodBinding mb = context.getApplication().createMethodBinding(actionListener,
-                                                                                ACTION_LISTENER_ARGS);
+                MethodBinding mb = context.getApplication()
+                        .createMethodBinding(actionListener,
+                                ACTION_LISTENER_ARGS);
 
                 /**
                 if(! Void.class.equals(mb.getType(context)))
@@ -304,29 +311,33 @@ public class UIComponentTagUtils
                 }
                 */
 
-                ((ActionSource)component).setActionListener(mb);
+                ((ActionSource) component).setActionListener(mb);
             }
             else
             {
-                log.severe("Component " + component.getClientId(context) + " has invalid actionListener value: " + actionListener);
+                log.severe("Component " + component.getClientId(context)
+                        + " has invalid actionListener value: "
+                        + actionListener);
             }
         }
     }
 
     public static void setValueChangedListenerProperty(FacesContext context,
-                                                       UIComponent component,
-                                                       String valueChangedListener)
+            UIComponent component, String valueChangedListener)
     {
         if (valueChangedListener != null)
         {
             if (!(component instanceof EditableValueHolder))
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " is no EditableValueHolder");
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context)
+                        + " is no EditableValueHolder");
             }
             if (isValueReference(valueChangedListener))
             {
-                MethodBinding mb = context.getApplication().createMethodBinding(valueChangedListener,
-                                                                                VALUE_LISTENER_ARGS);
+                MethodBinding mb = context.getApplication()
+                        .createMethodBinding(valueChangedListener,
+                                VALUE_LISTENER_ARGS);
                 /**
                 if(! Void.class.equals(mb.getType(context)))
                 {
@@ -336,11 +347,13 @@ public class UIComponentTagUtils
                 }
                 */
 
-                ((EditableValueHolder)component).setValueChangeListener(mb);
+                ((EditableValueHolder) component).setValueChangeListener(mb);
             }
             else
             {
-                log.severe("Component " + component.getClientId(context) + " has invalid valueChangedListener expression " + valueChangedListener);
+                log.severe("Component " + component.getClientId(context)
+                        + " has invalid valueChangedListener expression "
+                        + valueChangedListener);
             }
         }
     }

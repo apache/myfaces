@@ -463,7 +463,8 @@ class _SharedRendererUtils
             SelectItem item = iterator.next();
             if (item instanceof SelectItemGroup)
             {
-                Iterator<SelectItem> groupIterator = Arrays.asList(((SelectItemGroup) item).getSelectItems()).iterator();
+                Iterator<SelectItem> groupIterator = Arrays.asList(
+                        ((SelectItemGroup) item).getSelectItems()).iterator();
                 converter = getSelectItemsValueConverter(groupIterator, facesContext);
             }
             else

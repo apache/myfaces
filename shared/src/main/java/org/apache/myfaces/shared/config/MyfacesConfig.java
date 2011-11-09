@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.shared.config;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
@@ -113,9 +112,11 @@ public class MyfacesConfig
      * gain performance.
      */
     @JSFWebConfigParam(defaultValue="org.apache.myfaces. renderkit.html.util. DefaultAddResource",since="1.1",
-            desc="Tomahawk specific: Indicate the class responsible to place scripts and css using tomahawk AddResource API", tags="tomahawk")
+            desc="Tomahawk specific: Indicate the class responsible to place scripts and css using " +
+                 "tomahawk AddResource API", tags="tomahawk")
     private static final String INIT_PARAM_ADD_RESOURCE_CLASS = "org.apache.myfaces.ADD_RESOURCE_CLASS";
-    private static final String INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT = "org.apache.myfaces.renderkit.html.util.DefaultAddResource";
+    private static final String INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT = 
+        "org.apache.myfaces.renderkit.html.util.DefaultAddResource";
 
     /**
      * Tomahawk specific: A very common problem in configuring MyFaces-web-applications
@@ -129,20 +130,25 @@ public class MyfacesConfig
      * 
      * In tomahawk for JSF 2.0 since version 1.1.11, this param is set by default to false, otherwise is true.
      */
-    @JSFWebConfigParam(defaultValue="for JSF 2.0 since 1.1.11 false, otherwise true", expectedValues="true, false, on, off, yes, no",since="1.1", ignoreUpperLowerCase=true,
-            desc="Tomahawk specific: This parameter will check for a properly configured Extensions-Filter if it is needed by the web-app.", tags="tomahawk")
+    @JSFWebConfigParam(defaultValue="for JSF 2.0 since 1.1.11 false, otherwise true", 
+            expectedValues="true, false, on, off, yes, no",since="1.1", ignoreUpperLowerCase=true,
+            desc="Tomahawk specific: This parameter will check for a properly configured Extensions-Filter if " +
+                 "it is needed by the web-app.", tags="tomahawk")
     private static final String  INIT_CHECK_EXTENSIONS_FILTER = "org.apache.myfaces.CHECK_EXTENSIONS_FILTER";
     private static final boolean INIT_CHECK_EXTENSIONS_FILTER_DEFAULT = false;
 
     /**
      * Tomahawk specific: Interpret "readonly" property as "disable" for select components like t:selectOneRow.
      */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", ignoreUpperLowerCase=true, tags="tomahawk", group="render")
-    private static final String INIT_READONLY_AS_DISABLED_FOR_SELECT = "org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS";
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", 
+            ignoreUpperLowerCase=true, tags="tomahawk", group="render")
+    private static final String INIT_READONLY_AS_DISABLED_FOR_SELECT = 
+        "org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS";
     private static final boolean INIT_READONLY_AS_DISABLED_FOR_SELECT_DEFAULT = true;
 
     /**
-     * Set the time in seconds that check for updates of web.xml and faces-config descriptors and refresh the configuration.
+     * Set the time in seconds that check for updates of web.xml and faces-config descriptors and 
+     * refresh the configuration.
      * This param is valid only if project stage is not production. Set this param to 0 disable this feature.
      */
     @JSFWebConfigParam(defaultValue="2",since="1.1", classType="java.lang.Long")
@@ -158,16 +164,18 @@ public class MyfacesConfig
     private static final boolean INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT = false;
 
     /**
-     * Define if the input field that should store the state (javax.faces.ViewState) should render id="javax.faces.ViewState".
+     * Define if the input field that should store the state (javax.faces.ViewState) should render 
+     * id="javax.faces.ViewState".
      * 
      * JSF API 1.2 defines a "javax.faces.ViewState" client parameter, that must be rendered as both the "name"
      * and the "id" attribute of the hidden input that is rendered for the purpose of state saving
-     * (see <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/javax/faces/render/ResponseStateManager.html#VIEW_STATE_PARAM">API</a>).
+     * (see ResponseStateManager.VIEW_STATE_PARAM).
      * Actually this causes duplicate id attributes and thus invalid XHTML pages when multiple forms are rendered on
      * one page. With the org.apache.myfaces.RENDER_VIEWSTATE_ID context parameter you can tune this behaviour.
      * <br/>Set it to
      * <ul><li>true - to render JSF 1.2 compliant id attributes (that might cause invalid XHTML), or</li>
-     * <li>false - to omit rendering of the id attribute (which is only needed for very special AJAX/Javascript components)</li></ul>
+     * <li>false - to omit rendering of the id attribute (which is only needed for very special 
+     * AJAX/Javascript components)</li></ul>
      * Default value is: true (for backwards compatibility and JSF 1.2 compliancy) 
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", 
@@ -203,18 +211,21 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.2.3",
             ignoreUpperLowerCase=true, group="render")
-    private static final String INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON = "org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON";
+    private static final String INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON = 
+        "org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON";
     private static final boolean INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT= false;
 
     /**
-     * This param renders hidden fields at the end of h:form for link params when h:commandLink + f:param is used, instead
-     * use javascript to create them. Set this param to true also enables org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON 
-     * automatically to ensure consistency. This feature is required to support Windows Mobile 6, because in this environment,
-     * document.createElement() and form.appendChild() javascript methods are not supported.
+     * This param renders hidden fields at the end of h:form for link params when h:commandLink + f:param is used,
+     * instead use javascript to create them. Set this param to true also enables 
+     * org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON 
+     * automatically to ensure consistency. This feature is required to support Windows Mobile 6, because in 
+     * this environment, document.createElement() and form.appendChild() javascript methods are not supported.
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.2.9",
             ignoreUpperLowerCase=true, group="render")
-    private static final String INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS = "org.apache.myfaces.RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS";
+    private static final String INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS = 
+        "org.apache.myfaces.RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS";
     private static final boolean INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS_DEFAULT= false;
     
     /**
@@ -227,28 +238,31 @@ public class MyfacesConfig
     private static final boolean INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT = false;
     
     /**
-     * Define an alternate class name that will be used to initialize MyFaces, instead the default javax.faces.webapp.FacesServlet.
+     * Define an alternate class name that will be used to initialize MyFaces, instead the default 
+     * javax.faces.webapp.FacesServlet.
      * 
-     * <p>This helps MyFaces to detect the mappings and other additional configuration used to setup the environment, and prevent
-     * abort initialization if no FacesServlet config is detected.
+     * <p>This helps MyFaces to detect the mappings and other additional configuration used to setup the 
+     * environment, and prevent abort initialization if no FacesServlet config is detected.
      * </p>
      */
     @JSFWebConfigParam(since="1.2.7")
     private static final String INIT_PARAM_DELEGATE_FACES_SERVLET = "org.apache.myfaces.DELEGATE_FACES_SERVLET";
 
     /**
-     * Indicate if the facelet associated to the view should be reapplied when the view is refreshed. Default mode is "auto".
+     * Indicate if the facelet associated to the view should be reapplied when the view is refreshed.
+     *  Default mode is "auto".
      * 
      * <p>This param is only valid when partial state saving is on.
-     * If this is set as true, the tag-handlers are always reapplied before render view, like in facelets 1.1.x, allowing
-     * c:if work correctly to "toggle" components based on a value changed on invoke application phase. 
+     * If this is set as true, the tag-handlers are always reapplied before render view, like in facelets 1.1.x, 
+     * allowing c:if work correctly to "toggle" components based on a value changed on invoke application phase. 
      * If the param is set as "auto", the implementation check if c:if, c:forEach, 
      * c:choose and ui:include with src=ELExpression is used on the page and if that so, mark the view
      * to be refreshed.</p> 
      */
     @JSFWebConfigParam(since="2.0", defaultValue="auto", expectedValues="true,false,auto", tags="performance", 
             ignoreUpperLowerCase=true, group="state")
-    public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"; 
+    public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS = 
+        "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"; 
     public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT = "auto";
 
     /**
@@ -260,9 +274,10 @@ public class MyfacesConfig
      * c:choose and ui:include with src=ELExpression are marked to be restored fully, so state
      * is preserved between request.</p>
      */
-    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false, on, off, yes, no", tags="performance",
-            ignoreUpperLowerCase=true, group="state")
-    public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE = "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE";
+    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false, on, off, yes, no", 
+            tags="performance", ignoreUpperLowerCase=true, group="state")
+    public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE = 
+        "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE";
     public final static boolean INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT = false;
     
     /**
@@ -278,7 +293,8 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0.1", expectedValues="true, false, on, off, yes, no", defaultValue="true",
             ignoreUpperLowerCase=true, group="render")
-    public final static String INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG = "org.apache.myfaces.WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG";
+    public final static String INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG = 
+        "org.apache.myfaces.WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG";
     public final static boolean INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = true;
     
     /**
@@ -286,12 +302,15 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0.2", expectedValues="true, false, on, off, yes, no", defaultValue="false", 
             ignoreUpperLowerCase=true, group="render")
-    public final static String INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE = "org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE";
+    public final static String INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE = 
+        "org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE";
     public final static boolean INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT = false;
     
     /**
-     * Enable/disable DebugPhaseListener feature, with provide useful information about ValueHolder variables (submittedValue, localValue, value).
-     * Note evaluate those getters for each component could cause some unwanted side effects when using "access" type scopes like on MyFaces CODI.
+     * Enable/disable DebugPhaseListener feature, with provide useful information about ValueHolder 
+     * variables (submittedValue, localValue, value).
+     * Note evaluate those getters for each component could cause some unwanted side effects when 
+     * using "access" type scopes like on MyFaces CODI.
      * This param only has effect when project stage is Development.     
      */
     @JSFWebConfigParam(since="2.0.8")
@@ -299,12 +318,14 @@ public class MyfacesConfig
     public final static boolean INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT = false;
     
     /**
-     * Detect if a target (usually head) should be update for the current view in an ajax render operation. This is activated if a css or js resource
-     * is added dynamically by effect of a refresh (c:if, ui:include src="#{...}" or a manipulation of the tree). This ensures ajax updates of content 
+     * Detect if a target (usually head) should be update for the current view in an ajax render 
+     * operation. This is activated if a css or js resource is added dynamically by effect of a refresh 
+     * (c:if, ui:include src="#{...}" or a manipulation of the tree). This ensures ajax updates of content 
      * using ui:include will be consistent. 
      */
     @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false")
-    public final static String INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX = "org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX";
+    public final static String INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX = 
+        "org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX";
     public final static boolean INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT = false;
     
     private boolean _prettyHtml;
@@ -426,7 +447,8 @@ public class MyfacesConfig
         setStrictJsf2RefreshTargetAjax(INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT);
     }
 
-    private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx) {
+    private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
+    {
         
         MyfacesConfig myfacesConfig = new MyfacesConfig();
 
@@ -435,22 +457,26 @@ public class MyfacesConfig
         myfacesConfig.setAllowJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_ALLOW_JAVASCRIPT,
                                                                  INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT));
 
-        myfacesConfig.setRenderClearJavascriptOnButton(getBooleanInitParameter(extCtx, INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
+        myfacesConfig.setRenderClearJavascriptOnButton(getBooleanInitParameter(extCtx, 
+                                                            INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
                                                             INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT));
 
-        myfacesConfig.setRenderHiddenFieldsForLinkParams(getBooleanInitParameter(extCtx, INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS,
+        myfacesConfig.setRenderHiddenFieldsForLinkParams(getBooleanInitParameter(extCtx, 
+                INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS,
                 INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS_DEFAULT));
 
         myfacesConfig.setSaveFormSubmitLinkIE(getBooleanInitParameter(extCtx, INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE,
                                                             INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT));
         
-        myfacesConfig.setReadonlyAsDisabledForSelect(getBooleanInitParameter(extCtx, INIT_READONLY_AS_DISABLED_FOR_SELECT,
+        myfacesConfig.setReadonlyAsDisabledForSelect(getBooleanInitParameter(extCtx, 
+                                                                 INIT_READONLY_AS_DISABLED_FOR_SELECT,
                                                                  INIT_READONLY_AS_DISABLED_FOR_SELECT_DEFAULT));
         myfacesConfig.setRenderViewStateId(getBooleanInitParameter(extCtx, INIT_PARAM_RENDER_VIEWSTATE_ID,
                                                                    INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT));
         myfacesConfig.setStrictXhtmlLinks(getBooleanInitParameter(extCtx, INIT_PARAM_STRICT_XHTML_LINKS,
                                                                   INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT));
-        myfacesConfig.setRenderFormSubmitScriptInline(getBooleanInitParameter(extCtx, INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE,
+        myfacesConfig.setRenderFormSubmitScriptInline(getBooleanInitParameter(extCtx,
+                                                                  INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE,
                                                                   INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT));
         
         myfacesConfig.setConfigRefreshPeriod(getLongInitParameter(extCtx, INIT_PARAM_CONFIG_REFRESH_PERIOD,
@@ -461,7 +487,8 @@ public class MyfacesConfig
 
         myfacesConfig.setDelegateFacesServlet(extCtx.getInitParameter(INIT_PARAM_DELEGATE_FACES_SERVLET));
         
-        String refreshTransientBuildOnPSS = getStringInitParameter(extCtx, INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, 
+        String refreshTransientBuildOnPSS = getStringInitParameter(extCtx, 
+                INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, 
                 INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT);
         
         if (refreshTransientBuildOnPSS == null)
@@ -491,10 +518,12 @@ public class MyfacesConfig
                 INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE, 
                 INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT));
         
-        myfacesConfig.setValidateXML(getBooleanInitParameter(extCtx, INIT_PARAM_VALIDATE_XML, INIT_PARAM_VALIDATE_XML_DEFAULT));
+        myfacesConfig.setValidateXML(getBooleanInitParameter(extCtx, INIT_PARAM_VALIDATE_XML, 
+                INIT_PARAM_VALIDATE_XML_DEFAULT));
         
         myfacesConfig.setWrapScriptContentWithXmlCommentTag(getBooleanInitParameter(extCtx, 
-                INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG, INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT));
+                INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG, 
+                INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT));
         
         myfacesConfig.setDebugPhaseListenerEnabled(getBooleanInitParameter(extCtx, INIT_PARAM_DEBUG_PHASE_LISTENER,
                 INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT));
@@ -538,14 +567,16 @@ public class MyfacesConfig
         {
             if (log.isLoggable(Level.INFO))
             {
-                log.info("Tomahawk jar not available. Autoscrolling, DetectJavascript, AddResourceClass and CheckExtensionsFilter are disabled now.");
+                log.info("Tomahawk jar not available. Autoscrolling, DetectJavascript, "+
+                "AddResourceClass and CheckExtensionsFilter are disabled now.");
             }
         }*/
 
         /*
         if(RI_IMPL_AVAILABLE && MYFACES_IMPL_AVAILABLE)
         {
-            log.severe("Both MyFaces and the RI are on your classpath. Please make sure to use only one of the two JSF-implementations.");
+            log.severe("Both MyFaces and the RI are on your classpath. Please make sure to"+
+            " use only one of the two JSF-implementations.");
         }*/
         return myfacesConfig;
     }
@@ -557,20 +588,24 @@ public class MyfacesConfig
         String strValue = externalContext.getInitParameter(paramName);
         if (strValue == null)
         {
-            //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + paramName + "' found, using default value " + defaultValue);
+            //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + 
+            // paramName + "' found, using default value " + defaultValue);
             return defaultValue;
         }
-        else if (strValue.equalsIgnoreCase("true") || strValue.equalsIgnoreCase("on") || strValue.equalsIgnoreCase("yes"))
+        else if (strValue.equalsIgnoreCase("true") || strValue.equalsIgnoreCase("on") || 
+                strValue.equalsIgnoreCase("yes"))
         {
             return true;
         }
-        else if (strValue.equalsIgnoreCase("false") || strValue.equalsIgnoreCase("off") || strValue.equalsIgnoreCase("no"))
+        else if (strValue.equalsIgnoreCase("false") || strValue.equalsIgnoreCase("off") || 
+                strValue.equalsIgnoreCase("no"))
         {
             return false;
         }
         else
         {
-            //if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" + paramName + "' (='" + strValue + "'), using default value " + defaultValue);
+            //if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" + 
+            //paramName + "' (='" + strValue + "'), using default value " + defaultValue);
             return defaultValue;
         }
     }
@@ -582,7 +617,9 @@ public class MyfacesConfig
         String strValue = externalContext.getInitParameter(paramName);
         if (strValue == null)
         {
-            //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + paramName + "' found, using default value " + defaultValue); //defaultValue==null should not be a problem here
+            //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + paramName +
+            //"' found, using default value " + defaultValue); //defaultValue==null should not be 
+            //a problem here
             return defaultValue;
         }
         
@@ -591,19 +628,25 @@ public class MyfacesConfig
 
     private static long getLongInitParameter(ExternalContext externalContext,
                                                   String paramName,
-                                                  long defaultValue) {
+                                                  long defaultValue)
+    {
        String strValue = externalContext.getInitParameter(paramName);
        if (strValue == null)
        {
-           //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" +paramName +"' found, using default value " +defaultValue);
+           //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" +paramName +
+           //"' found, using default value " +defaultValue);
            return defaultValue;
        }
        else
        {
-           try {
+           try
+           {
                return Long.parseLong(strValue);
-           } catch (NumberFormatException e) {
-               //if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" + paramName + "' (='" + strValue + "'), using default value " + defaultValue);
+           }
+           catch (NumberFormatException e)
+           {
+               //if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" +
+               //paramName + "' (='" + strValue + "'), using default value " + defaultValue);
            }
            return defaultValue;
        }
@@ -663,20 +706,23 @@ public class MyfacesConfig
     /**
      * JSF API 1.2 defines a "javax.faces.ViewState" client parameter, that must be rendered as both the "name"
      * and the "id" attribute of the hidden input that is rendered for the purpose of state saving
-     * (see <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/javax/faces/render/ResponseStateManager.html#VIEW_STATE_PARAM">API</a>).
+     * (see ResponseStateManager.VIEW_STATE_PARAM).
      * Actually this causes duplicate id attributes and thus invalid XHTML pages when multiple forms are rendered on
      * one page. With the {@link #INIT_PARAM_RENDER_VIEWSTATE_ID} context parameter you can tune this behaviour.
      * <br/>Set it to
      * <ul><li>true - to render JSF 1.2 compliant id attributes (that might cause invalid XHTML), or</li>
-     * <li>false - to omit rendering of the id attribute (which is only needed for very special AJAX/Javascript components)</li></ul>
+     * <li>false - to omit rendering of the id attribute (which is only needed for very special AJAX/Javascript 
+     * components)</li></ul>
      * Default value is: true (for backwards compatibility and JSF 1.2 compliancy) 
      * @return true, if the client state hidden input "javax.faces.ViewState" id attribute should be rendered
      */
-    public boolean isRenderViewStateId() {
+    public boolean isRenderViewStateId()
+    {
         return _renderViewStateId;
     }
 
-    public void setRenderViewStateId(boolean renderViewStateId) {
+    public void setRenderViewStateId(boolean renderViewStateId)
+    {
         _renderViewStateId = renderViewStateId;
     }
 
@@ -691,14 +737,16 @@ public class MyfacesConfig
      * "bug compatible" to the Sun RI which renders plain "&amp;" chars in links as well.</p>
      * @see <a href="http://www.w3.org/TR/html401/charset.html#h-5.3.2">HTML 4.01 Specification</a>
      * @see <a href="http://issues.apache.org/jira/browse/MYFACES-1774">Jira: MYFACES-1774</a>
-     * @return true if ampersand characters ("&amp;") should be correctly rendered as "&amp;amp;" entities within link urls (=default),
-     *         false for old (XHTML incompatible) behaviour
+     * @return true if ampersand characters ("&amp;") should be correctly rendered as "&amp;amp;" entities 
+     *         within link urls (=default), false for old (XHTML incompatible) behaviour
      */
-    public boolean isStrictXhtmlLinks() {
+    public boolean isStrictXhtmlLinks()
+    {
         return _strictXhtmlLinks;
     }
 
-    public void setStrictXhtmlLinks(boolean strictXhtmlLinks) {
+    public void setStrictXhtmlLinks(boolean strictXhtmlLinks)
+    {
         _strictXhtmlLinks = strictXhtmlLinks;
     }
 

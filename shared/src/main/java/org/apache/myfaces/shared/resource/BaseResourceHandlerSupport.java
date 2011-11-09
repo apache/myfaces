@@ -38,7 +38,8 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
 {
 
     /**
-     * Set the max time in miliseconds set on the "Expires" header for a resource rendered by the default ResourceHandler.
+     * Set the max time in miliseconds set on the "Expires" header for a resource rendered by 
+     * the default ResourceHandler.
      * (default to one week in miliseconds or 604800000) 
      */
     @JSFWebConfigParam(since="2.0", defaultValue="604800000", group="resources", tags="performance")

@@ -175,13 +175,15 @@ public class ResourceImpl extends Resource
                         }
                         catch(ELException e)
                         {
-                            ExceptionQueuedEventContext equecontext = new ExceptionQueuedEventContext (context, e, null);
+                            ExceptionQueuedEventContext equecontext = new ExceptionQueuedEventContext (
+                                    context, e, null);
                             context.getApplication().publishEvent (context, ExceptionQueuedEvent.class, equecontext);
                             
                             Logger log = Logger.getLogger(ResourceImpl.class.getName());
                             if (log.isLoggable(Level.SEVERE))
                             {
-                                log.severe("Cannot evaluate EL expression " + convertToExpression(expressionList) + " in resource " + getLibraryName() + ":" + getResourceName());
+                                log.severe("Cannot evaluate EL expression " + convertToExpression(expressionList)
+                                        + " in resource " + getLibraryName() + ":" + getResourceName());
                             }
                             
                             delegate.unread(c3);

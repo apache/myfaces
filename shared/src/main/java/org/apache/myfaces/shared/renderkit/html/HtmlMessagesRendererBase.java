@@ -68,7 +68,8 @@ public abstract class HtmlMessagesRendererBase
     }
 
     protected void renderMessages(FacesContext facesContext,
-                                  UIComponent messages, boolean alwaysRenderSpan, boolean renderDivWhenNoMessagesAndIdSet)
+                                  UIComponent messages, boolean alwaysRenderSpan, 
+                                  boolean renderDivWhenNoMessagesAndIdSet)
             throws IOException
     {
         // check the for attribute
@@ -79,7 +80,11 @@ public abstract class HtmlMessagesRendererBase
             forComponent = messages.findComponent(forAttr);
             if (forComponent == null)
             {
-                log.severe("Could not render Messages. Unable to find component '" + forAttr + "' (calling findComponent on component '" + messages.getClientId(facesContext) + "'). If the provided id was correct, wrap the message and its component into an h:panelGroup or h:panelGrid.");
+                log.severe("Could not render Messages. Unable to find component '"
+                        + forAttr + "' (calling findComponent on component '" 
+                        + messages.getClientId(facesContext)
+                        + "'). If the provided id was correct, wrap the message and its "
+                        + "component into an h:panelGroup or h:panelGrid.");
                 return;
             }
         }
@@ -113,7 +118,8 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            if (renderDivWhenNoMessagesAndIdSet && messages.getId() != null && !messages.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+            if (renderDivWhenNoMessagesAndIdSet && messages.getId() != null && 
+                    !messages.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
             {
                 ResponseWriter writer = facesContext.getResponseWriter();
                 writer.startElement(HTML.DIV_ELEM, messages);
@@ -134,7 +140,8 @@ public abstract class HtmlMessagesRendererBase
                 writer.writeAttribute(HTML.ID_ATTR,messages.getClientId(facesContext),null);
                 if(messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR)!=null)
                 {
-                    writer.writeAttribute(HTML.CLASS_ATTR, messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR), null);
+                    writer.writeAttribute(
+                            HTML.CLASS_ATTR, messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR), null);
                 }
                 if(messages.getAttributes().get(JSFAttr.STYLE_ATTR)!=null)
                 {
@@ -172,7 +179,8 @@ public abstract class HtmlMessagesRendererBase
         HtmlRendererUtils.renderHTMLAttributes(writer, messages, HTML.UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE);
 
         HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_ATTR, HTML.STYLE_ATTR, getComponentStyle(messages));
-        HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_CLASS_ATTR, HTML.STYLE_CLASS_ATTR, getComponentStyleClass(messages));
+        HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_CLASS_ATTR, HTML.STYLE_CLASS_ATTR, 
+                getComponentStyleClass(messages));
 
         while(messagesIterator.hasNext())
         {
@@ -224,7 +232,8 @@ public abstract class HtmlMessagesRendererBase
         HtmlRendererUtils.renderHTMLAttributes(writer, messages, HTML.UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE);
         
         HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_ATTR, HTML.STYLE_ATTR, getComponentStyle(messages));
-        HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_CLASS_ATTR, HTML.STYLE_CLASS_ATTR, getComponentStyleClass(messages));
+        HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_CLASS_ATTR, HTML.STYLE_CLASS_ATTR, 
+                getComponentStyleClass(messages));
         
         while(messagesIterator.hasNext())
         {
@@ -379,7 +388,8 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.TOOLTIP_ATTR, false);
+            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
+                    org.apache.myfaces.shared.renderkit.JSFAttr.TOOLTIP_ATTR, false);
         }
     }
 
@@ -403,7 +413,8 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
+            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+                    component, JSFAttr.SHOW_DETAIL_ATTR, false);
         }
     }
 
@@ -415,7 +426,8 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, JSFAttr.GLOBAL_ONLY_ATTR, false);
+            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+                    component, JSFAttr.GLOBAL_ONLY_ATTR, false);
         }
     }
 
@@ -448,7 +460,8 @@ public abstract class HtmlMessagesRendererBase
             return ((UIMessages) component).isRedisplay();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.REDISPLAY_ATTR, true);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+                component, org.apache.myfaces.shared.renderkit.JSFAttr.REDISPLAY_ATTR, true);
         
     }
 
@@ -462,7 +475,8 @@ public abstract class HtmlMessagesRendererBase
         private boolean _redisplay;
         private Object _next;
 
-        public MessagesIterator(FacesContext facesContext, boolean globalOnly, boolean redisplay,  UIComponent forComponent)
+        public MessagesIterator(FacesContext facesContext, boolean globalOnly, boolean redisplay,
+                UIComponent forComponent)
         {
             _facesContext = facesContext;
             // The for attribute is mutually exclusive with globalOnly and take precedence if used.

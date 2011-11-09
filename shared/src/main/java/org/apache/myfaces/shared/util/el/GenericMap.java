@@ -18,67 +18,80 @@
  */
 package org.apache.myfaces.shared.util.el;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collection;
 
 /**
  * @author Sylvain Vieujot (latest modification by $Author$)
  * @version $Revision$ $Date$
  *
  */
-public abstract class GenericMap implements Map {
+public abstract class GenericMap implements Map
+{
 
     /**
      * This method should return the result of the test.
      */
     protected abstract Object getValue(Object key);
 
-    public int size() {
+    public int size()
+    {
         return 1;
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return false;
     }
 
-    public boolean containsKey(Object key) {
+    public boolean containsKey(Object key)
+    {
         return true;
     }
 
-    public boolean containsValue(Object value) {
+    public boolean containsValue(Object value)
+    {
         return value instanceof Boolean;
     }
 
-    public Object get(Object key) {
+    public Object get(Object key)
+    {
         return getValue(key);
     }
 
-    public Object put(Object key, Object value) {
+    public Object put(Object key, Object value)
+    {
         return null;
     }
 
-    public Object remove(Object key) {
+    public Object remove(Object key)
+    {
         return null;
     }
 
-    public void putAll(Map m) {
+    public void putAll(Map m)
+    {
         // NoOp
     }
 
-    public void clear() {
+    public void clear()
+    {
         // NoOp
     }
 
-    public Set keySet() {
+    public Set keySet()
+    {
         return null;
     }
 
-    public Collection values() {
+    public Collection values()
+    {
         return null;
     }
 
-    public Set entrySet() {
+    public Set entrySet()
+    {
         return null;
     }
 }

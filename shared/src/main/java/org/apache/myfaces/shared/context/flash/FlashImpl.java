@@ -53,7 +53,7 @@ public class FlashImpl extends Flash
     
     // ~ static fields --------------------------------------------------------
     
-    private static final Logger logger = Logger.getLogger(FlashImpl.class.getName());
+    private static final Logger log = Logger.getLogger(FlashImpl.class.getName());
     
     /**
      * Defines whether flash scope is disabled, preventing add the Flash cookie to the response. 
@@ -321,11 +321,11 @@ public class FlashImpl extends Flash
         {
             if (alreadySet)
             {
-                logger.warning("Multiple call to setRedirect() ignored.");
+                log.warning("Multiple call to setRedirect() ignored.");
             }
             else // redirect = false
             {
-                logger.warning("Ignored call to setRedirect(false), because this "
+                log.warning("Ignored call to setRedirect(false), because this "
                         + "should only be set to true by the NavigationHandler. "
                         + "No one else should change it.");
             }
@@ -801,7 +801,7 @@ public class FlashImpl extends Flash
             if (facesContext.isPostback())
             {
                 // on a postback, we should always have a previousToken
-                logger.warning("Identifier for execute FlashMap was lost on " +
+                log.warning("Identifier for execute FlashMap was lost on " +
                         "the postback, thus FlashScope information is gone.");
             }
             
@@ -1064,7 +1064,8 @@ public class FlashImpl extends Flash
      */
     private void _checkFlashScopeDisabled()
     {
-        if (_flashScopeDisabled) {
+        if (_flashScopeDisabled)
+        {
             throw new FlashScopeDisabledException("Flash scope was disabled by context param " 
                 + FLASH_SCOPE_DISABLED_PARAM + " but erroneously accessed");
         }

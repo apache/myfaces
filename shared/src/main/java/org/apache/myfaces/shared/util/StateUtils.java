@@ -28,7 +28,6 @@ import java.security.AccessController;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,7 +88,8 @@ import org.apache.myfaces.shared.util.serial.SerialFactory;
  * @author Dennis C. Byrne
  * @see org.apache.myfaces.webapp.StartupServletContextListener
  */
-public final class StateUtils {
+public final class StateUtils
+{
 
     //private static final Log log = LogFactory.getLog(StateUtils.class);
     private static final Logger log = Logger.getLogger(StateUtils.class.getName());
@@ -104,7 +104,8 @@ public final class StateUtils {
     /**
      * Indicate if the view state is encrypted or not. By default, encryption is enabled.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.USE_ENCRYPTION",since="1.1",defaultValue="true",expectedValues="true,false",group="state")
+    @JSFWebConfigParam(name="org.apache.myfaces.USE_ENCRYPTION",since="1.1",
+            defaultValue="true",expectedValues="true,false",group="state")
     public static final String USE_ENCRYPTION = INIT_PREFIX + "USE_ENCRYPTION";
     
     /**
@@ -119,7 +120,8 @@ public final class StateUtils {
     /**
      * Indicate the encryption algorithm used for encrypt the view state.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM",since="1.1",defaultValue="DES",group="state",tags="performance")
+    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM",since="1.1",
+            defaultValue="DES",group="state",tags="performance")
     public static final String INIT_ALGORITHM = INIT_PREFIX + "ALGORITHM";
 
     /**
@@ -138,7 +140,8 @@ public final class StateUtils {
     /**
      * Defines the default mode and padding used for the encryption algorithm
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM.PARAMETERS",since="1.1",defaultValue="ECB/PKCS5Padding",group="state")
+    @JSFWebConfigParam(name="org.apache.myfaces.ALGORITHM.PARAMETERS",since="1.1",
+            defaultValue="ECB/PKCS5Padding",group="state")
     public static final String INIT_ALGORITHM_PARAM = INIT_ALGORITHM + ".PARAMETERS";
     
     /**
@@ -152,7 +155,8 @@ public final class StateUtils {
     /**
      * Indicate if the view state should be compressed before encrypted(optional) and encoded
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.COMPRESS_STATE_IN_CLIENT",since="1.1",defaultValue="false",expectedValues="true,false",group="state",tags="performance")
+    @JSFWebConfigParam(name="org.apache.myfaces.COMPRESS_STATE_IN_CLIENT",since="1.1",defaultValue="false",
+            expectedValues="true,false",group="state",tags="performance")
     public static final String COMPRESS_STATE_IN_CLIENT = INIT_PREFIX + "COMPRESS_STATE_IN_CLIENT";
 
     public static final String DEFAULT_MAC_ALGORITHM = "HmacSHA1";
@@ -161,7 +165,8 @@ public final class StateUtils {
      * Indicate the algorithm used to calculate the Message Authentication Code that is
      * added to the view state.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.MAC_ALGORITHM",defaultValue="HmacSHA1",group="state",tags="performance")
+    @JSFWebConfigParam(name="org.apache.myfaces.MAC_ALGORITHM",defaultValue="HmacSHA1",
+            group="state",tags="performance")
     public static final String INIT_MAC_ALGORITHM = "org.apache.myfaces.MAC_ALGORITHM";
     
     /**
@@ -184,7 +189,8 @@ public final class StateUtils {
         //nope
     }
 
-    private static void testConfiguration(ExternalContext ctx){
+    private static void testConfiguration(ExternalContext ctx)
+    {
 
         String algorithmParams = ctx.getInitParameter(INIT_ALGORITHM_PARAM);
         
@@ -237,7 +243,8 @@ public final class StateUtils {
      * This fires during the Render Response phase, saving state.
      */
 
-    public static final String construct(Object object, ExternalContext ctx){
+    public static final String construct(Object object, ExternalContext ctx)
+    {
         byte[] bytes = getAsByteArray(object, ctx);
         if( enableCompression(ctx) )
         {
@@ -559,7 +566,8 @@ public final class StateUtils {
                     {
                         //Put IOException and ClassNotFoundException as "checked" exceptions,
                         //so AccessController wrap them in a PrivilegedActionException
-                        public Object run() throws  PrivilegedActionException, IOException, ClassNotFoundException
+                        public Object run() throws PrivilegedActionException, 
+                                                   IOException, ClassNotFoundException
                         {
                             return ois.readObject();
                         }
@@ -650,25 +658,27 @@ public final class StateUtils {
           System.out.println(new String(bytes, ZIP_CHARSET));
     }
 
-    private static byte[] findInitializationVector(ExternalContext ctx) {
+    private static byte[] findInitializationVector(ExternalContext ctx)
+    {
         
         byte[] iv = null;
-        String _iv = ctx.getInitParameter(INIT_ALGORITHM_IV);
+        String ivString = ctx.getInitParameter(INIT_ALGORITHM_IV);
         
-        if(_iv == null)
+        if(ivString == null)
         {
-            _iv = ctx.getInitParameter(INIT_ALGORITHM_IV.toLowerCase());
+            ivString = ctx.getInitParameter(INIT_ALGORITHM_IV.toLowerCase());
         }
         
-        if (_iv != null)
+        if (ivString != null)
         {
-            iv = new Base64().decode(_iv.getBytes());
+            iv = new Base64().decode(ivString.getBytes());
         }
         
         return iv;
     }
 
-    private static String findAlgorithmParams(ExternalContext ctx) {
+    private static String findAlgorithmParams(ExternalContext ctx)
+    {
         
         String algorithmParams = ctx.getInitParameter(INIT_ALGORITHM_PARAM);
         
@@ -690,7 +700,8 @@ public final class StateUtils {
         return algorithmParams;
     }
 
-    private static String findAlgorithm(ExternalContext ctx) {
+    private static String findAlgorithm(ExternalContext ctx)
+    {
         
         String algorithm = ctx.getInitParameter(INIT_ALGORITHM);
         
@@ -702,7 +713,8 @@ public final class StateUtils {
         return findAlgorithm( algorithm );
     }
     
-    private static String findAlgorithm(ServletContext ctx) {
+    private static String findAlgorithm(ServletContext ctx)
+    {
 
         String algorithm = ctx.getInitParameter(INIT_ALGORITHM);
         
@@ -714,7 +726,8 @@ public final class StateUtils {
         return findAlgorithm( algorithm );
     }
     
-    private static String findAlgorithm(String initParam) {
+    private static String findAlgorithm(String initParam)
+    {
         
         if (initParam == null)
         {
@@ -740,7 +753,8 @@ public final class StateUtils {
      * stored in application scope where it can be used for all requests.
      */
     
-    public static void initSecret(ServletContext ctx){
+    public static void initSecret(ServletContext ctx)
+    {
         
         if(ctx == null)
         {
@@ -764,7 +778,8 @@ public final class StateUtils {
         {
             String algorithm = findAlgorithm(ctx);
             // you want to create this as few times as possible
-            ctx.setAttribute(INIT_SECRET_KEY_CACHE, new SecretKeySpec(findSecret(ctx, algorithm), algorithm));
+            ctx.setAttribute(INIT_SECRET_KEY_CACHE, new SecretKeySpec(
+                    findSecret(ctx, algorithm), algorithm));
         }
 
         if (log.isLoggable(Level.FINE))
@@ -783,7 +798,8 @@ public final class StateUtils {
         {
             String macAlgorithm = findMacAlgorithm(ctx);
             // init mac secret and algorithm 
-            ctx.setAttribute(INIT_MAC_SECRET_KEY_CACHE, new SecretKeySpec(findMacSecret(ctx, macAlgorithm), macAlgorithm));
+            ctx.setAttribute(INIT_MAC_SECRET_KEY_CACHE, new SecretKeySpec(
+                    findMacSecret(ctx, macAlgorithm), macAlgorithm));
         }
     }
     
@@ -860,7 +876,8 @@ public final class StateUtils {
         return findSecret(secret, algorithm);
     }
     
-    private static byte[] findSecret(String secret, String algorithm) {
+    private static byte[] findSecret(String secret, String algorithm)
+    {
         byte[] bytes = null;
         
         if(secret == null)
@@ -896,7 +913,8 @@ public final class StateUtils {
         return bytes;
     }
 
-    private static String findMacAlgorithm(ExternalContext ctx) {
+    private static String findMacAlgorithm(ExternalContext ctx)
+    {
         
         String algorithm = ctx.getInitParameter(INIT_MAC_ALGORITHM);
         
@@ -909,7 +927,8 @@ public final class StateUtils {
 
     }
     
-    private static String findMacAlgorithm(ServletContext ctx) {
+    private static String findMacAlgorithm(ServletContext ctx)
+    {
 
         String algorithm = ctx.getInitParameter(INIT_MAC_ALGORITHM);
         
@@ -922,7 +941,8 @@ public final class StateUtils {
         
     }
     
-    private static String findMacAlgorithm(String initParam) {
+    private static String findMacAlgorithm(String initParam)
+    {
         
         if (initParam == null)
         {
@@ -1011,7 +1031,8 @@ public final class StateUtils {
         return findMacSecret(secret, algorithm);
     }
 
-    private static byte[] findMacSecret(String secret, String algorithm) {
+    private static byte[] findMacSecret(String secret, String algorithm)
+    {
         byte[] bytes = null;
         
         if(secret == null)

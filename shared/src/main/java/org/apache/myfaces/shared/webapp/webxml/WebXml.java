@@ -144,9 +144,10 @@ public class WebXml
                     for (Iterator it2 = urlPatterns.iterator(); it2.hasNext(); )
                     {
                         String urlpattern = (String)it2.next();
-                        tempFacesServletMappings.add(new org.apache.myfaces.shared.webapp.webxml.ServletMapping(servletName,
-                                                                                                             servletClass,
-                                                                                                             urlpattern));
+                        tempFacesServletMappings.add(
+                                new org.apache.myfaces.shared.webapp.webxml.ServletMapping(servletName,
+                                                                                           servletClass,
+                                                                                           urlpattern));
                         if (log.isLoggable(Level.FINEST))
                         {
                             log.finest("adding mapping for servlet + " + servletName + " urlpattern = " + urlpattern);
@@ -247,9 +248,11 @@ public class WebXml
 
     protected boolean isOld(ExternalContext context)
     {
-        if (refreshPeriod > 0) {
+        if (refreshPeriod > 0)
+        {
             long ttl = this.parsingTime + refreshPeriod;
-            if (System.currentTimeMillis() > ttl) {
+            if (System.currentTimeMillis() > ttl)
+            {
                 long lastModified = WebXmlParser.getWebXmlLastModified(context);
                 return lastModified == 0 || lastModified > ttl;
             }
@@ -287,7 +290,8 @@ public class WebXml
 
     public static void update(ExternalContext context)
     {
-        if (getWebXml(context).isOld(context)){
+        if (getWebXml(context).isOld(context))
+        {
             WebXml.init(context);
         }
     }

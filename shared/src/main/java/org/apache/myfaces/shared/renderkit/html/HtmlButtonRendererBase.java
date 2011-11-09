@@ -19,7 +19,6 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -64,14 +63,16 @@ public class HtmlButtonRendererBase
 
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, UICommand.class);
+        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
+                facesContext, uiComponent, UICommand.class);
 
         //super.decode must not be called, because value is handled here
         if (!isReset(uiComponent) && isSubmitted(facesContext, uiComponent))
         {
             uiComponent.queueEvent(new ActionEvent(uiComponent));
 
-            org.apache.myfaces.shared.renderkit.RendererUtils.initPartialValidationAndModelUpdate(uiComponent, facesContext);
+            org.apache.myfaces.shared.renderkit.RendererUtils.initPartialValidationAndModelUpdate(
+                    uiComponent, facesContext);
         }
         
         if (uiComponent instanceof ClientBehaviorHolder &&
@@ -112,7 +113,8 @@ public class HtmlButtonRendererBase
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, UICommand.class);
+        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
+                facesContext, uiComponent, UICommand.class);
 
         String clientId = uiComponent.getClientId(facesContext);
 
@@ -167,7 +169,8 @@ public class HtmlButtonRendererBase
         String image = RendererUtils.getIconSrc(facesContext, uiComponent, JSFAttr.IMAGE_ATTR);
         if (image != null)
         {
-            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_IMAGE, org.apache.myfaces.shared.renderkit.JSFAttr.TYPE_ATTR);
+            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_IMAGE, 
+                    org.apache.myfaces.shared.renderkit.JSFAttr.TYPE_ATTR);
             writer.writeURIAttribute(HTML.SRC_ATTR, image, org.apache.myfaces.shared.renderkit.JSFAttr.IMAGE_ATTR);
         }
         else
@@ -182,7 +185,8 @@ public class HtmlButtonRendererBase
             Object value = getValue(uiComponent);
             if (value != null)
             {
-                writer.writeAttribute(org.apache.myfaces.shared.renderkit.html.HTML.VALUE_ATTR, value, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+                writer.writeAttribute(org.apache.myfaces.shared.renderkit.html.HTML.VALUE_ATTR, value, 
+                        org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
             }
         }
         
@@ -192,7 +196,8 @@ public class HtmlButtonRendererBase
         {
             if (!reset && !button)
             {
-                String onClick = buildBehaviorizedOnClick(uiComponent, behaviors, facesContext, writer, formInfo, validParams);
+                String onClick = buildBehaviorizedOnClick(
+                        uiComponent, behaviors, facesContext, writer, formInfo, validParams);
                 if (onClick.length() != 0)
                 {
                     writer.writeAttribute(HTML.ONCLICK_ATTR, onClick.toString(), null);
@@ -200,7 +205,8 @@ public class HtmlButtonRendererBase
             }
             else
             {
-                Collection<ClientBehaviorContext.Parameter> paramList = HtmlRendererUtils.getClientBehaviorContextParameters(
+                Collection<ClientBehaviorContext.Parameter> paramList = 
+                    HtmlRendererUtils.getClientBehaviorContextParameters(
                         HtmlRendererUtils.mapAttachedParamsToStringValues(facesContext, uiComponent));
                     
                 String onClick = HtmlRendererUtils.buildBehaviorChain(facesContext, uiComponent,
@@ -252,7 +258,8 @@ public class HtmlButtonRendererBase
         
         if (behaviors != null && !behaviors.isEmpty())
         {
-            HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, uiComponent, behaviors);
+            HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
+                    facesContext, writer, uiComponent, behaviors);
             HtmlRendererUtils.renderBehaviorizedFieldEventHandlers(facesContext, writer, uiComponent, behaviors);
         }
         else
@@ -274,19 +281,22 @@ public class HtmlButtonRendererBase
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, org.apache.myfaces.shared.renderkit.JSFAttr.DISABLED_ATTR);
+            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, 
+                    org.apache.myfaces.shared.renderkit.JSFAttr.DISABLED_ATTR);
         }
         
         if (isReadonly(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.READONLY_ATTR, Boolean.TRUE, org.apache.myfaces.shared.renderkit.JSFAttr.READONLY_ATTR);
+            writer.writeAttribute(HTML.READONLY_ATTR, Boolean.TRUE, 
+                    org.apache.myfaces.shared.renderkit.JSFAttr.READONLY_ATTR);
         }
 
         writer.endElement(HTML.INPUT_ELEM);
         
         if (formInfo != null)
         {
-            HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(formInfo.getForm(), facesContext, writer);
+            HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(
+                    formInfo.getForm(), facesContext, writer);
         }
         
         // render the UIParameter children of the commandButton (since 2.0)
@@ -305,9 +315,12 @@ public class HtmlButtonRendererBase
     private boolean hasSubmittingBehavior(Map<String, List<ClientBehavior>> clientBehaviors, String eventName)
     {
         List<ClientBehavior> eventBehaviors = clientBehaviors.get(eventName);
-        if (eventBehaviors != null && !eventBehaviors.isEmpty()) {
-            for (ClientBehavior behavior : eventBehaviors) {
-                if (behavior.getHints().contains(ClientBehaviorHint.SUBMITTING)) {
+        if (eventBehaviors != null && !eventBehaviors.isEmpty())
+        {
+            for (ClientBehavior behavior : eventBehaviors)
+            {
+                if (behavior.getHints().contains(ClientBehaviorHint.SUBMITTING))
+                {
                     return true;
                 }
             }
@@ -316,15 +329,18 @@ public class HtmlButtonRendererBase
     }
     
     protected String buildBehaviorizedOnClick(UIComponent uiComponent, Map<String, List<ClientBehavior>> behaviors, 
-                                              FacesContext facesContext, ResponseWriter writer, FormInfo nestedFormInfo, List<UIParameter> validParams)
+                                              FacesContext facesContext, ResponseWriter writer, 
+                                              FormInfo nestedFormInfo, List<UIParameter> validParams)
         throws IOException
     {
-        //we can omit autoscroll here for now maybe we should check if it is an ajax behavior and omit it only in this case
+        //we can omit autoscroll here for now maybe we should check if it is an ajax 
+        //behavior and omit it only in this case
         StringBuilder userOnClick = new StringBuilder();
         //user onclick part 
         String commandOnClick = (String) uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
 
-        if (commandOnClick != null) {
+        if (commandOnClick != null)
+        {
             userOnClick.append(commandOnClick);
             userOnClick.append(';');
         }
@@ -341,17 +357,20 @@ public class HtmlButtonRendererBase
             // hidden fields, because this code is called for a submit button.
             //if (behaviors.isEmpty() && validParams != null && !validParams.isEmpty() )
             //{
-            //    rendererOnClick.append(buildServerOnclick(facesContext, uiComponent, uiComponent.getClientId(facesContext), nestedFormInfo, validParams));
+            //    rendererOnClick.append(buildServerOnclick(facesContext, uiComponent, 
+            //            uiComponent.getClientId(facesContext), nestedFormInfo, validParams));
             //}
             //else
             //{
                 String formName = nestedFormInfo.getFormName();
-                if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext())) {
+                if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext()))
+                {
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
                     HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(rendererOnClick, formName);
                 }
         
-                if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll()) {
+                if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll())
+                {
                     HtmlRendererUtils.appendAutoScrollAssignment(rendererOnClick, formName);
                 }
             //}
@@ -375,14 +394,16 @@ public class HtmlButtonRendererBase
 
         StringBuffer onClick = new StringBuffer();
 
-        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm())) {
+        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
+        {
             onClick.append("submitForm('");
             onClick.append(formInfo.getForm().getClientId(facesContext));
             onClick.append("',1,{source:'");
             onClick.append(component.getClientId(facesContext));
             onClick.append("'});return false;");
         }
-        else {
+        else
+        {
             StringBuffer params = addChildParameters(facesContext, component, nestingForm, validParams);
 
             String target = getTarget(component);
@@ -402,7 +423,8 @@ public class HtmlButtonRendererBase
                     append(component.getClientId(facesContext)).append("'");
             }
 
-            if (params.length() > 2 || target != null) {
+            if (params.length() > 2 || target != null)
+            {
                 onClick.append(",").
                     append(target == null ? "null" : ("'" + target + "'")).append(",").
                     append(params);
@@ -418,7 +440,9 @@ public class HtmlButtonRendererBase
         return onClick.toString();
     }
     
-    private StringBuffer addChildParameters(FacesContext context, UIComponent component, UIComponent nestingForm, List<UIParameter> validParams) {
+    private StringBuffer addChildParameters(FacesContext context, UIComponent component, 
+            UIComponent nestingForm, List<UIParameter> validParams)
+    {
         //add child parameters
         StringBuffer params = new StringBuffer();
         params.append("[");
@@ -489,13 +513,16 @@ public class HtmlButtonRendererBase
         return params;
     }
 
-    private String getTarget(UIComponent component) {
+    private String getTarget(UIComponent component)
+    {
         // for performance reason: double check for the target attribute
         String target;
-        if (component instanceof HtmlCommandLink) {
+        if (component instanceof HtmlCommandLink)
+        {
             target = ((HtmlCommandLink) component).getTarget();
         }
-        else {
+        else
+        {
             target = (String) component.getAttributes().get(HTML.TARGET_ATTR);
         }
         return target;
@@ -552,11 +579,13 @@ public class HtmlButtonRendererBase
             
             if (validParams != null && !validParams.isEmpty() )
             {
-                StringBuffer params = addChildParameters(facesContext, uiComponent, nestedFormInfo.getForm(), validParams);
+                StringBuffer params = addChildParameters(
+                        facesContext, uiComponent, nestedFormInfo.getForm(), validParams);
 
                 String target = getTarget(uiComponent);
 
-                if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRenderFormSubmitScriptInline())
+                if (MyfacesConfig.getCurrentInstance(
+                        facesContext.getExternalContext()).isRenderFormSubmitScriptInline())
                 {
                     onClick.append("return ").
                         append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME).append("('").
@@ -571,7 +600,8 @@ public class HtmlButtonRendererBase
                         append(uiComponent.getClientId(facesContext)).append("'");
                 }
 
-                if (params.length() > 2 || target != null) {
+                if (params.length() > 2 || target != null)
+                {
                     onClick.append(",").
                         append(target == null ? "null" : ("'" + target + "'")).append(",").
                         append(params);
@@ -580,7 +610,8 @@ public class HtmlButtonRendererBase
 
                 //Not necessary since we are using oamSetHiddenInput to create input hidden fields
                 //render hidden field - todo: in here for backwards compatibility
-                if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
+                if (MyfacesConfig.getCurrentInstance(
+                        facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
                 {
                     String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(nestedFormInfo);
                     addHiddenCommandParameter(facesContext, nestedFormInfo.getForm(), hiddenFieldName);
@@ -590,13 +621,15 @@ public class HtmlButtonRendererBase
             {
         
                 if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext()) ||
-                        MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams() )
+                        MyfacesConfig.getCurrentInstance(
+                                facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams() )
                 {
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
                     HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(onClick, formName);
                 }
         
-                if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll()) {
+                if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll())
+                {
                     HtmlRendererUtils.appendAutoScrollAssignment(onClick, formName);
                 }
             }
@@ -621,7 +654,8 @@ public class HtmlButtonRendererBase
         return onClick;
     }
 
-    protected void addHiddenCommandParameter(FacesContext facesContext, UIComponent nestingForm, String hiddenFieldName)
+    protected void addHiddenCommandParameter(FacesContext facesContext, 
+            UIComponent nestingForm, String hiddenFieldName)
     {
         if (nestingForm != null)
         {
@@ -646,7 +680,8 @@ public class HtmlButtonRendererBase
             return ((HtmlCommandButton)uiComponent).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+                uiComponent, HTML.DISABLED_ATTR, false);
         
     }
 
@@ -656,7 +691,8 @@ public class HtmlButtonRendererBase
         {
             return ((HtmlCommandButton)uiComponent).isReadonly();
         }
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, HTML.READONLY_ATTR, false);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+                uiComponent, HTML.READONLY_ATTR, false);
     }
 
     private String getImage(UIComponent uiComponent)

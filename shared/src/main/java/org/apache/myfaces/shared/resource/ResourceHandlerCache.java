@@ -43,16 +43,21 @@ public class ResourceHandlerCache
      * 
      * <p>See org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED for details.</p>
      */
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="resources", classType="java.lang.Integer", tags="performance")
-    private static final String RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.RESOURCE_HANDLER_CACHE_SIZE";
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="resources", 
+            classType="java.lang.Integer", tags="performance")
+    private static final String RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE = 
+        "org.apache.myfaces.RESOURCE_HANDLER_CACHE_SIZE";
     private static final int RESOURCE_HANDLER_CACHE_DEFAULT_SIZE = 500;
 
     /**
-     * Enable or disable the cache used to "remember" if a resource handled by the default ResourceHandler exists or not.
+     * Enable or disable the cache used to "remember" if a resource handled by 
+     * the default ResourceHandler exists or not.
      * 
      */
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="resources", expectedValues="true,false", tags="performance")
-    private static final String RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="resources", 
+            expectedValues="true,false", tags="performance")
+    private static final String RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE = 
+        "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
     private static final boolean RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT = true;
 
     public ResourceValue getResource(String resourceName, String libraryName,
@@ -123,7 +128,8 @@ public class ResourceHandlerCache
             //first, check to make sure that ProjectStage is production, if not, skip caching
             if (!facesContext.isProjectStage(ProjectStage.Production))
             {
-                return _resourceCacheEnabled = Boolean.FALSE;
+                _resourceCacheEnabled = Boolean.FALSE;
+                return _resourceCacheEnabled;
             }
 
             ExternalContext externalContext = facesContext.getExternalContext();

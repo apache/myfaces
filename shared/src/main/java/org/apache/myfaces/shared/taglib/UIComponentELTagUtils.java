@@ -47,16 +47,18 @@ import javax.faces.validator.MethodExpressionValidator;
 public class UIComponentELTagUtils
 {
     //private static final Log log = LogFactory.getLog(UIComponentELTagUtils.class);
-    private static final Logger log = Logger.getLogger(UIComponentELTagUtils.class.getName());
+    private static final Logger log = Logger
+            .getLogger(UIComponentELTagUtils.class.getName());
 
-    private UIComponentELTagUtils() {}    //util class, no instantiation allowed
+    private UIComponentELTagUtils()
+    {
+    } //util class, no instantiation allowed
 
     /**
      * @since 1.2
      */
     public static void setIntegerProperty(UIComponent component,
-                                          String propName,
-                                          ValueExpression value)
+            String propName, ValueExpression value)
     {
         setIntegerProperty(component, propName, value, null);
     }
@@ -65,15 +67,14 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void setIntegerProperty(UIComponent component,
-                                         String propName,
-                                         ValueExpression value,
-                                         Integer defaultValue)
+            String propName, ValueExpression value, Integer defaultValue)
     {
         if (value != null)
         {
             if (value.isLiteralText())
             {
-                component.getAttributes().put(propName, Integer.valueOf(value.getExpressionString()));
+                component.getAttributes().put(propName,
+                        Integer.valueOf(value.getExpressionString()));
             }
             else
             {
@@ -89,13 +90,11 @@ public class UIComponentELTagUtils
         }
     }
 
-
     /**
      * @since 1.2
      */
-    public static void setLongProperty(UIComponent component,
-                                       String propName,
-                                       ValueExpression value)
+    public static void setLongProperty(UIComponent component, String propName,
+            ValueExpression value)
     {
         setLongProperty(component, propName, value, null);
     }
@@ -103,16 +102,15 @@ public class UIComponentELTagUtils
     /**
      * @since 1.2
      */
-    public static void setLongProperty(UIComponent component,
-                                         String propName,
-                                         ValueExpression value,
-                                         Long defaultValue)
+    public static void setLongProperty(UIComponent component, String propName,
+            ValueExpression value, Long defaultValue)
     {
         if (value != null)
         {
             if (value.isLiteralText())
             {
-                component.getAttributes().put(propName, Long.valueOf(value.getExpressionString()));
+                component.getAttributes().put(propName,
+                        Long.valueOf(value.getExpressionString()));
             }
             else
             {
@@ -132,8 +130,7 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void setStringProperty(UIComponent component,
-                                     String propName,
-                                     ValueExpression value)
+            String propName, ValueExpression value)
     {
         setStringProperty(component, propName, value, null);
     }
@@ -142,15 +139,14 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void setStringProperty(UIComponent component,
-                                         String propName,
-                                         ValueExpression value,
-                                         String defaultValue)
+            String propName, ValueExpression value, String defaultValue)
     {
         if (value != null)
         {
             if (value.isLiteralText())
             {
-                component.getAttributes().put(propName, value.getExpressionString());
+                component.getAttributes().put(propName,
+                        value.getExpressionString());
             }
             else
             {
@@ -166,13 +162,11 @@ public class UIComponentELTagUtils
         }
     }
 
-
     /**
      * @since 1.2
      */
     public static void setBooleanProperty(UIComponent component,
-                                      String propName,
-                                      ValueExpression value)
+            String propName, ValueExpression value)
     {
         setBooleanProperty(component, propName, value, null);
     }
@@ -181,15 +175,14 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void setBooleanProperty(UIComponent component,
-                                      String propName,
-                                      ValueExpression value,
-                                      Boolean defaultValue)
+            String propName, ValueExpression value, Boolean defaultValue)
     {
         if (value != null)
         {
             if (value.isLiteralText())
             {
-                component.getAttributes().put(propName, Boolean.valueOf(value.getExpressionString()));
+                component.getAttributes().put(propName,
+                        Boolean.valueOf(value.getExpressionString()));
             }
             else
             {
@@ -209,40 +202,43 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void setValueProperty(FacesContext context,
-                                        UIComponent component,
-                                        ValueExpression value)
+            UIComponent component, ValueExpression value)
     {
         if (value != null)
         {
             if (!value.isLiteralText())
             {
-                component.setValueExpression(org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR, value);
+                component.setValueExpression(
+                        org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR,
+                        value);
             }
             else if (component instanceof UICommand)
             {
-                ((UICommand)component).setValue(value.getExpressionString());
+                ((UICommand) component).setValue(value.getExpressionString());
             }
             else if (component instanceof UIParameter)
             {
-                ((UIParameter)component).setValue(value.getExpressionString());
+                ((UIParameter) component).setValue(value.getExpressionString());
             }
             else if (component instanceof UISelectBoolean)
             {
-                ((UISelectBoolean)component).setValue(Boolean.valueOf(value.getExpressionString()));
+                ((UISelectBoolean) component).setValue(Boolean.valueOf(value
+                        .getExpressionString()));
             }
             else if (component instanceof UIGraphic)
             {
-                ((UIGraphic)component).setValue(value.getExpressionString());
+                ((UIGraphic) component).setValue(value.getExpressionString());
             }
             //Since many input components are ValueHolders the special components
             //must come first, ValueHolder is the last resort.
             else if (component instanceof ValueHolder)
             {
-                ((ValueHolder)component).setValue(value.getExpressionString());
+                ((ValueHolder) component).setValue(value.getExpressionString());
             }
             else
             {
-                log.severe("Component " + component.getClass().getName() + " is no ValueHolder, cannot set value.");
+                log.severe("Component " + component.getClass().getName()
+                        + " is no ValueHolder, cannot set value.");
             }
         }
     }
@@ -251,8 +247,7 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void setConverterProperty(FacesContext context,
-                                        UIComponent component,
-                                        ValueExpression value)
+            UIComponent component, ValueExpression value)
     {
         if (value != null)
         {
@@ -260,18 +255,24 @@ public class UIComponentELTagUtils
             {
                 if (value.isLiteralText())
                 {
-                    FacesContext facesContext = FacesContext.getCurrentInstance();
-                    Converter converter = facesContext.getApplication().createConverter(value.getExpressionString());
-                    ((ValueHolder)component).setConverter(converter);
+                    FacesContext facesContext = FacesContext
+                            .getCurrentInstance();
+                    Converter converter = facesContext.getApplication()
+                            .createConverter(value.getExpressionString());
+                    ((ValueHolder) component).setConverter(converter);
                 }
                 else
                 {
-                    component.setValueExpression(org.apache.myfaces.shared.renderkit.JSFAttr.CONVERTER_ATTR, value);
+                    component
+                            .setValueExpression(
+                                    org.apache.myfaces.shared.renderkit.JSFAttr.CONVERTER_ATTR,
+                                    value);
                 }
             }
             else
             {
-                log.severe("Component " + component.getClass().getName() + " is no ValueHolder, cannot set value.");
+                log.severe("Component " + component.getClass().getName()
+                        + " is no ValueHolder, cannot set value.");
             }
         }
     }
@@ -280,17 +281,19 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void addValidatorProperty(FacesContext context,
-                                            UIComponent component,
-                                            MethodExpression validator)
+            UIComponent component, MethodExpression validator)
     {
         if (validator != null)
         {
             if (!(component instanceof EditableValueHolder))
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " is no EditableValueHolder");
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context)
+                        + " is no EditableValueHolder");
             }
 
-            ((EditableValueHolder)component).addValidator(new MethodExpressionValidator(validator));
+            ((EditableValueHolder) component)
+                    .addValidator(new MethodExpressionValidator(validator));
         }
     }
 
@@ -298,9 +301,7 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void setValueBinding(FacesContext context,
-                                       UIComponent component,
-                                       String propName,
-                                       ValueExpression value)
+            UIComponent component, String propName, ValueExpression value)
     {
         if (value != null)
         {
@@ -310,7 +311,9 @@ public class UIComponentELTagUtils
             }
             else
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " attribute " + propName + " must be a value reference, was " + value);
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context) + " attribute "
+                        + propName + " must be a value reference, was " + value);
             }
         }
     }
@@ -319,17 +322,18 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void setActionProperty(FacesContext context,
-                                         UIComponent component,
-                                         MethodExpression action)
+            UIComponent component, MethodExpression action)
     {
         if (action != null)
         {
             if (!(component instanceof ActionSource2))
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " is no ActionSource2");
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context)
+                        + " is no ActionSource2");
             }
 
-            ((ActionSource2)component).setActionExpression(action);
+            ((ActionSource2) component).setActionExpression(action);
         }
     }
 
@@ -337,17 +341,20 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void addActionListenerProperty(FacesContext context,
-                                                 UIComponent component,
-                                                 MethodExpression actionListener)
+            UIComponent component, MethodExpression actionListener)
     {
         if (actionListener != null)
         {
             if (!(component instanceof ActionSource2))
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " is no ActionSource");
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context)
+                        + " is no ActionSource");
             }
 
-            ((ActionSource2)component).addActionListener(new MethodExpressionActionListener(actionListener));
+            ((ActionSource2) component)
+                    .addActionListener(new MethodExpressionActionListener(
+                            actionListener));
         }
     }
 
@@ -355,48 +362,56 @@ public class UIComponentELTagUtils
      * @since 1.2
      */
     public static void addValueChangedListenerProperty(FacesContext context,
-                                                       UIComponent component,
-                                                       MethodExpression valueChangedListener)
+            UIComponent component, MethodExpression valueChangedListener)
     {
         if (valueChangedListener != null)
         {
             if (!(component instanceof EditableValueHolder))
             {
-                throw new IllegalArgumentException("Component " + component.getClientId(context) + " is no EditableValueHolder");
+                throw new IllegalArgumentException("Component "
+                        + component.getClientId(context)
+                        + " is no EditableValueHolder");
             }
 
-            ((EditableValueHolder)component).addValueChangeListener(
-                    new MethodExpressionValueChangeListener(valueChangedListener));
+            ((EditableValueHolder) component)
+                    .addValueChangeListener(new MethodExpressionValueChangeListener(
+                            valueChangedListener));
         }
     }
 
     /**
      * @since 1.2
      */
-    public static Object evaluateValueExpression(ELContext elContext, ValueExpression valueExpression )
+    public static Object evaluateValueExpression(ELContext elContext,
+            ValueExpression valueExpression)
     {
-        return valueExpression.isLiteralText() ? valueExpression.getExpressionString() : valueExpression.getValue(elContext);
+        return valueExpression.isLiteralText() ? valueExpression
+                .getExpressionString() : valueExpression.getValue(elContext);
     }
 
     /**
      * @since 1.2
      */
-    public static Boolean getBooleanValue(ELContext elContext, ValueExpression valueExpression)
+    public static Boolean getBooleanValue(ELContext elContext,
+            ValueExpression valueExpression)
     {
-        if (valueExpression.isLiteralText()){
+        if (valueExpression.isLiteralText())
+        {
             return Boolean.valueOf(valueExpression.getExpressionString());
         }
-        
+
         return (Boolean) valueExpression.getValue(elContext);
     }
 
-    public static Integer getIntegerValue(ELContext elContext, ValueExpression valueExpression)
+    public static Integer getIntegerValue(ELContext elContext,
+            ValueExpression valueExpression)
     {
-        if (valueExpression.isLiteralText()){
+        if (valueExpression.isLiteralText())
+        {
             return Integer.valueOf(valueExpression.getExpressionString());
         }
-        
-           return (Integer) valueExpression.getValue(elContext);
+
+        return (Integer) valueExpression.getValue(elContext);
     }
 
 }

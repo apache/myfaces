@@ -29,11 +29,11 @@ import java.util.NoSuchElementException;
  */
 public final class NullEnumeration implements Enumeration
 {
-    private static final NullEnumeration s_nullEnumeration = new NullEnumeration();
+    private static final NullEnumeration NULL_ENUMERATION = new NullEnumeration();
 
     public static final NullEnumeration instance()
     {
-        return s_nullEnumeration;
+        return NULL_ENUMERATION;
     }
 
     public boolean hasMoreElements()

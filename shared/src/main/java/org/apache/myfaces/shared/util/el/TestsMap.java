@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.shared.util.el;
 
-import org.apache.myfaces.shared.util.el.GenericMap;
 
 /**
  * You can use this class to perform tests.
@@ -27,18 +26,21 @@ import org.apache.myfaces.shared.util.el.GenericMap;
  * @author Sylvain Vieujot (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class TestsMap extends GenericMap {
+public abstract class TestsMap extends GenericMap
+{
 
     /**
      * This method should return the result of the test.
      */
     public abstract boolean getTest(String testKey);
 
-    protected Object getValue(Object testKey){
+    protected Object getValue(Object testKey)
+    {
         return Boolean.valueOf(getTest( (String) testKey ));
     }
 
-    public Object get(Object key) {
+    public Object get(Object key)
+    {
         if( ! (key instanceof String) )
         {
             return null;
@@ -46,7 +48,8 @@ public abstract class TestsMap extends GenericMap {
         return Boolean.valueOf(getTest( (String)key ));
     }
 
-    public Boolean put(String key, Boolean value) {
+    public Boolean put(String key, Boolean value)
+    {
         return Boolean.FALSE;
     }
 }

@@ -40,14 +40,14 @@ public class ResourceLoaderUtils
             "EEE, dd MMM yyyy HH:mm:ss zzz", "EEEEEE, dd-MMM-yy HH:mm:ss zzz",
             "EEE MMMM d HH:mm:ss yyyy" };
     
-    private static TimeZone __GMT = TimeZone.getTimeZone("GMT");
+    private static final TimeZone GMT = TimeZone.getTimeZone("GMT");
 
     public static String formatDateHeader(long value)
     {
         SimpleDateFormat format = new SimpleDateFormat(
                 HTTP_RESPONSE_DATE_HEADER,
                 Locale.US);
-        format.setTimeZone(__GMT);
+        format.setTimeZone(GMT);
         return format.format(new Date(value));
     }
     
@@ -60,12 +60,11 @@ public class ResourceLoaderUtils
             {
                 SimpleDateFormat format = new SimpleDateFormat(
                         HTTP_REQUEST_DATE_HEADER[i], Locale.US);
-                format.setTimeZone(__GMT);
+                format.setTimeZone(GMT);
                 date = format.parse(value);
             }
             catch (ParseException e)
             {
-                ;
             }
         }
         if (date == null)

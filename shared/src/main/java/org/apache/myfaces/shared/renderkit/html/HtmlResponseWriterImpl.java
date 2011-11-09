@@ -50,8 +50,8 @@ public class HtmlResponseWriterImpl
     private static final String DEFAULT_CHARACTER_ENCODING = "ISO-8859-1";
     private static final String UTF8 = "UTF-8";
 
-    private static String APPLICATION_XML_CONTENT_TYPE = "application/xml";
-    private static String TEXT_XML_CONTENT_TYPE = "text/xml";
+    private static final String APPLICATION_XML_CONTENT_TYPE = "application/xml";
+    private static final String TEXT_XML_CONTENT_TYPE = "text/xml";
     
     //private boolean _writeDummyForm = false;
     //private Set _dummyFormParams = null;
@@ -96,7 +96,7 @@ public class HtmlResponseWriterImpl
 
     private boolean _cdataOpen;
 
-    private static final Set<String> s_emptyHtmlElements = new HashSet<String>();
+    private static final Set<String> S_EMPTY_HTML_ELEMENTS = new HashSet<String>();
 
     private static final String CDATA_START = "<![CDATA[ \n";
     private static final String CDATA_START_NO_LINE_RETURN = "<![CDATA[";
@@ -110,19 +110,19 @@ public class HtmlResponseWriterImpl
 
     static
     {
-        s_emptyHtmlElements.add("area");
-        s_emptyHtmlElements.add("br");
-        s_emptyHtmlElements.add("base");
-        s_emptyHtmlElements.add("basefont");
-        s_emptyHtmlElements.add("col");
-        s_emptyHtmlElements.add("frame");
-        s_emptyHtmlElements.add("hr");
-        s_emptyHtmlElements.add("img");
-        s_emptyHtmlElements.add("input");
-        s_emptyHtmlElements.add("isindex");
-        s_emptyHtmlElements.add("link");
-        s_emptyHtmlElements.add("meta");
-        s_emptyHtmlElements.add("param");
+        S_EMPTY_HTML_ELEMENTS.add("area");
+        S_EMPTY_HTML_ELEMENTS.add("br");
+        S_EMPTY_HTML_ELEMENTS.add("base");
+        S_EMPTY_HTML_ELEMENTS.add("basefont");
+        S_EMPTY_HTML_ELEMENTS.add("col");
+        S_EMPTY_HTML_ELEMENTS.add("frame");
+        S_EMPTY_HTML_ELEMENTS.add("hr");
+        S_EMPTY_HTML_ELEMENTS.add("img");
+        S_EMPTY_HTML_ELEMENTS.add("input");
+        S_EMPTY_HTML_ELEMENTS.add("isindex");
+        S_EMPTY_HTML_ELEMENTS.add("link");
+        S_EMPTY_HTML_ELEMENTS.add("meta");
+        S_EMPTY_HTML_ELEMENTS.add("param");
     }
 
     public HtmlResponseWriterImpl(Writer writer, String contentType, String characterEncoding)
@@ -158,7 +158,8 @@ public class HtmlResponseWriterImpl
         {
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("No character encoding given, using default character encoding " + DEFAULT_CHARACTER_ENCODING);
+                log.fine("No character encoding given, using default character encoding " +
+                        DEFAULT_CHARACTER_ENCODING);
             }
             _characterEncoding = DEFAULT_CHARACTER_ENCODING;
         }
@@ -259,7 +260,8 @@ public class HtmlResponseWriterImpl
     }
 
     @Override
-    public void startCDATA() throws IOException {
+    public void startCDATA() throws IOException
+    {
         if (!_cdataOpen)
         {
             write(CDATA_START_NO_LINE_RETURN);
@@ -268,7 +270,8 @@ public class HtmlResponseWriterImpl
     }
 
     @Override
-    public void endCDATA() throws IOException {
+    public void endCDATA() throws IOException
+    {
         if (_cdataOpen)
         {
             write(CDATA_END_NO_LINE_RETURN);
@@ -280,7 +283,7 @@ public class HtmlResponseWriterImpl
     {
         if (_startTagOpen)
         {
-            if (!_useStraightXml && s_emptyHtmlElements.contains(_startElementName.toLowerCase()))
+            if (!_useStraightXml && S_EMPTY_HTML_ELEMENTS.contains(_startElementName.toLowerCase()))
             {
                 _currentWriter.write(" />");
                 // make null, this will cause NullPointer in some invalid element nestings
@@ -374,13 +377,14 @@ public class HtmlResponseWriterImpl
         }
         else
         {
-            if (!_useStraightXml && s_emptyHtmlElements.contains(name.toLowerCase()))
+            if (!_useStraightXml && S_EMPTY_HTML_ELEMENTS.contains(name.toLowerCase()))
             {
            /*
            Should this be here?  It warns even when you have an x:htmlTag value="br", it should just close.
 
                 if (log.isWarnEnabled())
-                    log.warn("HTML nesting warning on closing " + name + ": This element must not contain nested elements or text in HTML");
+                    log.warn("HTML nesting warning on closing " + name + 
+                        ": This element must not contain nested elements or text in HTML");
                     */
             }
             else
@@ -418,17 +422,20 @@ public class HtmlResponseWriterImpl
             // simple CDATA without comments, but note we need to check
             // when we are using any valid notation (simple CDATA, commented CDATA, xml comment) 
             String trimmedContent = content.trim();
-            if (trimmedContent.startsWith(CommentUtils.CDATA_SIMPLE_START) && trimmedContent.endsWith(CommentUtils.CDATA_SIMPLE_END))
+            if (trimmedContent.startsWith(CommentUtils.CDATA_SIMPLE_START) && trimmedContent.endsWith(
+                    CommentUtils.CDATA_SIMPLE_END))
             {
                 _outputWriter.write(content);
                 return;
             }
-            else if (CommentUtils.isStartMatchWithCommentedCDATA(trimmedContent) && CommentUtils.isEndMatchWithCommentedCDATA(trimmedContent))
+            else if (CommentUtils.isStartMatchWithCommentedCDATA(trimmedContent) && 
+                    CommentUtils.isEndMatchWithCommentedCDATA(trimmedContent))
             {
                 _outputWriter.write(content);
                 return;
             }
-            else if (trimmedContent.startsWith(CommentUtils.COMMENT_SIMPLE_START) && trimmedContent.endsWith(CommentUtils.COMMENT_SIMPLE_END))
+            else if (trimmedContent.startsWith(CommentUtils.COMMENT_SIMPLE_START) && 
+                    trimmedContent.endsWith(CommentUtils.COMMENT_SIMPLE_END))
             {
                 //Use comment wrap is valid, but for xhtml it is preferred to use CDATA
                 _outputWriter.write(CDATA_START);
@@ -486,12 +493,14 @@ public class HtmlResponseWriterImpl
                 
                 return;
             }
-            else if (CommentUtils.isStartMatchWithCommentedCDATA(trimmedContent) && CommentUtils.isEndMatchWithCommentedCDATA(trimmedContent))
+            else if (CommentUtils.isStartMatchWithCommentedCDATA(trimmedContent) && 
+                    CommentUtils.isEndMatchWithCommentedCDATA(trimmedContent))
             {
                 _outputWriter.write(content);
                 return;
             }
-            else if (CommentUtils.isStartMatchWithInlineCommentedCDATA(trimmedContent) && CommentUtils.isEndMatchWithInlineCommentedCDATA(trimmedContent))
+            else if (CommentUtils.isStartMatchWithInlineCommentedCDATA(trimmedContent) && 
+                    CommentUtils.isEndMatchWithInlineCommentedCDATA(trimmedContent))
             {
                 _outputWriter.write(content);
                 return;
@@ -535,12 +544,14 @@ public class HtmlResponseWriterImpl
                     _outputWriter.write(content);
                     return;
                 }
-                else if (CommentUtils.isStartMatchWithCommentedCDATA(trimmedContent) && CommentUtils.isEndMatchWithCommentedCDATA(trimmedContent))
+                else if (CommentUtils.isStartMatchWithCommentedCDATA(trimmedContent) && 
+                        CommentUtils.isEndMatchWithCommentedCDATA(trimmedContent))
                 {
                     _outputWriter.write(content);
                     return;
                 }
-                else if (CommentUtils.isStartMatchWithInlineCommentedCDATA(trimmedContent) && CommentUtils.isEndMatchWithInlineCommentedCDATA(trimmedContent))
+                else if (CommentUtils.isStartMatchWithInlineCommentedCDATA(trimmedContent) && 
+                        CommentUtils.isEndMatchWithInlineCommentedCDATA(trimmedContent))
                 {
                     _outputWriter.write(content);
                     return;
@@ -605,7 +616,8 @@ public class HtmlResponseWriterImpl
         }
         if (!_startTagOpen)
         {
-            throw new IllegalStateException("Must be called before the start element is closed (attribute '" + name + "')");
+            throw new IllegalStateException("Must be called before the start element is closed (attribute '"
+                    + name + "')");
         }
 
         if (value instanceof Boolean)
@@ -626,7 +638,8 @@ public class HtmlResponseWriterImpl
             _currentWriter.write(' ');
             _currentWriter.write(name);
             _currentWriter.write("=\"");
-            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(strValue, false, false, !UTF8.equals(_characterEncoding)));
+            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
+                    strValue, false, false, !UTF8.equals(_characterEncoding)));
             _currentWriter.write('"');
         }
     }
@@ -639,7 +652,8 @@ public class HtmlResponseWriterImpl
         }
         if (!_startTagOpen)
         {
-            throw new IllegalStateException("Must be called before the start element is closed (attribute '" + name + "')");
+            throw new IllegalStateException("Must be called before the start element is closed (attribute '"
+                    + name + "')");
         }
 
         String strValue = value.toString();
@@ -648,7 +662,8 @@ public class HtmlResponseWriterImpl
         _currentWriter.write("=\"");
         if (strValue.toLowerCase().startsWith("javascript:"))
         {
-            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(strValue, false, false, !UTF8.equals(_characterEncoding)));
+            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
+                    strValue, false, false, !UTF8.equals(_characterEncoding)));
         }
         else
         {
@@ -680,7 +695,9 @@ public class HtmlResponseWriterImpl
             }
             */
             //_writer.write(strValue);
-            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAtributte(strValue, _characterEncoding));
+            _currentWriter.write(
+                    org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAtributte(
+                            strValue, _characterEncoding));
         }
         _currentWriter.write('"');
     }
@@ -723,7 +740,8 @@ public class HtmlResponseWriterImpl
         }
         else
         {
-            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(strValue, false, false, !UTF8.equals(_characterEncoding)));
+            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
+                    strValue, false, false, !UTF8.equals(_characterEncoding)));
         }
     }
 
@@ -756,12 +774,14 @@ public class HtmlResponseWriterImpl
         else if (isTextarea())
         {
             // For textareas we must *not* map successive spaces to &nbsp or Newlines to <br/>
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(cbuf, off, len, false, false, !UTF8.equals(_characterEncoding), _currentWriter);
+            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
+                    cbuf, off, len, false, false, !UTF8.equals(_characterEncoding), _currentWriter);
         }
         else
         {
             // We map successive spaces to &nbsp; and Newlines to <br/>
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(cbuf, off, len, true, true, !UTF8.equals(_characterEncoding), _currentWriter);
+            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
+                    cbuf, off, len, true, true, !UTF8.equals(_characterEncoding), _currentWriter);
         }
     }
 
@@ -840,7 +860,8 @@ public class HtmlResponseWriterImpl
     public ResponseWriter cloneWithWriter(Writer writer)
     {
         HtmlResponseWriterImpl newWriter
-                = new HtmlResponseWriterImpl(writer, getContentType(), getCharacterEncoding(), _wrapScriptContentWithXmlCommentTag);
+                = new HtmlResponseWriterImpl(writer, getContentType(), getCharacterEncoding(), 
+                        _wrapScriptContentWithXmlCommentTag);
         //newWriter._writeDummyForm = _writeDummyForm;
         //newWriter._dummyFormParams = _dummyFormParams;
         return newWriter;

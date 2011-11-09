@@ -42,7 +42,8 @@ public abstract class UnicodeEncoder
             c = string.charAt(i);
             if (((int)c) >= 0x80)
             {
-                if( sb == null ){
+                if( sb == null )
+                {
                     sb = new StringBuilder( string.length()+4 );
                     sb.append( string.substring(0,i) );
                 }

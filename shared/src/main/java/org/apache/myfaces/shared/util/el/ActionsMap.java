@@ -45,15 +45,18 @@ import java.util.Set;
  * JSF page :
  * &lt;h:selectBooleanCheckbox value="#{inboxFace.removeEmailUnid[email.unid]}"/&gt;
  */
-public abstract class ActionsMap implements Map {
+public abstract class ActionsMap implements Map
+{
 
     private Set keys;
 
-    public ActionsMap(){
+    public ActionsMap()
+    {
         // NoOp
     }
 
-    public ActionsMap(Set keys){
+    public ActionsMap(Set keys)
+    {
         this.keys = keys;
     }
 
@@ -62,19 +65,23 @@ public abstract class ActionsMap implements Map {
      */
     public abstract void performAction(String command);
 
-    public int size() {
+    public int size()
+    {
         return keys.size();
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return keys.isEmpty();
     }
 
-    public boolean containsKey(Object key) {
+    public boolean containsKey(Object key)
+    {
         return keys.contains( key );
     }
 
-    public boolean containsValue(Object value) {
+    public boolean containsValue(Object value)
+    {
         if( ! (value instanceof Boolean) )
         {
             return false;
@@ -82,11 +89,13 @@ public abstract class ActionsMap implements Map {
         return ((Boolean)value).booleanValue();
     }
 
-    public Object get( Object key) {
+    public Object get( Object key)
+    {
         return Boolean.FALSE;
     }
 
-    public Boolean put(String key, Boolean value) {
+    public Boolean put(String key, Boolean value)
+    {
         if( value!=null && value.booleanValue() )
         {
             performAction(key);
@@ -94,7 +103,8 @@ public abstract class ActionsMap implements Map {
         return Boolean.FALSE;
     }
 
-    public Object remove(Object key) {
+    public Object remove(Object key)
+    {
         if( keys.remove( key ) )
         {
             return Boolean.FALSE;
@@ -102,7 +112,8 @@ public abstract class ActionsMap implements Map {
         return null;
     }
 
-    public void putAll(Map map) {
+    public void putAll(Map map)
+    {
         Iterator it = map.entrySet().iterator();
 
         while (it.hasNext())
@@ -116,19 +127,23 @@ public abstract class ActionsMap implements Map {
         }
     }
 
-    public void clear() {
+    public void clear()
+    {
         keys.clear();
     }
 
-    public Set keySet() {
+    public Set keySet()
+    {
         return keys;
     }
 
-    public Collection values() {
+    public Collection values()
+    {
         return Collections.nCopies(keys.size(), Boolean.FALSE);
     }
 
-    public Set entrySet() {
+    public Set entrySet()
+    {
         Set set = new HashSet( keys.size() );
 
         Iterator it = keys.iterator();
@@ -142,25 +157,31 @@ public abstract class ActionsMap implements Map {
         return set;
     }
 
-    private class CommandEntry implements Entry{
+    private class CommandEntry implements Entry
+    {
 
         private final String command;
         private boolean commandPerformed = false;
 
-        public CommandEntry(String command){
+        public CommandEntry(String command)
+        {
             this.command = command;
         }
 
-        public Object getKey() {
+        public Object getKey()
+        {
             return command;
         }
 
-        public Object getValue() {
+        public Object getValue()
+        {
             return Boolean.valueOf(commandPerformed);
         }
 
-        public Object setValue(Object performCommand) {
-            if( (performCommand instanceof Boolean) && ((Boolean)performCommand).booleanValue() ){
+        public Object setValue(Object performCommand)
+        {
+            if( (performCommand instanceof Boolean) && ((Boolean)performCommand).booleanValue() )
+            {
                 performAction( command );
                 commandPerformed = true;
             }

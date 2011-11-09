@@ -214,6 +214,7 @@ public final class JavascriptUtils
                 case '\'' : app = "\\'";  break;
                 case '\n' : app = "\\n";  break;
                 case '\r' : app = "\\r";  break;
+                default:
             }
             if (app != null)
             {
@@ -222,7 +223,9 @@ public final class JavascriptUtils
                     sb = new StringBuffer(string.substring(0, i));
                 }
                 sb.append(app);
-            } else {
+            }
+            else
+            {
                 if (sb != null)
                 {
                     sb.append(c);

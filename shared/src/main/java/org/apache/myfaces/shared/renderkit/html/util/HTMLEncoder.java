@@ -100,9 +100,14 @@ public abstract class HTMLEncoder
                             app = "<br/>";
                         }
                         break;
+                    default:
+                        break;
                 }
-            } else if (encodeNonLatin && (int)c > 0x80) {
-                 switch(c) {
+            }
+            else if (encodeNonLatin && (int)c > 0x80)
+            {
+                 switch(c)
+                 {
                     //german umlauts
                     case '\u00E4' : app = "&auml;";  break;
                     case '\u00C4' : app = "&Auml;";  break;
@@ -132,7 +137,9 @@ public abstract class HTMLEncoder
                     sb = new StringBuilder(string.substring(0, i));
                 }
                 sb.append(app);
-            } else {
+            }
+            else
+            {
                 if (sb != null)
                 {
                     sb.append(c);
@@ -161,7 +168,8 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNbsp is true.
      */
-    public static void encode (char[] string, int offset, int length, boolean encodeNewline, Writer writer) throws IOException
+    public static void encode (char[] string, int offset, int length, boolean encodeNewline, Writer writer)
+        throws IOException
     {
         encode(string, offset, length, encodeNewline, true, writer);
     }
@@ -169,7 +177,8 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNbsp and encodeNonLatin are true 
      */
-    public static void encode (char[] string, int offset, int length, boolean encodeNewline, boolean encodeSubsequentBlanksToNbsp, Writer writer) throws IOException
+    public static void encode (char[] string, int offset, int length, boolean encodeNewline, 
+            boolean encodeSubsequentBlanksToNbsp, Writer writer) throws IOException
     {
         encode(string, offset, length, encodeNewline, encodeSubsequentBlanksToNbsp, true, writer);
     }
@@ -226,9 +235,14 @@ public abstract class HTMLEncoder
                             app = "<br/>";
                         }
                         break;
+                    default:
+                        break;
                 }
-            } else if (encodeNonLatin && (int)c > 0x80) {
-                 switch(c) {
+            }
+            else if (encodeNonLatin && (int)c > 0x80)
+            {
+                 switch(c)
+                 {
                     //german umlauts
                     case '\u00E4' : app = "&auml;";  break;
                     case '\u00C4' : app = "&Auml;";  break;
@@ -259,7 +273,9 @@ public abstract class HTMLEncoder
                     sb.append(string, offset, i - offset);
                 }
                 sb.append(app);
-            } else {
+            }
+            else
+            {
                 if (sb != null)
                 {
                     sb.append(c);
@@ -480,7 +496,9 @@ public abstract class HTMLEncoder
                     sb = new StringBuilder(string.substring(0, i));
                 }
                 sb.append(app);
-            } else {
+            }
+            else
+            {
                 if (sb != null)
                 {
                     sb.append(c);
@@ -572,13 +590,14 @@ public abstract class HTMLEncoder
             c = string.charAt(i);
             
             // - From %00 to %20 (' ' %20 could encode as +, but %20 also works, so we keep %20)
-            // - <"> %22 (If there is encode of "%", there is a risk of duplicate encoding, so we make easier and omit this one)
+            // - <"> %22 (If there is encode of "%", there is a risk of duplicate encoding, so 
+            //            we make easier and omit this one)
             // - "<" %3C, ">" %3E,
             // - "\" %5C, "^" %5E, "`" %60 
             // - "{" %7B, "|" %7C, "}" %7D
             // - From %7F ad infinitum (each character as many bytes as necessary but take into account
-            //   that a single char should contain 2,3 or more bytes!. This data should be encoded translating from the document
-            //   character encoding to percent encoding)
+            //   that a single char should contain 2,3 or more bytes!. This data should be encoded 
+            //   translating from the document character encoding to percent encoding)
             //
             // "&" should be encoded as "&amp;" because this link is inside an html page, and 
             // put & is invalid in this context   
@@ -646,7 +665,9 @@ public abstract class HTMLEncoder
                     sb = new StringBuilder(string.substring(0, i));
                 }
                 sb.append(app);
-            } else {
+            }
+            else
+            {
                 if (sb != null)
                 {
                     sb.append(c);

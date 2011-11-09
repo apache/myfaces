@@ -38,7 +38,8 @@ public class ClassElementHandler extends DefaultHandler
     private List className = new ArrayList();
     private StringBuffer buffer ;
     
-    public ClassElementHandler(){
+    public ClassElementHandler()
+    {
         
         elementName.add("component-class");
         elementName.add("tag-class");
@@ -84,7 +85,8 @@ public class ClassElementHandler extends DefaultHandler
         throws SAXException
     {
         
-        if(clazz){
+        if(clazz)
+        {
             className.add(buffer.toString());
             clazz = false;
         }
