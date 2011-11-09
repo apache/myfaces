@@ -61,7 +61,8 @@ public class HtmlBodyRendererBase extends HtmlRenderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (component instanceof ClientBehaviorHolder && 
+                JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             if (!behaviors.isEmpty())

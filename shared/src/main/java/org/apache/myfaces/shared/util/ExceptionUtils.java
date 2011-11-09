@@ -36,8 +36,9 @@ public final class ExceptionUtils
     /**
      * <p>
      * returns a list of all throwables (including the one you passed in) wrapped by the given throwable.
-     * In contrast to a simple call to <code>getClause()</code> on each throwable it will also check if the throwable class
-     * contain a method <code>getRootCause()</code> (e.g. ServletException or JspException) and call it instead.
+     * In contrast to a simple call to <code>getClause()</code> on each throwable it will also check if 
+     * the throwable class contain a method <code>getRootCause()</code> (e.g. ServletException or JspException)
+     * and call it instead.
      * </p>
      * <p>
      * The first list element will your passed in exception, the last list element is the cause. 

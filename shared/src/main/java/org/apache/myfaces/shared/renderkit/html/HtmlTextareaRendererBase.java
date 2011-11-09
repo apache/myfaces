@@ -18,14 +18,10 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
-import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.HTML;
-import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
-import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
@@ -35,9 +31,10 @@ import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.ConverterException;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+
+import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 
 /**
@@ -59,7 +56,8 @@ public class HtmlTextareaRendererBase
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             if (!behaviors.isEmpty())
             {
-                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
+                ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, 
+                        facesContext.getResponseWriter());
             }
         }
         
@@ -67,7 +65,9 @@ public class HtmlTextareaRendererBase
 
     }
 
-    protected void encodeTextArea(FacesContext facesContext, UIComponent uiComponent) throws IOException {
+    protected void encodeTextArea(FacesContext facesContext, UIComponent uiComponent) 
+        throws IOException
+    {
        //allow subclasses to render custom attributes by separating rendering begin and end
         renderTextAreaBegin(facesContext, uiComponent);
         renderTextAreaValue(facesContext, uiComponent);
@@ -83,7 +83,8 @@ public class HtmlTextareaRendererBase
         writer.startElement(HTML.TEXTAREA_ELEM, uiComponent);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             if (!behaviors.isEmpty())
@@ -97,7 +98,8 @@ public class HtmlTextareaRendererBase
             }
             HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
             HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
+            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                    facesContext, writer, uiComponent, behaviors);
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(writer, 
@@ -106,7 +108,8 @@ public class HtmlTextareaRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                        HTML.TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
             }
         }
         else
@@ -121,7 +124,8 @@ public class HtmlTextareaRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                        HTML.TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
             }
         }
 
@@ -153,7 +157,8 @@ public class HtmlTextareaRendererBase
             return ((HtmlInputTextarea)uiComponent).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+                uiComponent, HTML.DISABLED_ATTR, false);
         
     }
 
@@ -168,7 +173,8 @@ public class HtmlTextareaRendererBase
         }
     }
 
-    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue) throws ConverterException
+    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
+        throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIOutput.class);
         return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUIOutputValue(facesContext,

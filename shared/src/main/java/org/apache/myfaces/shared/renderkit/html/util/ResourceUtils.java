@@ -19,7 +19,6 @@
 package org.apache.myfaces.shared.renderkit.html.util;
 
 import java.io.IOException;
-import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.HTML;
@@ -38,7 +36,8 @@ import org.apache.myfaces.shared.renderkit.html.HTML;
  * @version $Revision$ $Date$
  * @since 4.0.1
  */
-public class ResourceUtils {
+public class ResourceUtils
+{
     public final static String JAVAX_FACES_LIBRARY_NAME = "javax.faces";
     public final static String JSF_JS_RESOURCE_NAME = "jsf.js";
 
@@ -59,7 +58,8 @@ public class ResourceUtils {
     public final static String JSF_MYFACES_JSFJS_EXPERIMENTAL = "jsf-experimental.js";
     public final static String JSF_MYFACES_JSFJS_LEGACY = "jsf-legacy.js";
 
-    private final static String RENDERED_STYLESHEET_RESOURCES_SET = "org.apache.myfaces.RENDERED_STYLESHEET_RESOURCES_SET";
+    private final static String RENDERED_STYLESHEET_RESOURCES_SET = 
+        "org.apache.myfaces.RENDERED_STYLESHEET_RESOURCES_SET";
     private final static String RENDERED_SCRIPT_RESOURCES_SET = "org.apache.myfaces.RENDERED_SCRIPT_RESOURCES_SET";
     private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
     public final static String HEAD_TARGET = "head";
@@ -81,7 +81,8 @@ public class ResourceUtils {
     @SuppressWarnings("unchecked")
     private static Map<String, Boolean> getRenderedStylesheetResources(FacesContext facesContext)
     {
-        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getAttributes().get(RENDERED_STYLESHEET_RESOURCES_SET);
+        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getAttributes().get(
+                RENDERED_STYLESHEET_RESOURCES_SET);
         if (map == null)
         {
             map = new HashMap<String, Boolean>();
@@ -100,7 +101,8 @@ public class ResourceUtils {
     @SuppressWarnings("unchecked")
     private static Map<String, Boolean> getRenderedScriptResources(FacesContext facesContext)
     {
-        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getAttributes().get(RENDERED_SCRIPT_RESOURCES_SET);
+        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getAttributes().get(
+                RENDERED_SCRIPT_RESOURCES_SET);
         if (map == null)
         {
             map = new HashMap<String, Boolean>();
@@ -111,32 +113,38 @@ public class ResourceUtils {
     
     public static void markScriptAsRendered(FacesContext facesContext, String libraryName, String resourceName)
     {
-        getRenderedScriptResources(facesContext).put(libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
+        getRenderedScriptResources(facesContext).put(
+                libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
         if (JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
             JSF_JS_RESOURCE_NAME.equals(resourceName))
         {
             // If we are calling this method, it is expected myfaces core is being used as runtime and note
             // oamSubmit script is included inside jsf.js, so mark this one too.
-            getRenderedScriptResources(facesContext).put(MYFACES_LIBRARY_NAME+'/'+MYFACES_JS_RESOURCE_NAME, Boolean.TRUE);
+            getRenderedScriptResources(facesContext).put(
+                    MYFACES_LIBRARY_NAME+'/'+MYFACES_JS_RESOURCE_NAME, Boolean.TRUE);
         }
     }
     
     public static void markStylesheetAsRendered(FacesContext facesContext, String libraryName, String resourceName)
     {
-        getRenderedStylesheetResources(facesContext).put(libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
+        getRenderedStylesheetResources(facesContext).put(
+                libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
     }
     
     public static boolean isRenderedScript(FacesContext facesContext, String libraryName, String resourceName)
     {
-        return getRenderedScriptResources(facesContext).containsKey(libraryName != null ? libraryName+'/'+resourceName : resourceName);
+        return getRenderedScriptResources(facesContext).containsKey(
+                libraryName != null ? libraryName+'/'+resourceName : resourceName);
     }
     
     public static boolean isRenderedStylesheet(FacesContext facesContext, String libraryName, String resourceName)
     {
-        return getRenderedStylesheetResources(facesContext).containsKey(libraryName != null ? libraryName+'/'+resourceName : resourceName);
+        return getRenderedStylesheetResources(facesContext).containsKey(
+                libraryName != null ? libraryName+'/'+resourceName : resourceName);
     }
     
-    public static void writeScriptInline(FacesContext facesContext, ResponseWriter writer, String libraryName, String resourceName) throws IOException
+    public static void writeScriptInline(FacesContext facesContext, ResponseWriter writer, String libraryName, 
+            String resourceName) throws IOException
     {
         if (!ResourceUtils.isRenderedScript(facesContext, libraryName, resourceName))
         {
@@ -152,7 +160,8 @@ public class ResourceUtils {
             else
             {
                 //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
-                Resource resource = facesContext.getApplication().getResourceHandler().createResource(resourceName, libraryName);
+                Resource resource = facesContext.getApplication().getResourceHandler().createResource(
+                        resourceName, libraryName);
                 markScriptAsRendered(facesContext, libraryName, resourceName);
                 writer.startElement(HTML.SCRIPT_ELEM, null);
                 writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT , null);
@@ -162,7 +171,8 @@ public class ResourceUtils {
         }
     }
     
-    public static void renderDefaultJsfJsInlineIfNecessary(FacesContext facesContext, ResponseWriter writer) throws IOException
+    public static void renderDefaultJsfJsInlineIfNecessary(FacesContext facesContext, ResponseWriter writer) 
+        throws IOException
     {
         if (facesContext.getAttributes().containsKey(RENDERED_JSF_JS))
         {
@@ -210,7 +220,8 @@ public class ResourceUtils {
         else
         {
             //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
-            Resource resource = facesContext.getApplication().getResourceHandler().createResource(JSF_JS_RESOURCE_NAME, JAVAX_FACES_LIBRARY_NAME);
+            Resource resource = facesContext.getApplication().getResourceHandler().createResource(
+                    JSF_JS_RESOURCE_NAME, JAVAX_FACES_LIBRARY_NAME);
             markScriptAsRendered(facesContext, JAVAX_FACES_LIBRARY_NAME, JSF_JS_RESOURCE_NAME);
             writer.startElement(HTML.SCRIPT_ELEM, null);
             writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
@@ -223,8 +234,11 @@ public class ResourceUtils {
         return;
     }
 
-    public static void renderMyfacesJSInlineIfNecessary(FacesContext facesContext, ResponseWriter writer) throws IOException {
-        if (facesContext.getAttributes().containsKey(RENDERED_MYFACES_JS)) {
+    public static void renderMyfacesJSInlineIfNecessary(FacesContext facesContext, ResponseWriter writer)
+        throws IOException
+    {
+        if (facesContext.getAttributes().containsKey(RENDERED_MYFACES_JS))
+        {
             return;
         }
 
@@ -238,7 +252,8 @@ public class ResourceUtils {
         }
         // Check first if we have lucky, we are using myfaces and the script has
         // been previously rendered
-        if (isRenderedScript(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME)) {
+        if (isRenderedScript(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME))
+        {
             facesContext.getAttributes().put(RENDERED_MYFACES_JS, Boolean.TRUE);
             return;
         }
@@ -268,7 +283,8 @@ public class ResourceUtils {
         else
         {
             //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
-            Resource resource = facesContext.getApplication().getResourceHandler().createResource(MYFACES_JS_RESOURCE_NAME, MYFACES_LIBRARY_NAME);
+            Resource resource = facesContext.getApplication().getResourceHandler().createResource(
+                    MYFACES_JS_RESOURCE_NAME, MYFACES_LIBRARY_NAME);
             markScriptAsRendered(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME);
             writer.startElement(HTML.SCRIPT_ELEM, null);
             writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);

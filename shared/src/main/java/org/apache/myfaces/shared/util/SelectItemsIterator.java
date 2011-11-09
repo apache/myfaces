@@ -69,7 +69,8 @@ public class SelectItemsIterator implements Iterator<SelectItem>
 
     public SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
     {
-        _children = selectItemsParent.getChildCount() > 0 ? selectItemsParent.getChildren().iterator() : _EMPTY_UICOMPONENT_ITERATOR; 
+        _children = selectItemsParent.getChildCount() > 0 ? 
+                selectItemsParent.getChildren().iterator() : _EMPTY_UICOMPONENT_ITERATOR; 
         _facesContext = facesContext;
     }
 
@@ -136,7 +137,8 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     ValueExpression expression = uiSelectItem.getValueExpression("value");
                     throw new IllegalArgumentException("ValueExpression '"
                             + (expression == null ? null : expression.getExpressionString()) + "' of UISelectItem : "
-                            + RendererUtils.getPathToComponent(child) + " does not reference an Object of type SelectItem");
+                            + RendererUtils.getPathToComponent(child) + 
+                            " does not reference an Object of type SelectItem");
                 }
                 _nextItem = (SelectItem) item;
                 return true;

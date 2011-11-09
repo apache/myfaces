@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
-import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UISelectMany;
@@ -32,9 +32,9 @@ import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+
+import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  * X-CHECKED: tlddoc of h:selectManyListbox
@@ -97,7 +97,8 @@ public class HtmlMenuRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, false);
+            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, 
+                    org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, false);
         }
     }
 
@@ -124,7 +125,8 @@ public class HtmlMenuRendererBase
         }
     }
 
-    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue) throws ConverterException
+    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
+         throws ConverterException
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 

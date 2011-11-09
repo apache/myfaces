@@ -23,14 +23,16 @@ package org.apache.myfaces.shared.util;
  *
  * @author Werner Punz
  */
-public class ClassLoaderExtension {
+public class ClassLoaderExtension
+{
     /**
      * standard forName for the loader
      *
      * @param name
      * @return
      */
-    public Class forName(String name) {
+    public Class forName(String name)
+    {
         return null;
     }
 }

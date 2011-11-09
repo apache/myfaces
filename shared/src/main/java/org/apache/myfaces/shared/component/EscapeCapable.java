@@ -26,7 +26,8 @@ package org.apache.myfaces.shared.component;
  * @author Grant Smith (latest modification by $Author$)
  */
 
-public interface EscapeCapable {
+public interface EscapeCapable
+{
     boolean isEscape();
     void setEscape(boolean escape);
 }

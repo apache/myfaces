@@ -66,7 +66,8 @@ public abstract class HtmlMessageRendererBase
         renderMessage(facesContext, message, false);
     }
 
-    protected void renderMessage(FacesContext facesContext, UIComponent message, boolean alwaysRenderSpan) throws IOException
+    protected void renderMessage(FacesContext facesContext, UIComponent message, 
+            boolean alwaysRenderSpan) throws IOException
     {
         renderMessage(facesContext, message, alwaysRenderSpan, false);
     }
@@ -76,7 +77,8 @@ public abstract class HtmlMessageRendererBase
      * @param message
      * @param alwaysRenderSpan if true will render a span even if there is no message
      */
-    protected void renderMessage(FacesContext facesContext, UIComponent message, boolean alwaysRenderSpan, boolean renderDivWhenNoMessagesAndIdSet) throws IOException
+    protected void renderMessage(FacesContext facesContext, UIComponent message, 
+            boolean alwaysRenderSpan, boolean renderDivWhenNoMessagesAndIdSet) throws IOException
     {
         String forAttr = getFor(message);
         if (forAttr == null)
@@ -88,7 +90,11 @@ public abstract class HtmlMessageRendererBase
         UIComponent forComponent = message.findComponent(forAttr);
         if (forComponent == null)
         {
-            log.severe("Could not render Message. Unable to find component '" + forAttr + "' (calling findComponent on component '" + message.getClientId(facesContext) + "'). If the provided id was correct, wrap the message and its component into an h:panelGroup or h:panelGrid.");
+            log.severe("Could not render Message. Unable to find component '" 
+                    + forAttr + "' (calling findComponent on component '" 
+                    + message.getClientId(facesContext) 
+                    + "'). If the provided id was correct, wrap the message and its " 
+                    + "component into an h:panelGroup or h:panelGrid.");
             return;
         }
 
@@ -107,7 +113,8 @@ public abstract class HtmlMessageRendererBase
                 HtmlRendererUtils.renderHTMLAttribute(writer, message, JSFAttr.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
                 writer.endElement(HTML.SPAN_ELEM);
             }
-            else if (renderDivWhenNoMessagesAndIdSet && message.getId() != null && !message.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+            else if (renderDivWhenNoMessagesAndIdSet && message.getId() != null && 
+                    !message.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
             {
                 // show span anyways in case there's a client side update, ie: ajax
                 ResponseWriter writer = facesContext.getResponseWriter();
@@ -172,14 +179,16 @@ public abstract class HtmlMessageRendererBase
     throws IOException
     {
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
         }
         boolean wrapSpan = (message.getId() != null && !message.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX)) 
             || (behaviors != null && !behaviors.isEmpty());
 
-        renderSingleFacesMessage(facesContext, message, facesMessage, messageClientId, renderId, renderStyleAndStyleClass, wrapSpan);
+        renderSingleFacesMessage(facesContext, message, facesMessage, messageClientId, 
+                renderId, renderStyleAndStyleClass, wrapSpan);
     }
     
     protected void renderSingleFacesMessage(FacesContext facesContext,
@@ -192,7 +201,8 @@ public abstract class HtmlMessageRendererBase
             throws IOException
     {
         // determine style and style class
-        String[] styleAndClass = HtmlMessageRendererBase.getStyleAndStyleClass(message, facesMessage.getSeverity());
+        String[] styleAndClass = HtmlMessageRendererBase.getStyleAndStyleClass(
+                message, facesMessage.getSeverity());
         String style = styleAndClass[0];
         String styleClass = styleAndClass[1];
 
@@ -212,7 +222,8 @@ public abstract class HtmlMessageRendererBase
         boolean span = false;
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed
+                (facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
         }
@@ -232,28 +243,35 @@ public abstract class HtmlMessageRendererBase
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, message, facesContext);
             }
-            if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                    facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
                 HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, message, behaviors);
-                HtmlRendererUtils.renderHTMLAttributes(writer, message, HTML.UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE_AND_TITLE);
+                HtmlRendererUtils.renderHTMLAttributes(writer, message, 
+                        HTML.UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE_AND_TITLE);
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, message, HTML.MESSAGE_PASSTHROUGH_ATTRIBUTES_WITHOUT_TITLE_STYLE_AND_STYLE_CLASS);
+                HtmlRendererUtils.renderHTMLAttributes(writer, message, 
+                        HTML.MESSAGE_PASSTHROUGH_ATTRIBUTES_WITHOUT_TITLE_STYLE_AND_STYLE_CLASS);
             }
         }
         else
         {
             span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(
-                    writer, message, HTML.SPAN_ELEM, HTML.MESSAGE_PASSTHROUGH_ATTRIBUTES_WITHOUT_TITLE_STYLE_AND_STYLE_CLASS);
+                    writer, message, HTML.SPAN_ELEM, 
+                    HTML.MESSAGE_PASSTHROUGH_ATTRIBUTES_WITHOUT_TITLE_STYLE_AND_STYLE_CLASS);
         }
 
-        span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(writer, message, HTML.SPAN_ELEM, HTML.TITLE_ATTR, title, span);
+        span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(
+                writer, message, HTML.SPAN_ELEM, HTML.TITLE_ATTR, title, span);
         if (renderStyleAndStyleClass)
         {
-            span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(writer, message, HTML.SPAN_ELEM, HTML.STYLE_ATTR, style, span);
-            span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(writer, message, HTML.SPAN_ELEM, HTML.STYLE_CLASS_ATTR, styleClass, span);
+            span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(
+                    writer, message, HTML.SPAN_ELEM, HTML.STYLE_ATTR, style, span);
+            span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(
+                    writer, message, HTML.SPAN_ELEM, HTML.STYLE_CLASS_ATTR, styleClass, span);
         }
 
 
@@ -389,7 +407,8 @@ public abstract class HtmlMessageRendererBase
             return ((HtmlMessage) component).isTooltip();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.TOOLTIP_ATTR, false);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
+                org.apache.myfaces.shared.renderkit.JSFAttr.TOOLTIP_ATTR, false);
         
     }
 
@@ -400,7 +419,8 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isShowSummary();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.SHOW_SUMMARY_ATTR, false);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
+                org.apache.myfaces.shared.renderkit.JSFAttr.SHOW_SUMMARY_ATTR, false);
         
     }
 
@@ -411,7 +431,8 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isShowDetail();
         }
 
-        return RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.SHOW_DETAIL_ATTR, false);
+        return RendererUtils.getBooleanAttribute(component, 
+                org.apache.myfaces.shared.renderkit.JSFAttr.SHOW_DETAIL_ATTR, false);
         
     }
     
@@ -422,7 +443,8 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isRedisplay();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.REDISPLAY_ATTR, true);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
+                org.apache.myfaces.shared.renderkit.JSFAttr.REDISPLAY_ATTR, true);
         
     }
 

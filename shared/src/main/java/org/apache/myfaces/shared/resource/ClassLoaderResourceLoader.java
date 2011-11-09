@@ -21,10 +21,6 @@ package org.apache.myfaces.shared.resource;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
-
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ClassUtils;
 
 /**

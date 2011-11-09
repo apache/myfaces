@@ -76,7 +76,8 @@ public class HashMapUtils
      /**
      * spit out each name/value pair
      */
-    public static String mapToString(Map map){
+    public static String mapToString(Map map)
+    {
         Set entries = map.entrySet();
         Iterator iter = entries.iterator();
         StringBuffer buff = new StringBuffer();

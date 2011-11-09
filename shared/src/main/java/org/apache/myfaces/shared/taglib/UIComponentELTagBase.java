@@ -30,8 +30,7 @@ import javax.faces.webapp.UIComponentELTag;
  * @author Bruno Aranda (JSR-252)
  * @version $Revision$ $Date$
  */
-public abstract class UIComponentELTagBase
-        extends UIComponentELTag
+public abstract class UIComponentELTagBase extends UIComponentELTag
 {
     //private static final Log log = LogFactory.getLog(UIComponentTagBase.class);
 
@@ -48,16 +47,18 @@ public abstract class UIComponentELTagBase
     //Special UIComponent attributes (ValueHolder, ConvertibleValueHolder)
     private ValueExpression _value;
     private ValueExpression _converter;
+
     //attributes id, rendered and binding are handled by UIComponentTag
 
-    public void release() {
+    public void release()
+    {
         super.release();
 
         _forceId = null;
         _forceIdIndex = null;
 
-        _value=null;
-        _converter=null;
+        _value = null;
+        _converter = null;
 
         _javascriptLocation = null;
         _imageLocation = null;
@@ -68,11 +69,26 @@ public abstract class UIComponentELTagBase
     {
         super.setProperties(component);
 
-        setBooleanProperty(component, org.apache.myfaces.shared.renderkit.JSFAttr.FORCE_ID_ATTR, _forceId);
-        setBooleanProperty(component, org.apache.myfaces.shared.renderkit.JSFAttr.FORCE_ID_INDEX_ATTR, _forceIdIndex, DEFAULT_FORCE_ID_INDEX_VALUE);
-        if (_javascriptLocation != null) setStringProperty(component, JSFAttr.JAVASCRIPT_LOCATION, _javascriptLocation);
-        if (_imageLocation != null) setStringProperty(component, JSFAttr.IMAGE_LOCATION, _imageLocation);
-        if (_styleLocation != null) setStringProperty(component, JSFAttr.STYLE_LOCATION, _styleLocation);
+        setBooleanProperty(component,
+                org.apache.myfaces.shared.renderkit.JSFAttr.FORCE_ID_ATTR,
+                _forceId);
+        setBooleanProperty(
+                component,
+                org.apache.myfaces.shared.renderkit.JSFAttr.FORCE_ID_INDEX_ATTR,
+                _forceIdIndex, DEFAULT_FORCE_ID_INDEX_VALUE);
+        if (_javascriptLocation != null)
+        {
+            setStringProperty(component, JSFAttr.JAVASCRIPT_LOCATION,
+                    _javascriptLocation);
+        }
+        if (_imageLocation != null)
+        {
+            setStringProperty(component, JSFAttr.IMAGE_LOCATION, _imageLocation);
+        }
+        if (_styleLocation != null)
+        {
+            setStringProperty(component, JSFAttr.STYLE_LOCATION, _styleLocation);
+        }
 
         //rendererType already handled by UIComponentTag
 
@@ -113,7 +129,6 @@ public abstract class UIComponentELTagBase
         _converter = converter;
     }
 
-
     /**
      * Sets the javascript location attribute of the tag.  NOTE: Not every tag that extends this class will
      * actually make use of this attribute.  Check the TLD to see which components actually implement it.
@@ -149,111 +164,141 @@ public abstract class UIComponentELTagBase
 
     // sub class helpers
 
-    protected void setIntegerProperty(UIComponent component, String propName, ValueExpression value)
+    protected void setIntegerProperty(UIComponent component, String propName,
+            ValueExpression value)
     {
         UIComponentELTagUtils.setIntegerProperty(component, propName, value);
     }
 
-    protected void setIntegerProperty(UIComponent component, String propName, ValueExpression value, Integer defaultValue)
+    protected void setIntegerProperty(UIComponent component, String propName,
+            ValueExpression value, Integer defaultValue)
     {
-        UIComponentELTagUtils.setIntegerProperty(component, propName, value, defaultValue);
+        UIComponentELTagUtils.setIntegerProperty(component, propName, value,
+                defaultValue);
     }
 
-    protected void setLongProperty(UIComponent component, String propName, ValueExpression value)
+    protected void setLongProperty(UIComponent component, String propName,
+            ValueExpression value)
     {
         UIComponentELTagUtils.setLongProperty(component, propName, value);
     }
 
-    protected void setLongProperty(UIComponent component, String propName, ValueExpression value, Long defaultValue)
+    protected void setLongProperty(UIComponent component, String propName,
+            ValueExpression value, Long defaultValue)
     {
-        UIComponentELTagUtils.setLongProperty(component, propName, value, defaultValue);
+        UIComponentELTagUtils.setLongProperty(component, propName, value,
+                defaultValue);
     }
 
     @Deprecated
-    protected void setStringProperty(UIComponent component, String propName, String value)
+    protected void setStringProperty(UIComponent component, String propName,
+            String value)
     {
-        UIComponentTagUtils.setStringProperty(getFacesContext(), component, propName, value);
+        UIComponentTagUtils.setStringProperty(getFacesContext(), component,
+                propName, value);
     }
 
-    protected void setStringProperty(UIComponent component, String propName, ValueExpression value)
+    protected void setStringProperty(UIComponent component, String propName,
+            ValueExpression value)
     {
         UIComponentELTagUtils.setStringProperty(component, propName, value);
     }
 
-    protected void setStringProperty(UIComponent component, String propName, ValueExpression value, String defaultValue)
+    protected void setStringProperty(UIComponent component, String propName,
+            ValueExpression value, String defaultValue)
     {
-        UIComponentELTagUtils.setStringProperty(component, propName, value, defaultValue);
+        UIComponentELTagUtils.setStringProperty(component, propName, value,
+                defaultValue);
     }
 
     @Deprecated
-    protected void setBooleanProperty(UIComponent component, String propName, String value)
+    protected void setBooleanProperty(UIComponent component, String propName,
+            String value)
     {
-        UIComponentTagUtils.setBooleanProperty(getFacesContext(), component, propName, value);
+        UIComponentTagUtils.setBooleanProperty(getFacesContext(), component,
+                propName, value);
     }
 
-    protected void setBooleanProperty(UIComponent component, String propName, ValueExpression value)
+    protected void setBooleanProperty(UIComponent component, String propName,
+            ValueExpression value)
     {
         UIComponentELTagUtils.setBooleanProperty(component, propName, value);
     }
 
-    protected void setBooleanProperty(UIComponent component, String propName, ValueExpression value, Boolean defaultValue)
+    protected void setBooleanProperty(UIComponent component, String propName,
+            ValueExpression value, Boolean defaultValue)
     {
-        UIComponentELTagUtils.setBooleanProperty(component, propName, value, defaultValue);
+        UIComponentELTagUtils.setBooleanProperty(component, propName, value,
+                defaultValue);
     }
 
     private void setValueProperty(UIComponent component, ValueExpression value)
     {
-        UIComponentELTagUtils.setValueProperty(getFacesContext(), component, value);
+        UIComponentELTagUtils.setValueProperty(getFacesContext(), component,
+                value);
     }
 
-    private void setConverterProperty(UIComponent component, ValueExpression value)
+    private void setConverterProperty(UIComponent component,
+            ValueExpression value)
     {
-        UIComponentELTagUtils.setConverterProperty(getFacesContext(), component, value);
+        UIComponentELTagUtils.setConverterProperty(getFacesContext(),
+                component, value);
     }
 
-    protected void addValidatorProperty(UIComponent component, MethodExpression value)
+    protected void addValidatorProperty(UIComponent component,
+            MethodExpression value)
     {
-        UIComponentELTagUtils.addValidatorProperty(getFacesContext(), component, value);
+        UIComponentELTagUtils.addValidatorProperty(getFacesContext(),
+                component, value);
     }
 
     @Deprecated
     protected void setActionProperty(UIComponent component, String action)
     {
-        UIComponentTagUtils.setActionProperty(getFacesContext(), component, action);
+        UIComponentTagUtils.setActionProperty(getFacesContext(), component,
+                action);
     }
 
-    protected void setActionProperty(UIComponent component, MethodExpression action)
+    protected void setActionProperty(UIComponent component,
+            MethodExpression action)
     {
-        UIComponentELTagUtils.setActionProperty(getFacesContext(), component, action);
+        UIComponentELTagUtils.setActionProperty(getFacesContext(), component,
+                action);
     }
 
     @Deprecated
-    protected void setActionListenerProperty(UIComponent component, String actionListener)
+    protected void setActionListenerProperty(UIComponent component,
+            String actionListener)
     {
-        UIComponentTagUtils.setActionListenerProperty(getFacesContext(), component, actionListener);
+        UIComponentTagUtils.setActionListenerProperty(getFacesContext(),
+                component, actionListener);
     }
 
-    protected void setActionListenerProperty(UIComponent component, MethodExpression actionListener)
+    protected void setActionListenerProperty(UIComponent component,
+            MethodExpression actionListener)
     {
-        UIComponentELTagUtils.addActionListenerProperty(getFacesContext(), component, actionListener);
+        UIComponentELTagUtils.addActionListenerProperty(getFacesContext(),
+                component, actionListener);
     }
 
-    protected void addValueChangedListenerProperty(UIComponent component, MethodExpression valueChangedListener)
+    protected void addValueChangedListenerProperty(UIComponent component,
+            MethodExpression valueChangedListener)
     {
-        UIComponentELTagUtils.addValueChangedListenerProperty(getFacesContext(), component, valueChangedListener);
+        UIComponentELTagUtils.addValueChangedListenerProperty(
+                getFacesContext(), component, valueChangedListener);
     }
 
-    protected void setValueBinding(UIComponent component,
-                                   String propName,
-                                   ValueExpression value)
+    protected void setValueBinding(UIComponent component, String propName,
+            ValueExpression value)
     {
-        UIComponentELTagUtils.setValueBinding(getFacesContext(), component, propName, value);
+        UIComponentELTagUtils.setValueBinding(getFacesContext(), component,
+                propName, value);
     }
-    
+
     protected Object evaluateValueExpression(ValueExpression expression)
     {
-        return UIComponentELTagUtils.evaluateValueExpression(getFacesContext().getELContext(), expression);
+        return UIComponentELTagUtils.evaluateValueExpression(getFacesContext()
+                .getELContext(), expression);
     }
-
 
 }

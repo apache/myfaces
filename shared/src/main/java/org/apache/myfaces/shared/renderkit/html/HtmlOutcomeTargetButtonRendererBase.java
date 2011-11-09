@@ -147,7 +147,8 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer, commonPropertiesMarked, uiComponent);
+                    CommonPropertyUtils.renderEventPropertiesWithoutOnclick(
+                            writer, commonPropertiesMarked, uiComponent);
                     CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, uiComponent);
                 }
             }

@@ -67,14 +67,16 @@ public abstract class BiLevelCacheMap implements Map
 
     public boolean isEmpty()
     {
-        synchronized (_cacheL2) {
+        synchronized (_cacheL2)
+        {
             return _cacheL1.isEmpty() && _cacheL2.isEmpty();
         }
     }
 
     public void clear()
     {
-        synchronized (_cacheL2) {
+        synchronized (_cacheL2)
+        {
             _cacheL1 = new HashMap(); // dafault size
             _cacheL2.clear();
         }
@@ -82,14 +84,16 @@ public abstract class BiLevelCacheMap implements Map
 
     public boolean containsKey(Object key)
     {
-        synchronized (_cacheL2) {
+        synchronized (_cacheL2)
+        {
             return _cacheL1.containsKey(key) || _cacheL2.containsKey(key);
         }
     }
 
     public boolean containsValue(Object value)
     {
-        synchronized (_cacheL2) {
+        synchronized (_cacheL2)
+        {
             return _cacheL1.containsValue(value) || _cacheL2.containsValue(value);
         }
     }
@@ -117,14 +121,16 @@ public abstract class BiLevelCacheMap implements Map
             // Has another thread merged caches while we were waiting on the mutex? Then check L1 again
             if (cacheL1 != _cacheL1)
             {
-                if ((retval = _cacheL1.get(key)) != null)
+                retval = _cacheL1.get(key);
+                if (retval != null)
                 {
                     // do not update miss count (it is not a miss anymore)
                     return retval;
                 }
             }
 
-            if ((retval = _cacheL2.get(key)) == null)
+            retval = _cacheL2.get(key);
+            if (retval == null)
             {
                 retval = newInstance(key);
                 if (retval != null)

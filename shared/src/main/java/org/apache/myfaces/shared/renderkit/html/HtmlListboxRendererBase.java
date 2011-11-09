@@ -100,7 +100,8 @@ public class HtmlListboxRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, false);
+            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, 
+                    org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, false);
         }
     }
 
@@ -128,7 +129,8 @@ public class HtmlListboxRendererBase
         }
     }
 
-    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue) throws ConverterException
+    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
+         throws ConverterException
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
