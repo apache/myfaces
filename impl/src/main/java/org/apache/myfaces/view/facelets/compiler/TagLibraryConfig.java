@@ -273,7 +273,8 @@ public final class TagLibraryConfig
                             ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
                                     "javax.faces.NamingContainer", null);
                             
-                            return new CompositeComponentResourceTagHandler(componentConfig, compositeComponentResource);
+                            return new CompositeComponentResourceTagHandler(
+                                    componentConfig, compositeComponentResource);
                         }
                     }
                 }
@@ -817,7 +818,8 @@ public final class TagLibraryConfig
         //for (int i = 0; i < urls.length; i++)
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         FaceletConfigResourceProvider provider = FaceletConfigResourceProviderFactory.
-            getFacesConfigResourceProviderFactory(externalContext).createFaceletConfigResourceProvider(externalContext);
+            getFacesConfigResourceProviderFactory(externalContext).
+                createFaceletConfigResourceProvider(externalContext);
         Collection<URL> urls = provider.getFaceletTagLibConfigurationResources(externalContext);
         for (URL url : urls)
         {
