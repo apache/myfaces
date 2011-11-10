@@ -72,7 +72,6 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -97,15 +96,6 @@ public final class HtmlRendererUtils
     public static final String SUBMIT_FORM_FN_NAME = "oamSubmitForm";
     public static final String SUBMIT_FORM_FN_NAME_JSF2 = "myfaces.oam.submitForm";
     public static final String ALLOW_CDATA_SECTION_ON = "org.apache.myfaces.ResponseWriter.CdataSectionOn";
-
-    private static final String SET_HIDDEN_INPUT_FN_NAME = "oamSetHiddenInput";
-    private static final String SET_HIDDEN_INPUT_FN_NAME_JSF2 = "myfaces.oam.setHiddenInput";
-    private static final String CLEAR_HIDDEN_INPUT_FN_NAME = "oamClearHiddenInput";
-
-    private static final String AUTO_SCROLL_PARAM = "autoScroll";
-    private static final String AUTO_SCROLL_FUNCTION = "getScrolling";
-
-    private static final String FIRST_SUBMIT_SCRIPT_ON_PAGE = "org.apache.MyFaces.FIRST_SUBMIT_SCRIPT_ON_PAGE";
 
     public static final String NON_SUBMITTED_VALUE_WARNING 
             = "There should always be a submitted value for an input if it is rendered,"
@@ -140,12 +130,10 @@ public final class HtmlRendererUtils
         Map paramMap = facesContext.getExternalContext()
                 .getRequestParameterMap();
         String clientId = component.getClientId(facesContext);
-
         if (isDisabledOrReadOnly(component))
         {
             return;
         }
-
         if (paramMap.containsKey(clientId))
         {
             ((EditableValueHolder) component).setSubmittedValue(paramMap
@@ -173,12 +161,10 @@ public final class HtmlRendererUtils
                     + component.getClientId(facesContext)
                     + " is not an EditableValueHolder");
         }
-
         if (isDisabledOrReadOnly(component))
         {
             return;
         }
-
         Map paramMap = facesContext.getExternalContext()
                 .getRequestParameterMap();
         String clientId = component.getClientId(facesContext);
@@ -226,12 +212,10 @@ public final class HtmlRendererUtils
         {
             return new Boolean((String) obj);
         }
-
         if (!(obj instanceof Boolean))
         {
             return false;
         }
-
         return ((Boolean) obj).booleanValue();
     }
 
@@ -253,12 +237,10 @@ public final class HtmlRendererUtils
         Map paramValuesMap = facesContext.getExternalContext()
                 .getRequestParameterValuesMap();
         String clientId = component.getClientId(facesContext);
-
         if (isDisabledOrReadOnly(component))
         {
             return;
         }
-
         if (paramValuesMap.containsKey(clientId))
         {
             String[] reqValues = (String[]) paramValuesMap.get(clientId);
@@ -269,7 +251,6 @@ public final class HtmlRendererUtils
             /* request parameter not found, nothing to decode - set submitted value to an empty array
                as we should get here only if the component is on a submitted form, is rendered
                and if the component is not readonly or has not been disabled.
-
                So in fact, there must be component value at this location, but for listboxes, comboboxes etc.
                the submitted value is not posted if no item is selected. */
             ((EditableValueHolder) component)
@@ -292,12 +273,10 @@ public final class HtmlRendererUtils
                     + component.getClientId(facesContext)
                     + " is not an EditableValueHolder");
         }
-
         if (isDisabledOrReadOnly(component))
         {
             return;
         }
-
         Map paramMap = facesContext.getExternalContext()
                 .getRequestParameterMap();
         String clientId = component.getClientId(facesContext);
@@ -325,28 +304,22 @@ public final class HtmlRendererUtils
         if (component instanceof ClientBehaviorHolder)
         {
             ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
-
             Map<String, List<ClientBehavior>> clientBehaviors = clientBehaviorHolder
                     .getClientBehaviors();
-
             if (clientBehaviors != null && !clientBehaviors.isEmpty())
             {
                 Map<String, String> paramMap = facesContext
                         .getExternalContext().getRequestParameterMap();
-
                 String behaviorEventName = paramMap
                         .get("javax.faces.behavior.event");
-
                 if (behaviorEventName != null)
                 {
                     List<ClientBehavior> clientBehaviorList = clientBehaviors
                             .get(behaviorEventName);
-
                     if (clientBehaviorList != null
                             && !clientBehaviorList.isEmpty())
                     {
                         String clientId = paramMap.get("javax.faces.source");
-
                         if (component.getClientId().equals(clientId))
                         {
                             for (ClientBehavior clientBehavior : clientBehaviorList)
@@ -397,7 +370,6 @@ public final class HtmlRendererUtils
             boolean selectMany, Converter converter) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
-
         writer.startElement(HTML.SELECT_ELEM, uiComponent);
         if (uiComponent instanceof ClientBehaviorHolder
                 && JavascriptUtils.isJavascriptAllowed(facesContext
@@ -415,7 +387,6 @@ public final class HtmlRendererUtils
         }
         writer.writeAttribute(HTML.NAME_ATTR,
                 uiComponent.getClientId(facesContext), null);
-
         List selectItemList;
         if (selectMany)
         {
@@ -488,7 +459,6 @@ public final class HtmlRendererUtils
             Converter converter)
     {
         Set lookupSet;
-
         if (selectMany)
         {
             UISelectMany uiSelectMany = (UISelectMany) uiComponent;
@@ -717,34 +687,6 @@ public final class HtmlRendererUtils
             }
         }
     }
-
-    /*
-     * public static void renderRadio(FacesContext facesContext, UIInput
-     * uiComponent, String value, String label, boolean checked) throws
-     * IOException { String clientId = uiComponent.getClientId(facesContext);
-     *
-     * ResponseWriter writer = facesContext.getResponseWriter();
-     *
-     * writer.startElement(HTML.INPUT_ELEM, uiComponent);
-     * writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_RADIO, null);
-     * writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
-     * writer.writeAttribute(HTML.ID_ATTR, clientId, null);
-     *
-     * if (checked) { writer.writeAttribute(HTML.CHECKED_ATTR,
-     * HTML.CHECKED_ATTR, null); }
-     *
-     * if ((value != null) && (value.length() > 0)) {
-     * writer.writeAttribute(HTML.VALUE_ATTR, value, null); }
-     *
-     * renderHTMLAttributes(writer, uiComponent,
-     * HTML.INPUT_PASSTHROUGH_ATTRIBUTES); renderDisabledOnUserRole(writer,
-     * uiComponent, facesContext);
-     *
-     * if ((label != null) && (label.length() > 0)) {
-     * writer.write(HTML.NBSP_ENTITY); writer.writeText(label, null); }
-     *
-     * writer.endElement(HTML.INPUT_ELEM); }
-     */
 
     public static void writePrettyLineSeparator(FacesContext facesContext)
             throws IOException
@@ -1173,7 +1115,6 @@ public final class HtmlRendererUtils
                 }
             }
         }
-
         return null;
     }
 
@@ -1198,7 +1139,6 @@ public final class HtmlRendererUtils
                 }
             }
         }
-
         return false;
     }
 
@@ -1218,349 +1158,14 @@ public final class HtmlRendererUtils
     public static void appendClearHiddenCommandFormParamsFunctionCall(
             StringBuffer buf, String formName)
     {
-        appendClearHiddenCommandFormParamsFunctionCall(new ScriptContext(buf,
-                false), formName);
-    }
-
-    private static void appendClearHiddenCommandFormParamsFunctionCall(
-            ScriptContext context, String formName)
-    {
-        String functionName = HtmlRendererUtils
-                .getClearHiddenCommandFormParamsFunctionName(formName);
-        if (formName == null)
-        {
-            context.prettyLine();
-            context.append("var clearFn = ");
-            context.append(functionName);
-            context.append(";");
-            context.prettyLine();
-            context.append("if(typeof window[clearFn] =='function')");
-            context.append("{");
-            context.append("window[clearFn](formName);");
-            context.append("}");
-        }
-        else
-        {
-            context.prettyLine();
-            context.append("if(typeof window.");
-            context.append(functionName);
-            context.append("=='function')");
-            context.append("{");
-            context.append(functionName).append("('").append(formName)
-                    .append("');");
-            context.append("}");
-        }
+        HtmlJavaScriptUtils.appendClearHiddenCommandFormParamsFunctionCall(buf, formName);
     }
 
     @SuppressWarnings("unchecked")
     public static void renderFormSubmitScript(FacesContext facesContext)
             throws IOException
     {
-
-        Map map = facesContext.getExternalContext().getRequestMap();
-        Boolean firstScript = (Boolean) map.get(FIRST_SUBMIT_SCRIPT_ON_PAGE);
-
-        if (firstScript == null || firstScript.equals(Boolean.TRUE))
-        {
-            map.put(FIRST_SUBMIT_SCRIPT_ON_PAGE, Boolean.FALSE);
-            HtmlRendererUtils.renderFormSubmitScriptIfNecessary(facesContext);
-
-            //we have to render the config just in case
-            renderConfigOptionsIfNecessary(facesContext);
-        }
-    }
-
-    private static void renderConfigOptionsIfNecessary(FacesContext facesContext)
-            throws IOException
-    {
-        ResponseWriter writer = facesContext.getResponseWriter();
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext
-                .getExternalContext());
-        ScriptContext script = new ScriptContext(config.isPrettyHtml());
-        boolean autoScroll = config.isAutoScroll();
-        boolean autoSave = JavascriptUtils.isSaveFormSubmitLinkIE(facesContext
-                .getExternalContext());
-
-        if (autoScroll || autoSave)
-        {
-            script.prettyLine();
-            script.increaseIndent();
-            script.append("(!window.myfaces) ? window.myfaces = {} : null;");
-            script.append("(!myfaces.core) ? myfaces.core = {} : null;");
-            script.append("(!myfaces.core.config) ? myfaces.core.config = {} : null;");
-        }
-
-        if (autoScroll)
-        {
-            script.append("myfaces.core.config.autoScroll = true;");
-        }
-        if (autoSave)
-        {
-            script.append("myfaces.core.config.ieAutoSave = true;");
-        }
-        if (autoScroll || autoSave)
-        {
-            writer.startElement(HTML.SCRIPT_ELEM, null);
-            writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
-            writer.writeText(script.toString(), null);
-            writer.endElement(HTML.SCRIPT_ELEM);
-        }
-    }
-
-    /**
-     * @param facesContext
-     * @throws IOException
-     */
-    private static void renderFormSubmitScriptIfNecessary(
-            FacesContext facesContext) throws IOException
-    {
-        final ExternalContext externalContext = facesContext
-                .getExternalContext();
-        final MyfacesConfig currentInstance = MyfacesConfig
-                .getCurrentInstance(externalContext);
-        ResponseWriter writer = facesContext.getResponseWriter();
-
-        if (currentInstance.isRenderFormSubmitScriptInline())
-        {
-            writer.startElement(HTML.SCRIPT_ELEM, null);
-            writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
-
-            boolean autoScroll = currentInstance.isAutoScroll();
-
-            ScriptContext context = new ScriptContext(
-                    currentInstance.isPrettyHtml());
-            context.prettyLine();
-            context.increaseIndent();
-
-            prepareScript(facesContext, context, autoScroll);
-
-            writer.writeText(context.toString(), null);
-
-            writer.endElement(HTML.SCRIPT_ELEM);
-        }
-        else
-        {
-            ResourceUtils
-                    .renderMyfacesJSInlineIfNecessary(facesContext, writer);
-        }
-    }
-
-    /**
-     * @param facesContext
-     * @param context
-     * @param autoScroll
-     */
-    private static void prepareScript(FacesContext facesContext,
-            ScriptContext context, boolean autoScroll)
-    {
-
-        final char separatorChar = UINamingContainer
-                .getSeparatorChar(facesContext);
-        context.prettyLine();
-
-        //render a function to create a hidden input, if it doesn't exist
-        context.append("function ");
-        context.append(SET_HIDDEN_INPUT_FN_NAME).append(
-                "(formname, name, value)");
-        context.append("{");
-        context.append("var form = document.forms[formname];");
-        context.prettyLine();
-        context.append("if (typeof form == 'undefined')");
-        context.append("{");
-        context.append("form = document.getElementById(formname);");
-        context.append("}");
-        context.prettyLine();
-        context.append("if(typeof form.elements[name]!='undefined' && "+
-                "(form.elements[name].nodeName=='INPUT' || form.elements[name].nodeName=='input'))");
-        context.append("{");
-        context.append("form.elements[name].value=value;");
-        context.append("}");
-        context.append("else");
-        context.append("{");
-        context.append("var newInput = document.createElement('input');");
-        context.prettyLine();
-        context.append("newInput.setAttribute('type','hidden');");
-        context.prettyLine();
-        context.append("newInput.setAttribute('id',name);"); // IE hack; See MYFACES-1805
-        context.prettyLine();
-        context.append("newInput.setAttribute('name',name);");
-        context.prettyLine();
-        context.append("newInput.setAttribute('value',value);");
-        context.prettyLine();
-        context.append("form.appendChild(newInput);");
-        context.append("}");
-
-        context.append("}");
-
-        context.prettyLine();
-
-        context.prettyLine();
-
-        //render a function to clear a hidden input, if it exists        
-        context.append("function ");
-        context.append(CLEAR_HIDDEN_INPUT_FN_NAME).append(
-                "(formname, name, value)");
-        context.append("{");
-        context.append("var form = document.forms[formname];");
-        context.prettyLine();
-        context.append("if (typeof form == 'undefined')");
-        context.append("{");
-        context.append("form = document.getElementById(formname);");
-        context.append("}");
-        context.prettyLine();
-        context.append("var hInput = form.elements[name];");
-        context.prettyLine();
-        context.append("if(typeof hInput !='undefined')");
-        context.append("{");
-        //context.append("form.elements[name].value=null;");
-        context.append("form.removeChild(hInput);");
-        context.append("}");
-
-        context.append("}");
-
-        context.prettyLine();
-
-        context.append("function ");
-        context.append(SUBMIT_FORM_FN_NAME).append(
-                "(formName, linkId, target, params)");
-        context.append("{");
-
-        //call the script to clear the form (clearFormHiddenParams_<formName>) method - 
-        //optionally, only necessary for IE5.5.
-        //todo: if IE5.5. is ever desupported, we can get rid of this and instead rely on 
-        //the last part of this script to
-        //clear the parameters
-        HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(
-                context, null);
-
-        if (autoScroll)
-        {
-            appendAutoScrollAssignment(facesContext, context, null);
-        }
-
-        context.prettyLine();
-
-        context.append("var form = document.forms[formName];");
-        context.prettyLine();
-        context.append("if (typeof form == 'undefined')");
-        context.append("{");
-        context.append("form = document.getElementById(formName);");
-        context.append("}");
-        context.prettyLine();
-
-        if (JavascriptUtils.isSaveFormSubmitLinkIE(FacesContext
-                .getCurrentInstance().getExternalContext()))
-        {
-            context.append("var agentString = navigator.userAgent.toLowerCase();");
-            context.prettyLine();
-            //context.append("var isIE = false;");
-            context.prettyLine();
-            context.append("if (agentString.indexOf('msie') != -1)");
-
-            context.append("{");
-            context.append("if (!(agentString.indexOf('ppc') != -1 &&"+
-                    " agentString.indexOf('windows ce') != -1 && version >= 4.0))");
-            context.append("{");
-            context.append("window.external.AutoCompleteSaveForm(form);");
-            //        context.append("isIE = false;");
-            context.append("}");
-            //        context.append("else");
-            //        context.append("{");
-            //        context.append("isIE = true;");
-            //        context.prettyLine();
-            //        context.append("}");
-
-            context.append("}");
-
-            context.prettyLine();
-        }
-        //set the target (and save it). This should be done always, 
-        //and the default value of target is always valid.
-        context.append("var oldTarget = form.target;");
-        context.prettyLine();
-        context.append("if(target != null)");
-        context.append("{");
-        context.prettyLine();
-        context.append("form.target=target;");
-        context.append("}");
-
-        //set the submit parameters
-
-        context.append("if((typeof params!='undefined') && params != null)");
-        context.append("{");
-        context.prettyLine();
-        context.append("for(var i=0, param; (param = params[i]); i++)");
-        context.append("{");
-        context.append(SET_HIDDEN_INPUT_FN_NAME).append(
-                "(formName,param[0], param[1]);");
-        context.append("}");
-        context.append("}");
-
-        context.prettyLine();
-
-        context.append(SET_HIDDEN_INPUT_FN_NAME);
-        context.append("(formName,formName +'" + separatorChar + "'+'"
-                + HtmlRendererUtils.HIDDEN_COMMANDLINK_FIELD_NAME
-                + "',linkId);");
-
-        context.prettyLine();
-        context.prettyLine();
-
-        //do the actual submit calls
-
-        context.append("if(form.onsubmit)");
-        context.append("{");
-        context.append("var result=form.onsubmit();");
-        context.prettyLine();
-        context.append("if((typeof result=='undefined')||result)");
-        context.append("{");
-        context.append("try");
-        context.append("{");
-        context.append("form.submit();");
-        context.append("}");
-        context.append("catch(e){}");
-        context.append("}");
-        context.append("}");
-        context.append("else ");
-        context.append("{");
-        context.append("try");
-        context.append("{");
-        context.append("form.submit();");
-        context.append("}");
-        context.append("catch(e){}");
-        context.append("}");
-
-        //reset the target
-        context.prettyLine();
-        //Restore the old target, no more questions asked
-        context.append("form.target=oldTarget;");
-        context.prettyLine();
-
-        //clear the individual parameters - to make sure that even if the clear-function isn't called,
-        // the back button/resubmit functionality will still work in all browsers except IE 5.5.
-
-        context.append("if((typeof params!='undefined') && params != null)");
-        context.append("{");
-        context.prettyLine();
-        context.append("for(var i=0, param; (param = params[i]); i++)");
-        context.append("{");
-        context.append(CLEAR_HIDDEN_INPUT_FN_NAME).append(
-                "(formName,param[0], param[1]);");
-        context.append("}");
-        context.append("}");
-
-        context.prettyLine();
-
-        context.append(CLEAR_HIDDEN_INPUT_FN_NAME);
-        context.append("(formName,formName +'" + separatorChar + "'+'"
-                + HtmlRendererUtils.HIDDEN_COMMANDLINK_FIELD_NAME
-                + "',linkId);");
-
-        //return false, so that browser does not handle the click
-        context.append("return false;");
-        context.append("}");
-
-        context.prettyLineDecreaseIndent();
+        HtmlJavaScriptUtils.renderFormSubmitScript(facesContext);
     }
 
     /**
@@ -1570,8 +1175,7 @@ public final class HtmlRendererUtils
     public static void appendAutoScrollAssignment(StringBuffer onClickValue,
             String formName)
     {
-        appendAutoScrollAssignment(FacesContext.getCurrentInstance(),
-                new ScriptContext(onClickValue, false), formName);
+        HtmlJavaScriptUtils.appendAutoScrollAssignment(onClickValue, formName);
     }
 
     /**
@@ -1581,37 +1185,7 @@ public final class HtmlRendererUtils
     public static void appendAutoScrollAssignment(FacesContext context,
             StringBuffer onClickValue, String formName)
     {
-        appendAutoScrollAssignment(context, new ScriptContext(onClickValue,
-                false), formName);
-    }
-
-    private static void appendAutoScrollAssignment(FacesContext context,
-            ScriptContext scriptContext, String formName)
-    {
-        String formNameStr = formName == null ? "formName" : (new StringBuffer(
-                "'").append(formName).append("'").toString());
-        String paramName = new StringBuffer().append("'")
-                .append(AUTO_SCROLL_PARAM).append("'").toString();
-        String value = new StringBuffer().append(AUTO_SCROLL_FUNCTION)
-                .append("()").toString();
-
-        scriptContext.prettyLine();
-        scriptContext.append("if(typeof window." + AUTO_SCROLL_FUNCTION
-                + "!='undefined')");
-        scriptContext.append("{");
-        if (MyfacesConfig.getCurrentInstance(context.getExternalContext())
-                .isRenderFormSubmitScriptInline())
-        {
-            scriptContext.append(SET_HIDDEN_INPUT_FN_NAME);
-        }
-        else
-        {
-            scriptContext.append(SET_HIDDEN_INPUT_FN_NAME_JSF2);
-        }
-        scriptContext.append("(").append(formNameStr).append(",")
-                .append(paramName).append(",").append(value).append(");");
-        scriptContext.append("}");
-
+        HtmlJavaScriptUtils.appendAutoScrollAssignment(context, onClickValue, formName);
     }
 
     /**
@@ -1620,12 +1194,7 @@ public final class HtmlRendererUtils
     public static void renderAutoScrollHiddenInput(FacesContext facesContext,
             ResponseWriter writer) throws IOException
     {
-        writePrettyLineSeparator(facesContext);
-        writer.startElement(HTML.INPUT_ELEM, null);
-        writer.writeAttribute(HTML.TYPE_ATTR, "hidden", null);
-        writer.writeAttribute(HTML.NAME_ATTR, AUTO_SCROLL_PARAM, null);
-        writer.endElement(HTML.INPUT_ELEM);
-        writePrettyLineSeparator(facesContext);
+        HtmlJavaScriptUtils.renderAutoScrollHiddenInput(facesContext, writer);
     }
 
     /**
@@ -1634,112 +1203,22 @@ public final class HtmlRendererUtils
     public static void renderAutoScrollFunction(FacesContext facesContext,
             ResponseWriter writer) throws IOException
     {
-        writePrettyLineSeparator(facesContext);
-        writer.startElement(HTML.SCRIPT_ELEM, null);
-        writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR,
-                HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
-        writer.writeText(getAutoScrollFunction(facesContext), null);
-        writer.endElement(HTML.SCRIPT_ELEM);
-        writePrettyLineSeparator(facesContext);
+        HtmlJavaScriptUtils.renderAutoScrollFunction(facesContext, writer);
     }
 
     public static String getAutoScrollFunction(FacesContext facesContext)
     {
-        ScriptContext script = new ScriptContext(MyfacesConfig
-                .getCurrentInstance(facesContext.getExternalContext())
-                .isPrettyHtml());
-
-        script.prettyLineIncreaseIndent();
-
-        script.append("function ");
-        script.append(AUTO_SCROLL_FUNCTION);
-        script.append("()");
-        script.append("{");
-        script.append("var x = 0; var y = 0;");
-        script.append("if (self.pageXOffset || self.pageYOffset)");
-        script.append("{");
-        script.append("x = self.pageXOffset;");
-        script.prettyLine();
-        script.append("y = self.pageYOffset;");
-        script.append("}");
-        script.append(" else if ((document.documentElement && document.documentElement.scrollLeft)||"+
-                "(document.documentElement && document.documentElement.scrollTop))");
-        script.append("{");
-        script.append("x = document.documentElement.scrollLeft;");
-        script.prettyLine();
-        script.append("y = document.documentElement.scrollTop;");
-        script.append("}");
-        script.append(" else if (document.body) ");
-        script.append("{");
-        script.append("x = document.body.scrollLeft;");
-        script.prettyLine();
-        script.append("y = document.body.scrollTop;");
-        script.append("}");
-        script.append("return x + \",\" + y;");
-        script.append("}");
-
-        ExternalContext externalContext = facesContext.getExternalContext();
-        String oldViewId = JavascriptUtils.getOldViewId(externalContext);
-        if (oldViewId != null
-                && oldViewId.equals(facesContext.getViewRoot().getViewId()))
-        {
-            //ok, we stayed on the same page, so let's scroll it to the former place
-            String scrolling = (String) externalContext
-                    .getRequestParameterMap().get(AUTO_SCROLL_PARAM);
-            if (scrolling != null && scrolling.length() > 0)
-            {
-                int x = 0;
-                int y = 0;
-                int comma = scrolling.indexOf(',');
-                if (comma == -1)
-                {
-                    log.warning("Illegal autoscroll request parameter: "
-                            + scrolling);
-                }
-                else
-                {
-                    try
-                    {
-                        //we convert to int against XSS vulnerability
-                        x = Integer.parseInt(scrolling.substring(0, comma));
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        log.warning("Error getting x offset for autoscroll feature. Bad param value: "
-                                + scrolling);
-                        x = 0; //ignore false numbers
-                    }
-
-                    try
-                    {
-                        //we convert to int against XSS vulnerability
-                        y = Integer.parseInt(scrolling.substring(comma + 1));
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        log.warning("Error getting y offset for autoscroll feature. Bad param value: "
-                                + scrolling);
-                        y = 0; //ignore false numbers
-                    }
-                }
-                script.append("window.scrollTo(").append(x).append(",")
-                        .append(y).append(");\n");
-            }
-        }
-
-        return script.toString();
+        return HtmlJavaScriptUtils.getAutoScrollFunction(facesContext);
     }
 
     public static boolean isAllowedCdataSection(FacesContext fc)
     {
         Boolean value = null;
-
         if (fc != null)
         {
             value = (Boolean) fc.getExternalContext().getRequestMap()
                     .get(ALLOW_CDATA_SECTION_ON);
         }
-
         return value != null && ((Boolean) value).booleanValue();
     }
 
@@ -1777,7 +1256,6 @@ public final class HtmlRendererUtils
         {
             _value = value;
         }
-
     }
 
     public static void renderHiddenCommandFormParams(ResponseWriter writer,
@@ -1819,9 +1297,7 @@ public final class HtmlRendererUtils
     {
         writer.startElement(HTML.LABEL_ELEM, component);
         writer.writeAttribute(HTML.FOR_ATTR, forClientId, null);
-
         String labelClass = null;
-
         if (disabled)
         {
             labelClass = (String) component.getAttributes().get(
@@ -1837,13 +1313,11 @@ public final class HtmlRendererUtils
         {
             writer.writeAttribute("class", labelClass, "labelClass");
         }
-
         if ((labelValue != null) && (labelValue.length() > 0))
         {
             writer.write(HTML.NBSP_ENTITY);
             writer.writeText(labelValue, null);
         }
-
         writer.endElement(HTML.LABEL_ELEM);
     }
 
@@ -1856,9 +1330,7 @@ public final class HtmlRendererUtils
     {
         writer.startElement(HTML.LABEL_ELEM, component);
         writer.writeAttribute(HTML.FOR_ATTR, forClientId, null);
-
         String labelClass = null;
-
         if (disabled)
         {
             labelClass = (String) component.getAttributes().get(
@@ -1874,7 +1346,6 @@ public final class HtmlRendererUtils
         {
             writer.writeAttribute("class", labelClass, "labelClass");
         }
-
         if ((item.getLabel() != null) && (item.getLabel().length() > 0))
         {
             // writer.write(HTML.NBSP_ENTITY);
@@ -1890,7 +1361,6 @@ public final class HtmlRendererUtils
                 writer.write(item.getLabel());
             }
         }
-
         writer.endElement(HTML.LABEL_ELEM);
     }
 
@@ -1903,9 +1373,7 @@ public final class HtmlRendererUtils
     {
         writer.startElement(HTML.LABEL_ELEM, component);
         writer.writeAttribute(HTML.FOR_ATTR, forClientId, null);
-
         String labelClass = null;
-
         if (disabled)
         {
             labelClass = (String) component.getAttributes().get(
@@ -1917,9 +1385,7 @@ public final class HtmlRendererUtils
                     .getAttributes()
                     .get(org.apache.myfaces.shared.renderkit.JSFAttr.ENABLED_CLASS_ATTR);
         }
-
         String labelSelectedClass = null;
-
         if (selected)
         {
             labelSelectedClass = (String) component.getAttributes().get(
@@ -1930,7 +1396,6 @@ public final class HtmlRendererUtils
             labelSelectedClass = (String) component.getAttributes().get(
                     JSFAttr.UNSELECTED_CLASS_ATTR);
         }
-
         if (labelSelectedClass != null)
         {
             if (labelClass == null)
@@ -1942,12 +1407,10 @@ public final class HtmlRendererUtils
                 labelClass = labelClass + " " + labelSelectedClass;
             }
         }
-
         if (labelClass != null)
         {
             writer.writeAttribute("class", labelClass, "labelClass");
         }
-
         if ((item.getLabel() != null) && (item.getLabel().length() > 0))
         {
             writer.write(HTML.NBSP_ENTITY);
@@ -1962,7 +1425,6 @@ public final class HtmlRendererUtils
                 writer.write(item.getLabel());
             }
         }
-
         writer.endElement(HTML.LABEL_ELEM);
     }
 
@@ -1982,65 +1444,7 @@ public final class HtmlRendererUtils
             ResponseWriter writer, String formName, Set dummyFormParams,
             String formTarget) throws IOException
     {
-        //render the clear hidden inputs javascript function
-        String functionName = getClearHiddenCommandFormParamsFunctionName(formName);
-        writer.startElement(HTML.SCRIPT_ELEM, null);
-        writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
-
-        // Using writeComment instead of write with <!-- tag
-        StringBuffer script = new StringBuffer();
-        script.append("function ");
-        script.append(functionName);
-        script.append("() {");
-        if (dummyFormParams != null)
-        {
-            script.append("\n  var f = document.forms['");
-            script.append(formName);
-            script.append("'];");
-            int i = 0;
-            for (Iterator it = dummyFormParams.iterator(); it.hasNext();)
-            {
-                String elemVarName = "elem" + i;
-                script.append("\n  var ").append(elemVarName).append(" = ");
-                script.append("f.elements['").append((String) it.next())
-                        .append("'];");
-                script.append("\n  if(typeof ").append(elemVarName)
-                        .append(" !='undefined' && ");
-                script.append(elemVarName).append(".nodeName=='INPUT'){");
-                script.append("\n   if (").append(elemVarName)
-                        .append(".value != '') {");
-                script.append("\n    " + elemVarName + ".value='';");
-                script.append("\n   }");
-                script.append("\n  }");
-                i++;
-            }
-        }
-        // clear form target
-        script.append("\n  f.target=");
-        if (formTarget == null || formTarget.length() == 0)
-        {
-            //Normally one would think that setting target to null has the
-            //desired effect, but once again IE is different...
-            //Setting target to null causes IE to open a new window!
-            script.append("'';");
-        }
-        else
-        {
-            script.append("'");
-            script.append(formTarget);
-            script.append("';");
-        }
-        script.append("\n}");
-
-        //Just to be sure we call this clear method on each load.
-        //Otherwise in the case, that someone submits a form by pressing Enter
-        //within a text input, the hidden inputs won't be cleared!
-        script.append("\n");
-        script.append(functionName);
-        script.append("();");
-
-        writer.writeText(script.toString(), null);
-        writer.endElement(HTML.SCRIPT_ELEM);
+        HtmlJavaScriptUtils.renderClearHiddenCommandFormParamsFunction(writer, formName, dummyFormParams, formTarget);
     }
 
     /**
@@ -2052,25 +1456,13 @@ public final class HtmlRendererUtils
     public static String getClearHiddenCommandFormParamsFunctionName(
             String formName)
     {
-        final char separatorChar = UINamingContainer
-                .getSeparatorChar(FacesContext.getCurrentInstance());
-        if (formName == null)
-        {
-            return "'" + CLEAR_HIDDEN_FIELD_FN_NAME
-                    + "_'+formName.replace(/-/g, '\\$" + separatorChar
-                    + "').replace(/" + separatorChar + "/g,'_')";
-        }
-
-        return JavascriptUtils
-                .getValidJavascriptNameAsInRI(CLEAR_HIDDEN_FIELD_FN_NAME + "_"
-                        + formName.replace(separatorChar, '_'));
+        return HtmlJavaScriptUtils.getClearHiddenCommandFormParamsFunctionName(formName);
     }
 
     public static String getClearHiddenCommandFormParamsFunctionNameMyfacesLegacy(
             String formName)
     {
-        return "clear_"
-                + JavascriptUtils.getValidJavascriptName(formName, false);
+        return HtmlJavaScriptUtils.getClearHiddenCommandFormParamsFunctionNameMyfacesLegacy(formName);
     }
 
     /**
@@ -2105,7 +1497,6 @@ public final class HtmlRendererUtils
     {
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
-
         String sourceId = params.get("javax.faces.source");
         if (sourceId == null || !sourceId.equals(clientId))
         {
@@ -2152,7 +1543,6 @@ public final class HtmlRendererUtils
         outcome = (outcome == null) ? facesContext.getViewRoot().getViewId()
                 : outcome;
         outcome = ((outcome == null) ? STR_EMPTY : outcome.trim());
-
         // Get the correct URL for the outcome.
         NavigationHandler nh = facesContext.getApplication()
                 .getNavigationHandler();
@@ -2166,7 +1556,6 @@ public final class HtmlRendererUtils
         // fromAction is null because there is no action method that was called to get the outcome
         NavigationCase navigationCase = navigationHandler.getNavigationCase(
                 facesContext, null, outcome);
-
         // when navigation case is null, force the link or button to be disabled and log a warning
         if (navigationCase == null)
         {
@@ -2176,7 +1565,6 @@ public final class HtmlRendererUtils
 
             return null;
         }
-
         Map<String, List<String>> parameters = null;
         // handle URL parameters
         if (component.getChildCount() > 0)
@@ -2200,7 +1588,6 @@ public final class HtmlRendererUtils
                 }
             }
         }
-
         // handle NavigationCase parameters
         Map<String, List<String>> navigationCaseParams = navigationCase
                 .getParameters();
@@ -2220,12 +1607,10 @@ public final class HtmlRendererUtils
                 }
             }
         }
-
         if (parameters == null)
         {
             parameters = Collections.emptyMap();
         }
-
         // In theory the precedence order to deal with params is this:
         // component parameters, navigation-case parameters, view parameters
         // getBookmarkableURL deal with this details.
@@ -2237,7 +1622,6 @@ public final class HtmlRendererUtils
                 parameters,
                 navigationCase.isIncludeViewParams()
                         || component.isIncludeViewParams());
-
         // handle fragment (viewId#fragment)
         String fragment = (String) component.getAttributes().get("fragment");
         if (fragment != null)
@@ -2249,7 +1633,6 @@ public final class HtmlRendererUtils
                 href += "#" + fragment;
             }
         }
-
         return href;
     }
 
@@ -2277,7 +1660,6 @@ public final class HtmlRendererUtils
             {
                 contentTypeListString = (String) context.getExternalContext()
                         .getRequestHeaderMap().get("Accept");
-
                 // There is a windows mobile IE client (6.12) sending
                 // "application/vnd.wap.mms-message;*/*"
                 // Note that the Accept header should be written as 
@@ -2290,23 +1672,18 @@ public final class HtmlRendererUtils
                     contentTypeListString = "*/*";
                 }
             }
-
             if (contentTypeListString == null)
             {
                 if (log.isLoggable(Level.FINE))
                 {
                     log.fine("No content type list given, creating HtmlResponseWriterImpl with default content type.");
                 }
-
                 contentTypeListString = HTML_CONTENT_TYPE;
             }
         }
-
         List contentTypeList = splitContentTypeListString(contentTypeListString);
         String[] supportedContentTypeArray = getSupportedContentTypes();
-
         String selectedContentType = null;
-
         for (int i = 0; i < supportedContentTypeArray.length; i++)
         {
             String supportedContentType = supportedContentTypeArray[i].trim();
@@ -2333,7 +1710,6 @@ public final class HtmlRendererUtils
                 break;
             }
         }
-
         if (selectedContentType == null)
         {
             throw new IllegalArgumentException(
@@ -2368,22 +1744,17 @@ public final class HtmlRendererUtils
     private static List splitContentTypeListString(String contentTypeListString)
     {
         List contentTypeList = new ArrayList();
-
         StringTokenizer st = new StringTokenizer(contentTypeListString, ",");
         while (st.hasMoreTokens())
         {
             String contentType = st.nextToken().trim();
-
             int semicolonIndex = contentType.indexOf(";");
-
             if (semicolonIndex != -1)
             {
                 contentType = contentType.substring(0, semicolonIndex);
             }
-
             contentTypeList.add(contentType);
         }
-
         return contentTypeList;
     }
 
@@ -2393,7 +1764,6 @@ public final class HtmlRendererUtils
         {
             return null;
         }
-
         return (String) component.getAttributes().get(
                 JSFAttr.JAVASCRIPT_LOCATION);
     }
@@ -2404,7 +1774,6 @@ public final class HtmlRendererUtils
         {
             return null;
         }
-
         return (String) component.getAttributes().get(JSFAttr.IMAGE_LOCATION);
     }
 
@@ -2414,7 +1783,6 @@ public final class HtmlRendererUtils
         {
             return null;
         }
-
         return (String) component.getAttributes().get(JSFAttr.STYLE_LOCATION);
     }
 
@@ -2487,15 +1855,12 @@ public final class HtmlRendererUtils
             ScriptContext target,
             Collection<ClientBehaviorContext.Parameter> params)
     {
-
         if (!(uiComponent instanceof ClientBehaviorHolder))
         {
             target.append(STR_EMPTY);
             return false;
         }
-
         ExternalContext externalContext = facesContext.getExternalContext();
-
         boolean renderClientBehavior = JavascriptUtils
                 .isJavascriptAllowed(externalContext)
                 && clientBehaviors != null && clientBehaviors.size() > 0;
@@ -2504,7 +1869,6 @@ public final class HtmlRendererUtils
             target.append(STR_EMPTY);
             return false;
         }
-
         List<ClientBehavior> attachedEventBehaviors = clientBehaviors
                 .get(eventName);
         if (attachedEventBehaviors == null
@@ -2513,11 +1877,9 @@ public final class HtmlRendererUtils
             target.append(STR_EMPTY);
             return false;
         }
-
         ClientBehaviorContext context = ClientBehaviorContext
                 .createClientBehaviorContext(facesContext, uiComponent,
                         eventName, targetClientId, params);
-
         boolean submitting = false;
         Iterator<ClientBehavior> clientIterator = attachedEventBehaviors
                 .iterator();
@@ -2525,9 +1887,7 @@ public final class HtmlRendererUtils
         {
             ClientBehavior clientBehavior = clientIterator.next();
             String script = clientBehavior.getScript(context);
-
             // The script _can_ be null, and in fact is for <f:ajax disabled="true" />
-
             if (script != null)
             {
                 //either strings or functions, but I assume string is more appropriate 
@@ -2592,12 +1952,10 @@ public final class HtmlRendererUtils
             finalParams
                     .add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
-
         final MyfacesConfig currentInstance = MyfacesConfig
                 .getCurrentInstance(externalContext);
         ScriptContext behaviorCode = new ScriptContext();
         ScriptContext retVal = new ScriptContext(currentInstance.isPrettyHtml());
-
         getClientBehaviorScript(facesContext, uiComponent, targetClientId,
                 eventName, clientBehaviors, behaviorCode, params);
         if (behaviorCode != null
@@ -2612,10 +1970,8 @@ public final class HtmlRendererUtils
                     .add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
         Iterator<String> it = finalParams.iterator();
-
         // It's possible that there are no behaviors to render.  For example, if we have
         // <f:ajax disabled="true" /> as the only behavior.
-
         if (it.hasNext())
         {
             //according to the spec jsf.util.chain has to be used to build up the 
@@ -2690,17 +2046,14 @@ public final class HtmlRendererUtils
                 .getCurrentInstance(externalContext);
         ScriptContext behaviorCode = new ScriptContext();
         ScriptContext retVal = new ScriptContext(currentInstance.isPrettyHtml());
-
         boolean submitting1 = getClientBehaviorScript(facesContext,
                 uiComponent, targetClientId, eventName1, clientBehaviors,
                 behaviorCode, params);
         boolean submitting2 = getClientBehaviorScript(facesContext,
                 uiComponent, targetClientId, eventName2, clientBehaviors,
                 behaviorCode, params2);
-
         // ClientBehaviors for both events have to be checked for the Submitting hint
         boolean submitting = submitting1 || submitting2;
-
         if (behaviorCode != null
                 && !behaviorCode.toString().trim().equals(STR_EMPTY))
         {
@@ -2713,10 +2066,8 @@ public final class HtmlRendererUtils
                     .add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
         Iterator<String> it = finalParams.iterator();
-
         // It's possible that there are no behaviors to render.  For example, if we have
         // <f:ajax disabled="true" /> as the only behavior.
-
         if (it.hasNext())
         {
             if (!submitting)
@@ -2756,46 +2107,7 @@ public final class HtmlRendererUtils
      */
     public static String escapeJavaScriptForChain(String javaScript)
     {
-        // first replace \' with \\'
-        //String escaped = StringUtils.replace(javaScript, "\\'", "\\\\'");
-
-        // then replace ' with \'
-        // (this will replace every \' in the original to \\\')
-        //escaped = StringUtils.replace(escaped, '\'', "\\'");
-
-        //return escaped;
-
-        StringBuffer out = null;
-        for (int pos = 0; pos < javaScript.length(); pos++)
-        {
-            char c = javaScript.charAt(pos);
-
-            if (c == '\\' || c == '\'')
-            {
-                if (out == null)
-                {
-                    out = new StringBuffer(javaScript.length() + 8);
-                    if (pos > 0)
-                    {
-                        out.append(javaScript, 0, pos);
-                    }
-                }
-                out.append('\\');
-            }
-            if (out != null)
-            {
-                out.append(c);
-            }
-        }
-
-        if (out == null)
-        {
-            return javaScript;
-        }
-        else
-        {
-            return out.toString();
-        }
+        return HtmlJavaScriptUtils.escapeJavaScriptForChain(javaScript);
     }
 
     /**
@@ -2807,7 +2119,6 @@ public final class HtmlRendererUtils
             FacesContext facesContext, UIComponent uiComponent)
     {
         Map<String, String> retVal = null;
-
         if (uiComponent.getChildCount() > 0)
         {
             List<UIParameter> validParams = getValidUIParameterChildren(
@@ -2830,12 +2141,10 @@ public final class HtmlRendererUtils
                 }
             }
         }
-
         if (retVal == null)
         {
             retVal = Collections.emptyMap();
         }
-
         return retVal;
     }
 
@@ -2878,14 +2187,12 @@ public final class HtmlRendererUtils
             boolean skipNullValue, boolean skipUnrendered, boolean skipNullName)
     {
         List<UIParameter> params = null;
-
         for (int i = 0, size = children.size(); i < size; i++)
         {
             UIComponent child = children.get(i);
             if (child instanceof UIParameter)
             {
                 UIParameter param = (UIParameter) child;
-
                 // check for the disable attribute (since 2.0)
                 // and the render attribute (only if skipUnrendered is true)
                 if (param.isDisable()
@@ -2894,7 +2201,6 @@ public final class HtmlRendererUtils
                     // ignore this UIParameter and continue
                     continue;
                 }
-
                 // check the name
                 String name = param.getName();
                 if (skipNullName && (name == null || STR_EMPTY.equals(name)))
@@ -2907,7 +2213,6 @@ public final class HtmlRendererUtils
                     // and skip it
                     continue;
                 }
-
                 // check the value
                 if (skipNullValue && param.getValue() == null)
                 {
@@ -2923,7 +2228,6 @@ public final class HtmlRendererUtils
                     // skip a null-value
                     continue;
                 }
-
                 // add the param
                 if (params == null)
                 {
@@ -2932,7 +2236,6 @@ public final class HtmlRendererUtils
                 params.add(param);
             }
         }
-
         if (params == null)
         {
             params = Collections.emptyList();
@@ -3614,37 +2917,7 @@ public final class HtmlRendererUtils
     public static void renderViewStateJavascript(FacesContext facesContext,
             String hiddenId, String serializedState) throws IOException
     {
-        ResponseWriter writer = facesContext.getResponseWriter();
-
-        writer.startElement(HTML.SCRIPT_ELEM, null);
-        writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
-
-        final ExternalContext externalContext = facesContext
-                .getExternalContext();
-        final MyfacesConfig currentInstance = MyfacesConfig
-                .getCurrentInstance(externalContext);
-
-        ScriptContext context = new ScriptContext(
-                currentInstance.isPrettyHtml());
-        context.prettyLine();
-        context.increaseIndent();
-
-        context.append("function setViewState() {\n");
-        context.append("\tvar state = '");
-        context.append(serializedState);
-        context.append("';\n");
-        context.append("\tfor (var i = 0; i < document.forms.length; i++) {\n");
-        context.append("\t\tdocument.forms[i]['" + hiddenId
-                + "'].value = state;\n");
-        context.append("\t}\n");
-        context.append("}\n");
-        context.append("setViewState();\n");
-
-        context.decreaseIndent();
-
-        writer.writeText(context.toString(), null);
-
-        writer.endElement(HTML.SCRIPT_ELEM);
+        HtmlJavaScriptUtils.renderViewStateJavascript(facesContext, hiddenId, serializedState);
     }
 
     /**
@@ -3689,135 +2962,21 @@ public final class HtmlRendererUtils
      * to help with rendering out a script and keeping a
      * proper formatting.
      */
-    public static class ScriptContext
+    public static class ScriptContext extends JavascriptContext
     {
-        private long currentIndentationLevel;
-        private StringBuffer buffer = new StringBuffer();
-        private boolean prettyPrint = false;
-        /**
-         * automatic formatting will render
-         * new-lines and indents if blocks are opened
-         * and closed - attention: you need to append
-         * opening and closing brackets of blocks separately in this case!
-         */
-        private boolean automaticFormatting = true;
-
         public ScriptContext()
         {
-
+            super();
         }
 
         public ScriptContext(boolean prettyPrint)
         {
-            this.prettyPrint = prettyPrint;
+            super(prettyPrint);
         }
 
         public ScriptContext(StringBuffer buf, boolean prettyPrint)
         {
-            this.prettyPrint = prettyPrint;
-            this.buffer = buf;
-        }
-
-        public void increaseIndent()
-        {
-            currentIndentationLevel++;
-        }
-
-        public void decreaseIndent()
-        {
-            currentIndentationLevel--;
-
-            if (currentIndentationLevel < 0)
-            {
-                currentIndentationLevel = 0;
-            }
-        }
-
-        public void prettyLine()
-        {
-            if (prettyPrint)
-            {
-                append(LINE_SEPARATOR);
-
-                for (int i = 0; i < getCurrentIndentationLevel(); i++)
-                {
-                    append(TABULATOR);
-                }
-            }
-        }
-
-        public void prettyLineIncreaseIndent()
-        {
-            increaseIndent();
-            prettyLine();
-        }
-
-        public void prettyLineDecreaseIndent()
-        {
-            decreaseIndent();
-            prettyLine();
-        }
-
-        public long getCurrentIndentationLevel()
-        {
-            return currentIndentationLevel;
-        }
-
-        public void setCurrentIndentationLevel(long currentIndentationLevel)
-        {
-            this.currentIndentationLevel = currentIndentationLevel;
-        }
-
-        public ScriptContext append(String str)
-        {
-
-            if (automaticFormatting && str.length() == 1)
-            {
-                boolean openBlock = str.equals("{");
-                boolean closeBlock = str.equals("}");
-
-                if (openBlock)
-                {
-                    prettyLine();
-                }
-                else if (closeBlock)
-                {
-                    prettyLineDecreaseIndent();
-                }
-
-                buffer.append(str);
-
-                if (openBlock)
-                {
-                    prettyLineIncreaseIndent();
-                }
-                else if (closeBlock)
-                {
-                    prettyLine();
-                }
-            }
-            else
-            {
-                buffer.append(str);
-            }
-            return this;
-        }
-
-        public ScriptContext append(char c)
-        {
-            buffer.append(c);
-            return this;
-        }
-
-        public ScriptContext append(int i)
-        {
-            buffer.append(i);
-            return this;
-        }
-
-        public String toString()
-        {
-            return buffer.toString();
+            super(buf, prettyPrint);
         }
     }
 }
