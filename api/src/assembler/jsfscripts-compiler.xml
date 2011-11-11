@@ -82,6 +82,7 @@
 
 
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
+                <include>**/_impl/xhrCore/_ExtAjaxRequest.js</include>
 
                 <!-- this is pure 2.2 functionality -->
                 <include>**/_impl/xhrCore/_IFrameRequest.js</include>

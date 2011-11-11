@@ -64,8 +64,6 @@ _MF_SINGLTN(_PFX_XHR + "_Transports", _MF_OBJECT,
      */
     _q: new myfaces._impl.xhrCore._AjaxRequestQueue(),
 
-
-
     /**
      * xhr post with enqueuing as defined by the jsf 2.0 specification
      *
@@ -79,38 +77,6 @@ _MF_SINGLTN(_PFX_XHR + "_Transports", _MF_OBJECT,
     xhrQueuedPost : function(source, sourceForm, context, passThrgh) {
         this._q.enqueue(
                 new (this._getAjaxReqClass(context))(this._getArguments(source, sourceForm, context, passThrgh)));
-    },
-
-    /**
-     * Spec. 13.3.3
-     * Examining the response markup and updating the DOM tree
-     * @param {XMLHttpRequest} request - the ajax request
-     * @param {Object} context - the ajax context
-     */
-    response : function(request, context) {
-
-        //TODO we can eliminate this method in favor of an impl specific code where
-        //the response is weakly bound
-
-        var internalContext = context._mfInternal;
-
-        //the normal usecase is that the request knows about its response
-        //which normally is temporary stored within the _mfRequest object
-        //(aka call from a finished request)
-        //if no _mfRequest object is given which means an external call we
-        //have a call from the outside
-
-        //TODO check if we cannot eliminate the _mfRequest object in the long run
-        //given we have to pass a request object anyway
-
-        var ajaxObj = (internalContext && internalContext._mfRequest) || new (this._getAjaxReqClass(context))({xhr: request, context: context});
-        //ie gc fix
-        if (internalContext && internalContext._mfRequest) {
-            internalContext._mfRequest = null;
-            delete internalContext._mfRequest;
-        }
-
-        ajaxObj._response.processResponse(request, context);
     },
 
     /**

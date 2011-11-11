@@ -211,6 +211,18 @@ _MF_SINGLTN(_PFX_UTIL+"DomQuirks", myfaces._impl._util._Dom, /**
 
     },
 
+    _determineDepth: function(probe) {
+        var depth = 0;
+        var newProbe = probe;
+        for (; newProbe &&
+                       newProbe.childNodes &&
+                       newProbe.childNodes.length &&
+                       newProbe.nodeType == 1; depth++) {
+            newProbe = newProbe.childNodes[0];
+        }
+        return depth;
+    },
+
      //now to another nasty issue:
     //for ie we have to walk recursively over all nodes:
     //http://msdn.microsoft.com/en-us/library/bb250448%28VS.85%29.aspx
