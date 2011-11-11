@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import javax.el.ExpressionFactory;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputText;
@@ -44,15 +45,11 @@ public class TestUserTags extends FaceletTestCase {
     }
 
     @Override
-    protected void setUpExternalContext() throws Exception
+    protected ExpressionFactory createExpressionFactory()
     {
-        externalContext =
-            new MockExternalContext(servletContext, request, response);
-        
         // For this test we need the a real one, because the Mock does not
         // handle VariableMapper stuff properly and ui:param logic will not work
-        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
-                new org.apache.el.ExpressionFactoryImpl());
+        return new org.apache.el.ExpressionFactoryImpl();
     }
     
     @Override

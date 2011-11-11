@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
+import javax.el.ExpressionFactory;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
@@ -49,21 +50,11 @@ public class CompositeComponentValueChangeListenerTestCase extends FaceletTestCa
     }
     
     @Override
-    protected void setUpExternalContext() throws Exception
+    protected ExpressionFactory createExpressionFactory()
     {
-        externalContext =
-            new MockExternalContext(servletContext, request, response);
-        
-        //RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
-        //        new PropertyResolverImpl());
-        //RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
-        //        new VariableResolverImpl());
-        // For this test we need the a real one, because the Mock does not
-        // handle VariableMapper stuff properly and ui:param logic will not work
-        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
-                new org.apache.el.ExpressionFactoryImpl());
+        return new org.apache.el.ExpressionFactoryImpl();
     }
-
+    
     @Test
     public void testSimpleValueChangeListenerTarget() throws Exception
     {

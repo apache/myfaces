@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets;
 import java.io.IOException;
 import java.util.Iterator;
 
+import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.ContextCallback;
@@ -47,14 +48,11 @@ import org.testng.Assert;
 
 public class ExceptionTestCase extends FaceletTestCase
 {
+    
     @Override
-    protected void setUpExternalContext() throws Exception
+    protected ExpressionFactory createExpressionFactory()
     {
-        externalContext =
-            new MockExternalContext(servletContext, request, response);
-        
-        RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
-                new org.apache.el.ExpressionFactoryImpl());
+        return new org.apache.el.ExpressionFactoryImpl();
     }
 
     @Override
