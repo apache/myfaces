@@ -35,6 +35,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.el.CompositeComponentExpressionHolder;
 
+import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+
 /**
  * Composite component attribute EL resolver.  See JSF spec, section 5.6.2.2.
  */
@@ -68,7 +71,89 @@ public final class CompositeComponentELResolver extends ELResolver
     @Override
     public Class<?> getType(ELContext context, Object base, Object property)
     {
+        if (base != null && property != null &&
+             base instanceof CompositeComponentAttributesMapWrapper &&
+             property instanceof String)
+        {
+            FacesContext facesContext = facesContext(context);
+            if (facesContext == null)
+            {
+                facesContext = FacesContext.getCurrentInstance();
+            }
+            if (facesContext == null)
+            {
+                return null;
+            }
+            if (!MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isStrictJsf2CCELResolver())
+            {
+                // handle JSF 2.2 spec revisions:
+                // code resembles that found in Mojarra because it originates from
+                // the same contributor, whose ICLA is on file
+                Class<?> exprType = null;
+                Class<?> metaType = null;
+
+                CompositeComponentAttributesMapWrapper evalMap = (CompositeComponentAttributesMapWrapper) base;
+                ValueExpression ve = evalMap.getExpression((String) property);
+                if (ve != null)
+                {
+                    exprType = ve.getType(context);
+                }
+
+                if (!"".equals(property))
+                {
+                    if (evalMap._propertyDescriptors != null)
+                    {
+                        for (PropertyDescriptor pd : evalMap._propertyDescriptors)
+                        {
+                            if (property.equals(pd.getName()))
+                            {
+                                metaType = resolveType(context, pd);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (metaType != null)
+                {
+                    // override exprType only if metaType is narrower:
+                    if (exprType == null || exprType.isAssignableFrom(metaType))
+                    {
+                        context.setPropertyResolved(true);
+                        return metaType;
+                    }
+                }
+                return exprType;
+            }
+        }
+
         // Per the spec, return null.
+        return null;
+    }
+
+    // adapted from CompositeMetadataTargetImpl#getPropertyType():
+    private static Class<?> resolveType(ELContext context, PropertyDescriptor pd)
+    {
+        if (pd != null)
+        {
+            Object type = pd.getValue("type");
+            if (type != null)
+            {
+                type = ((ValueExpression)type).getValue(context);
+                if (type instanceof String)
+                {
+                    try
+                    {
+                        type = FaceletViewDeclarationLanguage._javaTypeToClass((String)type);
+                    }
+                    catch (ClassNotFoundException e)
+                    {
+                        type = null;
+                    }
+                }
+                return (Class<?>) type;
+            }
+            return pd.getPropertyType();
+        }
 
         return null;
     }
