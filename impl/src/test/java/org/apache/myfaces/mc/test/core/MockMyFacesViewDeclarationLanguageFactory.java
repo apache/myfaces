@@ -23,7 +23,6 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
 
 public class MockMyFacesViewDeclarationLanguageFactory extends ViewDeclarationLanguageFactory
 {
@@ -56,8 +55,9 @@ public class MockMyFacesViewDeclarationLanguageFactory extends ViewDeclarationLa
     {
         if (!_initialized)
         {
-            _supportedLanguages = new ViewDeclarationLanguageStrategy[1];
+            _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
             _supportedLanguages[0] = new MockMyFacesFaceletViewDeclarationLanguageStrategy();
+            _supportedLanguages[1] = new MockDefaultViewDeclarationLanguageStrategy(); 
         }
     }
 
