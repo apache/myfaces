@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
 
+import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
@@ -173,10 +174,13 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
         RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
                 new MockVariableResolver());
         RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
-                new MockExpressionFactory());
+                createExpressionFactory());
     }
     
-    
+    protected ExpressionFactory createExpressionFactory()
+    {
+        return new MockExpressionFactory();
+    }
     
     @Override
     protected void setUpFacesContext() throws Exception

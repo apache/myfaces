@@ -224,7 +224,7 @@ public abstract class AbstractMyFacesTestCase
      * 
      * @return
      */
-    protected ExpressionFactory createDefaultExpressionFactory()
+    protected ExpressionFactory createExpressionFactory()
     {
         return new MockExpressionFactory();
     }
@@ -275,7 +275,7 @@ public abstract class AbstractMyFacesTestCase
             protected void initContainerIntegration(ServletContext servletContext,
                     ExternalContext externalContext)
             {
-                ExpressionFactory expressionFactory = createDefaultExpressionFactory();
+                ExpressionFactory expressionFactory = createExpressionFactory();
 
                 RuntimeConfig runtimeConfig = buildConfiguration(servletContext, externalContext, expressionFactory);
             }

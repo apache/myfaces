@@ -41,6 +41,7 @@ import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 
+import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
@@ -161,8 +162,14 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
                 new MockPropertyResolver());
         RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
                 new MockVariableResolver());
+        
         RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
-                new MockExpressionFactory());
+                createExpressionFactory());
+    }
+    
+    protected ExpressionFactory createExpressionFactory()
+    {
+        return new MockExpressionFactory();
     }
     
     @Override
