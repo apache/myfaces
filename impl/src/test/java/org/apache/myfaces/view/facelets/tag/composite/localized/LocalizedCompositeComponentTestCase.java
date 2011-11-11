@@ -18,9 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite.localized;
 
-import javax.faces.webapp.FacesServlet;
-
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,6 +31,7 @@ import org.junit.Test;
  * @author Leonardo Uribe
  *
  */
+@DeclareFacesConfig("/faces-config.xml")
 public class LocalizedCompositeComponentTestCase extends AbstractMyFacesRequestTestCase
 {
     // This is a nice example that shows how AbstractMyFacesRequestTestCase 
@@ -41,13 +41,6 @@ public class LocalizedCompositeComponentTestCase extends AbstractMyFacesRequestT
     // not fit well and it is more easy to use a test case than setup and
     // teardown all MyFaces container. 
     
-    @Override
-    protected void setUpWebConfigParams() throws Exception
-    {
-        super.setUpWebConfigParams();
-        servletContext.addInitParameter(FacesServlet.CONFIG_FILES_ATTR, "/faces-config.xml");
-    }
-
     @Test
     public void testNoLocaleCompositeComponent() throws Exception
     {

@@ -20,14 +20,19 @@ package org.apache.myfaces.mc.test.core;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ExpressionFactory;
+import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -41,11 +46,16 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
+import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
+import org.apache.myfaces.mc.test.core.annotation.ManagedBeans;
+import org.apache.myfaces.mc.test.core.annotation.PageBean;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
 import org.apache.myfaces.test.el.MockExpressionFactory;
@@ -57,6 +67,7 @@ import org.apache.myfaces.webapp.AbstractFacesInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.junit.After;
 import org.junit.Before;
+import org.xml.sax.SAXException;
 
 /**
  * <p>Abstract JUnit test case base class, which sets up MyFaces Core environment
@@ -244,7 +255,7 @@ public abstract class AbstractMyFacesTestCase
      */
     protected FacesConfigurationProvider createFacesConfigurationProvider()
     {
-        return new MyFacesMockFacesConfigurationProvider(); 
+        return new MyFacesMockFacesConfigurationProvider(this); 
     }
     
     protected void setUpMyFaces() throws Exception
@@ -512,7 +523,7 @@ public abstract class AbstractMyFacesTestCase
     
     /**
      * Indicate if annotation scanning should be done over the classpath. 
-     * By default it is set to false.  
+     * By default it is set to false.
      * 
      * @return
      */
@@ -635,6 +646,12 @@ public abstract class AbstractMyFacesTestCase
      */
     protected class MyFacesMockFacesConfigurationProvider extends DefaultFacesConfigurationProvider
     {
+        private AbstractMyFacesTestCase testCase;
+        
+        public MyFacesMockFacesConfigurationProvider(AbstractMyFacesTestCase testCase)
+        {
+            this.testCase = testCase;
+        }
         
         @Override
         public FacesConfig getStandardFacesConfig(ExternalContext ectx)
@@ -655,11 +672,105 @@ public abstract class AbstractMyFacesTestCase
         public FacesConfig getAnnotationsFacesConfig(ExternalContext ectx,
                 boolean metadataComplete)
         {
+            FacesConfig facesConfig = null;
             if (isScanAnnotations())
             {
-                return super.getAnnotationsFacesConfig(ectx, metadataComplete);
+                facesConfig = super.getAnnotationsFacesConfig(ectx, metadataComplete); 
             }
-            return null;
+            
+            ManagedBeans annoManagedBeans = testCase.getClass().getAnnotation(ManagedBeans.class);
+            if (annoManagedBeans != null)
+            {
+                if (facesConfig == null)
+                {
+                    facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                }
+                for (PageBean annoPageBean : annoManagedBeans.values())
+                {
+                    org.apache.myfaces.config.impl.digester.elements.ManagedBean bean = new 
+                        org.apache.myfaces.config.impl.digester.elements.ManagedBean();
+                    bean.setBeanClass(annoPageBean.clazz().getName());
+                    bean.setName(annoPageBean.name() == null ? annoPageBean.clazz().getName() : annoPageBean.name());
+                    bean.setScope(annoPageBean.scope() == null ? "request" : annoPageBean.scope());
+                    bean.setEager(Boolean.toString(annoPageBean.eager()));
+                    
+                    ((org.apache.myfaces.config.impl.digester.elements.FacesConfig)facesConfig).addManagedBean(bean);
+                }
+            }
+
+            PageBean annoPageBean = testCase.getClass().getAnnotation(PageBean.class);
+            if (annoPageBean != null)
+            {
+                if (facesConfig == null)
+                {
+                    facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                }
+                org.apache.myfaces.config.impl.digester.elements.ManagedBean bean = new 
+                    org.apache.myfaces.config.impl.digester.elements.ManagedBean();
+                bean.setBeanClass(annoPageBean.clazz().getName());
+                bean.setName(annoPageBean.name() == null ? annoPageBean.clazz().getName() : annoPageBean.name());
+                bean.setScope(annoPageBean.scope() == null ? "request" : annoPageBean.scope());
+                bean.setEager(Boolean.toString(annoPageBean.eager()));
+                
+                ((org.apache.myfaces.config.impl.digester.elements.FacesConfig)facesConfig).addManagedBean(bean);
+            }
+            return facesConfig;
+        }
+        
+        @Override
+        public List<FacesConfig> getContextSpecifiedFacesConfig(ExternalContext ectx)
+        {
+            List<FacesConfig> appConfigResources = super.getContextSpecifiedFacesConfig(ectx);
+            
+            DeclareFacesConfig annoFacesConfig = testCase.getClass().getAnnotation(DeclareFacesConfig.class);
+            if (annoFacesConfig != null)
+            {
+                Logger log = Logger.getLogger(testCase.getClass().getName());
+                try
+                {
+                    for (String systemId : annoFacesConfig.value())
+                    {
+                        if (MyfacesConfig.getCurrentInstance(ectx).isValidateXML())
+                        {
+                            URL url = ectx.getResource(systemId);
+                            if (url != null)
+                            {
+                                validateFacesConfig(ectx, url);
+                            }
+                        }   
+                        InputStream stream = ectx.getResourceAsStream(systemId);
+                        if (stream == null)
+                        {
+                            
+                            log.severe("Faces config resource " + systemId + " not found");
+                            continue;
+                        }
+            
+                        if (log.isLoggable(Level.INFO))
+                        {
+                            log.info("Reading config " + systemId);
+                        }
+                        appConfigResources.add(getUnmarshaller(ectx).getFacesConfig(stream, systemId));
+                        //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
+                        stream.close();
+    
+                    }
+                }
+                catch (Throwable e)
+                {
+                    throw new FacesException(e);
+                }
+            }
+            return appConfigResources;
+        }
+    }
+    
+    private void validateFacesConfig(ExternalContext ectx, URL url) throws IOException, SAXException
+    {
+        String version = ConfigFilesXmlValidationUtils.getFacesConfigVersion(url);
+        if ("1.2".equals(version) || "2.0".equals(version) || "2.1".equals(version))
+        {
+            ConfigFilesXmlValidationUtils.validateFacesConfigFile(url, ectx, version);
         }
     }
 }
