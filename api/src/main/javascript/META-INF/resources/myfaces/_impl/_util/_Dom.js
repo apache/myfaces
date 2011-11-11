@@ -477,32 +477,29 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      * @param markup
      */
     _buildTableNodes: function(item, markup) {
-        var evalNodes,
-                itemNodeName = (item.nodeName || item.tagName).toLowerCase(),
-                probe = this.getDummyPlaceHolder(); //document.createElement("div");
+        var itemNodeName = (item.nodeName || item.tagName).toLowerCase(),
+                probe = document.createElement("div");
 
-        if (itemNodeName == "td") {
-            probe.innerHTML = "<table><tbody><tr><td></td></tr></tbody></table>";
-        } else {
-            probe.innerHTML = ["<table><" , itemNodeName , "></" , itemNodeName , ">" , "</table>"].join("");
+        var tmpNodeName = itemNodeName;
+        var depth = 0;
+        while (tmpNodeName != "table") {
+            item = item.parentNode;
+            tmpNodeName = (item.nodeName || item.tagName).toLowerCase();
+            depth++;
         }
-        var depth = this._determineDepth(probe);
 
-        this._removeChildNodes(probe, false);
-        probe.innerHTML = "";
-
-        var dummyPlaceHolder = this.getDummyPlaceHolder();//document.createElement("div");
+        var dummyPlaceHolder = document.createElement("div");
         if (itemNodeName == "td") {
             dummyPlaceHolder.innerHTML = "<table><tbody><tr>" + markup + "</tr></tbody></table>";
         } else {
             dummyPlaceHolder.innerHTML = "<table>" + markup + "</table>";
         }
-        evalNodes = dummyPlaceHolder;
+
         for (var cnt = 0; cnt < depth; cnt++) {
-            evalNodes = evalNodes.childNodes[0];
+            dummyPlaceHolder = dummyPlaceHolder.childNodes[0];
         }
-        evalNodes = (evalNodes.parentNode) ? evalNodes.parentNode.childNodes : null;
-        return this.detach(evalNodes);
+
+        return this.detach(dummyPlaceHolder.childNodes);
     },
 
     _removeChildNodes: function(node, breakEventsOpen) {
@@ -510,17 +507,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         node.innerHTML = "";
     },
 
-    _determineDepth: function(probe) {
-        var depth = 0;
-        var newProbe = probe;
-        for (; newProbe &&
-                       newProbe.childNodes &&
-                       newProbe.childNodes.length &&
-                       newProbe.nodeType == 1; depth++) {
-            newProbe = newProbe.childNodes[0];
-        }
-        return depth;
-    },
+
 
     _removeNode: function(node, breakEventsOpen) {
         if (!node) return;

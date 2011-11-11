@@ -62,9 +62,6 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     /** xhr object, internal param */
     _xhr: null,
 
-    /** response object which is exposed to the queue */
-    _response: null,
-
     /** predefined method */
     _ajaxType:"POST",
 
@@ -112,9 +109,6 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             var xhrCore = myfaces._impl.xhrCore;
             this._AJAXUTIL = xhrCore._AjaxUtils;
 
-            //we cannot eliminate it due to the direct reference to its request the response needs
-            //at least for now, in the long run we can and must
-            this._response = xhrCore._AjaxResponse;
         } catch (e) {
             //_onError
             this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
@@ -155,13 +149,15 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             xhr.open(this._ajaxType, targetURL +
                     ((this._ajaxType == "GET") ? "?" + this._formDataToURI(formData) : "")
                     , true);
+
             xhr.timeout = this._timeout || 0;
+
             var contentType = this._contentType;
             if (this._encoding) {
                 contentType = contentType + "; charset:" + this._encoding;
             }
 
-            xhr.setRequestHeader(this._CONTENT_TYPE, this._contentType);
+            xhr.setRequestHeader(this._CONTENT_TYPE, contentType);
             xhr.setRequestHeader(this._HEAD_FACES_REQ, this._VAL_AJAX);
 
             this._sendEvent("BEGIN");
@@ -192,13 +188,16 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             this._sendEvent("COMPLETE");
             //now we have to reroute into our official api
             //because users might want to decorate it, we will split it apart afterwards
-            context._mfInternal = context._mfInternal || {};
-            context._mfInternal._mfRequest = this;
 
+            context._mfInternal = context._mfInternal || {};
             jsf.ajax.response((xhr.getXHRObject) ? xhr.getXHRObject() : xhr, context);
 
             //an error in the processing has been raised
-            if(!context._mfInternal.internalError) {
+            //TODO move all the error callbacks from response into
+            //a thrown exception best with a message history so
+            //that we have a message trace
+            //target 2.1.5
+            if (!context._mfInternal.internalError) {
                 this._sendEvent("SUCCESS");
             }
         } catch (e) {
@@ -235,7 +234,6 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     },
 
     ontimeout: function(evt) {
-
         try {
             //we issue an event not an error here before killing the xhr process
             this._sendEvent("TIMEOUT_EVENT");
@@ -253,15 +251,8 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     },
 
     _getTransport: function() {
-        var _Rt = myfaces._impl.core._Runtime;
-        //same interface between 1 and 2, in the worst case
-        //so we can make a drop in replacement, on level2
-        //we have one layer less hence we can work directly
-        //on the xhr object, on level2 we have our engine
-        //emulation layer which thunks back into level1
-        //for all calls
 
-        var xhr = myfaces._impl.core._Runtime.getXHRObject();
+        var xhr = this._RT.getXHRObject();
         //the current xhr level2 timeout w3c spec is not implemented by the browsers yet
         //we have to do a fallback to our custom routines
 
@@ -271,7 +262,6 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         //no timeout we can skip the emulation layer
         //    return xhr;
         //}
-
         return new myfaces._impl.xhrCore.engine.Xhr1({xhrObject: xhr});
     },
 
@@ -289,29 +279,8 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      * which keeps the final Send Representation of the
      */
     getFormData : function() {
-        var _AJAXUTIL = this._AJAXUTIL,
-                _Lang = this._Lang,
-                myfacesOptions = this._context.myfaces,
-                ret = null,
-                source = this._source,
-                sourceForm = this._sourceForm;
-
-        //now this is less performant but we have to call it to allow viewstate decoration
-        if (!this._partialIdsArray || !this._partialIdsArray.length) {
-            var viewState = jsf.getViewState(sourceForm);
-            ret = _Lang.createFormDataDecorator(viewState);
-
-            //just in case the source item is outside of the form
-            //only if the form override is set we have to append the issuing item
-            //otherwise it is an element of the parent form
-            if (source && myfacesOptions && myfacesOptions.form)
-                _AJAXUTIL.appendIssuingItem(source);
-        } else {
-            ret = _Lang.createFormDataDecorator(new Array());
-            _AJAXUTIL.encodeSubmittableFields(ret, sourceForm, this._partialIdsArray);
-            if (source && myfacesOptions && myfacesOptions.form)
-                _AJAXUTIL.appendIssuingItem(source);
-        }
+        var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces;
+        var ret = this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
 
         return ret;
     },
