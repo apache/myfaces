@@ -590,28 +590,29 @@ public class NumberConverter
                 byte value = Byte.parseByte(version.substring(0, 1));
                 version = version.substring(idx + 1, version.length());
                 idx = version.indexOf('.');
-                if (i == 0)
+                switch (i)
                 {
-                    if (value == 1)
-                    {
-                        java14 = 1;
+                    case 0:
+                        if (value == 1)
+                        {
+                            java14 = 1;
+                            break;
+                        }
+                        else if (value > 1)
+                        {
+                            java14 = 2;
+                        }
+                    case 1:
+                        if (java14 > 0 && value >= 4)
+                        {
+                            java14 = 2;
+                        }
+                        ;
+                    default:
+                        idx = 0;
+                        version = null;
                         break;
-                    }
-                    else if (value > 1)
-                    {
-                        java14 = 2;
-                    }
                 }
-                if (i <=1)
-                {
-                    if (java14 > 0 && value >= 4)
-                    {
-                        java14 = 2;
-                    }
-                }
-
-                idx = 0;
-                version = null;
             }
             else
             {
