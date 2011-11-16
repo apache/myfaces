@@ -21,11 +21,7 @@
  * @description Implementation singleton which implements all interface method
  * defined by our jsf.js API
  * */
-_MF_SINGLTN(_PFX_CORE+"Impl", _MF_OBJECT,
-/**
- * @lends myfaces._impl.core.Impl.prototype
- */
-{
+_MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.prototype */ {
 
     //third option myfaces._impl.xhrCoreAjax which will be the new core impl for now
     _transport      : myfaces._impl.core._Runtime.getGlobalConfig("transport", myfaces._impl.xhrCore._Transports),

@@ -38,6 +38,8 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
     /*optional functionality can be provided
      * for ie6 but is turned off by default*/
     _initDefaultFinalizableFields: function() {
+        var isIE = this._RT.browser.isIE;
+        if(!isIE || isIE > 7) return;
         for (var key in this) {
             //per default we reset everything which is not preinitalized
             if (null == this[key] && key != "_resettableContent" && key.indexOf("_mf") != 0 && key.indexOf("_") == 0) {
