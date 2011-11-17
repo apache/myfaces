@@ -788,7 +788,7 @@ public class UIData extends UIComponentBase
                                 new Object[]{new EditableValueHolderState((EditableValueHolder) child),
                                     null});
                     }
-                    else if (child.getChildCount() > 0)
+                    else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
                     {
                         Object descendantSavedState = saveDescendantComponentStates(child, saveChildFacets, true);
                         
@@ -869,7 +869,7 @@ public class UIData extends UIComponentBase
                                 new Object[]{new EditableValueHolderState((EditableValueHolder) child),
                                     null});
                     }
-                    else if (child.getChildCount() > 0)
+                    else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
                     {
                         Object descendantSavedState = saveDescendantComponentStates(child, saveChildFacets, true);
                         
