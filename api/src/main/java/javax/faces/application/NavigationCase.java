@@ -138,8 +138,8 @@ public class NavigationCase
         return new URL(externalContext.getRequestScheme(),
                 externalContext.getRequestServerName(),
                 externalContext.getRequestServerPort(),
-                context.getApplication().getViewHandler().getBookmarkableURL(context, getToViewId(context),
-                                                                             getParameters(), isIncludeViewParams()));
+                context.getApplication().getViewHandler().getBookmarkableURL(context, getToViewId(context), 
+                        _NavigationUtils.getEvaluatedNavigationParameters(getParameters()), isIncludeViewParams()));
     }
 
     public URL getResourceURL(FacesContext context) throws MalformedURLException
@@ -156,8 +156,8 @@ public class NavigationCase
         return new URL(externalContext.getRequestScheme(),
                 externalContext.getRequestServerName(),
                 externalContext.getRequestServerPort(),
-                context.getApplication().getViewHandler().getRedirectURL(context, getToViewId(context),
-                                                                         getParameters(), isIncludeViewParams()));
+                context.getApplication().getViewHandler().getRedirectURL(context, getToViewId(context), 
+                        _NavigationUtils.getEvaluatedNavigationParameters(getParameters()), isIncludeViewParams()));
     }
     
     public Map<String,List<String>> getParameters()

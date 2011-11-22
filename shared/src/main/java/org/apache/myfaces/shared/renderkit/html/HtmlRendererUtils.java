@@ -63,6 +63,7 @@ import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
+import org.apache.myfaces.shared.application.NavigationUtils;
 import org.apache.myfaces.shared.component.DisplayValueOnlyCapable;
 import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -1589,8 +1590,8 @@ public final class HtmlRendererUtils
             }
         }
         // handle NavigationCase parameters
-        Map<String, List<String>> navigationCaseParams = navigationCase
-                .getParameters();
+        Map<String, List<String>> navigationCaseParams = 
+            NavigationUtils.getEvaluatedNavigationParameters(navigationCase.getParameters());
         if (navigationCaseParams != null)
         {
             if (parameters == null)
