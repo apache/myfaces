@@ -50,6 +50,7 @@ import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
+import org.apache.myfaces.shared.application.NavigationUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
@@ -101,7 +102,12 @@ public class NavigationHandlerImpl
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 String toViewId = navigationCase.getToViewId(facesContext);
-                String redirectPath = viewHandler.getRedirectURL(facesContext, toViewId, navigationCase.getParameters(), navigationCase.isIncludeViewParams());
+                
+
+                String redirectPath = viewHandler.getRedirectURL(
+                        facesContext, toViewId, 
+                        NavigationUtils.getEvaluatedNavigationParameters(navigationCase.getParameters()) ,
+                        navigationCase.isIncludeViewParams());
                 
                 //Clear ViewMap if we are redirecting to other resource
                 UIViewRoot viewRoot = facesContext.getViewRoot(); 

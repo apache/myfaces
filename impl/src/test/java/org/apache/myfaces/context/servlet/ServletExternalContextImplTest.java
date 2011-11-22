@@ -65,6 +65,7 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
      * Tests if encodeRedirectURL() and encodeBookmarkableURL() correctly
      * evaluate ValueExpressions as parameters values.
      */
+    /* TODO: Invalid test, because EL evaluation should be done before call these methods.
     @Test
     @SuppressWarnings("unchecked")
     public void testEncodeURLHandlesValueExpressionParameters()
@@ -94,7 +95,7 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         Assert.assertTrue(bookmarkableUrl.contains("param1=literalvalue"));
         Assert.assertTrue(bookmarkableUrl.contains("param1=myvalue1"));
         Assert.assertTrue(bookmarkableUrl.contains("param2=myvalue2"));
-    }
+    }*/
 
     @Test
     public void testEncodeRedirectUrlWithEmptyParamInBaseUrl()
