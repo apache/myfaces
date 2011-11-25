@@ -92,15 +92,11 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         try {
             this._callSuper("constructor_", args);
 
-            this._onException = this._Lang.hitch(this, this._stdErrorHandler);
-            this._onWarn = this._Lang.hitch(this, this._stdErrorHandler);
             this._initDefaultFinalizableFields();
             delete this._resettableContent["_xhrQueue"];
 
             this.applyArgs(args);
             var mfInternal = this._context._mfInternal;
-            mfInternal._onException = this._onException;
-            mfInternal._onWarning = this._onWarn;
 
             /*namespace remapping for readability*/
             //we fetch in the standard arguments
@@ -111,7 +107,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
 
         } catch (e) {
             //_onError
-            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "constructor", e);
+            this._stdErrorHandler(this._xhr, this._context, e);
         }
     },
 
@@ -152,10 +148,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
 
             xhr.timeout = this._timeout || 0;
 
-            var contentType = this._contentType;
-            if (this._encoding) {
-                contentType = contentType + "; charset:" + this._encoding;
-            }
+            var contentType = this._contentType+"; charset=utf-8";
 
             xhr.setRequestHeader(this._CONTENT_TYPE, contentType);
             xhr.setRequestHeader(this._HEAD_FACES_REQ, this._VAL_AJAX);
@@ -170,7 +163,8 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
 
         } catch (e) {
             //_onError//_onError
-            this._onException(this._xhr, this._context, "myfaces._impl.xhrCore._AjaxRequest", "send", e);
+            e = (e._mfInternal)? e: this._Lang.makeException("sendError","sendError", this._nameSpace, "send", e.message);
+            this._stdErrorHandler(this._xhr, this._context, e);
         }
     },
 
@@ -197,16 +191,16 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             //a thrown exception best with a message history so
             //that we have a message trace
             //target 2.1.5
-            if (!context._mfInternal.internalError) {
-                this._sendEvent("SUCCESS");
-            }
+            this._sendEvent("SUCCESS");
+
         } catch (e) {
-            this._onException(xhr, context, "myfaces._impl.xhrCore._AjaxRequest", "callback", e);
+            this._stdErrorHandler(this._xhr, this._context, e);
         }
     },
 
     onerror: function(evt) {
-
+        //TODO improve the error code detection here regarding server errors etc...
+        //and push it into our general error handling subframework
         var context = this._context;
         var xhr = this._xhr;
         var _Lang = this._Lang;
@@ -297,11 +291,10 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      * @param func the issuing function
      * @param exception the embedded exception
      */
-    _stdErrorHandler: function(request, context, sourceClass, func, exception) {
-        context._mfInternal.internalError = true;
+    _stdErrorHandler: function(request, context, exception) {
         var xhrQueue = this._xhrQueue;
         try {
-            this.attr("impl").stdErrorHandler(request, context, sourceClass, func, exception);
+             this.attr("impl").stdErrorHandler(request, context, exception);
         } finally {
             if (xhrQueue) {
                 xhrQueue.cleanup();
@@ -326,10 +319,6 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
 
     //cleanup
     _finalize: function() {
-
-        //final cleanup to terminate everything
-        this._Lang.clearExceptionProcessed();
-
         if (this._xhr.readyState == this._XHR_CONST.READY_STATE_DONE) {
             this._callSuper("_finalize");
         }
