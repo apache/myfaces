@@ -37,11 +37,7 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
      */
     encodeSubmittableFields : function(targetBuf,
                                        parentItem, partialIds) {
-
-        //try {
             if (!parentItem) throw "NO_PARITEM";
-
-
             if (partialIds ) {
                 this.encodePartialSubmit(parentItem, false, partialIds, targetBuf);
             } else {
@@ -52,9 +48,6 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
                 } // end of for (formElements)
             }
 
-        //} catch (e) {
-        //    context._mfInternal._onException(request, context, "myfaces._impl.xhrCore._AjaxUtils", "encodeSubmittableFields", e);
-        //}
     },
 
      /**

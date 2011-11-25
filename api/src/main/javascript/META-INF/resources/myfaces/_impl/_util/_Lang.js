@@ -81,13 +81,10 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             this._installedLocale = new newLocale();
             return;
         }
-        var language_Variant = this._RT.getLanguage(this._RT.getGlobalConfig("locale"));
-        var langStr = language_Variant ? language_Variant.language : "";
-        var variantStr = language_Variant ? [language_Variant.language,"_",language_Variant.variant || ""].join("") : "";
-        var i18nRoot = myfaces._impl.i18n;
-        var i18nHolder = i18nRoot["Messages_" + variantStr] ||
-                i18nRoot["Messages_" + langStr] ||
-                i18nRoot["Messages"];
+        var language_Variant = this._RT.getLanguage(this._RT.getGlobalConfig("locale")),
+                langStr = language_Variant ? language_Variant.language : "",
+                variantStr = language_Variant ? [language_Variant.language,"_",language_Variant.variant || ""].join("") : "",
+                i18nRoot = myfaces._impl.i18n, i18nHolder = i18nRoot["Messages_" + variantStr] || i18nRoot["Messages_" + langStr] || i18nRoot["Messages"];
         this._installedLocale = new i18nHolder();
     },
     assertType: function(probe, theType) {
@@ -95,19 +92,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
     },
     exists: function(nms, theType) {
         return this._RT.exists(nms, theType);
-    },
-    isExceptionProcessed: function(e) {
-        return !! this._processedExceptions[e.toString()];
-    },
-    setExceptionProcessed: function(e) {
-        this._processedExceptions[e.toString()] = true;
-    },
-    clearExceptionProcessed: function() {
-        //ie again
-        for (var key in this._processedExceptions) {
-            this._processedExceptions[key] = null;
-        }
-        this._processedExceptions = {};
     },
     fetchNamespace : function(namespace) {
         this._assertStr(namespace, "fetchNamespace", "namespace");
@@ -209,7 +193,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      */
     byId : function(/*object*/ reference) {
         if (!reference) {
-            throw Error(this.getMessage("ERR_REF_OR_ID", null, "_Lang.byId", "reference"));
+            throw this.makeException(null, null, this._nameSpace, "byId", this.getMessage("ERR_REF_OR_ID", null, "_Lang.byId", "reference"));
         }
         return (this.isString(reference)) ? document.getElementById(reference) : reference;
     },
@@ -234,7 +218,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         //		Return true if it is a String
         this._assertStr(it, "strToArray", "it");
         if (!splitter) {
-            throw Error(this.getMessage("ERR_PARAM_STR_RE", null, "myfaces._impl._util._Lang.strToArray", "splitter"));
+            throw this.makeException(null, null, this._nameSpace, "strToArray", this.getMessage("ERR_PARAM_STR_RE", null, "myfaces._impl._util._Lang.strToArray", "splitter"));
         }
         var retArr = it.split(splitter);
         var len = retArr.length;
@@ -245,7 +229,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
     },
     _assertStr: function(it, functionName, paramName) {
         if (!this.isString(it)) {
-            throw Error(this.getMessage("ERR_PARAM_STR", null, "myfaces._impl._util._Lang." + functionName, paramName));
+            throw this.makeException(null, null, this._nameSpace, arguments.caller.toString(), this.getMessage("ERR_PARAM_STR", null, "myfaces._impl._util._Lang." + functionName, paramName));
         }
     },
     /**
@@ -301,7 +285,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      **/
     mixMaps: function(dest, src, overwrite, blockFilter, whitelistFilter) {
         if (!dest || !src) {
-            throw Error(this.getMessage("ERR_PARAM_MIXMAPS", null, "_Lang.mixMaps"));
+            throw this.makeException(null, null, this._nameSpace, "mixMaps", this.getMessage("ERR_PARAM_MIXMAPS", null, "_Lang.mixMaps"));
         }
         var _undef = "undefined";
         for (var key in src) {
@@ -331,7 +315,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      */
     contains : function(arr, str) {
         if (!arr || !str) {
-            throw Error(this.getMessage("ERR_MUST_BE_PROVIDED", null, "_Lang.contains", "arr {array}", "str {string}"));
+            throw this.makeException(null, null, this._nameSpace, "contains", this.getMessage("ERR_MUST_BE_PROVIDED", null, "_Lang.contains", "arr {array}", "str {string}"));
         }
         return this.arrIndexOf(arr, str) != -1;
     },
@@ -501,7 +485,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         pushRet(key);
         pushRet(val);
         delimiter = delimiter || "\n";
-		pushRet(delimiter);
+        pushRet(delimiter);
         return ret.join("");
     },
     parseXML: function(txt) {
@@ -665,10 +649,31 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             if (finalAttr) {
                 return applyAttr(obj, finalAttr, value, true);
             }
-            throw Error("property " + name + " not found");
+
+            throw this.makeException(null, null, this._nameSpace, "contains", "property " + name + " not found");
         } finally {
             findAccessor = null;
             applyAttr = null;
         }
+    },
+
+    /**
+     * creates an exeption with additional internal parameters
+     * for extra information
+     *
+     * @param {String} title the exception title
+     * @param {String} name  the exception name
+     * @param {String} callerCls the caller class
+     * @param {String} callFunc the caller function
+     * @param {String} message the message for the exception
+     */
+    makeException: function(title, name, callerCls, callFunc, message) {
+        var ret = new Error(message || "");
+        ret._mfInternal = {};
+        ret._mfInternal.name = name ||"clientError";
+        ret._mfInternal.title = title ||"clientError";
+        ret._mfInternal.caller = callerCls ||this._nameSpace;
+        ret._mfInternal.callFunc = callFunc ||(""+arguments.caller.toString());
+        return ret;
     }
 });
