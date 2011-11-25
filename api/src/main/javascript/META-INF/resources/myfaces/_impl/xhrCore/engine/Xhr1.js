@@ -131,7 +131,7 @@ _MF_CLS(_PFX_XHR + "engine.Xhr1", myfaces._impl.xhrCore.engine.BaseRequest, /** 
                     if (status >= XHRConst.STATUS_OK_MINOR && status < XHRConst.STATUS_OK_MAJOR) {
                         this.onload(myevt);
                     } else {
-                        evt.type = "error";
+                        myevt.type = "error";
                         this.onerror(myevt);
                     }
                 } finally {
