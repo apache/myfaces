@@ -141,8 +141,15 @@ _MF_CLS(_PFX_XHR + "engine.Xhr1", myfaces._impl.xhrCore.engine.BaseRequest, /** 
     },
 
     _transferRequestValues: function() {
-        this._Lang.mixMaps(this, this._xhrObject, true, null,
-                {responseText:1,responseXML:1,status:1,statusText:1,response:1});
+        //this._Lang.mixMaps(this, this._xhrObject, true, null,
+        //        {responseText:1,responseXML:1,status:1,statusText:1,response:1});
+        var UDEF = "undefined";
+        var xhr = this._xhrObject;
+        this.responseText = (UDEF != typeof xhr.responseText)?xhr.responseText: null;
+        this.responseXML = (UDEF != typeof xhr.responseXML)?xhr.responseXML: null;
+        this.status = (UDEF != typeof xhr.status)?xhr.status: null;
+        this.statusText = (UDEF != typeof xhr.statusText)?xhr.statusText: null;
+        this.response = (UDEF != typeof xhr.response)?xhr.response: null;
     },
 
     _startTimeout: function() {
