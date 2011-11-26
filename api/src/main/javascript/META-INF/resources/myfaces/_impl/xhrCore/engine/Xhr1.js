@@ -142,7 +142,7 @@ _MF_CLS(_PFX_XHR + "engine.Xhr1", myfaces._impl.xhrCore.engine.BaseRequest, /** 
 
     _transferRequestValues: function() {
         this._Lang.mixMaps(this, this._xhrObject, true, null,
-                ["responseText","responseXML","status","statusText","response"]);
+                {responseText:1,responseXML:1,status:1,statusText:1,response:1});
     },
 
     _startTimeout: function() {
