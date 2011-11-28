@@ -1259,7 +1259,12 @@ public final class ErrorPageWriter
                         valueExpression = c.getValueExpression(pd[i].getName());
                         if (valueExpressionValues && valueExpression != null)
                         {
-                            _writeAttribute(writer, pd[i].getName(), valueExpression.getExpressionString());
+                            String expressionString = valueExpression.getExpressionString();
+                            if (null == expressionString)
+                            {
+                                expressionString = "";
+                            }
+                            _writeAttribute(writer, pd[i].getName(), expressionString);
                         }
                         else
                         {
