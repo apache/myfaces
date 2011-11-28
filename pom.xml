@@ -42,9 +42,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/matzew-branch</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/matzew-branch</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/matzew-branch</url>
     </scm>
 
     <modules>
