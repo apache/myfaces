@@ -246,9 +246,9 @@ public class HtmlRenderKitImpl extends RenderKit
                                     ContentTypeUtils.XHTML_ALLOWED_CONTENT_TYPES);
         }
 
-        //2. If no passed contentTypeListString and no selectedContent
+        //2. If no selectedContentType
         //   try to derive it from accept header
-        if (selectedContentType == null && contentTypeListString == null)
+        if (selectedContentType == null)
         {
             contentTypeListStringFromAccept = 
                 ContentTypeUtils.getContentTypeFromAcceptHeader(facesContext);
@@ -284,7 +284,7 @@ public class HtmlRenderKitImpl extends RenderKit
                     }
                 }
                 
-                if (contentTypeListStringFromAccept != null)
+                if (selectedContentType == null && contentTypeListStringFromAccept != null)
                 {
                     String[] contentTypes = ContentTypeUtils.splitContentTypeListString(
                             contentTypeListStringFromAccept);
