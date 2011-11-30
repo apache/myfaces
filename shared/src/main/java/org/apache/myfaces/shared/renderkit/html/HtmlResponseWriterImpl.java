@@ -30,6 +30,7 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ResponseWriter;
 
+import org.apache.myfaces.shared.renderkit.ContentTypeUtils;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.shared.util.CommentUtils;
@@ -72,6 +73,8 @@ public class HtmlResponseWriterImpl
     private FastWriter _bufferedWriter;
     
     private String _contentType;
+    
+    private String _writerContentTypeMode;
     
     /**
      * This var prevents check if the contentType is for xhtml multiple times.
@@ -131,7 +134,15 @@ public class HtmlResponseWriterImpl
     }
 
     public HtmlResponseWriterImpl(Writer writer, String contentType, String characterEncoding,
-             boolean wrapScriptContentWithXmlCommentTag)
+            boolean wrapScriptContentWithXmlCommentTag)
+    {
+        this(writer,contentType, characterEncoding, wrapScriptContentWithXmlCommentTag, 
+                contentType != null && HtmlRendererUtils.isXHTMLContentType(contentType) ? 
+                    ContentTypeUtils.XHTML_CONTENT_TYPE : ContentTypeUtils.HTML_CONTENT_TYPE);
+    }
+    
+    public HtmlResponseWriterImpl(Writer writer, String contentType, String characterEncoding,
+             boolean wrapScriptContentWithXmlCommentTag, String writerContentTypeMode)
     throws FacesException
     {
         _outputWriter = writer;
@@ -149,10 +160,11 @@ public class HtmlResponseWriterImpl
             }
             _contentType = DEFAULT_CONTENT_TYPE;
         }
-        _isXhtmlContentType = HtmlRendererUtils.isXHTMLContentType(_contentType);
+        _writerContentTypeMode = writerContentTypeMode;
+        _isXhtmlContentType = writerContentTypeMode.indexOf(ContentTypeUtils.XHTML_CONTENT_TYPE) != -1;
         
-        _useStraightXml = _contentType.indexOf(APPLICATION_XML_CONTENT_TYPE) != -1 ||
-                          _contentType.indexOf(TEXT_XML_CONTENT_TYPE) != -1;
+        _useStraightXml = _isXhtmlContentType && (_contentType.indexOf(APPLICATION_XML_CONTENT_TYPE) != -1 ||
+                          _contentType.indexOf(TEXT_XML_CONTENT_TYPE) != -1);
 
         if (characterEncoding == null)
         {
@@ -199,6 +211,11 @@ public class HtmlResponseWriterImpl
     public String getContentType()
     {
         return _contentType;
+    }
+    
+    public String getWriterContentTypeMode()
+    {
+        return _writerContentTypeMode;
     }
 
     public String getCharacterEncoding()
@@ -861,7 +878,7 @@ public class HtmlResponseWriterImpl
     {
         HtmlResponseWriterImpl newWriter
                 = new HtmlResponseWriterImpl(writer, getContentType(), getCharacterEncoding(), 
-                        _wrapScriptContentWithXmlCommentTag);
+                        _wrapScriptContentWithXmlCommentTag, _writerContentTypeMode);
         //newWriter._writeDummyForm = _writeDummyForm;
         //newWriter._dummyFormParams = _dummyFormParams;
         return newWriter;

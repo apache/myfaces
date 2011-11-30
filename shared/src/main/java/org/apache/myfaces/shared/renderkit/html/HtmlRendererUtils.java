@@ -1652,6 +1652,10 @@ public final class HtmlRendererUtils
             XHTML_CONTENT_TYPE, APPLICATION_XML_CONTENT_TYPE,
             TEXT_XML_CONTENT_TYPE, TEXT_ANY_CONTENT_TYPE, ANY_CONTENT_TYPE };
 
+    /**
+     * @deprecated use ContentTypeUtils instead
+     */
+    @Deprecated
     public static String selectContentType(String contentTypeListString)
     {
         if (contentTypeListString == null)

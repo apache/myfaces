@@ -340,6 +340,16 @@ public class MyfacesConfig
     public final static String INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER = "org.apache.myfaces.STRICT_JSF_2_CC_EL_RESOLVER";
     public final static boolean INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT = false;
     
+    /**
+     * Define the default content type that the default ResponseWriter generates, when no match can be derived from
+     * HTTP Accept Header.
+     */
+    @JSFWebConfigParam(since="2.0.11,2.1.5", expectedValues="text/html, application/xhtml+xml", 
+            defaultValue="text/html", group="render")
+    public final static String INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE = 
+        "org.apache.myfaces.DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE";
+    public final static String INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT = "text/html";
+    
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -365,6 +375,7 @@ public class MyfacesConfig
     private boolean _debugPhaseListenerEnabled;
     private boolean _strictJsf2RefreshTargetAjax;
     private boolean _strictJsf2CCELResolver;
+    private String _defaultResponseWriterContentTypeMode;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -459,6 +470,7 @@ public class MyfacesConfig
         setDebugPhaseListenerEnabled(INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT);
         setStrictJsf2RefreshTargetAjax(INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT);
         setStrictJsf2CCELResolver(INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT);
+        setDefaultResponseWriterContentTypeMode(INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -547,6 +559,10 @@ public class MyfacesConfig
         
         myfacesConfig.setStrictJsf2CCELResolver(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                 INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER, INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT));
+        
+        myfacesConfig.setDefaultResponseWriterContentTypeMode(WebConfigParamUtils.getStringInitParameter(
+                extCtx, INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE,
+                INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT));
 
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1002,5 +1018,16 @@ public class MyfacesConfig
     public void setStrictJsf2CCELResolver(boolean strictJsf2CCELResolver)
     {
         this._strictJsf2CCELResolver = strictJsf2CCELResolver;
+    }
+
+    public String getDefaultResponseWriterContentTypeMode()
+    {
+        return _defaultResponseWriterContentTypeMode;
+    }
+
+    public void setDefaultResponseWriterContentTypeMode(
+            String defaultResponseWriterContentTypeMode)
+    {
+        this._defaultResponseWriterContentTypeMode = defaultResponseWriterContentTypeMode;
     }
 }
