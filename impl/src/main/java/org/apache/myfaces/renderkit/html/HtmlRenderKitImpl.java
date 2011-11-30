@@ -40,6 +40,7 @@ import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderKit;
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.shared.renderkit.ContentTypeUtils;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 
@@ -150,8 +151,10 @@ public class HtmlRenderKitImpl extends RenderKit
         _put(componentFamily, rendererType, renderer);
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("add Renderer family = " + componentFamily + " rendererType = " + rendererType
                     + " renderer class = " + renderer.getClass().getName());
+        }
     }
     
     /**
@@ -171,7 +174,8 @@ public class HtmlRenderKitImpl extends RenderKit
         }
         else
         {
-            if (familyRendererMap.get(rendererType) != null) {
+            if (familyRendererMap.get(rendererType) != null)
+            {
                 // this is not necessarily an error, but users do need to be
                 // very careful about jar processing order when overriding
                 // some component's renderer with an alternate renderer.
@@ -220,16 +224,106 @@ public class HtmlRenderKitImpl extends RenderKit
     @Override
     public ResponseWriter createResponseWriter(Writer writer, String contentTypeListString, String characterEncoding)
     {
-        String selectedContentType = HtmlRendererUtils.selectContentType(contentTypeListString);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(
+                facesContext.getExternalContext());
+        String selectedContentType = null;
+        String writerContentType = null;
+        boolean isAjaxRequest = facesContext.getPartialViewContext().isAjaxRequest();
+        String contentTypeListStringFromAccept = null;
 
+        // To detect the right contentType, we need to check if the request is an ajax request or not.
+        // If it is an ajax request, HTTP Accept header content type will be set for the ajax itself, which
+        // is application/xml or text/xml. In that case, there are two response writers
+        // (PartialResponseWriterImpl and HtmlResponseWriterImpl),
+        
+        //1. if there is a passed contentTypeListString, it takes precedence over accept header
+        if (contentTypeListString != null)
+        {
+            selectedContentType = ContentTypeUtils.chooseWriterContentType(contentTypeListString, 
+                    ContentTypeUtils.HTML_ALLOWED_CONTENT_TYPES, 
+                    isAjaxRequest ? ContentTypeUtils.AJAX_XHTML_ALLOWED_CONTENT_TYPES :
+                                    ContentTypeUtils.XHTML_ALLOWED_CONTENT_TYPES);
+        }
+
+        //2. If no passed contentTypeListString and no selectedContent
+        //   try to derive it from accept header
+        if (selectedContentType == null && contentTypeListString == null)
+        {
+            contentTypeListStringFromAccept = 
+                ContentTypeUtils.getContentTypeFromAcceptHeader(facesContext);
+            
+            if (contentTypeListStringFromAccept != null)
+            {
+                selectedContentType = ContentTypeUtils.chooseWriterContentType(contentTypeListStringFromAccept,
+                        ContentTypeUtils.HTML_ALLOWED_CONTENT_TYPES, 
+                        isAjaxRequest ? ContentTypeUtils.AJAX_XHTML_ALLOWED_CONTENT_TYPES :
+                                        ContentTypeUtils.XHTML_ALLOWED_CONTENT_TYPES);
+            }
+        }
+
+        //3. if no selectedContentType was derived, set default from the param 
+        if (selectedContentType == null)
+        {
+            if (contentTypeListString == null && contentTypeListStringFromAccept == null)
+            {
+                //If no contentTypeList, return the default
+                selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
+            }
+            else
+            {
+                // If a contentTypeList was passed and we don't have direct matches, we still need
+                // to check if */* is found and if that so return the default, otherwise throw
+                // exception.
+                if (contentTypeListString != null)
+                {
+                    String[] contentTypes = ContentTypeUtils.splitContentTypeListString(contentTypeListString);
+                    if (ContentTypeUtils.containsContentType(ContentTypeUtils.ANY_CONTENT_TYPE, contentTypes))
+                    {
+                        selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
+                    }
+                }
+                
+                if (contentTypeListStringFromAccept != null)
+                {
+                    String[] contentTypes = ContentTypeUtils.splitContentTypeListString(
+                            contentTypeListStringFromAccept);
+                    if (ContentTypeUtils.containsContentType(ContentTypeUtils.ANY_CONTENT_TYPE, contentTypes))
+                    {
+                        selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
+                    }
+                }
+                
+                if (selectedContentType == null)
+                {
+                    throw new IllegalArgumentException(
+                            "ContentTypeList does not contain a supported content type: "
+                                    + contentTypeListString != null ? 
+                                            contentTypeListString : contentTypeListStringFromAccept);
+                }
+            }
+        }
+        if (isAjaxRequest)
+        {
+            // If HTTP Accept header has application/xml or text/xml, that does not means the writer
+            // content type mode should be set to application/xhtml+xml.
+            writerContentType = selectedContentType.indexOf(ContentTypeUtils.XHTML_CONTENT_TYPE) != -1 ?
+                    ContentTypeUtils.XHTML_CONTENT_TYPE : ContentTypeUtils.HTML_CONTENT_TYPE;
+        }
+        else
+        {
+            writerContentType = HtmlRendererUtils.isXHTMLContentType(selectedContentType) ? 
+                    ContentTypeUtils.XHTML_CONTENT_TYPE : ContentTypeUtils.HTML_CONTENT_TYPE;;
+        }
+        
         if (characterEncoding == null)
         {
             characterEncoding = HtmlRendererUtils.DEFAULT_CHAR_ENCODING;
         }
 
         return new HtmlResponseWriterImpl(writer, selectedContentType, characterEncoding, 
-                MyfacesConfig.getCurrentInstance(
-                        FacesContext.getCurrentInstance().getExternalContext()).isWrapScriptContentWithXmlCommentTag());
+                myfacesConfig.isWrapScriptContentWithXmlCommentTag(),
+                        writerContentType);
     }
 
     @Override
