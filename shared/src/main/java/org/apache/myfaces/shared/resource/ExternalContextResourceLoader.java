@@ -119,7 +119,10 @@ public class ExternalContextResourceLoader extends ResourceLoader
             for (Iterator<String> it = libraryPaths.iterator(); it.hasNext();)
             {
                 String libraryPath = it.next();
-                String version = libraryPath.substring(path.length());
+                String version = "";
+                if (path.length() < libraryPath.length()) {
+                    version = libraryPath.substring(path.length());
+                }
 
                 if (VERSION_CHECKER.matcher(version).matches())
                 {
