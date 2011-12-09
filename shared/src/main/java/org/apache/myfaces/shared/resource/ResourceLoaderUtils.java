@@ -65,6 +65,7 @@ public class ResourceLoaderUtils
             }
             catch (ParseException e)
             {
+                // all fine
             }
         }
         if (date == null)

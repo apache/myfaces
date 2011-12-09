@@ -63,6 +63,11 @@ public abstract class ResourceLoader
     
     public abstract boolean libraryExists(String libraryName);
     
+    public boolean resourceExists(ResourceMeta resourceMeta)
+    {
+        return (getResourceURL(resourceMeta) != null);
+    }
+    
     private Comparator<String> _versionComparator = null;
 
     protected Comparator<String> getVersionComparator()
