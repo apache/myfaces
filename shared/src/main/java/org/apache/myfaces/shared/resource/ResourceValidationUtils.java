@@ -99,7 +99,7 @@ public class ResourceValidationUtils
                 return false;
             }
         }
-        if (expression.length() > 3)
+        if (expression.length() >= 3)
         {
             int length = expression.length();
             if ( (expression.charAt(length-3) == '/' || expression.charAt(length-3) == '\\' ) && 
