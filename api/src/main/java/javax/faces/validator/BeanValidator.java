@@ -116,6 +116,8 @@ public class BeanValidator implements Validator, PartialStateHolder
      * Currently, a string containing only whitespace is classified as empty.
      */
     public static final String EMPTY_VALIDATION_GROUPS_PATTERN = "^[\\W,]*$";
+    
+    private static final Class<?>[] DEFAULT_VALIDATION_GROUPS_ARRAY = new Class<?>[] { Default.class };
 
     private String validationGroups;
 
@@ -178,7 +180,7 @@ public class BeanValidator implements Validator, PartialStateHolder
 
         // Initialize Bean Validation.
         ValidatorFactory validatorFactory = createValidatorFactory(context);
-        javax.validation.Validator validator = createValidator(validatorFactory);
+        javax.validation.Validator validator = createValidator(validatorFactory, context);
         BeanDescriptor beanDescriptor = validator.getConstraintsForClass(valueBaseClass);
         if (!beanDescriptor.isBeanConstrained())
         {
@@ -205,7 +207,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
     }
 
-    private javax.validation.Validator createValidator(final ValidatorFactory validatorFactory)
+    private javax.validation.Validator createValidator(final ValidatorFactory validatorFactory, FacesContext context)
     {
         // Set default validation group when setValidationGroups has not been called.
         // The null check is there to prevent it from happening twice.
@@ -216,7 +218,7 @@ public class BeanValidator implements Validator, PartialStateHolder
 
         return validatorFactory //
                 .usingContext() //
-                .messageInterpolator(_FacesMessageInterpolatorHolder.get(validatorFactory)) //
+                .messageInterpolator(new FacesMessageInterpolator(validatorFactory.getMessageInterpolator(), context)) //
                 .getValidator();
 
     }
@@ -294,7 +296,7 @@ public class BeanValidator implements Validator, PartialStateHolder
                 if (_ExternalSpecifications.isBeanValidationAvailable())
                 {
                     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-                    applicationMap.put(VALIDATOR_FACTORY_KEY, attr);
+                    applicationMap.put(VALIDATOR_FACTORY_KEY, factory);
                     return factory;
                 }
                 else
@@ -313,7 +315,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     {
         if (this.validationGroups == null || this.validationGroups.matches(EMPTY_VALIDATION_GROUPS_PATTERN))
         {
-            this.validationGroupsArray = new Class<?>[] { Default.class };
+            this.validationGroupsArray = DEFAULT_VALIDATION_GROUPS_ARRAY;
         }
         else
         {
@@ -452,55 +454,30 @@ public class BeanValidator implements Validator, PartialStateHolder
     {
         _initialStateMarked = true;
     }
-}
-
-/**
- * Holder class to prevent NoClassDefFoundError in environments without Bean Validation.
- *
- * This is needed, because holder classes are loaded lazily. This means that when it's not
- * used, it will not be loaded, parsed and initialized. The BeanValidator class is used always,
- * so the MessageInterpolator references need to be in this separate class.
- */
-final class _FacesMessageInterpolatorHolder
-{
-    // Needs to be volatile.
-    private static volatile FacesMessageInterpolator instance;
-
+    
     /**
-     * Helper method for initializing the FacesMessageInterpolator.
-     *
-     * It uses the "Single Check Idiom" as described in Joshua Bloch's Effective Java 2nd Edition.
-     *
-     * @param validatorFactory Used to obtain the MessageInterpolator.
-     * @return The instantiated MessageInterpolator for BeanValidator.
-     */
-    static MessageInterpolator get(final ValidatorFactory validatorFactory)
-    {
-        _FacesMessageInterpolatorHolder.FacesMessageInterpolator ret = instance;
-        if (ret == null)
-        {
-            MessageInterpolator interpolator = validatorFactory.getMessageInterpolator();
-            ret = new FacesMessageInterpolator(interpolator);
-            instance = ret;
-        }
-        return ret;
-    }
-
-    /**
+     * Note: Before 2.1.5/2.0.11 there was another strategy for this point to minimize
+     * the instances used, but after checking this with a profiler, it is more expensive to
+     * call FacesContext.getCurrentInstance() than create this object for bean validation.
+     * 
      * Standard MessageInterpolator, as described in the JSR-314 spec.
+     * 
+     * @author Leonardo Uribe
      */
     private static class FacesMessageInterpolator implements MessageInterpolator
     {
+        private final FacesContext facesContext;
         private final MessageInterpolator interpolator;
 
-        FacesMessageInterpolator(final MessageInterpolator interpolator)
+        public FacesMessageInterpolator(final MessageInterpolator interpolator, final FacesContext facesContext)
         {
             this.interpolator = interpolator;
+            this.facesContext = facesContext;
         }
 
         public String interpolate(final String s, final Context context)
         {
-            Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+            Locale locale = facesContext.getViewRoot().getLocale();
             return interpolator.interpolate(s, context, locale);
         }
 
