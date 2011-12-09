@@ -120,7 +120,8 @@ public class ExternalContextResourceLoader extends ResourceLoader
             {
                 String libraryPath = it.next();
                 String version = "";
-                if (path.length() < libraryPath.length()) {
+                if (path.length() < libraryPath.length())
+                {
                     version = libraryPath.substring(path.length());
                 }
 

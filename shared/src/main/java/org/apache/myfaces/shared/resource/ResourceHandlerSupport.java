@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.shared.resource;
 
+import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
 
 /**
@@ -83,4 +84,9 @@ public abstract class ResourceHandlerSupport
      * @return
      */
     public abstract long getMaxTimeExpires();
+    
+    public String getResourceIdentifier()
+    {
+        return ResourceHandler.RESOURCE_IDENTIFIER;
+    }
 }
