@@ -18,9 +18,6 @@
  */
 package org.apache.myfaces.shared.resource;
 
-import static org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.JAVAX_FACES_LIBRARY_NAME;
-import static org.apache.myfaces.shared.renderkit.html.util.ResourceUtils.JSF_JS_RESOURCE_NAME;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -40,6 +37,9 @@ import javax.faces.context.FacesContext;
  */
 public class ResourceImpl extends Resource
 {
+    protected final static String JAVAX_FACES_LIBRARY_NAME = "javax.faces";
+    protected final static String JSF_JS_RESOURCE_NAME = "jsf.js";
+
 
     private ResourceMeta _resourceMeta;
     private ResourceLoader _resourceLoader;
