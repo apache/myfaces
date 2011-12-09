@@ -63,9 +63,14 @@ public class DynamicPushbackInputStream extends PushbackInputStream
     {
         byte[] old = buf;
         if (pos == 0)
+        {
             return 0; // nothing to do
+        }
         int n = old.length - pos;
-        int m, p, s, l;
+        int m;
+        int p;
+        int s;
+        int l;
         if (n < origsize)
         {
             buf = new byte[origsize];
@@ -119,7 +124,9 @@ public class DynamicPushbackInputStream extends PushbackInputStream
     {
         int m = super.read();
         if (pos >= buf.length && buf.length > origsize)
+        {
             shrink();
+        }
         return m;
     }
 
@@ -129,7 +136,9 @@ public class DynamicPushbackInputStream extends PushbackInputStream
                           // from some streams will be incorrect
         int r = super.read(b, off, len);
         if (pos >= buf.length && buf.length > origsize)
+        {
             shrink();
+        }
         return r;
     }
 
@@ -137,7 +146,9 @@ public class DynamicPushbackInputStream extends PushbackInputStream
     {
         long r = super.skip(n);
         if (pos >= buf.length && buf.length > origsize)
+        {
             shrink();
+        }
         return r;
     }
 }
