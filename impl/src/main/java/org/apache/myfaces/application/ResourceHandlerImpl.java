@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.application;
 
-import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.shared.resource.ResourceHandlerCache;
 import org.apache.myfaces.shared.resource.ResourceHandlerCache.ResourceValue;
 import org.apache.myfaces.shared.resource.ResourceHandlerSupport;
 import org.apache.myfaces.shared.resource.ResourceImpl;
 import org.apache.myfaces.shared.resource.ResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceMeta;
+import org.apache.myfaces.shared.resource.ResourceValidationUtils;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
@@ -84,6 +84,15 @@ public class ResourceHandlerImpl extends ResourceHandler
             String contentType)
     {
         Resource resource = null;
+        
+        if (!ResourceValidationUtils.isValidResourceName(resourceName))
+        {
+            return null;
+        }
+        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName))
+        {
+            return null;
+        }
         
         if (contentType == null)
         {
@@ -244,9 +253,13 @@ public class ResourceHandlerImpl extends ResourceHandler
     public String getRendererTypeForResourceName(String resourceName)
     {
         if (resourceName.endsWith(".js"))
+        {
             return "javax.faces.resource.Script";
+        }
         else if (resourceName.endsWith(".css"))
+        {
             return "javax.faces.resource.Stylesheet";
+        }
         return null;
     }
 
@@ -296,6 +309,12 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 resourceName = resourceBasePath
                         .substring(ResourceHandler.RESOURCE_IDENTIFIER.length() + 1);
+                
+                if (resourceBasePath != null && !ResourceValidationUtils.isValidResourceName(resourceName))
+                {
+                    httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
             }
             else
             {
@@ -307,6 +326,12 @@ public class ResourceHandlerImpl extends ResourceHandler
             String libraryName = facesContext.getExternalContext()
                     .getRequestParameterMap().get("ln");
     
+            if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName))
+            {
+                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+            
             Resource resource = null;
             if (libraryName != null)
             {
@@ -368,9 +393,11 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 //TODO: Log using a localized message (which one?)
                 if (log.isLoggable(Level.SEVERE))
+                {
                     log.severe("Error trying to load resource " + resourceName
                             + " with library " + libraryName + " :"
                             + e.getMessage());
+                }
                 httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         //}
@@ -445,6 +472,10 @@ public class ResourceHandlerImpl extends ResourceHandler
             
             if (localePrefix != null)
             {
+                if (!ResourceValidationUtils.isValidLocalePrefix(localePrefix))
+                {
+                    return null;
+                }
                 return localePrefix;
             }
         }
@@ -517,6 +548,11 @@ public class ResourceHandlerImpl extends ResourceHandler
 
         String pathToLib = null;
         
+        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName))
+        {
+            return false;
+        }
+        
         if (localePrefix != null)
         {
             //Check with locale
@@ -570,7 +606,9 @@ public class ResourceHandlerImpl extends ResourceHandler
     private ResourceHandlerCache getResourceLoaderCache()
     {
         if (_resourceHandlerCache == null)
+        {
             _resourceHandlerCache = new ResourceHandlerCache();
+        }
         return _resourceHandlerCache;
     }
 
