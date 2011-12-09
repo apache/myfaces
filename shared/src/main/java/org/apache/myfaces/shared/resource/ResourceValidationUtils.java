@@ -49,6 +49,12 @@ public class ResourceValidationUtils
     
     private static boolean validate(String expression, boolean allowSlash)
     {
+        if (expression.length() == 2 && 
+            expression.charAt(0) == '.' &&
+            expression.charAt(1) == '.')
+        {
+            return false;
+        }
         for (int i = 0; i < expression.length(); i++)
         {
             char c = expression.charAt(i);
@@ -75,16 +81,30 @@ public class ResourceValidationUtils
             {
                 continue;
             }
-            else if (c == '.' && i+2 < expression.length())
+            else if (c == '.')
             {
-                char c1 = expression.charAt(i+1);
-                char c2 = expression.charAt(i+2);
-                if (c == c1 && (c2 == '/' || c2 == '\\' ) )
+                if (i+2 < expression.length())
                 {
-                    return false;
+                    char c1 = expression.charAt(i+1);
+                    char c2 = expression.charAt(i+2);
+                    if (c == c1 && (c2 == '/' || c2 == '\\' ) )
+                    {
+                        return false;
+                    }
                 }
+                continue;
             }
             else
+            {
+                return false;
+            }
+        }
+        if (expression.length() > 3)
+        {
+            int length = expression.length();
+            if ( (expression.charAt(length-3) == '/' || expression.charAt(length-3) == '\\' ) && 
+                  expression.charAt(length-2) == '.' &&
+                  expression.charAt(length-1) == '.' )
             {
                 return false;
             }
