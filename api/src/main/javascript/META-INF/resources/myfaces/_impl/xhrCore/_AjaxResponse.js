@@ -336,15 +336,16 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             // The source form has to be pulled out of the CURRENT document first because the context object
             // may refer to an invalid document if an update of the entire body has occurred before this point.
             var mfInternal = context._mfInternal,
-                    fuzzyFormDetection = this._Lang.hitch(this._Dom, this._Dom.fuzzyFormDetection),
-                    elementId = (mfInternal) ? mfInternal["_mfSourceControlId"] : context.source.id,
+                fuzzyFormDetection = this._Lang.hitch(this._Dom, this._Dom.fuzzyFormDetection);
+            var elemId = (mfInternal._mfSourceControlId)? mfInternal._mfSourceControlId:
+                            ((context.source)?context.source.id: null);
 
                     //theoretically a source of null can be given, then our form detection fails for
                     //the source element case and hence updateviewstate is skipped for the source
                     //form, but still render targets still can get the viewstate
-                    sourceForm = (mfInternal && mfInternal["_mfSourceFormId"] &&
-                                  document.forms[mfInternal["_mfSourceFormId"]]) ?
-                           document.forms[mfInternal["_mfSourceFormId"]] : ((elementId)? fuzzyFormDetection(elementId): null);
+            var sourceForm = (mfInternal && mfInternal["_mfSourceFormId"] &&
+                           document.forms[mfInternal["_mfSourceFormId"]]) ?
+                           document.forms[mfInternal["_mfSourceFormId"]] : ((elemId)? fuzzyFormDetection(elemId): null);
 
             mfInternal.appliedViewState = node.firstChild.nodeValue;
             //source form could not be determined either over the form identifer or the element
