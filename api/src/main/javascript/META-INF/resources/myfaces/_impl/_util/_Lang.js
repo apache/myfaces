@@ -48,7 +48,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * basic java log like templating functionality is included
      *
      * @param {String} key the key for the message
-     * @param {String} optional default message if none was found
+     * @param {String} defaultMessage optional default message if none was found
      *
      * Additionally you can pass additional arguments, which are used
      * in the same way java log templates use the params
@@ -142,15 +142,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return t;
     },
-    /**
-     * consume event in a browser independend manner
-     * @param event the event which should not be propagated anymore
-     */
-    consumeEvent: function(event) {
-        //w3c model vs ie model again
-        event = event || window.event;
-        (event.stopPropagation) ? event.stopPropagation() : event.cancelBubble = true;
-    },
+
     /**
      * equalsIgnoreCase, case insensitive comparison of two strings
      *
@@ -167,25 +159,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         //in any other case we do a strong string comparison
         return source.toLowerCase() === destination.toLowerCase();
     },
-    /**
-     * escapes a strings special chars (crossported from dojo 1.3+)
-     *
-     * @param str the string
-     *
-     * @param except a set of exceptions
-     */
-    escapeString: function(/*String*/str, /*String?*/except) {
-        //	summary:
-        //		Adds escape sequences for special characters in regular expressions
-        // except:
-        //		a String with special characters to be left unescaped
-        return str.replace(/([\.$?*|:{}\(\)\[\]\\\/\+^])/g, function(ch) {
-            if (except && except.indexOf(ch) != -1) {
-                return ch;
-            }
-            return "\\" + ch;
-        }); // String
-    },
+
     /**
      * Save document.getElementById (this code was ported over from dojo)
      * the idea is that either a string or domNode can be passed
@@ -197,16 +171,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return (this.isString(reference)) ? document.getElementById(reference) : reference;
     },
-    /**
-     * Helper function to provide a trim with a given splitter regular expression
-     * @param {String} it the string to be trimmed
-     * @param {RegExp} splitter the splitter regular expressiion
-     *
-     * FIXME is this still used?
-     */
-    trimStringInternal : function(it, splitter) {
-        return this.strToArray(it, splitter).join(splitter);
-    },
+
     /**
      * String to array function performs a string to array transformation
      * @param {String} it the string which has to be changed into an array
@@ -240,8 +205,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
     trim : function(/*string*/ str) {
         this._assertStr(str, "trim", "str");
         str = str.replace(/^\s\s*/, '');
-        var ws = /\s/;
-        var i = str.length;
+        var ws = /\s/, i = str.length;
+
         while (ws.test(str.charAt(--i))) {
             //do nothing
         }
@@ -289,6 +254,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         var _undef = "undefined";
         for (var key in src) {
+            if(!src.hasOwnProperty(key)) continue;
             if (blockFilter && blockFilter[key]) {
                 continue;
             }
@@ -434,6 +400,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             }
         } else {
             for (var key in args) {
+                if(!args.hasOwnProperty(key)) continue;
                 if (UDEF != typeof dest["_" + key]) {
                     dest["_" + key] = args[key];
                 }
@@ -443,36 +410,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             }
         }
     },
-    /**
-     * creates a standardized error message which can be reused by the system
-     *
-     * @param sourceClass the source class issuing the exception
-     * @param func the function issuing the exception
-     * @param error the error object itself (optional)
-     */
-    createErrorMsg: function(sourceClass, func, error) {
-        var ret = [];
-        var keyValToStr = this.hitch(this, this.keyValToStr),
-                getMsg = this.hitch(this, this.getMessage),
-                pushRet = this.hitch(ret, ret.push);
-        pushRet(keyValToStr(getMsg("MSG_AFFECTED_CLASS"), sourceClass));
-        pushRet(keyValToStr(getMsg("MSG_AFFECTED_METHOD"), func));
-        /*we push the values into separate vars to improve the compression*/
-        var errName = error.name;
-        var errMsg = error.message;
-        var errDesc = error.description;
-        var errNum = error.number;
-        var errLineNo = error.lineNumber;
-        if (error) {
-            var _UDEF = "undefined";
-            pushRet(keyValToStr(getMsg("MSG_ERROR_NAME"), errName ? errName : _UDEF));
-            pushRet(keyValToStr(getMsg("MSG_ERROR_MESSAGE"), errMsg ? errMsg : _UDEF));
-            pushRet(keyValToStr(getMsg("MSG_ERROR_DESC"), errDesc ? errDesc : _UDEF));
-            pushRet(keyValToStr(getMsg("MSG_ERROR_NO"), _UDEF != typeof errNum ? errNum : _UDEF));
-            pushRet(keyValToStr(getMsg("MSG_ERROR_LINENO"), _UDEF != typeof errLineNo ? errLineNo : _UDEF));
-        }
-        return ret.join("");
-    },
+
     /**
      * transforms a key value pair into a string
      * @param key the key
@@ -480,8 +418,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param delimiter the delimiter
      */
     keyValToStr: function(key, val, delimiter) {
-        var ret = [];
-        pushRet = this.hitch(ret, ret.push);
+        var ret = [], pushRet = this.hitch(ret, ret.push);
         pushRet(key);
         pushRet(val);
         delimiter = delimiter || "\n";
@@ -661,11 +598,11 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * creates an exeption with additional internal parameters
      * for extra information
      *
-     * @param {String} title the exception title
+     * @param {String} title the exception title
      * @param {String} name  the exception name
-     * @param {String} callerCls the caller class
-     * @param {String} callFunc the caller function
-     * @param {String} message the message for the exception
+     * @param {String} callerCls the caller class
+     * @param {String} callFunc the caller function
+     * @param {String} message the message for the exception
      */
     makeException: function(title, name, callerCls, callFunc, message) {
         var ret = new Error(message || "");

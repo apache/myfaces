@@ -110,6 +110,7 @@ _MF_SINGLTN(_PFX_XHR + "_Transports", _MF_OBJECT,
         //or pushed in under the context myfaces.<contextValue> into the current request
         applyCfg(ret, context, "alarmThreshold", this._PAR_ERRORLEVEL);
         applyCfg(ret, context, "queueSize", this._PAR_QUEUESIZE);
+        //TODO timeout probably not needed anymore
         applyCfg(ret, context, "timeout", this._PAR_TIMEOUT);
         //applyCfg(ret, context, "delay", this._PAR_DELAY);
 
