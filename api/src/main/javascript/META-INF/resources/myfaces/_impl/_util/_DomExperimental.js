@@ -35,10 +35,12 @@ if (_MF_SINGLTN) {
                 executes = this._Lang.strToArray(executes, /\s+/);
             }
 
-            for (var exec in executes) {
-                var element = this.byId(executes[exec]);
+            for (var executable in executes) {
+                if(!executes.hasOwnProperty(executable)) continue;
+                var element = this.byId(executes[executable]);
                 var inputs = this.findByTagName(element, "input", true);
                 for (var key in inputs) {
+                    if(!inputs.hasOwnProperty(key)) continue;
                     if (this.getAttribute(inputs[key], "type") == "file") return true;
                 }
             }

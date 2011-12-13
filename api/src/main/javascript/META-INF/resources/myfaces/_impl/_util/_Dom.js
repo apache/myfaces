@@ -53,24 +53,24 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     constructor_: function() {
     },
 
-    runCss: function(item, xmlData) {
+    runCss: function(item/*, xmlData*/) {
 
-        var stylesheets = document.styleSheets,
-                finalCss = [],
-                UDEF = "undefined",
-                applyStyle = this._Lang.hitch(this, function(item, style) {
+        var  UDEF = "undefined",
+                _RT = this._RT,
+                _Lang = this._Lang,
+                applyStyle = function(item, style) {
                     var newSS = document.createElement("style");
 
                     newSS.setAttribute("rel", item.getAttribute("rel") || "stylesheet");
                     newSS.setAttribute("type", item.getAttribute("type") || "text/css");
                     document.getElementsByTagName("head")[0].appendChild(newSS);
                     //ie merrily again goes its own way
-                    if (window.attachEvent && !this._RT.isOpera && UDEF != typeof newSS.styleSheet && UDEF != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
+                    if (window.attachEvent && !_RT.isOpera && UDEF != typeof newSS.styleSheet && UDEF != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
                     else newSS.appendChild(document.createTextNode(style));
-                }),
+                },
 
-                execCss = this._Lang.hitch(this, function(item) {
-                    var equalsIgnoreCase = this._Lang.equalsIgnoreCase;
+                execCss = function(item) {
+                    var equalsIgnoreCase = _Lang.equalsIgnoreCase;
                     var tagName = item.tagName;
                     if (tagName && equalsIgnoreCase(tagName, "link") && equalsIgnoreCase(item.getAttribute("type"), "text/css")) {
                         applyStyle(item, "@import url('" + item.getAttribute("href") + "');");
@@ -90,7 +90,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
                         applyStyle(item, innerText.join(""));
                     }
-                });
+                };
 
         try {
             var scriptElements = this.findByTagNames(item, {"link":1,"style":1}, true);
@@ -111,79 +111,66 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     },
 
 
-    deleteScripts: function(nodeList) {
-        if (!nodeList || !nodeList.length) return;
-        var len = nodeList.length;
-        for (var cnt = 0; cnt < len; cnt++) {
-            var item = nodeList[cnt];
-            var src = item.getAttribute('src');
-            if (src && src.length > 0 && (src.indexOf("/jsf.js") != -1 || src.indexOf("/jsf-uncompressed.js") != -1)) {
-                continue;
-            }
-            this.deleteItem(item);
-        }
-    },
-
     /**
      * Run through the given Html item and execute the inline scripts
      * (IE doesn't do this by itself)
      * @param {Node} item
      */
     runScripts: function(item, xmlData) {
-        var _Lang = this._Lang;
-        var finalScripts = [],
+        var _Lang = this._Lang,
+            _RT = this._RT,
+            finalScripts = [],
+            execScrpt = function(item) {
+                var tagName = item.tagName;
+                if (tagName && _Lang.equalsIgnoreCase(tagName, "script")) {
+                    var src = item.getAttribute('src');
+                    if ('undefined' != typeof src
+                            && null != src
+                            && src.length > 0
+                            ) {
+                        //we have to move this into an inner if because chrome otherwise chokes
+                        //due to changing the and order instead of relying on left to right
+                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
+                                && src.indexOf("/jsf-uncompressed.js") == -1)) {
+                            if (finalScripts.length) {
+                                //script source means we have to eval the existing
+                                //scripts before running the include
+                                _RT.globalEval(finalScripts.join("\n"));
 
-                execScrpt = _Lang.hitch(this, function(item) {
-                    var tagName = item.tagName;
-                    if (tagName && _Lang.equalsIgnoreCase(tagName, "script")) {
-                        var src = item.getAttribute('src');
-                        if ('undefined' != typeof src
-                                && null != src
-                                && src.length > 0
-                                ) {
-                            //we have to move this into an inner if because chrome otherwise chokes
-                            //due to changing the and order instead of relying on left to right
-                            if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
-                                    && src.indexOf("/jsf-uncompressed.js") == -1)) {
-                                if (finalScripts.length) {
-                                    //script source means we have to eval the existing
-                                    //scripts before running the include
-                                    this._RT.globalEval(finalScripts.join("\n"));
-
-                                    finalScripts = [];
-                                }
-                                //if jsf.js is already registered we do not replace it anymore
-                                if (!window.jsf) {
-                                    this._RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
-                                }
+                                finalScripts = [];
                             }
-                            //TODO handle embedded scripts
-                        } else {
-                            // embedded script auto eval
-                            var test = (!xmlData) ? item.text : _Lang.serializeChilds(item);
-                            var go = true;
-                            while (go) {
-                                go = false;
-                                if (test.substring(0, 1) == " ") {
-                                    test = test.substring(1);
-                                    go = true;
-                                }
-                                if (test.substring(0, 4) == "<!--") {
-                                    test = test.substring(4);
-                                    go = true;
-                                }
-                                if (test.substring(0, 11) == "//<![CDATA[") {
-                                    test = test.substring(11);
-                                    go = true;
-                                }
+                            //if jsf.js is already registered we do not replace it anymore
+                            if (!window.jsf) {
+                                _RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
                             }
-                            // we have to run the script under a global context
-                            //we store the script for less calls to eval
-                            finalScripts.push(test);
-
                         }
+                        //TODO handle embedded scripts
+                    } else {
+                        // embedded script auto eval
+                        var test = (!xmlData) ? item.text : _Lang.serializeChilds(item);
+                        var go = true;
+                        while (go) {
+                            go = false;
+                            if (test.substring(0, 1) == " ") {
+                                test = test.substring(1);
+                                go = true;
+                            }
+                            if (test.substring(0, 4) == "<!--") {
+                                test = test.substring(4);
+                                go = true;
+                            }
+                            if (test.substring(0, 11) == "//<![CDATA[") {
+                                test = test.substring(11);
+                                go = true;
+                            }
+                        }
+                        // we have to run the script under a global context
+                        //we store the script for less calls to eval
+                        finalScripts.push(test);
+
                     }
-                });
+                }
+            };
         try {
             var scriptElements = this.findByTagName(item, "script", true);
             if (scriptElements == null) return;
@@ -191,7 +178,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 execScrpt(scriptElements[cnt]);
             }
             if (finalScripts.length) {
-                this._RT.globalEval(finalScripts.join("\n"));
+                _RT.globalEval(finalScripts.join("\n"));
             }
         } finally {
             //the usual ie6 fix code
@@ -288,6 +275,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         var ret = document.createElement(nodeName);
         if (attrs) {
             for (var key in attrs) {
+                if(!attrs.hasOwnProperty(key)) continue;
                 this.setAttribute(ret, key, attrs[key]);
             }
         }
@@ -440,13 +428,11 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         }
     },
 
-    _isTable: function(item) {
-        return "table" == (item.nodeName || item.tagName).toLowerCase();
-    },
+
 
     /**
      * checks if the provided element is a subelement of a table element
-     * @param itemNodeName
+     * @param item
      */
     _isTableElement: function(item) {
         return !!this.TABLE_ELEMS[(item.nodeName || item.tagName).toLowerCase()];
@@ -477,8 +463,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      * @param markup
      */
     _buildTableNodes: function(item, markup) {
-        var itemNodeName = (item.nodeName || item.tagName).toLowerCase(),
-                probe = document.createElement("div");
+        var itemNodeName = (item.nodeName || item.tagName).toLowerCase();
 
         var tmpNodeName = itemNodeName;
         var depth = 0;
@@ -502,19 +487,18 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         return this.detach(dummyPlaceHolder.childNodes);
     },
 
-    _removeChildNodes: function(node, breakEventsOpen) {
+    _removeChildNodes: function(node /*, breakEventsOpen */) {
         if (!node) return;
         node.innerHTML = "";
     },
 
 
 
-    _removeNode: function(node, breakEventsOpen) {
+    _removeNode: function(node /*, breakEventsOpen*/) {
         if (!node) return;
         var parentNode = node.parentNode;
         if (parentNode) //if the node has a parent
             parentNode.removeChild(node);
-        return;
     },
 
 
@@ -554,7 +538,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 finalParams = params || ["item", "markup"];
 
         if (!item || !markup) {
-            _Lang.makeException(null, null,DOM, ""+caller,  _Lang.getMessage(ERR_PROV, null, DOM +"."+ caller, (!item) ? params[0] : params[1]));
+            _Lang.makeException(null, null,DOM, ""+caller,  _Lang.getMessage(ERR_PROV, null, DOM +"."+ caller, (!item) ? finalParams[0] : finalParams[1]));
             //throw Error(_Lang.getMessage(ERR_PROV, null, DOM + caller, (!item) ? params[0] : params[1]));
         }
     },
@@ -576,8 +560,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         }
     },
 
-
-
     /**
      * for performance reasons we work with replaceElement and replaceElements here
      * after measuring performance it has shown that passing down an array instead
@@ -585,7 +567,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      * a single node case is the 95% case
      *
      * @param item
-     * @param evalNodes
+     * @param evalNode
      */
     replaceElement: function(item, evalNode) {
         //browsers with defect garbage collection
@@ -643,6 +625,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         if (fragment.querySelectorAll) {
             var query = [];
             for (var key in tagNames) {
+                if(!tagNames.hasOwnProperty(key)) continue;
                 query.push(key);
             }
             var res = [];
@@ -721,10 +704,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             //will not be called in dom level3 compliant browsers
             return this._recursionSearchAll(rootNode, filter, deepScan);
         }
-
     },
-
-
 
     /**
      * the faster dom iterator based search, works on all newer browsers
@@ -779,7 +759,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             return;
         }
         node.setAttribute(attr, val);
-        return;
     },
 
     /**
@@ -875,7 +854,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         return (1 == foundElements.length ) ? foundElements[0] : null;
     },
 
-    html5FormDetection: function(item) {
+    html5FormDetection: function(/*item*/) {
         return null;
     },
 
@@ -969,7 +948,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         return true;
     },
 
-    isMultipartCandidate: function(executes) {
+    isMultipartCandidate: function(/*executes*/) {
         //implementation in the experimental part
         return false;
     },
@@ -988,11 +967,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     },
 
     getDummyPlaceHolder: function() {
-        var created = false;
-        if (!this._dummyPlaceHolder) {
-            this._dummyPlaceHolder = this.createElement("div");
-            created = true;
-        }
+        this._dummyPlaceHolder = this._dummyPlaceHolder ||this.createElement("div");
         return this._dummyPlaceHolder;
     },
 

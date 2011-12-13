@@ -50,7 +50,7 @@ _MF_CLS(_PFX_XHR+"_IFrameRequest", myfaces._impl.xhrCore._AjaxRequest,
         return ret;
     },
 
-    _formDataToURI: function(formData) {
+    _formDataToURI: function(/*formData*/) {
         //http get alwyays sends the form data
         return "";
     },

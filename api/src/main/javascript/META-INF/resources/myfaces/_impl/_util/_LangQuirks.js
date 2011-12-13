@@ -51,7 +51,6 @@ _MF_SINGLTN(_PFX_UTIL+"_LangQuirks", myfaces._impl._util._Lang, {
     constructor_: function() {
         this._callSuper("constructor_");
         var _RT = this._RT;
-        var singletons = this.attr(_RT, "registeredSingletons");
         var _T = this;
         //we only apply lazy if the jsf part is loaded already
         //otherwise we are at the correct position

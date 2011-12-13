@@ -64,7 +64,7 @@ _MF_CLS(_PFX_UTIL+"_Queue", _MF_OBJECT,
      * Sets the current queue to a new size, all overflow elements at the end are stripped
      * automatically
      *
-     * @param {int} newSize as numeric value
+     * @param {int} newSize as numeric value
      */
     setQueueSize: function(newSize) {
         this._size = newSize;

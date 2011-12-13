@@ -237,7 +237,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         }
 
         /**
-         * multiple transports upcoming jsf 2.1 feature currently allowed
+         * multiple transports upcoming jsf 2.x feature currently allowed
          * default (no value) xhrQueuedPost
          *
          * xhrQueuedPost
@@ -295,10 +295,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             //in case of no form is given we retry over the issuing event
             form = _Dom.fuzzyFormDetection(_Lang.getEventTarget(event));
             if (!form) {
-                throw this._Lang.makeException(null, null, this._nameSpace, "_getForm", _Lang.getMessage("ERR_FORM"));
+                throw _Lang.makeException(null, null, this._nameSpace, "_getForm", _Lang.getMessage("ERR_FORM"));
             }
         } else if (!form) {
-            throw this._Lang.makeException(null, null, this._nameSpace, "_getForm", _Lang.getMessage("ERR_FORM"));
+            throw _Lang.makeException(null, null, this._nameSpace, "_getForm", _Lang.getMessage("ERR_FORM"));
 
         }
         return form;
@@ -474,7 +474,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         if (jsf.getProjectStage() === "Development" && this._errListeners.length() == 0 && !context["onerror"]) {
             var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert),
                     finalMessage = [],
-                //we remap the function to achieve a better compressability
+                    //we remap the function to achieve a better compressability
                     finalMessagePush = _Lang.hitch(finalMessage, finalMessage.push);
 
             finalMessagePush((name) ? name : "");
@@ -615,20 +615,30 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      *   but can be undefined
      */
     chain : function(source, event) {
-        var len = arguments.length;
-        var _Lang = this._Lang;
-        var throwErr = function(msgKey) {
+        var len         = arguments.length;
+        var _Lang       = this._Lang;
+        var throwErr    = function(msgKey) {
             throw Error(_Lang.getMessage(msgKey));
         };
+        /**
+         * generic error condition checker which raises
+         * an exception if the condition is met
+         * @param assertion
+         * @param message
+         */
+        var errorCondition = function(assertion, message) {
+            if(assertion === true) throwErr(message);
+        };
+        var FUNC    = 'function';
+        var ISSTR   = _Lang.isString;
+        
         //the spec is contradicting here, it on one hand defines event, and on the other
         //it says it is optional, I have cleared this up now
         //the spec meant the param must be passed down, but can be 'undefined'
-        if (len < 2) {
-            throwErr("ERR_EV_OR_UNKNOWN");
-        } else if (len < 3) {
-            if ('function' == typeof event || this._Lang.isString(event)) {
-                throwErr("ERR_EVT_PASS");
-            }
+
+        errorCondition(len < 2, "ERR_EV_OR_UNKNOWN");
+        errorCondition(len < 3 && (FUNC == typeof event || ISSTR(event)), "ERR_EVT_PASS");
+        if (len < 3) {
             //nothing to be done here, move along
             return true;
         }
@@ -637,30 +647,20 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //arguments only are give if not set to undefined even null values!
 
         //assertions source either null or set as dom element:
-
-        if ('undefined' == typeof source) {
-            throwErr("ERR_SOURCE_DEF_NULL");
-            //allowed chain datatypes
-        } else if ('function' == typeof source) {
-            throwErr("ERR_SOURCE_FUNC");
-        }
-        if (this._Lang.isString(source)) {
-            throwErr("ERR_SOURCE_NOSTR");
-        }
+        errorCondition('undefined' == typeof source, "ERR_SOURCE_DEF_NULL");
+        errorCondition(FUNC == typeof source, "ERR_SOURCE_FUNC");
+        errorCondition(ISSTR(source), "ERR_SOURCE_NOSTR");
 
         //assertion if event is a function or a string we already are in our function elements
         //since event either is undefined, null or a valid event object
-
-        if ('function' == typeof event || this._Lang.isString(event)) {
-            throwErr("ERR_EV_OR_UNKNOWN");
-        }
+        errorCondition(FUNC == typeof event || ISSTR(event), "ERR_EV_OR_UNKNOWN");
 
         for (var cnt = 2; cnt < len; cnt++) {
             //we do not change the scope of the incoming functions
             //but we reuse the argument array capabilities of apply
             var ret;
 
-            if ('function' == typeof arguments[cnt]) {
+            if (FUNC == typeof arguments[cnt]) {
                 ret = arguments[cnt].call(source, event);
             } else {
                 //either a function or a string can be passed in case of a string we have to wrap it into another function
@@ -673,7 +673,6 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             }
         }
         return true;
-
     },
 
     /**
@@ -707,7 +706,6 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 this.sendError(request, context,
                         mfInternal.title || this.CLIENT_ERROR, mfInternal.name || exception.name, finalMsg.join("\n"));
             }
-
     }
 });
 

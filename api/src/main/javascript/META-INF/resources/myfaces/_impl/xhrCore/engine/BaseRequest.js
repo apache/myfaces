@@ -69,116 +69,114 @@
  *      <li>statusText</li>
  * </ul>
  */
-_MF_CLS(_PFX_XHR+"engine.BaseRequest", _MF_OBJECT,
-        /** @lends myfaces._impl.xhrCore.engine.BaseRequest.prototype */
-        {
-            /*standard attributes*/
+_MF_CLS(_PFX_XHR + "engine.BaseRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.engine.BaseRequest.prototype */ {
+    /*standard attributes*/
 
-            /**
-             * timeout attribute with a timeout for the request in miliseconds
-             */
-            timeout: 0,
-            /**
-             * readonly ready stte attribute
-             */
-            readyState: 0,
-            /**
-             * send method, allowed values POST and GET
-             */
-            method: "POST",
-            /**
-             * the url for the call
-             */
-            url:null,
-            /**
-             * asynchronous request, if set to true then the request happens
-             * asynchronously, if possible.
-             */
-            async:true,
-            /**
-             * read only response object, containing the response as json/dom representation
-             */
-            response: null,
-            /**
-             * read only plain text representation of the response
-             */
-            responseText: null,
-            /**
-             * xml dom readonly representation of the response
-             */
-            responseXML: null,
-            /**
-             * readonly status code of the response
-             */
-            status: null,
-            /**
-             * readonly status text of the response
-             */
-            statusText: null,
+    /**
+     * timeout attribute with a timeout for the request in miliseconds
+     */
+    timeout:0,
+    /**
+     * readonly ready stte attribute
+     */
+    readyState:0,
+    /**
+     * send method, allowed values POST and GET
+     */
+    method:"POST",
+    /**
+     * the url for the call
+     */
+    url:null,
+    /**
+     * asynchronous request, if set to true then the request happens
+     * asynchronously, if possible.
+     */
+    async:true,
+    /**
+     * read only response object, containing the response as json/dom representation
+     */
+    response:null,
+    /**
+     * read only plain text representation of the response
+     */
+    responseText:null,
+    /**
+     * xml dom readonly representation of the response
+     */
+    responseXML:null,
+    /**
+     * readonly status code of the response
+     */
+    status:null,
+    /**
+     * readonly status text of the response
+     */
+    statusText:null,
 
-            constructor_: function(params) {
-                this._callSuper("constructor_", params);
-                this._initDefaultFinalizableFields();
+    constructor_:function (params) {
+        this._callSuper("constructor_", params);
+        this._initDefaultFinalizableFields();
 
-                this._XHRConst = myfaces._impl.xhrCore.engine.XhrConst;
-                this._Lang.applyArgs(this, params);
-            },
+        this._XHRConst = myfaces._impl.xhrCore.engine.XhrConst;
+        this._Lang.applyArgs(this, params);
+    },
 
-            //open send, abort etc... abstract
-            /**
-             * opens the transport element
-             * @param {String} method transport method allowed values <i>POST</i> and <i>GET</i>
-             * @param {String} url optional url
-             * @param {Boolean} async optional param asynchronous transmission if set to true
-             */
-            open: function(method, url, async) {
-                this._implementThis();
-            },
-            /**
-             * send method
-             * @param {Object} formData data to be posted within the request
-             */
-            send: function(formData) {
-                this._implementThis();
-            },
-            /**
-             * appends a key value pair to the request header if possible
-             * @param {String} key the key of the request header entry
-             * @param {String} value  the value for the key
-             */
-            setRequestHeader: function(key, value) {
-                this._implementThis();
-            },
-            /**
-             * aborts the transmission
-             */
-            abort: function() {
-                this._implementThis();
-            },
+    //open send, abort etc... abstract
+    /**
+     * opens the transport element
+     * @param {String} method transport method allowed values <i>POST</i> and <i>GET</i>
+     * @param {String} url optional url
+     * @param {Boolean} async optional param asynchronous transmission if set to true
+     */
+    open:function (method, url, async) {
+        this._implementThis();
+    },
+    /**
+     * send method
+     * @param {Object} formData data to be posted within the request
+     */
+    send:function (formData) {
+        this._implementThis();
+    },
+    /**
+     * appends a key value pair to the request header if possible
+     * @param {String} key the key of the request header entry
+     * @param {String} value  the value for the key
+     */
+    setRequestHeader:function (key, value) {
+        this._implementThis();
+    },
+    /**
+     * aborts the transmission
+     */
+    abort:function () {
+        this._implementThis();
+    },
 
-            //empty implementations for the callback handlers
-            /**
-             * callback once the transmission has started
-             * @param evt
-             */
-            onloadstart: function(evt) {
-            },
-            onprogress: function(evt) {
-            },
-            onabort: function(evt) {
-            },
-            onerror: function(evt) {
-            },
-            onload: function(evt) {
-            },
-            ontimeout: function(evt) {
-            },
-            onloadend: function(evt) {
-            },
-            onreadystatechange: function(evt) {
-            },
+    //empty implementations for the callback handlers
+    /**
+     * callback once the transmission has started
+     * @param evt
+     */
+    onloadstart:function (evt) {
+    },
+    onprogress:function (evt) {
+    },
+    onabort:function (evt) {
+    },
+    onerror:function (evt) {
+    },
+    onload:function (evt) {
+    },
+    ontimeout:function (evt) {
+    },
+    onloadend:function (evt) {
+    },
+    onreadystatechange:function (evt) {
+    },
 
-            _implementThis: function() {
-                throw Error("the function needs to be implemented");
-            }
-        });
+    _implementThis:function () {
+        throw Error("the function needs to be implemented");
+    }
+});

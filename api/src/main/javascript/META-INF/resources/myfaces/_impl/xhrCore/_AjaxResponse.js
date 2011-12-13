@@ -68,7 +68,11 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      *
      */
     processResponse : function(request, context) {
+        //mfinternal handling, note, the mfinternal is only optional
+        //according to the spec
+        context._mfInternal =  context._mfInternal || {};
         var mfInternal = context._mfInternal;
+
         //the temporary data is hosted here
         mfInternal._updateElems = [];
         mfInternal._updateForms = [];
@@ -171,15 +175,15 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         // view state is updated.
 
         //set the viewstates of all outer forms parents of our updated elements
-
-        _Lang.arrForEach(mfInternal._updateForms, _Lang.hitch(this, function(elem) {
-            this._setVSTForm(context, elem);
-        }), 0, this);
+        var _T = this;
+        _Lang.arrForEach(mfInternal._updateForms, function(elem) {
+            _T._setVSTForm(context, elem);
+        }, 0, this);
 
         //set the viewstate of all forms within our updated elements
-        _Lang.arrForEach(mfInternal._updateElems, _Lang.hitch(this, function(elem) {
-            this._setVSTInnerForms(context, elem);
-        }), 0, this);
+        _Lang.arrForEach(mfInternal._updateElems, function(elem) {
+            _T._setVSTInnerForms(context, elem);
+        }, 0, this);
     }
     ,
 
@@ -214,7 +218,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
     _setVSTInnerForms: function(context, elem) {
 
-        var _Lang = this._Lang, _Dom = this._Dom, elem = _Dom.byIdOrName(elem);
+        var _Lang = this._Lang, _Dom = this._Dom;
+        elem = _Dom.byIdOrName(elem);
 
         var replacedForms = _Dom.findByTagName(elem, "form", false);
         var applyVST = _Lang.hitch(this, function(elem) {
@@ -330,13 +335,18 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             //update the submitting forms viewstate to the new value
             // The source form has to be pulled out of the CURRENT document first because the context object
             // may refer to an invalid document if an update of the entire body has occurred before this point.
-            var viewStateValue = node.firstChild.nodeValue,
-                    mfInternal = context._mfInternal,
+            var mfInternal = context._mfInternal,
                     fuzzyFormDetection = this._Lang.hitch(this._Dom, this._Dom.fuzzyFormDetection),
                     elementId = (mfInternal) ? mfInternal["_mfSourceControlId"] : context.source.id,
-                    sourceForm = (mfInternal) ? (document.forms[mfInternal["_mfSourceFormId"]] || fuzzyFormDetection(elementId)) : fuzzyFormDetection(elementId);
 
-            mfInternal.appliedViewState = viewStateValue;
+                    //theoretically a source of null can be given, then our form detection fails for
+                    //the source element case and hence updateviewstate is skipped for the source
+                    //form, but still render targets still can get the viewstate
+                    sourceForm = (mfInternal && mfInternal["_mfSourceFormId"] &&
+                                  document.forms[mfInternal["_mfSourceFormId"]]) ?
+                           document.forms[mfInternal["_mfSourceFormId"]] : ((elementId)? fuzzyFormDetection(elementId): null);
+
+            mfInternal.appliedViewState = node.firstChild.nodeValue;
             //source form could not be determined either over the form identifer or the element
             //we now skip this phase and just add everything we need for the fixup code
 
@@ -504,13 +514,9 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         _Dom._removeChildNodes(oldBody);
         oldBody.innerHTML = "";
-        var newBody = oldBody;
+        oldBody.appendChild(placeHolder);
 
-        newBody.appendChild(placeHolder);
-
-        var bodyData = null;
-
-        var doc = null;
+        var bodyData, doc = null, parser;
 
         //we have to work around an xml parsing bug in Webkit
         //see https://issues.apache.org/jira/browse/MYFACES-3061
@@ -525,7 +531,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         if (isWebkit || _Lang.isXMLParseError(doc)) {
             //the standard xml parser failed we retry with the stripper
 
-            var parser = new (_RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
+            parser = new (_RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
 
             bodyData = parser.parse(newData, "body");
         } else {
@@ -543,13 +549,13 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 for (var cnt = 0; cnt < newBodyData.attributes.length; cnt++) {
                     var value = newBodyData.attributes[cnt].value;
                     if (value)
-                        _Dom.setAttribute(newBody, newBodyData.attributes[cnt].name, value);
+                        _Dom.setAttribute(oldBody, newBodyData.attributes[cnt].name, value);
                 }
             }
         }
         //we cannot serialize here, due to escape problems
         //we must parse, this is somewhat unsafe but should be safe enough
-        var parser = new (_RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
+        parser = new (_RT.getGlobalConfig("updateParser", myfaces._impl._util._HtmlStripper))();
         bodyData = parser.parse(newData, "body");
 
         var returnedElement = this.replaceHtmlItem(request, context, placeHolder, bodyData);

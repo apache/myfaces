@@ -34,8 +34,6 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     _contentType: "application/x-www-form-urlencoded",
     /** source element issuing the request */
     _source: null,
-    /** encoding for the submit */
-    _encoding:null ,
     /** context passed down from the caller */
     _context:null,
     /** source form issuing the request */
@@ -96,7 +94,6 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             delete this._resettableContent["_xhrQueue"];
 
             this.applyArgs(args);
-            var mfInternal = this._context._mfInternal;
 
             /*namespace remapping for readability*/
             //we fetch in the standard arguments
@@ -139,6 +136,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
                     formData = this.getFormData();
 
             for (var key in this._passThrough) {
+                if(!this._passThrough.hasOwnProperty(key)) continue;
                 formData.append(key, this._passThrough[key]);
             }
 
@@ -174,7 +172,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     },
 
 
-    onsuccess: function(evt) {
+    onsuccess: function(/*evt*/) {
 
         var context = this._context;
         var xhr = this._xhr;
@@ -198,14 +196,14 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         }
     },
 
-    onerror: function(evt) {
+    onerror: function(/*evt*/) {
         //TODO improve the error code detection here regarding server errors etc...
         //and push it into our general error handling subframework
         var context = this._context;
         var xhr = this._xhr;
         var _Lang = this._Lang;
 
-        var errorText = "";
+        var errorText;
         this._sendEvent("COMPLETE");
         try {
             var UNKNOWN = _Lang.getMessage("UNKNOWN");
@@ -223,11 +221,11 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         //_onError
     },
 
-    onprogress: function(evt) {
+    onprogress: function(/*evt*/) {
         //do nothing for now
     },
 
-    ontimeout: function(evt) {
+    ontimeout: function(/*evt*/) {
         try {
             //we issue an event not an error here before killing the xhr process
             this._sendEvent("TIMEOUT_EVENT");
@@ -274,9 +272,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      */
     getFormData : function() {
         var _AJAXUTIL = this._AJAXUTIL, myfacesOptions = this._context.myfaces;
-        var ret = this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
-
-        return ret;
+        return this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
     },
 
     /**
@@ -287,8 +283,6 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      *
      * @param request the xhr request object
      * @param context the context holding all values for further processing
-     * @param sourceClass (String) the issuing class for a more meaningful message
-     * @param func the issuing function
      * @param exception the embedded exception
      */
     _stdErrorHandler: function(request, context, exception) {
