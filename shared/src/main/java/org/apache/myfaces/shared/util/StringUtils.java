@@ -268,13 +268,13 @@ public final class StringUtils
         int endInt = str.indexOf(quote, begin);
 
         // If no quotes, return the original string
-        // and save StringBuffer allocation/char copying
+        // and save StringBuilder allocation/char copying
         if (endInt < 0)
         {
             return str.substring(begin, end);
         }
 
-        StringBuffer sb     = new StringBuffer(end - begin);
+        StringBuilder sb     = new StringBuilder(end - begin);
         int          beginInt = begin; // need begin later
         do
         {
@@ -347,7 +347,7 @@ public final class StringUtils
         int pos = str.indexOf(repl);
 
         // If no replacement needed, return the original string
-        // and save StringBuffer allocation/char copying
+        // and save StringBuilder allocation/char copying
         if (pos < 0)
         {
             return str;
@@ -355,8 +355,8 @@ public final class StringUtils
 
         int          len     = repl.length();
         int          lendiff = with.length() - repl.length();
-        StringBuffer out     =
-            new StringBuffer((lendiff <= 0) ? str.length()
+        StringBuilder out     =
+            new StringBuilder((lendiff <= 0) ? str.length()
                 : (str.length() + (10 * lendiff)));
         while(pos >= 0)
         {
@@ -373,7 +373,7 @@ public final class StringUtils
         int pos = str.indexOf(repl);
 
         // If no replacement needed, return the original string
-        // and save StringBuffer allocation/char copying
+        // and save StringBuilder allocation/char copying
         if (pos < 0)
         {
             return str;
@@ -381,8 +381,8 @@ public final class StringUtils
 
         int          len       = str.length();
         int          lendiff   = with.length() - 1;
-        StringBuffer out       =
-            new StringBuffer((lendiff <= 0) ? str.length()
+        StringBuilder out       =
+            new StringBuilder((lendiff <= 0) ? str.length()
                 : (str.length() + (10 * lendiff)));
         int          lastindex = 0;
         while( pos >= 0)
@@ -394,9 +394,26 @@ public final class StringUtils
 
         return out.append(substring(str, lastindex, len)).toString();
     }
-
+    
     public static StringBuffer replace(
         StringBuffer out, String s, String repl, String with)
+    {
+        int lastindex = 0;
+        int len = repl.length();
+        int index = s.indexOf(repl);
+        while (index >= 0)
+        {
+            // we have search string at position index
+            out.append(substring(s, lastindex, index)).append(with);
+            lastindex = index + len;
+            index = s.indexOf(repl, lastindex);
+        }
+
+        return out.append(substring(s, lastindex, len));
+    }
+
+    public static StringBuilder replace(
+        StringBuilder out, String s, String repl, String with)
     {
         int lastindex = 0;
         int len = repl.length();

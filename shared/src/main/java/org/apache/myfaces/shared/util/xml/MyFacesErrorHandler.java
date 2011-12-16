@@ -59,7 +59,7 @@ public class MyFacesErrorHandler
 
     private String getMessage(SAXParseException exception)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("SAXParseException at");
         buf.append(" URI=");
         buf.append(exception.getSystemId());
