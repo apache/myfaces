@@ -26,7 +26,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -455,15 +454,22 @@ public abstract class UIComponent
         }
         else
         {
-            LinkedList<UIComponent> componentStack
-                    = (LinkedList<UIComponent>) context.getAttributes().get(UIComponent._COMPONENT_STACK);
+            List<UIComponent> componentStack
+                    = (List<UIComponent>) context.getAttributes().get(UIComponent._COMPONENT_STACK);
             if (componentStack == null)
             {
                 return null;
             }
             else
             {
-                return componentStack.peek();
+                if (componentStack.size() > 0)
+                {
+                    return componentStack.get(componentStack.size()-1);
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
     }
@@ -1064,8 +1070,8 @@ public abstract class UIComponent
         {
             // Pop the current UIComponent from the FacesContext attributes map so that the previous 
             // UIComponent, if any, becomes the current component.
-            LinkedList<UIComponent> componentStack
-                    = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            List<UIComponent> componentStack
+                    = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
 
             UIComponent oldCurrent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
 
@@ -1075,12 +1081,13 @@ public abstract class UIComponent
                 if (!this.equals(oldCurrent))
                 {
                     //Check on the componentStack if it can be found
-                    int componentIndex = componentStack.indexOf(this);
+                    int componentIndex = componentStack.lastIndexOf(this);
                     if (componentIndex >= 0)
                     {
-                        for (int i = 0; i < (componentIndex + 1); i++)
+                        //for (int i = 0; i < (componentIndex + 1); i++)
+                        for (int i = componentStack.size()-1; i >= componentIndex ; i--)
                         {
-                            newCurrent = componentStack.removeFirst();
+                            newCurrent = componentStack.remove(componentStack.size()-1);
                         }
                     }
                     else
@@ -1091,7 +1098,7 @@ public abstract class UIComponent
                 }
                 else
                 {
-                    newCurrent = componentStack.removeFirst();
+                    newCurrent = componentStack.remove(componentStack.size()-1);
                 }
             }
             else
@@ -1113,9 +1120,9 @@ public abstract class UIComponent
                     else
                     {
                         UIComponent previousCompositeComponent = null;
-                        for (Iterator<UIComponent> it = componentStack.iterator(); it.hasNext(); )
+                        for (int i = componentStack.size()-1; i >= 0; i--)
                         {
-                            UIComponent component = it.next();
+                            UIComponent component = componentStack.get(i);
                             if (component._isCompositeComponent())
                             {
                                 previousCompositeComponent = component;
@@ -1131,18 +1138,18 @@ public abstract class UIComponent
         {
             // Pop the current UIComponent from the FacesContext attributes map so that the previous 
             // UIComponent, if any, becomes the current component.
-            LinkedList<UIComponent> componentStack
-                    = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            List<UIComponent> componentStack
+                    = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
 
             UIComponent oldCurrent = null;
             if (componentStack != null && !componentStack.isEmpty())
             {
-                int componentIndex = componentStack.indexOf(this);
+                int componentIndex = componentStack.lastIndexOf(this);
                 if (componentIndex >= 0)
                 {
-                    for (int i = 0; i < (componentIndex + 1); i++)
+                    for (int i = componentStack.size()-1; i >= componentIndex ; i--)
                     {
-                        oldCurrent = componentStack.removeFirst();
+                        oldCurrent = componentStack.remove(componentStack.size()-1);
                     }
                 }
                 else
@@ -1155,9 +1162,9 @@ public abstract class UIComponent
             {
                 // Recalculate the current composite component
                 UIComponent previousCompositeComponent = null;
-                for (Iterator<UIComponent> it = componentStack.iterator(); it.hasNext(); )
+                for (int i = componentStack.size()-1; i >= 0; i--)
                 {
-                    UIComponent component = it.next();
+                    UIComponent component = componentStack.get(i);
                     if (component._isCompositeComponent())
                     {
                         previousCompositeComponent = component;
@@ -1190,15 +1197,15 @@ public abstract class UIComponent
 
             if (currentComponent != null)
             {
-                LinkedList<UIComponent> componentStack
-                        = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+                List<UIComponent> componentStack
+                        = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
                 if (componentStack == null)
                 {
-                    componentStack = new LinkedList<UIComponent>();
+                    componentStack = new ArrayList<UIComponent>();
                     contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
                 }
 
-                componentStack.addFirst(currentComponent);
+                componentStack.add(currentComponent);
             }
 
             // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
@@ -1213,14 +1220,14 @@ public abstract class UIComponent
         }
         else
         {
-            LinkedList<UIComponent> componentStack
-                    = (LinkedList<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            List<UIComponent> componentStack
+                    = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
             if (componentStack == null)
             {
-                componentStack = new LinkedList<UIComponent>();
+                componentStack = new ArrayList<UIComponent>();
                 contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
             }
-            componentStack.addFirst(component);
+            componentStack.add(component);
             if (component._isCompositeComponent())
             {
                 contextAttributes.put(UIComponent._CURRENT_COMPOSITE_COMPONENT_KEY, component);
