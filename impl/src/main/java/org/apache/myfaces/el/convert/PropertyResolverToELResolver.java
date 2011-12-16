@@ -32,6 +32,7 @@ import javax.faces.el.PropertyResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.myfaces.el.DefaultPropertyResolver;
 
 /**
  * Wrapper that converts a VariableResolver into an ELResolver. See JSF 1.2 spec section 5.6.1.6
@@ -46,6 +47,8 @@ public final class PropertyResolverToELResolver extends ELResolver
     private PropertyResolver propertyResolver;
 
     private ExpressionFactory expressionFactory;
+    
+    private boolean isDefaultLegacyPropertyResolver;
 
     /**
      * Creates a new instance of PropertyResolverToELResolver
@@ -53,12 +56,17 @@ public final class PropertyResolverToELResolver extends ELResolver
     public PropertyResolverToELResolver(final PropertyResolver propertyResolver)
     {
         this.propertyResolver = propertyResolver;
+        this.isDefaultLegacyPropertyResolver = (propertyResolver instanceof DefaultPropertyResolver);
     }
 
     @Override
     public void setValue(final ELContext context, final Object base, final Object property, final Object value)
         throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException
     {
+        if (isDefaultLegacyPropertyResolver)
+        {
+            return;
+        }
         if (base == null || property == null)
         {
             return;
@@ -101,6 +109,10 @@ public final class PropertyResolverToELResolver extends ELResolver
     public boolean isReadOnly(final ELContext context, final Object base, final Object property)
             throws NullPointerException, PropertyNotFoundException, ELException
     {
+        if (isDefaultLegacyPropertyResolver)
+        {
+            return false;
+        }
         if (base == null || property == null)
         {
             return true;
@@ -145,6 +157,10 @@ public final class PropertyResolverToELResolver extends ELResolver
     public Object getValue(final ELContext context, final Object base, final Object property)
             throws NullPointerException, PropertyNotFoundException, ELException
     {
+        if (isDefaultLegacyPropertyResolver)
+        {
+            return null;
+        }        
         if (base == null || property == null)
         {
             return null;
@@ -190,6 +206,10 @@ public final class PropertyResolverToELResolver extends ELResolver
     public Class<?> getType(final ELContext context, final Object base, final Object property)
             throws NullPointerException, PropertyNotFoundException, ELException
     {
+        if (isDefaultLegacyPropertyResolver)
+        {
+            return null;
+        }
         if (base == null || property == null)
         {
             return null;
@@ -240,7 +260,10 @@ public final class PropertyResolverToELResolver extends ELResolver
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
-
+        if (isDefaultLegacyPropertyResolver)
+        {
+            return null;
+        }
         if (base == null)
         {
             return null;
