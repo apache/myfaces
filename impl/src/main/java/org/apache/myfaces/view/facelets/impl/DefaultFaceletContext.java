@@ -313,7 +313,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         // the final id will be unique, but prefix and base ensure it will be unique
         // per facelet because prefix is calculated from faceletHierarchy and base is
         // related to the tagId, which depends on the location.
-        _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
+        //_uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
+        getFaceletCompositionContext().generateUniqueId(_uniqueIdBuilder);
         _uniqueIdBuilder.append("_");
         _uniqueIdBuilder.append(_prefix);
         _uniqueIdBuilder.append("_");

@@ -721,6 +721,11 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         return _sectionUniqueIdCounter.generateUniqueId();
     }
     
+    public void generateUniqueId(StringBuilder builderToAdd)
+    {
+        _sectionUniqueIdCounter.generateUniqueId(builderToAdd);
+    }
+
     public String generateUniqueComponentId()
     {
         return _sectionUniqueComponentIdCounter.generateUniqueId();

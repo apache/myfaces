@@ -420,6 +420,10 @@ abstract public class FaceletCompositionContext
         return null;
     }
     
+    public void generateUniqueId(StringBuilder builderToAdd)
+    {
+    }
+    
     /**
      * Generate a unique id for component instances. 
      * 

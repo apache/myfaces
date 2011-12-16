@@ -37,6 +37,8 @@ public class SectionUniqueIdCounter
     
     private final StringBuilder _builder;
     
+    private char[] _bufferConversion;
+    
     private final int _radix;
    
     public SectionUniqueIdCounter()
@@ -47,6 +49,7 @@ public class SectionUniqueIdCounter
         _counterStack.add(new Section(null,1,_radix));
         _prefix = null;
         _builder = new StringBuilder(30);
+        _bufferConversion = new char[15];
     }
     
     public SectionUniqueIdCounter(String prefix)
@@ -57,6 +60,7 @@ public class SectionUniqueIdCounter
         _counterStack.add(new Section(null,1,_radix));
         _prefix = prefix;
         _builder = new StringBuilder(30);
+        _bufferConversion = new char[15];
     }
     
     public SectionUniqueIdCounter(String prefix, int radix)
@@ -67,6 +71,7 @@ public class SectionUniqueIdCounter
         _counterStack.add(new Section(null,1,_radix));
         _prefix = prefix;
         _builder = new StringBuilder(30);
+        _bufferConversion = new char[15];
     }
 
     public String startUniqueIdSection()
@@ -80,7 +85,8 @@ public class SectionUniqueIdCounter
             {
                 _builder.append('_');
             }
-            _builder.append(Long.toString(_counterStack.get(i).getCounter(), _radix));
+            //_builder.append(Long.toString(_counterStack.get(i).getCounter(), _radix));
+            appendToBuilder(_counterStack.get(i).getCounter(), _radix, _builder, _bufferConversion);
             added = true;
         }
         
@@ -100,7 +106,8 @@ public class SectionUniqueIdCounter
             {
                 _builder.append('_');
             }
-            _builder.append(Long.toString(_counterStack.get(i).getCounter(), _radix));
+            //_builder.append(Long.toString(_counterStack.get(i).getCounter(), _radix));
+            appendToBuilder(_counterStack.get(i).getCounter(), _radix, _builder, _bufferConversion);
             added = true;
         }
         if (base != null && base.length() > 0)
@@ -116,6 +123,11 @@ public class SectionUniqueIdCounter
     public String generateUniqueId()
     {
         return _counterStack.get(_activeSection).generateUniqueId(_prefix);
+    }
+    
+    public void generateUniqueId(StringBuilder builderToAdd)
+    {
+        _counterStack.get(_activeSection).generateUniqueId(_prefix, builderToAdd);
     }
     
     public void endUniqueIdSection()
@@ -139,6 +151,7 @@ public class SectionUniqueIdCounter
         private String prefix;
         private long counter;
         private final StringBuilder _builder;
+        private char[] _bufferConversion;
         private final int _radix;
         
         public Section(String prefix, long counter, int radix)
@@ -147,6 +160,7 @@ public class SectionUniqueIdCounter
             this.prefix = prefix;
             this.counter = counter;
             _builder = new StringBuilder(30);
+            _bufferConversion = new char[15];
             _radix = radix;
         }
 
@@ -155,6 +169,27 @@ public class SectionUniqueIdCounter
             return counter;
         }
 
+        public void generateUniqueId(String base, StringBuilder builder)
+        {
+            long i = this.counter;
+            this.counter++;
+            //_builder.delete(0, _builder.length());
+            if (base != null)
+            {
+                builder.append(base);
+            }
+            if (this.prefix != null)
+            {
+                builder.append(this.prefix);
+                builder.append('_');
+            }
+            // By performance reasons, Long.toString is a very expensive
+            // operation in this location, because it triggers a new String()
+            //_builder.append(Long.toString(i, _radix));
+            appendToBuilder(i, _radix, builder, _bufferConversion);
+            //return _builder.toString();
+        }
+        
         public String generateUniqueId(String base)
         {
             long i = this.counter;
@@ -169,8 +204,68 @@ public class SectionUniqueIdCounter
                 _builder.append(this.prefix);
                 _builder.append('_');
             }
-            _builder.append(Long.toString(i, _radix));
+            // By performance reasons, Long.toString is a very expensive
+            // operation in this location, because it triggers a new String()
+            //_builder.append(Long.toString(i, _radix));
+            appendToBuilder(i, _radix, _builder, _bufferConversion);
             return _builder.toString();
         }
+    }
+    
+    //From Harmony Long.toString(l,radix)
+    private static void appendToBuilder(long l, int radix, StringBuilder builder, char[] bufferConversion)
+    {
+        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
+        {
+            radix = 10;
+        }
+        if (l == 0)
+        {
+            builder.append('0');
+            return;
+        }
+
+        int count = 2;
+        long j = l;
+        boolean negative = l < 0;
+        if (!negative)
+        {
+            count = 1;
+            j = -l;
+        }
+        while ((l /= radix) != 0) {
+            count++;
+        }
+
+        if (bufferConversion.length < count)
+        {
+            bufferConversion = new char[count];
+        }
+        int finalCount = count;
+
+        char[] buffer = bufferConversion;
+        do 
+        {
+            int ch = 0 - (int) (j % radix);
+            if (ch > 9)
+            {
+                ch = ch - 10 + 'a';
+            }
+            else
+            {
+                ch += '0';
+            }
+            buffer[--count] = (char) ch;
+        }
+        while ((j /= radix) != 0);
+        if (negative)
+        {
+            buffer[0] = '-';
+        }
+        for (int i = 0; i < finalCount; i++)
+        {
+            builder.append(buffer[i]);
+        }
+        //return new String(0, buffer.length, buffer);
     }
 }
