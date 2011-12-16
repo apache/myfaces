@@ -1597,10 +1597,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
             finally
             {
-                popComponentFromEL(getFacesContext());
+                source.popComponentFromEL(getFacesContext());
                 if (compositeParent != null)
                 {
-                    popComponentFromEL(getFacesContext());
+                    compositeParent.popComponentFromEL(getFacesContext());
                 }
                 setRowIndex(currentRowIndex);
             }

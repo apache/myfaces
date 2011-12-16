@@ -275,7 +275,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             // First broadcast events that have been queued for PhaseId.ANY_PHASE.
             _broadcastAll(context, events.getAnyPhase(), eventsAborted);
-            Collection<FacesEvent> eventsOnPhase = events.getOnPhase();
+            List<FacesEvent> eventsOnPhase = events.getOnPhase();
             if (!eventsAborted.isEmpty())
             {
                 eventsOnPhase.removeAll(eventsAborted);
@@ -991,13 +991,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * @return <code>true</code> if the broadcast was completed without abortion, <code>false</code> otherwise
      */
     private void _broadcastAll(FacesContext context,
-                               Collection<? extends FacesEvent> events,
+                               List<? extends FacesEvent> events,
                                Collection<FacesEvent> eventsAborted)
     {
         assert events != null;
 
-        for (FacesEvent event : events)
+        for (int i = 0; i < events.size(); i++)
         {
+            FacesEvent event = events.get(i);
             UIComponent source = event.getComponent();
             UIComponent compositeParent = UIComponent.getCompositeComponentParent(source);
             if (compositeParent != null)
@@ -1025,10 +1026,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             finally
             {
                 // Restore the current component
-                popComponentFromEL(context);
+                source.popComponentFromEL(context);
                 if (compositeParent != null)
                 {
-                    popComponentFromEL(context);
+                    compositeParent.popComponentFromEL(context);
                 }
             }
         }
