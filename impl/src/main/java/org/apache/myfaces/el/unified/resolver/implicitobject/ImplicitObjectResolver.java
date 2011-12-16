@@ -18,7 +18,11 @@
  */
 package org.apache.myfaces.el.unified.resolver.implicitobject;
 
-import javax.el.*;
+import javax.el.ELContext;
+import javax.el.ELException;
+import javax.el.ELResolver;
+import javax.el.PropertyNotFoundException;
+import javax.el.PropertyNotWritableException;
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +44,7 @@ public class ImplicitObjectResolver extends ELResolver
      */
     public static ELResolver makeResolverForJSP()
     {
-        Map<String, ImplicitObject> forJSPList = new HashMap<String, ImplicitObject>(2);
+        Map<String, ImplicitObject> forJSPList = new HashMap<String, ImplicitObject>(4);//2
         ImplicitObject io1 = new FacesContextImplicitObject();
         forJSPList.put(io1.getName(), io1);
         ImplicitObject io2 = new ViewImplicitObject();
@@ -53,7 +57,7 @@ public class ImplicitObjectResolver extends ELResolver
      */
     public static ELResolver makeResolverForFaces()
     {
-        Map<String, ImplicitObject> forFacesList = new HashMap<String, ImplicitObject>(14);
+        Map<String, ImplicitObject> forFacesList = new HashMap<String, ImplicitObject>(30);//14
         ImplicitObject io1 = new ApplicationImplicitObject();
         forFacesList.put(io1.getName(), io1);
         ImplicitObject io2 = new ApplicationScopeImplicitObject();
@@ -112,11 +116,17 @@ public class ImplicitObjectResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return;
+        }
 
         String strProperty = property.toString();
 
@@ -132,11 +142,17 @@ public class ImplicitObjectResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return false;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return false;
+        }
 
         String strProperty = property.toString();
 
@@ -155,11 +171,17 @@ public class ImplicitObjectResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         String strProperty = property.toString();
 
@@ -179,11 +201,17 @@ public class ImplicitObjectResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         String strProperty = property.toString();
 
@@ -199,7 +227,9 @@ public class ImplicitObjectResolver extends ELResolver
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         if (base != null)
+        {
             return null;
+        }
 
         ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(implicitObjects.size());
 
@@ -215,7 +245,9 @@ public class ImplicitObjectResolver extends ELResolver
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
         if (base != null)
+        {
             return null;
+        }
 
         return String.class;
     }
