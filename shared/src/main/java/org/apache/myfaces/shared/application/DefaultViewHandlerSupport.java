@@ -32,6 +32,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
+import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
@@ -55,7 +56,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     /**
      * Controls the size of the cache used to "remember" if a view exists or not.
      */
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", classType="java.lang.Integer",
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", 
+            classType="java.lang.Integer",
             desc="Controls the size of the cache used to 'remember' if a view exists or not.")
     private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
     private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
@@ -64,9 +66,12 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
      * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
      * sucesive calls to ExternalContext.getResource().
      */
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", tags="performance",
-            desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact of sucesive calls to ExternalContext.getResource().")
-    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
+            tags="performance",
+            desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact " +
+                 "of sucesive calls to ExternalContext.getResource().")
+    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = 
+        "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
 
     private Map<String, Boolean> _checkedViewIdMap = null;
@@ -188,11 +193,15 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                 if (!founded)
                 {   
                     //See JSF 2.0 section 7.5.2
-                    // - If the argument viewId has an extension, and this extension is mapping, the result is contextPath + viewId
+                    // - If the argument viewId has an extension, and this extension is mapping, 
+                    // the result is contextPath + viewId
                     //
-                    // -= Leonardo Uribe =- It is evident that when the page is generated, the derived viewId will end with the 
-                    // right contextSuffix, and a navigation entry on faces-config.xml should use such id, this is just a workaroud
-                    // for usability. There is a potential risk that change the mapping in a webapp make the same application fail,
+                    // -= Leonardo Uribe =- It is evident that when the page is generated, the derived 
+                    // viewId will end with the 
+                    // right contextSuffix, and a navigation entry on faces-config.xml should use such id,
+                    // this is just a workaroud
+                    // for usability. There is a potential risk that change the mapping in a webapp make 
+                    // the same application fail,
                     // so use viewIds ending with mapping extensions is not a good practice.
                     if (viewId.endsWith(mapping.getExtension()))
                     {
@@ -303,7 +312,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             defaultSuffix = ViewHandler.DEFAULT_SUFFIX;
         }
-        return defaultSuffix.split(" ");
+        return StringUtils.splitShortString(defaultSuffix, ' ');
     }
     
     protected String getFaceletsContextSuffix(FacesContext context)
@@ -320,13 +329,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     
     protected String[] getFaceletsViewMappings(FacesContext context)
     {
-        String faceletsViewMappings= context.getExternalContext().getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
+        String faceletsViewMappings= context.getExternalContext().getInitParameter(
+                ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
         if(faceletsViewMappings == null)    //consider alias facelets.VIEW_MAPPINGS
         {
             faceletsViewMappings= context.getExternalContext().getInitParameter("facelets.VIEW_MAPPINGS");
         }
         
-        return faceletsViewMappings == null ? null : faceletsViewMappings.split(";");
+        return faceletsViewMappings == null ? null : StringUtils.splitShortString(faceletsViewMappings, ';');
     }
 
     /**
@@ -435,14 +445,18 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                         builder.replace(candidateViewId.lastIndexOf('.'), candidateViewId.length(), mapping);
                         String tempViewId = builder.toString();
                         if(checkResourceExists(context,tempViewId))
+                        {
                             return tempViewId;
+                        }
                     }
                 }
             }
 
             // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
             if(checkResourceExists(context,candidateViewId))
+            {
                 return candidateViewId;
+            }
         
         }
         
@@ -474,12 +488,16 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             
             String candidateViewId = builder.toString();
             if(checkResourceExists(context,candidateViewId))
+            {
                 return candidateViewId;
+            }
         }
 
         // Otherwise, if a physical resource exists with the name requestViewId let that value be viewId.
         if(checkResourceExists(context,requestViewId))
+        {
             return requestViewId;
+        }
         
         //Otherwise return null.
         return null;
@@ -518,7 +536,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     {
         if (_checkedViewIdMap == null)
         {
-            _checkedViewIdMap = Collections.synchronizedMap(new _CheckedViewIDMap<String, Boolean>(getViewIDCacheMaxSize(context)));
+            _checkedViewIdMap = Collections.synchronizedMap(
+                    new _CheckedViewIDMap<String, Boolean>(getViewIDCacheMaxSize(context)));
         }
         return _checkedViewIdMap;
     }
