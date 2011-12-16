@@ -247,7 +247,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         public void setRowIndex(int i)
         {
             if (i < -1)
+            {
                 throw new IllegalArgumentException();
+            }
         }
 
         @Override
@@ -406,9 +408,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         UIComponent child = itChildren.next();
                         if (child instanceof UIColumn && clientId.equals(child.getClientId(context)))
                         {
-                            try {
+                            try
+                            {
                                 callback.invokeContextCallback(context, child);
-                            } catch (Exception e) {
+                            }
+                            catch (Exception e)
+                            {
                                 throw new FacesException(e);
                             }
                             returnValue = true;
@@ -714,7 +719,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * @param iterateFacets
      * @param restoreChildFacets 
      */
-    private void restoreDescendantComponentWithoutRestoreState(UIComponent parent, boolean iterateFacets, boolean restoreChildFacets)
+    private void restoreDescendantComponentWithoutRestoreState(UIComponent parent, boolean iterateFacets,
+                                                               boolean restoreChildFacets)
     {
         if (iterateFacets && parent.getFacetCount() > 0)
         {
@@ -1033,10 +1039,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             }
             finally
             {
-                popComponentFromEL(getFacesContext());
+                source.popComponentFromEL(getFacesContext());
                 if (compositeParent != null)
                 {
-                    popComponentFromEL(getFacesContext());
+                    compositeParent.popComponentFromEL(getFacesContext());
                 }
                 setRowIndex(currentRowIndex);
             }
@@ -1361,7 +1367,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <p>
      * This is complicated by the fact that this table may be nested within another table. In this case a different
      * datamodel should be fetched for each row. When nested within a parent table, the parent reference won't change
-     * but parent.getContainerClientId() will, as the suffix changes depending upon the current row index. A map object on this
+     * but parent.getContainerClientId() will, as the suffix changes
+     * depending upon the current row index. A map object on this
      * component is therefore used to cache the datamodel for each row of the table. In the normal case where this table
      * is not nested inside a component that changes its id (like a table does) then this map only ever has one entry.
      */
@@ -1590,9 +1597,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     if (skipIterationHint != null && skipIterationHint.booleanValue())
                     {
                         // If SKIP_ITERATION is enabled, do not take into account rows.
-                        for (int i = 0, childCount = getChildCount(); i < childCount; i++ ) {
+                        for (int i = 0, childCount = getChildCount(); i < childCount; i++ )
+                        {
                             UIComponent child = getChildren().get(i);
-                            if (child.visitTree(context, callback)) {
+                            if (child.visitTree(context, callback))
+                            {
                                 return true;
                             }
                         }
