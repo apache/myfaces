@@ -258,8 +258,10 @@ public class NavigationHandlerImpl
         if (navigationCase == null)
         {
             // Wildcard match?
-            for (String fromViewId : getSortedWildcardKeys())
+            List<String> sortedWildcardKeys = getSortedWildcardKeys();
+            for (int i = 0; i < sortedWildcardKeys.size(); i++)
             {
+                String fromViewId = sortedWildcardKeys.get(i);
                 if (fromViewId.length() > 2)
                 {
                     String prefix = fromViewId.substring(0, fromViewId.length() - 1);

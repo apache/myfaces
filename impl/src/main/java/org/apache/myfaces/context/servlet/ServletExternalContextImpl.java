@@ -723,7 +723,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
         String fragment = null;
         String queryString = null;
-        Map<String, List<String>> paramMap = new HashMap<String, List<String>>();
+        Map<String, List<String>> paramMap = null;
 
         //extract any URL fragment
         int index = baseUrl.indexOf(URL_FRAGMENT_SEPERATOR);
@@ -757,6 +757,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding()
                                                             + " not supported", e);
                 }
+                if (paramMap == null)
+                {
+                    paramMap = new HashMap<String, List<String>>();
+                }
                 paramMap.put(currentPair[0], value);
             }
         }
@@ -768,6 +772,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             {
                 if (pair.getKey() != null && pair.getKey().trim().length() != 0)
                 {
+                    if (paramMap == null)
+                    {
+                        paramMap = new HashMap<String, List<String>>();
+                    }
                     paramMap.put(pair.getKey(), pair.getValue());
                 }
             }
@@ -777,7 +785,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         StringBuilder newUrl = new StringBuilder(baseUrl);
 
         //now add the updated param list onto the url
-        if (paramMap.size()>0)
+        if (paramMap != null && paramMap.size()>0)
         {
             boolean isFirstPair = true;
             for (Map.Entry<String, List<String>> pair : paramMap.entrySet())
