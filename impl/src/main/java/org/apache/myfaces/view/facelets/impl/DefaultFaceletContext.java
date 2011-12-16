@@ -21,12 +21,10 @@ package org.apache.myfaces.view.facelets.impl;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.el.ELContext;
@@ -59,7 +57,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
  * Default FaceletContext implementation.
  * 
  * A single FaceletContext is used for all Facelets involved in an invocation of
- * {@link org.apache.myfaces.view.facelets.Facelet#apply(FacesContext, UIComponent) Facelet#apply(FacesContext, UIComponent)}. This
+ * {@link org.apache.myfaces.view.facelets.Facelet#apply(FacesContext, UIComponent)
+ * Facelet#apply(FacesContext, UIComponent)}. This
  * means that included Facelets are treated the same as the JSP include directive.
  * 
  * @author Jacob Hookom
@@ -314,71 +313,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         // the final id will be unique, but prefix and base ensure it will be unique
         // per facelet because prefix is calculated from faceletHierarchy and base is
         // related to the tagId, which depends on the location.
-        _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
+        //_uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
+        getFaceletCompositionContext().generateUniqueId(_uniqueIdBuilder);
         _uniqueIdBuilder.append("_");
         _uniqueIdBuilder.append(_prefix);
         _uniqueIdBuilder.append("_");
         _uniqueIdBuilder.append(base);
         return _uniqueIdBuilder.toString();
-        /*
-        if (_prefix == null)
-        {
-            StringBuilder builder = new StringBuilder(
-                    _faceletHierarchy.size() * 30);
-            for (int i = 0; i < _faceletHierarchy.size(); i++)
-            {
-                AbstractFacelet facelet = _faceletHierarchy.get(i);
-                builder.append(facelet.getAlias());
-            }
-
-            // Integer prefixInt = new Integer(builder.toString().hashCode());
-            // -= Leonardo Uribe =- if the previous formula is used, it is possible that
-            // negative values are introduced. The presence of '-' char causes problems
-            // with htmlunit 2.4 or lower, so in order to prevent it it is better to use
-            // only positive values instead.
-            // Take into account CompilationManager.nextTagId() uses Math.abs too.
-            Integer prefixInt = new Integer(Math.abs(builder.toString().hashCode()));
-
-            Integer cnt = _prefixes.get(prefixInt);
-            if (cnt == null)
-            {
-                _prefixes.put(prefixInt, Integer.valueOf(0));
-                _prefix = prefixInt.toString();
-            }
-            else
-            {
-                int i = cnt.intValue() + 1;
-                _prefixes.put(prefixInt, Integer.valueOf(i));
-                _prefix = prefixInt + "_" + i;
-            }
-        }
-
-        Integer cnt = _ids.get(base);
-        if (cnt == null)
-        {
-            _ids.put(base, Integer.valueOf(0));
-            _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
-            _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(_prefix);
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(base);
-            return _uniqueIdBuilder.toString();
-        }
-        else
-        {
-            int i = cnt.intValue() + 1;
-            _ids.put(base, Integer.valueOf(i));
-            _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
-            _uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(_prefix);
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(base);
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(i);
-            return _uniqueIdBuilder.toString();
-        }*/
     }
 
     /**
@@ -495,7 +436,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         //    found = client.apply(this, parent, name);
         //}
         //return found;
-        return _isolatedTemplateContext.get(_currentTemplateContext).includeDefinition(this, this._facelet, parent, name);
+        return _isolatedTemplateContext.get(_currentTemplateContext).includeDefinition(
+                this, this._facelet, parent, name);
     }
 
     /*
@@ -593,7 +535,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             _isolatedTemplateContext.add(new IsolatedTemplateContextImpl());
         }
         _currentTemplateContext++;
-        _isolatedTemplateContext.get(_currentTemplateContext).setCompositeComponentClient( new CompositeComponentTemplateManager(this._facelet, client));
+        _isolatedTemplateContext.get(_currentTemplateContext).setCompositeComponentClient(
+            new CompositeComponentTemplateManager(this._facelet, client));
     }
     
     @Override
@@ -617,7 +560,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     public void pushCompositeComponentClient(final TemplateClient client)
     {
         TemplateContext itc = new TemplateContextImpl();
-        itc.setCompositeComponentClient(new CompositeComponentTemplateManager(this._facelet, client, getPageContext()));
+        itc.setCompositeComponentClient(
+                new CompositeComponentTemplateManager(this._facelet, client, getPageContext()));
         _isolatedTemplateContext.add(itc);
         _currentTemplateContext++;
         _defaultVarMapper.setTemplateContext(itc);
@@ -744,6 +688,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             return this._owner == o || this._target == o;
         }
 
+        @Override
+        public int hashCode()
+        {
+            int result = _owner != null ? _owner.hashCode() : 0;
+            result = 31 * result + (_target != null ? _target.hashCode() : 0);
+            return result;
+        }
     }
     
     @Override
@@ -861,7 +812,8 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     
     public boolean isAllowCacheELExpressions()
     {
-        return _isCacheELExpressions && getTemplateContext().isAllowCacheELExpressions() && getPageContext().isAllowCacheELExpressions();
+        return _isCacheELExpressions && getTemplateContext().isAllowCacheELExpressions() 
+                && getPageContext().isAllowCacheELExpressions();
     }
     
     public void beforeConstructELExpression()

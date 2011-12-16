@@ -44,7 +44,8 @@ abstract public class FaceletCompositionContext
     
     static public FaceletCompositionContext getCurrentInstance()
     {
-        return (FaceletCompositionContext) FacesContext.getCurrentInstance().getAttributes().get(FACELET_COMPOSITION_CONTEXT_KEY);
+        return (FaceletCompositionContext)
+                FacesContext.getCurrentInstance().getAttributes().get(FACELET_COMPOSITION_CONTEXT_KEY);
     }
     
     static public FaceletCompositionContext getCurrentInstance(FaceletContext ctx)
@@ -58,7 +59,8 @@ abstract public class FaceletCompositionContext
             // Here we have two choices: retrieve it throught ThreadLocal var
             // or use the attribute value on FacesContext, but it seems better
             // use the FacesContext attribute map.
-            return (FaceletCompositionContext) ctx.getFacesContext().getAttributes().get(FACELET_COMPOSITION_CONTEXT_KEY);
+            return (FaceletCompositionContext)
+                    ctx.getFacesContext().getAttributes().get(FACELET_COMPOSITION_CONTEXT_KEY);
         }
     }
     
@@ -204,23 +206,25 @@ abstract public class FaceletCompositionContext
      * 
      * @param validatorId
      * @param attachedObjectHandler
-     * @since 2.0.8
+     * @since 2.0.10
      */
-    public abstract void pushEnclosingValidatorIdToStack(String validatorId, EditableValueHolderAttachedObjectHandler attachedObjectHandler);
+    public abstract void pushEnclosingValidatorIdToStack(String validatorId, 
+            EditableValueHolderAttachedObjectHandler attachedObjectHandler);
 
     /**
      * Gets all validationIds with its associated EditableValueHolderAttachedObjectHandler from the stack.
      * 
      * @return
-     * @since 2.0.8
+     * @since 2.0.10
      */
-    public abstract Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> getEnclosingValidatorIdsAndHandlers();
+    public abstract Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> 
+        getEnclosingValidatorIdsAndHandlers();
     
     /**
      * 
      * @param id
      * @return
-     * @since 2.0.8
+     * @since 2.0.10
      */
     public abstract boolean containsEnclosingValidatorId(String id);
     
@@ -304,7 +308,7 @@ abstract public class FaceletCompositionContext
      * Marks all direct children and Facets with an attribute for deletion.
      *
      * @since 2.0.2
-     * @see #finalizeForDeletion(FaceletCompositionContext, UIComponent)
+     * @see #finalizeForDeletion(UIComponent)
      * @param component
      *            UIComponent to mark
      */
@@ -323,11 +327,12 @@ abstract public class FaceletCompositionContext
      * Add a method expression as targeted for the provided composite component
      * 
      * @since 2.0.3
-     * @param compositeComponentParent
+     * @param targetedComponent
      * @param attributeName
      * @param backingValue A value that could be useful to revert its effects.
      */
-    public abstract void addMethodExpressionTargeted(UIComponent targetedComponent, String attributeName, Object backingValue);
+    public abstract void addMethodExpressionTargeted(UIComponent targetedComponent, String attributeName,
+                                                     Object backingValue);
 
     /**
      * Check if the MethodExpression attribute has been applied using vdl.retargetMethodExpression 
@@ -337,7 +342,8 @@ abstract public class FaceletCompositionContext
      * @param attributeName
      * @return
      */
-    public abstract boolean isMethodExpressionAttributeApplied(UIComponent compositeComponentParent, String attributeName);
+    public abstract boolean isMethodExpressionAttributeApplied(UIComponent compositeComponentParent,
+                                                               String attributeName);
     
     /**
      * Mark the MethodExpression attribute as applied using vdl.retargetMethodExpression
@@ -361,7 +367,7 @@ abstract public class FaceletCompositionContext
      * Remove a method expression as targeted for the provided composite component
      * 
      * @since 2.0.3
-     * @param compositeComponentParent
+     * @param targetedComponent
      * @param attributeName
      * @return A value that could be useful to revert its effects.
      */
@@ -412,6 +418,10 @@ abstract public class FaceletCompositionContext
     public String generateUniqueId()
     {
         return null;
+    }
+    
+    public void generateUniqueId(StringBuilder builderToAdd)
+    {
     }
     
     /**
