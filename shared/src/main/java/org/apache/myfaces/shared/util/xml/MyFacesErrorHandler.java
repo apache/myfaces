@@ -41,7 +41,10 @@ public class MyFacesErrorHandler
 
     public void warning(SAXParseException exception)
     {
-        if (_log.isLoggable(Level.WARNING)) _log.log(Level.WARNING, getMessage(exception), exception);
+        if (_log.isLoggable(Level.WARNING))
+        {
+            _log.log(Level.WARNING, getMessage(exception), exception);
+        }
     }
 
     public void error(SAXParseException exception)
@@ -56,7 +59,7 @@ public class MyFacesErrorHandler
 
     private String getMessage(SAXParseException exception)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("SAXParseException at");
         buf.append(" URI=");
         buf.append(exception.getSystemId());

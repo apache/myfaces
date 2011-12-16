@@ -39,7 +39,7 @@ public class XmlUtils
 
     public static String getElementText(Element elem)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         NodeList nodeList = elem.getChildNodes();
         for (int i = 0, len = nodeList.getLength(); i < len; i++)
         {
