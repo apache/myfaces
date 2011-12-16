@@ -141,7 +141,8 @@ final class UIInstructionHandler extends AbstractUIHandler
                     String uid = uniqueIdVendor.createUniqueId(ctx.getFacesContext(), componentId);
                     c.setId(uid);
                 }                
-                c.getAttributes().put(ComponentSupport.MARK_CREATED, id);
+                //c.getAttributes().put(ComponentSupport.MARK_CREATED, id);
+                ((UIInstructions)c).setMarkCreated(id);
             }
             
             boolean oldProcessingEvents = ctx.getFacesContext().isProcessingEvents();
