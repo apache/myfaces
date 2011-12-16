@@ -19,20 +19,21 @@
 package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import java.util.Set;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
+import javax.faces.component.UINamingContainer;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
@@ -43,10 +44,252 @@ import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
-class UILeaf extends UIComponentBase
-{
+import javax.faces.view.Location;
+import org.apache.commons.collections.iterators.EmptyIterator;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
-    private final static Map<String, UIComponent> facets = new HashMap<String, UIComponent>()
+class UILeaf extends UIComponent implements Map<String, Object>
+{
+    //-------------- START TAKEN FROM UIComponentBase ----------------
+    private static final String _STRING_BUILDER_KEY
+            = "javax.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
+    
+    private String _clientId = null;
+    
+    private String _id = null;
+
+    public String getClientId(FacesContext context)
+    {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
+        if (_clientId != null)
+        {
+            return _clientId;
+        }
+
+        //boolean idWasNull = false;
+        String id = getId();
+        if (id == null)
+        {
+            // Although this is an error prone side effect, we automatically create a new id
+            // just to be compatible to the RI
+            
+            // The documentation of UniqueIdVendor says that this interface should be implemented by
+            // components that also implements NamingContainer. The only component that does not implement
+            // NamingContainer but UniqueIdVendor is UIViewRoot. Anyway we just can't be 100% sure about this
+            // fact, so it is better to scan for the closest UniqueIdVendor. If it is not found use 
+            // viewRoot.createUniqueId, otherwise use UniqueIdVendor.createUniqueId(context,seed).
+            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.findParentUniqueIdVendor(this);
+            if (parentUniqueIdVendor == null)
+            {
+                UIViewRoot viewRoot = context.getViewRoot();
+                if (viewRoot != null)
+                {
+                    id = viewRoot.createUniqueId();
+                }
+                else
+                {
+                    // The RI throws a NPE
+                    String location = getComponentLocation(this);
+                    throw new FacesException("Cannot create clientId. No id is assigned for component"
+                            + " to create an id and UIViewRoot is not defined: "
+                            + getPathToComponent(this)
+                            + (location != null ? " created from: " + location : ""));
+                }
+            }
+            else
+            {
+                id = parentUniqueIdVendor.createUniqueId(context, null);
+            }
+            setId(id);
+            // We remember that the id was null and log a warning down below
+            // idWasNull = true;
+        }
+
+        UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
+        if (namingContainer != null)
+        {
+            String containerClientId = namingContainer.getContainerClientId(context);
+            if (containerClientId != null)
+            {
+                StringBuilder bld = _getSharedStringBuilder(context);
+                _clientId = bld.append(containerClientId).append(
+                                      UINamingContainer.getSeparatorChar(context)).append(id).toString();
+            }
+            else
+            {
+                _clientId = id;
+            }
+        }
+        else
+        {
+            _clientId = id;
+        }
+
+        Renderer renderer = getRenderer(context);
+        if (renderer != null)
+        {
+            _clientId = renderer.convertClientId(context, _clientId);
+        }
+
+        // -=Leonardo Uribe=- In jsf 1.1 and 1.2 this warning has sense, but in jsf 2.0 it is common to have
+        // components without any explicit id (UIViewParameter components and UIOuput resource components) instances.
+        // So, this warning is becoming obsolete in this new context and should be removed.
+        //if (idWasNull && log.isLoggable(Level.WARNING))
+        //{
+        //    log.warning("WARNING: Component " + _clientId
+        //            + " just got an automatic id, because there was no id assigned yet. "
+        //            + "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an "
+        //            + "explicit static id or assign it the id you get from "
+        //            + "the createUniqueId from the current UIViewRoot "
+        //            + "component right after creation! Path to Component: " + getPathToComponent(this));
+        //}
+
+        return _clientId;
+    }
+    
+    public String getId()
+    {
+        return _id;
+    }
+    
+    @Override
+    public void setId(String id)
+    {
+        isIdValid(id);
+        _id = id;
+        _clientId = null;
+    }
+    
+    private void isIdValid(String string)
+    {
+
+        // is there any component identifier ?
+        if (string == null)
+        {
+            return;
+        }
+
+        // Component identifiers must obey the following syntax restrictions:
+        // 1. Must not be a zero-length String.
+        if (string.length() == 0)
+        {
+            throw new IllegalArgumentException("component identifier must not be a zero-length String");
+        }
+
+        // If new id is the same as old it must be valid
+        if (string.equals(_id))
+        {
+            return;
+        }
+
+        // 2. First character must be a letter or an underscore ('_').
+        if (!Character.isLetter(string.charAt(0)) && string.charAt(0) != '_')
+        {
+            throw new IllegalArgumentException("component identifier's first character must be a letter "
+                                               + "or an underscore ('_')! But it is \""
+                                               + string.charAt(0) + "\"");
+        }
+        for (int i = 1; i < string.length(); i++)
+        {
+            char c = string.charAt(i);
+            // 3. Subsequent characters must be a letter, a digit, an underscore ('_'), or a dash ('-').
+            if (!Character.isLetterOrDigit(c) && c != '-' && c != '_')
+            {
+                throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, "
+                                                   + "a digit, an underscore ('_'), or a dash ('-')! "
+                                                   + "But component identifier contains \""
+                                                   + c + "\"");
+            }
+        }
+    }
+    
+    private String getComponentLocation(UIComponent component)
+    {
+        Location location = (Location) component.getAttributes()
+                .get(UIComponent.VIEW_LOCATION_KEY);
+        if (location != null)
+        {
+            return location.toString();
+        }
+        return null;
+    }
+
+    private String getPathToComponent(UIComponent component)
+    {
+        StringBuffer buf = new StringBuffer();
+
+        if (component == null)
+        {
+            buf.append("{Component-Path : ");
+            buf.append("[null]}");
+            return buf.toString();
+        }
+
+        getPathToComponent(component, buf);
+
+        buf.insert(0, "{Component-Path : ");
+        buf.append("}");
+
+        return buf.toString();
+    }
+
+    private void getPathToComponent(UIComponent component, StringBuffer buf)
+    {
+        if (component == null)
+        {
+            return;
+        }
+
+        StringBuffer intBuf = new StringBuffer();
+
+        intBuf.append("[Class: ");
+        intBuf.append(component.getClass().getName());
+        if (component instanceof UIViewRoot)
+        {
+            intBuf.append(",ViewId: ");
+            intBuf.append(((UIViewRoot) component).getViewId());
+        }
+        else
+        {
+            intBuf.append(",Id: ");
+            intBuf.append(component.getId());
+        }
+        intBuf.append("]");
+
+        buf.insert(0, intBuf.toString());
+
+        getPathToComponent(component.getParent(), buf);
+    }
+    
+    static StringBuilder _getSharedStringBuilder(FacesContext facesContext)
+    {
+        Map<Object, Object> attributes = facesContext.getAttributes();
+
+        StringBuilder sb = (StringBuilder) attributes.get(_STRING_BUILDER_KEY);
+
+        if (sb == null)
+        {
+            sb = new StringBuilder();
+            attributes.put(_STRING_BUILDER_KEY, sb);
+        }
+        else
+        {
+
+            // clear out the stringBuilder by setting the length to 0
+            sb.setLength(0);
+        }
+
+        return sb;
+    }
+
+    //-------------- END TAKEN FROM UICOMPONENTBASE ------------------
+    
+
+    private static Map<String, UIComponent> facets = new HashMap<String, UIComponent>()
     {
 
         @Override
@@ -64,7 +307,7 @@ class UILeaf extends UIComponentBase
 
     private UIComponent parent;
     
-    private _ComponentAttributesMap attributesMap;
+    //private _ComponentAttributesMap attributesMap;
 
     @Override
     public Map<String, Object> getAttributes()
@@ -76,11 +319,7 @@ class UILeaf extends UIComponentBase
         // 2. Since the only key that will be saved here is MARK_ID, we can create
         // a small map of size 2. In practice, this will prevent create a lot of
         // maps, like the ones used on state helper
-        if (attributesMap == null)
-        {
-            attributesMap = new _ComponentAttributesMap();
-        }
-        return attributesMap;
+        return this;
     }
 
     @Override
@@ -220,12 +459,14 @@ class UILeaf extends UIComponentBase
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Iterator<UIComponent> getFacetsAndChildren()
     {
-        List<UIComponent> childrenAndFacets = Collections.emptyList();
-        
-        return childrenAndFacets.iterator();
+        // Performance: Collections.emptyList() is Singleton,
+        // but .iterator() creates new instance of AbstractList$Itr every invocation, because
+        // emptyList() extends AbstractList.  Therefore we cannot use Collections.emptyList() here. 
+        return EmptyIterator.INSTANCE;
     }
 
     @Override
@@ -330,25 +571,21 @@ class UILeaf extends UIComponentBase
         return null;
     }
 
-    @Override
     public Object saveState(FacesContext faces)
     {
         return null;
     }
 
-    @Override
     public void restoreState(FacesContext faces, Object state)
     {
         // do nothing
     }
 
-    @Override
     public boolean isTransient()
     {
         return true;
     }
 
-    @Override
     public void setTransient(boolean tranzient)
     {
         // do nothing
@@ -370,128 +607,150 @@ class UILeaf extends UIComponentBase
         return false;
     }
 
-    private static class _ComponentAttributesMap implements Map<String, Object>, Serializable
+    //-------------- START ATTRIBUTE MAP IMPLEMENTATION ----------------
+
+    private Map<String, Object> _attributes = null;
+    private String _markCreated = null;
+
+    public void setMarkCreated(String markCreated)
     {
-        private static final long serialVersionUID = -4459484500489059515L;
-        
-        private Map<String, Object> _attributes = null;
-        
-        _ComponentAttributesMap()
+        _markCreated = markCreated;
+    }
+
+    public int size()
+    {
+        return _attributes == null ? 0 : _attributes.size();
+    }
+         
+    public void clear()
+    {
+        if (_attributes != null)
         {
+         _attributes.clear();
+        _markCreated = null;
         }
-        
-        public int size()
-        {
-            return _attributes == null ? 0 : _attributes.size();
-        }
-        
-        public void clear()
-        {
-            if (_attributes != null)
-            {
-                _attributes.clear();
-            }
-        }
-        
-        public boolean isEmpty()
+    }
+         
+    public boolean isEmpty()
+    {
+        if (_markCreated == null)
         {
             return _attributes == null ? false : _attributes.isEmpty();
         }
-        
-        public boolean containsKey(Object key)
+        else
         {
-            checkKey(key);
-        
-            return (_attributes == null ? false :_attributes.containsKey(key));
-        }
-        
-        public boolean containsValue(Object value)
-        {
-            return (_attributes == null) ? false : _attributes.containsValue(value);
-        }
-        
-        public Collection<Object> values()
-        {
-            return getUnderlyingMap().values();
-        }
-        
-        public void putAll(Map<? extends String, ? extends Object> t)
-        {
-            for (Map.Entry<? extends String, ? extends Object> entry : t.entrySet())
-            {
-                put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        public Set<Entry<String, Object>> entrySet()
-        {
-            return getUnderlyingMap().entrySet();
-        }
-
-        public Set<String> keySet()
-        {
-            return getUnderlyingMap().keySet();
-        }
-        
-        public Object get(Object key)
-        {
-            checkKey(key);
-
-            if ("rendered".equals(key))
-            {
-                return true;
-            }
-            if ("transient".equals(key))
-            {
-                return true;
-            }
-
-            return (_attributes == null) ? null : _attributes.get(key);
-        }
-        
-        public Object remove(Object key)
-        {
-            checkKey(key);
-
-            return (_attributes == null) ? null : _attributes.remove(key);
-        }
-        
-        public Object put(String key, Object value)
-        {
-            checkKey(key);
-
-            return getUnderlyingMap().put(key, value);
-        }
-        
-        private void checkKey(Object key)
-        {
-            if (key == null)
-            {
-                throw new NullPointerException("key");
-            }
-            if (!(key instanceof String))
-            {
-                throw new ClassCastException("key is not a String");
-            }
-        }
-        
-        Map<String, Object> getUnderlyingMap()
-        {
-            if (_attributes == null)
-            {
-                _attributes = new HashMap<String, Object>(2,1);
-            }
-            return _attributes;
-        }
-        
-        public boolean equals(Object obj)
-        {
-            return getUnderlyingMap().equals(obj);
-        }
-        
-        public int hashCode()
-        {
-            return getUnderlyingMap().hashCode();
+            return false;
         }
     }
+         
+    public boolean containsKey(Object key)
+    {
+        checkKey(key);
+
+        if (ComponentSupport.MARK_CREATED.equals(key))
+        {
+            return _markCreated != null;
+        }
+        else
+        {
+            return (_attributes == null ? false :_attributes.containsKey(key));
+        }
+    }
+         
+    public boolean containsValue(Object value)
+    {
+        if (_markCreated != null && _markCreated.equals(value))
+        {
+            return true;
+        }
+        return (_attributes == null) ? false : _attributes.containsValue(value);
+    }
+
+    public Collection<Object> values()
+    {
+        return getUnderlyingMap().values();
+    }
+
+    public void putAll(Map<? extends String, ? extends Object> t)
+    {
+        for (Map.Entry<? extends String, ? extends Object> entry : t.entrySet())
+        {
+            put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public Set<Entry<String, Object>> entrySet()
+    {
+        return getUnderlyingMap().entrySet();
+    }
+
+    public Set<String> keySet()
+    {
+        return getUnderlyingMap().keySet();
+    }
+
+    public Object get(Object key)
+    {
+        checkKey(key);
+
+        if ("rendered".equals(key))
+        {
+            return true;
+        }
+        if ("transient".equals(key))
+        {
+            return true;
+        }
+        if (ComponentSupport.MARK_CREATED.equals(key))
+        {
+            return _markCreated;
+        }
+        return (_attributes == null) ? null : _attributes.get(key);
+    }
+
+    public Object remove(Object key)
+    {
+        checkKey(key);
+
+        if (ComponentSupport.MARK_CREATED.equals(key))
+        {
+            _markCreated = null;
+        }
+         return (_attributes == null) ? null : _attributes.remove(key);
+    }
+         
+    public Object put(String key, Object value)
+    {
+        checkKey(key);
+
+        if (ComponentSupport.MARK_CREATED.equals(key))
+        {
+            String old = _markCreated;
+            _markCreated = (String) value;
+            return old;
+        }
+        return getUnderlyingMap().put(key, value);
+    }
+
+    private void checkKey(Object key)
+    {
+        if (key == null)
+        {
+            throw new NullPointerException("key");
+        }
+        if (!(key instanceof String))
+        {
+            throw new ClassCastException("key is not a String");
+        }
+    }
+
+    Map<String, Object> getUnderlyingMap()
+    {
+        if (_attributes == null)
+        {
+            _attributes = new HashMap<String, Object>(2,1);
+        }
+        return _attributes;
+    }
+
 }
