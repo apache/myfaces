@@ -30,6 +30,7 @@ import java.beans.FeatureDescriptor;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import org.apache.myfaces.el.VariableResolverImpl;
 
 /**
  * Wrapper that converts a VariableResolver into an ELResolver. See JSF 1.2 spec section 5.6.1.5
@@ -71,6 +72,7 @@ public final class VariableResolverToELResolver extends ELResolver
     }
     
     private VariableResolver variableResolver;
+    private boolean isDefaultLegacyVariableResolver;
 
     /**
      * Creates a new instance of VariableResolverToELResolver
@@ -78,6 +80,7 @@ public final class VariableResolverToELResolver extends ELResolver
     public VariableResolverToELResolver(final VariableResolver variableResolver)
     {
         this.variableResolver = variableResolver;
+        this.isDefaultLegacyVariableResolver = (this.variableResolver instanceof VariableResolverImpl);
     }
     
     /**
@@ -92,16 +95,28 @@ public final class VariableResolverToELResolver extends ELResolver
     public Object getValue(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
-
-        if (base != null)
+        if (isDefaultLegacyVariableResolver)
+        {
+            // Skip this one because it causes previous EL Resolvers already processed
+            // before this one to be called again. This behavior is only valid if it 
+            // is installed a custom VariableResolver.
             return null;
+        }
+        if (base != null)
+        {
+            return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
 
         context.setPropertyResolved(true);
 
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         final String strProperty = (String) property;
 
@@ -111,7 +126,8 @@ public final class VariableResolverToELResolver extends ELResolver
         try
         {
             // only call the resolver if we haven't done it in current stack
-            if(!propertyGuard.contains(strProperty)) {
+            if(!propertyGuard.contains(strProperty))
+            {
                 propertyGuard.add(strProperty);
                 result = variableResolver.resolveVariable(facesContext(context), strProperty);
             }
@@ -158,8 +174,14 @@ public final class VariableResolverToELResolver extends ELResolver
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
-        if (base != null)
+        if (isDefaultLegacyVariableResolver)
+        {
             return null;
+        }
+        if (base != null)
+        {
+            return null;
+        }
 
         return String.class;
     }
@@ -168,18 +190,28 @@ public final class VariableResolverToELResolver extends ELResolver
     public void setValue(ELContext context, Object base, Object property, Object value) throws NullPointerException,
             PropertyNotFoundException, PropertyNotWritableException, ELException
     {
-
+        if (isDefaultLegacyVariableResolver)
+        {
+            return;
+        }
         if ((base == null) && (property == null))
+        {
             throw new PropertyNotFoundException();
+        }
     }
 
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
-
+        if (isDefaultLegacyVariableResolver)
+        {
+            return false;
+        }
         if ((base == null) && (property == null))
+        {
             throw new PropertyNotFoundException();
+        }
 
         return false;
     }
@@ -188,9 +220,14 @@ public final class VariableResolverToELResolver extends ELResolver
     public Class<?> getType(ELContext context, Object base, Object property) throws NullPointerException,
             PropertyNotFoundException, ELException
     {
-
+        if (isDefaultLegacyVariableResolver)
+        {
+            return null;
+        }
         if ((base == null) && (property == null))
+        {
             throw new PropertyNotFoundException();
+        }
 
         return null;
     }
@@ -198,6 +235,10 @@ public final class VariableResolverToELResolver extends ELResolver
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
+        if (isDefaultLegacyVariableResolver)
+        {
+            return null;
+        }
         return null;
     }
 
