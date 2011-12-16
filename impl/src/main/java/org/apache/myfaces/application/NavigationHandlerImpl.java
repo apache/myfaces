@@ -75,7 +75,10 @@ public class NavigationHandlerImpl
 
     public NavigationHandlerImpl()
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("New NavigationHandler instance created");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("New NavigationHandler instance created");
+        }
     }
 
     @Override
@@ -169,7 +172,8 @@ public class NavigationHandlerImpl
                     if (facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
                     {
                         facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
-                        facesContext.getViewRoot().visitTree(VisitContext.createVisitContext(facesContext), new PreDisposeViewCallback());
+                        facesContext.getViewRoot().visitTree(VisitContext.createVisitContext(facesContext),
+                                                             new PreDisposeViewCallback());
                         facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
                     }
                 }
@@ -223,7 +227,8 @@ public class NavigationHandlerImpl
 
         public VisitResult visit(VisitContext context, UIComponent target)
         {
-            context.getFacesContext().getApplication().publishEvent(context.getFacesContext(), PreDisposeViewEvent.class, target);
+            context.getFacesContext().getApplication().publishEvent(context.getFacesContext(),
+                                                                    PreDisposeViewEvent.class, target);
             
             return VisitResult.ACCEPT;
         }
@@ -253,8 +258,10 @@ public class NavigationHandlerImpl
         if (navigationCase == null)
         {
             // Wildcard match?
-            for (String fromViewId : getSortedWildcardKeys())
+            List<String> sortedWildcardKeys = getSortedWildcardKeys();
+            for (int i = 0; i < sortedWildcardKeys.size(); i++)
             {
+                String fromViewId = sortedWildcardKeys.get(i);
                 if (fromViewId.length() > 2)
                 {
                     String prefix = fromViewId.substring(0, fromViewId.length() - 1);
@@ -264,7 +271,10 @@ public class NavigationHandlerImpl
                         if (casesSet != null)
                         {
                             navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
-                            if (navigationCase != null) break;
+                            if (navigationCase != null)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -274,7 +284,10 @@ public class NavigationHandlerImpl
                     if (casesSet != null)
                     {
                         navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
-                        if (navigationCase != null) break;
+                        if (navigationCase != null)
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -287,7 +300,8 @@ public class NavigationHandlerImpl
             navigationCase = getOutcomeNavigationCase (facesContext, fromAction, outcome);
         }
         
-        if (outcome != null && navigationCase == null && !facesContext.isProjectStage(ProjectStage.Production)) {
+        if (outcome != null && navigationCase == null && !facesContext.isProjectStage(ProjectStage.Production))
+        {
             final FacesMessage facesMessage = new FacesMessage("No navigation case match for viewId " + viewId + 
                     ",  action " + fromAction + " and outcome " + outcome);
             facesMessage.setSeverity(FacesMessage.SEVERITY_WARN);
@@ -376,7 +390,8 @@ public class NavigationHandlerImpl
         
         catch (UnsupportedOperationException e)
         {
-            // This is the case when a pre-JSF 2.0 ViewHandler is used.  In this case, the default algorithm must be used.
+            // This is the case when a pre-JSF 2.0 ViewHandler is used.
+            // In this case, the default algorithm must be used.
             // FIXME: I think we're always calling the "default" ViewHandler.deriveViewId() algorithm and we don't
             // distinguish between pre-JSF 2.0 and JSF 2.0 ViewHandlers.  This probably needs to be addressed.
         }
@@ -449,7 +464,9 @@ public class NavigationHandlerImpl
         return null;
     }
 
-    private NavigationCase calcMatchingNavigationCase(FacesContext context, Set<? extends NavigationCase> casesList, String actionRef, 
+    private NavigationCase calcMatchingNavigationCase(FacesContext context,
+                                                      Set<? extends NavigationCase> casesList,
+                                                      String actionRef,
                                                       String outcome)
     {
         NavigationCase noConditionCase = null;
@@ -473,11 +490,13 @@ public class NavigationHandlerImpl
             
             if(outcome == null && (cazeOutcome != null || cazeIf == null) && actionRef == null)
             {
-                continue;   //To match an outcome value of null, the <from-outcome> must be absent and the <if> element present.
+                //To match an outcome value of null, the <from-outcome> must be absent and the <if> element present.
+                continue;
             }
             
             //If there are no conditions on navigation case save it and return as last resort
-            if (cazeOutcome == null && cazeActionRef == null && cazeIf == null && noConditionCase == null && outcome != null)
+            if (cazeOutcome == null && cazeActionRef == null &&
+                cazeIf == null && noConditionCase == null && outcome != null)
             {
                 noConditionCase = caze;
             }
@@ -641,65 +660,67 @@ public class NavigationHandlerImpl
 
         if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
         {
-            synchronized (this)
-            {
-                if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
-                {
-                    Collection<? extends NavigationRule> rules = runtimeConfig.getNavigationRules();
-                    int rulesSize = rules.size();
-
-                    Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
-                            HashMapUtils.calcCapacity(rulesSize));
-
-                    List<String> wildcardKeys = new ArrayList<String>();
-
-                    for (NavigationRule rule : rules)
-                    {
-                        String fromViewId = rule.getFromViewId();
-
-                        //specification 7.4.2 footnote 4 - missing fromViewId is allowed:
-                        if (fromViewId == null)
-                        {
-                            fromViewId = ASTERISK;
-                        }
-                        else
-                        {
-                            fromViewId = fromViewId.trim();
-                        }
-
-                        Set<NavigationCase> set = cases.get(fromViewId);
-                        if (set == null)
-                        {
-                            set = new HashSet<NavigationCase>(convertNavigationCasesToAPI(rule));
-                            cases.put(fromViewId, set);
-                            if (fromViewId.endsWith(ASTERISK))
-                            {
-                                wildcardKeys.add(fromViewId);
-                            }
-                        }
-                        else
-                        {
-                            set.addAll(convertNavigationCasesToAPI(rule));
-                        }
-                    }
-
-                    Collections.sort(wildcardKeys, new KeyComparator());
-
-                    synchronized (cases)
-                    {
-                        // We do not really need this sychronization at all, but this
-                        // gives us the peace of mind that some good optimizing compiler
-                        // will not rearrange the execution of the assignment to an
-                        // earlier time, before all init code completes
-                        _navigationCases = cases;
-                        _wildcardKeys = wildcardKeys;
-
-                        runtimeConfig.setNavigationRulesChanged(false);
-                    }
-                }
-            }
+            calculateNavigationCases(facesContext, runtimeConfig);
         }
         return _navigationCases;
+    }
+    
+    private synchronized void calculateNavigationCases(FacesContext facesContext, RuntimeConfig runtimeConfig)
+    {
+        if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
+        {
+            Collection<? extends NavigationRule> rules = runtimeConfig.getNavigationRules();
+            int rulesSize = rules.size();
+
+            Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
+                    HashMapUtils.calcCapacity(rulesSize));
+
+            List<String> wildcardKeys = new ArrayList<String>();
+
+            for (NavigationRule rule : rules)
+            {
+                String fromViewId = rule.getFromViewId();
+
+                //specification 7.4.2 footnote 4 - missing fromViewId is allowed:
+                if (fromViewId == null)
+                {
+                    fromViewId = ASTERISK;
+                }
+                else
+                {
+                    fromViewId = fromViewId.trim();
+                }
+
+                Set<NavigationCase> set = cases.get(fromViewId);
+                if (set == null)
+                {
+                    set = new HashSet<NavigationCase>(convertNavigationCasesToAPI(rule));
+                    cases.put(fromViewId, set);
+                    if (fromViewId.endsWith(ASTERISK))
+                    {
+                        wildcardKeys.add(fromViewId);
+                    }
+                }
+                else
+                {
+                    set.addAll(convertNavigationCasesToAPI(rule));
+                }
+            }
+
+            Collections.sort(wildcardKeys, new KeyComparator());
+
+            synchronized (cases)
+            {
+                // We do not really need this sychronization at all, but this
+                // gives us the peace of mind that some good optimizing compiler
+                // will not rearrange the execution of the assignment to an
+                // earlier time, before all init code completes
+                _navigationCases = cases;
+                _wildcardKeys = wildcardKeys;
+
+                runtimeConfig.setNavigationRulesChanged(false);
+            }
+        }
     }
 
     private static final class KeyComparator implements Comparator<String>
@@ -725,11 +746,15 @@ public class NavigationHandlerImpl
                 {
                     includeViewParams = new Boolean(includeViewParamsAttribute);
                 }
-                apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),configCase.getRedirect().getViewParams(),true,includeViewParams));
+                apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),
+                                                configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),
+                                                configCase.getRedirect().getViewParams(),true,includeViewParams));
             }
             else
             {
-                apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),null,false,false));
+                apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),
+                                                configCase.getFromOutcome(),configCase.getIf(),
+                                                configCase.getToViewId(),null,false,false));
             }
         }
         
