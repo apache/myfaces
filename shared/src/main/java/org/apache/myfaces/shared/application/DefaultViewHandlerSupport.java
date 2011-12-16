@@ -33,6 +33,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
+import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
@@ -312,7 +313,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             defaultSuffix = ViewHandler.DEFAULT_SUFFIX;
         }
-        return defaultSuffix.split(" ");
+        return StringUtils.splitShortString(defaultSuffix, ' ');
     }
     
     protected String getFaceletsContextSuffix(FacesContext context)
@@ -336,7 +337,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             faceletsViewMappings= context.getExternalContext().getInitParameter("facelets.VIEW_MAPPINGS");
         }
         
-        return faceletsViewMappings == null ? null : faceletsViewMappings.split(";");
+        return faceletsViewMappings == null ? null : StringUtils.splitShortString(faceletsViewMappings, ';');
     }
 
     /**
