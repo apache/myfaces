@@ -140,6 +140,10 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             //fixup missing viewStates due to spec deficiencies
             this.fixViewStates(context);
+
+            //spec jsdoc, the success event must be sent from response
+            _Impl.sendEvent(request, context, _Impl["SUCCESS"]);
+
         } finally {
             delete mfInternal._updateElems;
             delete mfInternal._updateForms;
