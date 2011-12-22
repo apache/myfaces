@@ -184,12 +184,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             context._mfInternal = context._mfInternal || {};
             jsf.ajax.response((xhr.getXHRObject) ? xhr.getXHRObject() : xhr, context);
 
-            //an error in the processing has been raised
-            //TODO move all the error callbacks from response into
-            //a thrown exception best with a message history so
-            //that we have a message trace
-            //target 2.1.5
-            this._sendEvent("SUCCESS");
+
 
         } catch (e) {
             this._stdErrorHandler(this._xhr, this._context, e);
