@@ -43,7 +43,7 @@ _MF_CLS(_PFX_UTIL+"_ListenerQueue", myfaces._impl._util._Queue,
     _assertListener : function( listener) {
         if ("function" != typeof (listener)) {
             var msg = myfaces._impl._util._Lang.getMessage("ERR_PARAM_GENERIC",null,"_ListenerQueue", arguments.caller.toString(),"function" );
-            throw this._Lang.makeException(null, null, this._nameSpace,arguments.caller.toString(),  msg);
+            throw this._Lang.makeException(new Error(), null, null, this._nameSpace,arguments.caller.toString(),  msg);
         }
     },
 

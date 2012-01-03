@@ -161,7 +161,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
 
         } catch (e) {
             //_onError//_onError
-            e = (e._mfInternal)? e: this._Lang.makeException("sendError","sendError", this._nameSpace, "send", e.message);
+            e = (e._mfInternal)? e: this._Lang.makeException(new Error(), "sendError","sendError", this._nameSpace, "send", e.message);
             this._stdErrorHandler(this._xhr, this._context, e);
         }
     },

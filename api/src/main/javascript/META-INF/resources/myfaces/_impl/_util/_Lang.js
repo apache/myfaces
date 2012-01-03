@@ -40,9 +40,9 @@
  * what _Runtime provided
  * */
 _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.prototype */ {
-    _processedExceptions: {},
-    _installedLocale: null,
-    _RT: myfaces._impl.core._Runtime,
+    _processedExceptions:{},
+    _installedLocale:null,
+    _RT:myfaces._impl.core._Runtime,
     /**
      * returns a given localized message upon a given key
      * basic java log like templating functionality is included
@@ -55,7 +55,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *
      * @param key
      */
-    getMessage: function(key, defaultMessage /*,vararg templateParams*/) {
+    getMessage:function (key, defaultMessage /*,vararg templateParams*/) {
         if (!this._installedLocale) {
             //we first try to install language and variant, if that one fails
             //we try to install the language only, and if that one fails
@@ -64,7 +64,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         var msg = this._installedLocale[key] || defaultMessage || key + " - undefined message";
         for (var cnt = 2; cnt < arguments.length; cnt++) {
-            msg = msg.replace(new RegExp(["\\{",cnt - 2,"\\}"].join(""), "g"), new String(arguments[cnt]));
+            msg = msg.replace(new RegExp(["\\{", cnt - 2, "\\}"].join(""), "g"), new String(arguments[cnt]));
         }
         return msg;
     },
@@ -76,32 +76,32 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *
      * @param newLocale locale override
      */
-    initLocale: function(newLocale) {
+    initLocale:function (newLocale) {
         if (newLocale) {
             this._installedLocale = new newLocale();
             return;
         }
         var language_Variant = this._RT.getLanguage(this._RT.getGlobalConfig("locale")),
                 langStr = language_Variant ? language_Variant.language : "",
-                variantStr = language_Variant ? [language_Variant.language,"_",language_Variant.variant || ""].join("") : "",
+                variantStr = language_Variant ? [language_Variant.language, "_", language_Variant.variant || ""].join("") : "",
                 i18nRoot = myfaces._impl.i18n, i18nHolder = i18nRoot["Messages_" + variantStr] || i18nRoot["Messages_" + langStr] || i18nRoot["Messages"];
         this._installedLocale = new i18nHolder();
     },
-    assertType: function(probe, theType) {
+    assertType:function (probe, theType) {
         return this._RT.assertType(probe, theType);
     },
-    exists: function(nms, theType) {
+    exists:function (nms, theType) {
         return this._RT.exists(nms, theType);
     },
-    fetchNamespace : function(namespace) {
+    fetchNamespace:function (namespace) {
         this._assertStr(namespace, "fetchNamespace", "namespace");
         return this._RT.fetchNamespace(namespace);
     },
-    reserveNamespace : function(namespace) {
+    reserveNamespace:function (namespace) {
         this._assertStr(namespace, "reserveNamespace", "namespace");
         return this._RT.reserveNamespace(namespace);
     },
-    globalEval : function(code) {
+    globalEval:function (code) {
         this._assertStr(code, "globalEval", "code");
         return  this._RT.globalEval(code);
     },
@@ -114,7 +114,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *
      * @return an event object no matter what is incoming
      */
-    getEvent: function(evt) {
+    getEvent:function (evt) {
         evt = (!evt) ? window.event || {} : evt;
         return evt;
     },
@@ -124,7 +124,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param evt the event object
      * (with a fallback for ie events if none is present)
      */
-    getEventTarget: function(evt) {
+    getEventTarget:function (evt) {
         //ie6 and 7 fallback
         evt = this.getEvent(evt);
         /**
@@ -149,7 +149,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param source
      * @param destination
      */
-    equalsIgnoreCase: function(source, destination) {
+    equalsIgnoreCase:function (source, destination) {
         //either both are not set or null
         if (!source && !destination) {
             return true;
@@ -165,9 +165,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * the idea is that either a string or domNode can be passed
      * @param {Object} reference the reference which has to be byIded
      */
-    byId : function(/*object*/ reference) {
+    byId:function (/*object*/ reference) {
         if (!reference) {
-            throw this.makeException(null, null, this._nameSpace, "byId", this.getMessage("ERR_REF_OR_ID", null, "_Lang.byId", "reference"));
+            throw this.makeException(new Error(), null, null, this._nameSpace, "byId", this.getMessage("ERR_REF_OR_ID", null, "_Lang.byId", "reference"));
         }
         return (this.isString(reference)) ? document.getElementById(reference) : reference;
     },
@@ -178,12 +178,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param {RegExp} splitter our splitter reglar expression
      * @return an array of the splitted string
      */
-    strToArray : function(/*string*/ it, /*regexp*/ splitter) {
+    strToArray:function (/*string*/ it, /*regexp*/ splitter) {
         //	summary:
         //		Return true if it is a String
         this._assertStr(it, "strToArray", "it");
         if (!splitter) {
-            throw this.makeException(null, null, this._nameSpace, "strToArray", this.getMessage("ERR_PARAM_STR_RE", null, "myfaces._impl._util._Lang.strToArray", "splitter"));
+            throw this.makeException(new Error(), null, null, this._nameSpace, "strToArray", this.getMessage("ERR_PARAM_STR_RE", null, "myfaces._impl._util._Lang.strToArray", "splitter"));
         }
         var retArr = it.split(splitter);
         var len = retArr.length;
@@ -192,9 +192,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return retArr;
     },
-    _assertStr: function(it, functionName, paramName) {
+    _assertStr:function (it, functionName, paramName) {
         if (!this.isString(it)) {
-            throw this.makeException(null, null, this._nameSpace, arguments.caller.toString(), this.getMessage("ERR_PARAM_STR", null, "myfaces._impl._util._Lang." + functionName, paramName));
+            throw this.makeException(new Error(), null, null, this._nameSpace, arguments.caller.toString(), this.getMessage("ERR_PARAM_STR", null, "myfaces._impl._util._Lang." + functionName, paramName));
         }
     },
     /**
@@ -202,7 +202,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * http://blog.stevenlevithan.com/archives/faster-trim-javascript
      * crossported from dojo
      */
-    trim : function(/*string*/ str) {
+    trim:function (/*string*/ str) {
         this._assertStr(str, "trim", "str");
         str = str.replace(/^\s\s*/, '');
         var ws = /\s/, i = str.length;
@@ -219,7 +219,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param it {|Object|} the object to be checked for being a string
      * @return true in case of being a string false otherwise
      */
-    isString: function(/*anything*/ it) {
+    isString:function (/*anything*/ it) {
         //	summary:
         //		Return true if it is a String
         return !!arguments.length && it != null && (typeof it == "string" || it instanceof String); // Boolean
@@ -236,8 +236,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *
      * @return whatever the executed method returns
      */
-    hitch : function(scope, method) {
-        return !scope ? method : function() {
+    hitch:function (scope, method) {
+        return !scope ? method : function () {
             return method.apply(scope, arguments || []);
         }; // Function
     },
@@ -248,13 +248,13 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param {Object} src the source map
      * @param {boolean} overwrite if set to true the destination is overwritten if the keys exist in both maps
      **/
-    mixMaps: function(dest, src, overwrite, blockFilter, whitelistFilter) {
+    mixMaps:function (dest, src, overwrite, blockFilter, whitelistFilter) {
         if (!dest || !src) {
-            throw this.makeException(null, null, this._nameSpace, "mixMaps", this.getMessage("ERR_PARAM_MIXMAPS", null, "_Lang.mixMaps"));
+            throw this.makeException(new Error(), null, null, this._nameSpace, "mixMaps", this.getMessage("ERR_PARAM_MIXMAPS", null, "_Lang.mixMaps"));
         }
         var _undef = "undefined";
         for (var key in src) {
-            if(!src.hasOwnProperty(key)) continue;
+            if (!src.hasOwnProperty(key)) continue;
             if (blockFilter && blockFilter[key]) {
                 continue;
             }
@@ -279,13 +279,13 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param {Array} arr   array
      * @param {String} str string to check for
      */
-    contains : function(arr, str) {
+    contains:function (arr, str) {
         if (!arr || !str) {
-            throw this.makeException(null, null, this._nameSpace, "contains", this.getMessage("ERR_MUST_BE_PROVIDED", null, "_Lang.contains", "arr {array}", "str {string}"));
+            throw this.makeException(new Error(), null, null, this._nameSpace, "contains", this.getMessage("ERR_MUST_BE_PROVIDED", null, "_Lang.contains", "arr {array}", "str {string}"));
         }
         return this.arrIndexOf(arr, str) != -1;
     },
-    arrToMap: function(arr, offset) {
+    arrToMap:function (arr, offset) {
         var ret = new Array(arr.length);
         var len = arr.length;
         offset = (offset) ? offset : 0;
@@ -294,7 +294,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return ret;
     },
-    objToArray: function(obj, offset, pack) {
+    objToArray:function (obj, offset, pack) {
         if (!obj) {
             return null;
         }
@@ -334,7 +334,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *      <li>param scope (optional) the scope to apply the closure to  </li>
      * </ul>
      */
-    arrForEach: function(arr, func /*startPos, scope*/) {
+    arrForEach:function (arr, func /*startPos, scope*/) {
         if (!arr || !arr.length) return;
         var startPos = Number(arguments[2]) || 0;
         var thisObj = arguments[3];
@@ -358,7 +358,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *  <li> scope (optional) the scope to apply the closure to</li>
      * </ul>
      */
-    arrFilter: function(arr, func /*startPos, scope*/) {
+    arrFilter:function (arr, func /*startPos, scope*/) {
         if (!arr || !arr.length) return [];
         arr = this.objToArray(arr);
         return ((startPos) ? arr.slice(startPos).filter(func, thisObj) : arr.filter(func, thisObj));
@@ -372,7 +372,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param arr the array
      * @param element the index to search for
      */
-    arrIndexOf: function(arr, element /*fromIndex*/) {
+    arrIndexOf:function (arr, element /*fromIndex*/) {
         if (!arr || !arr.length) return -1;
         var pos = Number(arguments[2]) || 0;
         arr = this.objToArray(arr);
@@ -386,7 +386,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param args the arguments array or map
      * @param argNames the argument names to be transferred
      */
-    applyArgs: function(dest, args, argNames) {
+    applyArgs:function (dest, args, argNames) {
         var UDEF = 'undefined';
         if (argNames) {
             for (var cnt = 0; cnt < args.length; cnt++) {
@@ -400,7 +400,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             }
         } else {
             for (var key in args) {
-                if(!args.hasOwnProperty(key)) continue;
+                if (!args.hasOwnProperty(key)) continue;
                 if (UDEF != typeof dest["_" + key]) {
                     dest["_" + key] = args[key];
                 }
@@ -417,7 +417,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param val the value
      * @param delimiter the delimiter
      */
-    keyValToStr: function(key, val, delimiter) {
+    keyValToStr:function (key, val, delimiter) {
         var ret = [], pushRet = this.hitch(ret, ret.push);
         pushRet(key);
         pushRet(val);
@@ -425,7 +425,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         pushRet(delimiter);
         return ret.join("");
     },
-    parseXML: function(txt) {
+    parseXML:function (txt) {
         try {
             var parser = new DOMParser();
             return parser.parseFromString(txt, "text/xml");
@@ -434,14 +434,14 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             return null;
         }
     },
-    serializeXML: function(xmlNode, escape) {
+    serializeXML:function (xmlNode, escape) {
         if (!escape) {
             if (xmlNode.data) return xmlNode.data; //CDATA block has raw data
             if (xmlNode.textContent) return xmlNode.textContent; //textNode has textContent
         }
         return (new XMLSerializer()).serializeToString(xmlNode);
     },
-    serializeChilds: function(xmlNode) {
+    serializeChilds:function (xmlNode) {
         var buffer = [];
         if (!xmlNode.childNodes) return "";
         for (var cnt = 0; cnt < xmlNode.childNodes.length; cnt++) {
@@ -449,11 +449,11 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return buffer.join("");
     },
-    isXMLParseError: function(xmlContent) {
+    isXMLParseError:function (xmlContent) {
         //TODO determine the ie specific part here
         //no xml content
         if (xmlContent == null) return true;
-        var findParseError = function(node) {
+        var findParseError = function (node) {
             if (!node || !node.childNodes) return false;
             for (var cnt = 0; cnt < node.childNodes.length; cnt++) {
                 var childNode = node.childNodes[cnt];
@@ -466,6 +466,71 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
                 findParseError(xmlContent);
     },
     /**
+     * fetches the error message from the xml content
+     * in a browser independent way
+     *
+     * @param xmlContent
+     * @return a map with the following structure {errorMessage: the error Message, sourceText: the text with the error}
+     */
+    fetchXMLErrorMessage:function (text, xmlContent) {
+        var _t = this;
+        var findParseError = function (node) {
+            if (!node || !node.childNodes) return false;
+            for (var cnt = 0; cnt < node.childNodes.length; cnt++) {
+                var childNode = node.childNodes[cnt];
+                if (childNode.tagName && childNode.tagName == "parsererror") {
+                    var errorMessage = _t.serializeXML(childNode.childNodes[0]);
+                    //we now have to determine the row and column position
+                    var lastLine = errorMessage.split("\n");
+                    lastLine = lastLine[lastLine.length-1];
+                    var positions = lastLine.match(/[^0-9]*([0-9]+)[^0-9]*([0-9]+)[^0-9]*/);
+
+                    var ret = {
+                        errorMessage: errorMessage,
+                        sourceText: _t.serializeXML(childNode.childNodes[1].childNodes[0])
+                    }
+                    if(positions) {
+                        ret.line = Math.max(0, parseInt(positions[1])-1);
+                        ret.linePos = Math.max(0, parseInt(positions[2])-1);
+                    }
+                    return ret;
+                }
+            }
+            return null;
+        };
+        var ret = null;
+        if (!xmlContent) {
+            //chrome does not deliver any further data
+            ret =  (this.trim(text || "").length > 0)? {errorMessage:"Illegal response",sourceText:""} : {errorMessage:"Empty Response",sourceText:""};
+        } else if (this.exists(xmlContent, "parseError.errorCode") && xmlContent.parseError.errorCode != 0) {
+            ret =   {
+                errorMessage:xmlContent.parseError.reason,
+                line:Math.max(0, parseInt(xmlContent.parseError.line)-1),
+                linePos:Math.max(0,parseInt(xmlContent.parseError.linepos) -1),
+                sourceText:xmlContent.parseError.srcText
+            };
+        } else {
+            ret = findParseError(xmlContent);
+        }
+        //we have a line number we now can format the source accordingly
+        if(ret && 'undefined' != typeof ret.line) {
+            var source = ret.sourceText ||"";
+            source = source.split("\n");
+            if(source.length-1 < ret.line) return ret;
+            source = source[ret.line];
+            var secondLine = [];
+            var lineLen = (ret.linePos - 2);
+            for(var cnt = 0; cnt < lineLen; cnt++) {
+                secondLine.push(" ");
+            }
+            secondLine.push("^^");
+            ret.sourceText = source;
+            ret.visualError = secondLine;
+        }
+        return ret;
+    },
+
+    /**
      * creates a neutral form data wrapper over an existing form Data element
      * the wrapper delegates following methods, append
      * and adds makeFinal as finalizing method which returns the final
@@ -473,7 +538,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *
      * @param formData an array
      */
-    createFormDataDecorator: function(formData) {
+    createFormDataDecorator:function (formData) {
         //we simulate the dom level 2 form element here
         var _newCls = null;
         var bufInstance = null;
@@ -483,14 +548,14 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
                 this._idx = {};
             };
             _newCls = this.FormDataDecoratorArray;
-            _newCls.prototype.append = function(key, val) {
+            _newCls.prototype.append = function (key, val) {
                 this._valBuf.push([encodeURIComponent(key), encodeURIComponent(val)].join("="));
                 this._idx[key] = true;
             };
-            _newCls.prototype.hasKey = function(key) {
+            _newCls.prototype.hasKey = function (key) {
                 return !!this._idx[key];
             };
-            _newCls.prototype.makeFinal = function() {
+            _newCls.prototype.makeFinal = function () {
                 return this._valBuf.join("&");
             };
         }
@@ -501,15 +566,15 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
                 this._idx = {};
             };
             _newCls = this.FormDataDecoratorString;
-            _newCls.prototype.append = function(key, val) {
+            _newCls.prototype.append = function (key, val) {
                 this._valBuf.push([encodeURIComponent(key), encodeURIComponent(val)].join("="));
                 this._idx[key] = true;
             };
             //for now we check only for keys which are added subsequently otherwise we do not perform any checks
-            _newCls.prototype.hasKey = function(key) {
+            _newCls.prototype.hasKey = function (key) {
                 return !!this._idx[key];
             };
-            _newCls.prototype.makeFinal = function() {
+            _newCls.prototype.makeFinal = function () {
                 if (this._preprocessedData != "") {
                     return this._preprocessedData + "&" + this._valBuf.join("&")
                 } else {
@@ -523,14 +588,14 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
                 this._idx = {};
             };
             _newCls = this.FormDataDecoratorOther;
-            _newCls.prototype.append = function(key, val) {
+            _newCls.prototype.append = function (key, val) {
                 this._valBuf.append(key, val);
                 this._idx[key] = true;
             };
-            _newCls.prototype.hasKey = function(key) {
+            _newCls.prototype.hasKey = function (key) {
                 return !!this._idx[key];
             };
-            _newCls.prototype.makeFinal = function() {
+            _newCls.prototype.makeFinal = function () {
                 return this._valBuf;
             };
         }
@@ -557,11 +622,11 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param name
      * @param value
      */
-    attr: function(obj, name, value) {
-        var findAccessor = function(theObj, theName) {
+    attr:function (obj, name, value) {
+        var findAccessor = function (theObj, theName) {
             return (theObj["_" + theName]) ? "_" + theName : ( (theObj[theName]) ? theName : null)
         };
-        var applyAttr = function(theObj, theName, value, isFunc) {
+        var applyAttr = function (theObj, theName, value, isFunc) {
             if (value) {
                 if (isFunc) {
                     theObj[theName](value);
@@ -581,13 +646,13 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             //lets check for setter and getter overrides
             var found = false;
             var prefix = (value) ? "set" : "get";
-            finalAttr = [prefix,name.substr(0, 1).toUpperCase(),name.substr(1)].join("");
+            finalAttr = [prefix, name.substr(0, 1).toUpperCase(), name.substr(1)].join("");
             finalAttr = findAccessor(obj, finalAttr);
             if (finalAttr) {
                 return applyAttr(obj, finalAttr, value, true);
             }
 
-            throw this.makeException(null, null, this._nameSpace, "contains", "property " + name + " not found");
+            throw this.makeException(new Error(), null, null, this._nameSpace, "contains", "property " + name + " not found");
         } finally {
             findAccessor = null;
             applyAttr = null;
@@ -604,13 +669,16 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param {String} callFunc the caller function
      * @param {String} message the message for the exception
      */
-    makeException: function(title, name, callerCls, callFunc, message) {
-        var ret = new Error(message || "");
-        ret._mfInternal = {};
-        ret._mfInternal.name = name ||"clientError";
-        ret._mfInternal.title = title ||"clientError";
-        ret._mfInternal.caller = callerCls ||this._nameSpace;
-        ret._mfInternal.callFunc = callFunc ||(""+arguments.caller.toString());
-        return ret;
+    makeException:function (error, title, name, callerCls, callFunc, message) {
+        //var error = new Error(message || "");
+        error.name = name || "clientError";
+        error.title = title || "";
+        error.message = message || "";
+        error._mfInternal = {};
+        error._mfInternal.name = name || "clientError";
+        error._mfInternal.title = title || "clientError";
+        error._mfInternal.caller = callerCls || this._nameSpace;
+        error._mfInternal.callFunc = callFunc || ("" + arguments.caller.toString());
+        return error;
     }
 });

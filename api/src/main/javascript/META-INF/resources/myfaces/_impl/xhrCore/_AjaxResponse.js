@@ -87,27 +87,27 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             // istead of ISO-8859-1
 
             if (!request || !_Lang.exists(request, "responseXML")) {
-                throw this.makeException(_Impl.EMPTY_RESPONSE, _Impl.EMPTY_RESPONSE, this._nameSpace, "processResponse", "");
+                throw this.makeException(new Error(), _Impl.EMPTY_RESPONSE, _Impl.EMPTY_RESPONSE, this._nameSpace, "processResponse", "");
             }
             //check for a parseError under certain browsers
 
             var xmlContent = request.responseXML;
             //ie6+ keeps the parsing response under xmlContent.parserError
             //while the rest of the world keeps it as element under the first node
-
-            if (_Lang.isXMLParseError(xmlContent)) {
-                throw this._raiseError("XML Parse Error", "processResponse");
+            var xmlErr = _Lang.fetchXMLErrorMessage(request.responseText || request.response, xmlContent)
+            if (xmlErr) {
+                throw this._raiseError(new Error(),xmlErr.errorMessage+"\n"+xmlErr.sourceText+"\n"+xmlErr.visualError+"\n", "processResponse");
             }
             var partials = xmlContent.childNodes[0];
             if ('undefined' == typeof partials || partials == null) {
-                throw this._raiseError("No child nodes for response", "processResponse");
+                throw this._raiseError(new Error(),"No child nodes for response", "processResponse");
 
             } else {
                 if (partials.tagName != this.RESP_PARTIAL) {
                     // IE 8 sees XML Header as first sibling ...
                     partials = partials.nextSibling;
                     if (!partials || partials.tagName != this.RESP_PARTIAL) {
-                        throw this._raiseError("Partial response not set","processResponse");
+                        throw this._raiseError(new Error(), "Partial response not set","processResponse");
                     }
                 }
             }
@@ -270,7 +270,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var _Lang = this._Lang;
         var redirectUrl = node.getAttribute("url");
         if (!redirectUrl) {
-            throw this._raiseError(_Lang.getMessage("ERR_RED_URL", null, "_AjaxResponse.processRedirect"),"processRedirect");
+            throw this._raiseError(new Error(),_Lang.getMessage("ERR_RED_URL", null, "_AjaxResponse.processRedirect"),"processRedirect");
         }
         redirectUrl = _Lang.trim(redirectUrl);
         if (redirectUrl == "") {
@@ -319,7 +319,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 case this.CMD_EXTENSION:
                     break;
                 default:
-                    throw this._raiseError("_AjaxResponse.processChanges: Illegal Command Issued","processChanges");
+                    throw this._raiseError(new Error(),"_AjaxResponse.processChanges: Illegal Command Issued","processChanges");
             }
         }
 
@@ -475,7 +475,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                     newHead.innerHTML = headData;
                 } catch (e) {
                     //we give up no further fallbacks
-                    throw this._raiseError("Error head replacement failed reason:" + e.toString(),"_replaceHead");
+                    throw this._raiseError(new Error(),"Error head replacement failed reason:" + e.toString(),"_replaceHead");
                 }
             }
         } else {
@@ -612,7 +612,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         var opNode = _Dom.byIdOrName(insertData.opId);
         if (!opNode) {
-            throw this._raiseError(_Lang.getMessage("ERR_PPR_INSERTBEFID_1", null, "_AjaxResponse.processInsert", insertData.opId),"processInsert");
+            throw this._raiseError(new Error(),_Lang.getMessage("ERR_PPR_INSERTBEFID_1", null, "_AjaxResponse.processInsert", insertData.opId),"processInsert");
         }
 
         //call insertBefore or insertAfter in our dom routines
@@ -675,7 +675,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             var opType = node.childNodes[0].tagName;
 
             if (opType != "before" && opType != "after") {
-                throw this._raiseError(_Lang.getMessage("ERR_PPR_INSERTBEFID"),"_parseInsertData");
+                throw this._raiseError(new Error(),_Lang.getMessage("ERR_PPR_INSERTBEFID"),"_parseInsertData");
             }
             opType = opType.toLowerCase();
             var beforeAfterId = node.childNodes[0].getAttribute("id");
@@ -683,7 +683,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             ret.opId = beforeAfterId;
             ret.cDataBlock = concatCDATA(node.childNodes[0]);
         } else {
-            throw this._raiseError([_Lang.getMessage("ERR_PPR_IDREQ"),
+            throw this._raiseError(new Error(),[_Lang.getMessage("ERR_PPR_IDREQ"),
                                     "\n ",
                                     _Lang.getMessage("ERR_PPR_INSERTBEFID")].join(""),"_parseInsertData");
         }
@@ -698,12 +698,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 deleteId = node.getAttribute('id');
 
         if (!deleteId) {
-            throw this._raiseError(_Lang.getMessage("ERR_PPR_UNKNOWNCID", null, "_AjaxResponse.processDelete", ""),"processDelete");
+            throw this._raiseError(new Error(),_Lang.getMessage("ERR_PPR_UNKNOWNCID", null, "_AjaxResponse.processDelete", ""),"processDelete");
         }
 
         var item = _Dom.byIdOrName(deleteId);
         if (!item) {
-            throw this._raiseError(_Lang.getMessage("ERR_PPR_UNKNOWNCID", null, "_AjaxResponse.processDelete", deleteId),"processDelete");
+            throw this._raiseError(new Error(),_Lang.getMessage("ERR_PPR_UNKNOWNCID", null, "_AjaxResponse.processDelete", deleteId),"processDelete");
         }
 
         var parentForm = this._Dom.getParent(item, "form");
@@ -728,7 +728,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 elemId = node.getAttribute('id');
 
         if (!elemId) {
-            throw this._raiseError("Error in attributes, id not in xml markup","processAttributes");
+            throw this._raiseError(new Error(),"Error in attributes, id not in xml markup","processAttributes");
         }
         var childNodes = node.childNodes;
 
@@ -753,10 +753,10 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             switch (elemId) {
                 case this.P_VIEWROOT:
-                    throw  this._raiseError(_Lang.getMessage("ERR_NO_VIEWROOTATTR", null, "_AjaxResponse.processAttributes"),"processAttributes");
+                    throw  this._raiseError(new Error(),_Lang.getMessage("ERR_NO_VIEWROOTATTR", null, "_AjaxResponse.processAttributes"),"processAttributes");
 
                 case this.P_VIEWHEAD:
-                    throw  this._raiseError(_Lang.getMessage("ERR_NO_HEADATTR", null, "_AjaxResponse.processAttributes"),"processAttributes");
+                    throw  this._raiseError(new Error(),_Lang.getMessage("ERR_NO_HEADATTR", null, "_AjaxResponse.processAttributes"),"processAttributes");
 
                 case this.P_VIEWBODY:
                     var element = document.getElementsByTagName("body")[0];
@@ -779,12 +779,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param title the title of the error (optional)
      * @param name the name of the error (optional)
      */
-    _raiseError: function(message,  caller, title, name) {
+    _raiseError: function(error, message,  caller, title, name) {
         var _Impl = this.attr("impl");
         var finalTitle = title || _Impl.MALFORMEDXML;
         var finalName = name || _Impl.MALFORMEDXML;
         var finalMessage = message || "";
 
-        return this._Lang.makeException(finalTitle, finalName, this._nameSpace, caller || ( (arguments.caller) ? arguments.caller.toString() : "_raiseError"), finalMessage);
+        return this._Lang.makeException(error, finalTitle, finalName, this._nameSpace, caller || ( (arguments.caller) ? arguments.caller.toString() : "_raiseError"), finalMessage);
     }
 });
