@@ -114,7 +114,7 @@ _MF_SINGLTN && _MF_SINGLTN(_PFX_UTIL + "_ExtDom", myfaces._impl._util._Dom, {
      */
     getElementFromForm:function (nameId, form, nameSearch, localOnly) {
         if (!nameId) {
-            throw this._Lang.makeException(null, null, this._nameSpace, "getElementFromForm", "_Dom.getElementFromForm an item id or name must be given");
+            throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "getElementFromForm", "_Dom.getElementFromForm an item id or name must be given");
         }
 
         if (!form) {

@@ -260,7 +260,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     deleteItem: function(itemIdToReplace) {
         var item = this.byId(itemIdToReplace);
         if (!item) {
-            throw this._Lang.makeException(null, null, this._nameSpace, "deleteItem",  "_Dom.deleteItem  Unknown Html-Component-ID: " + itemIdToReplace);
+            throw this._Lang.makeException(new Error(),null, null, this._nameSpace, "deleteItem",  "_Dom.deleteItem  Unknown Html-Component-ID: " + itemIdToReplace);
         }
 
         this._removeNode(item, false);
@@ -530,7 +530,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     _assertStdParams: function(item, markup, caller, params) {
         //internal error
         if (!caller) {
-            throw this._Lang.makeException(null, null, this._nameSpace, "_assertStdParams",  "Caller must be set for assertion");
+            throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "_assertStdParams",  "Caller must be set for assertion");
         }
         var _Lang = this._Lang,
                 ERR_PROV = "ERR_MUST_BE_PROVIDED1",
@@ -538,7 +538,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 finalParams = params || ["item", "markup"];
 
         if (!item || !markup) {
-            _Lang.makeException(null, null,DOM, ""+caller,  _Lang.getMessage(ERR_PROV, null, DOM +"."+ caller, (!item) ? finalParams[0] : finalParams[1]));
+            _Lang.makeException(new Error(), null, null,DOM, ""+caller,  _Lang.getMessage(ERR_PROV, null, DOM +"."+ caller, (!item) ? finalParams[0] : finalParams[1]));
             //throw Error(_Lang.getMessage(ERR_PROV, null, DOM + caller, (!item) ? params[0] : params[1]));
         }
     },
@@ -586,7 +586,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     replaceElements: function (item, evalNodes) {
         var evalNodesDefined = evalNodes && 'undefined' != typeof evalNodes.length;
         if (!evalNodesDefined) {
-            throw this._Lang.makeException(null, null, this._nameSpace, "replaceElements",  this._Lang.getMessage("ERR_REPLACE_EL"));
+            throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "replaceElements",  this._Lang.getMessage("ERR_REPLACE_EL"));
         }
 
         var parentNode = item.parentNode,
@@ -867,7 +867,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     getParent : function(item, tagName) {
 
         if (!item) {
-            throw this._Lang.makeException(null, null, this._nameSpace, "getParent",
+            throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "getParent",
                     this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
         }
 
