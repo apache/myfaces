@@ -39,7 +39,8 @@ _MF_CLS && _MF_CLS(_PFX_I18N + "Messages_es", myfaces._impl.i18n.Messages,
             MSG_AFFECTED_METHOD:    "M�todo Afectado:",
 
             MSG_ERROR_NAME:         "Nombre del Error:",
-            MSG_ERROR_MESSAGE:      "Nombre del Error:",
+            MSG_ERROR_MESSAGE:      "Mensaje del Error:",
+            MSG_SERVER_ERROR_NAME:  "Mensaje de error de servidor:",
 
             MSG_ERROR_DESC:         "Descripci�n del Error:",
             MSG_ERROR_NO:           "N�mero de Error:",
