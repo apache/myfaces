@@ -49,6 +49,7 @@ _MF_CLS && _MF_CLS(_PFX_I18N + "Messages_de", myfaces._impl.i18n.Messages,
 
             MSG_ERROR_NAME:         "Fehler Name:",
             MSG_ERROR_MESSAGE:      "Nachricht:",
+            MSG_SERVER_ERROR_NAME:  "Server Fehler Name:",
 
             MSG_ERROR_DESC:         "Fehlerbeschreibung:",
             MSG_ERROR_NO:           "Fehlernummer:",

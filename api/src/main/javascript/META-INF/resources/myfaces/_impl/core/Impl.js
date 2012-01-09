@@ -435,6 +435,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @param {String} name the error name
      * @param {String} serverErrorName the server error name in case of a server error
      * @param {String} serverErrorMessage the server error message in case of a server error
+     * @param {String} caller optional caller reference for extended error messages
+     * @param {String} callFunc optional caller Function reference for extended error messages
      *
      *  handles the errors, in case of an onError exists within the context the onError is called as local error handler
      *  the registered error handlers in the queue receiv an error message to be dealt with
@@ -445,7 +447,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      *
      *
      */
-    sendError : function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage) {
+    sendError : function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage, caller, callFunc) {
         var _Lang = myfaces._impl._util._Lang;
         var UNKNOWN = _Lang.getMessage("UNKNOWN");
 
@@ -463,6 +465,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         eventData.serverErrorName = serverErrorName || UNKNOWN;
         eventData.serverErrorMessage = serverErrorMessage || UNKNOWN;
 
+
+
         try {
             eventData.source = context.source || UNKNOWN;
             eventData.responseCode = request.status || UNKNOWN;
@@ -470,6 +474,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             eventData.responseXML = request.responseXML || UNKNOWN;
         } catch (e) {
             // silently ignore: user can find out by examining the event data
+        }
+         //extended error message only in dev mode
+        if(jsf.getProjectStage() === "Development") {
+            eventData.serverErrorMessage = eventData.serverErrorMessage || "";
+            eventData.serverErrorMessage = (caller)?  eventData.serverErrorMessage + "\nCalling class: "+caller:eventData.serverErrorMessage;
+            eventData.serverErrorMessage = (callFunc)? eventData.serverErrorMessage + "\n Calling function: "+callFunc :eventData.serverErrorMessage;
         }
 
         /**/
@@ -481,24 +491,26 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         this._errListeners.broadcastEvent(eventData);
 
         if (jsf.getProjectStage() === "Development" && this._errListeners.length() == 0 && !context["onerror"]) {
-            var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert),
+            var DIVIDER = "--------------------------------------------------------",
+                    defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert),
                     finalMessage = [],
                     //we remap the function to achieve a better compressability
-                    finalMessagePush = _Lang.hitch(finalMessage, finalMessage.push);
+                    pushMsg = _Lang.hitch(finalMessage, finalMessage.push);
 
-            finalMessagePush((name) ? name : "");
-            if (name) {
-                finalMessagePush(": ");
-            }
-            finalMessagePush((serverErrorName) ? serverErrorName : "");
-            if (serverErrorName) {
-                finalMessagePush(" ");
-            }
-            finalMessagePush((serverErrorMessage) ? serverErrorMessage : "");
-            finalMessagePush(malFormedMessage());
-            finalMessagePush("\n\n");
-            finalMessagePush(_Lang.getMessage("MSG_DEV_MODE"));
-            defaultErrorOutput(finalMessage.join(""));
+            (serverErrorMessage) ? pushMsg(_Lang.getMessage("MSG_ERROR_MESSAGE") +" "+ serverErrorMessage +"\n") : null;
+            
+            pushMsg(DIVIDER);
+
+            (caller)? pushMsg("Calling class:"+ caller): null;
+            (callFunc)? pushMsg("Calling function:"+ callFunc): null;
+            (name) ? pushMsg(_Lang.getMessage("MSG_ERROR_NAME") +" "+name ): null;
+            (serverErrorName && name != serverErrorName) ? pushMsg("Server error name: "+ serverErrorName ) : null;
+
+
+            pushMsg(malFormedMessage());
+            pushMsg(DIVIDER);
+            pushMsg(_Lang.getMessage("MSG_DEV_MODE"));
+            defaultErrorOutput(finalMessage.join("\n"));
         }
     },
 
@@ -631,7 +643,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         var len         = arguments.length;
         var _Lang       = this._Lang;
         var throwErr    = function(msgKey) {
-            throw Error(_Lang.getMessage(msgKey));
+            throw Error("jsf.util.chain: "+ _Lang.getMessage(msgKey));
         };
         /**
          * generic error condition checker which raises
@@ -709,15 +721,11 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 //TODO clean the name mess here
                 var finalMsg = [];
 
-                //extended error message only in dev mode
-                if(jsf.getProjectStage() === "Development") {
-                   (mfInternal.caller)? finalMsg.push("Caller: "+mfInternal.caller):null;
-                   (mfInternal.callFunc)? finalMsg.push("Caller Function: "+mfInternal.callFunc):null;
-                }
+
 
                 finalMsg.push(exception.message);
                 this.sendError(request, context,
-                        mfInternal.title || this.CLIENT_ERROR, mfInternal.name || exception.name, finalMsg.join("\n"));
+                        mfInternal.title || this.CLIENT_ERROR, mfInternal.name || exception.name, finalMsg.join("\n"), mfInternal.caller, mfInternal.callFunc);
             }
     }
 });

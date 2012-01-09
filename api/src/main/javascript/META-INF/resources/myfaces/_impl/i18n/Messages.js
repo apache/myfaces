@@ -48,7 +48,10 @@ _MF_CLS && _MF_CLS(_PFX_I18N+"Messages", Object,
     /** @constant */
     MSG_ERROR_NAME:         "Error Name:",
     /** @constant */
-    MSG_ERROR_MESSAGE:      "Error Name:",
+    MSG_ERROR_MESSAGE:      "Error Message:",
+    /** @constant */
+    MSG_SERVER_ERROR_NAME:  "Server Error Name:",
+
     /** @constant */
     MSG_ERROR_DESC:         "Error Description:",
     /** @constant */
