@@ -1649,28 +1649,76 @@ public class ApplicationImpl extends Application
             return;
         }
         
-        ResourceDependency annotation = inspected.getClass().getAnnotation(ResourceDependency.class);
-        
-        if (annotation == null)
+        // This and only this method handles @ResourceDependency and @ResourceDependencies annotations
+        // The source of these annotations is Class<?> inspectedClass.
+        // Because Class<?> and its annotations cannot change
+        // during request/response, it is sufficient to process Class<?> only once per view.
+        RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);
+        Class<?> inspectedClass = inspected.getClass();
+        if (rvc.isClassAlreadyProcessed(inspectedClass))
         {
-            // If the ResourceDependency annotation is not present, the argument must be inspected for the presence 
-            // of the ResourceDependencies annotation. 
-            ResourceDependencies dependencies = inspected.getClass().getAnnotation(ResourceDependencies.class);
-            if (dependencies != null)
+            return;
+        }
+        boolean classAlreadyProcessed = false;
+
+        
+        List<ResourceDependency> dependencyList = null;
+        boolean isCachedList = false;
+        
+        if(context.isProjectStage(ProjectStage.Production) && _classToResourceDependencyMap.containsKey(inspectedClass))
+        {
+            dependencyList = _classToResourceDependencyMap.get(inspectedClass);
+            if(dependencyList == null)
             {
-                // If the ResourceDependencies annotation is present, the action described in ResourceDependencies 
-                // must be taken.
-                for (ResourceDependency dependency : dependencies.value())
+                return; //class has been inspected and did not contain any resource dependency annotations
+            }
+            
+            isCachedList = true;    // else annotations were found in the cache
+        }
+        
+        if(dependencyList == null)  //not in production or the class hasn't been inspected yet
+        {   
+            ResourceDependency dependency = inspectedClass.getAnnotation(ResourceDependency.class);
+            ResourceDependencies dependencies = inspectedClass.getAnnotation(ResourceDependencies.class);
+            if(dependency != null || dependencies != null)
+            {
+                //resource dependencies were found using one or both annotations, create and build a new list
+                dependencyList = new ArrayList<ResourceDependency>();
+                
+                if(dependency != null)
+                {
+                    dependencyList.add(dependency);
+                }
+                
+                if(dependencies != null)
+                {
+                    dependencyList.addAll(Arrays.asList(dependencies.value()));
+                }
+            }
+        }        
+ 
+        if (dependencyList != null) //resource dependencies were found through inspection or from cache, handle them
+        {
+            for (int i = 0, size = dependencyList.size(); i < size; i++)
+            {
+                ResourceDependency dependency = dependencyList.get(i);
+                if (!rvc.isResourceDependencyAlreadyProcessed(dependency))
                 {
                     _handleAttachedResourceDependency(context, dependency);
+                    rvc.setResourceDependencyAsProcessed(dependency);
                 }
             }
         }
-        else
+        
+        if(context.isProjectStage(ProjectStage.Production) && !isCachedList)   //if we're in production and the list is not yet cached, store it
         {
-            // If the ResourceDependency annotation is present, the action described in ResourceDependency must be 
-            // taken. 
-            _handleAttachedResourceDependency(context, annotation);
+            //null value stored for dependencyList means no annotations were found
+            _classToResourceDependencyMap.put(inspectedClass, dependencyList);
+        }
+        
+        if (!classAlreadyProcessed)
+        {
+            rvc.setClassProcessed(inspectedClass);
         }
     }
     
