@@ -2278,8 +2278,12 @@ public class ApplicationImpl extends Application
     {
         if (listeners != null && !listeners.isEmpty())
         {
-            for (SystemEventListener listener : listeners)
+            // perf: org.apache.myfaces.application.ApplicationImpl.SystemListenerEntry.getSpecificSourceListenersNotNull(Class<?>)
+            // or javax.faces.component.UIComponent.subscribeToEvent(Class<? extends SystemEvent>, ComponentSystemEventListener)
+            // creates a ArrayList:
+            for (int i  = 0, size = listeners.size(); i < size; i++)
             {
+                SystemEventListener listener = listeners.get(i);
                 // Call SystemEventListener.isListenerForSource(java.lang.Object), passing the source argument.
                 // If this returns false, take no action on the listener.
                 if (listener.isListenerForSource(source))

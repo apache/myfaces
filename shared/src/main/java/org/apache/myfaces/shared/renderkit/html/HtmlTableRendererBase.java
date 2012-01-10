@@ -785,9 +785,10 @@ public class HtmlTableRendererBase extends HtmlRenderer
     {
         int colspan = 0;
         boolean hasColumnFacet = false;
-        for (Iterator it = getChildren(component).iterator(); it.hasNext();)
+        int childCount = component.getChildCount();
+        for (int i = 0; i < childCount; i++)
         {
-            UIComponent uiComponent = (UIComponent) it.next();
+            UIComponent uiComponent = component.getChildren().get(i);
             if(uiComponent.isRendered())
             {
                 // a UIColumn has a span of 1, anything else has a span of 0
@@ -797,10 +798,11 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 // the specified type.
                 if (!hasColumnFacet)
                 {
-                     hasColumnFacet = hasFacet(header, uiComponent);
+                    hasColumnFacet = hasFacet(header, uiComponent);
                 }
             }
         }
+
 
         UIComponent facet = header ? (UIComponent) component.getFacets().get(HEADER_FACET_NAME)
                 : (UIComponent) component.getFacets().get(FOOTER_FACET_NAME);
@@ -1004,9 +1006,9 @@ public class HtmlTableRendererBase extends HtmlRenderer
         int newspaperColumns = getNewspaperColumns(component);
         for(int nc = 0; nc < newspaperColumns; nc++)
         {
-            for (Iterator it = getChildren(component).iterator(); it.hasNext();)
+            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
             {
-                UIComponent uiComponent = (UIComponent) it.next();
+                UIComponent uiComponent = component.getChildren().get(i);
                 if (uiComponent.isRendered())
                 {
                     if (component instanceof UIData && uiComponent instanceof UIColumn)

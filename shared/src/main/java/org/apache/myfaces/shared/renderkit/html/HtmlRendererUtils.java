@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -323,9 +324,20 @@ public final class HtmlRendererUtils
                         String clientId = paramMap.get("javax.faces.source");
                         if (component.getClientId().equals(clientId))
                         {
-                            for (ClientBehavior clientBehavior : clientBehaviorList)
+                            if (clientBehaviorList instanceof RandomAccess)
                             {
-                                clientBehavior.decode(facesContext, component);
+                                for (int i = 0, size = clientBehaviorList.size(); i < size; i++)
+                                {
+                                    ClientBehavior clientBehavior = clientBehaviorList.get(i);
+                                    clientBehavior.decode(facesContext, component);
+                                }
+                            } 
+                            else
+                            {
+                                for (ClientBehavior clientBehavior : clientBehaviorList)
+                                {
+                                    clientBehavior.decode(facesContext, component);
+                                }
                             }
                         }
                     }
@@ -1573,8 +1585,9 @@ public final class HtmlRendererUtils
             parameters = new HashMap<String, List<String>>();
             List<UIParameter> validParams = getValidUIParameterChildren(
                     facesContext, component.getChildren(), true, false);
-            for (UIParameter param : validParams)
+            for (int i = 0, size = validParams.size(); i < size; i++)
             {
+                UIParameter param = validParams.get(i);
                 String name = param.getName();
                 Object value = param.getValue();
                 if (parameters.containsKey(name))
@@ -1886,29 +1899,57 @@ public final class HtmlRendererUtils
                 .createClientBehaviorContext(facesContext, uiComponent,
                         eventName, targetClientId, params);
         boolean submitting = false;
-        Iterator<ClientBehavior> clientIterator = attachedEventBehaviors
-                .iterator();
-        while (clientIterator.hasNext())
+        
+        // List<ClientBehavior>  attachedEventBehaviors is  99% _DeltaList created in
+        // javax.faces.component.UIComponentBase.addClientBehavior
+        if (attachedEventBehaviors instanceof RandomAccess)
         {
-            ClientBehavior clientBehavior = clientIterator.next();
-            String script = clientBehavior.getScript(context);
-            // The script _can_ be null, and in fact is for <f:ajax disabled="true" />
-            if (script != null)
+            for (int i = 0, size = attachedEventBehaviors.size(); i < size; i++)
             {
-                //either strings or functions, but I assume string is more appropriate 
-                //since it allows access to the
-                //origin as this!
-                target.append("'" + escapeJavaScriptForChain(script) + "'");
-                if (clientIterator.hasNext())
-                {
-                    target.append(", ");
-                }
+                ClientBehavior clientBehavior = attachedEventBehaviors.get(i);
+                submitting =  _appendClientBehaviourScript(target, context, submitting, i < (size -1), clientBehavior);   
             }
-            if (!submitting)
+        }
+        else 
+        {
+            Iterator<ClientBehavior> clientIterator = attachedEventBehaviors
+                    .iterator();
+            while (clientIterator.hasNext())
             {
-                submitting = clientBehavior.getHints().contains(
-                        ClientBehaviorHint.SUBMITTING);
+                ClientBehavior clientBehavior = clientIterator.next();
+                submitting = _appendClientBehaviourScript(target, context, submitting, clientIterator.hasNext(), clientBehavior);
             }
+        }
+        
+        return submitting;
+    }
+
+    /**
+     * @param target
+     * @param context
+     * @param submitting
+     * @param clientIterator
+     * @param clientBehavior
+     * @return
+     */
+    private static boolean _appendClientBehaviourScript(ScriptContext target, ClientBehaviorContext context, boolean submitting, boolean hasNext, ClientBehavior clientBehavior) {
+        String script = clientBehavior.getScript(context);
+        // The script _can_ be null, and in fact is for <f:ajax disabled="true" />
+        if (script != null)
+        {
+            //either strings or functions, but I assume string is more appropriate 
+            //since it allows access to the
+            //origin as this!
+            target.append("'" + escapeJavaScriptForChain(script) + "'");
+            if (hasNext)
+            {
+                target.append(", ");
+            }
+        }
+        if (!submitting)
+        {
+            submitting = clientBehavior.getHints().contains(
+                    ClientBehaviorHint.SUBMITTING);
         }
         return submitting;
     }
@@ -2128,8 +2169,9 @@ public final class HtmlRendererUtils
         {
             List<UIParameter> validParams = getValidUIParameterChildren(
                     facesContext, uiComponent.getChildren(), true, true);
-            for (UIParameter param : validParams)
+            for (int i = 0, size = validParams.size(); i < size; i++)
             {
+                UIParameter param = validParams.get(i);
                 String name = param.getName();
                 Object value = param.getValue();
                 if (retVal == null)
@@ -2160,7 +2202,7 @@ public final class HtmlRendererUtils
      * @param children
      * @param skipNullValue
      * @param skipUnrendered
-     * @return
+     * @return ArrayList size > 0 if any parameter found
      */
     public static List<UIParameter> getValidUIParameterChildren(
             FacesContext facesContext, List<UIComponent> children,
@@ -2185,7 +2227,7 @@ public final class HtmlRendererUtils
      * @param skipUnrendered should UIParameters with isRendered() returning false be skipped
      * @param skipNullName   should UIParameters with a null name be skipped
      *                       (normally true, but in the case of h:outputFormat false)
-     * @return
+     * @return ArrayList size > 0 if any parameter found 
      */
     public static List<UIParameter> getValidUIParameterChildren(
             FacesContext facesContext, List<UIComponent> children,

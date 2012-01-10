@@ -24,6 +24,7 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UICommand;
@@ -511,11 +512,27 @@ public abstract class HtmlLinkRendererBase
         List<ClientBehavior> eventBehaviors = clientBehaviors.get(eventName);
         if (eventBehaviors != null && !eventBehaviors.isEmpty())
         {
-            for (ClientBehavior behavior : eventBehaviors)
-            {
-                if (behavior.getHints().contains(ClientBehaviorHint.SUBMITTING))
+            // perf: in 99% cases is  eventBehaviors javax.faces.component._DeltaList._DeltaList(int) = RandomAccess
+            // instance created in javax.faces.component.UIComponentBase.addClientBehavior(String, ClientBehavior), but
+            // component libraries can provide own implementation
+            if (eventBehaviors instanceof RandomAccess) {
+                for (int i = 0, size = eventBehaviors.size(); i < size; i++)
                 {
-                    return true;
+                    ClientBehavior behavior = eventBehaviors.get(i);
+                    if (behavior.getHints().contains(ClientBehaviorHint.SUBMITTING))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                for (ClientBehavior behavior : eventBehaviors)
+                {
+                    if (behavior.getHints().contains(ClientBehaviorHint.SUBMITTING))
+                    {
+                        return true;
+                    }
                 }
             }
         }
@@ -602,8 +619,9 @@ public abstract class HtmlLinkRendererBase
         
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 FacesContext.getCurrentInstance(), getChildren(component), false, false);
-        for (UIParameter param : validParams) 
+        for (int j = 0, size = validParams.size(); j < size; j++) 
         {
+            UIParameter param = validParams.get(j);
             String name = param.getName();
 
             //Not necessary, since we are using oamSetHiddenInput to create hidden fields
@@ -751,8 +769,10 @@ public abstract class HtmlLinkRendererBase
         
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 facesContext, getChildren(linkComponent), false, false);
-        for (UIParameter param : validParams)
+        
+        for (int i = 0, size = validParams.size(); i < size; i++)
         {
+            UIParameter param = validParams.get(i);
             String name = param.getName();
             Object value = param.getValue();
             addParameterToHref(name, value, hrefBuf, firstParameter, charEncoding, strictXhtmlLinks);

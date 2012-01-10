@@ -273,8 +273,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     context.getAttributes().put(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD, Boolean.TRUE);
                     try
                     {
-                        for (String clientId : clientIdsRemoved)
+                        // perf: clientIds are ArrayList: see method registerOnAddRemoveList(String)
+                        for (int i = 0, size = clientIdsRemoved.size(); i < size; i++)
                         {
+                            String clientId = clientIdsRemoved.get(i);
                             if (!idsRemovedSet.contains(clientId))
                             {
                                 view.invokeOnComponent(context, clientId, new ContextCallback()
@@ -323,8 +325,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 if (clientIdsAdded != null)
                 {
                     Set<String> idsAddedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsAdded.size()));
-                    for (String clientId : clientIdsAdded)
+                    // perf: clientIds are ArrayList: see method setClientsIdsAdded(String)
+                    for (int i = 0, size = clientIdsAdded.size(); i < size; i++)
                     {
+                        String clientId = clientIdsAdded.get(i);
                         if (!idsAddedSet.contains(clientId))
                         {
                             final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);

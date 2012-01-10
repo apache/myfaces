@@ -235,19 +235,36 @@ final class DefaultFacelet extends AbstractFacelet
     {
         if (this._refreshPeriod > 0)
         {
-            Iterator<UIComponent> itr = parent.getFacetsAndChildren();
-            ApplyToken token = new ApplyToken(_alias, System.currentTimeMillis() + _refreshPeriod);
-            while (itr.hasNext())
+            int facetCount = parent.getFacetCount();
+            int childCount = parent.getChildCount();
+            if (childCount > 0 || facetCount > 0)
             {
-                UIComponent c = itr.next();
-                if (!c.isTransient())
+                ApplyToken token = new ApplyToken(_alias, System.currentTimeMillis() + _refreshPeriod);
+
+                if (facetCount > 0)
                 {
-                    Map<String, Object> attr = c.getAttributes();
-                    if (!attr.containsKey(APPLIED_KEY))
+                    for (UIComponent facet : parent.getFacets().values())
                     {
-                        attr.put(APPLIED_KEY, token);
+                        markApplied(token, facet);
                     }
                 }
+                for (int i = 0; i < childCount; i++)
+                {
+                    UIComponent child = parent.getChildren().get(i);
+                    markApplied(token, child);
+                }
+            }
+        }
+    }
+
+    private void markApplied(ApplyToken token, UIComponent c)
+    {
+        if (!c.isTransient())
+        {
+            Map<String, Object> attr = c.getAttributes();
+            if (!attr.containsKey(APPLIED_KEY))
+            {
+                attr.put(APPLIED_KEY, token);
             }
         }
     }

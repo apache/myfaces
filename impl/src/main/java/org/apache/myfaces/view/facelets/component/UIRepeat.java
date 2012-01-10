@@ -346,8 +346,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         for (String clientId : _getChildState().keySet())
         {
-            for (FacesMessage message : context.getMessageList(clientId))
+            // Perf: messages are instances of arrayList (or Collections.emptyList): see Method org.apache.myfaces.context.servlet.FacesContextImpl.addMessage(String, FacesMessage)
+            List<FacesMessage> messageList = context.getMessageList(clientId);
+            for (int i = 0, size = messageList.size(); i < size; i++)
             {
+                FacesMessage message = messageList.get(i);
                 if (message.getSeverity().compareTo(FacesMessage.SEVERITY_ERROR) >= 0)
                 {
                     return true;
@@ -432,10 +435,21 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
 
         // continue hack
-        Iterator<UIComponent> itr = c.getFacetsAndChildren();
-        while (itr.hasNext())
+        if (c.getFacetCount() > 0)
         {
-            _restoreChildState(faces, itr.next());
+            for (UIComponent facet : c.getFacets().values())
+            {
+                _restoreChildState(faces, facet);
+            }
+        }
+        int childCount = c.getChildCount();
+        if (childCount > 0)
+        {
+            for (int i = 0; i < childCount; i++)
+            {
+                UIComponent child = c.getChildren().get(i);
+                _restoreChildState(faces, child);
+            }
         }
     }
 
@@ -468,10 +482,21 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
 
         // continue hack
-        Iterator<UIComponent> itr = c.getFacetsAndChildren();
-        while (itr.hasNext())
+        if (c.getFacetCount() > 0)
         {
-            _saveChildState(faces, itr.next());
+            for (UIComponent facet : c.getFacets().values())
+            {
+                _saveChildState(faces, facet);
+            }
+        }
+        int childCount = c.getChildCount();
+        if (childCount > 0)
+        {
+            for (int i = 0; i < childCount; i++)
+            {
+                UIComponent child = c.getChildren().get(i);
+                _saveChildState(faces, child);
+            }
         }
     }
     

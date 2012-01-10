@@ -19,7 +19,6 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -295,9 +294,9 @@ public class HtmlGridRendererBase
             int columnIndex = 0;
             int rowClassIndex = 0;
             boolean rowStarted = false;
-            for (Iterator it = getChildren(component).iterator(); it.hasNext(); )
+            for (int i = 0, size =  component.getChildCount(); i < size; i++)
             {
-                UIComponent child = (UIComponent)it.next();
+                UIComponent child = component.getChildren().get(i);
                 if (child.isRendered())
                 {
                     if (columnIndex == 0)
