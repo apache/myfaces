@@ -111,14 +111,16 @@ final class DefaultFacelet extends AbstractFacelet
     }    
 
     /**
-     * @see org.apache.myfaces.view.facelets.Facelet#apply(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+     * @see org.apache.myfaces.view.facelets.Facelet#apply(javax.faces.context.FacesContext,
+     *      javax.faces.component.UIComponent)
      */
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
     {
         FaceletCompositionContext myFaceletContext = null;
         boolean faceletCompositionContextInitialized = false;
-        if ( (myFaceletContext = FaceletCompositionContext.getCurrentInstance(facesContext)) == null)
+        myFaceletContext = FaceletCompositionContext.getCurrentInstance(facesContext);
+        if (myFaceletContext == null)
         {
             myFaceletContext = new FaceletCompositionContextImpl(_factory, facesContext);
             myFaceletContext.init(facesContext);
@@ -137,7 +139,8 @@ final class DefaultFacelet extends AbstractFacelet
             // push the parent as a UniqueIdVendor to the stack here,
             // if there is no UniqueIdVendor on the stack yet
             boolean pushedUniqueIdVendor = false;
-            if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+            if (parent instanceof UniqueIdVendor
+                && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
             {
                 ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
                 pushedUniqueIdVendor = true;
@@ -232,19 +235,36 @@ final class DefaultFacelet extends AbstractFacelet
     {
         if (this._refreshPeriod > 0)
         {
-            Iterator<UIComponent> itr = parent.getFacetsAndChildren();
-            ApplyToken token = new ApplyToken(_alias, System.currentTimeMillis() + _refreshPeriod);
-            while (itr.hasNext())
+            int facetCount = parent.getFacetCount();
+            int childCount = parent.getChildCount();
+            if (childCount > 0 || facetCount > 0)
             {
-                UIComponent c = itr.next();
-                if (!c.isTransient())
+                ApplyToken token = new ApplyToken(_alias, System.currentTimeMillis() + _refreshPeriod);
+
+                if (facetCount > 0)
                 {
-                    Map<String, Object> attr = c.getAttributes();
-                    if (!attr.containsKey(APPLIED_KEY))
+                    for (UIComponent facet : parent.getFacets().values())
                     {
-                        attr.put(APPLIED_KEY, token);
+                        markApplied(token, facet);
                     }
                 }
+                for (int i = 0; i < childCount; i++)
+                {
+                    UIComponent child = parent.getChildren().get(i);
+                    markApplied(token, child);
+                }
+            }
+        }
+    }
+
+    private void markApplied(ApplyToken token, UIComponent c)
+    {
+        if (!c.isTransient())
+        {
+            Map<String, Object> attr = c.getAttributes();
+            if (!attr.containsKey(APPLIED_KEY))
+            {
+                attr.put(APPLIED_KEY, token);
             }
         }
     }
@@ -343,8 +363,9 @@ final class DefaultFacelet extends AbstractFacelet
 
     /**
      * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
-     * getRelativePath(String)}, then calls {@link #include(FaceletContext, UIComponent, URL) include(FaceletContext,
-     * UIComponent, URL)}.
+     * getRelativePath(String)}, then calls
+     * {@link #include(org.apache.myfaces.view.facelets.AbstractFaceletContext,
+     * javax.faces.component.UIComponent, java.net.URL)}.
      * 
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx
@@ -358,8 +379,8 @@ final class DefaultFacelet extends AbstractFacelet
      * @throws FaceletException
      * @throws ELException
      */
-    public void include(AbstractFaceletContext ctx, UIComponent parent, String path) throws IOException, FacesException,
-            FaceletException, ELException
+    public void include(AbstractFaceletContext ctx, UIComponent parent, String path)
+            throws IOException, FacesException, FaceletException, ELException
     {
         URL url = this.getRelativePath(path);
         this.include(ctx, parent, url);
@@ -387,8 +408,8 @@ final class DefaultFacelet extends AbstractFacelet
         f.include(ctx, parent);
     }
     
-    public void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource) throws IOException, FacesException,
-            FaceletException, ELException
+    public void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource)
+            throws IOException, FacesException, FaceletException, ELException
     {
         // Here we are creating a facelet using the url provided by the resource.
         // It works, but the Resource API provides getInputStream() for that. But the default
@@ -405,7 +426,8 @@ final class DefaultFacelet extends AbstractFacelet
             // if there is no UniqueIdVendor on the stack yet
             boolean pushedUniqueIdVendor = false;
             FaceletCompositionContext mctx = ctx.getFaceletCompositionContext();
-            if (parent instanceof UniqueIdVendor && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+            if (parent instanceof UniqueIdVendor
+                && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
             {
                 mctx.pushUniqueIdVendorToStack((UniqueIdVendor) parent);
                 pushedUniqueIdVendor = true;

@@ -301,8 +301,11 @@ public class FacesConfigurator
             lastModified = resModified;
         }
 
-        for (String systemId : getConfigFilesList())
+        // perf: method getConfigFilesList() creates a ArrayList    
+        List<String> configFilesList = getConfigFilesList();
+        for (int i = 0, size = configFilesList.size(); i < size; i++)
         {
+            String systemId = configFilesList.get(i);
             resModified = getResourceLastModified(systemId);
             if (resModified > lastModified)
             {

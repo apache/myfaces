@@ -70,7 +70,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     private final static DataModel<?> EMPTY_MODEL = new ListDataModel<Object>(Collections.emptyList());
 
-    private final static SavedState NullState = new SavedState();
+    private final static SavedState NULL_STATE = new SavedState();
 
     private Map<String, SavedState> _childState;
 
@@ -345,8 +345,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         for (String clientId : _getChildState().keySet())
         {
-            for (FacesMessage message : context.getMessageList(clientId))
+            // Perf: messages are instances of arrayList (or Collections.emptyList): see Method org.apache.myfaces.context.servlet.FacesContextImpl.addMessage(String, FacesMessage)
+            List<FacesMessage> messageList = context.getMessageList(clientId);
+            for (int i = 0, size = messageList.size(); i < size; i++)
             {
+                FacesMessage message = messageList.get(i);
                 if (message.getSeverity().compareTo(FacesMessage.SEVERITY_ERROR) >= 0)
                 {
                     return true;
@@ -400,8 +403,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (getChildCount() > 0)
         {
             FacesContext context = getFacesContext();
-            for (UIComponent child : getChildren())
+            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
             {
+                UIComponent child = getChildren().get(i);
                 _restoreChildState(context, child);
             }
         }
@@ -425,15 +429,26 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             else
             {
-                NullState.apply(evh);
+                NULL_STATE.apply(evh);
             }
         }
 
         // continue hack
-        Iterator<UIComponent> itr = c.getFacetsAndChildren();
-        while (itr.hasNext())
+        if (c.getFacetCount() > 0)
         {
-            _restoreChildState(faces, itr.next());
+            for (UIComponent facet : c.getFacets().values())
+            {
+                _restoreChildState(faces, facet);
+            }
+        }
+        int childCount = c.getChildCount();
+        if (childCount > 0)
+        {
+            for (int i = 0; i < childCount; i++)
+            {
+                UIComponent child = c.getChildren().get(i);
+                _restoreChildState(faces, child);
+            }
         }
     }
 
@@ -442,8 +457,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (getChildCount() > 0)
         {
             FacesContext context = getFacesContext();
-            for (UIComponent child : getChildren())
+            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
             {
+                UIComponent child = getChildren().get(i);
                 _saveChildState(context, child);
             }
         }
@@ -465,10 +481,21 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
 
         // continue hack
-        Iterator<UIComponent> itr = c.getFacetsAndChildren();
-        while (itr.hasNext())
+        if (c.getFacetCount() > 0)
         {
-            _saveChildState(faces, itr.next());
+            for (UIComponent facet : c.getFacets().values())
+            {
+                _saveChildState(faces, facet);
+            }
+        }
+        int childCount = c.getChildCount();
+        if (childCount > 0)
+        {
+            for (int i = 0; i < childCount; i++)
+            {
+                UIComponent child = c.getChildren().get(i);
+                _saveChildState(faces, child);
+            }
         }
     }
     
@@ -526,59 +553,70 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         return (index - getOffset()) / getStep();
     }
-    
-    private void _validateAttributes () throws FacesException {
+
+    private void _validateAttributes() throws FacesException
+    {
         int begin = getOffset();
         int end = getDataModel().getRowCount();
         int size = getSize();
         int step = getStep();
         boolean sizeIsEnd = false;
-        
-        if (size == -1) {
+
+        if (size == -1)
+        {
             size = end;
             sizeIsEnd = true;
         }
-        
-        if (end >= 0) {
-            if (size < 0) {
-                throw new FacesException ("iteration size cannot be less " +
-                    "than zero");
+
+        if (end >= 0)
+        {
+            if (size < 0)
+            {
+                throw new FacesException("iteration size cannot be less " +
+                        "than zero");
             }
-            
-            else if (!sizeIsEnd && (begin + size) > end) {
-                throw new FacesException ("iteration size cannot be greater " +
+
+            else if (!sizeIsEnd && (begin + size) > end)
+            {
+                throw new FacesException("iteration size cannot be greater " +
+                        "than collection size");
+            }
+        }
+
+        if ((size > -1) && (begin > end))
+        {
+            throw new FacesException("iteration offset cannot be greater " +
                     "than collection size");
-            }
         }
-        
-        if ((size > -1) && (begin > end)) {
-            throw new FacesException ("iteration offset cannot be greater " +
-                "than collection size");
-        }
-        
-        if (step == -1) {
+
+        if (step == -1)
+        {
             step = 1;
         }
-        
-        if (step < 0) {
-            throw new FacesException ("iteration step size cannot be less " +
-                "than zero");
+
+        if (step < 0)
+        {
+            throw new FacesException("iteration step size cannot be less " +
+                    "than zero");
         }
-        
-        else if (step == 0) {
-            throw new FacesException ("iteration step size cannot be equal " +
-                "to zero");
+
+        else if (step == 0)
+        {
+            throw new FacesException("iteration step size cannot be equal " +
+                    "to zero");
         }
-        
+
         _end = size;
         _step = step;
     }
-    
+
     public void process(FacesContext faces, PhaseId phase)
     {
         // stop if not rendered
         if (!isRendered())
+        {
             return;
+        }
         
         // validate attributes
         _validateAttributes();
@@ -620,8 +658,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     }
                     else
                     {
-                        for (UIComponent child : getChildren())
+                        for (int j = 0, childCount = getChildCount(); j < childCount; j++)
                         {
+                            UIComponent child = getChildren().get(j);
                             if (PhaseId.APPLY_REQUEST_VALUES.equals(phase))
                             {
                                 child.processDecodes(faces);
@@ -766,7 +805,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     if (this.getChildCount() > 0)
                     {
                         // Searching for this component's children/facets
-                        for (Iterator<UIComponent> it = this.getChildren().iterator(); !returnValue && it.hasNext();) {
+                        for (Iterator<UIComponent> it = this.getChildren().iterator(); !returnValue && it.hasNext();)
+                        {
                             returnValue = it.next().invokeOnComponent(context, clientId, callback);
                         }
                     }
@@ -888,8 +928,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         _setIndex(i);
                         while (i <= end && _isIndexAvailable())
                         {
-                            for (UIComponent child : getChildren()) 
+                            for (int j = 0, childCount = getChildCount(); j < childCount; j++)
                             {
+                                UIComponent child = getChildren().get(j);
                                 if (child.visitTree(context, callback)) 
                                 {
                                     return true;
