@@ -24,10 +24,24 @@ import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 // TODO @Resources
 public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLifecycleProvider
 {
+    /**
+     * Cache the Method instances per ClassLoader using the Class-Name.
+     * NOTE that we do it this way, because the only other valid way in order to support a shared
+     * classloader scenario would be to use a WeakHashMap<Class<?>, Method[]>, but this
+     * creates a cyclic reference between the key and the value of the WeakHashMap which will
+     * most certainly cause a memory leak! Furthermore we can manually cleanup the Map when
+     * the webapp is undeployed just by removing the Map for the current ClassLoader. 
+     */
+    private volatile static WeakHashMap<ClassLoader, Map<Class,Field[]> > declaredFieldBeans = 
+            new WeakHashMap<ClassLoader, Map<Class, Field[]>>();
 
     protected Context context;
     private static final String JAVA_COMP_ENV = "java:comp/env/";
@@ -37,6 +51,37 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
         this.context = context;
     }
 
+    private static Map<Class,Field[]> getDeclaredFieldBeansMap()
+    {
+        ClassLoader cl = ClassUtils.getContextClassLoader();
+        
+        Map<Class,Field[]> metadata = (Map<Class,Field[]>)
+                declaredFieldBeans.get(cl);
+
+        if (metadata == null)
+        {
+            // Ensure thread-safe put over _metadata, and only create one map
+            // per classloader to hold metadata.
+            synchronized (declaredFieldBeans)
+            {
+                metadata = createDeclaredFieldBeansMap(cl, metadata);
+            }
+        }
+
+        return metadata;
+    }
+    
+    private static Map<Class,Field[]> createDeclaredFieldBeansMap(
+            ClassLoader cl, Map<Class,Field[]> metadata)
+    {
+        metadata = (Map<Class,Field[]>) declaredFieldBeans.get(cl);
+        if (metadata == null)
+        {
+            metadata = new HashMap<Class,Field[]>();
+            declaredFieldBeans.put(cl, metadata);
+        }
+        return metadata;
+    }
 
     /**
      * Inject resources in specified instance.
@@ -67,21 +112,38 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
             superclass = superclass.getSuperclass();
         } 
     }
+    
+    Field[] getDeclaredFieldBeans(Class clazz)
+    {
+        Map<Class,Field[]> declaredFieldBeansMap = getDeclaredFieldBeansMap();
+        Field[] fields = declaredFieldBeansMap.get(clazz);
+        if (fields == null)
+        {
+            fields = clazz.getDeclaredFields();
+            synchronized(declaredFieldBeansMap)
+            {
+                declaredFieldBeansMap.put(clazz, fields);
+            }
+        }
+        return fields;
+    }
 
     private void checkAnnotation(Class<?> clazz, Object instance)
             throws NamingException, IllegalAccessException, InvocationTargetException
     {
         // Initialize fields annotations
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields)
+        Field[] fields = getDeclaredFieldBeans(clazz);
+        for (int i = 0; i < fields.length; i++)
         {
+            Field field = fields[i];
             checkFieldAnnotation(field, instance);
         }
 
         // Initialize methods annotations
-        Method[] methods = clazz.getDeclaredMethods();
-        for (Method method : methods)
+        Method[] methods = getDeclaredMethods(clazz);
+        for (int i = 0; i < methods.length; i++)
         {
+            Method method = methods[i];
             checkMethodAnnotation(method, instance);
         }
     }
