@@ -89,6 +89,7 @@ public class HtmlResponseWriterImpl
     
     private String _characterEncoding;
     private boolean _wrapScriptContentWithXmlCommentTag;
+    private boolean _isUTF8;
     
     private String _startElementName;
     private Boolean _isInsideScript;
@@ -190,6 +191,7 @@ public class HtmlResponseWriterImpl
             // canonize to uppercase, that's the standard format
             _characterEncoding = characterEncoding.toUpperCase();
         }
+        _isUTF8 = UTF8.equals(_characterEncoding);
     }
 
     public static boolean supportsContentType(String contentType)
@@ -655,8 +657,8 @@ public class HtmlResponseWriterImpl
             _currentWriter.write(' ');
             _currentWriter.write(name);
             _currentWriter.write("=\"");
-            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                    strValue, false, false, !UTF8.equals(_characterEncoding)));
+            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
+                    strValue, false, false, !_isUTF8);
             _currentWriter.write('"');
         }
     }
@@ -679,8 +681,8 @@ public class HtmlResponseWriterImpl
         _currentWriter.write("=\"");
         if (strValue.toLowerCase().startsWith("javascript:"))
         {
-            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                    strValue, false, false, !UTF8.equals(_characterEncoding)));
+            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
+                    strValue, false, false, !_isUTF8);
         }
         else
         {
@@ -712,9 +714,8 @@ public class HtmlResponseWriterImpl
             }
             */
             //_writer.write(strValue);
-            _currentWriter.write(
-                    org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAtributte(
-                            strValue, _characterEncoding));
+            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAtributte(_currentWriter,
+                            strValue, _characterEncoding);
         }
         _currentWriter.write('"');
     }
@@ -746,19 +747,19 @@ public class HtmlResponseWriterImpl
         if (isScriptOrStyle())
         {
             // Don't bother encoding anything if chosen character encoding is UTF-8
-            if (UTF8.equals(_characterEncoding))
+            if (_isUTF8)
             {
                 _currentWriter.write(strValue);
             }
             else
             {
-                _currentWriter.write(UnicodeEncoder.encode(strValue));
+                UnicodeEncoder.encode(_currentWriter, strValue);
             }
         }
         else
         {
-            _currentWriter.write(org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                    strValue, false, false, !UTF8.equals(_characterEncoding)));
+            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
+                      strValue, false, false, !_isUTF8);
         }
     }
 
@@ -779,26 +780,26 @@ public class HtmlResponseWriterImpl
         {
             String strValue = new String(cbuf, off, len);
             // Don't bother encoding anything if chosen character encoding is UTF-8
-            if (UTF8.equals(_characterEncoding))
+            if (_isUTF8)
             {
                 _currentWriter.write(strValue);
             }
             else
             {
-                _currentWriter.write(UnicodeEncoder.encode(strValue));
+                UnicodeEncoder.encode(_currentWriter, strValue);
             }
         }
         else if (isTextarea())
         {
             // For textareas we must *not* map successive spaces to &nbsp or Newlines to <br/>
             org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                    cbuf, off, len, false, false, !UTF8.equals(_characterEncoding), _currentWriter);
+                    cbuf, off, len, false, false, !_isUTF8, _currentWriter);
         }
         else
         {
             // We map successive spaces to &nbsp; and Newlines to <br/>
             org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                    cbuf, off, len, true, true, !UTF8.equals(_characterEncoding), _currentWriter);
+                    cbuf, off, len, true, true, !_isUTF8, _currentWriter);
         }
     }
 
@@ -896,15 +897,14 @@ public class HtmlResponseWriterImpl
     public void write(char cbuf[], int off, int len) throws IOException
     {
         closeStartTagIfNecessary();
-        String strValue = new String(cbuf, off, len);
         // Don't bother encoding anything if chosen character encoding is UTF-8
-        if (UTF8.equals(_characterEncoding))
+        if (_isUTF8)
         {
-            _currentWriter.write(strValue);
+            _currentWriter.write(cbuf, off, len);
         }
         else
         {
-            _currentWriter.write(UnicodeEncoder.encode(strValue));
+            UnicodeEncoder.encode(_currentWriter, cbuf, off, len);
         }
     }
 
@@ -917,15 +917,14 @@ public class HtmlResponseWriterImpl
     public void write(char cbuf[]) throws IOException
     {
         closeStartTagIfNecessary();
-        String strValue = new String(cbuf);
         // Don't bother encoding anything if chosen character encoding is UTF-8
-        if (UTF8.equals(_characterEncoding))
+        if (_isUTF8)
         {
-            _currentWriter.write(strValue);
+            _currentWriter.write(cbuf);
         }
         else
         {
-            _currentWriter.write(UnicodeEncoder.encode(strValue));
+            UnicodeEncoder.encode(_currentWriter, cbuf, 0, cbuf.length);
         }
     }
 
@@ -937,13 +936,13 @@ public class HtmlResponseWriterImpl
         if (str.length() > 0)
         {
             // Don't bother encoding anything if chosen character encoding is UTF-8
-            if (UTF8.equals(_characterEncoding))
+            if (_isUTF8)
             {
                 _currentWriter.write(str);
             }
             else
             {
-                _currentWriter.write(UnicodeEncoder.encode(str));
+                UnicodeEncoder.encode(_currentWriter, str);
             }
         }
     }
@@ -951,15 +950,14 @@ public class HtmlResponseWriterImpl
     public void write(String str, int off, int len) throws IOException
     {
         closeStartTagIfNecessary();
-        String strValue = str.substring(off, off+len);
         // Don't bother encoding anything if chosen character encoding is UTF-8
-        if (UTF8.equals(_characterEncoding))
+        if (_isUTF8)
         {
-            _currentWriter.write(strValue);
+            _currentWriter.write(str, off, len);
         }
         else
         {
-            _currentWriter.write(UnicodeEncoder.encode(strValue));
+            UnicodeEncoder.encode(_currentWriter, str, off, len);
         }
     }
     
