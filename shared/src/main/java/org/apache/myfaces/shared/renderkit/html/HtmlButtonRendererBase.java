@@ -229,7 +229,7 @@ public class HtmlButtonRendererBase
             //fallback into the pre 2.0 code to keep backwards compatibility with libraries which rely on internals
             if (!reset && !button)
             {
-                StringBuffer onClick = buildOnClick(uiComponent, facesContext, writer, validParams);
+                StringBuilder onClick = buildOnClick(uiComponent, facesContext, writer, validParams);
                 if (onClick.length() != 0)
                 {
                     writer.writeAttribute(HTML.ONCLICK_ATTR, onClick.toString(), null);
@@ -345,7 +345,7 @@ public class HtmlButtonRendererBase
             userOnClick.append(';');
         }
 
-        StringBuffer rendererOnClick = new StringBuffer();
+        StringBuilder rendererOnClick = new StringBuilder();
 
         if (nestedFormInfo != null) 
         {
@@ -392,7 +392,7 @@ public class HtmlButtonRendererBase
         UIComponent nestingForm = formInfo.getForm();
         String formName = formInfo.getFormName();
 
-        StringBuffer onClick = new StringBuffer();
+        StringBuilder onClick = new StringBuilder();
 
         if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
         {
@@ -404,7 +404,7 @@ public class HtmlButtonRendererBase
         }
         else
         {
-            StringBuffer params = addChildParameters(facesContext, component, nestingForm, validParams);
+            StringBuilder params = addChildParameters(facesContext, component, nestingForm, validParams);
 
             String target = getTarget(component);
 
@@ -440,11 +440,11 @@ public class HtmlButtonRendererBase
         return onClick.toString();
     }
     
-    private StringBuffer addChildParameters(FacesContext context, UIComponent component, 
+    private StringBuilder addChildParameters(FacesContext context, UIComponent component, 
             UIComponent nestingForm, List<UIParameter> validParams)
     {
         //add child parameters
-        StringBuffer params = new StringBuffer();
+        StringBuilder params = new StringBuilder();
         params.append("[");
         
         for (UIParameter param : validParams) 
@@ -473,7 +473,7 @@ public class HtmlButtonRendererBase
             if (value != null)
             {
                 strParamValue = value.toString();
-                StringBuffer buff = null;
+                StringBuilder buff = null;
                 for (int i = 0; i < strParamValue.length(); i++)
                 {
                     char c = strParamValue.charAt(i); 
@@ -481,7 +481,7 @@ public class HtmlButtonRendererBase
                     {
                         if (buff == null)
                         {
-                            buff = new StringBuffer();
+                            buff = new StringBuilder();
                             buff.append(strParamValue.substring(0,i));
                         }
                         buff.append('\\');
@@ -528,7 +528,7 @@ public class HtmlButtonRendererBase
         return target;
     }
 
-    protected StringBuffer buildOnClick(UIComponent uiComponent, FacesContext facesContext,
+    protected StringBuilder buildOnClick(UIComponent uiComponent, FacesContext facesContext,
                                         ResponseWriter writer, List<UIParameter> validParams)
         throws IOException
     {
@@ -559,7 +559,7 @@ public class HtmlButtonRendererBase
             DummyFormUtils.setWriteDummyForm(facesContext, true);
         }
         */
-        StringBuffer onClick = new StringBuffer();
+        StringBuilder onClick = new StringBuilder();
         String commandOnClick = (String) uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
 
         if (commandOnClick != null)
@@ -579,7 +579,7 @@ public class HtmlButtonRendererBase
             
             if (validParams != null && !validParams.isEmpty() )
             {
-                StringBuffer params = addChildParameters(
+                StringBuilder params = addChildParameters(
                         facesContext, uiComponent, nestedFormInfo.getForm(), validParams);
 
                 String target = getTarget(uiComponent);

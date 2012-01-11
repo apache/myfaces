@@ -125,7 +125,7 @@ public final class JavascriptUtils
             return s + "_";
         }
 
-        StringBuffer buf = null;
+        StringBuilder buf = null;
         for (int i = 0, len = s.length(); i < len; i++)
         {
             char c = s.charAt(i);
@@ -133,13 +133,16 @@ public final class JavascriptUtils
             if (Character.isLetterOrDigit(c))
             {
                 // allowed char
-                if (buf != null) buf.append(c);
+                if (buf != null)
+                {
+                    buf.append(c);
+                }
             }
             else
             {
                 if (buf == null)
                 {
-                    buf = new StringBuffer(s.length() + 10);
+                    buf = new StringBuilder(s.length() + 10);
                     buf.append(s.substring(0, i));
                 }
 
@@ -197,7 +200,7 @@ public final class JavascriptUtils
         {
             return "";
         }
-        StringBuffer sb = null;    //create later on demand
+        StringBuilder sb = null;    //create later on demand
         String app;
         char c;
         for (int i = 0; i < string.length (); ++i)
@@ -211,15 +214,18 @@ public final class JavascriptUtils
                 case '\'' : app = "\\'";  break;
                 case '\n' : app = "\\n";  break;
                 case '\r' : app = "\\r";  break;
+                default:
             }
             if (app != null)
             {
                 if (sb == null)
                 {
-                    sb = new StringBuffer(string.substring(0, i));
+                    sb = new StringBuilder(string.substring(0, i));
                 }
                 sb.append(app);
-            } else {
+            }
+            else
+            {
                 if (sb != null)
                 {
                     sb.append(c);

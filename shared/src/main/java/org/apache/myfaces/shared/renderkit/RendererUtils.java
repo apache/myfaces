@@ -76,17 +76,21 @@ import org.apache.myfaces.shared.util.SelectItemsIterator;
  */
 public final class RendererUtils
 {
-    private RendererUtils(){
+    private RendererUtils()
+    {
         //nope
     }
-    
+
     //private static final Log log = LogFactory.getLog(RendererUtils.class);
-    private static final Logger log = Logger.getLogger(RendererUtils.class.getName());
-    
-    public static final String SELECT_ITEM_LIST_ATTR = RendererUtils.class.getName() + ".LIST";
+    private static final Logger log = Logger.getLogger(RendererUtils.class
+            .getName());
+
+    public static final String SELECT_ITEM_LIST_ATTR = RendererUtils.class
+            .getName() + ".LIST";
     public static final String EMPTY_STRING = "";
     //This constant is no longer used by UISelectOne/UISelectMany instances
-    public static final Object NOTHING = new Serializable() {
+    public static final Object NOTHING = new Serializable()
+    {
         public boolean equals(final Object o)
         {
             if (o != null)
@@ -98,6 +102,12 @@ public final class RendererUtils
             }
             return false;
         }
+
+        @Override
+        public int hashCode()
+        {
+            return super.hashCode();
+        }
     };
 
     public static final String ACTION_FOR_LIST = "org.apache.myfaces.ActionForList";
@@ -105,27 +115,30 @@ public final class RendererUtils
 
     public static final String SEQUENCE_PARAM = "jsf_sequence";
 
-    private static final String RENDER_KIT_IMPL = RendererUtils.class.getName() + ".RenderKitImpl";
-    
+    private static final String RENDER_KIT_IMPL = RendererUtils.class.getName()
+            + ".RenderKitImpl";
+
     // This nice constant is "specified" 13.1.1.2 The Resource API Approach in Spec as an example
     public static final String RES_NOT_FOUND = "RES_NOT_FOUND";
 
     public static String getPathToComponent(UIComponent component)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
-        if(component == null)
+        if (component == null)
         {
             buf.append("{Component-Path : ");
             buf.append("[null]}");
             return buf.toString();
         }
 
-        getPathToComponent(component,buf);
+        getPathToComponent(component, buf);
 
-        buf.insert(0,"{Component-Path : ");
-        Object location = component.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
-        if (location != null) {
+        buf.insert(0, "{Component-Path : ");
+        Object location = component.getAttributes().get(
+                UIComponent.VIEW_LOCATION_KEY);
+        if (location != null)
+        {
             buf.append(" Location: ").append(location);
         }
         buf.append("}");
@@ -133,16 +146,19 @@ public final class RendererUtils
         return buf.toString();
     }
 
-    private static void getPathToComponent(UIComponent component, StringBuffer buf)
+    private static void getPathToComponent(UIComponent component,
+            StringBuilder buf)
     {
-        if(component == null)
+        if (component == null)
+        {
             return;
+        }
 
-        StringBuffer intBuf = new StringBuffer();
+        StringBuilder intBuf = new StringBuilder();
 
         intBuf.append("[Class: ");
         intBuf.append(component.getClass().getName());
-        if(component instanceof UIViewRoot)
+        if (component instanceof UIViewRoot)
         {
             intBuf.append(",ViewId: ");
             intBuf.append(((UIViewRoot) component).getViewId());
@@ -154,38 +170,44 @@ public final class RendererUtils
         }
         intBuf.append("]");
 
-        buf.insert(0,intBuf.toString());
+        buf.insert(0, intBuf.toString());
 
         getPathToComponent(component.getParent(), buf);
     }
 
-    public static String getConcatenatedId(FacesContext context, UIComponent container,
-                                           String clientId)
+    public static String getConcatenatedId(FacesContext context,
+            UIComponent container, String clientId)
     {
         UIComponent child = container.findComponent(clientId);
 
-        if(child == null)
-                return clientId;
+        if (child == null)
+        {
+            return clientId;
+        }
 
         return getConcatenatedId(context, child);
     }
 
-    public static String getConcatenatedId(FacesContext context, UIComponent component)
+    public static String getConcatenatedId(FacesContext context,
+            UIComponent component)
     {
-        if (context == null) throw new NullPointerException("context");
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
 
-        StringBuffer idBuf = new StringBuffer();
+        StringBuilder idBuf = new StringBuilder();
 
         idBuf.append(component.getId());
 
         UIComponent parent;
 
-        while((parent = component.getParent())!=null)
+        while ((parent = component.getParent()) != null)
         {
-            if(parent instanceof NamingContainer)
+            if (parent instanceof NamingContainer)
             {
-                idBuf.insert(0,UINamingContainer.getSeparatorChar(context));
-                idBuf.insert(0,parent.getId());
+                idBuf.insert(0, UINamingContainer.getSeparatorChar(context));
+                idBuf.insert(0, parent.getId());
             }
         }
 
@@ -196,50 +218,54 @@ public final class RendererUtils
     {
         Object value = getObjectValue(component);
         // Try to convert to Boolean if it is a String
-        if (value instanceof  String) {
-            value = Boolean.valueOf((String)value);
+        if (value instanceof String)
+        {
+            value = Boolean.valueOf((String) value);
         }
-        
-        if (value==null || value instanceof Boolean)
+
+        if (value == null || value instanceof Boolean)
         {
             return (Boolean) value;
         }
 
-        throw new IllegalArgumentException("Expected submitted value of type Boolean for Component : "+
-                    getPathToComponent(component));
-        
+        throw new IllegalArgumentException(
+                "Expected submitted value of type Boolean for Component : "
+                        + getPathToComponent(component));
+
     }
 
     public static Date getDateValue(UIComponent component)
     {
         Object value = getObjectValue(component);
-        if (value==null || value instanceof Date)
+        if (value == null || value instanceof Date)
         {
             return (Date) value;
         }
 
-        throw new IllegalArgumentException("Expected submitted value of type Date for component : "
-                +getPathToComponent(component));
+        throw new IllegalArgumentException(
+                "Expected submitted value of type Date for component : "
+                        + getPathToComponent(component));
     }
 
     public static Object getObjectValue(UIComponent component)
     {
         if (!(component instanceof ValueHolder))
         {
-            throw new IllegalArgumentException("Component : "+
-                    getPathToComponent(component)+"is not a ValueHolder");
+            throw new IllegalArgumentException("Component : "
+                    + getPathToComponent(component) + "is not a ValueHolder");
         }
 
         if (component instanceof EditableValueHolder)
         {
-            Object value = ((EditableValueHolder)component).getSubmittedValue();
+            Object value = ((EditableValueHolder) component)
+                    .getSubmittedValue();
             if (value != null)
             {
                 return value;
             }
         }
 
-        return ((ValueHolder)component).getValue();
+        return ((ValueHolder) component).getValue();
     }
 
     @Deprecated
@@ -264,83 +290,6 @@ public final class RendererUtils
     }
 
     public static String getStringValue(FacesContext facesContext,
-                                        UIComponent component)
-    {
-        try
-        {
-            if (!(component instanceof ValueHolder))
-            {
-                throw new IllegalArgumentException("Component : "+getPathToComponent(component)+"is not a ValueHolder");
-            }
-
-            if (component instanceof EditableValueHolder)
-            {
-                Object submittedValue = ((EditableValueHolder)component).getSubmittedValue();
-                if (submittedValue != null)
-                {
-                        if (log.isLoggable(Level.FINE)) log.fine("returning 1 '" + submittedValue + "'");
-                        return submittedValue.toString();
-                }
-            }
-
-            Object value;
-
-            if(component instanceof EditableValueHolder) {
-
-                EditableValueHolder holder = (EditableValueHolder) component;
-                
-                if(holder.isLocalValueSet()) {
-                    value = holder.getLocalValue();
-                } else {
-                    value = getValue(component);
-                }
-            }
-            else {
-                value = getValue(component);
-            }
-
-            Converter converter = ((ValueHolder)component).getConverter();
-            if (converter == null  && value != null)
-            {
-
-                try
-                {
-                    converter = facesContext.getApplication().createConverter(value.getClass());
-                    if (log.isLoggable(Level.FINE)) log.fine("the created converter is " + converter);
-                }
-                catch (FacesException e)
-                {
-                    log.log(Level.SEVERE, "No converter for class " + value.getClass().getName() + " found (component id=" + component.getId() + ").", e);
-                    // converter stays null
-                }
-            }
-
-            if (converter == null)
-            {
-                if (value == null)
-                {
-                    if (log.isLoggable(Level.FINE)) log.fine("returning an empty string");
-                    return "";
-                }
-
-                if (log.isLoggable(Level.FINE)) log.fine("returning an .toString");
-                return value.toString();
-                
-            }
-
-            if (log.isLoggable(Level.FINE)) log.fine("returning converter get as string " + converter);
-            return converter.getAsString(facesContext, component, value);
-            
-        }
-        catch(PropertyNotFoundException ex)
-        {
-            log.log(Level.SEVERE, "Property not found - called by component : "+getPathToComponent(component),ex);
-
-            throw ex;
-        }
-    }
-    
-    public static String getStringFromSubmittedValueOrLocalValueReturnNull(FacesContext facesContext,
             UIComponent component)
     {
         try
@@ -359,7 +308,9 @@ public final class RendererUtils
                 if (submittedValue != null)
                 {
                     if (log.isLoggable(Level.FINE))
+                    {
                         log.fine("returning 1 '" + submittedValue + "'");
+                    }
                     return submittedValue.toString();
                 }
             }
@@ -394,7 +345,114 @@ public final class RendererUtils
                     converter = facesContext.getApplication().createConverter(
                             value.getClass());
                     if (log.isLoggable(Level.FINE))
+                    {
                         log.fine("the created converter is " + converter);
+                    }
+                }
+                catch (FacesException e)
+                {
+                    log.log(Level.SEVERE, "No converter for class "
+                            + value.getClass().getName()
+                            + " found (component id=" + component.getId()
+                            + ").", e);
+                    // converter stays null
+                }
+            }
+
+            if (converter == null)
+            {
+                if (value == null)
+                {
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("returning an empty string");
+                    }
+                    return "";
+                }
+
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("returning an .toString");
+                }
+                return value.toString();
+
+            }
+
+            if (log.isLoggable(Level.FINE))
+            {
+                log.fine("returning converter get as string " + converter);
+            }
+            return converter.getAsString(facesContext, component, value);
+
+        }
+        catch (PropertyNotFoundException ex)
+        {
+            log.log(Level.SEVERE, "Property not found - called by component : "
+                    + getPathToComponent(component), ex);
+
+            throw ex;
+        }
+    }
+
+    public static String getStringFromSubmittedValueOrLocalValueReturnNull(
+            FacesContext facesContext, UIComponent component)
+    {
+        try
+        {
+            if (!(component instanceof ValueHolder))
+            {
+                throw new IllegalArgumentException("Component : "
+                        + getPathToComponent(component)
+                        + "is not a ValueHolder");
+            }
+
+            if (component instanceof EditableValueHolder)
+            {
+                Object submittedValue = ((EditableValueHolder) component)
+                        .getSubmittedValue();
+                if (submittedValue != null)
+                {
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("returning 1 '" + submittedValue + "'");
+                    }
+                    return submittedValue.toString();
+                }
+            }
+
+            Object value;
+
+            if (component instanceof EditableValueHolder)
+            {
+
+                EditableValueHolder holder = (EditableValueHolder) component;
+
+                if (holder.isLocalValueSet())
+                {
+                    value = holder.getLocalValue();
+                }
+                else
+                {
+                    value = getValue(component);
+                }
+            }
+            else
+            {
+                value = getValue(component);
+            }
+
+            Converter converter = ((ValueHolder) component).getConverter();
+            if (converter == null && value != null)
+            {
+
+                try
+                {
+                    converter = facesContext.getApplication().createConverter(
+                            value.getClass());
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("the created converter is " + converter);
+                    }
                 }
                 catch (FacesException e)
                 {
@@ -416,13 +474,17 @@ public final class RendererUtils
                 }
 
                 if (log.isLoggable(Level.FINE))
+                {
                     log.fine("returning an .toString");
+                }
                 return value.toString();
 
             }
 
             if (log.isLoggable(Level.FINE))
+            {
                 log.fine("returning converter get as string " + converter);
+            }
             return converter.getAsString(facesContext, component, value);
 
         }
@@ -435,16 +497,18 @@ public final class RendererUtils
         }
     }
 
-    private static Object getValue(UIComponent component) {
+    private static Object getValue(UIComponent component)
+    {
         Object value;
         try
         {
             value = ((ValueHolder) component).getValue();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            throw new FacesException("Could not retrieve value of component with path : "+
-                    getPathToComponent(component),ex);
+            throw new FacesException(
+                    "Could not retrieve value of component with path : "
+                            + getPathToComponent(component), ex);
         }
         return value;
     }
@@ -468,27 +532,27 @@ public final class RendererUtils
         {
             if (value instanceof Integer)
             {
-                return ((Number)value).intValue() == Integer.MIN_VALUE;
+                return ((Number) value).intValue() == Integer.MIN_VALUE;
             }
             else if (value instanceof Double)
             {
-                return ((Number)value).doubleValue() == Double.MIN_VALUE;
+                return ((Number) value).doubleValue() == Double.MIN_VALUE;
             }
             else if (value instanceof Long)
             {
-                return ((Number)value).longValue() == Long.MIN_VALUE;
+                return ((Number) value).longValue() == Long.MIN_VALUE;
             }
             else if (value instanceof Byte)
             {
-                return ((Number)value).byteValue() == Byte.MIN_VALUE;
+                return ((Number) value).byteValue() == Byte.MIN_VALUE;
             }
             else if (value instanceof Float)
             {
-                return ((Number)value).floatValue() == Float.MIN_VALUE;
+                return ((Number) value).floatValue() == Float.MIN_VALUE;
             }
             else if (value instanceof Short)
             {
-                return ((Number)value).shortValue() == Short.MIN_VALUE;
+                return ((Number) value).shortValue() == Short.MIN_VALUE;
             }
         }
         return false;
@@ -500,12 +564,11 @@ public final class RendererUtils
      * @throws FacesException if the Converter could not be created
      */
     public static Converter findUIOutputConverter(FacesContext facesContext,
-                                                  UIOutput component)
-            throws FacesException
+            UIOutput component) throws FacesException
     {
-        return _SharedRendererUtils.findUIOutputConverter(facesContext, component);
+        return _SharedRendererUtils.findUIOutputConverter(facesContext,
+                component);
     }
-
 
     /**
      * Calls findUISelectManyConverter with considerValueType = false.
@@ -513,12 +576,12 @@ public final class RendererUtils
      * @param component
      * @return
      */
-    public static Converter findUISelectManyConverter(FacesContext facesContext,
-                                                      UISelectMany component)
+    public static Converter findUISelectManyConverter(
+            FacesContext facesContext, UISelectMany component)
     {
         return findUISelectManyConverter(facesContext, component, false);
     }
-    
+
     /**
      * Find proper Converter for the entries in the associated Collection or array of
      * the given UISelectMany as specified in API Doc of UISelectMany.
@@ -528,88 +591,119 @@ public final class RendererUtils
      * @return the Converter or null if no Converter specified or needed
      * @throws FacesException if the Converter could not be created
      */
-    public static Converter findUISelectManyConverter(FacesContext facesContext,
-            UISelectMany component, boolean considerValueType) 
+    public static Converter findUISelectManyConverter(
+            FacesContext facesContext, UISelectMany component,
+            boolean considerValueType)
     {
         // If the component has an attached Converter, use it.
         Converter converter = component.getConverter();
-        if (converter != null) return converter;
-        
+        if (converter != null)
+        {
+            return converter;
+        }
+
         if (considerValueType)
         {
             // try to get a converter from the valueType attribute
-            converter = _SharedRendererUtils.getValueTypeConverter(facesContext, component);
-            if (converter != null) return converter;
+            converter = _SharedRendererUtils.getValueTypeConverter(
+                    facesContext, component);
+            if (converter != null)
+            {
+                return converter;
+            }
         }
 
         //Try to find out by value expression
         ValueExpression ve = component.getValueExpression("value");
-        if (ve == null) return null;
+        if (ve == null)
+        {
+            return null;
+        }
 
         // Try to get the type from the actual value or,
         // if value == null, obtain the type from the ValueExpression
         Class<?> valueType = null;
-        Object value = ve.getValue(facesContext.getELContext()); 
-        valueType = (value != null) 
-                        ? value.getClass() 
-                        : ve.getType(facesContext.getELContext());
-        
-        if (valueType == null) return null;
-        
+        Object value = ve.getValue(facesContext.getELContext());
+        valueType = (value != null) ? value.getClass() : ve
+                .getType(facesContext.getELContext());
+
+        if (valueType == null)
+        {
+            return null;
+        }
+
         // a valueType of Object is also permitted, in order to support
         // managed bean properties of type Object that resolve to null at this point
-        if (Collection.class.isAssignableFrom(valueType) || Object.class.equals(valueType))
+        if (Collection.class.isAssignableFrom(valueType)
+                || Object.class.equals(valueType))
         {
             // try to get the by-type-converter from the type of the SelectItems
-            return _SharedRendererUtils.getSelectItemsValueConverter(new SelectItemsIterator(component, facesContext), facesContext);
+            return _SharedRendererUtils.getSelectItemsValueConverter(
+                    new SelectItemsIterator(component, facesContext),
+                    facesContext);
         }
 
         if (!valueType.isArray())
         {
-            throw new IllegalArgumentException("ValueExpression for UISelectMany : "
-                    + getPathToComponent(component) + " must be of type Collection or Array");
+            throw new IllegalArgumentException(
+                    "ValueExpression for UISelectMany : "
+                            + getPathToComponent(component)
+                            + " must be of type Collection or Array");
         }
 
         Class<?> arrayComponentType = valueType.getComponentType();
-        if (String.class.equals(arrayComponentType)) return null;    //No converter needed for String type
-        
-        if (Object.class.equals(arrayComponentType)) 
-        {    
+        if (String.class.equals(arrayComponentType))
+        {
+            return null; //No converter needed for String type
+        }
+
+        if (Object.class.equals(arrayComponentType))
+        {
             // There is no converter for Object class
             // try to get the by-type-converter from the type of the SelectItems
-            return _SharedRendererUtils.getSelectItemsValueConverter(new SelectItemsIterator(component, facesContext), facesContext);
+            return _SharedRendererUtils.getSelectItemsValueConverter(
+                    new SelectItemsIterator(component, facesContext),
+                    facesContext);
         }
 
         try
         {
-            return facesContext.getApplication().createConverter(arrayComponentType);
+            return facesContext.getApplication().createConverter(
+                    arrayComponentType);
         }
         catch (FacesException e)
         {
-            log.log(Level.SEVERE, "No Converter for type " + arrayComponentType.getName() + " found", e);
+            log.log(Level.SEVERE,
+                    "No Converter for type " + arrayComponentType.getName()
+                            + " found", e);
             return null;
         }
     }
-    
-    public static void checkParamValidity(FacesContext facesContext, UIComponent uiComponent, Class compClass)
+
+    public static void checkParamValidity(FacesContext facesContext,
+            UIComponent uiComponent, Class compClass)
     {
-        if(facesContext == null)
+        if (facesContext == null)
+        {
             throw new NullPointerException("facesContext may not be null");
-        if(uiComponent == null)
+        }
+        if (uiComponent == null)
+        {
             throw new NullPointerException("uiComponent may not be null");
+        }
 
         //if (compClass != null && !(compClass.isAssignableFrom(uiComponent.getClass())))
         // why isAssignableFrom with additional getClass method call if isInstance does the same?
         if (compClass != null && !(compClass.isInstance(uiComponent)))
         {
-            throw new IllegalArgumentException("uiComponent : "+getPathToComponent(uiComponent)+
-                    " is not instance of "+compClass.getName()+" as it should be");
+            throw new IllegalArgumentException("uiComponent : "
+                    + getPathToComponent(uiComponent) + " is not instance of "
+                    + compClass.getName() + " as it should be");
         }
     }
 
-
-    public static void renderChildren(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public static void renderChildren(FacesContext facesContext,
+            UIComponent component) throws IOException
     {
         if (component.getChildCount() > 0)
         {
@@ -634,13 +728,13 @@ public final class RendererUtils
             throws IOException
     {
         // The next isRendered() call is only shortcut:
-         // methods encodeBegin, encodeChildren and encodeEnd should proceed only if 
+        // methods encodeBegin, encodeChildren and encodeEnd should proceed only if 
         // "If our rendered property is true, render the (beginning, child, ending) of this component"
         if (!isRendered(facesContext, child))
         {
             return;
         }
-        
+
         child.encodeBegin(facesContext);
         if (child.getRendersChildren())
         {
@@ -658,7 +752,9 @@ public final class RendererUtils
      * reads the isRendered property, call {@link
      * UIComponent#popComponentFromEL} and returns the value of isRendered.
      */
-    public static boolean isRendered(FacesContext facesContext, UIComponent uiComponent) {
+    public static boolean isRendered(FacesContext facesContext,
+            UIComponent uiComponent)
+    {
         // We must call pushComponentToEL here because ValueExpression may have 
         // implicit object "component" used. 
         try
@@ -667,30 +763,32 @@ public final class RendererUtils
             return uiComponent.isRendered();
         }
         finally
-        {       
+        {
             uiComponent.popComponentFromEL(facesContext);
         }
     }
 
-
     public static List getSelectItemList(UISelectOne uiSelectOne)
     {
-        return internalGetSelectItemList(uiSelectOne, FacesContext.getCurrentInstance());
+        return internalGetSelectItemList(uiSelectOne,
+                FacesContext.getCurrentInstance());
     }
-    
+
     /**
      * @param uiSelectOne
      * @param facesContext
      * @return List of SelectItem Objects
      */
-    public static List getSelectItemList(UISelectOne uiSelectOne, FacesContext facesContext)
+    public static List getSelectItemList(UISelectOne uiSelectOne,
+            FacesContext facesContext)
     {
         return internalGetSelectItemList(uiSelectOne, facesContext);
     }
-    
+
     public static List getSelectItemList(UISelectMany uiSelectMany)
     {
-        return internalGetSelectItemList(uiSelectMany, FacesContext.getCurrentInstance());
+        return internalGetSelectItemList(uiSelectMany,
+                FacesContext.getCurrentInstance());
     }
 
     /**
@@ -698,12 +796,14 @@ public final class RendererUtils
      * @param facesContext
      * @return List of SelectItem Objects
      */
-    public static List getSelectItemList(UISelectMany uiSelectMany, FacesContext facesContext)
+    public static List getSelectItemList(UISelectMany uiSelectMany,
+            FacesContext facesContext)
     {
         return internalGetSelectItemList(uiSelectMany, facesContext);
     }
 
-    private static List internalGetSelectItemList(UIComponent uiComponent, FacesContext facesContext)
+    private static List internalGetSelectItemList(UIComponent uiComponent,
+            FacesContext facesContext)
     {
         /* TODO: Shall we cache the list in a component attribute?
         ArrayList list = (ArrayList)uiComponent.getAttributes().get(SELECT_ITEM_LIST_ATTR);
@@ -712,16 +812,16 @@ public final class RendererUtils
             return list;
         }
          */
-        
+
         List list = new ArrayList();
-        
-        for (Iterator iter = new SelectItemsIterator(uiComponent, facesContext); iter.hasNext();)
+
+        for (Iterator iter = new SelectItemsIterator(uiComponent, facesContext); iter
+                .hasNext();)
         {
-            list.add(iter.next());            
-        }        
+            list.add(iter.next());
+        }
         return list;
     }
-
 
     /**
      * Convenient utility method that returns the currently submitted values of
@@ -732,7 +832,9 @@ public final class RendererUtils
      * @param uiSelectMany
      * @return Set containing all currently selected values
      */
-    public static Set getSubmittedValuesAsSet(FacesContext context, UIComponent component, Converter converter, UISelectMany uiSelectMany)
+    public static Set getSubmittedValuesAsSet(FacesContext context,
+            UIComponent component, Converter converter,
+            UISelectMany uiSelectMany)
     {
         Object submittedValues = uiSelectMany.getSubmittedValue();
         if (submittedValues == null)
@@ -740,13 +842,14 @@ public final class RendererUtils
             return null;
         }
 
-        if(converter != null) {
+        if (converter != null)
+        {
             converter = new PassThroughAsStringConverter(converter);
         }
 
-        return internalSubmittedOrSelectedValuesAsSet(context, component, converter, uiSelectMany, submittedValues, false);
+        return internalSubmittedOrSelectedValuesAsSet(context, component,
+                converter, uiSelectMany, submittedValues, false);
     }
-
 
     /**
      * Convenient utility method that returns the currently selected values of
@@ -757,13 +860,15 @@ public final class RendererUtils
      * @param uiSelectMany
      * @return Set containing all currently selected values
      */
-    public static Set getSelectedValuesAsSet(FacesContext context, UIComponent component, Converter converter, UISelectMany uiSelectMany)
+    public static Set getSelectedValuesAsSet(FacesContext context,
+            UIComponent component, Converter converter,
+            UISelectMany uiSelectMany)
     {
         Object selectedValues = uiSelectMany.getValue();
 
-        return internalSubmittedOrSelectedValuesAsSet(context, component, converter, uiSelectMany, selectedValues, true);
+        return internalSubmittedOrSelectedValuesAsSet(context, component,
+                converter, uiSelectMany, selectedValues, true);
     }
-
 
     /**
      * Convenient utility method that returns the currently given value as String,
@@ -771,13 +876,20 @@ public final class RendererUtils
      * Especially usefull for dealing with primitive types.
      */
     public static String getConvertedStringValue(FacesContext context,
-            UIComponent component, Converter converter, Object value) {
-        if (converter == null) {
-            if (value == null) {
+            UIComponent component, Converter converter, Object value)
+    {
+        if (converter == null)
+        {
+            if (value == null)
+            {
                 return "";
-            } else if (value instanceof String) {
+            }
+            else if (value instanceof String)
+            {
                 return (String) value;
-            } else {
+            }
+            else
+            {
                 return value.toString();
             }
         }
@@ -785,20 +897,22 @@ public final class RendererUtils
         return converter.getAsString(context, component, value);
     }
 
-
     /**
      * Convenient utility method that returns the currently given SelectItem value
      * as String, using the given converter.
      * Especially usefull for dealing with primitive types.
      */
     public static String getConvertedStringValue(FacesContext context,
-            UIComponent component, Converter converter, SelectItem selectItem) {
-        return getConvertedStringValue(context, component, converter, selectItem.getValue());
+            UIComponent component, Converter converter, SelectItem selectItem)
+    {
+        return getConvertedStringValue(context, component, converter,
+                selectItem.getValue());
     }
 
-    private static Set internalSubmittedOrSelectedValuesAsSet(FacesContext context,
-            UIComponent component, Converter converter, UISelectMany uiSelectMany,
-            Object values, boolean allowNonArrayOrCollectionValue)
+    private static Set internalSubmittedOrSelectedValuesAsSet(
+            FacesContext context, UIComponent component, Converter converter,
+            UISelectMany uiSelectMany, Object values,
+            boolean allowNonArrayOrCollectionValue)
     {
         if (values == null || EMPTY_STRING.equals(values))
         {
@@ -807,7 +921,7 @@ public final class RendererUtils
         else if (values instanceof Object[])
         {
             //Object array
-            Object[] ar = (Object[])values;
+            Object[] ar = (Object[]) values;
             if (ar.length == 0)
             {
                 return Collections.EMPTY_SET;
@@ -816,7 +930,8 @@ public final class RendererUtils
             HashSet set = new HashSet(HashMapUtils.calcCapacity(ar.length));
             for (int i = 0; i < ar.length; i++)
             {
-                set.add( getConvertedStringValue(context, component, converter, ar[i]) );
+                set.add(getConvertedStringValue(context, component, converter,
+                        ar[i]));
             }
             return set;
         }
@@ -824,16 +939,19 @@ public final class RendererUtils
         {
             //primitive array
             int len = Array.getLength(values);
-            HashSet set = new HashSet(org.apache.myfaces.shared.util.HashMapUtils.calcCapacity(len));
+            HashSet set = new HashSet(
+                    org.apache.myfaces.shared.util.HashMapUtils
+                            .calcCapacity(len));
             for (int i = 0; i < len; i++)
             {
-                set.add( getConvertedStringValue(context, component, converter, Array.get(values,i)) );
+                set.add(getConvertedStringValue(context, component, converter,
+                        Array.get(values, i)));
             }
             return set;
         }
         else if (values instanceof Collection)
         {
-            Collection col = (Collection)values;
+            Collection col = (Collection) values;
             if (col.size() == 0)
             {
                 return Collections.EMPTY_SET;
@@ -841,7 +959,10 @@ public final class RendererUtils
 
             HashSet set = new HashSet(HashMapUtils.calcCapacity(col.size()));
             for (Iterator i = col.iterator(); i.hasNext();)
-                set.add(getConvertedStringValue(context, component, converter, i.next()));
+            {
+                set.add(getConvertedStringValue(context, component, converter,
+                        i.next()));
+            }
 
             return set;
 
@@ -854,22 +975,28 @@ public final class RendererUtils
         }
         else
         {
-            throw new IllegalArgumentException("Value of UISelectMany component with path : "
-                    + getPathToComponent(uiSelectMany) + " is not of type Array or List");
+            throw new IllegalArgumentException(
+                    "Value of UISelectMany component with path : "
+                            + getPathToComponent(uiSelectMany)
+                            + " is not of type Array or List");
         }
     }
 
-    public static Object getConvertedUISelectOneValue(FacesContext facesContext, UISelectOne output, Object submittedValue){        
+    public static Object getConvertedUISelectOneValue(
+            FacesContext facesContext, UISelectOne output, Object submittedValue)
+    {
         if (submittedValue != null && !(submittedValue instanceof String))
         {
-            throw new IllegalArgumentException("Submitted value of type String for component : "
-                    + getPathToComponent(output) + "expected");
+            throw new IllegalArgumentException(
+                    "Submitted value of type String for component : "
+                            + getPathToComponent(output) + "expected");
         }
-        
+
         //To be compatible with jsf ri, and according to issue 69
         //[  Permit the passing of a null value to SelectItem.setValue()  ]
         //If submittedValue == "" then convert to null.
-        if ((submittedValue != null) && (submittedValue instanceof String) && ("".equals(submittedValue)))
+        if ((submittedValue != null) && (submittedValue instanceof String)
+                && ("".equals(submittedValue)))
         {
             //Replace "" by null value
             submittedValue = null;
@@ -885,12 +1012,12 @@ public final class RendererUtils
             throw new ConverterException(e);
         }
 
-        return converter == null ? submittedValue : converter
-                .getAsObject(facesContext, output, (String) submittedValue);
+        return converter == null ? submittedValue : converter.getAsObject(
+                facesContext, output, (String) submittedValue);
     }
-    
-    public static Object getConvertedUIOutputValue(FacesContext facesContext, UIOutput output, Object submittedValue)
-            throws ConverterException
+
+    public static Object getConvertedUIOutputValue(FacesContext facesContext,
+            UIOutput output, Object submittedValue) throws ConverterException
     {
         if (submittedValue != null && !(submittedValue instanceof String))
         {
@@ -907,10 +1034,10 @@ public final class RendererUtils
             throw new ConverterException(e);
         }
 
-        return converter == null ? submittedValue : converter
-                .getAsObject(facesContext, output, (String) submittedValue);
+        return converter == null ? submittedValue : converter.getAsObject(
+                facesContext, output, (String) submittedValue);
     }
-    
+
     /**
      * Invokes getConvertedUISelectManyValue() with considerValueType = false, thus
      * implementing the standard behavior of the spec (valueType comes from Tomahawk).
@@ -921,11 +1048,13 @@ public final class RendererUtils
      * @return
      * @throws ConverterException
      */
-    public static Object getConvertedUISelectManyValue(FacesContext facesContext, 
-            UISelectMany selectMany, Object submittedValue) throws ConverterException
+    public static Object getConvertedUISelectManyValue(
+            FacesContext facesContext, UISelectMany selectMany,
+            Object submittedValue) throws ConverterException
     {
         // do not consider the valueType attribute
-        return getConvertedUISelectManyValue(facesContext, selectMany, submittedValue, false);
+        return getConvertedUISelectManyValue(facesContext, selectMany,
+                submittedValue, false);
     }
 
     /**
@@ -939,9 +1068,10 @@ public final class RendererUtils
      * @return
      * @throws ConverterException
      */
-    public static Object getConvertedUISelectManyValue(FacesContext facesContext, 
-            UISelectMany selectMany, Object submittedValue,
-            boolean considerValueType) throws ConverterException
+    public static Object getConvertedUISelectManyValue(
+            FacesContext facesContext, UISelectMany selectMany,
+            Object submittedValue, boolean considerValueType)
+            throws ConverterException
     {
         if (submittedValue == null)
         {
@@ -950,21 +1080,24 @@ public final class RendererUtils
 
         if (!(submittedValue instanceof String[]))
         {
-            throw new ConverterException("Submitted value of type String[] for component : "
-                    + getPathToComponent(selectMany) + "expected");
+            throw new ConverterException(
+                    "Submitted value of type String[] for component : "
+                            + getPathToComponent(selectMany) + "expected");
         }
 
         return _SharedRendererUtils.getConvertedUISelectManyValue(facesContext,
                 selectMany, (String[]) submittedValue, considerValueType);
     }
 
-    public static boolean getBooleanAttribute(UIComponent component, String attrName, boolean defaultValue)
+    public static boolean getBooleanAttribute(UIComponent component,
+            String attrName, boolean defaultValue)
     {
         Boolean b = (Boolean) component.getAttributes().get(attrName);
         return b != null ? b.booleanValue() : defaultValue;
     }
 
-    public static int getIntegerAttribute(UIComponent component, String attrName, int defaultValue)
+    public static int getIntegerAttribute(UIComponent component,
+            String attrName, int defaultValue)
     {
         Integer i = (Integer) component.getAttributes().get(attrName);
         return i != null ? i.intValue() : defaultValue;
@@ -972,7 +1105,6 @@ public final class RendererUtils
 
     private static final String TRINIDAD_FORM_COMPONENT_FAMILY = "org.apache.myfaces.trinidad.Form";
     private static final String ADF_FORM_COMPONENT_FAMILY = "oracle.adf.Form";
-
 
     /**
      * Find the enclosing form of a component
@@ -989,12 +1121,14 @@ public final class RendererUtils
      * @param facesContext
      * @return FormInfo Information about the form - the form itself and its name.
      */
-    public static FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)
+    public static FormInfo findNestingForm(UIComponent uiComponent,
+            FacesContext facesContext)
     {
         UIComponent parent = uiComponent.getParent();
-        while (parent != null && (!ADF_FORM_COMPONENT_FAMILY.equals(parent.getFamily()) &&
-            !TRINIDAD_FORM_COMPONENT_FAMILY.equals(parent.getFamily()) &&
-            !(parent instanceof UIForm)))
+        while (parent != null
+                && (!ADF_FORM_COMPONENT_FAMILY.equals(parent.getFamily())
+                        && !TRINIDAD_FORM_COMPONENT_FAMILY.equals(parent
+                                .getFamily()) && !(parent instanceof UIForm)))
         {
             parent = parent.getParent();
         }
@@ -1009,16 +1143,23 @@ public final class RendererUtils
         return null;
     }
 
-    public static boolean getBooleanValue(String attribute, Object value, boolean defaultValue) {
-        if (value instanceof Boolean) {
+    public static boolean getBooleanValue(String attribute, Object value,
+            boolean defaultValue)
+    {
+        if (value instanceof Boolean)
+        {
             return ((Boolean) value).booleanValue();
         }
-        else if (value instanceof String) {
+        else if (value instanceof String)
+        {
             return Boolean.valueOf((String) value).booleanValue();
         }
-        else if (value != null) {
-            log.severe("value for attribute " + attribute +
-                " must be instanceof 'Boolean' or 'String', is of type : " + value.getClass());
+        else if (value != null)
+        {
+            log.severe("value for attribute "
+                    + attribute
+                    + " must be instanceof 'Boolean' or 'String', is of type : "
+                    + value.getClass());
 
             return defaultValue;
         }
@@ -1026,14 +1167,14 @@ public final class RendererUtils
         return defaultValue;
     }
 
-    public static void copyHtmlInputTextAttributes(HtmlInputText src, HtmlInputText dest)
+    public static void copyHtmlInputTextAttributes(HtmlInputText src,
+            HtmlInputText dest)
     {
         dest.setId(src.getId());
-        boolean forceId = getBooleanValue(
-            JSFAttr.FORCE_ID_ATTR,
-            src.getAttributes().get(JSFAttr.FORCE_ID_ATTR),
-            false);
-        if (forceId) {
+        boolean forceId = getBooleanValue(JSFAttr.FORCE_ID_ATTR, src
+                .getAttributes().get(JSFAttr.FORCE_ID_ATTR), false);
+        if (forceId)
+        {
             dest.getAttributes().put(JSFAttr.FORCE_ID_ATTR, Boolean.TRUE);
         }
         dest.setImmediate(src.isImmediate());
@@ -1082,7 +1223,8 @@ public final class RendererUtils
 
             synchronized (facescontext.getExternalContext().getSession(true))
             {
-                facescontext.getExternalContext().getSessionMap().put(RendererUtils.SEQUENCE_PARAM, sequence);
+                facescontext.getExternalContext().getSessionMap()
+                        .put(RendererUtils.SEQUENCE_PARAM, sequence);
             }
         }
         return sequence;
@@ -1105,7 +1247,9 @@ public final class RendererUtils
             UIComponent lookupComp = findComponent(comp, clazz);
 
             if (lookupComp != null)
+            {
                 return lookupComp;
+            }
         }
 
         return null;
@@ -1119,7 +1263,8 @@ public final class RendererUtils
         {
             UIComponent oldChild = (UIComponent) li.get(i);
 
-            if (oldChild.getId() != null && oldChild.getId().equals(child.getId()))
+            if (oldChild.getId() != null
+                    && oldChild.getId().equals(child.getId()))
             {
                 li.set(i, child);
                 return;
@@ -1129,23 +1274,25 @@ public final class RendererUtils
         component.getChildren().add(child);
     }
 
-    public static String getClientId(FacesContext facesContext, UIComponent uiComponent, String forAttr)
+    public static String getClientId(FacesContext facesContext,
+            UIComponent uiComponent, String forAttr)
     {
         UIComponent forComponent = uiComponent.findComponent(forAttr);
         if (forComponent == null)
         {
-            final char separatorChar = UINamingContainer.getSeparatorChar(facesContext);
+            final char separatorChar = UINamingContainer
+                    .getSeparatorChar(facesContext);
             if (log.isLoggable(Level.INFO))
             {
-                log
-                        .info("Unable to find component '"
-                                + forAttr
-                                + "' (calling findComponent on component '"
-                                + uiComponent.getClientId(facesContext)
-                                + "')."
-                                + " We'll try to return a guessed client-id anyways -"
-                                + " this will be a problem if you put the referenced component"
-                                + " into a different naming-container. If this is the case, you can always use the full client-id.");
+                log.info("Unable to find component '"
+                        + forAttr
+                        + "' (calling findComponent on component '"
+                        + uiComponent.getClientId(facesContext)
+                        + "')."
+                        + " We'll try to return a guessed client-id anyways -"
+                        + " this will be a problem if you put the referenced component"
+                        + " into a different naming-container. If this is the case, " 
+                        + "you can always use the full client-id.");
             }
             if (forAttr.length() > 0 && forAttr.charAt(0) == separatorChar)
             {
@@ -1157,7 +1304,8 @@ public final class RendererUtils
             String labelClientId = uiComponent.getClientId(facesContext);
             int colon = labelClientId.lastIndexOf(separatorChar);
 
-            return colon == -1 ? forAttr : labelClientId.substring(0, colon + 1) + forAttr;
+            return colon == -1 ? forAttr : labelClientId
+                    .substring(0, colon + 1) + forAttr;
 
         }
 
@@ -1165,7 +1313,8 @@ public final class RendererUtils
 
     }
 
-    public static List convertIdsToClientIds(String actionFor, FacesContext facesContext, UIComponent component)
+    public static List convertIdsToClientIds(String actionFor,
+            FacesContext facesContext, UIComponent component)
     {
         List li = new ArrayList();
 
@@ -1175,9 +1324,14 @@ public final class RendererUtils
         {
             String trimedId = ids[i].trim();
             if (trimedId.equals("none"))
+            {
                 li.add(trimedId);
+            }
             else
-                li.add(RendererUtils.getClientId(facesContext, component, trimedId));
+            {
+                li.add(RendererUtils.getClientId(facesContext, component,
+                        trimedId));
+            }
         }
         return li;
     }
@@ -1221,7 +1375,8 @@ public final class RendererUtils
         ByteArrayOutputStream content = new ByteArrayOutputStream(10240);
 
         InputStream in = null;
-        try {
+        try
+        {
             in = ctx.getExternalContext().getResourceAsStream(file);
             if (in == null)
             {
@@ -1235,14 +1390,21 @@ public final class RendererUtils
                 content.write(fileBuffer, 0, read);
             }
         }
-        catch (FileNotFoundException e) {
+        catch (FileNotFoundException e)
+        {
             if (log.isLoggable(Level.WARNING))
+            {
                 log.log(Level.WARNING, "no such file " + file, e);
+            }
             content = null;
         }
-        catch (IOException e) {
+        catch (IOException e)
+        {
             if (log.isLoggable(Level.WARNING))
-                log.log(Level.WARNING, "problems during processing resource " + file, e);
+            {
+                log.log(Level.WARNING, "problems during processing resource "
+                        + file, e);
+            }
             content = null;
         }
         finally
@@ -1279,7 +1441,8 @@ public final class RendererUtils
      * and initialize the request-map accordingly.
      * SubForms will work with this information.
      */
-    public static void initPartialValidationAndModelUpdate(UIComponent component, FacesContext facesContext)
+    public static void initPartialValidationAndModelUpdate(
+            UIComponent component, FacesContext facesContext)
     {
         String actionFor = (String) component.getAttributes().get("actionFor");
 
@@ -1287,34 +1450,41 @@ public final class RendererUtils
         {
             List li = convertIdsToClientIds(actionFor, facesContext, component);
 
-            facesContext.getExternalContext().getRequestMap().put(ACTION_FOR_LIST, li);
+            facesContext.getExternalContext().getRequestMap()
+                    .put(ACTION_FOR_LIST, li);
 
-            String actionForPhase = (String) component.getAttributes().get("actionForPhase");
+            String actionForPhase = (String) component.getAttributes().get(
+                    "actionForPhase");
 
             if (actionForPhase != null)
             {
                 List phaseList = convertPhasesToPhasesIds(actionForPhase);
 
-                facesContext.getExternalContext().getRequestMap().put(ACTION_FOR_PHASE_LIST, phaseList);
+                facesContext.getExternalContext().getRequestMap()
+                        .put(ACTION_FOR_PHASE_LIST, phaseList);
             }
         }
     }
 
-    public static boolean isAdfOrTrinidadForm(UIComponent component) {
+    public static boolean isAdfOrTrinidadForm(UIComponent component)
+    {
         if (component == null)
+        {
             return false;
-        return ADF_FORM_COMPONENT_FAMILY.equals(component.getFamily()) ||
-            TRINIDAD_FORM_COMPONENT_FAMILY.equals(component.getFamily());
+        }
+        return ADF_FORM_COMPONENT_FAMILY.equals(component.getFamily())
+                || TRINIDAD_FORM_COMPONENT_FAMILY.equals(component.getFamily());
     }
-
 
     /**
      * Gets the ResponseStateManager for the renderKit Id provided
      * 
-     * @deprecated use FacesContext.getRenderKit() or getRenderKitFactory().getRenderKit(context, renderKitId).getResponseStateManager()
+     * @deprecated use FacesContext.getRenderKit() or getRenderKitFactory().getRenderKit(
+     *               context, renderKitId).getResponseStateManager()
      */
     @Deprecated
-    public static ResponseStateManager getResponseStateManager(FacesContext facesContext, String renderKitId)
+    public static ResponseStateManager getResponseStateManager(
+            FacesContext facesContext, String renderKitId)
             throws FacesException
     {
         RenderKit renderKit = facesContext.getRenderKit();
@@ -1323,7 +1493,8 @@ public final class RendererUtils
         {
             // look for the renderkit in the request
             Map attributesMap = facesContext.getAttributes();
-            RenderKitFactory factory = (RenderKitFactory) attributesMap.get(RENDER_KIT_IMPL);
+            RenderKitFactory factory = (RenderKitFactory) attributesMap
+                    .get(RENDER_KIT_IMPL);
 
             if (factory != null)
             {
@@ -1331,7 +1502,8 @@ public final class RendererUtils
             }
             else
             {
-                factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+                factory = (RenderKitFactory) FactoryFinder
+                        .getFactory(FactoryFinder.RENDER_KIT_FACTORY);
 
                 if (factory == null)
                 {
@@ -1346,12 +1518,13 @@ public final class RendererUtils
 
         if (renderKit == null)
         {
-            throw new IllegalArgumentException("Could not find a RenderKit for \"" + renderKitId + "\""); 
+            throw new IllegalArgumentException(
+                    "Could not find a RenderKit for \"" + renderKitId + "\"");
         }
 
         return renderKit.getResponseStateManager();
     }
-    
+
     /**
       * Checks for name/library attributes on component and if they are avaliable,
       * creates {@link Resource} and returns it's path suitable for rendering.
@@ -1364,7 +1537,8 @@ public final class RendererUtils
       * 
       * @since 4.0.1
       */
-    public static String getIconSrc(final FacesContext facesContext, final UIComponent component, final String attributeName)
+    public static String getIconSrc(final FacesContext facesContext,
+            final UIComponent component, final String attributeName)
     {
 
         // JSF 2.0: if "name" attribute is available, treat as a resource reference.
@@ -1373,19 +1547,22 @@ public final class RendererUtils
         if (resourceName != null && (resourceName.length() > 0))
         {
 
-            final ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
+            final ResourceHandler resourceHandler = facesContext
+                    .getApplication().getResourceHandler();
             final Resource resource;
-            
-            final String libraryName = (String) component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
+
+            final String libraryName = (String) component.getAttributes().get(
+                    JSFAttr.LIBRARY_ATTR);
             if ((libraryName != null) && (libraryName.length() > 0))
             {
-                resource = resourceHandler.createResource(resourceName, libraryName);
+                resource = resourceHandler.createResource(resourceName,
+                        libraryName);
             }
             else
             {
-                resource = resourceHandler.createResource(resourceName);    
+                resource = resourceHandler.createResource(resourceName);
             }
-            
+
             if (resource == null)
             {
                 // If resourceName/libraryName are set but no resource created -> probably a typo,
@@ -1393,14 +1570,16 @@ public final class RendererUtils
                 if (facesContext.isProjectStage(ProjectStage.Development))
                 {
                     String summary = "Unable to find resource: " + resourceName;
-                    if (libraryName != null) 
+                    if (libraryName != null)
                     {
                         summary = summary + " from library: " + libraryName;
                     }
-                    facesContext.addMessage(component.getClientId(facesContext), 
-                            new FacesMessage(FacesMessage.SEVERITY_WARN, summary, summary));
+                    facesContext.addMessage(
+                            component.getClientId(facesContext),
+                            new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                    summary, summary));
                 }
-                
+
                 return RES_NOT_FOUND;
             }
             else
@@ -1410,55 +1589,59 @@ public final class RendererUtils
         }
         else
         {
-            String value = (String) component.getAttributes().get(attributeName);
+            String value = (String) component.getAttributes()
+                    .get(attributeName);
             return toResourceUri(facesContext, value);
         }
     }
-    
+
     /**
      * Coerces an object into a resource URI, calling the view-handler.
      */
     static public String toResourceUri(FacesContext facesContext, Object o)
     {
-      if (o == null)
-        return null;
+        if (o == null)
+        {
+            return null;
+        }
 
-      String uri = o.toString();
+        String uri = o.toString();
 
-      // *** EL Coercion problem ***
-      // If icon or image attribute was declared with #{resource[]} and that expression
-      // evaluates to null (it means ResourceHandler.createResource returns null because requested resource does not exist)
-      // EL implementation turns null into ""
-      // see http://www.irian.at/blog/blogid/unifiedElCoercion/#unifiedElCoercion
-      if (uri.length() == 0)
-      {
-        return null;
-      }
+        // *** EL Coercion problem ***
+        // If icon or image attribute was declared with #{resource[]} and that expression
+        // evaluates to null (it means ResourceHandler.createResource returns null because 
+        // requested resource does not exist)
+        // EL implementation turns null into ""
+        // see http://www.irian.at/blog/blogid/unifiedElCoercion/#unifiedElCoercion
+        if (uri.length() == 0)
+        {
+            return null;
+        }
 
+        // With JSF 2.0 url for resources can be done with EL like #{resource['resourcename']}
+        // and such EL after evalution contains context path for the current web application already,
+        // -> we dont want call viewHandler.getResourceURL()
+        if (uri.contains(ResourceHandler.RESOURCE_IDENTIFIER))
+        {
+            return uri;
+        }
 
-      // With JSF 2.0 url for resources can be done with EL like #{resource['resourcename']}
-      // and such EL after evalution contains context path for the current web application already,
-      // -> we dont want call viewHandler.getResourceURL()
-      if (uri.contains(ResourceHandler.RESOURCE_IDENTIFIER))
-      {
-        return uri;
-      }
-
-      // Treat two slashes as server-relative
-      if (uri.startsWith("//"))
-      {
-        return uri.substring(1);
-      }
-      else
-      {
-        // If the specified path starts with a "/",
-        // following method will prefix it with the context path for the current web application,
-        // and return the result
-        String resourceURL = facesContext.getApplication().getViewHandler().getResourceURL(facesContext, uri);
-        return facesContext.getExternalContext().encodeResourceURL(resourceURL);
-      }
+        // Treat two slashes as server-relative
+        if (uri.startsWith("//"))
+        {
+            return uri.substring(1);
+        }
+        else
+        {
+            // If the specified path starts with a "/",
+            // following method will prefix it with the context path for the current web application,
+            // and return the result
+            String resourceURL = facesContext.getApplication().getViewHandler()
+                    .getResourceURL(facesContext, uri);
+            return facesContext.getExternalContext().encodeResourceURL(
+                    resourceURL);
+        }
     }
-
 
     /**
      * Special converter for handling submitted values which don't need to be converted.
@@ -1484,7 +1667,7 @@ public final class RendererUtils
         public String getAsString(FacesContext context, UIComponent component,
                 Object value) throws ConverterException
         {
-            return (String)value;
+            return (String) value;
         }
 
     }

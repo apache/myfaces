@@ -30,7 +30,7 @@ public class JavascriptContext
     private static final char TABULATOR = '\t';
 
     private long currentIndentationLevel;
-    private StringBuffer buffer = new StringBuffer();
+    private StringBuilder buffer = new StringBuilder();
     private boolean prettyPrint = false;
     /**
      * automatic formatting will render
@@ -50,7 +50,7 @@ public class JavascriptContext
         this.prettyPrint = prettyPrint;
     }
 
-    public JavascriptContext(StringBuffer buf, boolean prettyPrint)
+    public JavascriptContext(StringBuilder buf, boolean prettyPrint)
     {
         this.prettyPrint = prettyPrint;
         this.buffer = buf;

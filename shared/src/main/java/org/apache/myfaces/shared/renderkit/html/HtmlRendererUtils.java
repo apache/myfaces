@@ -1169,7 +1169,7 @@ public final class HtmlRendererUtils
     }
 
     public static void appendClearHiddenCommandFormParamsFunctionCall(
-            StringBuffer buf, String formName)
+            StringBuilder buf, String formName)
     {
         HtmlJavaScriptUtils.appendClearHiddenCommandFormParamsFunctionCall(buf, formName);
     }
@@ -1185,7 +1185,7 @@ public final class HtmlRendererUtils
      * Adds the hidden form input value assignment that is necessary for the autoscroll
      * feature to an html link or button onclick attribute.
      */
-    public static void appendAutoScrollAssignment(StringBuffer onClickValue,
+    public static void appendAutoScrollAssignment(StringBuilder onClickValue,
             String formName)
     {
         HtmlJavaScriptUtils.appendAutoScrollAssignment(onClickValue, formName);
@@ -1196,7 +1196,7 @@ public final class HtmlRendererUtils
      * feature to an html link or button onclick attribute.
      */
     public static void appendAutoScrollAssignment(FacesContext context,
-            StringBuffer onClickValue, String formName)
+            StringBuilder onClickValue, String formName)
     {
         HtmlJavaScriptUtils.appendAutoScrollAssignment(context, onClickValue, formName);
     }
@@ -1582,9 +1582,12 @@ public final class HtmlRendererUtils
         // handle URL parameters
         if (component.getChildCount() > 0)
         {
-            parameters = new HashMap<String, List<String>>();
             List<UIParameter> validParams = getValidUIParameterChildren(
                     facesContext, component.getChildren(), true, false);
+            if (validParams.size() > 0)
+            {
+                parameters = new HashMap<String, List<String>>();
+            }
             for (int i = 0, size = validParams.size(); i < size; i++)
             {
                 UIParameter param = validParams.get(i);
@@ -3021,7 +3024,7 @@ public final class HtmlRendererUtils
             super(prettyPrint);
         }
 
-        public ScriptContext(StringBuffer buf, boolean prettyPrint)
+        public ScriptContext(StringBuilder buf, boolean prettyPrint)
         {
             super(buf, prettyPrint);
         }
