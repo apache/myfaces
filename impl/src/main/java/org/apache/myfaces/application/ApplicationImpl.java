@@ -187,7 +187,7 @@ public class ApplicationImpl extends Application
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap
             = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
-    private final Map<String, String> _defaultValidatorsIds = new HashMap<String, String>();
+    private final Map<String, String> _defaultValidatorsIds = new ConcurrentHashMap<String, String>();
     
     private volatile Map<String, String> _cachedDefaultValidatorsIds = null;
     
@@ -203,14 +203,16 @@ public class ApplicationImpl extends Application
 
     private volatile boolean _firstRequestProcessed = false;
     
+    // MYFACES-3442 If HashMap or other non thread-safe structure is used, it is
+    // possible to fall in a infinite loop under heavy load.
     private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap
-            = new HashMap<Class<?>, List<ListenerFor>>() ;
+            = new ConcurrentHashMap<Class<?>, List<ListenerFor>>() ;
 
     private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap
-            = new HashMap<Class<?>, List<ResourceDependency>>() ;
+            = new ConcurrentHashMap<Class<?>, List<ResourceDependency>>() ;
     
     private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
-            = new ArrayList<Class<? extends Converter>>();
+            = new CopyOnWriteArrayList<Class<? extends Converter>>();
     
     /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
     private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
