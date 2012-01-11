@@ -205,12 +205,12 @@ public class ApplicationImpl extends Application
     
     // MYFACES-3442 If HashMap or other non thread-safe structure is used, it is
     // possible to fall in a infinite loop under heavy load unless a synchronized block
-    // is used to modify it.
+    // is used to modify it or a ConcurrentHashMap.
     private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap
-            = new HashMap<Class<?>, List<ListenerFor>>() ;
+            = new ConcurrentHashMap<Class<?>, List<ListenerFor>>() ;
 
     private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap
-            = new HashMap<Class<?>, List<ResourceDependency>>() ;
+            = new ConcurrentHashMap<Class<?>, List<ResourceDependency>>() ;
     
     private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
             = new CopyOnWriteArrayList<Class<? extends Converter>>();
@@ -1675,6 +1675,10 @@ public class ApplicationImpl extends Application
             {
                 return; //class has been inspected and did not contain any resource dependency annotations
             }
+            else if (dependencyList.isEmpty())
+            {
+                return;
+            }
             
             isCachedList = true;    // else annotations were found in the cache
         }
@@ -1698,9 +1702,13 @@ public class ApplicationImpl extends Application
                     dependencyList.addAll(Arrays.asList(dependencies.value()));
                 }
             }
-        }        
- 
-        if (dependencyList != null) //resource dependencies were found through inspection or from cache, handle them
+            else
+            {
+                dependencyList = Collections.emptyList();
+            }
+        }
+
+        if (dependencyList != null && !dependencyList.isEmpty()) //resource dependencies were found through inspection or from cache, handle them
         {
             for (int i = 0, size = dependencyList.size(); i < size; i++)
             {
@@ -1715,9 +1723,10 @@ public class ApplicationImpl extends Application
         
         if(context.isProjectStage(ProjectStage.Production) && !isCachedList)   //if we're in production and the list is not yet cached, store it
         {
-            synchronized(_classToResourceDependencyMap)
+            // Note at this point listenerForList cannot be null, but just let this
+            // as a sanity check.
+            if (dependencyList != null)
             {
-                //null value stored for dependencyList means no annotations were found
                 _classToResourceDependencyMap.put(inspectedClass, dependencyList);
             }
         }
@@ -1994,6 +2003,10 @@ public class ApplicationImpl extends Application
             {
                 return; //class has been inspected and did not contain any listener annotations
             }
+            else if (listenerForList.isEmpty())
+            {
+                return;
+            }
             
             isCachedList = true;    // else annotations were found in the cache
         }
@@ -2017,9 +2030,13 @@ public class ApplicationImpl extends Application
                     listenerForList.addAll(Arrays.asList(listeners.value()));
                 }
             }
+            else
+            {
+                listenerForList = Collections.emptyList();
+            }
         }        
  
-        if (listenerForList != null) //listeners were found through inspection or from cache, handle them
+        if (listenerForList != null && !listenerForList.isEmpty()) //listeners were found through inspection or from cache, handle them
         {
             for (int i = 0, size = listenerForList.size(); i < size; i++)
             {
@@ -2030,9 +2047,10 @@ public class ApplicationImpl extends Application
         
         if(isProduction && !isCachedList) //if we're in production and the list is not yet cached, store it
         {
-            synchronized(_classToListenerForMap)
+            // Note at this point listenerForList cannot be null, but just let this
+            // as a sanity check.
+            if (listenerForList != null)
             {
-                //null value stored for listenerForList means no annotations were found
                 _classToListenerForMap.put(inspectedClass, listenerForList);
             }
         }
@@ -2129,6 +2147,10 @@ public class ApplicationImpl extends Application
             {
                 return; //class has been inspected and did not contain any resource dependency annotations
             }
+            else if (dependencyList.isEmpty())
+            {
+                return;
+            }
             
             isCachedList = true;    // else annotations were found in the cache
         }
@@ -2152,9 +2174,13 @@ public class ApplicationImpl extends Application
                     dependencyList.addAll(Arrays.asList(dependencies.value()));
                 }
             }
+            else
+            {
+                dependencyList = Collections.emptyList();
+            }
         }        
  
-        if (dependencyList != null) //resource dependencies were found through inspection or from cache, handle them
+        if (dependencyList != null && !dependencyList.isEmpty()) //resource dependencies were found through inspection or from cache, handle them
         {
             for (int i = 0, size = dependencyList.size(); i < size; i++)
             {
@@ -2169,9 +2195,10 @@ public class ApplicationImpl extends Application
         
         if(isProduction && !isCachedList)   //if we're in production and the list is not yet cached, store it
         {
-            synchronized(_classToResourceDependencyMap)
+            // Note at this point listenerForList cannot be null, but just let this
+            // as a sanity check.
+            if (dependencyList != null)
             {
-                //null value stored for dependencyList means no annotations were found
                 _classToResourceDependencyMap.put(inspectedClass, dependencyList);
             }
         }
