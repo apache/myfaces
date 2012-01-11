@@ -115,13 +115,20 @@ $innersource
 #end
 #end
 #end
-#end
         ));
 
     public java.util.Collection<String> getEventNames()
     {
         return CLIENT_EVENTS_LIST;
     }
+
+    @Override
+    public void addClientBehavior(String eventName, javax.faces.component.behavior.ClientBehavior behavior)
+    {
+        super.addClientBehavior(eventName, behavior);
+        _CommonEventConstants.markEvent(this, eventName);
+    }
+#end
 #end
 #if ($component.defaultEventName)
 #if ($component.defaultEventName != "")
