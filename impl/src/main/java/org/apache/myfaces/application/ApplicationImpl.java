@@ -187,7 +187,7 @@ public class ApplicationImpl extends Application
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap
             = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
 
-    private final Map<String, String> _defaultValidatorsIds = new ConcurrentHashMap<String, String>();
+    private final Map<String, String> _defaultValidatorsIds = new HashMap<String, String>();
     
     private volatile Map<String, String> _cachedDefaultValidatorsIds = null;
     
@@ -204,12 +204,13 @@ public class ApplicationImpl extends Application
     private volatile boolean _firstRequestProcessed = false;
     
     // MYFACES-3442 If HashMap or other non thread-safe structure is used, it is
-    // possible to fall in a infinite loop under heavy load.
+    // possible to fall in a infinite loop under heavy load unless a synchronized block
+    // is used to modify it.
     private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap
-            = new ConcurrentHashMap<Class<?>, List<ListenerFor>>() ;
+            = new HashMap<Class<?>, List<ListenerFor>>() ;
 
     private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap
-            = new ConcurrentHashMap<Class<?>, List<ResourceDependency>>() ;
+            = new HashMap<Class<?>, List<ResourceDependency>>() ;
     
     private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
             = new CopyOnWriteArrayList<Class<? extends Converter>>();
@@ -1714,8 +1715,11 @@ public class ApplicationImpl extends Application
         
         if(context.isProjectStage(ProjectStage.Production) && !isCachedList)   //if we're in production and the list is not yet cached, store it
         {
-            //null value stored for dependencyList means no annotations were found
-            _classToResourceDependencyMap.put(inspectedClass, dependencyList);
+            synchronized(_classToResourceDependencyMap)
+            {
+                //null value stored for dependencyList means no annotations were found
+                _classToResourceDependencyMap.put(inspectedClass, dependencyList);
+            }
         }
         
         if (!classAlreadyProcessed)
@@ -2026,8 +2030,11 @@ public class ApplicationImpl extends Application
         
         if(isProduction && !isCachedList) //if we're in production and the list is not yet cached, store it
         {
-            //null value stored for listenerForList means no annotations were found
-            _classToListenerForMap.put(inspectedClass, listenerForList);
+            synchronized(_classToListenerForMap)
+            {
+                //null value stored for listenerForList means no annotations were found
+                _classToListenerForMap.put(inspectedClass, listenerForList);
+            }
         }
     }
 
@@ -2162,8 +2169,11 @@ public class ApplicationImpl extends Application
         
         if(isProduction && !isCachedList)   //if we're in production and the list is not yet cached, store it
         {
-            //null value stored for dependencyList means no annotations were found
-            _classToResourceDependencyMap.put(inspectedClass, dependencyList);
+            synchronized(_classToResourceDependencyMap)
+            {
+                //null value stored for dependencyList means no annotations were found
+                _classToResourceDependencyMap.put(inspectedClass, dependencyList);
+            }
         }
         
         if (!classAlreadyProcessed)
