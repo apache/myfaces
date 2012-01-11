@@ -160,4 +160,9 @@ public abstract class HtmlRenderer
     {
         return false;
     }
+    
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return false;
+    }
 }
