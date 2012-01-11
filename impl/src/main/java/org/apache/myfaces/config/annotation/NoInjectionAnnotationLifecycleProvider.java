@@ -22,6 +22,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.naming.NamingException;
@@ -36,16 +39,74 @@ import org.apache.myfaces.shared.util.ClassUtils;
 
 public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider2
 {
+     /**
+     * Cache the Method instances per ClassLoader using the Class-Name.
+     * NOTE that we do it this way, because the only other valid way in order to support a shared
+     * classloader scenario would be to use a WeakHashMap<Class<?>, Method[]>, but this
+     * creates a cyclic reference between the key and the value of the WeakHashMap which will
+     * most certainly cause a memory leak! Furthermore we can manually cleanup the Map when
+     * the webapp is undeployed just by removing the Map for the current ClassLoader. 
+     */
+    private volatile static WeakHashMap<ClassLoader, Map<Class,Method[]> > declaredMethodBeans = 
+            new WeakHashMap<ClassLoader, Map<Class, Method[]>>();
 
+    private static Map<Class,Method[]> getDeclaredMethodBeansMap()
+    {
+        ClassLoader cl = ClassUtils.getContextClassLoader();
+        
+        Map<Class,Method[]> metadata = (Map<Class,Method[]>)
+                declaredMethodBeans.get(cl);
+
+        if (metadata == null)
+        {
+            // Ensure thread-safe put over _metadata, and only create one map
+            // per classloader to hold metadata.
+            synchronized (declaredMethodBeans)
+            {
+                metadata = createDeclaredMethodBeansMap(cl, metadata);
+            }
+        }
+
+        return metadata;
+    }
+    
+    private static Map<Class,Method[]> createDeclaredMethodBeansMap(
+            ClassLoader cl, Map<Class,Method[]> metadata)
+    {
+        metadata = (Map<Class,Method[]>) declaredMethodBeans.get(cl);
+        if (metadata == null)
+        {
+            metadata = new HashMap<Class,Method[]>();
+            declaredMethodBeans.put(cl, metadata);
+        }
+        return metadata;
+    }
 
     public Object newInstance(String className)
-           throws InstantiationException, IllegalAccessException, NamingException, InvocationTargetException, ClassNotFoundException
+           throws InstantiationException, IllegalAccessException, NamingException,
+            InvocationTargetException, ClassNotFoundException
     {
         Class clazz = ClassUtils.classForName(className);
         Object object = clazz.newInstance();
         processAnnotations(object);
         //postConstruct(object);
         return object;
+    }
+    
+    
+    Method[] getDeclaredMethods(Class clazz)
+    {
+        Map<Class,Method[]> declaredMethodBeansMap = getDeclaredMethodBeansMap();
+        Method[] methods = declaredMethodBeansMap.get(clazz);
+        if (methods == null)
+        {
+            methods = clazz.getDeclaredMethods();
+            synchronized(declaredMethodBeansMap)
+            {
+                declaredMethodBeansMap.put(clazz, methods);
+            }
+        }
+        return methods;
     }
 
     /**
@@ -54,13 +115,22 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
     public void postConstruct(Object instance)
             throws IllegalAccessException, InvocationTargetException
     {
-
         // TODO the servlet spec is not clear about searching in superclass??
-
-        Method[] methods = instance.getClass().getDeclaredMethods();
-        Method postConstruct = null;
-        for (Method method : methods)
+        Class clazz = instance.getClass();
+        Method[] methods = getDeclaredMethods(clazz);
+        if (methods == null)
         {
+            methods = clazz.getDeclaredMethods();
+            Map<Class,Method[]> declaredMethodBeansMap = getDeclaredMethodBeansMap();
+            synchronized(declaredMethodBeansMap)
+            {
+                declaredMethodBeansMap.put(clazz, methods);
+            }
+        }
+        Method postConstruct = null;
+        for (int i = 0; i < methods.length; i++)
+        {
+            Method method = methods[i];
             if (method.isAnnotationPresent(PostConstruct.class))
             {
                 // a method that does not take any arguments
@@ -91,10 +161,12 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
 
         // TODO the servlet spec is not clear about searching in superclass??
         // May be only check non private fields and methods
-        Method[] methods = instance.getClass().getDeclaredMethods();
+        Class clazz = instance.getClass();
+        Method[] methods = getDeclaredMethods(clazz);
         Method preDestroy = null;
-        for (Method method : methods)
+        for (int i = 0; i < methods.length; i++)
         {
+            Method method = methods[i];
             if (method.isAnnotationPresent(PreDestroy.class))
             {
                 // must not throw any checked expections
