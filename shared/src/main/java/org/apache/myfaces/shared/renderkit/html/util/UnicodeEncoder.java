@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.shared.renderkit.html.util;
 
+import java.io.IOException;
+import java.io.Writer;
+
 /**
  * Converts characters outside of latin-1 set in a string to numeric character references.
  * 
@@ -60,6 +63,112 @@ public abstract class UnicodeEncoder
 
         return sb != null ? sb.toString() : string;
     }
+    
+    public static void encode (Writer writer, String string) throws IOException
+    {
+        if (string == null)
+        {
+            return;
+        }
 
+        int start = 0;
+        char c;
+        for (int i = 0; i < string.length (); ++i)
+        {
+            c = string.charAt(i);
+            if (((int)c) >= 0x80)
+            {
+                if (start < i)
+                {
+                    writer.write(string, start, i-start);
+                }
+                start = i+1;
+                //encode all non basic latin characters
+                writer.write("&#");
+                writer.write(Integer.toString((int)c));
+                writer.write(";");
+            }
+        }
 
+        if (start == 0)
+        {
+            writer.write(string);
+        }
+        else if (start < string.length())
+        {
+            writer.write(string,start,string.length()-start);
+        }
+    }
+
+    public static void encode (Writer writer, char[] cbuf, int off, int len) throws IOException
+    {
+        if (cbuf == null)
+        {
+            return;
+        }
+
+        int start = off;
+        char c;
+        for (int i = off; i < off+len; ++i)
+        {
+            c = cbuf[i];
+            if (((int)c) >= 0x80)
+            {
+                if (start < i)
+                {
+                    writer.write(cbuf, start, i-start);
+                }
+                start = i+1;
+                //encode all non basic latin characters
+                writer.write("&#");
+                writer.write(Integer.toString((int)c));
+                writer.write(";");
+            }
+        }
+
+        if (start == off)
+        {
+            writer.write(cbuf, off, len);
+        }
+        else if (start < off+len)
+        {
+            writer.write(cbuf,start,off+len-start);
+        }
+    }
+    
+    public static void encode (Writer writer, String cbuf, int off, int len) throws IOException
+    {
+        if (cbuf == null)
+        {
+            return;
+        }
+
+        int start = off;
+        char c;
+        for (int i = off; i < off+len; ++i)
+        {
+            c = cbuf.charAt(i);
+            if (((int)c) >= 0x80)
+            {
+                if (start < i)
+                {
+                    writer.write(cbuf, start, i-start);
+                }
+                start = i+1;
+                //encode all non basic latin characters
+                writer.write("&#");
+                writer.write(Integer.toString((int)c));
+                writer.write(";");
+            }
+        }
+
+        if (start == off)
+        {
+            writer.write(cbuf, off, len);
+        }
+        else if (start < off+len)
+        {
+            writer.write(cbuf,start,off+len-start);
+        }
+    }
 }
