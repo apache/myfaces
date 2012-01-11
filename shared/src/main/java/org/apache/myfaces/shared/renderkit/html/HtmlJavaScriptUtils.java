@@ -359,7 +359,7 @@ public final class HtmlJavaScriptUtils
         context.prettyLineDecreaseIndent();
     }
     
-    public static void appendAutoScrollAssignment(StringBuffer onClickValue,
+    public static void appendAutoScrollAssignment(StringBuilder onClickValue,
             String formName)
     {
         appendAutoScrollAssignment(FacesContext.getCurrentInstance(),
@@ -371,7 +371,7 @@ public final class HtmlJavaScriptUtils
      * feature to an html link or button onclick attribute.
      */
     public static void appendAutoScrollAssignment(FacesContext context,
-            StringBuffer onClickValue, String formName)
+            StringBuilder onClickValue, String formName)
     {
         appendAutoScrollAssignment(context, new ScriptContext(onClickValue,
                 false), formName);
@@ -380,11 +380,11 @@ public final class HtmlJavaScriptUtils
     private static void appendAutoScrollAssignment(FacesContext context,
             ScriptContext scriptContext, String formName)
     {
-        String formNameStr = formName == null ? "formName" : (new StringBuffer(
+        String formNameStr = formName == null ? "formName" : (new StringBuilder(
                 "'").append(formName).append("'").toString());
-        String paramName = new StringBuffer().append("'")
+        String paramName = new StringBuilder().append("'")
                 .append(AUTO_SCROLL_PARAM).append("'").toString();
-        String value = new StringBuffer().append(AUTO_SCROLL_FUNCTION)
+        String value = new StringBuilder().append(AUTO_SCROLL_FUNCTION)
                 .append("()").toString();
 
         scriptContext.prettyLine();
@@ -523,7 +523,7 @@ public final class HtmlJavaScriptUtils
     }
     
     public static void appendClearHiddenCommandFormParamsFunctionCall(
-            StringBuffer buf, String formName)
+            StringBuilder buf, String formName)
     {
         appendClearHiddenCommandFormParamsFunctionCall(new ScriptContext(buf,
                 false), formName);
@@ -611,7 +611,7 @@ public final class HtmlJavaScriptUtils
         writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
 
         // Using writeComment instead of write with <!-- tag
-        StringBuffer script = new StringBuffer();
+        StringBuilder script = new StringBuilder();
         script.append("function ");
         script.append(functionName);
         script.append("() {");
@@ -685,7 +685,7 @@ public final class HtmlJavaScriptUtils
 
         //return escaped;
 
-        StringBuffer out = null;
+        StringBuilder out = null;
         for (int pos = 0; pos < javaScript.length(); pos++)
         {
             char c = javaScript.charAt(pos);
@@ -694,7 +694,7 @@ public final class HtmlJavaScriptUtils
             {
                 if (out == null)
                 {
-                    out = new StringBuffer(javaScript.length() + 8);
+                    out = new StringBuilder(javaScript.length() + 8);
                     if (pos > 0)
                     {
                         out.append(javaScript, 0, pos);

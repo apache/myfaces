@@ -123,7 +123,7 @@ public final class RendererUtils
 
     public static String getPathToComponent(UIComponent component)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         if (component == null)
         {
@@ -147,14 +147,14 @@ public final class RendererUtils
     }
 
     private static void getPathToComponent(UIComponent component,
-            StringBuffer buf)
+            StringBuilder buf)
     {
         if (component == null)
         {
             return;
         }
 
-        StringBuffer intBuf = new StringBuffer();
+        StringBuilder intBuf = new StringBuilder();
 
         intBuf.append("[Class: ");
         intBuf.append(component.getClass().getName());
@@ -196,7 +196,7 @@ public final class RendererUtils
             throw new NullPointerException("context");
         }
 
-        StringBuffer idBuf = new StringBuffer();
+        StringBuilder idBuf = new StringBuilder();
 
         idBuf.append(component.getId());
 

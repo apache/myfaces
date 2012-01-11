@@ -125,7 +125,7 @@ public final class JavascriptUtils
             return s + "_";
         }
 
-        StringBuffer buf = null;
+        StringBuilder buf = null;
         for (int i = 0, len = s.length(); i < len; i++)
         {
             char c = s.charAt(i);
@@ -142,7 +142,7 @@ public final class JavascriptUtils
             {
                 if (buf == null)
                 {
-                    buf = new StringBuffer(s.length() + 10);
+                    buf = new StringBuilder(s.length() + 10);
                     buf.append(s.substring(0, i));
                 }
 
@@ -200,7 +200,7 @@ public final class JavascriptUtils
         {
             return "";
         }
-        StringBuffer sb = null;    //create later on demand
+        StringBuilder sb = null;    //create later on demand
         String app;
         char c;
         for (int i = 0; i < string.length (); ++i)
@@ -220,7 +220,7 @@ public final class JavascriptUtils
             {
                 if (sb == null)
                 {
-                    sb = new StringBuffer(string.substring(0, i));
+                    sb = new StringBuilder(string.substring(0, i));
                 }
                 sb.append(app);
             }
