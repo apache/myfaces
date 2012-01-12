@@ -119,7 +119,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
             }
             else
             {
-                StringBuffer onClick = new StringBuffer();
+                StringBuilder onClick = new StringBuilder();
     
                 if (commandOnClick != null)
                 {
@@ -162,7 +162,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
                     writer, commonPropertiesMarked, uiComponent);
             if ((commonPropertiesMarked & CommonPropertyConstants.ALT_PROP) != 0)
             {
-                CommonPropertyUtils.renderHTMLStringAttribute(writer, uiComponent,
+                HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent,
                         HTML.ALT_ATTR, HTML.ALT_ATTR);
             }
         }
@@ -186,7 +186,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
             }
             HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
                     HTML.COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
-            HtmlRendererUtils.renderHTMLAttribute(writer, uiComponent,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent,
                     HTML.ALT_ATTR, HTML.ALT_ATTR);
         }
 

@@ -105,7 +105,7 @@ public final class HtmlRendererUtils
             + "  You cannot submit a form after disabling an input element via javascript."
             + "  Consider setting read-only to true instead"
             + " or resetting the disabled value back to false prior to form submission.";
-    private static final String STR_EMPTY = "";
+    public static final String STR_EMPTY = "";
 
     private HtmlRendererUtils()
     {
@@ -860,6 +860,158 @@ public final class HtmlRendererUtils
             writer.writeAttribute(HTML.ID_ATTR, clientId, null);
             writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
         }
+    }
+    
+    /**
+     * Renders a html string type attribute. If the value retrieved from the component 
+     * property is "", the attribute is rendered.
+     * 
+     * @param writer
+     * @param component
+     * @param componentProperty
+     * @param htmlAttrName
+     * @return
+     * @throws IOException
+     */
+    public static final boolean renderHTMLStringPreserveEmptyAttribute(ResponseWriter writer,
+            UIComponent component, String componentProperty, String htmlAttrName)
+            throws IOException
+    {
+        String value = (String) component.getAttributes()
+                .get(componentProperty);
+        if (!isDefaultStringPreserveEmptyAttributeValue(value))
+        {
+            writer.writeAttribute(htmlAttrName, value, componentProperty);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Renders a html string type attribute. If the value retrieved from the component 
+     * property is "", the attribute is rendered.
+     * 
+     * @param writer
+     * @param component
+     * @param componentProperty
+     * @param htmlAttrName
+     * @return
+     * @throws IOException
+     */
+    public static final boolean renderHTMLStringPreserveEmptyAttribute(ResponseWriter writer,
+            String componentProperty, String htmlAttrName, String value)
+            throws IOException
+    {
+        if (!isDefaultStringPreserveEmptyAttributeValue(value))
+        {
+            writer.writeAttribute(htmlAttrName, value, componentProperty);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if the value is the default for String type attributes that requires preserve "" as
+     * a valid value.
+     * 
+     * @param value
+     * @return
+     */
+    private static final boolean isDefaultStringPreserveEmptyAttributeValue(String value)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Renders a html string type attribute. If the value retrieved from the component 
+     * property is "" or null, the attribute is not rendered.
+     * 
+     * @param writer
+     * @param component
+     * @param componentProperty
+     * @param htmlAttrName
+     * @return
+     * @throws IOException
+     */
+    public static final boolean renderHTMLStringAttribute(ResponseWriter writer,
+            UIComponent component, String componentProperty, String htmlAttrName)
+            throws IOException
+    {
+        String value = (String) component.getAttributes()
+                .get(componentProperty);
+        if (!isDefaultStringAttributeValue(value))
+        {
+            writer.writeAttribute(htmlAttrName, value, componentProperty);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Renders a html string type attribute. If the value retrieved from the component 
+     * property is "" or null, the attribute is not rendered.
+     * 
+     * @param writer
+     * @param componentProperty
+     * @param htmlAttrName
+     * @param value
+     * @return
+     * @throws IOException
+     */
+    public static final boolean renderHTMLStringAttribute(ResponseWriter writer,
+            String componentProperty, String htmlAttrName, String value)
+            throws IOException
+    {
+        if (!isDefaultStringAttributeValue(value))
+        {
+            writer.writeAttribute(htmlAttrName, value, componentProperty);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Check if the value is the default for String type attributes (null or "").
+     * 
+     * @param value
+     * @return
+     */
+    private static final boolean isDefaultStringAttributeValue(String value)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+        else if (value.length() == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    public static boolean renderHTMLStringNoStyleAttributes(ResponseWriter writer,
+            UIComponent component, String[] attributes) throws IOException
+    {
+        boolean somethingDone = false;
+        for (int i = 0, len = attributes.length; i < len; i++)
+        {
+            String attrName = attributes[i];
+            if (renderHTMLStringAttribute(writer, component, attrName, attrName))
+            {
+                somethingDone = true;
+            }
+        }
+        return somethingDone;
     }
 
     public static void writeIdAndName(ResponseWriter writer,
@@ -2494,18 +2646,18 @@ public final class HtmlRendererUtils
             {
                 if (attributeValue != null)
                 {
-                    return renderHTMLAttribute(writer, componentProperty,
+                    return renderHTMLStringAttribute(writer, componentProperty,
                             htmlAttrName, attributeValue);
                 }
                 else
                 {
-                    return renderHTMLAttribute(writer, componentProperty,
+                    return renderHTMLStringAttribute(writer, componentProperty,
                             htmlAttrName, serverSideScript);
                 }
             }
             else
             {
-                return renderHTMLAttribute(
+                return renderHTMLStringAttribute(
                         writer,
                         componentProperty,
                         htmlAttrName,
@@ -2519,7 +2671,7 @@ public final class HtmlRendererUtils
         }
         else
         {
-            return renderHTMLAttribute(writer, componentProperty, htmlAttrName,
+            return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
                     HtmlRendererUtils.buildBehaviorChain(facesContext,
                             component, targetClientId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
@@ -2581,17 +2733,17 @@ public final class HtmlRendererUtils
         {
             if (attributeValue != null)
             {
-                return renderHTMLAttribute(writer, componentProperty,
+                return renderHTMLStringAttribute(writer, componentProperty,
                         htmlAttrName, attributeValue);
             }
             else if (serverSideScript != null)
             {
-                return renderHTMLAttribute(writer, componentProperty,
+                return renderHTMLStringAttribute(writer, componentProperty,
                         htmlAttrName, serverSideScript);
             }
             else if (((cb1 != null) ? cb1.size() : 0) > 0)
             {
-                return renderHTMLAttribute(
+                return renderHTMLStringAttribute(
                         writer,
                         componentProperty,
                         htmlAttrName,
@@ -2604,7 +2756,7 @@ public final class HtmlRendererUtils
             }
             else
             {
-                return renderHTMLAttribute(
+                return renderHTMLStringAttribute(
                         writer,
                         componentProperty,
                         htmlAttrName,
@@ -2618,7 +2770,7 @@ public final class HtmlRendererUtils
         }
         else
         {
-            return renderHTMLAttribute(writer, componentProperty, htmlAttrName,
+            return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
                     HtmlRendererUtils.buildBehaviorChain(facesContext,
                             component, targetClientId, eventName,
                             eventParameters, eventName2, eventParameters2,
@@ -2895,7 +3047,7 @@ public final class HtmlRendererUtils
                     (String) uiComponent.getAttributes()
                             .get(HTML.ONCHANGE_ATTR), null);
 
-            return HtmlRendererUtils.renderHTMLAttribute(writer,
+            return HtmlRendererUtils.renderHTMLStringAttribute(writer,
                     HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR, chain);
         }
         else if (hasChange)
@@ -2914,7 +3066,7 @@ public final class HtmlRendererUtils
         }
         else
         {
-            return HtmlRendererUtils.renderHTMLAttribute(writer, uiComponent,
+            return HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent,
                     HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR);
         }
     }
@@ -2940,7 +3092,7 @@ public final class HtmlRendererUtils
                     (String) uiComponent.getAttributes()
                             .get(HTML.ONCHANGE_ATTR), null);
 
-            return HtmlRendererUtils.renderHTMLAttribute(writer,
+            return HtmlRendererUtils.renderHTMLStringAttribute(writer,
                     HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR, chain);
         }
         else if (hasChange)
@@ -2959,7 +3111,7 @@ public final class HtmlRendererUtils
         }
         else
         {
-            return HtmlRendererUtils.renderHTMLAttribute(writer, uiComponent,
+            return HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent,
                     HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR);
         }
     }
