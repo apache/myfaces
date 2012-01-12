@@ -42,4 +42,10 @@ public class HtmlTextareaRenderer
         return true;
     }
 
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }

@@ -36,6 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.CommonEventUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
@@ -58,6 +59,12 @@ public class HtmlLabelRenderer extends HtmlRenderer
 
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
     {
         return true;
     }
@@ -102,9 +109,36 @@ public class HtmlLabelRenderer extends HtmlRenderer
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
             }
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer,
-                                                                                             uiComponent, behaviors);
+            long commonPropertiesMarked = 0L;
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+            }
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                        commonPropertiesMarked, uiComponent);
+            }
+            else
+            {
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                            commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                            facesContext, writer,
+                            uiComponent, behaviors);
+                }
+            }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderLabelPassthroughPropertiesWithoutEvents(writer, 

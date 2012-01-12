@@ -74,4 +74,11 @@ public class HtmlFormRenderer
     {
         return true;
     }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }

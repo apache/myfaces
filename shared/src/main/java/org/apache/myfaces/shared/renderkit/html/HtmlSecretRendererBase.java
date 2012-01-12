@@ -117,14 +117,42 @@ public class HtmlSecretRendererBase
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             
-            HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                    facesContext, writer, uiComponent, behaviors);
+            long commonPropertiesMarked = 0L;
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+            }
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderChangeEventProperty(writer, 
+                        commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                        commonPropertiesMarked, uiComponent);
+            }
+            else
+            {
+                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                            commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                            facesContext, writer, uiComponent, behaviors);
+                }
+            }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                        commonPropertiesMarked, uiComponent);
             }
             else
             {

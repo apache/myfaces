@@ -43,4 +43,11 @@ public class HtmlTableRenderer
     {
         return true;
     }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }

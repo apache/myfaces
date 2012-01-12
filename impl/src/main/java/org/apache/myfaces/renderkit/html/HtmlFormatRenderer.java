@@ -62,6 +62,12 @@ public class HtmlFormatRenderer extends HtmlRenderer
     }
 
     @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
     }

@@ -44,4 +44,11 @@ public class HtmlGridRenderer
     {
         return true;
     }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }

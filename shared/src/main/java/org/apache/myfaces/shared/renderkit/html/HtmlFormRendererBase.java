@@ -98,7 +98,24 @@ public class HtmlFormRendererBase
                 facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) htmlForm).getClientBehaviors();
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, htmlForm, behaviors);
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(htmlForm), htmlForm);
+            }
+            else
+            {
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                           CommonPropertyUtils.getCommonPropertiesMarked(htmlForm),
+                           CommonEventUtils.getCommonEventsMarked(htmlForm), htmlForm, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, htmlForm, behaviors);
+                }
+            }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
@@ -218,7 +235,7 @@ public class HtmlFormRendererBase
 
     private static String getHiddenCommandInputsSetName(FacesContext facesContext, UIComponent form)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder(HIDDEN_COMMAND_INPUTS_SET_ATTR.length()+20);
         buf.append(HIDDEN_COMMAND_INPUTS_SET_ATTR);
         buf.append("_");
         buf.append(form.getClientId(facesContext));
@@ -227,7 +244,7 @@ public class HtmlFormRendererBase
 
     private static String getScrollHiddenInputName(FacesContext facesContext, UIComponent form)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder(SCROLL_HIDDEN_INPUT.length()+20);
         buf.append(SCROLL_HIDDEN_INPUT);
         buf.append("_");
         buf.append(form.getClientId(facesContext));

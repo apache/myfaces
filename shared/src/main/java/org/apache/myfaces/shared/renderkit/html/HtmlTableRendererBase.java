@@ -154,7 +154,24 @@ public class HtmlTableRendererBase extends HtmlRenderer
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
             }
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+            }
+            else
+            {
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                           CommonPropertyUtils.getCommonPropertiesMarked(uiComponent),
+                           CommonEventUtils.getCommonEventsMarked(uiComponent), uiComponent, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                }
+            }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.TABLE_ATTRIBUTES);

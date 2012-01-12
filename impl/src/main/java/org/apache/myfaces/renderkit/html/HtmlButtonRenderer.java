@@ -41,4 +41,11 @@ public class HtmlButtonRenderer
     {
         return true;
     }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }

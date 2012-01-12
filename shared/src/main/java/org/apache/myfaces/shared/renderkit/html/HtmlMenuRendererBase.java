@@ -44,7 +44,7 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
  * @version $Revision$ $Date$
  */
 public class HtmlMenuRendererBase
-        extends HtmlRenderer
+        extends HtmlSelectableRendererBase
 {
     //private static final Log log = LogFactory.getLog(HtmlMenuRenderer.class);
 
@@ -66,14 +66,14 @@ public class HtmlMenuRendererBase
 
         if (component instanceof UISelectMany)
         {
-            HtmlRendererUtils.renderMenu(facesContext,
+            renderMenu(facesContext,
                                          (UISelectMany)component,
                                          isDisabled(facesContext, component),
                                          getConverter(facesContext, component));
         }
         else if (component instanceof UISelectOne)
         {
-            HtmlRendererUtils.renderMenu(facesContext,
+            renderMenu(facesContext,
                                          (UISelectOne)component,
                                          isDisabled(facesContext, component),
                                          getConverter(facesContext, component));
@@ -82,6 +82,22 @@ public class HtmlMenuRendererBase
         {
             throw new IllegalArgumentException("Unsupported component class " + component.getClass().getName());
         }
+    }
+    
+    protected void renderMenu(FacesContext facesContext,
+            UISelectOne selectOne, boolean disabled, Converter converter)
+            throws IOException
+    {
+        internalRenderSelect(facesContext, selectOne, disabled, 1, false,
+                converter);
+    }
+
+    protected void renderMenu(FacesContext facesContext,
+            UISelectMany selectMany, boolean disabled, Converter converter)
+            throws IOException
+    {
+        internalRenderSelect(facesContext, selectMany, disabled, 1, true,
+                converter);
     }
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)

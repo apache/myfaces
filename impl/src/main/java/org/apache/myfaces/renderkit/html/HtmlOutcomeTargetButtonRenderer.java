@@ -38,4 +38,11 @@ public class HtmlOutcomeTargetButtonRenderer extends HtmlOutcomeTargetButtonRend
     {
         return true;
     }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }

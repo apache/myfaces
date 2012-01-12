@@ -218,14 +218,42 @@ public class HtmlTextRendererBase
         {
             behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             
-            HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                    facesContext, writer, component, behaviors);
+            long commonPropertiesMarked = 0L;
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+            }
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderChangeEventProperty(writer, 
+                        commonPropertiesMarked, component);
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        commonPropertiesMarked, component);
+                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                        commonPropertiesMarked, component);
+            }
+            else
+            {
+                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                            commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                            facesContext, writer, component, behaviors);
+                }
+            }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                        commonPropertiesMarked, component);
             }
             else
             {

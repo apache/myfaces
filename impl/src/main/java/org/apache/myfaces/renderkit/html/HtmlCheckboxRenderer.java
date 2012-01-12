@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
+import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.shared.renderkit.html.HtmlCheckboxRendererBase;
@@ -43,5 +44,16 @@ public class HtmlCheckboxRenderer
         extends HtmlCheckboxRendererBase
 {
     //private static final Log log = LogFactory.getLog(HtmlCheckboxRenderer.class);
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
 
 }

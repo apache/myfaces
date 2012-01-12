@@ -133,12 +133,34 @@ public class HtmlGridRendererBase
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
             }
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
+            long commonPropertiesMarked = 0L;
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+            }
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        commonPropertiesMarked, component);
+            }
+            else
+            {
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                           commonPropertiesMarked,
+                           CommonEventUtils.getCommonEventsMarked(component), component, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
+                }
+            }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.TABLE_ATTRIBUTES);
                 CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                        commonPropertiesMarked, component);
             }
             else
             {
