@@ -43,32 +43,23 @@ public final class CommonPropertyUtils
         return component.getId() != null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX);
     }
 
-    public static final void renderHTMLStringAttribute(ResponseWriter writer,
-            UIComponent component, String componentProperty, String htmlAttrName)
-            throws IOException
-    {
-        String value = (String) component.getAttributes()
-                .get(componentProperty);
-        writer.writeAttribute(htmlAttrName, value, componentProperty);
-    }
-
     public static final void renderUniversalProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.DIR_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.DIR_ATTR, HTML.DIR_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.LANG_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.LANG_ATTR, HTML.LANG_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.TITLE_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TITLE_ATTR, HTML.TITLE_ATTR);
         }
     }
@@ -79,12 +70,12 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.DIR_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.DIR_ATTR, HTML.DIR_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.LANG_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.LANG_ATTR, HTML.LANG_ATTR);
         }
     }
@@ -95,12 +86,12 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.STYLE_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.STYLE_ATTR, HTML.STYLE_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.STYLECLASS_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
         }
     }
@@ -111,7 +102,7 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ONCLICK_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONCLICK_ATTR, HTML.ONCLICK_ATTR);
         }
         renderEventPropertiesWithoutOnclick(writer, commonPropertiesMarked, component);
@@ -123,47 +114,47 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ONDBLCLICK_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONDBLCLICK_ATTR, HTML.ONDBLCLICK_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEDOWN_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEDOWN_ATTR, HTML.ONMOUSEDOWN_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEUP_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEUP_ATTR, HTML.ONMOUSEUP_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOVER_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEOVER_ATTR, HTML.ONMOUSEOVER_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEMOVE_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEMOVE_ATTR, HTML.ONMOUSEMOVE_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONMOUSEOUT_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONMOUSEOUT_ATTR, HTML.ONMOUSEOUT_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYPRESS_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONKEYPRESS_ATTR, HTML.ONKEYPRESS_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYDOWN_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONKEYDOWN_ATTR, HTML.ONKEYDOWN_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONKEYUP_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONKEYUP_ATTR, HTML.ONKEYUP_ATTR);
         }
     }
@@ -175,12 +166,12 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONSELECT_ATTR, HTML.ONSELECT_ATTR);
         }
     }
@@ -191,13 +182,58 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONFOCUS_ATTR, HTML.ONFOCUS_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ONBLUR_ATTR, HTML.ONBLUR_ATTR);
+        }
+    }
+    
+    public static final void renderFieldEventPropertiesWithoutOnchangeAndOnselect(ResponseWriter writer,
+            long commonPropertiesMarked, UIComponent component) throws IOException
+    {
+        if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.ONFOCUS_ATTR, HTML.ONFOCUS_ATTR);
+        }
+        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.ONBLUR_ATTR, HTML.ONBLUR_ATTR);
+        }
+    }
+    
+    public static final void renderFieldEventPropertiesWithoutOnchange(ResponseWriter writer,
+            long commonPropertiesMarked, UIComponent component) throws IOException
+    {
+        if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.ONFOCUS_ATTR, HTML.ONFOCUS_ATTR);
+        }
+        if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.ONBLUR_ATTR, HTML.ONBLUR_ATTR);
+        }
+        if ((commonPropertiesMarked & CommonPropertyConstants.ONSELECT_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.ONSELECT_ATTR, HTML.ONSELECT_ATTR);
+        }
+    }
+    
+    public static final void renderChangeEventProperty(ResponseWriter writer,
+            long commonPropertiesMarked, UIComponent component) throws IOException
+    {
+        if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR);
         }
     }
     
@@ -207,12 +243,12 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ACCESSKEY_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ACCESSKEY_ATTR, HTML.ACCESSKEY_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.TABINDEX_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TABINDEX_ATTR, HTML.TABINDEX_ATTR);
         }
     }
@@ -223,12 +259,12 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ALIGN_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ALIGN_ATTR, HTML.ALIGN_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ALT_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ALT_ATTR, HTML.ALT_ATTR);
         }
     }
@@ -244,7 +280,7 @@ public final class CommonPropertyUtils
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.ALT_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ALT_ATTR, HTML.ALT_ATTR);
         }
         if ((commonPropertiesMarked & CommonPropertyConstants.CHECKED_PROP) != 0)
@@ -276,42 +312,42 @@ public final class CommonPropertyUtils
         renderAccesskeyTabindexProperties(writer, commonPropertiesMarked, component);
         if ((commonPropertiesMarked & CommonPropertyConstants.CHARSET_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.CHARSET_ATTR, HTML.CHARSET_ATTR);
         }        
         if ((commonPropertiesMarked & CommonPropertyConstants.COORDS_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.COORDS_ATTR, HTML.COORDS_ATTR);
         }        
         if ((commonPropertiesMarked & CommonPropertyConstants.HREFLANG_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.HREFLANG_ATTR, HTML.HREFLANG_ATTR);
         }        
         if ((commonPropertiesMarked & CommonPropertyConstants.REL_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.REL_ATTR, HTML.REL_ATTR);
         }        
         if ((commonPropertiesMarked & CommonPropertyConstants.REV_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.REV_ATTR, HTML.REV_ATTR);
         }        
         if ((commonPropertiesMarked & CommonPropertyConstants.SHAPE_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.SHAPE_ATTR, HTML.SHAPE_ATTR);
         }        
         if ((commonPropertiesMarked & CommonPropertyConstants.TARGET_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TARGET_ATTR, HTML.TARGET_ATTR);
         }        
         if ((commonPropertiesMarked & CommonPropertyConstants.TYPE_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TYPE_ATTR, HTML.TYPE_ATTR);
         }        
     }
@@ -438,7 +474,7 @@ public final class CommonPropertyUtils
         renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
         if ((commonPropertiesMarked & CommonPropertyConstants.ACCESSKEY_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ACCESSKEY_ATTR, HTML.ACCESSKEY_ATTR);
         }
     }
@@ -458,9 +494,23 @@ public final class CommonPropertyUtils
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ACCESSKEY_PROP) != 0)
         {
-            renderHTMLStringAttribute(writer, component,
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.ACCESSKEY_ATTR, HTML.ACCESSKEY_ATTR);
         }
         renderCommonPassthroughPropertiesWithoutEvents(writer, commonPropertiesMarked, component);
+    }
+    
+    public static final void renderSelectPassthroughPropertiesWithoutDisabled(ResponseWriter writer,
+            long commonPropertiesMarked, UIComponent component)
+            throws IOException
+    {
+        renderCommonFieldPassthroughPropertiesWithoutDisabled(writer, commonPropertiesMarked, component);
+    }
+    
+    public static final void renderSelectPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
+            long commonPropertiesMarked, UIComponent component)
+            throws IOException
+    {
+        renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(writer, commonPropertiesMarked, component);
     }
 }
