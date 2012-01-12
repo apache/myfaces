@@ -36,6 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.CommonEventUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
@@ -58,6 +59,12 @@ public class HtmlLabelRenderer extends HtmlRenderer
 
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
     {
         return true;
     }
@@ -91,7 +98,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
         encodeBefore(facesContext, writer, uiComponent);
 
         writer.startElement(HTML.LABEL_ELEM, uiComponent);
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder
+            && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
         {
             if (!behaviors.isEmpty())
             {
@@ -101,8 +109,36 @@ public class HtmlLabelRenderer extends HtmlRenderer
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
             }
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext, writer, uiComponent, behaviors);
+            long commonPropertiesMarked = 0L;
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+            }
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                        commonPropertiesMarked, uiComponent);
+            }
+            else
+            {
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                            commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                            facesContext, writer,
+                            uiComponent, behaviors);
+                }
+            }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderLabelPassthroughPropertiesWithoutEvents(writer, 
@@ -110,7 +146,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                                                       HTML.LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
             }
         }
         else
@@ -156,7 +193,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(uiComponent, org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
+                    escape = RendererUtils.getBooleanAttribute(uiComponent,
+                                                               org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
                                                                true); //default is to escape
                 }                
                 if (escape)

@@ -50,7 +50,8 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class HtmlCheckboxRendererBase extends HtmlRenderer {
+public class HtmlCheckboxRendererBase extends HtmlRenderer
+{
     //private static final Log log = LogFactory
     //        .getLog(HtmlCheckboxRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlCheckboxRendererBase.class.getName());
@@ -62,7 +63,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
     private static final String EXTERNAL_TRUE_VALUE = "true";
 
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException {
+            throws IOException
+    {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
         
         Map<String, List<ClientBehavior>> behaviors = null;
@@ -75,29 +77,42 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
             }
         }
         
-        if (uiComponent instanceof UISelectBoolean) {
+        if (uiComponent instanceof UISelectBoolean)
+        {
             Boolean value = org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanValue( uiComponent );
             boolean isChecked = value != null ? value.booleanValue() : false;
-            renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, false,isChecked, true, null); //TODO: the selectBoolean is never disabled
-        } else if (uiComponent instanceof UISelectMany) {
+            renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, false,isChecked, true, null); 
+                //TODO: the selectBoolean is never disabled
+        }
+        else if (uiComponent instanceof UISelectMany)
+        {
             renderCheckboxList(facesContext, (UISelectMany) uiComponent);
-        } else {
+        }
+        else
+        {
             throw new IllegalArgumentException("Unsupported component class "
                     + uiComponent.getClass().getName());
         }
     }
 
     public void renderCheckboxList(FacesContext facesContext,
-            UISelectMany selectMany) throws IOException {
+            UISelectMany selectMany) throws IOException
+    {
 
         String layout = getLayout(selectMany);
         boolean pageDirectionLayout = false; //Default to lineDirection
-        if (layout != null) {
-            if (layout.equals(PAGE_DIRECTION)) {
+        if (layout != null)
+        {
+            if (layout.equals(PAGE_DIRECTION))
+            {
                 pageDirectionLayout = true;
-            } else if (layout.equals(LINE_DIRECTION)) {
+            } 
+            else if (layout.equals(LINE_DIRECTION))
+            {
                 pageDirectionLayout = false;
-            } else {
+            }
+            else
+            {
                 log.severe("Wrong layout attribute for component "
                         + selectMany.getClientId(facesContext) + ": " + layout);
             }
@@ -125,21 +140,28 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
         }        
 
         if (!pageDirectionLayout)
+        {
             writer.startElement(HTML.TR_ELEM, selectMany);
+        }
         
         Converter converter = getConverter(facesContext, selectMany);
 
-        Set lookupSet = org.apache.myfaces.shared.renderkit.RendererUtils.getSubmittedValuesAsSet(facesContext, selectMany, converter, selectMany);
+        Set lookupSet = org.apache.myfaces.shared.renderkit.RendererUtils.getSubmittedValuesAsSet(
+                facesContext, selectMany, converter, selectMany);
         boolean useSubmittedValues = lookupSet != null;
 
-        if (!useSubmittedValues) {
-            lookupSet = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectedValuesAsSet(facesContext, selectMany, converter, selectMany);
+        if (!useSubmittedValues)
+        {
+            lookupSet = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectedValuesAsSet(
+                    facesContext, selectMany, converter, selectMany);
         }
 
         int itemNum = 0;
 
-        for (Iterator it = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(selectMany, facesContext)
-                .iterator(); it.hasNext();) {
+        for (Iterator it = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
+                selectMany, facesContext)
+                .iterator(); it.hasNext();)
+        {
             SelectItem selectItem = (SelectItem) it.next();
             
             itemNum = renderGroupOrItemCheckbox(facesContext, selectMany, 
@@ -148,12 +170,16 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
         }
 
         if (!pageDirectionLayout)
+        {
             writer.endElement(HTML.TR_ELEM);
+        }
         writer.endElement(HTML.TABLE_ELEM);
     }
 
-    protected String getLayout(UISelectMany selectMany) {
-        if (selectMany instanceof HtmlSelectManyCheckbox) {
+    protected String getLayout(UISelectMany selectMany)
+    {
+        if (selectMany instanceof HtmlSelectManyCheckbox)
+        {
             return ((HtmlSelectManyCheckbox) selectMany).getLayout();
         } 
         
@@ -176,7 +202,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
     protected int renderGroupOrItemCheckbox(FacesContext facesContext,
                                              UIComponent uiComponent, SelectItem selectItem,
                                              boolean useSubmittedValues, Set lookupSet,
-                                             Converter converter, boolean pageDirectionLayout, Integer itemNum) throws IOException
+                                             Converter converter, boolean pageDirectionLayout, 
+                                             Integer itemNum) throws IOException
     {
 
         ResponseWriter writer = facesContext.getResponseWriter();
@@ -188,7 +215,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
         if (isSelectItemGroup)
         {
             if (pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectMany);
+            }
 
             writer.startElement(HTML.TD_ELEM, selectMany);
             writer.write(selectItem.getLabel());
@@ -205,7 +234,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
             writer.writeAttribute(HTML.BORDER_ATTR, "0", null);
             
             if(!pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectMany);
+            }
 
             SelectItemGroup group = (SelectItemGroup) selectItem;
             SelectItem[] selectItems = group.getSelectItems();
@@ -217,18 +248,24 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
             }
 
             if(!pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
             writer.endElement(HTML.TABLE_ELEM);
             writer.endElement(HTML.TD_ELEM);
 
             if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
 
         }
         else
         {
-            Object itemValue = selectItem.getValue(); // TODO : Check here for getSubmittedValue. Look at RendererUtils.getValue
-            String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedStringValue(facesContext, selectMany, converter, itemValue);
+            Object itemValue = selectItem.getValue(); // TODO : Check here for getSubmittedValue. 
+                                                      // Look at RendererUtils.getValue
+            String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedStringValue(
+                    facesContext, selectMany, converter, itemValue);
             
             boolean checked = lookupSet.contains(itemStrValue);
             
@@ -245,7 +282,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
 
             writer.write("\t\t");
             if (pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectMany);
+            }
             writer.startElement(HTML.TD_ELEM, selectMany);
 
             boolean disabled = selectItem.isDisabled();
@@ -260,7 +299,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
 
             writer.endElement(HTML.TD_ELEM);
             if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
             
             // we rendered one checkbox --> increment itemNum
             itemNum++;
@@ -272,7 +313,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
     @Deprecated
     protected void renderCheckbox(FacesContext facesContext,
             UIComponent uiComponent, String value, String label,
-            boolean disabled, boolean checked, boolean renderId) throws IOException {
+            boolean disabled, boolean checked, boolean renderId) throws IOException
+    {
         renderCheckbox(facesContext, uiComponent, value, disabled, checked, renderId, 0);
     }
 
@@ -281,10 +323,13 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
      * @return the 'id' value of the rendered element
      */
     protected String renderCheckbox(FacesContext facesContext,
-            UIComponent uiComponent, String value, boolean disabled, boolean checked, boolean renderId, Integer itemNum) throws IOException {
+            UIComponent uiComponent, String value, boolean disabled, boolean checked, 
+            boolean renderId, Integer itemNum) throws IOException
+    {
         String clientId = uiComponent.getClientId(facesContext);
 
-        String itemId = (itemNum == null)? null : clientId + UINamingContainer.getSeparatorChar(facesContext) + itemNum;
+        String itemId = (itemNum == null)? null : clientId + 
+                UINamingContainer.getSeparatorChar(facesContext) + itemNum;
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -301,29 +346,62 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_CHECKBOX, null);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
         
-        if (checked) {
-            writer.writeAttribute(HTML.CHECKED_ATTR, org.apache.myfaces.shared.renderkit.html.HTML.CHECKED_ATTR, null);
+        if (checked)
+        {
+            writer.writeAttribute(HTML.CHECKED_ATTR, 
+                    org.apache.myfaces.shared.renderkit.html.HTML.CHECKED_ATTR, null);
         }
         
-        if (disabled) {
+        if (disabled)
+        {
             writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
 
-        if ((value != null) && (value.length() > 0)) {
+        if ((value != null) && (value.length() > 0))
+        {
             writer.writeAttribute(HTML.VALUE_ATTR, value, null);
         }
 
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof UISelectBoolean)
         {
-            if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                    facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
                 
-                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
-                HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                {
+                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                    CommonPropertyUtils.renderChangeEventProperty(writer, 
+                            commonPropertiesMarked, uiComponent);
+                    CommonPropertyUtils.renderEventProperties(writer, 
+                            commonPropertiesMarked, uiComponent);
+                    CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                            commonPropertiesMarked, uiComponent);
+                }
+                else
+                {
+                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                    HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
+                            facesContext, writer, uiComponent, behaviors);
+                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    {
+                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
+                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                                commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                            facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                    }
+                    else
+                    {
+                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                        HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                                facesContext, writer, uiComponent, behaviors);
+                    }
+                }
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
             }
             else
             {
@@ -333,14 +411,43 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
         }
         else
         {
-            if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                    facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
                 
-                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
-                HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS);
+                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                {
+                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+                    CommonPropertyUtils.renderChangeEventProperty(writer, 
+                            commonPropertiesMarked, uiComponent);
+                    CommonPropertyUtils.renderEventProperties(writer, 
+                            commonPropertiesMarked, uiComponent);
+                    CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                            commonPropertiesMarked, uiComponent);
+                }
+                else
+                {
+                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);                    
+                    HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
+                            facesContext, writer, uiComponent, behaviors);
+                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    {
+                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
+                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                                commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                            facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                    }
+                    else
+                    {
+                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                        HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                                facesContext, writer, uiComponent, behaviors);
+                    }
+                }
+                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS);
             }
             else
             {
@@ -348,7 +455,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
                         HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE);
             }
         }
-        if (isDisabled(facesContext, uiComponent)) {
+        if (isDisabled(facesContext, uiComponent))
+        {
             writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
         }
         
@@ -358,26 +466,38 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
     }
 
     protected boolean isDisabled(FacesContext facesContext,
-            UIComponent component) {
+            UIComponent component)
+    {
         //TODO: overwrite in extended HtmlCheckboxRenderer and check for
         // enabledOnUserRole
-        if (component instanceof HtmlSelectBooleanCheckbox) {
+        if (component instanceof HtmlSelectBooleanCheckbox)
+        {
             return ((HtmlSelectBooleanCheckbox) component).isDisabled();
-        } else if (component instanceof HtmlSelectManyCheckbox) {
+        }
+        else if (component instanceof HtmlSelectManyCheckbox)
+        {
             return ((HtmlSelectManyCheckbox) component).isDisabled();
-        } else {
+        }
+        else
+        {
             return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component,
                     HTML.DISABLED_ATTR, false);
         }
     }
 
-    public void decode(FacesContext facesContext, UIComponent component) {
+    public void decode(FacesContext facesContext, UIComponent component)
+    {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, null);
-        if (component instanceof UISelectBoolean) {
+        if (component instanceof UISelectBoolean)
+        {
             HtmlRendererUtils.decodeUISelectBoolean(facesContext, component);
-        } else if (component instanceof UISelectMany) {
+        }
+        else if (component instanceof UISelectMany)
+        {
             HtmlRendererUtils.decodeUISelectMany(facesContext, component);
-        } else {
+        }
+        else
+        {
             throw new IllegalArgumentException("Unsupported component class "
                     + component.getClass().getName());
         }
@@ -390,14 +510,20 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer {
 
     public Object getConvertedValue(FacesContext facesContext,
             UIComponent component, Object submittedValue)
-            throws ConverterException {
+            throws ConverterException
+    {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, null);
-        if (component instanceof UISelectBoolean) {
+        if (component instanceof UISelectBoolean)
+        {
             return submittedValue;
-        } else if (component instanceof UISelectMany) {
+        }
+        else if (component instanceof UISelectMany)
+        {
             return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUISelectManyValue(facesContext,
                     (UISelectMany) component, submittedValue);
-        } else {
+        }
+        else
+        {
             throw new IllegalArgumentException("Unsupported component class "
                     + component.getClass().getName());
         }

@@ -90,7 +90,10 @@ public class HtmlTextRendererBase
     {
         
         String text = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, component);
-        if (log.isLoggable(Level.FINE)) log.fine("renderOutput '" + text + "'");
+        if (log.isLoggable(Level.FINE))
+        {
+            log.fine("renderOutput '" + text + "'");
+        }
         boolean escape;
         if (component instanceof HtmlOutputText || component instanceof EscapeCapable)
         {
@@ -98,7 +101,8 @@ public class HtmlTextRendererBase
         }
         else
         {
-            escape = RendererUtils.getBooleanAttribute(component, org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
+            escape = RendererUtils.getBooleanAttribute(component, 
+                    org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
                                                        true); //default is to escape
         }
         if (text != null)
@@ -152,7 +156,10 @@ public class HtmlTextRendererBase
 
             if (escape)
             {
-                if (log.isLoggable(Level.FINE)) log.fine("renderOutputText writing '" + text + "'");
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("renderOutputText writing '" + text + "'");
+                }
                 writer.writeText(text, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
             }
             else
@@ -188,7 +195,10 @@ public class HtmlTextRendererBase
 
         String clientId = component.getClientId(facesContext);
         String value = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, component);
-        if (log.isLoggable(Level.FINE)) log.fine("renderInput '" + value + "'");
+        if (log.isLoggable(Level.FINE))
+        {
+            log.fine("renderInput '" + value + "'");
+        }
         writer.startElement(HTML.INPUT_ELEM, component);
         writer.writeAttribute(HTML.ID_ATTR, clientId, null);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
@@ -203,21 +213,52 @@ public class HtmlTextRendererBase
         }
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             
-            HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, component, behaviors);
+            long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+            }
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderChangeEventProperty(writer, 
+                        commonPropertiesMarked, component);
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        commonPropertiesMarked, component);
+                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                        commonPropertiesMarked, component);
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, component, behaviors);
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                            commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                            facesContext, writer, component, behaviors);
+                }
+            }
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderInputPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                        commonPropertiesMarked, component);
+            }
+            else
+            {
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
             }
         }
         else
@@ -229,7 +270,8 @@ public class HtmlTextRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                        HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
             }
         }
 
@@ -259,7 +301,8 @@ public class HtmlTextRendererBase
             return ((HtmlInputText)component).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
+                HTML.DISABLED_ATTR, false);
         
     }
 
@@ -305,7 +348,8 @@ public class HtmlTextRendererBase
     }
 
 
-    public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue) throws ConverterException
+    public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue)
+        throws ConverterException
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, UIOutput.class);
         return RendererUtils.getConvertedUIOutputValue(facesContext,
@@ -357,7 +401,9 @@ public class HtmlTextRendererBase
             if (escape)
             {
                 if (log.isLoggable(Level.FINE))
+                {
                     log.fine("renderOutputText writing '" + text + "'");
+                }
                 writer.writeText(text,
                         org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
             }

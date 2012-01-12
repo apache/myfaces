@@ -43,7 +43,7 @@ import java.util.Map;
  * @version $Revision$ $Date$
  */
 public class HtmlListboxRendererBase
-        extends HtmlRenderer
+        extends HtmlSelectableRendererBase
 {
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
@@ -69,14 +69,14 @@ public class HtmlListboxRendererBase
 
         if (uiComponent instanceof UISelectMany)
         {
-            HtmlRendererUtils.renderListbox(facesContext,
+            renderListbox(facesContext,
                                             (UISelectMany)uiComponent,
                                             isDisabled(facesContext, uiComponent),
                                             size, getConverter(facesContext, uiComponent));
         }
         else if (uiComponent instanceof HtmlSelectOneListbox)
         {
-            HtmlRendererUtils.renderListbox(facesContext,
+            renderListbox(facesContext,
                                             (UISelectOne)uiComponent,
                                             isDisabled(facesContext, uiComponent),
                                             size, getConverter(facesContext, uiComponent));
@@ -85,6 +85,22 @@ public class HtmlListboxRendererBase
         {
             throw new IllegalArgumentException("Unsupported component class " + uiComponent.getClass().getName());
         }
+    }
+    
+    protected void renderListbox(FacesContext facesContext,
+            UISelectOne selectOne, boolean disabled, int size,
+            Converter converter) throws IOException
+    {
+        internalRenderSelect(facesContext, selectOne, disabled, size, false,
+                converter);
+    }
+
+    protected void renderListbox(FacesContext facesContext,
+            UISelectMany selectMany, boolean disabled, int size,
+            Converter converter) throws IOException
+    {
+        internalRenderSelect(facesContext, selectMany, disabled, size, true,
+                converter);
     }
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)

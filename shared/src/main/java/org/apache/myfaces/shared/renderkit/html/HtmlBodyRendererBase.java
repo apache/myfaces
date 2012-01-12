@@ -80,7 +80,24 @@ public class HtmlBodyRendererBase extends HtmlRenderer
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
             }
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+            }
+            else
+            {
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                           CommonPropertyUtils.getCommonPropertiesMarked(component),
+                           CommonEventUtils.getCommonEventsMarked(component), component, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
+                }
+            }
             HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONLOAD_ATTR, component,
                     ClientBehaviorEvents.LOAD, behaviors, HTML.ONLOAD_ATTR);
             HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONUNLOAD_ATTR, component,

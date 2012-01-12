@@ -84,7 +84,8 @@ public class HtmlFormRendererBase
         writer.writeAttribute(HTML.ID_ATTR, clientId, null);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
         writer.writeAttribute(HTML.METHOD_ATTR, method, null);
-        if (acceptCharset != null) {
+        if (acceptCharset != null)
+        {
             writer.writeAttribute(HTML.ACCEPT_CHARSET_ATTR, acceptCharset, null);
         }
         String encodedActionURL = facesContext.getExternalContext().encodeActionURL(actionURL);
@@ -93,10 +94,28 @@ public class HtmlFormRendererBase
                 encodedActionURL,
                 null);
         
-        if (htmlForm instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (htmlForm instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) htmlForm).getClientBehaviors();
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, htmlForm, behaviors);
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        CommonPropertyUtils.getCommonPropertiesMarked(htmlForm), htmlForm);
+            }
+            else
+            {
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                           CommonPropertyUtils.getCommonPropertiesMarked(htmlForm),
+                           CommonEventUtils.getCommonEventsMarked(htmlForm), htmlForm, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, htmlForm, behaviors);
+                }
+            }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
@@ -105,7 +124,8 @@ public class HtmlFormRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, HTML.FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                HtmlRendererUtils.renderHTMLAttributes(writer, htmlForm, 
+                        HTML.FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
             }
         }
         else
@@ -139,15 +159,18 @@ public class HtmlFormRendererBase
         afterFormElementsStart(facesContext, component);
     }
 
-    protected String getActionUrl(FacesContext facesContext, UIForm form) {
+    protected String getActionUrl(FacesContext facesContext, UIForm form)
+    {
         return getActionUrl(facesContext);
     }
 
-    protected String getMethod(FacesContext facesContext, UIForm form) {
+    protected String getMethod(FacesContext facesContext, UIForm form)
+    {
         return "post";
     }
 
-    protected String getAcceptCharset(FacesContext facesContext, UIForm form ) {
+    protected String getAcceptCharset(FacesContext facesContext, UIForm form )
+    {
         return (String)form.getAttributes().get( JSFAttr.ACCEPTCHARSET_ATTR );
     }
 
@@ -198,25 +221,30 @@ public class HtmlFormRendererBase
 
         afterFormElementsEnd(facesContext, component);
         
-        for (UIComponent child : facesContext.getViewRoot().getComponentResources(facesContext,
-            FORM_TARGET))
+        List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext,
+            FORM_TARGET);
+        
+        for (int i = 0, size = componentResources.size(); i < size; i++)
         {
+           UIComponent child = componentResources.get(i);
            child.encodeAll (facesContext);
         }
         
         writer.endElement(HTML.FORM_ELEM);
     }
 
-    private static String getHiddenCommandInputsSetName(FacesContext facesContext, UIComponent form) {
-        StringBuffer buf = new StringBuffer();
+    private static String getHiddenCommandInputsSetName(FacesContext facesContext, UIComponent form)
+    {
+        StringBuilder buf = new StringBuilder(HIDDEN_COMMAND_INPUTS_SET_ATTR.length()+20);
         buf.append(HIDDEN_COMMAND_INPUTS_SET_ATTR);
         buf.append("_");
         buf.append(form.getClientId(facesContext));
         return buf.toString();
     }
 
-    private static String getScrollHiddenInputName(FacesContext facesContext, UIComponent form) {
-        StringBuffer buf = new StringBuffer();
+    private static String getScrollHiddenInputName(FacesContext facesContext, UIComponent form)
+    {
+        StringBuilder buf = new StringBuilder(SCROLL_HIDDEN_INPUT.length()+20);
         buf.append(SCROLL_HIDDEN_INPUT);
         buf.append("_");
         buf.append(form.getClientId(facesContext));
@@ -255,27 +283,35 @@ public class HtmlFormRendererBase
 
     public static void addHiddenCommandParameter(FacesContext facesContext, UIComponent form, String paramName)
     {
-        Set set = (Set) facesContext.getExternalContext().getRequestMap().get(getHiddenCommandInputsSetName(facesContext, form));
+        Set set = (Set) facesContext.getExternalContext().getRequestMap().get(
+                getHiddenCommandInputsSetName(facesContext, form));
         if (set == null)
         {
             set = new HashSet();
-            facesContext.getExternalContext().getRequestMap().put(getHiddenCommandInputsSetName(facesContext, form), set);
+            facesContext.getExternalContext().getRequestMap().put(
+                    getHiddenCommandInputsSetName(facesContext, form), set);
         }
         set.add(paramName);
     }
 
-    public static void renderScrollHiddenInputIfNecessary(UIComponent form, FacesContext facesContext, ResponseWriter writer)
-        throws IOException {
-        if (form == null) {
+    public static void renderScrollHiddenInputIfNecessary(
+            UIComponent form, FacesContext facesContext, ResponseWriter writer)
+        throws IOException
+    {
+        if (form == null)
+        {
             return;
         }
 
-        if (facesContext.getExternalContext().getRequestMap().get(getScrollHiddenInputName(facesContext, form)) == null)
+        if (facesContext.getExternalContext().getRequestMap().get(
+                getScrollHiddenInputName(facesContext, form)) == null)
         {
-            if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll()) {
+            if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll())
+            {
                 HtmlRendererUtils.renderAutoScrollHiddenInput(facesContext, writer);
             }
-            facesContext.getExternalContext().getRequestMap().put(getScrollHiddenInputName(facesContext, form), Boolean.TRUE);
+            facesContext.getExternalContext().getRequestMap().put(getScrollHiddenInputName(
+                    facesContext, form), Boolean.TRUE);
         }
     }
 
@@ -294,7 +330,9 @@ public class HtmlFormRendererBase
      */
     protected void beforeFormElementsStart(FacesContext facesContext, UIComponent component)
             throws IOException
-    {}
+    {
+        
+    }
 
     /**
      * Called after the state and any elements are added to the form tag in the
@@ -302,7 +340,9 @@ public class HtmlFormRendererBase
      */
     protected void afterFormElementsStart(FacesContext facesContext, UIComponent component)
             throws IOException
-    {}
+    {
+        
+    }
 
     /**
      * Called before the state and any elements are added to the form tag in the
@@ -310,7 +350,9 @@ public class HtmlFormRendererBase
      */
     protected void beforeFormElementsEnd(FacesContext facesContext, UIComponent component)
             throws IOException
-    {}
+    {
+        
+    }
 
     /**
      * Called after the state and any elements are added to the form tag in the
@@ -318,5 +360,7 @@ public class HtmlFormRendererBase
      */
     protected void afterFormElementsEnd(FacesContext facesContext, UIComponent component)
             throws IOException
-    {}
+    {
+        
+    }
 }

@@ -109,8 +109,8 @@ public abstract class HtmlMessageRendererBase
                 ResponseWriter writer = facesContext.getResponseWriter();
                 writer.startElement(HTML.SPAN_ELEM, null);
                 writer.writeAttribute(HTML.ID_ATTR, clientId + "_msgFor", null);
-                HtmlRendererUtils.renderHTMLAttribute(writer, message, JSFAttr.STYLE_ATTR, HTML.STYLE_ATTR);
-                HtmlRendererUtils.renderHTMLAttribute(writer, message, JSFAttr.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
+                HtmlRendererUtils.renderHTMLStringAttribute(writer, message, JSFAttr.STYLE_ATTR, HTML.STYLE_ATTR);
+                HtmlRendererUtils.renderHTMLStringAttribute(writer, message, JSFAttr.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
                 writer.endElement(HTML.SPAN_ELEM);
             }
             else if (renderDivWhenNoMessagesAndIdSet && message.getId() != null && 
@@ -247,7 +247,24 @@ public abstract class HtmlMessageRendererBase
                     facesContext.getExternalContext()))
             {
                 behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
-                HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, message, behaviors);
+                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                {
+                    CommonPropertyUtils.renderEventProperties(writer, 
+                            CommonPropertyUtils.getCommonPropertiesMarked(message), message);
+                }
+                else
+                {
+                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    {
+                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                               CommonPropertyUtils.getCommonPropertiesMarked(message),
+                               CommonEventUtils.getCommonEventsMarked(message), message, behaviors);
+                    }
+                    else
+                    {
+                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, message, behaviors);
+                    }
+                }
                 HtmlRendererUtils.renderHTMLAttributes(writer, message, 
                         HTML.UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE_AND_TITLE);
             }

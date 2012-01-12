@@ -38,4 +38,11 @@ public class HtmlBodyRenderer extends HtmlBodyRendererBase
     {
         return true;
     }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }

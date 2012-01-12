@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
@@ -60,7 +59,8 @@ public class HtmlRadioRendererBase
 
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, UISelectOne.class);
+        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
+                facesContext, uiComponent, UISelectOne.class);
 
         UISelectOne selectOne = (UISelectOne)uiComponent;
 
@@ -79,7 +79,8 @@ public class HtmlRadioRendererBase
             }
             else
             {
-                log.severe("Wrong layout attribute for component " + selectOne.getClientId(facesContext) + ": " + layout);
+                log.severe("Wrong layout attribute for component " + 
+                        selectOne.getClientId(facesContext) + ": " + layout);
             }
         }
 
@@ -109,13 +110,19 @@ public class HtmlRadioRendererBase
             HtmlRendererUtils.writeIdIfNecessary(writer, selectOne, facesContext); 
         }        
 
-        if (!pageDirectionLayout) writer.startElement(HTML.TR_ELEM, selectOne);
+        if (!pageDirectionLayout)
+        {
+            writer.startElement(HTML.TR_ELEM, selectOne);
+        }
 
         Converter converter;
-        List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(selectOne, facesContext);
+        List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
+                selectOne, facesContext);
         converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
         
-        Object currentValue = org.apache.myfaces.shared.renderkit.RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(facesContext, selectOne);
+        Object currentValue = 
+            org.apache.myfaces.shared.renderkit.RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+                    facesContext, selectOne);
 
         int itemNum = 0;
 
@@ -128,7 +135,10 @@ public class HtmlRadioRendererBase
                                              converter, pageDirectionLayout, itemNum);
         }
 
-        if (!pageDirectionLayout) writer.endElement(HTML.TR_ELEM);
+        if (!pageDirectionLayout)
+        {
+            writer.endElement(HTML.TR_ELEM);
+        }
         writer.endElement(HTML.TABLE_ELEM);
     }
 
@@ -179,13 +189,16 @@ public class HtmlRadioRendererBase
         if (isSelectItemGroup) 
         {
             if (pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectOne);
+            }
 
             writer.startElement(HTML.TD_ELEM, selectOne);
             writer.write(selectItem.getLabel());
             writer.endElement(HTML.TD_ELEM);
 
-            if (pageDirectionLayout) {
+            if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
                 writer.startElement(HTML.TR_ELEM, selectOne);
             }
@@ -195,7 +208,9 @@ public class HtmlRadioRendererBase
             writer.writeAttribute(HTML.BORDER_ATTR, "0", null);
             
             if(!pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectOne);
+            }
 
             SelectItemGroup group = (SelectItemGroup) selectItem;
             SelectItem[] selectItems = group.getSelectItems();
@@ -207,17 +222,22 @@ public class HtmlRadioRendererBase
             }
 
             if(!pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
             writer.endElement(HTML.TABLE_ELEM);
             writer.endElement(HTML.TD_ELEM);
 
             if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
 
         } 
         else 
         {
-            String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedStringValue(facesContext, selectOne, converter, selectItem.getValue());
+            String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedStringValue(
+                    facesContext, selectOne, converter, selectItem.getValue());
             boolean itemChecked = (itemStrValue == null) ? 
                     itemStrValue == currentValue : 
                     "".equals(itemStrValue) ? 
@@ -237,12 +257,15 @@ public class HtmlRadioRendererBase
             
             writer.write("\t\t");
             if (pageDirectionLayout)
+            {
                 writer.startElement(HTML.TR_ELEM, selectOne);
+            }
             writer.startElement(HTML.TD_ELEM, selectOne);
     
             boolean itemDisabled = selectItem.isDisabled();
     
-            String itemId = renderRadio(facesContext, selectOne, itemStrValue, itemDisabled, itemChecked, false, itemNum);
+            String itemId = renderRadio(facesContext, selectOne, itemStrValue, itemDisabled, 
+                    itemChecked, false, itemNum);
     
             // label element after the input
             boolean componentDisabled = isDisabled(facesContext, selectOne);
@@ -252,7 +275,9 @@ public class HtmlRadioRendererBase
     
             writer.endElement(HTML.TD_ELEM);
             if (pageDirectionLayout)
+            {
                 writer.endElement(HTML.TR_ELEM);
+            }
             
             // we rendered one radio --> increment itemNum
             itemNum++;
@@ -287,7 +312,8 @@ public class HtmlRadioRendererBase
     {
         String clientId = uiComponent.getClientId(facesContext);
 
-        String itemId = (itemNum == null)? null : clientId + UINamingContainer.getSeparatorChar(facesContext) + itemNum;
+        String itemId = (itemNum == null)? null : clientId + 
+                UINamingContainer.getSeparatorChar(facesContext) + itemNum;
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -297,13 +323,15 @@ public class HtmlRadioRendererBase
         {
             writer.writeAttribute(HTML.ID_ATTR, itemId, null);
         }
-        else if (renderId) {
+        else if (renderId)
+        {
             writer.writeAttribute(HTML.ID_ATTR, clientId, null);
         }
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_RADIO, null);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
 
-        if (disabled) {
+        if (disabled)
+        {
             writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
 
@@ -322,18 +350,50 @@ public class HtmlRadioRendererBase
         }
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
+                facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             
-            HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS);
+            long commonPropertiesMarked = 0L;
+            if (isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
+            }
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+            {
+                CommonPropertyUtils.renderChangeEventProperty(writer, 
+                        commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                        commonPropertiesMarked, uiComponent);
+            }
+            else
+            {
+                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
+                if (isCommonEventsOptimizationEnabled(facesContext))
+                {
+                    Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
+                    CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                            commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                        facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                            facesContext, writer, uiComponent, behaviors);
+                }
+            }
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                    HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS);
         }
         else
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE);
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 
+                    HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE);
         }
 
         if (isDisabled(facesContext, uiComponent))
@@ -355,7 +415,8 @@ public class HtmlRadioRendererBase
             return ((HtmlSelectOneRadio)uiComponent).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+                uiComponent, HTML.DISABLED_ATTR, false);
     }
 
 
@@ -374,7 +435,8 @@ public class HtmlRadioRendererBase
     }
 
 
-    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue) throws ConverterException
+    public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
+        throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UISelectOne.class);
         return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUISelectOneValue(facesContext,

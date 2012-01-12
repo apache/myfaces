@@ -237,7 +237,7 @@ public class HtmlButtonRendererBase
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttribute(writer, uiComponent, HTML.ONCLICK_ATTR, HTML.ONCLICK_ATTR);
+                HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent, HTML.ONCLICK_ATTR, HTML.ONCLICK_ATTR);
             }
         }
         

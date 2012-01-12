@@ -50,6 +50,12 @@ public class HtmlTextRenderer
     {
         return true;
     }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
     
     @Override
     protected boolean isRenderOutputEventAttributes()

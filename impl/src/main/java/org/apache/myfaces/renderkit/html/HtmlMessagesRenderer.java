@@ -75,4 +75,17 @@ public class HtmlMessagesRenderer extends HtmlMessagesRendererBase
     {
         return facesMessage.getDetail();
     }
+
+    @Override
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+
 }
