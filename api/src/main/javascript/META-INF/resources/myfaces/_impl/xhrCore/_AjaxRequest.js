@@ -198,7 +198,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         var xhr = this._xhr;
         var _Lang = this._Lang;
 
-        var errorText;
+        var errorText = "";
         this._sendEvent("COMPLETE");
         try {
             var UNKNOWN = _Lang.getMessage("UNKNOWN");
@@ -212,7 +212,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         } finally {
             var _Impl = this.attr("impl");
             _Impl.sendError(xhr, context, _Impl.HTTPERROR,
-                    _Impl.HTTPERROR, errorText);
+                    _Impl.HTTPERROR, errorText,"","myfaces._impl.xhrCore._AjaxRequest","onerror");
         }
         //_onError
     },

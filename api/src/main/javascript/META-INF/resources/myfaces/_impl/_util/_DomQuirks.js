@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-if (!document.querySelectorAll && _MF_SINGLTN) {
+if (_MF_SINGLTN) {
     /***
      Dom.js version for non html5 browsers
      */
@@ -96,9 +96,10 @@ if (!document.querySelectorAll && _MF_SINGLTN) {
         isDomCompliant:function () {
             if ('undefined' == typeof this._isCompliantBrowser) {
                 this._isCompliantBrowser = !!((window.Range
-                        && typeof Range.prototype.createContextualFragment == 'function') //createContextualFragment hints to a no quirks browser but we need more fallbacks
-                        || document.querySelectoryAll  //query selector all hints to html5 capabilities
-                        || document.createTreeWalker);   //treewalker is either firefox 3.5+ or ie9 standards mode
+                        && typeof Range.prototype.createContextualFragment == 'function')
+                                                            //createContextualFragment hints to a no quirks browser but we need more fallbacks
+                        || document.querySelectoryAll       //query selector all hints to html5 capabilities
+                        || document.createTreeWalker);      //treewalker is either firefox 3.5+ or ie9 standards mode
             }
             return this._isCompliantBrowser;
         },
