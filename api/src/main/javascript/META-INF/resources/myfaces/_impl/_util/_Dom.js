@@ -473,7 +473,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             depth++;
         }
 
-        var dummyPlaceHolder = document.createElement("div");
+        var dummyPlaceHolder = this.getDummyPlaceHolder();
         if (itemNodeName == "td") {
             dummyPlaceHolder.innerHTML = "<table><tbody><tr>" + markup + "</tr></tbody></table>";
         } else {
@@ -514,7 +514,14 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         if (this._isTableElement(item)) {
             evalNodes = this._buildTableNodes(item, markup);
         } else {
-            evalNodes = (this.isDomCompliant()) ? this._buildNodesCompliant(markup) : this._buildNodesNonCompliant(markup);
+            var nonIEQuirks = (!this._RT.browser.isIE || this.browser.isIE > 8);
+            //ie8 has a special problem it still has the swallow scripts and other
+            //elements bug, but it is mostly dom compliant so we have to give it a special
+            //treatment
+            evalNodes = (this.isDomCompliant() &&  nonIEQuirks) ?
+                    this._buildNodesCompliant(markup) :
+                    //ie8 or quirks mode browsers
+                    this._buildNodesNonCompliant(markup);
         }
         return evalNodes;
     },
