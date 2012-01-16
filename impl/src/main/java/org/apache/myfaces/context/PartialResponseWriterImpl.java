@@ -19,15 +19,16 @@
 
 package org.apache.myfaces.context;
 
+import java.io.FilterWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ResponseWriter;
+import org.apache.myfaces.util.CDataEndEscapeFilterWriter;
 
 /**
  * <p/>
@@ -73,9 +74,9 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     class StackEntry
     {
         ResponseWriter writer;
-        StringWriter _doubleBuffer;
+        Writer _doubleBuffer;
 
-        StackEntry(ResponseWriter writer, StringWriter doubleBuffer)
+        StackEntry(ResponseWriter writer, Writer doubleBuffer)
         {
             this.writer = writer;
             _doubleBuffer = doubleBuffer;
@@ -91,20 +92,20 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
             this.writer = writer;
         }
 
-        public StringWriter getDoubleBuffer()
+        public Writer getDoubleBuffer()
         {
             return _doubleBuffer;
         }
 
-        public void setDoubleBuffer(StringWriter doubleBuffer)
+        public void setDoubleBuffer(Writer doubleBuffer)
         {
             _doubleBuffer = doubleBuffer;
         }
     }
 
     ResponseWriter _cdataDoubleBufferWriter = null;
-    StringWriter _doubleBuffer = null;
-    List<StackEntry> _nestingStack = new LinkedList<StackEntry>();
+    Writer _doubleBuffer = null;
+    List<StackEntry> _nestingStack = new ArrayList<StackEntry>(4);
 
     public PartialResponseWriterImpl(ResponseWriter writer)
     {
@@ -127,7 +128,8 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
     private void openDoubleBuffer()
     {
-        _doubleBuffer = new StringWriter();
+        _doubleBuffer = new CDataEndEscapeFilterWriter(_cdataDoubleBufferWriter == null ? 
+                this.getWrapped() : _cdataDoubleBufferWriter );
         _cdataDoubleBufferWriter = getWrapped().cloneWithWriter(_doubleBuffer);
 
         StackEntry entry = new StackEntry(_cdataDoubleBufferWriter, _doubleBuffer);
@@ -191,53 +193,16 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     {
         StackEntry elem = _nestingStack.remove(0);
         StackEntry parent = (_nestingStack.isEmpty()) ? null : _nestingStack.get(0);
-        String result = postProcess(elem);
         if (parent != null)
         {
             _cdataDoubleBufferWriter = parent.getWriter();
             _doubleBuffer = parent.getDoubleBuffer();
-
-            _cdataDoubleBufferWriter.write(result);
         }
         else
         {
             _cdataDoubleBufferWriter = null;
             _doubleBuffer = null;
-
-            //todo write it in a blocks of strings which have
-            //the inherent string length included
-            super.write(result);
         }
-        elem.getDoubleBuffer().close();
-        elem.getWriter().close();
-    }
-
-    /**
-     * string post processing
-     *
-     * @param currentElement the current writer element
-     * @return the post processed string
-     * @throws IOException in case of an error
-     */
-    private String postProcess(StackEntry currentElement) throws IOException
-    {
-
-        currentElement.getWriter().flush();
-        StringBuffer buffer = currentElement.getDoubleBuffer().getBuffer();
-
-        int i = buffer.indexOf("]]>");
-        if (i >= 0)
-        {
-            do
-            {
-                buffer.replace(i, i + 3, "]]><![CDATA[]]]]><![CDATA[>");
-                i = i + 27; //27 is "]]><![CDATA[]]]]><![CDATA[>".length();
-
-                i = buffer.indexOf("]]>", i);
-            }
-            while (i >= 0);
-        }
-        return buffer.toString();
     }
 
     //--- we need to override ppr specifics to cover the case
