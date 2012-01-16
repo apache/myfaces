@@ -23,3 +23,8 @@ The following schemas are included:
   javaee_5.xsd
   javaee_web_services_client_1_2.xsd
 ===========================
+
+This software also includes code from Grails Licensed under Apache License, 
+Version 2.0 (org.apache.myfaces.shared.util.StreamCharBuffer)
+Copyright 2009 the original author or authors. Lari Hotari, Sagire Software Oy
+
