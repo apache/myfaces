@@ -115,12 +115,19 @@ public final class MetaRulesetImpl extends MetaRuleset
     {
         _tag = tag;
         _type = type;
-        _attributes = new HashMap<String, TagAttribute>();
-        _mappers = new ArrayList<Metadata>();
-        _rules = new ArrayList<MetaRule>();
+        TagAttribute[] allAttributes = _tag.getAttributes().getAll();
+        // This map is proportional to the number of attributes defined, and usually
+        // the properties with alias are very few, so set an initial size close to
+        // the number of attributes is ok.
+        int initialSize = allAttributes.length > 0 ? (allAttributes.length * 4 + 3) / 3 : 4;
+        _attributes = new HashMap<String, TagAttribute>(initialSize);
+        _mappers = new ArrayList<Metadata>(initialSize);
+        // Usually ComponentTagHandlerDelegate has 5 rules at max
+        // and CompositeComponentResourceTagHandler 6, so 8 is a good number
+        _rules = new ArrayList<MetaRule>(8); 
 
         // setup attributes
-        for (TagAttribute attribute : _tag.getAttributes().getAll())
+        for (TagAttribute attribute : allAttributes)
         {
             _attributes.put(attribute.getLocalName(), attribute);
         }
