@@ -34,7 +34,7 @@ import org.apache.myfaces.shared.renderkit.ContentTypeUtils;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.shared.util.CommentUtils;
-import org.apache.myfaces.shared.util.FastWriter;
+import org.apache.myfaces.shared.util.StreamCharBuffer;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -70,7 +70,7 @@ public class HtmlResponseWriterImpl
     /**
      * The writer used to buffer script and style content
      */
-    private FastWriter _bufferedWriter;
+    private StreamCharBuffer _buffer;
     
     private String _contentType;
     
@@ -149,7 +149,8 @@ public class HtmlResponseWriterImpl
         _outputWriter = writer;
         //The current writer to be used is the one used as output 
         _currentWriter = _outputWriter;
-        _bufferedWriter = new FastWriter(1024);
+        //_bufferedWriter = new FastWriter(1024);
+        _buffer = new StreamCharBuffer(256, 100);
         _wrapScriptContentWithXmlCommentTag = wrapScriptContentWithXmlCommentTag;
         
         _contentType = contentType;
@@ -330,13 +331,17 @@ public class HtmlResponseWriterImpl
                 }*/
                 if (isScript(_startElementName) && (_isXhtmlContentType || _wrapScriptContentWithXmlCommentTag))
                 {
-                    _bufferedWriter.reset();
-                    _currentWriter = _bufferedWriter;
+                    //_bufferedWriter.reset();
+                    //_currentWriter = _bufferedWriter;
+                    _buffer.reset();
+                    _currentWriter = _buffer.getWriter();
                 }                
                 if (isStyle(_startElementName) && _isXhtmlContentType)
                 {
-                    _bufferedWriter.reset();
-                    _currentWriter = _bufferedWriter;
+                    //_bufferedWriter.reset();
+                    //_currentWriter = _bufferedWriter;
+                    _buffer.reset();
+                    _currentWriter = _buffer.getWriter();
                 }
             }
             _startTagOpen = false;
@@ -429,7 +434,7 @@ public class HtmlResponseWriterImpl
     
     private void writeStyleContent() throws IOException
     {
-        String content = _bufferedWriter.toString(); 
+        String content = _buffer.toString();
         
         if(_isXhtmlContentType)
         {
@@ -478,7 +483,7 @@ public class HtmlResponseWriterImpl
     
     private void writeScriptContent() throws IOException
     {
-        String content = _bufferedWriter.toString();
+        String content = _buffer.toString();
         String trimmedContent = null;
         
         if(_isXhtmlContentType)
@@ -970,4 +975,5 @@ public class HtmlResponseWriterImpl
     {
         writeText(object,string);
     }
+    
 }
