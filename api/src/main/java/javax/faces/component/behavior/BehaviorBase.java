@@ -66,8 +66,9 @@ public class BehaviorBase implements Behavior, PartialStateHolder
             // This code prevent listeners from unregistering themselves while processing the event.
             // I believe it should always be alright in this case. However, the need rise, then it 
             // should be possible to remove that limitation by using a clone for the looping
-            for (BehaviorListener listener : _behaviorListeners)
+            for (int i = 0; i < _behaviorListeners.size() ; i++)
             {
+                BehaviorListener listener = _behaviorListeners.get(i);
                 if (event.isAppropriateListener(listener))
                 {
                     event.processListener(listener);
@@ -161,7 +162,9 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
         
         if (attachedObject == null)
+        {
             return null;
+        }
         // StateHolder interface should take precedence over
         // List children
         if (attachedObject instanceof StateHolder)
@@ -200,9 +203,13 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     private static Object restoreAttachedState(FacesContext context, Object stateObj) throws IllegalStateException
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
         if (stateObj == null)
+        {
             return null;
+        }
         if (stateObj instanceof _AttachedListStateWrapper)
         {
             List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
