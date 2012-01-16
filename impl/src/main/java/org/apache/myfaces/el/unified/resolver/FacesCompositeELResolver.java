@@ -49,7 +49,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
 
     public enum Scope
     {
-        Faces, JSP
+        Faces, JSP, NONE
     }
     
     public static final String SCOPE = "org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope";
@@ -247,16 +247,17 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     
     private Scope getScope(final Map<Object, Object> attributes)
     {
-        return (Scope) attributes.get(Scope.class.getName());
+        return (Scope) attributes.get(SCOPE);
     }
 
     private void setScope(final Map<Object, Object> attributes, Scope prevScope)
     {
-        attributes.put(Scope.class.getName(), prevScope);
+        attributes.put(SCOPE, prevScope);
     }
 
     private static void unsetScope(final Map<Object, Object> attributes)
     {
-        attributes.remove(SCOPE);
+        //attributes.remove(SCOPE);
+        attributes.put(SCOPE, Scope.NONE);
     }
 }
