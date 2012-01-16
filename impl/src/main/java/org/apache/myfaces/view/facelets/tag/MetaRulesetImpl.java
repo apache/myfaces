@@ -59,7 +59,7 @@ public final class MetaRulesetImpl extends MetaRuleset
      * most certainly cause a memory leak! Furthermore we can manually cleanup the Map when
      * the webapp is undeployed just by removing the Map for the current ClassLoader. 
      */
-    private final static WeakHashMap<ClassLoader, Map<String, MetadataTarget>> _metadata
+    private volatile static WeakHashMap<ClassLoader, Map<String, MetadataTarget>> metadata
             = new WeakHashMap<ClassLoader, Map<String, MetadataTarget>>();
 
     /**
@@ -67,7 +67,7 @@ public final class MetaRulesetImpl extends MetaRuleset
      */
     public static void clearMetadataTargetCache()
     {
-        _metadata.remove(ClassUtils.getContextClassLoader());
+        metadata.remove(ClassUtils.getContextClassLoader());
     }
 
     private static Map<String, MetadataTarget> getMetaData()
@@ -75,23 +75,29 @@ public final class MetaRulesetImpl extends MetaRuleset
         ClassLoader cl = ClassUtils.getContextClassLoader();
         
         Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>)
-                _metadata.get(cl);
+                MetaRulesetImpl.metadata.get(cl);
 
         if (metadata == null)
         {
             // Ensure thread-safe put over _metadata, and only create one map
             // per classloader to hold metadata.
-            synchronized (_metadata)
+            synchronized (MetaRulesetImpl.metadata)
             {
-                metadata = (Map<String, MetadataTarget>) _metadata.get(cl);
-                if (metadata == null)
-                {
-                    metadata = new HashMap<String, MetadataTarget>();
-                    _metadata.put(cl, metadata);
-                }
+                metadata = createMetaData(cl, metadata);
             }
         }
 
+        return metadata;
+    }
+    
+    private static Map<String, MetadataTarget> createMetaData(ClassLoader cl, Map<String, MetadataTarget> metadata)
+    {
+        metadata = (Map<String, MetadataTarget>) MetaRulesetImpl.metadata.get(cl);
+        if (metadata == null)
+        {
+            metadata = new HashMap<String, MetadataTarget>();
+            MetaRulesetImpl.metadata.put(cl, metadata);
+        }
         return metadata;
     }
 
@@ -109,12 +115,19 @@ public final class MetaRulesetImpl extends MetaRuleset
     {
         _tag = tag;
         _type = type;
-        _attributes = new HashMap<String, TagAttribute>();
-        _mappers = new ArrayList<Metadata>();
-        _rules = new ArrayList<MetaRule>();
+        TagAttribute[] allAttributes = _tag.getAttributes().getAll();
+        // This map is proportional to the number of attributes defined, and usually
+        // the properties with alias are very few, so set an initial size close to
+        // the number of attributes is ok.
+        int initialSize = allAttributes.length > 0 ? (allAttributes.length * 4 + 3) / 3 : 4;
+        _attributes = new HashMap<String, TagAttribute>(initialSize);
+        _mappers = new ArrayList<Metadata>(initialSize);
+        // Usually ComponentTagHandlerDelegate has 5 rules at max
+        // and CompositeComponentResourceTagHandler 6, so 8 is a good number
+        _rules = new ArrayList<MetaRule>(8); 
 
         // setup attributes
-        for (TagAttribute attribute : _tag.getAttributes().getAll())
+        for (TagAttribute attribute : allAttributes)
         {
             _attributes.put(attribute.getLocalName(), attribute);
         }
