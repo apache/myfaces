@@ -18,12 +18,8 @@
  */
 package org.apache.myfaces.el.unified.resolver;
 
-import org.apache.myfaces.el.VariableResolverImpl;
-
 import javax.el.ELContext;
-import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
-import javax.servlet.jsp.JspApplicationContext;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,9 +27,11 @@ import java.util.Arrays;
 
 /**
  * <p>
- * This composite el resolver will be used at the top level resolver for faces ({@link Application#getELResolver()})
- * and jsp (the one we add with {@link JspApplicationContext#addELResolver(javax.el.ELResolver)}. It keeps track of its
- * scope to let the variable resolver {@link VariableResolverImpl} know in which scope it is executed. This is
+ * This composite el resolver will be used at the top level resolver for faces
+ * ({@link javax.faces.application.Application#getELResolver()})
+ * and jsp (the one we add with {@link javax.servlet.jsp.JspApplicationContext#addELResolver(javax.el.ELResolver)}.
+ * It keeps track of its scope to let the variable resolver {@link org.apache.myfaces.el.VariableResolverImpl}
+ * know in which scope it is executed. This is
  * necessarry to call either the faces or the jsp resolver head.
  * </p>
  * <p>
@@ -51,7 +49,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
 
     public enum Scope
     {
-        Faces, JSP
+        Faces, JSP, NONE
     }
     
     public static final String SCOPE = "org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope";
@@ -249,16 +247,17 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     
     private Scope getScope(final Map<Object, Object> attributes)
     {
-        return (Scope) attributes.get(Scope.class.getName());
+        return (Scope) attributes.get(SCOPE);
     }
 
     private void setScope(final Map<Object, Object> attributes, Scope prevScope)
     {
-        attributes.put(Scope.class.getName(), prevScope);
+        attributes.put(SCOPE, prevScope);
     }
 
     private static void unsetScope(final Map<Object, Object> attributes)
     {
-        attributes.remove(SCOPE);
+        //attributes.remove(SCOPE);
+        attributes.put(SCOPE, Scope.NONE);
     }
 }
