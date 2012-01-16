@@ -65,6 +65,7 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
             _base = base;
             _prefix = prefix;
         }
+        _keyBuffer = new StringBuilder(32);
     }
 
     @Override
@@ -122,7 +123,11 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
             throw new NullPointerException();
         }
         // Yes, I want a ClassCastException if it's not a String
-        return _prefix + ((String) key);
+        //return _prefix + ((String) key);
+        _keyBuffer.setLength(0);
+        _keyBuffer.append(_prefix);
+        _keyBuffer.append((String) key);
+        return _keyBuffer.toString();
     }
 
     private List<String> _gatherKeys()
@@ -306,5 +311,6 @@ final class SubKeyMap<V> extends AbstractMap<String, V>
     private final Map<String, Object> _base;
     private final String _prefix;
     private Set<Map.Entry<String, V>> _entrySet;
+    private StringBuilder _keyBuffer;
 
 }
