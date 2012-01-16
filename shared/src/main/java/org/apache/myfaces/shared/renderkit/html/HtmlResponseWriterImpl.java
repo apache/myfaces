@@ -149,8 +149,6 @@ public class HtmlResponseWriterImpl
         _outputWriter = writer;
         //The current writer to be used is the one used as output 
         _currentWriter = _outputWriter;
-        //_bufferedWriter = new FastWriter(1024);
-        _buffer = new StreamCharBuffer(256, 100);
         _wrapScriptContentWithXmlCommentTag = wrapScriptContentWithXmlCommentTag;
         
         _contentType = contentType;
@@ -333,15 +331,15 @@ public class HtmlResponseWriterImpl
                 {
                     //_bufferedWriter.reset();
                     //_currentWriter = _bufferedWriter;
-                    _buffer.reset();
-                    _currentWriter = _buffer.getWriter();
+                    getInternalBuffer(true);
+                    _currentWriter = getInternalBuffer().getWriter();
                 }                
                 if (isStyle(_startElementName) && _isXhtmlContentType)
                 {
                     //_bufferedWriter.reset();
                     //_currentWriter = _bufferedWriter;
-                    _buffer.reset();
-                    _currentWriter = _buffer.getWriter();
+                    getInternalBuffer(true);
+                    _currentWriter = getInternalBuffer().getWriter();
                 }
             }
             _startTagOpen = false;
@@ -434,7 +432,7 @@ public class HtmlResponseWriterImpl
     
     private void writeStyleContent() throws IOException
     {
-        String content = _buffer.toString();
+        String content = getInternalBuffer().toString();
         
         if(_isXhtmlContentType)
         {
@@ -483,7 +481,7 @@ public class HtmlResponseWriterImpl
     
     private void writeScriptContent() throws IOException
     {
-        String content = _buffer.toString();
+        String content = getInternalBuffer().toString();
         String trimmedContent = null;
         
         if(_isXhtmlContentType)
@@ -976,4 +974,21 @@ public class HtmlResponseWriterImpl
         writeText(object,string);
     }
     
+    protected StreamCharBuffer getInternalBuffer()
+    {
+        return getInternalBuffer(false);
+    }
+    
+    protected StreamCharBuffer getInternalBuffer(boolean reset)
+    {
+        if (_buffer == null)
+        {
+            _buffer = new StreamCharBuffer(256, 100);
+        }
+        else if (reset)
+        {
+            _buffer.reset();
+        }
+        return _buffer;
+    }
 }
