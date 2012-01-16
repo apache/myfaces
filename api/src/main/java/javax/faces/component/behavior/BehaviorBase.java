@@ -66,8 +66,9 @@ public class BehaviorBase implements Behavior, PartialStateHolder
             // This code prevent listeners from unregistering themselves while processing the event.
             // I believe it should always be alright in this case. However, the need rise, then it 
             // should be possible to remove that limitation by using a clone for the looping
-            for (BehaviorListener listener : _behaviorListeners)
+            for (int i = 0; i < _behaviorListeners.size() ; i++)
             {
+                BehaviorListener listener = _behaviorListeners.get(i);
                 if (event.isAppropriateListener(listener))
                 {
                     event.processListener(listener);
