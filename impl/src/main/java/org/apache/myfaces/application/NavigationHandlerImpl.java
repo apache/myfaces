@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.util.regex.Pattern;
 import javax.faces.FacesException;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
@@ -51,6 +52,7 @@ import javax.faces.view.ViewMetadata;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.shared.application.NavigationUtils;
+import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
@@ -67,6 +69,10 @@ public class NavigationHandlerImpl
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    
+    private static final String OUTCOME_NAVIGATION_SB = "oam.navigation.OUTCOME_NAVIGATION_SB";
+    
+    private static final Pattern AMP_PATTERN = Pattern.compile("&(amp;)?"); // "&" or "&amp;"
     
     private static final String ASTERISK = "*";
 
@@ -327,14 +333,17 @@ public class NavigationHandlerImpl
         String queryString = null;
         NavigationCase result = null;
         String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
-        String viewIdToTest = outcome;
+        //String viewIdToTest = outcome;
+        StringBuilder viewIdToTest = SharedStringBuilder.get(facesContext, OUTCOME_NAVIGATION_SB);
+        viewIdToTest.append(outcome);
         
         // If viewIdToTest contains a query string, remove it and set queryString with that value.
         index = viewIdToTest.indexOf ("?");
         if (index != -1)
         {
             queryString = viewIdToTest.substring (index + 1);
-            viewIdToTest = viewIdToTest.substring (0, index);
+            //viewIdToTest = viewIdToTest.substring (0, index);
+            viewIdToTest.setLength(index);
             
             // If queryString contains "faces-redirect=true", set isRedirect to true.
             if (queryString.indexOf ("faces-redirect=true") != -1)
@@ -359,25 +368,34 @@ public class NavigationHandlerImpl
             
             if (index != -1)
             {
-                viewIdToTest += viewId.substring (index);
+                //viewIdToTest += viewId.substring (index);
+                viewIdToTest.append(viewId.substring (index));
             }
         }
         
         // If viewIdToTest does not start with "/", look for the last "/" in viewId.  If not found, simply prepend "/".
         // Otherwise, prepend everything before and including the last "/" in viewId.
         
-        if (!viewIdToTest.startsWith ("/") && viewId != null)
+        //if (!viewIdToTest.startsWith ("/") && viewId != null)
+        boolean startWithSlash = false;
+        if (viewIdToTest.length() > 0)
+        {
+            startWithSlash = (viewIdToTest.charAt(0) == '/');
+        } 
+        if (!startWithSlash && viewId != null)
         {
             index = viewId.lastIndexOf ("/");
             
             if (index == -1)
             {
-                viewIdToTest = "/" + viewIdToTest;
+                //viewIdToTest = "/" + viewIdToTest;
+                viewIdToTest.insert(0,"/");
             }
             
             else
             {
-                viewIdToTest = viewId.substring (0, index + 1) + viewIdToTest;
+                //viewIdToTest = viewId.substring (0, index + 1) + viewIdToTest;
+                viewIdToTest.insert(0, viewId, 0, index + 1);
             }
         }
         
@@ -385,7 +403,8 @@ public class NavigationHandlerImpl
         
         try
         {
-            implicitViewId = facesContext.getApplication().getViewHandler().deriveViewId (facesContext, viewIdToTest);
+            implicitViewId = facesContext.getApplication().getViewHandler().deriveViewId (
+                    facesContext, viewIdToTest.toString());
         }
         
         catch (UnsupportedOperationException e)
@@ -403,8 +422,10 @@ public class NavigationHandlerImpl
             Map<String, List<String>> params = null;
             if (queryString != null && !"".equals(queryString))
             {
-                String[] splitQueryParams = queryString.split("&(amp;)?"); // "&" or "&amp;"
-                params = new HashMap<String, List<String>>();
+                //String[] splitQueryParams = queryString.split("&(amp;)?"); // "&" or "&amp;"
+                String[] splitQueryParams = AMP_PATTERN.split(queryString); // "&" or "&amp;"
+                params = new HashMap<String, List<String>>(splitQueryParams.length, 
+                        (splitQueryParams.length* 4 + 3) / 3);
                 for (String queryParam : splitQueryParams)
                 {
                     String[] splitParam = StringUtils.splitShortString(queryParam, '=');

@@ -31,6 +31,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
@@ -73,6 +74,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = 
         "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
+    
+    private static final String VIEW_HANDLER_SUPPORT_SB = "oam.viewhandler.SUPPORT_SB";
 
     private Map<String, Boolean> _checkedViewIdMap = null;
     private Boolean _checkedViewIdCacheEnabled = null;
@@ -172,7 +175,9 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         FacesServletMapping mapping = getFacesServletMapping(context);
         ExternalContext externalContext = context.getExternalContext();
         String contextPath = externalContext.getRequestContextPath();
-        StringBuilder builder = new StringBuilder(contextPath);
+        //StringBuilder builder = new StringBuilder(contextPath);
+        StringBuilder builder = SharedStringBuilder.get(context, VIEW_HANDLER_SUPPORT_SB);
+        builder.append(contextPath);
         if (mapping != null)
         {
             if (mapping.isExtensionMapping())
@@ -411,10 +416,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         int slashPos = requestViewId.lastIndexOf('/');
         int extensionPos = requestViewId.lastIndexOf('.');
         
+        StringBuilder builder = SharedStringBuilder.get(context, VIEW_HANDLER_SUPPORT_SB);
+        
         //Try to locate any resource that match with the expected id
         for (String defaultSuffix : jspDefaultSuffixes)
         {
-            StringBuilder builder = new StringBuilder(requestViewId);
+            //StringBuilder builder = new StringBuilder(requestViewId);
+            builder.setLength(0);
+            builder.append(requestViewId);
            
             if (extensionPos > -1 && extensionPos > slashPos)
             {
@@ -475,7 +484,9 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         }
         if (faceletsDefaultSuffix != null)
         {
-            StringBuilder builder = new StringBuilder(requestViewId);
+            //StringBuilder builder = new StringBuilder(requestViewId);
+            builder.setLength(0);
+            builder.append(requestViewId);
             
             if (extensionPos > -1 && extensionPos > slashPos)
             {
