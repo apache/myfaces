@@ -246,6 +246,10 @@ abstract public class FaceletCompositionContext
      */
     public abstract boolean isMarkInitialState();
     
+    public void setMarkInitialState(boolean value)
+    {
+    }
+    
     /**
      * Check if the current view will be refreshed with partial state saving.
      * 
@@ -260,6 +264,16 @@ abstract public class FaceletCompositionContext
      * @since 2.0.1
      */
     public abstract boolean isRefreshTransientBuildOnPSS();
+    
+    /**
+     * 
+     * @since 2.0.12, 2.1.6
+     * @return
+     */
+    public boolean isRefreshTransientBuildOnPSSPreserveState()
+    {
+        return false;
+    }
     
     /**
      * Check if we are using partial state saving on this view

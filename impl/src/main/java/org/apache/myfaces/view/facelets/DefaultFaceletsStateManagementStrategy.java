@@ -31,6 +31,7 @@ import java.util.Set;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
+import javax.faces.application.StateManager;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
@@ -1011,6 +1012,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     public static class PostAddPreRemoveFromViewListener implements SystemEventListener
     {
+        private transient FacesContext _facesContext;
 
         public boolean isListenerForSource(Object source)
         {
@@ -1028,6 +1030,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 return;
             }
             
+            // This is a view listener. It is not saved on the state and this listener
+            // is suscribed each time the view is restored, so we can cache facesContext
+            // here
+            if (_facesContext == null)
+            {
+                _facesContext = FacesContext.getCurrentInstance();
+            }
             //FacesContext facesContext = FacesContext.getCurrentInstance();
             //if (FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext))
             //{
@@ -1036,23 +1045,28 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             if (event instanceof PostAddToViewEvent)
             {
+                if (Boolean.TRUE.equals(_facesContext.getAttributes().get("javax.faces.IS_BUILDING_INITIAL_STATE")))
+                {
+                    return;
+                }
+
                 //PostAddToViewEvent
                 component.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADD);
             }
             else
             {
-                FacesContext facesContext = FacesContext.getCurrentInstance();
+                //FacesContext facesContext = FacesContext.getCurrentInstance();
                 // In this case if we are removing components on build, it is not necessary to register
                 // again the current id, and its more, it could cause a concurrent exception. But note
                 // we need to propagate PreRemoveFromViewEvent, otherwise the view will not be restored
                 // correctly.
-                if (FaceletViewDeclarationLanguage.isRemovingComponentBuild(facesContext))
+                if (FaceletViewDeclarationLanguage.isRemovingComponentBuild(_facesContext))
                 {
                     return;
                 }
                 
                 //PreRemoveFromViewEvent
-                UIViewRoot uiViewRoot = facesContext.getViewRoot();
+                UIViewRoot uiViewRoot = _facesContext.getViewRoot();
                 
                 List<String> clientIdsRemoved = getClientIdsRemoved(uiViewRoot);
                 if (clientIdsRemoved == null)

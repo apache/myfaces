@@ -32,6 +32,7 @@ import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
@@ -99,6 +100,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private Boolean _isMarkInitialState;
     
     private Boolean _refreshTransientBuildOnPSS;
+    
+    private Boolean _refreshTransientBuildOnPSSPreserveState;
     
     private Boolean _usingPSSOnThisView;
     
@@ -405,6 +408,11 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     }
 
     @Override
+    public void setMarkInitialState(boolean value) {
+        _isMarkInitialState = value;
+    }
+
+    @Override
     public boolean isRefreshTransientBuildOnPSS()
     {
         if (_refreshTransientBuildOnPSS == null)
@@ -413,6 +421,16 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                 isRefreshTransientBuildOnPSS(_facesContext);
         }
         return _refreshTransientBuildOnPSS;
+    }
+    
+    public boolean isRefreshTransientBuildOnPSSPreserveState()
+    {
+        if (_refreshTransientBuildOnPSSPreserveState == null)
+        {
+            _refreshTransientBuildOnPSSPreserveState = MyfacesConfig.getCurrentInstance(
+                    _facesContext.getExternalContext()).isRefreshTransientBuildOnPSSPreserveState();
+        }
+        return _refreshTransientBuildOnPSSPreserveState;
     }
 
     @Override
