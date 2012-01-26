@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.annotation;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
@@ -47,7 +48,10 @@ public class TomcatAnnotationLifecycleProvider implements
             NamingException, ClassNotFoundException
     {
         Class<?> clazz = ClassUtils.classForName(className);
-        log.info("Creating instance of " + className);
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Creating instance of " + className);
+        }
         Object object = clazz.newInstance();
         annotationProcessor.processAnnotations(object);
         //annotationProcessor.postConstruct(object);
@@ -57,7 +61,10 @@ public class TomcatAnnotationLifecycleProvider implements
 
     public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException
     {
-        log.info("Destroy instance of " + o.getClass().getName());
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.info("Destroy instance of " + o.getClass().getName());
+        }
         annotationProcessor.preDestroy(o);
     }
 
