@@ -94,6 +94,12 @@ class PhaseListenerManager
     void informPhaseListenersAfter(PhaseId phaseId)
     {
         boolean[] beforePhaseSuccess = listenerSuccessMap.get(phaseId);
+        
+        if (beforePhaseSuccess == null)
+        {
+            // informPhaseListenersBefore method was not called : maybe an exception in LifecycleImpl.executePhase  
+            return;
+        }
 
         PhaseEvent event = null;
 
@@ -102,7 +108,8 @@ class PhaseListenerManager
             PhaseListener phaseListener = phaseListeners[i];
             if (isListenerForThisPhase(phaseListener, phaseId) && beforePhaseSuccess[i])
             {
-                if (event == null) {
+                if (event == null)
+                {
                     event = new PhaseEvent(facesContext, phaseId, lifecycle);
                 }
                 try
