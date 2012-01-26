@@ -159,4 +159,10 @@ public class ValueExpressionFilterInputStream extends InputStream
         }
         return String.valueOf(exprArray);
     }
+
+    @Override
+    public void close() throws IOException
+    {
+        delegate.close();
+    }
 }
