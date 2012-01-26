@@ -27,7 +27,9 @@ import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
+import javax.faces.event.PhaseId;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -145,10 +147,38 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
 
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
         String path;
+        boolean markInitialState = false;
         if (!_template.isLiteral())
         {
             String uniqueId = fcc.startComponentUniqueIdSection();
-            path = getTemplateValue(actx, fcc, parent, uniqueId);
+            //path = getTemplateValue(actx, fcc, parent, uniqueId);
+            String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
+            if (restoredPath != null)
+            {
+                // If is not restore view phase, the path value should be
+                // evaluated and if is not equals, trigger markInitialState stuff.
+                if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
+                {
+                    path = this._template.getValue(ctx);
+                    if (path == null || path.length() == 0)
+                    {
+                        return;
+                    }
+                    if (!path.equals(restoredPath))
+                    {
+                        markInitialState = true;
+                    }
+                }
+                else
+                {
+                    path = restoredPath;
+                }
+            }
+            else
+            {
+                //No state restored, calculate path
+                path = this._template.getValue(ctx);
+            }
             ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, path);
         }
         else
@@ -157,7 +187,38 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
         }
         try
         {
-            ctx.includeFacelet(parent, path);
+            boolean oldMarkInitialState = false;
+            Boolean isBuildingInitialState = null;
+            if (markInitialState)
+            {
+                //set markInitialState flag
+                oldMarkInitialState = fcc.isMarkInitialState();
+                fcc.setMarkInitialState(true);
+                isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
+                        StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+            }
+            try
+            {
+                ctx.includeFacelet(parent, path);
+            }
+            finally
+            {
+                if (markInitialState)
+                {
+                    //unset markInitialState flag
+                    if (isBuildingInitialState == null)
+                    {
+                        ctx.getFacesContext().getAttributes().remove(
+                                StateManager.IS_BUILDING_INITIAL_STATE);
+                    }
+                    else
+                    {
+                        ctx.getFacesContext().getAttributes().put(
+                                StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
+                    }
+                    fcc.setMarkInitialState(oldMarkInitialState);
+                }
+            }
         }
         finally
         {
@@ -196,20 +257,6 @@ public final class DecorateHandler extends TagHandler implements TemplateClient
         {
             this.nextHandler.apply(ctx, parent);
             return true;
-        }
-    }
-    
-    private String getTemplateValue(FaceletContext ctx, FaceletCompositionContext fcc, UIComponent parent,
-                                    String uniqueId)
-    {
-        String template = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
-        if (template != null)
-        {
-            return template;
-        }
-        else
-        {
-            return this._template.getValue(ctx);
         }
     }
 }
