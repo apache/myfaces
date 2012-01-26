@@ -40,6 +40,8 @@ _MF_CLS &&  _MF_CLS(_PFX_I18N + "Messages_zh_TW", myfaces._impl.i18n.Messages,
                 /** @constant */
                 MSG_ERROR_MESSAGE:      "錯誤信息：",
                 /** @constant */
+                MSG_SERVER_ERROR_NAME:  "伺服器錯誤名稱：",
+                /** @constant */
                 MSG_ERROR_DESC:         "錯誤說明：",
                 /** @constant */
                 MSG_ERROR_NO:           "錯誤號碼：",
@@ -58,7 +60,7 @@ _MF_CLS &&  _MF_CLS(_PFX_I18N + "Messages_zh_TW", myfaces._impl.i18n.Messages,
                 /** @constant */
                 ERR_CONSTRUCT:          "構建事件數據時部分回應不能取得，原因是：{0}",
                 /** @constant */
-                ERR_MALFORMEDXML:       "無法解析服務器的回應，服務器返回的回應不是XML！",
+                ERR_MALFORMEDXML:       "無法解析伺服器的回應，伺服器返回的回應不是XML！",
                 /** @constant */
                 ERR_SOURCE_FUNC:        "來源不能是一個函數（可能來源和事件沒有定義或設定為空）",
                 /** @constant */

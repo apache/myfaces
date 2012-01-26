@@ -40,6 +40,8 @@ _MF_CLS && _MF_CLS(_PFX_I18N+"Messages_zh_CN", myfaces._impl.i18n.Messages,
         /** @constant */
         MSG_ERROR_MESSAGE:      "错误信息：",
         /** @constant */
+        MSG_SERVER_ERROR_NAME:  "伺服器错误名称：",
+        /** @constant */
         MSG_ERROR_DESC:         "错误说明：",
         /** @constant */
         MSG_ERROR_NO:           "错误号码：",
@@ -58,7 +60,7 @@ _MF_CLS && _MF_CLS(_PFX_I18N+"Messages_zh_CN", myfaces._impl.i18n.Messages,
         /** @constant */
         ERR_CONSTRUCT:          "构建事件数据时部分回应不能取得，原因是：{0}",
         /** @constant */
-        ERR_MALFORMEDXML:       "无法解析服务器的回应，服务器返回的回应不是XML！",
+        ERR_MALFORMEDXML:       "无法解析伺服器的回应，伺服器返回的回应不是XML！",
         /** @constant */
         ERR_SOURCE_FUNC:        "来源不能是一个函数（可能来源和事件没有定义或设定为空）",
         /** @constant */
