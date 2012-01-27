@@ -163,6 +163,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
         StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     
+    private static final Object[] EMPTY_STATES = new Object[]{null, null};
+    
     private ViewDeclarationLanguageFactory _vdlFactory;
     
     private RenderKitFactory _renderKitFactory = null;
@@ -537,8 +539,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             // As required by ResponseStateManager, the return value is an Object array.  First
             // element is the structure object, second is the state map.
-        
-            serializedView = new Object[] { null, states };
+
+            if (states == null)
+            {
+                states = EMPTY_STATES;
+            }
+            else
+            {
+                serializedView = new Object[] { null, states };
+            }
             
             //externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
             //        getStateCache().encodeSerializedState(context, serializedView));
