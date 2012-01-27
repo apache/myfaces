@@ -37,7 +37,7 @@ import org.apache.myfaces.el.unified.ELResolverBuilder;
 public final class ResolverForJSPInitializer implements PhaseListener
 {
     private final ELResolverBuilder _resolverBuilder;
-    private boolean initialized;
+    private volatile boolean initialized;
     private final javax.el.CompositeELResolver _resolverForJSP;
 
     public ResolverForJSPInitializer(final ELResolverBuilder resolverBuilder, final javax.el.CompositeELResolver resolverForJSP)
@@ -50,13 +50,20 @@ public final class ResolverForJSPInitializer implements PhaseListener
     {
         if (!initialized)
         {
-            initialized = true;
-            _resolverBuilder.build(_resolverForJSP);
-
-            LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            for (Iterator<String> iter = factory.getLifecycleIds(); iter.hasNext();)
+            synchronized(this)
             {
-                factory.getLifecycle(iter.next()).removePhaseListener(this);
+                if (!initialized)
+                {
+                    _resolverBuilder.build(_resolverForJSP);
+
+                    LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+                    for (Iterator<String> iter = factory.getLifecycleIds(); iter.hasNext();)
+                    {
+                        factory.getLifecycle(iter.next()).removePhaseListener(this);
+                    }
+                    
+                    initialized = true;
+                }
             }
         }
     }
