@@ -57,6 +57,7 @@ import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
@@ -1024,12 +1025,24 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     public static class PostAddPreRemoveFromViewListener implements SystemEventListener
     {
         private transient FacesContext _facesContext;
+        
+        private transient Boolean _isRefreshOnTransientBuildPreserveState;
 
         public boolean isListenerForSource(Object source)
         {
             // PostAddToViewEvent and PreRemoveFromViewEvent are
             // called from UIComponentBase.setParent
             return (source instanceof UIComponent);
+        }
+        
+        private boolean isRefreshOnTransientBuildPreserveState()
+        {
+            if (_isRefreshOnTransientBuildPreserveState == null)
+            {
+                _isRefreshOnTransientBuildPreserveState = MyfacesConfig.getCurrentInstance(
+                        _facesContext.getExternalContext()).isRefreshTransientBuildOnPSSPreserveState();
+            }
+            return _isRefreshOnTransientBuildPreserveState;
         }
 
         public void processEvent(SystemEvent event)
@@ -1056,7 +1069,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             if (event instanceof PostAddToViewEvent)
             {
-                if (Boolean.TRUE.equals(_facesContext.getAttributes().get(StateManager.IS_BUILDING_INITIAL_STATE)))
+                if (!isRefreshOnTransientBuildPreserveState() &&
+                    Boolean.TRUE.equals(_facesContext.getAttributes().get(StateManager.IS_BUILDING_INITIAL_STATE)))
                 {
                     return;
                 }
@@ -1075,6 +1089,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 {
                     return;
                 }
+
+                if (!isRefreshOnTransientBuildPreserveState() &&
+                    component.getAttributes().containsKey(ComponentSupport.MARK_CREATED))
+                {
+                    // Components removed by facelets algorithm does not need to be registered
+                    // unless preserve state mode is used, because PSS initial state is changed
+                    // to restore delta properly.
+                    return;
+                }
                 
                 //PreRemoveFromViewEvent
                 UIViewRoot uiViewRoot = _facesContext.getViewRoot();
@@ -1085,7 +1108,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     //Create a set that preserve insertion order
                     clientIdsRemoved = new ArrayList<String>();
                 }
-                clientIdsRemoved.add(component.getClientId());
+                clientIdsRemoved.add(component.getClientId(_facesContext));
                 setClientsIdsRemoved(uiViewRoot, clientIdsRemoved);
             }
         }
