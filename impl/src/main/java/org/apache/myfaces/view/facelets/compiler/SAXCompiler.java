@@ -80,6 +80,7 @@ public final class SAXCompiler extends Compiler
         private final CompilationManager unit;
         
         private boolean consumingCDATA = false;
+        private boolean swallowCDATAContent = false;
 
         public CompilationHandler(CompilationManager unit, String alias)
         {
@@ -89,7 +90,7 @@ public final class SAXCompiler extends Compiler
 
         public void characters(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && !consumingCDATA)
+            if (this.inDocument && (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
             {
                 this.unit.writeText(new String(ch, start, length));
             }
@@ -131,6 +132,7 @@ public final class SAXCompiler extends Compiler
                 else
                 {
                     this.consumingCDATA = false;
+                    this.swallowCDATAContent = false;
                 }
             }
         }
@@ -206,6 +208,7 @@ public final class SAXCompiler extends Compiler
                 else
                 {
                     this.consumingCDATA = true;
+                    this.swallowCDATAContent = this.unit.getFaceletsProcessingInstructions().isSwallowCDataContent();
                 }
             }
         }
@@ -283,6 +286,7 @@ public final class SAXCompiler extends Compiler
         private boolean inMetadata = false;
         
         private boolean consumingCDATA = false;
+        private boolean swallowCDATAContent = false;
 
         public ViewMetadataHandler(CompilationManager unit, String alias)
         {
@@ -292,7 +296,7 @@ public final class SAXCompiler extends Compiler
 
         public void characters(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && inMetadata && !consumingCDATA)
+            if (this.inDocument && inMetadata && (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
             {
                 this.unit.writeText(new String(ch, start, length));
             }
@@ -334,6 +338,7 @@ public final class SAXCompiler extends Compiler
                 else
                 {
                     this.consumingCDATA = false;
+                    this.swallowCDATAContent = false;
                 }
             }
         }
@@ -416,6 +421,7 @@ public final class SAXCompiler extends Compiler
                 else
                 {
                     this.consumingCDATA = true;
+                    this.swallowCDATAContent = this.unit.getFaceletsProcessingInstructions().isSwallowCDataContent();
                 }
             }
         }
@@ -487,6 +493,7 @@ public final class SAXCompiler extends Compiler
         private boolean inCompositeImplementation = false;
 
         private boolean consumingCDATA = false;
+        private boolean swallowCDATAContent = false;
 
         public CompositeComponentMetadataHandler(CompilationManager unit, String alias)
         {
@@ -496,7 +503,7 @@ public final class SAXCompiler extends Compiler
 
         public void characters(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && inCompositeInterface && !consumingCDATA)
+            if (this.inDocument && inCompositeInterface && (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
             {
                 this.unit.writeText(new String(ch, start, length));
             }
@@ -538,6 +545,7 @@ public final class SAXCompiler extends Compiler
                 else
                 {
                     this.consumingCDATA = false;
+                    this.swallowCDATAContent = false;
                 }
             }
         }
@@ -638,6 +646,7 @@ public final class SAXCompiler extends Compiler
                 else
                 {
                     this.consumingCDATA = true;
+                    this.swallowCDATAContent = this.unit.getFaceletsProcessingInstructions().isSwallowCDataContent();
                 }
             }
         }

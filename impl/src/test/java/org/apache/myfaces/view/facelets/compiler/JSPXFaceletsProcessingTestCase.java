@@ -110,7 +110,7 @@ public class JSPXFaceletsProcessingTestCase extends FaceletTestCase {
         Assert.assertFalse("Response contains xml declaration", resp.contains("<?xml"));
         Assert.assertFalse("Response contains xml processing instructions", resp.contains("<?name"));
         Assert.assertFalse("Response contains cdata section", resp.contains("<![CDATA["));
-        Assert.assertFalse("Response contains cdata section", resp.contains("cdata not consumed"));
+        Assert.assertTrue("Response does not contains cdata content", resp.contains("cdata not consumed"));
         Assert.assertTrue("Response does not escape characters", resp.contains("In this mode, if you put a double quote, it will NOT be replaced by &quot; : \""));
         Assert.assertFalse("Response contains comments", resp.contains("<!--"));
         

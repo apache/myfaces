@@ -31,15 +31,15 @@ public final class FaceletsProcessingInstructions
     
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XHTML =
         new FaceletsProcessingInstructions(
-                false, false, false, false, true, false);
+                false, false, false, false, true, false, true);
 
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XML =
         new FaceletsProcessingInstructions(
-                true, true, true, true, true, true);
+                true, true, true, true, true, true, true);
 
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_JSPX =
         new FaceletsProcessingInstructions(
-                true, true, true, true, false, true);
+                true, true, true, true, false, true, false);
 
     private final boolean consumeXmlDocType;
     
@@ -52,6 +52,8 @@ public final class FaceletsProcessingInstructions
     private final boolean escapeInlineText;
     
     private final boolean consumeXMLComments;
+    
+    private final boolean swallowCDataContent;
     
     public final static FaceletsProcessingInstructions getProcessingInstructions(String processAs)
     {
@@ -83,7 +85,8 @@ public final class FaceletsProcessingInstructions
             boolean consumeProcessingInstructions,
             boolean consumeCDataSections, 
             boolean escapeInlineText,
-            boolean consumeXMLComments)
+            boolean consumeXMLComments,
+            boolean swallowCDataContent)
     {
         super();
         this.consumeXmlDocType = consumeXmlDocType;
@@ -92,6 +95,7 @@ public final class FaceletsProcessingInstructions
         this.consumeCDataSections = consumeCDataSections;
         this.escapeInlineText = escapeInlineText;
         this.consumeXMLComments = consumeXMLComments;
+        this.swallowCDataContent = swallowCDataContent;
     }
 
     public boolean isConsumeXmlDocType()
@@ -122,6 +126,11 @@ public final class FaceletsProcessingInstructions
     public boolean isConsumeXMLComments()
     {
         return consumeXMLComments;
+    }
+
+    public boolean isSwallowCDataContent()
+    {
+        return swallowCDataContent;
     }
 
 }
