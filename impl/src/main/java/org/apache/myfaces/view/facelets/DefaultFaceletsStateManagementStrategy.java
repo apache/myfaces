@@ -541,7 +541,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
             if (states == null)
             {
-                states = EMPTY_STATES;
+                serializedView = EMPTY_STATES;
             }
             else
             {
