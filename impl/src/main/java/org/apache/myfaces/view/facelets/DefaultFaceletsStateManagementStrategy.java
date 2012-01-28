@@ -1068,7 +1068,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (event instanceof PostAddToViewEvent)
             {
                 if (!isRefreshOnTransientBuildPreserveState() &&
-                    Boolean.TRUE.equals(_facesContext.getAttributes().get(StateManager.IS_BUILDING_INITIAL_STATE)))
+                    Boolean.TRUE.equals(_facesContext.getAttributes().get("javax.faces.IS_BUILDING_INITIAL_STATE")))
                 {
                     return;
                 }
