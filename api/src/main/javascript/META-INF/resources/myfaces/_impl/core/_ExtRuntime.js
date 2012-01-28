@@ -31,7 +31,7 @@
 
     var _T = myfaces._impl.core._Runtime;
 
-    _T.require = function(nms) {
+    _T.require = function (nms) {
         //namespace exists
         if (_T.exists(nms)) return;
         var rootPath = _T.getGlobalConfig("myfacesScriptRoot", "");
@@ -67,13 +67,13 @@
      * @param {Object} protoFuncs the prototype functions which should be attached
      * @param {Object} nmsFuncs the namespace functions which should be attached to the namespace
      */
-    _T.delegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+    _T.delegateObj = function (newCls, delegateObj, protoFuncs, nmsFuncs) {
         if (!_T.isString(newCls)) {
             throw Error("new class namespace must be of type String");
         }
 
         if ('function' != typeof newCls) {
-            newCls = _reserveClsNms(newCls, protoFuncs);
+            newCls = _T._reserveClsNms(newCls, protoFuncs);
             if (!newCls) return null;
         }
 
@@ -83,11 +83,11 @@
         //the trick here is to isolate the entries to bind the
         //keys in a private scope see
         //http://www.ruzee.com/blog/2008/12/javascript-inheritance-via-prototypes-and-closures
-        for (var key in delegateObj) (function(key, delFn) {
+        for (var key in delegateObj) (function (key, delFn) {
             //The isolation is needed otherwise the last _key assigend would be picked
             //up internally
             if (key && typeof delFn == "function") {
-                proto[key] = function(/*arguments*/) {
+                proto[key] = function (/*arguments*/) {
                     return delFn.apply(delegateObj, arguments);
                 };
             }
@@ -96,7 +96,7 @@
         proto._delegateObj = delegateObj;
         proto.constructor = newCls;
 
-        proto._callDelegate = function(methodName) {
+        proto._callDelegate = function (methodName) {
             var passThrough = (arguments.length == 1) ? [] : Array.prototype.slice.call(arguments, 1);
             var ret = this._delegateObj[methodName].apply(this._delegateObj, passThrough);
             if ('undefined' != ret) return ret;
@@ -108,6 +108,7 @@
 
         return newCls;
     };
+
 
     /**
      * convenience method which basically replaces an existing class
@@ -122,7 +123,7 @@
      * TODO do not use this function yet it needs some refinement, it will be interesting later
      * anyway, does not work yet
      */
-    _T.pluginClass = function(classNms, protoFuncs, overWrite) {
+    _T.pluginClass = function (classNms, protoFuncs, overWrite) {
         var oldClass = _T.fetchNamespace(classNms);
         if (!oldClass) throw new Error("The class namespace " + classNms + " is not existent");
 
@@ -139,8 +140,6 @@
         }
     };
 
-
-
     /**
      * delegation pattern which attached singleton generation
      *
@@ -149,11 +148,45 @@
      * @param protoFuncs the prototype functions which are attached on prototype level
      * @param nmsFuncs the functions which are attached on the classes namespace level
      */
-    _T.singletonDelegateObj = function(newCls, delegateObj, protoFuncs, nmsFuncs) {
+    _T.singletonDelegateObj = function (newCls, delegateObj, protoFuncs, nmsFuncs) {
         if (_T._reservedNMS[newCls]) {
             return;
         }
         return _T._makeSingleton(_T.delegateObj, newCls, delegateObj, protoFuncs, nmsFuncs);
     };
+
+
+    _T.loadScript = function (src, type, defer, charSet, async) {
+        //the chrome engine has a nasty javascript bug which prevents
+        //a correct order of scripts being loaded
+        //if you use script source on the head, we  have to revert
+        //to xhr+ globalEval for those
+        var b = _T.browser;
+        if (!b.isFF && !b.isWebkit && !b.isOpera >= 10) {
+            _T.loadScriptEval(src, type, defer, charSet);
+        } else {
+            //only firefox keeps the order, sorry ie...
+            _T.loadScriptByBrowser(src, type, defer, charSet, async);
+        }
+    };
+
+      //internal class namespace reservation depending on the type (string or function)
+      _T._reserveClsNms = function(newCls, protoFuncs) {
+            var constr = null;
+            var UDEF = "undefined";
+            if (UDEF != typeof protoFuncs && null != protoFuncs) {
+                constr = (UDEF != typeof null != protoFuncs['constructor_'] && null != protoFuncs['constructor_']) ? protoFuncs['constructor_'] : function() {
+                };
+            } else {
+                constr = function() {
+                };
+            }
+
+            if (!_T.reserveNamespace(newCls, constr)) {
+                return null;
+            }
+            newCls = _T.fetchNamespace(newCls);
+            return newCls;
+        };
 
 })();

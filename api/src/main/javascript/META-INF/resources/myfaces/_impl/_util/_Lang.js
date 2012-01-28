@@ -63,6 +63,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             this.initLocale();
         }
         var msg = this._installedLocale[key] || defaultMessage || key + " - undefined message";
+        //we now make a simple templating replace of {0}, {1} etc... with their corresponding
+        //arguments
         for (var cnt = 2; cnt < arguments.length; cnt++) {
             msg = msg.replace(new RegExp(["\\{", cnt - 2, "\\}"].join(""), "g"), new String(arguments[cnt]));
         }
