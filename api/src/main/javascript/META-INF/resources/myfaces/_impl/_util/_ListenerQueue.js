@@ -34,7 +34,6 @@ _MF_CLS(_PFX_UTIL+"_ListenerQueue", myfaces._impl._util._Queue,
  * @lends myfaces._impl._util._ListenerQueue.prototype
  */
 {
-
     /**
      * listener type safety assertion function
      *
