@@ -556,7 +556,8 @@ public abstract class HtmlLinkRendererBase
             // perf: in 99% cases is  eventBehaviors javax.faces.component._DeltaList._DeltaList(int) = RandomAccess
             // instance created in javax.faces.component.UIComponentBase.addClientBehavior(String, ClientBehavior), but
             // component libraries can provide own implementation
-            if (eventBehaviors instanceof RandomAccess) {
+            if (eventBehaviors instanceof RandomAccess)
+            {
                 for (int i = 0, size = eventBehaviors.size(); i < size; i++)
                 {
                     ClientBehavior behavior = eventBehaviors.get(i);

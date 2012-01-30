@@ -233,7 +233,8 @@ public class SectionUniqueIdCounter
             count = 1;
             j = -l;
         }
-        while ((l /= radix) != 0) {
+        while ((l /= radix) != 0)
+        {
             count++;
         }
 
@@ -256,8 +257,9 @@ public class SectionUniqueIdCounter
                 ch += '0';
             }
             buffer[--count] = (char) ch;
+            j /= radix;
         }
-        while ((j /= radix) != 0);
+        while (j != 0);
         if (negative)
         {
             buffer[0] = '-';

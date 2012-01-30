@@ -321,8 +321,8 @@ public class MyfacesConfig
      * Detect if a target (usually head) should be update for the current view in an ajax render 
      * operation. This is activated if a css or js resource is added dynamically by effect of a refresh 
      * (c:if, ui:include src="#{...}" or a manipulation of the tree). This ensures ajax updates of content 
-     * using ui:include will be consistent. Note this behavior is a myfaces specific extension, so to ensure strict compatibility with the spec, 
-     * set this param to false (default false).
+     * using ui:include will be consistent. Note this behavior is a myfaces specific extension, so to 
+     * ensure strict compatibility with the spec, set this param to false (default false).
      */
     @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false")
     public final static String INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX = 
@@ -330,14 +330,18 @@ public class MyfacesConfig
     public final static boolean INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT = false;
     
     /**
-     * Change default getType() behavior for composite component EL resolver, from return null (see JSF 2_0 spec section 5_6_2_2) to
-     * use the metadata information added by composite:attribute, ensuring components working with chained EL expressions to find the
+     * Change default getType() behavior for composite component EL resolver, from return null 
+     * (see JSF 2_0 spec section 5_6_2_2) to
+     * use the metadata information added by composite:attribute, ensuring components working with 
+     * chained EL expressions to find the
      * right type when a getType() is called over the source EL expression.
      * 
-     * To ensure strict compatibility with the spec set this param to true (by default is false, so the change is enabled by default). 
+     * To ensure strict compatibility with the spec set this param to true (by default is false, 
+     * so the change is enabled by default). 
      */
     @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false", group="EL")
-    public final static String INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER = "org.apache.myfaces.STRICT_JSF_2_CC_EL_RESOLVER";
+    public final static String INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER = 
+        "org.apache.myfaces.STRICT_JSF_2_CC_EL_RESOLVER";
     public final static boolean INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT = false;
     
     /**

@@ -418,7 +418,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
     }
 
     /**
-     * Minimum size for a String to be added as a StringChunk instead of copying content to the char[] buffer of the current StreamCharBufferChunk
+     * Minimum size for a String to be added as a StringChunk instead of copying content to 
+     * the char[] buffer of the current StreamCharBufferChunk
      *
      * @param stringChunkMinSize
      */
@@ -475,7 +476,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
 
     /**
      * Creates a new Reader instance for reading/consuming data from the buffer.
-     * Each call creates a new instance that will keep it's reading state. There can be several readers on the buffer. (single thread only supported)
+     * Each call creates a new instance that will keep it's reading state. There can be several readers on
+     * the buffer. (single thread only supported)
      *
      * @return the Reader
      */
@@ -610,7 +612,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
      * {@inheritDoc}
      *
      * Reads (and empties) the buffer to a String, but caches the return value for subsequent calls.
-     * If more content has been added between 2 calls, the returned value will be joined from the previously cached value and the data read from the buffer.
+     * If more content has been added between 2 calls, the returned value will be joined from the previously 
+     * cached value and the data read from the buffer.
      *
      * @see java.lang.Object#toString()
      */
@@ -652,7 +655,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
     }
 
     /**
-     * equals uses String.equals to check for equality to support compatibility with String instances in maps, sets, etc.
+     * equals uses String.equals to check for equality to support compatibility with String instances 
+     * in maps, sets, etc.
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -660,10 +664,14 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
     public boolean equals(Object o)
     {
         if (o == this)
+        {
             return true;
+        }
 
         if (!(o instanceof CharSequence))
+        {
             return false;
+        }
 
         CharSequence other = (CharSequence) o;
 
@@ -875,7 +883,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
             lastChunk.next = newChunk;
             if (hasReaders)
             {
-                // double link only if there are active readers since backwards iterating is only required for simultaneous writer & reader
+                // double link only if there are active readers since backwards iterating is only required 
+                //for simultaneous writer & reader
                 newChunk.prev = lastChunk;
             }
         }
@@ -1053,7 +1062,9 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
                 throws IOException
         {
             if (len == 0)
+            {
                 return;
+            }
             markUsed();
             if (shouldWriteDirectly(len))
             {
@@ -1573,7 +1584,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
 
         /**
-         * Creates a new chunk from the content written to the buffer (used before adding StringChunk or StreamCharBufferChunk).
+         * Creates a new chunk from the content written to the buffer 
+         * (used before adding StringChunk or StreamCharBufferChunk).
          *
          * @return the chunk
          */

@@ -35,7 +35,8 @@ public final class CheckDuplicateIdFaceletUtils
         checkIdsStatefulComponents (context, view, new HashSet<String>());
     }
 
-    private static void checkIdsStatefulComponents (FacesContext context, UIComponent component, Set<String> existingIds)
+    private static void checkIdsStatefulComponents (FacesContext context, 
+            UIComponent component, Set<String> existingIds)
     {
         String id;
         
