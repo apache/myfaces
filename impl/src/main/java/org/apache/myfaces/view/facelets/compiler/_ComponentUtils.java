@@ -18,20 +18,20 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import javax.el.ValueExpression;
+import java.util.Collection;
+
 import javax.faces.application.FacesMessage;
+import javax.faces.component.NamingContainer;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
-import java.util.Collection;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
 
 /**
  * A collection of static helper methods for locating UIComponents.

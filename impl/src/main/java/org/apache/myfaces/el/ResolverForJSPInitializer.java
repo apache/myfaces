@@ -57,7 +57,8 @@ public final class ResolverForJSPInitializer implements PhaseListener
                 {
                     _resolverBuilder.build(_resolverForJSP);
 
-                    LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+                    LifecycleFactory factory = (LifecycleFactory) 
+                            FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
                     for (Iterator<String> iter = factory.getLifecycleIds(); iter.hasNext();)
                     {
                         factory.getLifecycle(iter.next()).removePhaseListener(this);

@@ -395,7 +395,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                     }
                     else
                     {
-                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, 
+                                writer, uiComponent, behaviors);
                         HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
                                 facesContext, writer, uiComponent, behaviors);
                     }
@@ -428,7 +429,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);                    
+                    long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
                     HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
                             facesContext, writer, uiComponent, behaviors);
                     if (isCommonEventsOptimizationEnabled(facesContext))
@@ -437,11 +438,13 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                         CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
                                 commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
                         CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                            facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                            facesContext, writer, commonPropertiesMarked, commonEventsMarked,
+                            uiComponent, behaviors);
                     }
                     else
                     {
-                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
+                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer,
+                                uiComponent, behaviors);
                         HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
                                 facesContext, writer, uiComponent, behaviors);
                     }

@@ -439,7 +439,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                     }
                     catch(UnsupportedOperationException e)
                     {
-                        _getLogger().log(Level.SEVERE, "Exception while obtaining the view metadata: " + e.getMessage(), e);
+                        _getLogger().log(Level.SEVERE, "Exception while obtaining the view metadata: " +
+                                e.getMessage(), e);
                     }
                     
                     if (metadata != null)

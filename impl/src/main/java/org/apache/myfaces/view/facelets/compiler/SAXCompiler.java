@@ -503,7 +503,8 @@ public final class SAXCompiler extends Compiler
 
         public void characters(char[] ch, int start, int length) throws SAXException
         {
-            if (this.inDocument && inCompositeInterface && (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
+            if (this.inDocument && inCompositeInterface && 
+                    (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
             {
                 this.unit.writeText(new String(ch, start, length));
             }
@@ -511,7 +512,8 @@ public final class SAXCompiler extends Compiler
 
         public void comment(char[] ch, int start, int length) throws SAXException
         {
-            if (inDocument && inCompositeInterface && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
+            if (inDocument && inCompositeInterface && 
+                    !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
             {
                 this.unit.writeComment(new String(ch, start, length));
             }

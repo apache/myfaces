@@ -218,7 +218,8 @@ public class BeanValidator implements Validator, PartialStateHolder
 
         return validatorFactory //
                 .usingContext() //
-                .messageInterpolator(new FacesMessageInterpolator(validatorFactory.getMessageInterpolator(), context)) //
+                .messageInterpolator(new FacesMessageInterpolator(
+                        validatorFactory.getMessageInterpolator(), context)) //
                 .getValidator();
 
     }

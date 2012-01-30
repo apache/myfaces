@@ -1134,7 +1134,8 @@ public abstract class HTMLEncoder
         //return app;
     }
     
-    private static void percentEncodeNonUsAsciiCharacter(Writer currentWriter, char c, String characterEncoding) throws IOException
+    private static void percentEncodeNonUsAsciiCharacter(Writer currentWriter, char c, String characterEncoding) 
+        throws IOException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(10);
         StringBuilder builder = new StringBuilder();

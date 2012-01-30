@@ -408,7 +408,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     }
 
     @Override
-    public void setMarkInitialState(boolean value) {
+    public void setMarkInitialState(boolean value)
+    {
         _isMarkInitialState = value;
     }
 

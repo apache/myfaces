@@ -449,8 +449,10 @@ public class ApplicationImpl extends Application
         /*
          * Before the component instance is returned, it must be inspected for the presence of a ListenerFor (or
          * ListenersFor) or ResourceDependency (or ResourceDependencies) annotation. If any of these annotations are
-         * present, the action listed in ListenerFor or ResourceDependency must be taken on the component, before it is
-         * returned from this method. This variant of createComponent must not inspect the Renderer for the component to
+         * present, the action listed in ListenerFor or ResourceDependency must be taken on the component, 
+         * before it is
+         * returned from this method. This variant of createComponent must not inspect the Renderer for the 
+         * component to
          * be returned for any of the afore mentioned annotations. Such inspection is the province of
          */
 
@@ -490,8 +492,8 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
-                                       String rendererType)
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, 
+                                       String componentType, String rendererType)
     {
         // Like createComponent(ValueExpression, FacesContext, String)
         UIComponent component = createComponent(componentExpression, context, componentType);
@@ -806,8 +808,9 @@ public class ApplicationImpl extends Application
             if (stageName != null)
             {
                 /*
-                 * see if an enum constant can be obtained by calling ProjectStage.valueOf(), passing the value from the
-                 * initParamMap. If this succeeds without exception, save the value and return it.
+                 * see if an enum constant can be obtained by calling ProjectStage.valueOf(), passing 
+                 * the value from the initParamMap. If this succeeds without exception, save the value 
+                 * and return it.
                  */
                 try
                 {
@@ -1226,7 +1229,8 @@ public class ApplicationImpl extends Application
          * to createComponent(java.lang.String) to create the component.
          */
         BeanDescriptor descriptor = metadata.getBeanDescriptor();
-        ValueExpression componentType = (ValueExpression) descriptor.getValue(UIComponent.COMPOSITE_COMPONENT_TYPE_KEY);
+        ValueExpression componentType = (ValueExpression) descriptor.getValue(
+                UIComponent.COMPOSITE_COMPONENT_TYPE_KEY);
         boolean annotationsApplied = false;
         if (componentType != null)
         {
@@ -1257,7 +1261,8 @@ public class ApplicationImpl extends Application
                  * componentResource and resource-name be the return from calling Resource.getResourceName() on the
                  * argument componentResource. Create a fully qualified Java class name by removing any file extension
                  * from resource-name and let fqcn be library-name + "." + resource-name. If a class with the name of
-                 * fqcn cannot be found, take no action and continue to the next step. If any of InstantiationException,
+                 * fqcn cannot be found, take no action and continue to the next step. If any of 
+                 * InstantiationException,
                  * IllegalAccessException, or ClassCastException are thrown, wrap the exception in a FacesException and
                  * re-throw it. If any other exception is thrown, log the exception and continue to the next step.
                  */
@@ -1344,8 +1349,10 @@ public class ApplicationImpl extends Application
         component.getAttributes().put(UIComponent.BEANINFO_KEY, metadata);
 
         /*
-         * Before the component instance is returned, it must be inspected for the presence of a ListenerFor annotation.
-         * If this annotation is present, the action listed in ListenerFor must be taken on the component, before it is
+         * Before the component instance is returned, it must be inspected for the presence of a 
+         * ListenerFor annotation.
+         * If this annotation is present, the action listed in ListenerFor must be taken on the component, 
+         * before it is
          * returned from this method.
          */
         if (!annotationsApplied)
@@ -1428,8 +1435,8 @@ public class ApplicationImpl extends Application
      * passing the property's defaultValuer. Basic typeconversion is done so the target properties on the Converter
      * instance can be String, int, boolean, etc. Note that:
      * <ol>
-     * <li>the Sun Mojarra JSF implemenation ignores nested property tags completely, so this behaviour cannot be relied
-     * on across implementations.
+     * <li>the Sun Mojarra JSF implemenation ignores nested property tags completely, so this behaviour cannot be 
+     * relied on across implementations.
      * <li>there is no equivalent functionality for converter classes registered via the Application.addConverter api
      * method.
      * </ol>
@@ -1708,7 +1715,8 @@ public class ApplicationImpl extends Application
             }
         }
 
-        if (dependencyList != null && !dependencyList.isEmpty()) //resource dependencies were found through inspection or from cache, handle them
+        //resource dependencies were found through inspection or from cache, handle them
+        if (dependencyList != null && !dependencyList.isEmpty()) 
         {
             for (int i = 0, size = dependencyList.size(); i < size; i++)
             {
@@ -1721,7 +1729,8 @@ public class ApplicationImpl extends Application
             }
         }
         
-        if(context.isProjectStage(ProjectStage.Production) && !isCachedList)   //if we're in production and the list is not yet cached, store it
+        //if we're in production and the list is not yet cached, store it
+        if(context.isProjectStage(ProjectStage.Production) && !isCachedList)   
         {
             // Note at this point listenerForList cannot be null, but just let this
             // as a sanity check.
@@ -1792,7 +1801,8 @@ public class ApplicationImpl extends Application
             }
             else
             {
-                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext, 
+                // Otherwise, if target is null, call 
+                // UIViewRoot.addComponentResource(javax.faces.context.FacesContext, 
                 // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
                 context.getViewRoot().addComponentResource(context, output);
             }
@@ -1880,7 +1890,8 @@ public class ApplicationImpl extends Application
 
         try
         {
-            valueExpression = getExpressionFactory().createValueExpression(threadELContext(), reference, Object.class);
+            valueExpression = getExpressionFactory().createValueExpression(
+                    threadELContext(), reference, Object.class);
         }
         catch (ELException e)
         {
@@ -1971,7 +1982,8 @@ public class ApplicationImpl extends Application
             }
             catch (Exception e)
             {
-                throw new FacesException("Couldn't instanciate system event of type " + systemEventClass.getName(), e);
+                throw new FacesException("Couldn't instanciate system event of type " + 
+                        systemEventClass.getName(), e);
             }
         }
 
@@ -2036,7 +2048,8 @@ public class ApplicationImpl extends Application
             }
         }        
  
-        if (listenerForList != null && !listenerForList.isEmpty()) //listeners were found through inspection or from cache, handle them
+        // listeners were found through inspection or from cache, handle them
+        if (listenerForList != null && !listenerForList.isEmpty()) 
         {
             for (int i = 0, size = listenerForList.size(); i < size; i++)
             {
@@ -2180,7 +2193,8 @@ public class ApplicationImpl extends Application
             }
         }        
  
-        if (dependencyList != null && !dependencyList.isEmpty()) //resource dependencies were found through inspection or from cache, handle them
+        // resource dependencies were found through inspection or from cache, handle them
+        if (dependencyList != null && !dependencyList.isEmpty()) 
         {
             for (int i = 0, size = dependencyList.size(); i < size; i++)
             {
@@ -2317,8 +2331,10 @@ public class ApplicationImpl extends Application
     {
         if (listeners != null && !listeners.isEmpty())
         {
-            // perf: org.apache.myfaces.application.ApplicationImpl.SystemListenerEntry.getSpecificSourceListenersNotNull(Class<?>)
-            // or javax.faces.component.UIComponent.subscribeToEvent(Class<? extends SystemEvent>, ComponentSystemEventListener)
+            // perf: org.apache.myfaces.application.ApplicationImpl.
+            //    SystemListenerEntry.getSpecificSourceListenersNotNull(Class<?>)
+            // or javax.faces.component.UIComponent.subscribeToEvent(
+            //      Class<? extends SystemEvent>, ComponentSystemEventListener)
             // creates a ArrayList:
             for (int i  = 0, size = listeners.size(); i < size; i++)
             {

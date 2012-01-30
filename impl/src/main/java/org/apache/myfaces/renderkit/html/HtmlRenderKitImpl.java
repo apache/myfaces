@@ -313,7 +313,7 @@ public class HtmlRenderKitImpl extends RenderKit
         else
         {
             writerContentType = HtmlRendererUtils.isXHTMLContentType(selectedContentType) ? 
-                    ContentTypeUtils.XHTML_CONTENT_TYPE : ContentTypeUtils.HTML_CONTENT_TYPE;;
+                    ContentTypeUtils.XHTML_CONTENT_TYPE : ContentTypeUtils.HTML_CONTENT_TYPE;
         }
         
         if (characterEncoding == null)

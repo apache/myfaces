@@ -346,7 +346,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         for (String clientId : _getChildState().keySet())
         {
-            // Perf: messages are instances of arrayList (or Collections.emptyList): see Method org.apache.myfaces.context.servlet.FacesContextImpl.addMessage(String, FacesMessage)
+            // Perf: messages are instances of arrayList (or Collections.emptyList): 
+            // see Method org.apache.myfaces.context.servlet.FacesContextImpl.addMessage(String, FacesMessage)
             List<FacesMessage> messageList = context.getMessageList(clientId);
             for (int i = 0, size = messageList.size(); i < size; i++)
             {

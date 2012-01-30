@@ -191,7 +191,8 @@ public class StringCharArrayAccessor
         String str = new String();
         try
         {
-            // try to prevent possible final field setting execution reordering in JIT (JSR-133/JMM, "9.1.1 Post-Construction Modification of Final Fields")
+            // try to prevent possible final field setting execution reordering in JIT 
+            // (JSR-133/JMM, "9.1.1 Post-Construction Modification of Final Fields")
             // it was a bit unclear for me if this could ever happen in a single thread
             synchronized (str)
             {

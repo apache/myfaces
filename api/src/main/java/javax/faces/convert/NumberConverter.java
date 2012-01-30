@@ -602,12 +602,14 @@ public class NumberConverter
                         {
                             java14 = 2;
                         }
+                        // fallthru
                     case 1:
                         if (java14 > 0 && value >= 4)
                         {
                             java14 = 2;
                         }
-                        ;
+                        //;
+                        // fallthru
                     default:
                         idx = 0;
                         version = null;

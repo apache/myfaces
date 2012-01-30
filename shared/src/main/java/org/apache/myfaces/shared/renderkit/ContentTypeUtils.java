@@ -34,13 +34,15 @@ public class ContentTypeUtils
     public static final String TEXT_ANY_CONTENT_TYPE = "text/*";
     public static final String ANY_CONTENT_TYPE = "*/*";
 
-    public static final String[] HTML_ALLOWED_CONTENT_TYPES = {HTML_CONTENT_TYPE, ANY_CONTENT_TYPE, TEXT_ANY_CONTENT_TYPE};
+    public static final String[] HTML_ALLOWED_CONTENT_TYPES = {HTML_CONTENT_TYPE, 
+        ANY_CONTENT_TYPE, TEXT_ANY_CONTENT_TYPE};
     
     public static final String XHTML_CONTENT_TYPE = "application/xhtml+xml";
     public static final String APPLICATION_XML_CONTENT_TYPE = "application/xml";
     public static final String TEXT_XML_CONTENT_TYPE = "text/xml";
     
-    public static final String[] XHTML_ALLOWED_CONTENT_TYPES = {XHTML_CONTENT_TYPE, APPLICATION_XML_CONTENT_TYPE, TEXT_XML_CONTENT_TYPE};
+    public static final String[] XHTML_ALLOWED_CONTENT_TYPES = {XHTML_CONTENT_TYPE, 
+        APPLICATION_XML_CONTENT_TYPE, TEXT_XML_CONTENT_TYPE};
     
     public static final String[] AJAX_XHTML_ALLOWED_CONTENT_TYPES = {XHTML_CONTENT_TYPE};
 
@@ -64,7 +66,8 @@ public class ContentTypeUtils
         return false;
     }
 
-    public static String chooseWriterContentType(String contentTypeListString, String[] htmlContentTypes, String[] xhtmlContentTypes)
+    public static String chooseWriterContentType(String contentTypeListString, 
+            String[] htmlContentTypes, String[] xhtmlContentTypes)
     {
         String[] contentTypeList = splitContentTypeListString(contentTypeListString);
         String[] supportedContentTypeArray = HtmlRendererUtils.getSupportedContentTypes();

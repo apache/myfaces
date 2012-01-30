@@ -135,9 +135,11 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         // Check for one or more of this conditions:
         // 1. A faces-config.xml file is found in WEB-INF
         // 2. A faces-config.xml file is found in the META-INF directory of a jar in the application's classpath.
-        // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in the application's classpath.
+        // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in the 
+        //    application's classpath.
         // 4. The javax.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
-        // 5. The Set of classes passed to the onStartup() method of the ServletContainerInitializer implementation is not empty.
+        // 5. The Set of classes passed to the onStartup() method of the ServletContainerInitializer 
+        //    implementation is not empty.
         if ((clazzes != null && !clazzes.isEmpty()) || isFacesConfigPresent(servletContext))
         {
             // look for the FacesServlet
@@ -233,12 +235,16 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 }
             }
 
-            // 2. A faces-config.xml file is found in the META-INF directory of a jar in the application's classpath.
-            // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in the application's classpath.
-            // To do this properly it is necessary to use some SPI interfaces MyFaces already has, to deal with OSGi and other
+            // 2. A faces-config.xml file is found in the META-INF directory of a jar in the 
+            //    application's classpath.
+            // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in 
+            //    the application's classpath.
+            // To do this properly it is necessary to use some SPI interfaces MyFaces already has, to 
+            // deal with OSGi and other
             // environments properly.
             ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, true);
-            FacesConfigResourceProviderFactory factory = FacesConfigResourceProviderFactory.getFacesConfigResourceProviderFactory(externalContext);
+            FacesConfigResourceProviderFactory factory = FacesConfigResourceProviderFactory.
+                getFacesConfigResourceProviderFactory(externalContext);
             FacesConfigResourceProvider provider = factory.createFacesConfigResourceProvider(externalContext);
             Collection<URL> metaInfFacesConfigUrls =  provider.getMetaInfConfigurationResources(externalContext);
             

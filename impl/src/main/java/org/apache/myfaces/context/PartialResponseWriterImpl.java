@@ -19,7 +19,6 @@
 
 package org.apache.myfaces.context;
 
-import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import java.util.List;
 import javax.faces.component.UIComponent;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ResponseWriter;
+
 import org.apache.myfaces.util.CDataEndEscapeFilterWriter;
 
 /**
