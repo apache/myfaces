@@ -49,6 +49,8 @@ public class ImplicitObjectResolver extends ELResolver
         forJSPList.put(io1.getName(), io1);
         ImplicitObject io2 = new ViewImplicitObject();
         forJSPList.put(io2.getName(), io2);
+        ImplicitObject io3 = new ResourceImplicitObject();
+        forJSPList.put(io3.getName(), io3);
         return new ImplicitObjectResolver(forJSPList);
     }
 
