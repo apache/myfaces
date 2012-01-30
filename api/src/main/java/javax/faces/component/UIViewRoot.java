@@ -474,7 +474,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         catch (Exception e)
         {
             // following the spec we have to swallow the exception
-            logger.log(Level.SEVERE, "Exception while processing phase listener: " + e.getMessage(), e);
+            _getLogger().log(Level.SEVERE, "Exception while processing phase listener: " + e.getMessage(), e);
         }
     }
 
@@ -909,7 +909,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                             catch (Throwable t) 
                             {
                                 beforePhaseSuccess[i + 1] = false; // redundant - for clarity
-                                logger.log(Level.SEVERE, "An Exception occured while processing the " +
+                                _getLogger().log(Level.SEVERE, "An Exception occured while processing the " +
                                                          "beforePhase method of PhaseListener " + phaseListener +
                                                          " in Phase " + phaseId, t);
                                 return context.getResponseComplete() ||
