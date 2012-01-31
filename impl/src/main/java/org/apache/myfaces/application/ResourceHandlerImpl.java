@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.application;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.resource.ResourceHandlerCache;
 import org.apache.myfaces.shared.resource.ResourceHandlerCache.ResourceValue;
 import org.apache.myfaces.shared.resource.ResourceHandlerSupport;
@@ -28,6 +29,7 @@ import org.apache.myfaces.shared.resource.ResourceValidationUtils;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
@@ -66,6 +68,15 @@ public class ResourceHandlerImpl extends ResourceHandler
     private static final Logger log = Logger.getLogger(ResourceHandlerImpl.class.getName());
 
     private static final int _BUFFER_SIZE = 2048;
+    
+    /**
+     * Allow slash in the library name of a Resource. 
+     */
+    @JSFWebConfigParam(since="2.1.6, 2.0.12", defaultValue="false", expectedValues="true, false", group="resources")
+    public static final String INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME = "org.apache.myfaces.STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME";
+    public static final boolean INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT = false;
+    
+    private Boolean _allowSlashLibraryName;
 
     @Override
     public Resource createResource(String resourceName)
@@ -89,7 +100,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             return null;
         }
-        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName))
+        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName, isAllowSlashesLibraryName()))
         {
             return null;
         }
@@ -326,7 +337,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             String libraryName = facesContext.getExternalContext()
                     .getRequestParameterMap().get("ln");
     
-            if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName))
+            if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName, isAllowSlashesLibraryName()))
             {
                 httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
@@ -548,7 +559,7 @@ public class ResourceHandlerImpl extends ResourceHandler
 
         String pathToLib = null;
         
-        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName))
+        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName, isAllowSlashesLibraryName()))
         {
             return false;
         }
@@ -652,4 +663,17 @@ public class ResourceHandlerImpl extends ResourceHandler
 
         return null;
     }
+    
+    protected boolean isAllowSlashesLibraryName()
+    {
+        if (_allowSlashLibraryName == null)
+        {
+            _allowSlashLibraryName = WebConfigParamUtils.getBooleanInitParameter(
+                    FacesContext.getCurrentInstance().getExternalContext(), 
+                    INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME,
+                    INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT);
+        }
+        return _allowSlashLibraryName;
+    }
+
 }
