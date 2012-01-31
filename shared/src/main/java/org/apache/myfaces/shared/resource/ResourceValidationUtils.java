@@ -30,6 +30,11 @@ public class ResourceValidationUtils
         return validate(libraryName, false);
     }
     
+    public static boolean isValidLibraryName(String libraryName, boolean allowSlash)
+    {
+        return validate(libraryName, allowSlash);
+    }
+    
     public static boolean isValidLocalePrefix(String localePrefix)
     {
         for (int i = 0; i < localePrefix.length(); i++)

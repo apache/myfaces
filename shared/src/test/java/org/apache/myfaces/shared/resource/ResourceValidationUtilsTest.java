@@ -51,11 +51,15 @@ public class ResourceValidationUtilsTest extends AbstractJsfTestCase
         Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("org.apache.myfaces"));
         Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("some-js-lib"));
         Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("some_js_lib"));
+        
+        Assert.assertTrue(ResourceValidationUtils.isValidLibraryName("components/panels", true));
+        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("components/panels", false));
 
         Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("/mylib"));
         Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("mylib"+'\t'+"22"));
         Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("\\mylib"));
         Assert.assertFalse(ResourceValidationUtils.isValidLibraryName(".."));
+        Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("..", true));
         Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("some:js"));
         Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("some?js"));
         Assert.assertFalse(ResourceValidationUtils.isValidLibraryName("some&js"));
