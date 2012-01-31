@@ -72,8 +72,10 @@ public class ResourceHandlerImpl extends ResourceHandler
     /**
      * Allow slash in the library name of a Resource. 
      */
-    @JSFWebConfigParam(since="2.1.6, 2.0.12", defaultValue="false", expectedValues="true, false", group="resources")
-    public static final String INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME = "org.apache.myfaces.STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME";
+    @JSFWebConfigParam(since="2.1.6, 2.0.12", defaultValue="false", 
+            expectedValues="true, false", group="resources")
+    public static final String INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME = 
+            "org.apache.myfaces.STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME";
     public static final boolean INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT = false;
     
     private Boolean _allowSlashLibraryName;
@@ -100,7 +102,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             return null;
         }
-        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName, isAllowSlashesLibraryName()))
+        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
+                libraryName, isAllowSlashesLibraryName()))
         {
             return null;
         }
@@ -337,7 +340,8 @@ public class ResourceHandlerImpl extends ResourceHandler
             String libraryName = facesContext.getExternalContext()
                     .getRequestParameterMap().get("ln");
     
-            if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName, isAllowSlashesLibraryName()))
+            if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
+                    libraryName, isAllowSlashesLibraryName()))
             {
                 httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
@@ -559,7 +563,8 @@ public class ResourceHandlerImpl extends ResourceHandler
 
         String pathToLib = null;
         
-        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(libraryName, isAllowSlashesLibraryName()))
+        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
+                libraryName, isAllowSlashesLibraryName()))
         {
             return false;
         }
