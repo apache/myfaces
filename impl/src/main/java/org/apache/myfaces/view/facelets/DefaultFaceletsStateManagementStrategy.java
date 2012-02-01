@@ -1089,7 +1089,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
 
                 if (!isRefreshOnTransientBuildPreserveState() &&
-                    component.getAttributes().containsKey(ComponentSupport.MARK_CREATED))
+                    (component.getAttributes().containsKey(ComponentSupport.MARK_CREATED) ||
+                     component.getAttributes().containsKey(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
                 {
                     // Components removed by facelets algorithm does not need to be registered
                     // unless preserve state mode is used, because PSS initial state is changed
