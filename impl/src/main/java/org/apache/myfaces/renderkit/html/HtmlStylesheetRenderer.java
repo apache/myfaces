@@ -43,6 +43,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -77,7 +78,8 @@ public class HtmlStylesheetRenderer extends Renderer implements
             Location location = (Location) component.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
             if (location != null)
             {
-                UIComponent ccParent = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location); 
+                UIComponent ccParent
+                        = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(facesContext, location);
                 if (ccParent != null)
                 {
                     component.getAttributes().put(
@@ -87,15 +89,26 @@ public class HtmlStylesheetRenderer extends Renderer implements
             }
             // If this is an ajax request and the view is being refreshed and a PostAddToViewEvent
             // was propagated to relocate this resource, means the header must be refreshed.
-            // Note ajax request does not occur 
+            // Note ajax request does not occur on non postback requests.
+            
             if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()) &&
-                facesContext.getPartialViewContext().isAjaxRequest() && 
-                !facesContext.getAttributes().containsKey(IS_BUILDING_INITIAL_STATE) &&
-                MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isStrictJsf2RefreshTargetAjax())
+                facesContext.getPartialViewContext().isAjaxRequest() )
             {
-                //!(component.getParent() instanceof ComponentResourceContainer)
-                RequestViewContext requestViewContext = RequestViewContext.getCurrentInstance(facesContext);
-                requestViewContext.setRenderTarget("head", true);
+                boolean isBuildingInitialState = facesContext.getAttributes().
+                    containsKey(IS_BUILDING_INITIAL_STATE);
+                // The next condition takes into account the current request is an ajax request. 
+                boolean isPostAddToViewEventAfterBuildInitialState = 
+                    !isBuildingInitialState ||
+                    (isBuildingInitialState && 
+                            FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
+                if (isPostAddToViewEventAfterBuildInitialState &&
+                        MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).
+                            isStrictJsf2RefreshTargetAjax())
+                {
+                    //!(component.getParent() instanceof ComponentResourceContainer)
+                    RequestViewContext requestViewContext = RequestViewContext.getCurrentInstance(facesContext);
+                    requestViewContext.setRenderTarget("head", true);
+                }
             }
             facesContext.getViewRoot().addComponentResource(facesContext,
                         component, "head");
@@ -113,9 +126,13 @@ public class HtmlStylesheetRenderer extends Renderer implements
             throws IOException
     {
         if (facesContext == null)
+        {
             throw new NullPointerException("context");
+        }
         if (component == null)
+        {
             throw new NullPointerException("component");
+        }
 
         Map<String, Object> componentAttributesMap = component.getAttributes();
         String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
