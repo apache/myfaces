@@ -45,6 +45,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -89,15 +90,26 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
 
                 // If this is an ajax request and the view is being refreshed and a PostAddToViewEvent
                 // was propagated to relocate this resource, means the header must be refreshed.
-                // Note ajax request does not occur 
+                // Note ajax request does not occur on non postback requests.
+                
                 if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()) &&
-                    facesContext.getPartialViewContext().isAjaxRequest() &&
-                    !facesContext.getAttributes().containsKey(IS_BUILDING_INITIAL_STATE) &&
-                    MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isStrictJsf2RefreshTargetAjax())
+                    facesContext.getPartialViewContext().isAjaxRequest())
                 {
-                    //!(component.getParent() instanceof ComponentResourceContainer)
-                    RequestViewContext requestViewContext = RequestViewContext.getCurrentInstance(facesContext);
-                    requestViewContext.setRenderTarget("head", true);
+                    boolean isBuildingInitialState = facesContext.getAttributes().
+                        containsKey(IS_BUILDING_INITIAL_STATE);
+                    // The next condition takes into account the current request is an ajax request. 
+                    boolean isPostAddToViewEventAfterBuildInitialState = 
+                        !isBuildingInitialState ||
+                        (isBuildingInitialState && 
+                                FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
+                    if (isPostAddToViewEventAfterBuildInitialState &&                    
+                        MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).
+                            isStrictJsf2RefreshTargetAjax())
+                    {
+                        //!(component.getParent() instanceof ComponentResourceContainer)
+                        RequestViewContext requestViewContext = RequestViewContext.getCurrentInstance(facesContext);
+                        requestViewContext.setRenderTarget("head", true);
+                    }
                 }
 
                 facesContext.getViewRoot().addComponentResource(facesContext,
