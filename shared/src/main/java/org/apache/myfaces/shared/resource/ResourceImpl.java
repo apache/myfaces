@@ -44,6 +44,7 @@ public class ResourceImpl extends Resource
     private ResourceMeta _resourceMeta;
     private ResourceLoader _resourceLoader;
     private ResourceHandlerSupport _resourceHandlerSupport;
+    private URL _url; 
     
     public ResourceImpl(ResourceMeta resourceMeta, 
             ResourceLoader resourceLoader, ResourceHandlerSupport support, String contentType)
@@ -195,7 +196,13 @@ public class ResourceImpl extends Resource
     @Override
     public URL getURL()
     {
-        return getResourceLoader().getResourceURL(_resourceMeta);
+        // For the default algorithm, it is safe to assume the resource
+        // URL will not change over resource lifetime. See MYFACES-3458
+        if (_url == null)
+        {
+            _url = getResourceLoader().getResourceURL(_resourceMeta);
+        }
+        return _url;
     }
 
     @Override
