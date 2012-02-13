@@ -540,6 +540,8 @@ public final class HtmlRendererUtils
         ResponseWriter writer = context.getResponseWriter();
         // check for the hideNoSelectionOption attribute
         boolean hideNoSelectionOption = isHideNoSelectionOption(component);
+        boolean componentDisabled = isTrue(component.getAttributes()
+                .get("disabled"));
 
         for (Iterator it = selectItemList.iterator(); it.hasNext();)
         {
@@ -601,8 +603,6 @@ public final class HtmlRendererUtils
                 }
 
                 String labelClass = null;
-                boolean componentDisabled = isTrue(component.getAttributes()
-                        .get("disabled"));
 
                 if (componentDisabled || disabled)
                 {
