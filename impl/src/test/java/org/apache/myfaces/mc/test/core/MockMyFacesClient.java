@@ -55,9 +55,14 @@ public class MockMyFacesClient
     
     private final FacesContext facesContext;
     
-    public MockMyFacesClient(FacesContext facesContext)
+    // It has sense the client has a reference over the test, because 
+    // after all this class encapsulate some automatic operations
+    private AbstractMyFacesRequestTestCase testCase;
+    
+    public MockMyFacesClient(FacesContext facesContext, AbstractMyFacesRequestTestCase testCase)
     {
         this.facesContext = facesContext;
+        this.testCase = testCase;
     }
     
     public void inputText(UIInput input, String text)
@@ -65,7 +70,16 @@ public class MockMyFacesClient
         parameters.put(input.getClientId(), text);
     }
     
-    public void submit(UICommand command)
+    public void submit(UIComponent component) throws Exception
+    {
+        testCase.processRemainingPhases();
+        this.internalSubmit((UICommand)component);
+        String viewId = facesContext.getViewRoot().getViewId();
+        testCase.tearDownRequest();
+        testCase.setupRequest(viewId);
+    }
+    
+    protected void internalSubmit(UICommand command)
     {
         if (command instanceof HtmlCommandButton)
         {
@@ -95,6 +109,49 @@ public class MockMyFacesClient
             Cookie cookie = response.getCookie("oam.Flash.RENDERMAP.TOKEN");
             getCookies().put("oam.Flash.RENDERMAP.TOKEN", cookie);
         }
+    }
+    
+    public void ajax(UIComponent source, String event, String execute, String render, boolean submit) throws Exception
+    {
+        testCase.processRemainingPhases();
+        this.internalAjax(source, event, execute, render, submit);
+        String viewId = facesContext.getViewRoot().getViewId();
+        testCase.tearDownRequest();
+        testCase.setupRequest(viewId);
+    }
+    
+    public void internalAjax(UIComponent source, String event, String execute, String render, boolean submit)
+    {
+        parameters.put("javax.faces.partial.ajax", "true");
+        parameters.put("javax.faces.behavior.event", event);
+        parameters.put("javax.faces.partial.event", "action".equals(event) ? "click" : event);
+        parameters.put(ResponseStateManager.VIEW_STATE_PARAM, facesContext.getApplication().getStateManager().getViewState(facesContext));
+        parameters.put("javax.faces.source", source.getClientId(facesContext));
+        if (execute == null)
+        {
+            parameters.put("javax.faces.partial.execute", source.getClientId(facesContext));
+        }
+        else
+        {
+            parameters.put("javax.faces.partial.execute", execute);
+        }
+        if (render != null)
+        {
+            parameters.put("javax.faces.partial.render", render);
+        }
+        
+        if (submit)
+        {
+            parameters.put(source.getClientId(facesContext)+"_SUBMIT", "1");
+            parameters.put(source.getClientId(facesContext), source.getClientId(facesContext));
+        }
+        
+        MockHttpServletResponse response = (MockHttpServletResponse) facesContext.getExternalContext().getResponse(); 
+        Cookie cookie = response.getCookie("oam.Flash.RENDERMAP.TOKEN");
+        getCookies().put("oam.Flash.RENDERMAP.TOKEN", cookie);
+        
+        headers.put("Faces-Request", "partial/ajax");
+        headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
     }
     
     public Map<String, String> getParameters()
@@ -159,5 +216,15 @@ public class MockMyFacesClient
         {
             request.addCookie(entry.getValue());
         }
+    }
+
+    public AbstractMyFacesRequestTestCase getTestCase()
+    {
+        return testCase;
+    }
+
+    public void setTestCase(AbstractMyFacesRequestTestCase testCase)
+    {
+        this.testCase = testCase;
     }
 }
