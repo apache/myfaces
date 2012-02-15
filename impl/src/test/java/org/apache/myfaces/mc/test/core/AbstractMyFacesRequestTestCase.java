@@ -55,6 +55,10 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
     {
         tearDownRequest();
         session = null;
+        if (client != null)
+        {
+            client.setTestCase(null);
+        }
         client = null;
         super.tearDown();
     }
@@ -107,7 +111,7 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
     
     protected MockMyFacesClient createClient()
     {
-        return new MockMyFacesClient(facesContext);
+        return new MockMyFacesClient(facesContext, this);
     }
     
     protected void tearDownRequest()
@@ -207,13 +211,16 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
      */
     protected void submit(UIComponent component) throws Exception
     {
+        client.submit(component);
+        /*
         processRemainingPhases();
         client.submit((UICommand)component);
         String viewId = facesContext.getViewRoot().getViewId();
         tearDownRequest();
         setupRequest(viewId);
+        */
     }
-
+    
     protected MockMyFacesClient client = null;
     
     // Servlet objects 
