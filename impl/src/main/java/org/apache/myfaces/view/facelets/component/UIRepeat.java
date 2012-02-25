@@ -37,7 +37,6 @@ import javax.faces.component.EditableValueHolder;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIData;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
@@ -264,7 +263,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
 
         StringBuilder bld = _getBuffer(); //SharedStringBuilder(context);
-        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(index).toString();        
+        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(index).toString();
     }
     
     private RepeatStatus _getRepeatStatus()
@@ -340,8 +339,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
      * Overwrite the state of the child components of this component with data previously saved by method
      * saveDescendantComponentStates.
      * <p>
-     * The saved state info only covers those fields that are expected to vary between rows of a table. Other fields are
-     * not modified.
+     * The saved state info only covers those fields that are expected to vary between rows of a table. 
+     * Other fields are not modified.
      */
     @SuppressWarnings("unchecked")
     private void restoreDescendantComponentStates(UIComponent parent, boolean iterateFacets, Object state,
