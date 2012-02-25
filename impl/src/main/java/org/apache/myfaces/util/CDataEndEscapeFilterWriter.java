@@ -64,8 +64,8 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
             char c = cbuf[off+i];
             if (c1 == ']' && c2 == ']' && c == '>')
             {
-                super.write(cbuf, index, i+1);
-                index = i+1;
+                super.write(cbuf, index, i+1 - ( index - off ) ); 
+                index = off+i+1;
                 out.write("<![CDATA[]]]]><![CDATA[>");
             }
             c1 = c2;
@@ -87,8 +87,8 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
             char c = str.charAt(off+i);
             if (c1 == ']' && c2 == ']' && c == '>')
             {
-                super.write(str, index, i+1);
-                index = i+1;
+                super.write(str, index, i+1 - ( index - off ) );
+                index = off+i+1;
                 out.write("<![CDATA[]]]]><![CDATA[>");
             }
             c1 = c2;
