@@ -20,6 +20,7 @@ package org.apache.myfaces.config.annotation;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
@@ -43,7 +44,8 @@ public abstract class LifecycleProviderFactory
     
     public static LifecycleProviderFactory getLifecycleProviderFactory(ExternalContext ctx)
     {
-        LifecycleProviderFactory instance = (LifecycleProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+        Map<String, Object> applicationMap = ctx.getApplicationMap();
+        LifecycleProviderFactory instance = (LifecycleProviderFactory) applicationMap.get(FACTORY_KEY);
         if (instance != null)
         {
             return instance;
@@ -74,6 +76,10 @@ public abstract class LifecycleProviderFactory
         catch (PrivilegedActionException pae)
         {
             throw new FacesException(pae);
+        }
+        if (lpf != null)
+        {
+            applicationMap.put(FACTORY_KEY, lpf);
         }
         return lpf;
     }
