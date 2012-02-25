@@ -25,7 +25,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 
-public abstract class LifecycleProviderFactory {
+public abstract class LifecycleProviderFactory
+{
     protected static final String FACTORY_DEFAULT = DefaultLifecycleProviderFactory.class.getName();
 
     private static final String FACTORY_KEY = LifecycleProviderFactory.class.getName();
@@ -38,16 +39,23 @@ public abstract class LifecycleProviderFactory {
     
     public static LifecycleProviderFactory getLifecycleProviderFactory(ExternalContext ctx)
     {
-        LifecycleProviderFactory instance = (LifecycleProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+        Map<String, Object> applicationMap = ctx.getApplicationMap();
+        LifecycleProviderFactory instance = (LifecycleProviderFactory) applicationMap.get(FACTORY_KEY);
         if (instance != null)
         {
             return instance;
         }
-        return (LifecycleProviderFactory) DiscoverSingleton.find(LifecycleProviderFactory.class, FACTORY_DEFAULT);
+        LifecycleProviderFactory lpf = (LifecycleProviderFactory) DiscoverSingleton.find(LifecycleProviderFactory.class, FACTORY_DEFAULT);
+        if (lpf != null)
+        {
+            applicationMap.put(FACTORY_KEY, lpf);
+        }
+        return lpf;
     }
 
 
-    public static void setLifecycleProviderFactory(LifecycleProviderFactory instance) {
+    public static void setLifecycleProviderFactory(LifecycleProviderFactory instance)
+    {
         FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put(FACTORY_KEY, instance);
     }
 
