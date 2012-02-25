@@ -20,6 +20,7 @@ package org.apache.myfaces.config.annotation;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
@@ -28,7 +29,9 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 
-public abstract class LifecycleProviderFactory {
+
+public abstract class LifecycleProviderFactory
+{
     protected static final String FACTORY_DEFAULT = DefaultLifecycleProviderFactory.class.getName();
 
     private static final String FACTORY_KEY = LifecycleProviderFactory.class.getName();
@@ -41,7 +44,8 @@ public abstract class LifecycleProviderFactory {
     
     public static LifecycleProviderFactory getLifecycleProviderFactory(ExternalContext ctx)
     {
-        LifecycleProviderFactory instance = (LifecycleProviderFactory) ctx.getApplicationMap().get(FACTORY_KEY);
+        Map<String, Object> applicationMap = ctx.getApplicationMap();
+        LifecycleProviderFactory instance = (LifecycleProviderFactory) applicationMap.get(FACTORY_KEY);
         if (instance != null)
         {
             return instance;
@@ -53,7 +57,8 @@ public abstract class LifecycleProviderFactory {
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx; 
-                lpf = (LifecycleProviderFactory) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
+                lpf = (LifecycleProviderFactory)
+                        AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
                         {
                             public Object run() throws PrivilegedActionException
                             {
@@ -72,11 +77,16 @@ public abstract class LifecycleProviderFactory {
         {
             throw new FacesException(pae);
         }
+        if (lpf != null)
+        {
+            applicationMap.put(FACTORY_KEY, lpf);
+        }
         return lpf;
     }
 
 
-    public static void setLifecycleProviderFactory(LifecycleProviderFactory instance) {
+    public static void setLifecycleProviderFactory(LifecycleProviderFactory instance)
+    {
         FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().put(FACTORY_KEY, instance);
     }
 
