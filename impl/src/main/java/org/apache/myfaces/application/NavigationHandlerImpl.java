@@ -120,7 +120,7 @@ public class NavigationHandlerImpl
                 
                 //Clear ViewMap if we are redirecting to other resource
                 UIViewRoot viewRoot = facesContext.getViewRoot(); 
-                if (viewRoot != null && !viewRoot.getViewId().equals(toViewId))
+                if (viewRoot != null && !toViewId.equals(viewRoot.getViewId()))
                 {
                     //call getViewMap(false) to prevent unnecessary map creation
                     Map<String, Object> viewMap = viewRoot.getViewMap(false);
