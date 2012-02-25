@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.component;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +37,6 @@ import javax.faces.component.EditableValueHolder;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIData;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
@@ -57,7 +57,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- * TODO: PartialStateSaving and pluginize this component! 
+ *  
  */
 @JSFComponent(name="ui:repeat", defaultRendererType="facelets.ui.Repeat")
 public class UIRepeat extends UIComponentBase implements NamingContainer
@@ -69,34 +69,35 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
     private final static DataModel<?> EMPTY_MODEL = new ListDataModel<Object>(Collections.emptyList());
-
-    private final static SavedState NULL_STATE = new SavedState();
-
-    private Map<String, SavedState> _childState;
-
-    // our data
-    private Object _value;
-
-    // variables
-    private String _var;
     
+    private static final Class<Object[]> OBJECT_ARRAY_CLASS = Object[].class;
+
+    private static final Object[] LEAF_NO_STATE = new Object[]{null,null};
+    
+    private Object _initialDescendantComponentState = null;
+
+    // Holds for each row the states of the child components of this UIData.
+    // Note that only "partial" component state is saved: the component fields
+    // that are expected to vary between rows.
+    private Map<String, Collection<Object[]>> _rowStates = new HashMap<String, Collection<Object[]>>();
+    
+    /**
+     * Handle case where this table is nested inside another table. See method getDataModel for more details.
+     * <p>
+     * Key: parentClientId (aka rowId when nested within a parent table) Value: DataModel
+     */
+    private Map<String, DataModel> _dataModelMap = new HashMap<String, DataModel>();
+    
+    // will be set to false if the data should not be refreshed at the beginning of the encode phase
+    private boolean _isValidChilds = true;
+
     private int _end = -1;
     
     private int _count;
     
     private int _index = -1;
 
-    // scoping
-    private int _offset = -1;
-
-    private int _size = -1;
-    
-    private int _step = -1;
-    
-    private String _varStatus;
-    
-    private transient StringBuffer _buffer;
-    private transient DataModel<?> _model;
+    private transient StringBuilder _clientIdBuffer;
     private transient Object _origValue;
     private transient Object _origVarStatus;
 
@@ -115,171 +116,153 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @JSFProperty
     public int getOffset()
     {
-        if (_offset != -1)
-        {
-            return _offset;
-        }
-        
-        ValueExpression ve = getValueExpression("offset");
-        if (ve != null)
-        {
-            return ((Integer)ve.getValue(getFacesContext().getELContext())).intValue();
-        }
-        
-        return 0;
+        return (Integer) getStateHelper().eval(PropertyKeys.offset, 0);
     }
 
     public void setOffset(int offset)
     {
-        _offset = offset;
+        getStateHelper().put(PropertyKeys.offset, offset );
     }
     
     @JSFProperty
     public int getSize()
     {
-        if (_size != -1)
-        {
-            return _size;
-        }
-        
-        ValueExpression ve = getValueExpression("size");
-        if (ve != null)
-        {
-            return ((Integer)ve.getValue(getFacesContext().getELContext())).intValue();
-        }
-        
-        return -1;
+        return (Integer) getStateHelper().eval(PropertyKeys.size, -1);
     }
 
     public void setSize(int size)
     {
-        _size = size;
+        getStateHelper().put(PropertyKeys.size, size );
     }
     
     @JSFProperty
     public int getStep()
     {
-        if (_step != -1)
-        {
-            return _step;
-        }
-        
-        ValueExpression ve = getValueExpression("step");
-        if (ve != null)
-        {
-            return ((Integer)ve.getValue(getFacesContext().getELContext())).intValue();
-        }
-        
-        return 1;
+        return (Integer) getStateHelper().eval(PropertyKeys.step, 1);
     }
 
     public void setStep(int step)
     {
-        _step = step;
+        getStateHelper().put(PropertyKeys.step, step );
     }
     
-    @JSFProperty
+    @JSFProperty(literalOnly=true)
     public String getVar()
     {
-        return _var;
+        return (String) getStateHelper().get(PropertyKeys.var);
     }
 
     public void setVar(String var)
     {
-        _var = var;
+        getStateHelper().put(PropertyKeys.var, var );
     }
     
-    @JSFProperty
+    @JSFProperty(literalOnly=true)
     public String getVarStatus ()
     {
-        return _varStatus;
+        return (String) getStateHelper().get(PropertyKeys.varStatus);
     }
     
     public void setVarStatus (String varStatus)
     {
-        _varStatus = varStatus;
+        getStateHelper().put(PropertyKeys.varStatus, varStatus );
     }
     
-    private synchronized void setDataModel(DataModel<?> model)
+    protected DataModel getDataModel()
     {
-        _model = model;
-    }
+        DataModel dataModel;
+        String clientID = "";
 
-    @SuppressWarnings("unchecked")
-    private synchronized DataModel<?> getDataModel()
-    {
-        if (_model == null)
+        UIComponent parent = getParent();
+        if (parent != null)
         {
-            Object val = getValue();
-            if (val == null)
-            {
-                _model = EMPTY_MODEL;
-            }
-            else if (val instanceof DataModel)
-            {
-                _model = (DataModel<?>) val;
-            }
-            else if (val instanceof List)
-            {
-                _model = new ListDataModel<Object>((List<Object>) val);
-            }
-            else if (Object[].class.isAssignableFrom(val.getClass()))
-            {
-                _model = new ArrayDataModel<Object>((Object[]) val);
-            }
-            else if (val instanceof ResultSet)
-            {
-                _model = new ResultSetDataModel((ResultSet) val);
-            }
-            else
-            {
-                _model = new ScalarDataModel(val);
-            }
+            clientID = parent.getContainerClientId(getFacesContext());
         }
-        return _model;
+        dataModel = _dataModelMap.get(clientID);
+        if (dataModel == null)
+        {
+            dataModel = createDataModel();
+            _dataModelMap.put(clientID, dataModel);
+        }
+        return dataModel;
+    }
+    
+    private DataModel createDataModel()
+    {
+        Object value = getValue();
+
+        if (value == null)
+        {
+            return EMPTY_MODEL;
+        }
+        else if (value instanceof DataModel)
+        {
+            return (DataModel) value;
+        }
+        else if (value instanceof List)
+        {
+            return new ListDataModel((List<?>) value);
+        }
+        else if (OBJECT_ARRAY_CLASS.isAssignableFrom(value.getClass()))
+        {
+            return new ArrayDataModel((Object[]) value);
+        }
+        else if (value instanceof ResultSet)
+        {
+            return new ResultSetDataModel((ResultSet) value);
+        }
+        else
+        {
+            return new ScalarDataModel(value);
+        }
+    }
+    
+    @Override
+    public void setValueExpression(String name, ValueExpression binding)
+    {
+        if (name == null)
+        {
+            throw new NullPointerException("name");
+        }
+        else if (name.equals("value"))
+        {
+            _dataModelMap.clear();
+        }
+        else if (name.equals("rowIndex"))
+        {
+            throw new IllegalArgumentException("name " + name);
+        }
+        super.setValueExpression(name, binding);
     }
     
     @JSFProperty
     public Object getValue()
     {
-        if (_value == null)
-        {
-            ValueExpression ve = getValueExpression("value");
-            if (ve != null)
-            {
-                return ve.getValue(getFacesContext().getELContext());
-            }
-        }
-        
-        return _value;
+        return  getStateHelper().eval(PropertyKeys.value);
     }
 
     public void setValue(Object value)
     {
-        _value = value;
+        getStateHelper().put(PropertyKeys.value, value);
+        _dataModelMap.clear();
+        _rowStates.clear();
+        _isValidChilds = true;
     }
 
-    /*
     @Override
-    public String getClientId(FacesContext faces)
+    public String getContainerClientId(FacesContext context)
     {
-        String id = super.getClientId(faces);
-        if (_index >= 0)
+        //MYFACES-2744 UIData.getClientId() should not append rowIndex, instead use UIData.getContainerClientId()
+        String clientId = super.getContainerClientId(context);
+        
+        int index = getIndex();
+        if (index == -1)
         {
-            id = _getBuffer().append(id).append(UINamingContainer.getSeparatorChar(faces)).append(_index).toString();
+            return clientId;
         }
-        return id;
-    }*/
-    
-    @Override
-    public String getContainerClientId(FacesContext faces)
-    {
-        String id = super.getContainerClientId(faces);
-        if (_index >= 0)
-        {
-            id = _getBuffer().append(id).append(UINamingContainer.getSeparatorChar(faces)).append(_index).toString();
-        }
-        return id;
+
+        StringBuilder bld = _getBuffer(); //SharedStringBuilder(context);
+        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(index).toString();        
     }
     
     private RepeatStatus _getRepeatStatus()
@@ -290,36 +273,28 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     private void _captureScopeValues()
     {
-        if (_var != null)
+        String var = getVar();
+        if (var != null)
         {
-            _origValue = getFacesContext().getExternalContext().getRequestMap().get(_var);
+            _origValue = getFacesContext().getExternalContext().getRequestMap().get(var);
         }
-        if (_varStatus != null)
+        String varStatus = getVarStatus();
+        if (varStatus != null)
         {
-            _origVarStatus = getFacesContext().getExternalContext().getRequestMap().get(_varStatus);
+            _origVarStatus = getFacesContext().getExternalContext().getRequestMap().get(varStatus);
         }
     }
     
-    private StringBuffer _getBuffer()
+    private StringBuilder _getBuffer()
     {
-        if (_buffer == null)
+        if (_clientIdBuffer == null)
         {
-            _buffer = new StringBuffer();
+            _clientIdBuffer = new StringBuilder();
         }
         
-        _buffer.setLength(0);
+        _clientIdBuffer.setLength(0);
         
-        return _buffer;
-    }
-
-    private Map<String, SavedState> _getChildState()
-    {
-        if (_childState == null)
-        {
-            _childState = new HashMap<String, SavedState>();
-        }
-        
-        return _childState;
+        return _clientIdBuffer;
     }
 
     private boolean _isIndexAvailable()
@@ -327,176 +302,371 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         return getDataModel().isRowAvailable();
     }
 
-    private boolean _isNestedInIterator()
-    {
-        UIComponent parent = getParent();
-        while (parent != null)
-        {
-            if (parent instanceof UIData || parent instanceof UIRepeat)
-            {
-                return true;
-            }
-            parent = parent.getParent();
-        }
-        return false;
-    }
-
-    private boolean _keepSaved(FacesContext context)
-    {
-        for (String clientId : _getChildState().keySet())
-        {
-            // Perf: messages are instances of arrayList (or Collections.emptyList): see Method org.apache.myfaces.context.servlet.FacesContextImpl.addMessage(String, FacesMessage)
-            List<FacesMessage> messageList = context.getMessageList(clientId);
-            for (int i = 0, size = messageList.size(); i < size; i++)
-            {
-                FacesMessage message = messageList.get(i);
-                if (message.getSeverity().compareTo(FacesMessage.SEVERITY_ERROR) >= 0)
-                {
-                    return true;
-                }
-            }
-        }
-        
-        return _isNestedInIterator();
-    }
-
-    private void _resetDataModel()
-    {
-        if (_isNestedInIterator())
-        {
-            setDataModel(null);
-        }
-    }
-
     private void _restoreScopeValues()
     {
-        if (_var != null)
+        String var = getVar();
+        if (var != null)
         {
             Map<String, Object> attrs = getFacesContext().getExternalContext().getRequestMap();
             if (_origValue != null)
             {
-                attrs.put(_var, _origValue);
+                attrs.put(var, _origValue);
                 _origValue = null;
             }
             else
             {
-                attrs.remove(_var);
+                attrs.remove(var);
             }
         }
-        if (_varStatus != null)
+        String varStatus = getVarStatus();
+        if (getVarStatus() != null)
         {
             Map<String, Object> attrs = getFacesContext().getExternalContext().getRequestMap();
             if (_origVarStatus != null)
             {
-                attrs.put(_varStatus, _origVarStatus);
+                attrs.put(varStatus, _origVarStatus);
                 _origVarStatus = null;
             }
             else
             {
-                attrs.remove(_varStatus);
+                attrs.remove(varStatus);
             }
         }
     }
     
-    private void _restoreChildState()
+    /**
+     * Overwrite the state of the child components of this component with data previously saved by method
+     * saveDescendantComponentStates.
+     * <p>
+     * The saved state info only covers those fields that are expected to vary between rows of a table. Other fields are
+     * not modified.
+     */
+    @SuppressWarnings("unchecked")
+    private void restoreDescendantComponentStates(UIComponent parent, boolean iterateFacets, Object state,
+                                                  boolean restoreChildFacets)
     {
-        if (getChildCount() > 0)
+        int descendantStateIndex = -1;
+        List<? extends Object[]> stateCollection = null;
+        
+        if (iterateFacets && parent.getFacetCount() > 0)
         {
-            FacesContext context = getFacesContext();
-            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-            {
-                UIComponent child = getChildren().get(i);
-                _restoreChildState(context, child);
-            }
-        }
-    }
-
-    private void _restoreChildState(FacesContext faces, UIComponent c)
-    {
-        // reset id
-        String id = c.getId();
-        c.setId(id);
-
-        // hack
-        if (c instanceof EditableValueHolder)
-        {
-            EditableValueHolder evh = (EditableValueHolder) c;
-            String clientId = c.getClientId(faces);
-            SavedState ss = _getChildState().get(clientId);
-            if (ss != null)
-            {
-                ss.apply(evh);
-            }
-            else
-            {
-                NULL_STATE.apply(evh);
-            }
-        }
-
-        // continue hack
-        if (c.getFacetCount() > 0)
-        {
-            for (UIComponent facet : c.getFacets().values())
-            {
-                _restoreChildState(faces, facet);
-            }
-        }
-        int childCount = c.getChildCount();
-        if (childCount > 0)
-        {
-            for (int i = 0; i < childCount; i++)
-            {
-                UIComponent child = c.getChildren().get(i);
-                _restoreChildState(faces, child);
-            }
-        }
-    }
-
-    private void _saveChildState()
-    {
-        if (getChildCount() > 0)
-        {
-            FacesContext context = getFacesContext();
-            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-            {
-                UIComponent child = getChildren().get(i);
-                _saveChildState(context, child);
-            }
-        }
-    }
-
-    private void _saveChildState(FacesContext faces, UIComponent c)
-    {
-        if (c instanceof EditableValueHolder && !c.isTransient())
-        {
-            String clientId = c.getClientId(faces);
-            SavedState ss = (SavedState) _getChildState().get(clientId);
-            if (ss == null)
-            {
-                ss = new SavedState();
-                _getChildState().put(clientId, ss);
-            }
+            Iterator<UIComponent> childIterator = parent.getFacets().values().iterator();
             
-            ss.populate((EditableValueHolder) c);
-        }
+            while (childIterator.hasNext())
+            {
+                UIComponent component = childIterator.next();
 
-        // continue hack
-        if (c.getFacetCount() > 0)
-        {
-            for (UIComponent facet : c.getFacets().values())
-            {
-                _saveChildState(faces, facet);
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
+                {
+                    if (descendantStateIndex == -1)
+                    {
+                        stateCollection = ((List<? extends Object[]>) state);
+                        descendantStateIndex = stateCollection.isEmpty() ? -1 : 0;
+                    }
+                    
+                    if (descendantStateIndex != -1 && descendantStateIndex < stateCollection.size())
+                    {
+                        Object[] object = stateCollection.get(descendantStateIndex);
+                        if (object[0] != null && component instanceof EditableValueHolder)
+                        {
+                            ((SavedState) object[0]).restoreState((EditableValueHolder) component);
+                        }
+                        // If there is descendant state to restore, call it recursively, otherwise
+                        // it is safe to skip iteration.
+                        if (object[1] != null)
+                        {
+                            restoreDescendantComponentStates(component, restoreChildFacets, object[1], true);
+                        }
+                        else
+                        {
+                            restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                        }
+                    }
+                    else
+                    {
+                        restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                    }
+                    descendantStateIndex++;
+                }
             }
         }
-        int childCount = c.getChildCount();
-        if (childCount > 0)
+        
+        if (parent.getChildCount() > 0)
         {
-            for (int i = 0; i < childCount; i++)
+            for (int i = 0; i < parent.getChildCount(); i++)
             {
-                UIComponent child = c.getChildren().get(i);
-                _saveChildState(faces, child);
+                UIComponent component = parent.getChildren().get(i);
+
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
+                {
+                    if (descendantStateIndex == -1)
+                    {
+                        stateCollection = ((List<? extends Object[]>) state);
+                        descendantStateIndex = stateCollection.isEmpty() ? -1 : 0;
+                    }
+                    
+                    if (descendantStateIndex != -1 && descendantStateIndex < stateCollection.size())
+                    {
+                        Object[] object = stateCollection.get(descendantStateIndex);
+                        if (object[0] != null && component instanceof EditableValueHolder)
+                        {
+                            ((SavedState) object[0]).restoreState((EditableValueHolder) component);
+                        }
+                        // If there is descendant state to restore, call it recursively, otherwise
+                        // it is safe to skip iteration.
+                        if (object[1] != null)
+                        {
+                            restoreDescendantComponentStates(component, restoreChildFacets, object[1], true);
+                        }
+                        else
+                        {
+                            restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                        }
+                    }
+                    else
+                    {
+                        restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                    }
+                    descendantStateIndex++;
+                }
             }
         }
+    }
+
+    /**
+     * Just call component.setId(component.getId()) to reset all client ids and 
+     * ensure they will be calculated for the current row, but do not waste time
+     * dealing with row state code.
+     * 
+     * @param parent
+     * @param iterateFacets
+     * @param restoreChildFacets 
+     */
+    private void restoreDescendantComponentWithoutRestoreState(UIComponent parent, boolean iterateFacets,
+                                                               boolean restoreChildFacets)
+    {
+        if (iterateFacets && parent.getFacetCount() > 0)
+        {
+            Iterator<UIComponent> childIterator = parent.getFacets().values().iterator();
+            
+            while (childIterator.hasNext())
+            {
+                UIComponent component = childIterator.next();
+
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
+                {
+                    restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                }
+            }
+        }
+        
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0; i < parent.getChildCount(); i++)
+            {
+                UIComponent component = parent.getChildren().get(i);
+
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+                if (!component.isTransient())
+                {
+                    restoreDescendantComponentWithoutRestoreState(component, restoreChildFacets, true);
+                }
+            }
+        }
+    }
+
+    /**
+     * Walk the tree of child components of this UIData, saving the parts of their state that can vary between rows.
+     * <p>
+     * This is very similar to the process that occurs for normal components when the view is serialized. Transient
+     * components are skipped (no state is saved for them).
+     * <p>
+     * If there are no children then null is returned. If there are one or more children, and all children are transient
+     * then an empty collection is returned; this will happen whenever a table contains only read-only components.
+     * <p>
+     * Otherwise a collection is returned which contains an object for every non-transient child component; that object
+     * may itself contain a collection of the state of that child's child components.
+     */
+    private Collection<Object[]> saveDescendantComponentStates(UIComponent parent, boolean iterateFacets,
+                                                               boolean saveChildFacets)
+    {
+        Collection<Object[]> childStates = null;
+        // Index to indicate how many components has been passed without state to save.
+        int childEmptyIndex = 0;
+        int totalChildCount = 0;
+                
+        if (iterateFacets && parent.getFacetCount() > 0)
+        {
+            Iterator<UIComponent> childIterator = parent.getFacets().values().iterator();
+
+            while (childIterator.hasNext())
+            {
+                UIComponent child = childIterator.next();
+                if (!child.isTransient())
+                {
+                    // Add an entry to the collection, being an array of two
+                    // elements. The first element is the state of the children
+                    // of this component; the second is the state of the current
+                    // child itself.
+
+                    if (child instanceof EditableValueHolder)
+                    {
+                        if (childStates == null)
+                        {
+                            childStates = new ArrayList<Object[]>(
+                                    parent.getFacetCount()
+                                    + parent.getChildCount()
+                                    - totalChildCount
+                                    + childEmptyIndex);
+                            for (int ci = 0; ci < childEmptyIndex; ci++)
+                            {
+                                childStates.add(LEAF_NO_STATE);
+                            }
+                        }
+                    
+                        childStates.add(child.getChildCount() > 0 ? 
+                                new Object[]{new SavedState((EditableValueHolder) child),
+                                    saveDescendantComponentStates(child, saveChildFacets, true)} :
+                                new Object[]{new SavedState((EditableValueHolder) child),
+                                    null});
+                    }
+                    else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
+                    {
+                        Object descendantSavedState = saveDescendantComponentStates(child, saveChildFacets, true);
+                        
+                        if (descendantSavedState == null)
+                        {
+                            if (childStates == null)
+                            {
+                                childEmptyIndex++;
+                            }
+                            else
+                            {
+                                childStates.add(LEAF_NO_STATE);
+                            }
+                        }
+                        else
+                        {
+                            if (childStates == null)
+                            {
+                                childStates = new ArrayList<Object[]>(
+                                        parent.getFacetCount()
+                                        + parent.getChildCount()
+                                        - totalChildCount
+                                        + childEmptyIndex);
+                                for (int ci = 0; ci < childEmptyIndex; ci++)
+                                {
+                                    childStates.add(LEAF_NO_STATE);
+                                }
+                            }
+                            childStates.add(new Object[]{null, descendantSavedState});
+                        }
+                    }
+                    else
+                    {
+                        if (childStates == null)
+                        {
+                            childEmptyIndex++;
+                        }
+                        else
+                        {
+                            childStates.add(LEAF_NO_STATE);
+                        }
+                    }
+                }
+                totalChildCount++;
+            }
+        }
+        
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0; i < parent.getChildCount(); i++)
+            {
+                UIComponent child = parent.getChildren().get(i);
+                if (!child.isTransient())
+                {
+                    // Add an entry to the collection, being an array of two
+                    // elements. The first element is the state of the children
+                    // of this component; the second is the state of the current
+                    // child itself.
+
+                    if (child instanceof EditableValueHolder)
+                    {
+                        if (childStates == null)
+                        {
+                            childStates = new ArrayList<Object[]>(
+                                    parent.getFacetCount()
+                                    + parent.getChildCount()
+                                    - totalChildCount
+                                    + childEmptyIndex);
+                            for (int ci = 0; ci < childEmptyIndex; ci++)
+                            {
+                                childStates.add(LEAF_NO_STATE);
+                            }
+                        }
+                    
+                        childStates.add(child.getChildCount() > 0 ? 
+                                new Object[]{new SavedState((EditableValueHolder) child),
+                                    saveDescendantComponentStates(child, saveChildFacets, true)} :
+                                new Object[]{new SavedState((EditableValueHolder) child),
+                                    null});
+                    }
+                    else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
+                    {
+                        Object descendantSavedState = saveDescendantComponentStates(child, saveChildFacets, true);
+                        
+                        if (descendantSavedState == null)
+                        {
+                            if (childStates == null)
+                            {
+                                childEmptyIndex++;
+                            }
+                            else
+                            {
+                                childStates.add(LEAF_NO_STATE);
+                            }
+                        }
+                        else
+                        {
+                            if (childStates == null)
+                            {
+                                childStates = new ArrayList<Object[]>(
+                                        parent.getFacetCount()
+                                        + parent.getChildCount()
+                                        - totalChildCount
+                                        + childEmptyIndex);
+                                for (int ci = 0; ci < childEmptyIndex; ci++)
+                                {
+                                    childStates.add(LEAF_NO_STATE);
+                                }
+                            }
+                            childStates.add(new Object[]{null, descendantSavedState});
+                        }
+                    }
+                    else
+                    {
+                        if (childStates == null)
+                        {
+                            childEmptyIndex++;
+                        }
+                        else
+                        {
+                            childStates.add(LEAF_NO_STATE);
+                        }
+                    }
+                }
+                totalChildCount++;
+            }
+        }
+        
+        return childStates;
     }
     
     /**
@@ -519,7 +689,48 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private void _setIndex(int index)
     {
         // save child state
-        _saveChildState();
+        //_saveChildState();
+        if (index < -1)
+        {
+            throw new IllegalArgumentException("rowIndex is less than -1");
+        }
+
+        if (_index == index)
+        {
+            return;
+        }
+
+        FacesContext facesContext = getFacesContext();
+
+        if (_index == -1)
+        {
+            if (_initialDescendantComponentState == null)
+            {
+                // Create a template that can be used to initialise any row
+                // that we haven't visited before, ie a "saved state" that can
+                // be pushed to the "restoreState" method of all the child
+                // components to set them up to represent a clean row.
+                _initialDescendantComponentState = saveDescendantComponentStates(this, true, true);
+            }
+        }
+        else
+        {
+            // If no initial component state, there are no EditableValueHolder instances,
+            // and that means there is no state to be saved for the current row, so we can
+            // skip row state saving code safely.
+            if (_initialDescendantComponentState != null)
+            {
+                // We are currently positioned on some row, and are about to
+                // move off it, so save the (partial) state of the components
+                // representing the current row. Later if this row is revisited
+                // then we can restore this state.
+                Collection<Object[]> savedRowState = saveDescendantComponentStates(this, false, false);
+                if (savedRowState != null)
+                {
+                    _rowStates.put(getContainerClientId(facesContext), savedRowState);
+                }
+            }
+        }
 
         _index = index;
         
@@ -528,20 +739,63 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
         if (_index != -1)
         {
-            if (_var != null && localModel.isRowAvailable())
+            String var = getVar();
+            if (var != null && localModel.isRowAvailable())
             {
                 getFacesContext().getExternalContext().getRequestMap()
-                        .put(_var, localModel.getRowData());
+                        .put(var, localModel.getRowData());
             }
-            if (_varStatus != null)
+            String varStatus = getVarStatus();
+            if (varStatus != null)
             {
                 getFacesContext().getExternalContext().getRequestMap()
-                        .put(_varStatus, _getRepeatStatus());
+                        .put(varStatus, _getRepeatStatus());
             }
         }
 
         // restore child state
-        _restoreChildState();
+        //_restoreChildState();
+        
+        if (_index == -1)
+        {
+            // reset components to initial state
+            // If no initial state, skip row restore state code
+            if (_initialDescendantComponentState != null)
+            {
+                restoreDescendantComponentStates(this, true, _initialDescendantComponentState, true);
+            }
+            else
+            {
+                restoreDescendantComponentWithoutRestoreState(this, true, true);
+            }
+        }
+        else
+        {
+            Object rowState = _rowStates.get(getContainerClientId(facesContext));
+            if (rowState == null)
+            {
+                // We haven't been positioned on this row before, so just
+                // configure the child components of this component with
+                // the standard "initial" state
+                // If no initial state, skip row restore state code
+                if (_initialDescendantComponentState != null)
+                {
+                    restoreDescendantComponentStates(this, true, _initialDescendantComponentState, true);
+                }
+                else
+                {
+                    restoreDescendantComponentWithoutRestoreState(this, true, true);
+                }
+            }
+            else
+            {
+                // We have been positioned on this row before, so configure
+                // the child components of this component with the (partial)
+                // state that was previously saved. Fields not in the
+                // partial saved state are left with their original values.
+                restoreDescendantComponentStates(this, true, rowState, true);
+            }
+        }
     }
     
     /**
@@ -591,7 +845,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
         if (step == -1)
         {
-            step = 1;
+            setStep(1);
         }
 
         if (step < 0)
@@ -607,7 +861,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
 
         _end = size;
-        _step = step;
+        //_step = step;
     }
 
     public void process(FacesContext faces, PhaseId phase)
@@ -621,9 +875,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         // validate attributes
         _validateAttributes();
         
-        // clear datamodel
-        _resetDataModel();
-
         // reset index
         _captureScopeValues();
         _setIndex(-1);
@@ -873,9 +1124,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         // validate attributes
         _validateAttributes();
         
-        // clear datamodel
-        _resetDataModel();
-
         // reset index and save scope values
         _captureScopeValues();
         _setIndex(-1);
@@ -967,12 +1215,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             return;
         }
         
-        setDataModel(null);
-        if (!_keepSaved(faces))
-        {
-            _childState = null;
-        }
-        
         process(faces, PhaseId.APPLY_REQUEST_VALUES);
         decode(faces);
     }
@@ -985,8 +1227,12 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             return;
         }
         
-        _resetDataModel();
         process(faces, PhaseId.UPDATE_MODEL_VALUES);
+        
+        if (faces.getRenderResponse())
+        {
+            _isValidChilds = false;
+        }
     }
 
     @Override
@@ -997,8 +1243,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             return;
         }
         
-        _resetDataModel();
         process(faces, PhaseId.PROCESS_VALIDATIONS);
+        
+        // check if an validation error forces the render response for our data
+        if (faces.getRenderResponse())
+        {
+            _isValidChilds = false;
+        }
     }
 
     // from RI
@@ -1010,6 +1261,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         private Object _value;
 
         private static final long serialVersionUID = 2920252657338389849L;
+        
+        public SavedState(EditableValueHolder evh)
+        {
+            _value = evh.getLocalValue();
+            _localValueSet = evh.isLocalValueSet();
+            _valid = evh.isValid();
+            _submittedValue = evh.getSubmittedValue();
+        }        
 
         Object getSubmittedValue()
         {
@@ -1055,6 +1314,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         public String toString()
         {
             return ("submittedValue: " + _submittedValue + " value: " + _value + " localValueSet: " + _localValueSet);
+        }
+        
+        public void restoreState(EditableValueHolder evh)
+        {
+            evh.setValue(_value);
+            evh.setValid(_valid);
+            evh.setSubmittedValue(_submittedValue);
+            evh.setLocalValueSet(_localValueSet);
         }
 
         public void populate(EditableValueHolder evh)
@@ -1153,7 +1420,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (event instanceof IndexedEvent)
         {
             IndexedEvent idxEvent = (IndexedEvent) event;
-            _resetDataModel();
             
             // safe the current index, count aside
             final int prevIndex = _index;
@@ -1223,32 +1489,89 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         super.queueEvent(new IndexedEvent(this, event, _index));
     }
 
+    // -=Leonardo Uribe=- At the moment I haven't found any use case that
+    // require to store the rowStates in the component state, mostly
+    // because EditableValueHolder instances render the value into the
+    // client and then this value are taken back at the beginning of the
+    // next request. So, I just let this code in comments just in case
+    // somebody founds an issue with this.  
+    /* 
     @SuppressWarnings("unchecked")
     @Override
-    public void restoreState(FacesContext faces, Object object)
+    public void restoreState(FacesContext facesContext, Object state)
     {
-        Object[] state = (Object[]) object;
-        super.restoreState(faces, state[0]);
-        _childState = (Map<String, SavedState>) state[1];
-        _offset = ((Integer) state[2]).intValue();
-        _size = ((Integer) state[3]).intValue();
-        _var = (String) state[4];
-        _value = state[5];
-        _varStatus = (String) state[6];
+        if (state == null)
+        {
+            return;
+        }
+        
+        Object[] values = (Object[])state;
+        super.restoreState(facesContext,values[0]);
+        if (values[1] == null)
+        {
+            _rowStates.clear();
+        }
+        else
+        {
+            _rowStates = (Map<String, Collection<Object[]>>) restoreAttachedState(facesContext, values[1]);
+        }
     }
 
     @Override
-    public Object saveState(FacesContext faces)
+    public Object saveState(FacesContext facesContext)
     {
-        Object[] state = new Object[7];
-        state[0] = super.saveState(faces);
-        state[1] = _childState;
-        state[2] = Integer.valueOf(_offset);
-        state[3] = Integer.valueOf(_size);
-        state[4] = _var;
-        state[5] = _value;
-        state[6] = _varStatus;
-        return state;
+        if (initialStateMarked())
+        {
+            Object parentSaved = super.saveState(facesContext);
+            if (parentSaved == null && _rowStates.isEmpty())
+            {
+                //No values
+                return null;
+            }   
+            return new Object[]{parentSaved, saveAttachedState(facesContext, _rowStates)};
+        }
+        else
+        {
+            Object[] values = new Object[2];
+            values[0] = super.saveState(facesContext);
+            values[1] = saveAttachedState(facesContext, _rowStates);
+            return values;
+        } 
+    }
+    */
+    
+    @Override
+    public void encodeBegin(FacesContext context) throws IOException
+    {
+        _initialDescendantComponentState = null;
+        if (_isValidChilds && !hasErrorMessages(context))
+        {
+            // Clear the data model so that when rendering code calls
+            // getDataModel a fresh model is fetched from the backing
+            // bean via the value-binding.
+            _dataModelMap.clear();
+
+            // When the data model is cleared it is also necessary to
+            // clear the saved row state, as there is an implicit 1:1
+            // relation between objects in the _rowStates and the
+            // corresponding DataModel element.
+            _rowStates.clear();
+        }
+        // TODO Auto-generated method stub
+        super.encodeBegin(context);
+    }
+    
+    private boolean hasErrorMessages(FacesContext context)
+    {
+        for (Iterator<FacesMessage> iter = context.getMessages(); iter.hasNext();)
+        {
+            FacesMessage message = iter.next();
+            if (FacesMessage.SEVERITY_ERROR.compareTo(message.getSeverity()) <= 0)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -1257,13 +1580,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (!isRendered())
         {
             return;
-        }
-        
-        setDataModel(null);
-        
-        if (!_keepSaved(faces))
-        {
-            _childState = null;
         }
         
         process(faces, PhaseId.RENDER_RESPONSE);
@@ -1282,5 +1598,15 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         
         return true;
+    }
+    
+    enum PropertyKeys
+    {
+         value
+        , var
+        , size
+        , varStatus
+        , offset
+        , step
     }
 }
