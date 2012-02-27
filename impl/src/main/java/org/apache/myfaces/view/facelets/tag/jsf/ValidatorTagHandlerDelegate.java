@@ -149,7 +149,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
                     try
                     {
                         mctx.pushEnclosingValidatorIdToStack(validatorId, this);
-                        _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                        _delegate.applyNextHandler(ctx, parent);
                     }
                     finally
                     {
