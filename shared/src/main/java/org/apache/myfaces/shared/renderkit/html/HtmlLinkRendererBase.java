@@ -66,7 +66,7 @@ public abstract class HtmlLinkRendererBase
     //private static final Log log = LogFactory.getLog(HtmlLinkRenderer.class);
     
     public static final String END_LINK_OUTCOME_AS_SPAN = 
-        "org.apache.myfaces.shared.HtmlLinkRendererBase.END_LINK_OUTCOME_AS_SPAN";
+        "oam.shared.HtmlLinkRendererBase.END_LINK_OUTCOME_AS_SPAN";
 
     public boolean getRendersChildren()
     {
@@ -1024,7 +1024,10 @@ public abstract class HtmlLinkRendererBase
         
         if (HtmlRendererUtils.isDisabled(output) || targetHref == null)
         {
-            output.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.TRUE);
+            //output.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.TRUE);
+            //Note one h:link cannot have a nested h:link as a child, so it is safe
+            //to just put this flag on FacesContext attribute map
+            facesContext.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.TRUE);
             writer.startElement(HTML.SPAN_ELEM, output);
             if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
                     facesContext.getExternalContext()))
@@ -1238,10 +1241,11 @@ public abstract class HtmlLinkRendererBase
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         
-        if (HtmlRendererUtils.isDisabled(component) || component.getAttributes().remove(
-                END_LINK_OUTCOME_AS_SPAN) != null)
+        if (HtmlRendererUtils.isDisabled(component) || Boolean.TRUE.equals(
+                facesContext.getAttributes().get(END_LINK_OUTCOME_AS_SPAN)))
         {
             writer.endElement(HTML.SPAN_ELEM);
+            facesContext.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.FALSE);
         }
         else
         {
