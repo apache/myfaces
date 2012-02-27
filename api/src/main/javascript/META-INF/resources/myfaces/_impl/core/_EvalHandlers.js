@@ -1,8 +1,21 @@
 /**
  * @namespace
  * @name window
- * @description supplimental window methods.
+ * @description Eval routines, depending on the browser.
+ * <p/>
+ * The problem solved in this class is the problem on how to perform
+ * a global eval on multiple browsers. Some browsers auto eval themselves
+ * they do not need to be called
+ * <li>Some work with a window.eval.call(window,... </li>
+ * <li>Others use simply execScript <li>
+ * <li>Some others work only with the head appendix method
+ * head.appendChild(&lt;script...., head.removeChild(&lt;script </li>
+ * <p/>
+ * Note: The code here already is precompressed because the compressor
+ * fails on it, the deficits in readability will be covered by more comments
+ *
  */
+
 
 if (!window.myfaces) {
     /**
@@ -51,6 +64,10 @@ if (!myfaces._impl.core._EvalHandlers) {
          * evals a script globally using exec script (ie6 fallback)
          * @param {String} code the code which has to be evaluated
          * @borrows myfaces._impl.core._Runtime as _T
+         *
+         * TODO eval if we cannot replace this method with the head appendix
+         * method which is faster for ie this also would reduce our code
+         * by a few bytes
          */
         _T._evalExecScript = function(code) {
             //execScript definitely only for IE otherwise we might have a custom
@@ -74,7 +91,7 @@ if (!myfaces._impl.core._EvalHandlers) {
          * @param {String} code the code part to be evaled
          * @borrows myfaces._impl.core._Runtime as _T
          */
-        _T._evalBBOld = function(code) {
+        _T._evalHeadAppendix = function(code) {
             //_l == location
             var _l = document.getElementsByTagName("head")[0] || document.documentElement;
             //_p == placeHolder
@@ -95,7 +112,8 @@ if (!myfaces._impl.core._EvalHandlers) {
             //fix which works in a cross browser way
             //we used to scope an anonymous function
             //but I think this is better
-            //the reason is firefox applies a wrong scope
+            //the reason is some Firefox versions
+            // apply a wrong scope
             //if we call eval by not scoping
             //_U == "undefined"
             var _U = "undefined";
@@ -124,12 +142,20 @@ if (!myfaces._impl.core._EvalHandlers) {
             var _e = "_evalType";
             var _w = window;
             var _b = myfaces._impl.core._Runtime.browser;
+            //central routine to determine the eval method
             if (!_T[_e]) {
+                //execScript supported
                 _T[_e] = _w.execScript ? "_evalExecScript" : null;
+
+                //in case of no support we go to the standard global eval  window.eval.call(window,
+                // with Firefox fixes for scoping
                 _T[_e] = _T[_e] ||(( _w.eval && (!_b.isBlackBerry ||_b.isBlackBerry >= 6)) ? "_standardGlobalEval" : null);
-                _T[_e] = _T[_e] ||((_w.eval ) ? "_evalBBOld" : null);
+
+                //this one routes into the hed appendix method
+                _T[_e] = _T[_e] ||((_w.eval ) ? "_evalHeadAppendix" : null);
             }
             if (_T[_e]) {
+                //we now execute the eval method
                 return _T[_T[_e]](c);
             }
             //we probably have covered all browsers, but this is a safety net which might be triggered

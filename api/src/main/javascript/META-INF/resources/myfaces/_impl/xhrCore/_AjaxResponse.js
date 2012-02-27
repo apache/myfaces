@@ -209,6 +209,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             this._Dom.setAttribute(viewStateField, "value", mfInternal.appliedViewState);
         } else if (!viewStateField) {
             var element = this._Dom.getDummyPlaceHolder();
+            //spec error, two elements with the same id should not be there, TODO recheck the space if the name does not suffice alone
             element.innerHTML = ["<input type='hidden'", "id='", this.P_VIEWSTATE ,"' name='", this.P_VIEWSTATE ,"' value='" , mfInternal.appliedViewState , "' />"].join("");
             //now we go to proper dom handling after having to deal with another ie screwup
             try {
@@ -328,7 +329,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
     ,
 
     /**
-     * First substep process a pending update tag
+     * First sub-step process a pending update tag
      *
      * @param request the xhr request object
      * @param context the context map

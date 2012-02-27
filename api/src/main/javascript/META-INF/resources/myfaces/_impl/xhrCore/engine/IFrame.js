@@ -101,10 +101,11 @@ _MF_CLS(_PFX_XHR+"engine.IFrame", myfaces._impl.xhrCore.engine.BaseRequest,
                 this.onloadstart(myevt);
                 this.onprogress(myevt);
 
-                var oldTarget = formData.form.target;
-                var oldMethod = formData.form.method;
-                var oldAction = formData.form.action;
-                var formDataForm = formData.form;
+                var formDataForm = formData.form,
+                    oldTarget   = formDataForm.target,
+                    oldMethod   = formDataForm.method,
+                    oldAction   = formDataForm.action;
+
                 
                 try {
                     //_t._initAjaxParams();
@@ -112,18 +113,18 @@ _MF_CLS(_PFX_XHR+"engine.IFrame", myfaces._impl.xhrCore.engine.BaseRequest,
                         formData.append(key, this._requestHeader[key]);
                     }
 
-                    formData.form.target = this._frame.name;
-                    formData.form.method = this.method;
+                    formDataForm.target = this._frame.name;
+                    formDataForm.method = this.method;
                     if (this.url) {
-                        formData.form.action = this.url;
+                        formDataForm.action = this.url;
                     }
                     this.readyState = this._XHRConst.READY_STATE_LOADING;
                     this.onreadystatechange(myevt);
-                    formData.form.submit();
+                    formDataForm.submit();
                 } finally {
-                    formData.form.action = oldAction;
-                    formData.form.target = oldTarget;
-                    formData.form.method = oldMethod;
+                    formDataForm.action = oldAction;
+                    formDataForm.target = oldTarget;
+                    formDataForm.method = oldMethod;
 
                     formData._finalize();
                 }
