@@ -611,10 +611,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
     
             //Scan facets
-            Map<String, UIComponent> facetMap = component.getFacets();
-            if (!facetMap.isEmpty())
+            if (component.getFacetCount() > 0)
             {
-                //String currentClientId = component.getClientId();
+                Map<String, UIComponent> facetMap = component.getFacets();
                 
                 for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
                 {
@@ -765,12 +764,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         else
                         {
                             String facetName = null;
-                            for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
+                            if (target.getParent().getFacetCount() > 0)
                             {
-                                if (target.equals(entry.getValue()))
+                                for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
                                 {
-                                    facetName = entry.getKey();
-                                    break;
+                                    if (target.equals(entry.getValue()))
+                                    {
+                                        facetName = entry.getKey();
+                                        break;
+                                    }
                                 }
                             }
                             states.put(target.getClientId(facesContext),new AttachedFullStateWrapper(new Object[]{
@@ -874,9 +876,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
     
             //Scan facets
-            Map<String, UIComponent> facetMap = component.getFacets();
-            if (!facetMap.isEmpty())
+            
+            if (component.getFacetCount() > 0)
             {
+                Map<String, UIComponent> facetMap = component.getFacets();
                 String currentClientId = component.getClientId();
                 
                 for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
@@ -1137,9 +1140,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
 
         //facets
-        Map<String, UIComponent> facetMap = component.getFacets();
-        if (!facetMap.isEmpty())
+        
+        if (component.getFacetCount() > 0)
         {
+            Map<String, UIComponent> facetMap = component.getFacets();
             List<Object[]> structFacetList = new ArrayList<Object[]>();
             for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
             {

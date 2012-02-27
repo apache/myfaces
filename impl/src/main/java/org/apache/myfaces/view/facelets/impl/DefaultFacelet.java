@@ -203,7 +203,7 @@ final class DefaultFacelet extends AbstractFacelet
             }
 
             // remove any facets marked as deleted
-            if (c.getFacets().size() > 0)
+            if (c.getFacetCount() > 0)
             {
                 Collection<UIComponent> col = c.getFacets().values();
                 UIComponent fc;

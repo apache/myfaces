@@ -625,13 +625,11 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         id = (id == null) ? VIEWROOT_FACELET_ID : id;
         markComponentForDeletion(id, component);
         
-        Map<String, UIComponent> facets = component.getFacets();
-        if (!facets.isEmpty())
+        
+        if (component.getFacetCount() > 0)
         {
-            for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
+            for (UIComponent fc: component.getFacets().values())
             {
-                UIComponent fc = itr.next();
-
                 id = (String) fc.getAttributes().get(ComponentSupport.MARK_CREATED);
                 if (id != null)
                 {
@@ -697,9 +695,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         }
 
         // remove any facets marked as deleted
-        Map<String, UIComponent> facets = component.getFacets();
-        if (!facets.isEmpty())
+        
+        if (component.getFacetCount() > 0)
         {
+            Map<String, UIComponent> facets = component.getFacets();
             for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
             {
                 UIComponent fc = itr.next();
