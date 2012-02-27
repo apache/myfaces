@@ -563,17 +563,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (view.getFacetCount() > 0)
         {
             Map<String, UIComponent> facetMap = view.getFacets();
-            if (!facetMap.isEmpty())
+            for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
             {
-                for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
+                UIComponent child = entry.getValue();
+                if (!child.isTransient())
                 {
-                    UIComponent child = entry.getValue();
-                    if (!child.isTransient())
-                    {
-                        _markInitialState(child);
-                    }
+                    _markInitialState(child);
                 }
             }
+
         }
     }
 
@@ -596,17 +594,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         if (component.getFacetCount() > 0)
         {
             Map<String, UIComponent> facetMap = component.getFacets();
-            if (!facetMap.isEmpty())
+            for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
             {
-                for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
+                UIComponent child = entry.getValue();
+                if (!child.isTransient())
                 {
-                    UIComponent child = entry.getValue();
-                    if (!child.isTransient())
-                    {
-                        _markInitialState(child);
-                    }
+                    _markInitialState(child);
                 }
             }
+
         }
     }
 
@@ -872,7 +868,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // In the spec javadoc this variable is referred as forAttributeValue, but
             // note it is also called curTargetName
             String forValue = currentHandler.getFor();
-
+            
             for (AttachedObjectTarget currentTarget : targetList)
             {
                 FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance();

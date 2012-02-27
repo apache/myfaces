@@ -819,9 +819,13 @@ public class HtmlTableRendererBase extends HtmlRenderer
             }
         }
 
-
-        UIComponent facet = header ? (UIComponent) component.getFacets().get(HEADER_FACET_NAME)
-                : (UIComponent) component.getFacets().get(FOOTER_FACET_NAME);
+        
+        UIComponent facet = null;
+        if (component.getFacetCount() > 0)
+        {
+            facet = header ? (UIComponent) component.getFacets().get(HEADER_FACET_NAME) 
+                    : (UIComponent) component.getFacets().get(FOOTER_FACET_NAME);
+        }
         if (facet != null || hasColumnFacet)
         {
             // Header or Footer present on either the UIData or a column, so we
