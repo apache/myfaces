@@ -452,7 +452,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         return buffer.join("");
     },
     isXMLParseError:function (xmlContent) {
-        //TODO determine the ie specific part here
         //no xml content
         if (xmlContent == null) return true;
         var findParseError = function (node) {
@@ -617,8 +616,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * in the long run we probably can switch over
      * or make a code split between legacy and new
      *
-     * TODO find a way to map this mechanism to the standard
-     * props mechanism modern browsers have
      *
      * @param obj
      * @param name

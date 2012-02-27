@@ -61,7 +61,8 @@ _MF_SINGLTN && _MF_SINGLTN(_PFX_UTIL + "_ExtDom", myfaces._impl._util._Dom, {
 
             //html5 getElementsByClassname
 
-            //TODO implement this
+            //TODO implement this, there is a better way to check for styleclasses
+            //check the richfaces code for that one
             /*if (fragment.getElementsByClassName && deepScan) {
              return fragment.getElementsByClassName(styleClass);
              }

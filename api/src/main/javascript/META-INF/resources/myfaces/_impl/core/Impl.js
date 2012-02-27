@@ -129,10 +129,6 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @param {|Object|} options  map of options being pushed into the ajax cycle
      *
      *
-     * TODO refactoring, the passthrgh handling is only for dragging in request parameters
-     * we should rewrite this part
-     *
-     *
      * a) transformArguments out of the function
      * b) passThrough handling with a map copy with a filter map block map
      */
@@ -718,11 +714,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             //this is a valid approach
             if (this._threshold == "ERROR") {
                 var mfInternal = exception._mfInternal || {};
-                //TODO clean the name mess here
+
                 var finalMsg = [];
-
-
-
                 finalMsg.push(exception.message);
                 this.sendError(request, context,
                         mfInternal.title || this.CLIENT_ERROR, mfInternal.name || exception.name, finalMsg.join("\n"), mfInternal.caller, mfInternal.callFunc);
