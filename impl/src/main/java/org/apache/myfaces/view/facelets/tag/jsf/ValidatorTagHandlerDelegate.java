@@ -27,7 +27,6 @@ import javax.faces.FacesWrapper;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 import javax.faces.view.facelets.ComponentHandler;
@@ -54,7 +53,8 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
  *
  * @since 2.0
  */
-public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements EditableValueHolderAttachedObjectHandler, FacesWrapper<ValidatorHandler>
+public class ValidatorTagHandlerDelegate extends TagHandlerDelegate 
+    implements EditableValueHolderAttachedObjectHandler, FacesWrapper<ValidatorHandler>
 {
     
     /**
@@ -62,7 +62,8 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
      * its validatorId will be added to the exclusion list stored under
      * this key on the parent UIComponent.
      */
-    public final static String VALIDATOR_ID_EXCLUSION_LIST_KEY = "org.apache.myfaces.validator.VALIDATOR_ID_EXCLUSION_LIST";
+    public final static String VALIDATOR_ID_EXCLUSION_LIST_KEY
+            = "org.apache.myfaces.validator.VALIDATOR_ID_EXCLUSION_LIST";
     
     private ValidatorHandler _delegate;
     
@@ -148,7 +149,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
                     try
                     {
                         mctx.pushEnclosingValidatorIdToStack(validatorId, this);
-                        _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
+                        _delegate.applyNextHandler(ctx, parent);
                     }
                     finally
                     {
@@ -188,7 +189,8 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate implements E
             }
             else
             {
-                throw new TagException(_delegate.getTag(), "Parent not composite component or an instance of EditableValueHolder: " + parent);
+                throw new TagException(_delegate.getTag(),
+                        "Parent not composite component or an instance of EditableValueHolder: " + parent);
             }
         }
     }
