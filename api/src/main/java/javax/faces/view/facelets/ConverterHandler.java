@@ -38,6 +38,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 public class ConverterHandler extends FaceletsAttachedObjectHandler implements ValueHolderAttachedObjectHandler
 {
     private String converterId;
+    private TagHandlerDelegate helper;
     
     public ConverterHandler(ConverterConfig config)
     {
@@ -53,6 +54,13 @@ public class ConverterHandler extends FaceletsAttachedObjectHandler implements V
     
     protected TagHandlerDelegate getTagHandlerDelegate()
     {
-        return delegateFactory.createConverterHandlerDelegate (this);
+        if (helper == null)
+        {
+            // Spec seems to indicate that the helper is created here, as opposed to other Handler
+            // instances, where it's presumably a new instance for every getter call.
+            
+            this.helper = delegateFactory.createConverterHandlerDelegate (this);
+        }
+        return helper;
     }
 }

@@ -33,6 +33,7 @@ public class BehaviorHandler extends FaceletsAttachedObjectHandler implements Be
 {
     private String behaviorId;
     private TagAttribute event;
+    private TagHandlerDelegate helper;
     
     /**
      * @param config
@@ -71,6 +72,13 @@ public class BehaviorHandler extends FaceletsAttachedObjectHandler implements Be
     @Override
     protected TagHandlerDelegate getTagHandlerDelegate()
     {
-        return delegateFactory.createBehaviorHandlerDelegate (this);
+        if (helper == null)
+        {
+            // Spec seems to indicate that the helper is created here, as opposed to other Handler
+            // instances, where it's presumably a new instance for every getter call.
+            
+            this.helper = delegateFactory.createBehaviorHandlerDelegate (this);
+        }
+        return helper;
     }
 }
