@@ -9,14 +9,16 @@ if (_MF_SINGLTN) {
          * The function allows to fetch the windowid from any arbitrary elements
          * parent or child form.
          * If more than one unique windowid is found then an error is thrown.
-         * @param {optional} element, searches for the windowid from any given arbitrary element
-         * a search first for embedded forms is performed and then for the parent form. If no form is found at
-         * all, or the element is not given then a search on document.forms is performed and if that
-         * does not bring any result a search within the url is performed as last fallback.
+         *
+         * @param {optional String|DomNode} node, searches for the windowid from any given arbitrary element
+         * a search  for embedded forms is performed. If the node parameter is omitted, a search on document.forms
+         * will be performed and if that
+         * does not bring any result a search within the url will be performed as last fallback.
+         *
          * @throws an error in case of having more than one unique windowIds depending on the given
          * node element
          */
-        getWindowId:function (node) {
+        getWindowId:function (/*optional String|DomNode*/node) {
 
             var FORM = "form";
 
@@ -25,10 +27,11 @@ if (_MF_SINGLTN) {
                 var result;
                 var foundCnt = 0;
                 for (var cnt = forms.length - 1; cnt >= 0; cnt--) {
+                    var UDEF = 'undefined';
                     var currentForm = forms[cnt];
                     var windowId = currentForm["javax.faces.WindowId"] && currentForm["javax.faces.WindowId"].value;
-                    if ('undefined' != typeof windowId) {
-                        if (foundCnt > 0 && 'undefined' == typeof result_idx[windowId]) throw Error("Multiple different windowIds found in document");
+                    if (UDEF != typeof windowId) {
+                        if (foundCnt > 0 && UDEF == typeof result_idx[windowId]) throw Error("Multiple different windowIds found in document");
                         result = windowId;
                         result_idx[windowId] = true;
                         foundCnt++;
@@ -38,13 +41,28 @@ if (_MF_SINGLTN) {
             }
 
             var getChildForms = function (currentElement) {
+                //Special condition no element we return document forms
+                //as search parameter, ideal would be to
+                //have the viewroot here but the frameworks
+                //can deal with that themselves by using
+                //the viewroot as currentElement
+                if (!currentElement) {
+                    return document.forms;
+                }
 
                 var targetArr = [];
-                if(!currentElement.tagName) return [];
+                if (!currentElement.tagName) return [];
                 else if (currentElement.tagName.toLowerCase() == FORM) {
                     targetArr.push(currentElement);
                     return targetArr;
                 }
+
+                //if query selectors are supported we can take
+                //a non recursive shortcut
+                if(currentElement.querySelectorAll) {
+                    return currentElement.querySelectorAll(FORM);
+                }
+
                 //old recursive way, due to flakeyness of querySelectorAll
                 for (var cnt = currentElement.childNodes.length - 1; cnt >= 0; cnt--) {
                     var currentChild = currentElement.childNodes[cnt];
@@ -53,15 +71,7 @@ if (_MF_SINGLTN) {
                 return targetArr;
             }
 
-            var findParentForms = function(element) {
-                while(element != null) {
-                    if(element.tagName.toLowerCase() == FORM) return [element];
-                    element = element.parentNode;
-                }
-                return document.forms;
-            }
-
-            var fetchWindowIdFromURL = function() {
+            var fetchWindowIdFromURL = function () {
                 var href = window.location.href;
                 var windowId = "windowId";
                 var regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
@@ -70,16 +80,12 @@ if (_MF_SINGLTN) {
                 if (results != null) return results[1];
                 return null;
             }
-            var forms = [];
-            if(node) {
-                var forms = getChildForms(node);
-                if(!forms || forms.length == 0) {
-                    //We walk up the parent until we hit a form or document.body
-                    forms = findParentForms(node);
-                }
-            }
+            var finalNode = (node && (typeof node == "string" || node instanceof String)) ?
+                    document.getElementById(node) : (node || null);
+
+            var forms = getChildForms(finalNode);
             var result = fetchWindowIdFromForms(forms);
-            return (null != result)? result:  fetchWindowIdFromURL();
+            return (null != result) ? result : fetchWindowIdFromURL();
         },
 
         html5FormDetection:function (item) {
