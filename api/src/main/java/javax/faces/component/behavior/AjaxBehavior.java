@@ -137,7 +137,8 @@ public class AjaxBehavior extends ClientBehaviorBase
     public ValueExpression getValueExpression(String name) 
     {
         //return getValueExpressionMap().get(name);
-        if (name == null) {
+        if (name == null)
+        {
             throw new NullPointerException("name can not be null");
         }
         
@@ -166,13 +167,17 @@ public class AjaxBehavior extends ClientBehaviorBase
             getValueExpressionMap().put(name, item);
         }
         */
-        if (name == null) {
+        if (name == null)
+        {
             throw new NullPointerException("name");
         }
 
-        if (expression == null) {
+        if (expression == null)
+        {
             getStateHelper().remove(PropertyKeys.bindings, name);
-        } else {
+        }
+        else
+        {
             getStateHelper().put(PropertyKeys.bindings, name, expression);
         }
     }
@@ -203,7 +208,8 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public boolean isImmediateSet() 
     {
-        return getStateHelper().eval(ATTR_IMMEDIATE) != null;
+        return (getStateHelper().get(ATTR_IMMEDIATE) != null) ||
+            (getValueExpression(ATTR_IMMEDIATE) != null);
     }
 
     @Override
@@ -233,7 +239,8 @@ public class AjaxBehavior extends ClientBehaviorBase
         getStateHelper().restoreState(facesContext, values[1]);
     }
 
-    private StateHelper getStateHelper() {
+    private StateHelper getStateHelper()
+    {
         return getStateHelper(true);
     }
 
@@ -243,11 +250,14 @@ public class AjaxBehavior extends ClientBehaviorBase
      * @param create if true a state helper is created if not already existing
      * @return an implementation of the StateHelper interface or null if none exists and create is set to false
      */
-    private StateHelper getStateHelper(boolean create) {
-        if(_stateHelper != null) {
+    private StateHelper getStateHelper(boolean create)
+    {
+        if(_stateHelper != null)
+        {
             return _stateHelper;
         }
-        if(create) {
+        if(create)
+        {
             _stateHelper = new _DeltaStateHelper<AjaxBehavior>(this);
         }
         return _stateHelper;
@@ -326,7 +336,8 @@ public class AjaxBehavior extends ClientBehaviorBase
      * @param stringValue
      * @return
      */
-    private Collection<String> getCollectionFromSpaceSplitString(String stringValue) {
+    private Collection<String> getCollectionFromSpaceSplitString(String stringValue)
+    {
         //@special handling for @all, @none, @form and @this
         if (stringValue.equals(VAL_FORM)) 
         {
