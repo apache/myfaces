@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.RandomAccess;
 
 import javax.faces.context.FacesContext;
 
@@ -42,7 +43,7 @@ import javax.faces.context.FacesContext;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _DeltaList<T> implements List<T>, PartialStateHolder
+class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
 {
 
     private List<T> _delegate;

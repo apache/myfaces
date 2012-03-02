@@ -869,8 +869,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // note it is also called curTargetName
             String forValue = currentHandler.getFor();
             
-            for (AttachedObjectTarget currentTarget : targetList)
+            // perf: targetList is always arrayList: see AttachedObjectTargetHandler.apply 
+            // and ClientBehaviorHandler.apply 
+            for (int k = 0, targetsSize = targetList.size(); k < targetsSize; k++)
             {
+                AttachedObjectTarget currentTarget = targetList.get(k);
                 FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance();
 
                 if ((forValue != null && forValue.equals(currentTarget.getName())) &&
@@ -881,8 +884,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 (currentTarget instanceof ValueHolderAttachedObjectTarget &&
                                         currentHandler instanceof ValueHolderAttachedObjectHandler)))
                 {
-                    for (UIComponent component : currentTarget.getTargets(topLevelComponent))
+                    // perf: getTargets return ArrayList - see getTargets implementations
+                    List<UIComponent> targets = currentTarget.getTargets(topLevelComponent);
+                    for (int l = 0, targetsCount = targets.size(); l < targetsCount; l++)
                     {
+                        UIComponent component = targets.get(l);
                         // If we found composite components when traverse the tree
                         // we have to call this one recursively, because each composite component
                         // should have its own AttachedObjectHandler list, filled earlier when

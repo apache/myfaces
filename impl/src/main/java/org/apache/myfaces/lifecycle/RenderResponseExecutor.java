@@ -19,6 +19,7 @@
 package org.apache.myfaces.lifecycle;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -115,12 +116,17 @@ class RenderResponseExecutor extends PhaseExecutor
             viewHandler.renderView(facesContext, root);
             
             // log all unhandled FacesMessages, don't swallow them
-            if (!facesContext.getMessageList().isEmpty())
+            // perf: org.apache.myfaces.context.servlet.FacesContextImpl.getMessageList() creates
+            // new Collections.unmodifiableList with every invocation->  call it only once
+            // and messageList is RandomAccess -> use index based loop
+            List<FacesMessage> messageList = facesContext.getMessageList();
+            if (!messageList.isEmpty())
             {
                 StringBuilder builder = new StringBuilder();
                 boolean shouldLog = false;
-                for (FacesMessage message : facesContext.getMessageList())
+                for (int i = 0, size = messageList.size(); i < size; i++)
                 {
+                    FacesMessage message = messageList.get(i);
                     if (!message.isRendered())
                     {
                         builder.append("\n- ");

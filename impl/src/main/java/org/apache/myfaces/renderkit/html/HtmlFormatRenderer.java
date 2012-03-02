@@ -173,8 +173,9 @@ public class HtmlFormatRenderer extends HtmlRenderer
             {
                 List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                         facesContext, htmlOutputFormat.getChildren(), false, false, false);
-                for (UIParameter param : validParams)
+                for (int i = 0, size = validParams.size(); i < size; i++)
                 {
+                    UIParameter param = validParams.get(i);
                     if (argsList == null)
                     {
                         argsList = new ArrayList<Object>();

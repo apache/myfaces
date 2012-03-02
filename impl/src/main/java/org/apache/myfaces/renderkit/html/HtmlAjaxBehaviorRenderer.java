@@ -248,22 +248,23 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
              * see ClientBehaviorContext.html of the spec
              * the param list has to be added in the post back
              */
-            for (ClientBehaviorContext.Parameter param : params)
+            // params are in 99% RamdonAccess instace created in 
+            // HtmlRendererUtils.getClientBehaviorContextParameters(Map<String, String>)
+            if (params instanceof RandomAccess)
             {
-                //TODO we may need a proper type handling in this part
-                //lets leave it for now as it is
-                //quotes etc.. should be transferred directly
-                //and the rest is up to the toString properly implemented
-                //ANS: Both name and value should be quoted
-                paramBuffer.setLength(0);
-                paramBuffer.append(QUOTE);
-                paramBuffer.append(param.getName());
-                paramBuffer.append(QUOTE);
-                paramBuffer.append(COLON);
-                paramBuffer.append(QUOTE);
-                paramBuffer.append(param.getValue().toString());
-                paramBuffer.append(QUOTE);
-                parameterList.add(paramBuffer.toString());
+                List<ClientBehaviorContext.Parameter> list = (List<ClientBehaviorContext.Parameter>) params;
+                for (int i = 0, size = list.size(); i < size; i++)
+                {
+                    ClientBehaviorContext.Parameter param = list.get(i);
+                    append(paramBuffer, parameterList, param);
+                }
+            }
+            else
+            {
+                for (ClientBehaviorContext.Parameter param : params)
+                {
+                    append(paramBuffer, parameterList, param);
+                }
             }
         }
 
@@ -288,6 +289,24 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         retVal.append(R_PAREN);
 
         return retVal;
+    }
+
+    private void append(StringBuilder paramBuffer, List<String> parameterList, ClientBehaviorContext.Parameter param)
+    {
+        //TODO we may need a proper type handling in this part
+        //lets leave it for now as it is
+        //quotes etc.. should be transferred directly
+        //and the rest is up to the toString properly implemented
+        //ANS: Both name and value should be quoted
+        paramBuffer.setLength(0);
+        paramBuffer.append(QUOTE);
+        paramBuffer.append(param.getName());
+        paramBuffer.append(QUOTE);
+        paramBuffer.append(COLON);
+        paramBuffer.append(QUOTE);
+        paramBuffer.append(param.getValue().toString());
+        paramBuffer.append(QUOTE);
+        parameterList.add(paramBuffer.toString());
     }
 
 

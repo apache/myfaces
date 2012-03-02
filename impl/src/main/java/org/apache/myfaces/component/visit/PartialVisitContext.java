@@ -84,9 +84,9 @@ public class PartialVisitContext extends VisitContext
     _facesContext = facesContext;
 
     // Copy the client ids into a HashSet to allow for quick lookups.
-    Set<String> clientIdSet = (clientIds == null)
-                                ? new HashSet<String>()
-                                : new HashSet<String>(clientIds);
+//    Set<String> clientIdSet = (clientIds == null)
+//            ? new HashSet<String>()
+//                    : new HashSet<String>(clientIds);
 
     // Initialize our various collections
     // We maintain 4 collections:
@@ -122,8 +122,9 @@ public class PartialVisitContext extends VisitContext
     _clientIds = new CollectionProxy<String>(new HashSet<String>());
 
     // Finally, populate the clientIds collection.  This has the
-    // side effect of populating all of the other collections.       
-    _clientIds.addAll(clientIdSet);
+    // side effect of populating all of the other collections.
+    org.apache.myfaces.shared.util.ArrayUtils.addAll(_clientIds, clientIds);
+    //_clientIds.addAll(clientIdSet);
 
     // Copy and store hints - ensure unmodifiable and non-empty
     EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty()))
