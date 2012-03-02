@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELResolver;
+import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
@@ -34,6 +35,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
 import org.apache.myfaces.el.convert.VariableResolverToELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -88,22 +90,49 @@ public class ResolverBuilderBase
             }
         }
 
-        if (_config.getVariableResolver() != null)
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
-            resolvers.add(createELResolver(_config.getVariableResolver()));
-        }
-        else if (_config.getVariableResolverChainHead() != null)
-        {
-            resolvers.add(createELResolver(_config.getVariableResolverChainHead()));
-        }
+            // Should not happen, but if by some reason happens,
+            // initialize as usual.
+            if (_config.getVariableResolver() != null)
+            {
+                resolvers.add(createELResolver(_config.getVariableResolver()));
+            }
+            else if (_config.getVariableResolverChainHead() != null)
+            {
+                resolvers.add(createELResolver(_config.getVariableResolverChainHead()));
+            }
 
-        if (_config.getPropertyResolver() != null)
-        {
-            resolvers.add(createELResolver(_config.getPropertyResolver()));
+            if (_config.getPropertyResolver() != null)
+            {
+                resolvers.add(createELResolver(_config.getPropertyResolver()));
+            }
+            else if (_config.getPropertyResolverChainHead() != null)
+            {
+                resolvers.add(createELResolver(_config.getPropertyResolverChainHead()));
+            }
         }
-        else if (_config.getPropertyResolverChainHead() != null)
+        else if (facesContext != null && MyfacesConfig.getCurrentInstance(
+                facesContext.getExternalContext()).isSupportJSPAndFacesEL())
         {
-            resolvers.add(createELResolver(_config.getPropertyResolverChainHead()));
+            if (_config.getVariableResolver() != null)
+            {
+                resolvers.add(createELResolver(_config.getVariableResolver()));
+            }
+            else if (_config.getVariableResolverChainHead() != null)
+            {
+                resolvers.add(createELResolver(_config.getVariableResolverChainHead()));
+            }
+
+            if (_config.getPropertyResolver() != null)
+            {
+                resolvers.add(createELResolver(_config.getPropertyResolver()));
+            }
+            else if (_config.getPropertyResolverChainHead() != null)
+            {
+                resolvers.add(createELResolver(_config.getPropertyResolverChainHead()));
+            }
         }
 
         if (_config.getApplicationElResolvers() != null)

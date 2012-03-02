@@ -677,14 +677,19 @@ public class FacesConfigurator
 
         RuntimeConfig runtimeConfig = getRuntimeConfig();
 
-        runtimeConfig.setPropertyResolverChainHead(ClassUtils.buildApplicationObject(PropertyResolver.class,
-                dispenser.getPropertyResolverIterator(),
-                new DefaultPropertyResolver()));
-
-        runtimeConfig.setVariableResolverChainHead(ClassUtils.buildApplicationObject(VariableResolver.class,
-                dispenser.getVariableResolverIterator(),
-                new VariableResolverImpl()));
+        if (MyfacesConfig.getCurrentInstance(_externalContext).isSupportJSPAndFacesEL())
+        {
+            // If no JSP and old Faces EL, there is no need to initialize PropertyResolver
+            // and VariableResolver stuff.
+            runtimeConfig.setPropertyResolverChainHead(ClassUtils.buildApplicationObject(PropertyResolver.class,
+                    dispenser.getPropertyResolverIterator(),
+                    new DefaultPropertyResolver()));
+    
+            runtimeConfig.setVariableResolverChainHead(ClassUtils.buildApplicationObject(VariableResolver.class,
+                    dispenser.getVariableResolverIterator(),
+                    new VariableResolverImpl()));
         }
+    }
 
     /**
      * A mapper for the handful of system listener defaults

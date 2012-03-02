@@ -354,6 +354,20 @@ public class MyfacesConfig
         "org.apache.myfaces.DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE";
     public final static String INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT = "text/html";
     
+    /**
+    * If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in JSF 2.X, javax.faces.el in 
+    * in JSF 1.2. Default value is true. 
+    * 
+    * If this property is set is false, JSF 1.1 VariableResolver and PropertyResolver config (replaced in JSF 1.2 by
+    * ELResolver) and all related logic for JSP is skipped, making EL evaluation faster.  
+    */
+    @JSFWebConfigParam(since="2.0.13,2.1.7", expectedValues="true,false", defaultValue="true",
+         desc="If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in " +
+         "JSF 2.X, javax.faces.el in in JSF 1.2. Default value is true.",
+         group="EL", tags="performance ")
+    public final static String INIT_PARAM_SUPPORT_JSP_AND_FACES_EL = "org.apache.myfaces.SUPPORT_JSP_AND_FACES_EL";
+    public final static boolean INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT = true;
+    
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -380,6 +394,7 @@ public class MyfacesConfig
     private boolean _strictJsf2RefreshTargetAjax;
     private boolean _strictJsf2CCELResolver;
     private String _defaultResponseWriterContentTypeMode;
+    private boolean _supportJSPAndFacesEL;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -475,6 +490,7 @@ public class MyfacesConfig
         setStrictJsf2RefreshTargetAjax(INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT);
         setStrictJsf2CCELResolver(INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT);
         setDefaultResponseWriterContentTypeMode(INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT);
+        setSupportJSPAndFacesEL(INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -568,6 +584,10 @@ public class MyfacesConfig
                 extCtx, INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE,
                 INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT));
 
+        
+        myfacesConfig.setSupportJSPAndFacesEL(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                INIT_PARAM_SUPPORT_JSP_AND_FACES_EL, INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT));
+        
         if (TOMAHAWK_AVAILABLE)
         {
             myfacesConfig.setDetectJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_DETECT_JAVASCRIPT,
@@ -1034,4 +1054,15 @@ public class MyfacesConfig
     {
         this._defaultResponseWriterContentTypeMode = defaultResponseWriterContentTypeMode;
     }
+    
+    public boolean isSupportJSPAndFacesEL()
+    {
+        return _supportJSPAndFacesEL;
+    }
+
+    public void setSupportJSPAndFacesEL(
+            boolean supportJSPANDFacesEL)
+    {
+        _supportJSPAndFacesEL = supportJSPANDFacesEL;
+    } 
 }

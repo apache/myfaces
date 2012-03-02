@@ -31,6 +31,7 @@ import javax.faces.el.VariableResolver;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
 import org.apache.myfaces.el.convert.VariableResolverToELResolver;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.After;
@@ -43,7 +44,7 @@ import org.junit.Test;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class ResolverBuilderBaseTest
+public class ResolverBuilderBaseTest extends AbstractJsfTestCase
 {
     private IMocksControl _mocksControl;
     private RuntimeConfig _runtimeConfig;
@@ -55,8 +56,9 @@ public class ResolverBuilderBaseTest
     }
 
     @Before
-    public void setUp()
+    public void setUp() throws Exception
     {
+        super.setUp();
         _mocksControl = EasyMock.createNiceControl();
         _runtimeConfig = _mocksControl.createMock(RuntimeConfig.class);
         _testImpl = new ResolverBuilderBase(_runtimeConfig);
@@ -64,8 +66,9 @@ public class ResolverBuilderBaseTest
     }
     
     @After
-    public void tearDown()
+    public void tearDown() throws Exception
     {
+        super.tearDown();
         _mocksControl = null;
         _runtimeConfig = null;
         _testImpl = null;

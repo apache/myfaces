@@ -102,6 +102,7 @@ import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.el.ELText;
 
@@ -353,7 +354,17 @@ public class ApplicationImpl extends Application
 
     private ELResolver createFacesResolver()
     {
-        final CompositeELResolver resolver = new FacesCompositeELResolver(Scope.Faces);
+        boolean supportJSPAndFacesEL = MyfacesConfig.getCurrentInstance(
+                                getFaceContext().getExternalContext()).isSupportJSPAndFacesEL();
+        CompositeELResolver resolver;
+        if (supportJSPAndFacesEL)
+        {
+            resolver = new FacesCompositeELResolver(Scope.Faces);
+        }
+        else
+        {
+            resolver = new CompositeELResolver();
+        }
         getResolverBuilderForFaces().build(resolver);
         return resolver;
     }
