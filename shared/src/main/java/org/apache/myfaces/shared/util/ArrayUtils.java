@@ -19,6 +19,9 @@
 package org.apache.myfaces.shared.util;
 
 import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.List;
+import java.util.RandomAccess;
 
 /**
  * Utility class for managing arrays
@@ -228,7 +231,29 @@ public class ArrayUtils
         return false;
     }
 
-
+    /**
+     * Same as {@link Collection#addAll(Collection)} but in case of RandomAccess iterates over indices 
+     */
+    public static <T> void addAll(Collection<? super T> collection, Collection<? extends T> toAdd)
+    {
+        if (collection == null || toAdd == null)
+        {
+            return;
+        }
+        if (toAdd instanceof RandomAccess)
+        {
+            List<? extends T> randomAccess = (List<? extends T>) toAdd;
+            for (int i = 0, size = randomAccess.size(); i < size; i++)
+            {
+                T element = randomAccess.get(i);
+                collection.add(element);
+            }
+        }
+        else
+        {
+            collection.addAll(toAdd);
+        }
+    }
 
 //    public static void main(String[] args)
 //    {

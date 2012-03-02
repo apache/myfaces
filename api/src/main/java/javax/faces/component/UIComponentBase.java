@@ -401,9 +401,10 @@ public abstract class UIComponentBase extends UIComponent
             {
                 return;
             }
-            for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext();)
+            // perf: _facesListeners is RandomAccess instance (javax.faces.component._DeltaList)
+            for (int i = 0, size = _facesListeners.size(); i < size; i++)
             {
-                FacesListener facesListener = it.next();
+                FacesListener facesListener = _facesListeners.get(i);
                 if (event.isAppropriateListener(facesListener))
                 {
                     event.processListener(facesListener);
@@ -1164,9 +1165,10 @@ public abstract class UIComponentBase extends UIComponent
             return (FacesListener[]) Array.newInstance(clazz, 0);
         }
         List<FacesListener> lst = null;
-        for (Iterator<FacesListener> it = _facesListeners.iterator(); it.hasNext();)
+        // perf: _facesListeners is RandomAccess instance (javax.faces.component._DeltaList)
+        for (int i = 0, size = _facesListeners.size(); i < size; i++)
         {
-            FacesListener facesListener = it.next();
+            FacesListener facesListener = _facesListeners.get(i);
             if (facesListener != null && clazz.isAssignableFrom(facesListener.getClass()))
             {
                 if (lst == null)
@@ -1670,9 +1672,12 @@ public abstract class UIComponentBase extends UIComponent
         {
             if (ArrayList.class.equals(attachedObject.getClass()))
             {
-                List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
-                for (Object item : (List<?>) attachedObject)
+                ArrayList<?> list = (ArrayList<?>) attachedObject;
+                int size = list.size();
+                List<Object> lst = new ArrayList<Object>(size);
+                for (int i = 0; i < size; i++)
                 {
+                    Object item = list.get(i);
                     if (item != null)
                     {
                         lst.add(saveAttachedState(context, item));
@@ -1715,10 +1720,12 @@ public abstract class UIComponentBase extends UIComponent
         }
         if (stateObj instanceof _AttachedListStateWrapper)
         {
-            List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
+            // perf: getWrappedStateList in _AttachedListStateWrapper is always ArrayList: see saveAttachedState
+            ArrayList<Object> lst = (ArrayList<Object>) ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
             List<Object> restoredList = new ArrayList<Object>(lst.size());
-            for (Object item : lst)
+            for (int i = 0, size = lst.size(); i < size; i++)
             {
+                Object item = lst.get(i);
                 restoredList.add(restoreAttachedState(context, item));
             }
             return restoredList;

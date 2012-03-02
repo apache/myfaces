@@ -77,14 +77,16 @@ public class PartialVisitContext extends VisitContext
                              Set<VisitHint> hints)
   {
     if (facesContext == null)
-      throw new NullPointerException();
+    {
+        throw new NullPointerException();
+    }
 
     _facesContext = facesContext;
 
     // Copy the client ids into a HashSet to allow for quick lookups.
-    Set<String> clientIdSet = (clientIds == null)
-                                ? new HashSet<String>()
-                                : new HashSet<String>(clientIds);
+//    Set<String> clientIdSet = (clientIds == null)
+//            ? new HashSet<String>()
+//                    : new HashSet<String>(clientIds);
 
     // Initialize our various collections
     // We maintain 4 collections:
@@ -120,8 +122,9 @@ public class PartialVisitContext extends VisitContext
     _clientIds = new CollectionProxy<String>(new HashSet<String>());
 
     // Finally, populate the clientIds collection.  This has the
-    // side effect of populating all of the other collections.       
-    _clientIds.addAll(clientIdSet);
+    // side effect of populating all of the other collections.
+    org.apache.myfaces.shared.util.ArrayUtils.addAll(_clientIds, clientIds);
+    //_clientIds.addAll(clientIdSet);
 
     // Copy and store hints - ensure unmodifiable and non-empty
     EnumSet<VisitHint> hintsEnumSet = ((hints == null) || (hints.isEmpty()))
@@ -177,9 +180,13 @@ public class PartialVisitContext extends VisitContext
     Collection<String> ids = _subtreeClientIds.get(clientId);
 
     if (ids == null)
-      return Collections.emptyList();
+    {
+        return Collections.emptyList();
+    }
     else
-      return Collections.unmodifiableCollection(ids);     
+    {
+        return Collections.unmodifiableCollection(ids);
+    }
   }
 
   /**
@@ -212,7 +219,9 @@ public class PartialVisitContext extends VisitContext
     // If the unvisited collection is now empty, we are done.
     // Return VisitResult.COMPLETE to terminate the visit.
     if (_unvisitedClientIds.isEmpty())
-      return VisitResult.COMPLETE;
+    {
+        return VisitResult.COMPLETE;
+    }
     else
     {
       // Otherwise, just return the callback's result 
@@ -265,9 +274,11 @@ public class PartialVisitContext extends VisitContext
     String id = component.getId();
 
     if ((id != null) && !_ids.contains(id))
-      return null;
+    {
+        return null;
+    }
 
-    // The id was a match - now check the client id.
+      // The id was a match - now check the client id.
     // note that client id should never be null (should be
     // generated even if id is null, so asserting this.)
     String clientId = component.getClientId(getFacesContext());

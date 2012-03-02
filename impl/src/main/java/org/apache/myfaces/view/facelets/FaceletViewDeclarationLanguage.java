@@ -143,7 +143,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     private static final Class<?>[] ACTION_LISTENER_SIGNATURE = new Class[]{ActionEvent.class};
 
-    private static final Class<?>[] VALIDATOR_SIGNATURE = new Class[]{FacesContext.class, UIComponent.class, Object.class};
+    private static final Class<?>[] VALIDATOR_SIGNATURE
+            = new Class[]{FacesContext.class, UIComponent.class, Object.class};
 
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
 
@@ -158,7 +159,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
      * servlet environment to HttpServletResponse.setBufferSize().
      */
-    @JSFWebConfigParam(since = "2.0", alias = "facelets.BUFFER_SIZE", classType = "java.lang.Integer", tags = "performance",
+    @JSFWebConfigParam(since = "2.0", alias = "facelets.BUFFER_SIZE", classType = "java.lang.Integer",
+            tags = "performance",
             desc = "Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in "
                    + "a servlet environment to HttpServletResponse.setBufferSize()")
     public final static String PARAM_BUFFER_SIZE = "javax.faces.FACELETS_BUFFER_SIZE";
@@ -199,14 +201,16 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     /**
      * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
      */
-    @JSFWebConfigParam(since = "2.0", desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
+    @JSFWebConfigParam(since = "2.0",
+            desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
             alias = "facelets.LIBRARIES")
     public final static String PARAM_LIBRARIES = "javax.faces.FACELETS_LIBRARIES";
 
     /**
      * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
      */
-    @JSFWebConfigParam(since = "2.0", desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
+    @JSFWebConfigParam(since = "2.0",
+            desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
             deprecated = true)
     private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
 
@@ -217,7 +221,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      *
      * <p>By default is infinite (no active).</p>
      */
-    @JSFWebConfigParam(since = "2.0", defaultValue = "-1", alias = "facelets.REFRESH_PERIOD", classType = "java.lang.Long", tags = "performance")
+    @JSFWebConfigParam(since = "2.0", defaultValue = "-1", alias = "facelets.REFRESH_PERIOD",
+            classType = "java.lang.Long", tags = "performance")
     public final static String PARAM_REFRESH_PERIOD = "javax.faces.FACELETS_REFRESH_PERIOD";
 
     /**
@@ -242,7 +247,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @JSFWebConfigParam(since = "2.0", deprecated = true)
     private final static String PARAM_RESOURCE_RESOLVER_DEPRECATED = "facelets.RESOURCE_RESOLVER";
 
-    private final static String[] PARAMS_RESOURCE_RESOLVER = {PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED};
+    private final static String[] PARAMS_RESOURCE_RESOLVER
+            = {PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED};
 
     /**
      * Skip comments found on a facelet file.
@@ -734,9 +740,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // In the spec javadoc this variable is referred as forAttributeValue, but
             // note it is also called curTargetName
             String forValue = currentHandler.getFor();
-
-            for (AttachedObjectTarget currentTarget : targetList)
+            
+            // perf: targetList is always arrayList: see AttachedObjectTargetHandler.apply 
+            // and ClientBehaviorHandler.apply 
+            for (int k = 0, targetsSize = targetList.size(); k < targetsSize; k++)
             {
+                AttachedObjectTarget currentTarget = targetList.get(k);
                 FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance();
 
                 if ((forValue != null && forValue.equals(currentTarget.getName())) &&
@@ -747,8 +756,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 (currentTarget instanceof ValueHolderAttachedObjectTarget &&
                                         currentHandler instanceof ValueHolderAttachedObjectHandler)))
                 {
-                    for (UIComponent component : currentTarget.getTargets(topLevelComponent))
+                    // perf: getTargets return ArrayList - see getTargets implementations
+                    List<UIComponent> targets = currentTarget.getTargets(topLevelComponent);
+                    for (int l = 0, targetsCount = targets.size(); l < targetsCount; l++)
                     {
+                        UIComponent component = targets.get(l);
                         // If we found composite components when traverse the tree
                         // we have to call this one recursively, because each composite component
                         // should have its own AttachedObjectHandler list, filled earlier when
@@ -790,8 +802,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     if ((eventName != null && eventName.equals(currentTarget.getName())) ||
                             (eventName == null && isDefaultEvent))
                     {
-                        for (UIComponent component : currentTarget.getTargets(topLevelComponent))
+                        List<UIComponent> targets = currentTarget.getTargets(topLevelComponent);
+                        for (int j = 0, targetssize = targets.size(); j < targetssize; j++)
                         {
+                            UIComponent component = targets.get(j);
                             // If we found composite components when traverse the tree
                             // we have to call this one recursively, because each composite component
                             // should have its own AttachedObjectHandler list, filled earlier when
@@ -818,10 +832,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                             }
                             else
                             {
-                                if (currentHandler instanceof ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper)
+                                if (currentHandler instanceof
+                                        ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper)
                                 {
-                                    currentHandler.applyAttachedObject(context, new ClientBehaviorRedirectEventComponentWrapper(component, 
-                                            ((ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper) currentHandler).getWrappedEventName(), eventName));
+                                    currentHandler.applyAttachedObject(context,
+                                            new ClientBehaviorRedirectEventComponentWrapper(component,
+                                            ((ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper)
+                                                    currentHandler).getWrappedEventName(), eventName));
                                 }
                                 else
                                 {
@@ -836,10 +853,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     }
 
     @Override
-    public void retargetMethodExpressions(FacesContext context,
-            UIComponent topLevelComponent)
+    public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
     {
-        BeanInfo compositeComponentMetadata = (BeanInfo) topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
+        BeanInfo compositeComponentMetadata
+                = (BeanInfo) topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
 
         if (compositeComponentMetadata == null)
         {
@@ -1318,7 +1335,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     }
 
     @SuppressWarnings("unchecked")
-    private MethodExpression reWrapMethodExpression(MethodExpression createdMethodExpression, ValueExpression originalValueExpression)
+    private MethodExpression reWrapMethodExpression(MethodExpression createdMethodExpression,
+                                                    ValueExpression originalValueExpression)
     {
         if (originalValueExpression instanceof LocationValueExpression)
         {
@@ -1767,16 +1785,19 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         long refreshPeriod;
         if (context.isProjectStage(ProjectStage.Production))
         {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD, DEFAULT_REFRESH_PERIOD_PRODUCTION);
+            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD,
+                    DEFAULT_REFRESH_PERIOD_PRODUCTION);
         }
         else
         {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD, DEFAULT_REFRESH_PERIOD);
+            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD,
+                    DEFAULT_REFRESH_PERIOD);
         }
 
         // resource resolver
         ResourceResolver resolver = new DefaultResourceResolver();
-        String faceletsResourceResolverClassName = WebConfigParamUtils.getStringInitParameter(eContext, PARAMS_RESOURCE_RESOLVER, null);
+        String faceletsResourceResolverClassName = WebConfigParamUtils.getStringInitParameter(eContext,
+                PARAMS_RESOURCE_RESOLVER, null);
         if (faceletsResourceResolverClassName != null)
         {
             ArrayList<String> classNames = new ArrayList<String>(1);
@@ -2123,7 +2144,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         ExternalContext eContext = context.getExternalContext();
 
         // skip comments?
-        compiler.setTrimmingComments(WebConfigParamUtils.getBooleanInitParameter(eContext, PARAMS_SKIP_COMMENTS, false));
+        compiler.setTrimmingComments(WebConfigParamUtils.getBooleanInitParameter(
+                eContext, PARAMS_SKIP_COMMENTS, false));
     }
 
     /**

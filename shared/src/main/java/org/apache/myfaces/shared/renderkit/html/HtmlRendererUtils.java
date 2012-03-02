@@ -2164,10 +2164,12 @@ public final class HtmlRendererUtils
         {
             finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
-        Iterator<String> it = finalParams.iterator();
+        
         // It's possible that there are no behaviors to render.  For example, if we have
         // <f:ajax disabled="true" /> as the only behavior.
-        if (it.hasNext())
+        
+        int size = finalParams.size();
+        if (size > 0)
         {
             if (!submitting)
             {
@@ -2177,10 +2179,12 @@ public final class HtmlRendererUtils
             //behavior and scripts
             retVal.append("jsf.util.chain(document.getElementById('"
                     + targetClientId + "'), event,");
-            while (it.hasNext())
+            int cursor = 0;
+            while (cursor != size)
             {
-                retVal.append(it.next());
-                if (it.hasNext())
+                retVal.append(finalParams.get(cursor));
+                cursor++;
+                if (cursor != size)
                 {
                     retVal.append(", ");
                 }

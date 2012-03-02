@@ -24,12 +24,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _ComponentChildrenList extends AbstractList<UIComponent> implements Serializable
+class _ComponentChildrenList extends AbstractList<UIComponent> implements Serializable, RandomAccess
 {
     private static final long serialVersionUID = -6775078929331154224L;
     private UIComponent _component;

@@ -1357,22 +1357,26 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private Events _getEvents(PhaseId phaseId)
     {
         // Gather the events and purge the event list to prevent concurrent modification during broadcasting
-        List<FacesEvent> anyPhase = new ArrayList<FacesEvent>(
-                _events.size());
-        List<FacesEvent> onPhase = new ArrayList<FacesEvent>(_events.size());
-        for (Iterator<FacesEvent> iterator = _events.iterator(); iterator
-                .hasNext();)
+        int size = _events.size();
+        List<FacesEvent> anyPhase = new ArrayList<FacesEvent>(size);
+        List<FacesEvent> onPhase = new ArrayList<FacesEvent>(size);
+        
+        for (int i = 0; i < size; i++)
         {
-            FacesEvent event = iterator.next();
+            FacesEvent event = _events.get(i);
             if (event.getPhaseId().equals(PhaseId.ANY_PHASE))
             {
                 anyPhase.add(event);
-                iterator.remove();
+                _events.remove(i);
+                size--;
+                i--;
             }
             else if (event.getPhaseId().equals(phaseId))
             {
                 onPhase.add(event);
-                iterator.remove();
+                _events.remove(i);
+                size--;
+                i--;
             }
         }
         
