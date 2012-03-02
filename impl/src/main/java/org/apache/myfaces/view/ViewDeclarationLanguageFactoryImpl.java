@@ -27,6 +27,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
 
@@ -102,9 +103,18 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
             {
                 logWarningIfLegacyFaceletViewHandlerIsPresent(context);
 
-                _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
-                _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
-                _supportedLanguages[1] = new JspViewDeclarationLanguageStrategy();
+                if (MyfacesConfig.getCurrentInstance(
+                        context.getExternalContext()).isSupportJSPAndFacesEL())
+                {
+                    _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
+                    _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
+                    _supportedLanguages[1] = new JspViewDeclarationLanguageStrategy();
+                }
+                else
+                {
+                    _supportedLanguages = new ViewDeclarationLanguageStrategy[1];
+                    _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
+                }
             }
             else
             {
@@ -141,15 +151,16 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
      */
     private void logWarningIfLegacyFaceletViewHandlerIsPresent(FacesContext context)
     {
-        boolean facelets1ViewHandlerPresent  = context.getApplication().getViewHandler().getClass().getName().equals(FACELETS_1_VIEW_HANDLER);
+        boolean facelets1ViewHandlerPresent
+                = context.getApplication().getViewHandler().getClass().getName().equals(FACELETS_1_VIEW_HANDLER);
 
         if (facelets1ViewHandlerPresent)
         {
             if (LOGGER.isLoggable(Level.WARNING))
             {
-                LOGGER.log(Level.WARNING, "Your faces-config.xml contains the " + FACELETS_1_VIEW_HANDLER + " class." + 
-                    "\nYou need to remove it since you have not disabled the \"new\" Facelets-2 version with the " + PARAM_DISABLE_JSF_FACELET +
-                    " context parameter");
+                LOGGER.log(Level.WARNING, "Your faces-config.xml contains the " + FACELETS_1_VIEW_HANDLER + " class."
+                    + "\nYou need to remove it since you have not disabled the \"new\" Facelets-2 version with the "
+                    + PARAM_DISABLE_JSF_FACELET + " context parameter");
             }
         }
     }
