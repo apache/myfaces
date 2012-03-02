@@ -74,14 +74,19 @@ public class UISelectOne extends UIInput
         // selected value must match to one of the available options
         // and if required is true it must not match an option with noSelectionOption set to true (since 2.0)
         Converter converter = getConverter();
-        if (!(_SelectItemsUtil.matchValue(context, this, value, new _SelectItemsIterator(this, context), converter)
-              && (!this.isRequired() 
-                  || (this.isRequired() 
-                      && !_SelectItemsUtil.isNoSelectionOption(context, this, value, new _SelectItemsIterator(this, context), converter)))))
+
+        if (_SelectItemsUtil.matchValue(context, this, value, new _SelectItemsIterator(this, context), converter))
         {
-            _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[] { _MessageUtils.getLabel(
-                context, this) });
-            setValid(false);
+            if (! this.isRequired())
+            {
+                return; // Matched & Required false, so return ok.
+            }
+            if (! _SelectItemsUtil.isNoSelectionOption(context, this, value, new _SelectItemsIterator(this, context), converter))
+            {
+                return; // Matched & Required true & No-selection did NOT match, so return ok.
+            }
         }
+        _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[] {_MessageUtils.getLabel(context, this) });
+        setValid(false);
     }
 }
