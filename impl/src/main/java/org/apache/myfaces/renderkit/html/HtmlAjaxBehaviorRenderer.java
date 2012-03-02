@@ -18,9 +18,6 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +25,8 @@ import java.util.List;
 import java.util.RandomAccess;
 
 import javax.faces.FacesException;
+import javax.faces.component.ActionSource;
+import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.behavior.AjaxBehavior;
@@ -106,8 +105,17 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     private final void dispatchBehaviorEvent(UIComponent component, AjaxBehavior ajaxBehavior)
     {
         AjaxBehaviorEvent event = new AjaxBehaviorEvent(component, ajaxBehavior);
-
-        PhaseId phaseId = ajaxBehavior.isImmediate() || isComponentImmediate(component) ?
+        
+        boolean isImmediate = false;
+        if (ajaxBehavior.isImmediateSet())
+        {
+            isImmediate = ajaxBehavior.isImmediate();
+        }            
+        else
+        {
+            isImmediate = isComponentImmediate(component);
+        }
+        PhaseId phaseId = isImmediate ?
                 PhaseId.APPLY_REQUEST_VALUES :
                 PhaseId.INVOKE_APPLICATION;
 
@@ -119,40 +127,16 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
     private final boolean isComponentImmediate(UIComponent component)
     {
-        /**
-         * Currently implemented by ActionSource and EditableValueHolder
-         * but we cannot be sure about both interfaces so
-         * lets make introspection calls here
-         */
-        Method immediate = null;
-        try
+        boolean isImmediate = false;
+        if (component instanceof EditableValueHolder)
         {
-            immediate = component.getClass().getMethod("isImmediate", new Class[]{});
-            //public isImmediate must be present
-            if (Modifier.isPublic(immediate.getModifiers()) ||
-                    immediate.getReturnType().equals(boolean.class) ||
-                    immediate.getReturnType().equals(Boolean.class)) /*autoboxing*/
-            {
-                return (Boolean) immediate.invoke(component, new Object[]{});
-            }
-
-            return false;
+            isImmediate = ((EditableValueHolder)component).isImmediate();
         }
-        catch (NoSuchMethodException e)
+        else if (component instanceof ActionSource)
         {
-            //not implemented at all we can return, this is
-            //not really a programmatic exception but we do not have an
-            //hasMethod, and iterating over all methods is way slower
-            return false;
+            isImmediate = ((ActionSource)component).isImmediate();
         }
-        catch (InvocationTargetException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new FacesException(e);
-        }
+        return isImmediate;
     }
 
 

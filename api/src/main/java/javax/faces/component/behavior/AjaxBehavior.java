@@ -208,7 +208,8 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public boolean isImmediateSet() 
     {
-        return getStateHelper().eval(ATTR_IMMEDIATE) != null;
+        return (getStateHelper().get(ATTR_IMMEDIATE) != null) ||
+            (getValueExpression(ATTR_IMMEDIATE) != null);
     }
 
     @Override
