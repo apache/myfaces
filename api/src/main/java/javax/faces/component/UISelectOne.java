@@ -81,12 +81,14 @@ public class UISelectOne extends UIInput
             {
                 return; // Matched & Required false, so return ok.
             }
-            if (! _SelectItemsUtil.isNoSelectionOption(context, this, value, new _SelectItemsIterator(this, context), converter))
+            if (! _SelectItemsUtil.isNoSelectionOption(context, this, value, 
+                    new _SelectItemsIterator(this, context), converter))
             {
                 return; // Matched & Required true & No-selection did NOT match, so return ok.
             }
         }
-        _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[] {_MessageUtils.getLabel(context, this) });
+        _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, 
+                new Object[] {_MessageUtils.getLabel(context, this) });
         setValid(false);
     }
 }
