@@ -123,10 +123,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public void setValue(Object value)
     {
-        if (getFacesContext().isProjectStage(ProjectStage.Development))
+        FacesContext facesContext = getFacesContext();
+        if (facesContext != null && facesContext.isProjectStage(ProjectStage.Development))
         {
             // extended debug-info when in Development mode
-            _createFieldDebugInfo(getFacesContext(), "localValue",
+            _createFieldDebugInfo(facesContext, "localValue",
                     getLocalValue(), value, 1);
         }
         setLocalValueSet(true);
@@ -921,10 +922,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     public void setSubmittedValue(Object submittedValue)
     {
-        if (getFacesContext().isProjectStage(ProjectStage.Development))
+        FacesContext facesContext = getFacesContext();
+        if (facesContext != null && facesContext.isProjectStage(ProjectStage.Development))
         {
             // extended debug-info when in Development mode
-            _createFieldDebugInfo(getFacesContext(), "submittedValue",
+            _createFieldDebugInfo(facesContext, "submittedValue",
                     getSubmittedValue(), submittedValue, 1);
         }
         getStateHelper().put(PropertyKeys.submittedValue, submittedValue );
