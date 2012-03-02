@@ -24,7 +24,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
@@ -83,7 +82,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <p>Note this param is ignored for components extending from UISelectOne/UISelectMany.</p>
      **/
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
-    private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
+    private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME
+            = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
 
     // our own, cached key
     private static final String MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME =
@@ -123,10 +123,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public void setValue(Object value)
     {
-        if (getFacesContext().isProjectStage(ProjectStage.Development))
+        FacesContext facesContext = getFacesContext();
+        if (facesContext != null && facesContext.isProjectStage(ProjectStage.Development))
         {
             // extended debug-info when in Development mode
-            _createFieldDebugInfo(getFacesContext(), "localValue",
+            _createFieldDebugInfo(facesContext, "localValue",
                     getLocalValue(), value, 1);
         }
         setLocalValueSet(true);
@@ -143,7 +144,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     public Object getValue()
     {
-        if (isLocalValueSet()) return super.getLocalValue();
+        if (isLocalValueSet())
+        {
+            return super.getLocalValue();
+        }
         return super.getValue();
     }
 
@@ -419,7 +423,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             // continue for this lifecycle phase, as in all the other lifecycle phases.
             UpdateModelException updateModelException = new UpdateModelException(facesMessage, e);
             ExceptionQueuedEventContext exceptionQueuedContext 
-                    = new ExceptionQueuedEventContext (context, updateModelException, this, PhaseId.UPDATE_MODEL_VALUES);
+                    = new ExceptionQueuedEventContext(context, updateModelException, this, PhaseId.UPDATE_MODEL_VALUES);
             
             // spec javadoc says we should call context.getExceptionHandler().processEvent(exceptionQueuedContext),
             // which is not just syntactically wrong, but also stupid!!
@@ -433,7 +437,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     protected void validateValue(FacesContext context, Object convertedValue)
     {
         if (!isValid())
+        {
             return;
+        }
 
         // If our value is empty, check the required property
         boolean isEmpty = isEmpty(convertedValue); 
@@ -470,7 +476,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     private boolean shouldInterpretEmptyStringSubmittedValuesAsNull(FacesContext context)
     {
         ExternalContext ec = context.getExternalContext();
-        Boolean interpretEmptyStringAsNull = (Boolean)ec.getApplicationMap().get(MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME);
+        Boolean interpretEmptyStringAsNull
+                = (Boolean)ec.getApplicationMap().get(MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME);
 
         // not yet cached...
         if (interpretEmptyStringAsNull == null)
@@ -551,7 +558,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void validate(FacesContext context)
     {
         if (context == null)
+        {
             throw new NullPointerException("context");
+        }
 
         Object submittedValue = getSubmittedValue();
         if (submittedValue == null)
@@ -602,7 +611,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
         validateValue(context, convertedValue);
 
         if (!isValid())
+        {
             return;
+        }
 
         Object previousValue = getValue();
         setValue(convertedValue);
@@ -749,7 +760,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * @deprecated
      */
     @SuppressWarnings("dep-ann")
-    @JSFProperty(stateHolder=true, returnSignature = "void", methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
+    @JSFProperty(stateHolder=true, returnSignature = "void",
+            methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
     public MethodBinding getValidator()
     {
         return (MethodBinding) getStateHelper().eval(PropertyKeys.validator);
@@ -787,7 +799,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void removeValidator(Validator validator)
     {
         if (validator == null || _validatorList == null)
+        {
             return;
+        }
 
         _validatorList.remove(validator);
     }
@@ -822,7 +836,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
-    @JSFProperty(stateHolder=true, returnSignature = "void", methodSignature = "javax.faces.event.ValueChangeEvent", clientEvent="valueChange")
+    @JSFProperty(stateHolder=true, returnSignature = "void",
+                 methodSignature = "javax.faces.event.ValueChangeEvent", clientEvent="valueChange")
     public MethodBinding getValueChangeListener()
     {
         return (MethodBinding) getStateHelper().eval(PropertyKeys.valueChangeListener);
@@ -907,10 +922,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     public void setSubmittedValue(Object submittedValue)
     {
-        if (getFacesContext().isProjectStage(ProjectStage.Development))
+        FacesContext facesContext = getFacesContext();
+        if (facesContext != null && facesContext.isProjectStage(ProjectStage.Development))
         {
             // extended debug-info when in Development mode
-            _createFieldDebugInfo(getFacesContext(), "submittedValue",
+            _createFieldDebugInfo(facesContext, "submittedValue",
                     getSubmittedValue(), submittedValue, 1);
         }
         getStateHelper().put(PropertyKeys.submittedValue, submittedValue );
@@ -1054,7 +1070,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @SuppressWarnings("unchecked")
     private Map<String, List<Object[]>> _getDebugInfoMap()
     {
-        final Map<String, Object> requestMap = getFacesContext()
+        Map<String, Object> requestMap = getFacesContext()
                 .getExternalContext().getRequestMap();
         Map<String, List<Object[]>> debugInfo = (Map<String, List<Object[]>>) 
                 requestMap.get(DEBUG_INFO_KEY + getClientId());
