@@ -19,7 +19,6 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
@@ -177,16 +176,6 @@ public class HtmlResponseWriterImpl
         }
         else
         {
-            // validates the encoding, it will throw an UnsupportedEncodingException if the encoding is invalid
-            try
-            {
-                new String("myfaces".getBytes(), characterEncoding);
-            }
-            catch (UnsupportedEncodingException e)
-            {
-                throw new IllegalArgumentException("Unsupported encoding: "+characterEncoding);
-            }
-            
             // canonize to uppercase, that's the standard format
             _characterEncoding = characterEncoding.toUpperCase();
         }
