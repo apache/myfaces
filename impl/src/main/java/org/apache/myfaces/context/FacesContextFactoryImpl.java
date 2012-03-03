@@ -24,12 +24,15 @@ import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.application.ApplicationFactory;
 import javax.faces.context.ExceptionHandlerFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.ExternalContextFactory;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
+import javax.faces.context.PartialViewContextFactory;
 import javax.faces.lifecycle.Lifecycle;
+import javax.faces.render.RenderKitFactory;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
@@ -56,7 +59,13 @@ public class FacesContextFactoryImpl extends FacesContextFactory
      * Reference to factory to prevent unnecessary lookups
      */
     private final ExceptionHandlerFactory _exceptionHandlerFactory;
-        
+    
+    private final ApplicationFactory _applicationFactory;
+    
+    private final RenderKitFactory _renderKitFactory;
+    
+    private final PartialViewContextFactory _partialViewContextFactory;
+    
     /**
      * This var is assigned as the same as javax.faces.context.ExternalContext._firstInstance,
      * and since it is a static reference and does not change, we can cache it here safely.
@@ -89,14 +98,18 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         {
             // It could happen, but we can ignore it.
             if (log.isLoggable(Level.FINE))
+            {
                 log.log(Level.FINE, "Cannot access field _firstInstance"
                         + "from _MyFacesExternalContextHelper ", e);
+            }
         }
         catch (Exception e)
         {
             if (log.isLoggable(Level.SEVERE))
+            {
                 log.log(Level.SEVERE, "Cannot find field _firstInstance"
                         + "from _MyFacesExternalContextHelper ", e);
+            }
         }
         
         _firstExternalContextInstance = firstExternalContextInstance;
@@ -107,6 +120,14 @@ public class FacesContextFactoryImpl extends FacesContextFactory
         _exceptionHandlerFactory = (ExceptionHandlerFactory)
             FactoryFinder.getFactory(FactoryFinder.EXCEPTION_HANDLER_FACTORY);
         
+        _applicationFactory = (ApplicationFactory)
+            FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        
+        _renderKitFactory = (RenderKitFactory)
+            FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+
+        _partialViewContextFactory = (PartialViewContextFactory) 
+            FactoryFinder.getFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
     }
 
     @Override
@@ -154,15 +175,22 @@ public class FacesContextFactoryImpl extends FacesContextFactory
             FacesContext facesContext;
             if (externalContext instanceof ReleaseableExternalContext)
             {
-                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) externalContext, this);
+                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) externalContext,
+                                                    this, _applicationFactory, _renderKitFactory, 
+                                                    _partialViewContextFactory);
             }
             else if (defaultExternalContext != null && defaultExternalContext instanceof ReleaseableExternalContext)
             {
-                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) defaultExternalContext, this);
+                facesContext = new FacesContextImpl(externalContext,
+                                                    (ReleaseableExternalContext) defaultExternalContext, this,
+                                                    _applicationFactory, _renderKitFactory, 
+                                                    _partialViewContextFactory);
             }
             else
             {
-                facesContext = new FacesContextImpl(externalContext, null, this);
+                facesContext = new FacesContextImpl(externalContext, null, this,
+                                                    _applicationFactory, _renderKitFactory, 
+                                                    _partialViewContextFactory);
             }
             
             facesContext.setExceptionHandler(_exceptionHandlerFactory.getExceptionHandler());

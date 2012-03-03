@@ -52,8 +52,8 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
 
     private static final Logger LOGGER = Logger.getLogger(ViewDeclarationLanguageFactoryImpl.class.getName());
     
-    private boolean _initialized;
-    private ViewDeclarationLanguageStrategy[] _supportedLanguages;
+    private volatile boolean _initialized;
+    private volatile ViewDeclarationLanguageStrategy[] _supportedLanguages;
     
     /**
      * 
@@ -77,7 +77,10 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         // TODO: It would be nice to be able to preinitialize the factory. However, since it requires 
         //       access to the ExternalContext it may not be possible, depending on the loading order 
         //       in the FactoryFinder. Could use ideas here. -= SL =-
-        initialize();
+        if (!_initialized)
+        {
+            initialize();
+        }
         
         for (ViewDeclarationLanguageStrategy strategy : _supportedLanguages)
         {

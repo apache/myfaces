@@ -30,6 +30,8 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitContextFactory;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -84,6 +86,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     private Boolean _checkedViewIdCacheEnabled = null;
     
     private RenderKitFactory _renderKitFactory = null;
+    private VisitContextFactory _visitContextFactory = null;
 
     public void processComponentBinding(FacesContext facesContext, UIComponent component)
     {
@@ -93,7 +96,9 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         // TODO: Remove this hack and use VisitHints.SKIP_ITERATION in JSF 2.1
         facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
         
-        component.visitTree(VisitContext.createVisitContext(facesContext), new RestoreStateCallback());
+        VisitContext visitContext = (VisitContext) getVisitContextFactory().
+                    getVisitContext(facesContext, null, null);
+        component.visitTree(visitContext, new RestoreStateCallback());
         
         facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
         
@@ -195,6 +200,15 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         }
         return _renderKitFactory;
+    }
+    
+    protected VisitContextFactory getVisitContextFactory()
+    {
+        if (_visitContextFactory == null)
+        {
+            _visitContextFactory = (VisitContextFactory)FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        }
+        return _visitContextFactory;
     }
         
     private static class RestoreStateCallback implements VisitCallback
