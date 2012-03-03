@@ -18,17 +18,16 @@
  */
 package org.apache.myfaces.shared.resource;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.util.ConcurrentLRUCache;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 public class ResourceHandlerCache
 {
@@ -36,7 +35,7 @@ public class ResourceHandlerCache
             .getLogger(ResourceHandlerCache.class.getName());
 
     private Boolean _resourceCacheEnabled = null;
-    private Map<ResourceKey, ResourceValue> _resourceCacheMap = null;
+    private volatile ConcurrentLRUCache<ResourceKey, ResourceValue> _resourceCacheMap = null;
 
     /**
      * Controls the size of the cache used to check if a resource exists or not. 
@@ -87,7 +86,7 @@ public class ResourceHandlerCache
         }
 
         ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix);
-        return _resourceCacheMap.containsKey(key);
+        return _resourceCacheMap.get(key) != null;
     }
 
     public void putResource(String resourceName, String libraryName,
@@ -110,9 +109,9 @@ public class ResourceHandlerCache
             {
                 log.log(Level.FINE, "Initializing resource cache map");
             }
-            _resourceCacheMap = Collections
-                    .synchronizedMap(new _ResourceMap<ResourceKey, ResourceValue>(
-                            getMaxSize()));
+            int maxSize = getMaxSize();
+            _resourceCacheMap = new ConcurrentLRUCache<ResourceKey, ResourceValue>(
+                    (maxSize * 4 + 3) / 3, maxSize);
         }
 
         _resourceCacheMap.put(new ResourceKey(resourceName, libraryName,
@@ -247,22 +246,4 @@ public class ResourceHandlerCache
         }
     }
 
-    private static class _ResourceMap<K, V> extends LinkedHashMap<K, V>
-    {
-        private static final long serialVersionUID = 1L;
-        private int maxCapacity;
-
-        public _ResourceMap(int cacheSize)
-        {
-            // create map at max capacity and 1.1 load factor to avoid rehashing
-            super(cacheSize + 1, 1.1f, true);
-            maxCapacity = cacheSize;
-        }
-
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<K, V> eldest)
-        {
-            return size() > maxCapacity;
-        }
-    }
 }
