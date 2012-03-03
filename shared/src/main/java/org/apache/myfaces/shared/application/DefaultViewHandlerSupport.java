@@ -19,8 +19,6 @@
 package org.apache.myfaces.shared.application;
 
 import java.net.MalformedURLException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +30,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.shared.util.ConcurrentLRUCache;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
@@ -77,7 +76,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     
     private static final String VIEW_HANDLER_SUPPORT_SB = "oam.viewhandler.SUPPORT_SB";
 
-    private Map<String, Boolean> _checkedViewIdMap = null;
+    private volatile ConcurrentLRUCache<String, Boolean> _checkedViewIdMap = null;
     private Boolean _checkedViewIdCacheEnabled = null;
 
     public String calculateViewId(FacesContext context, String viewId)
@@ -543,12 +542,12 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return false;
     }
 
-    private Map<String, Boolean> getCheckedViewIDMap(FacesContext context)
+    private ConcurrentLRUCache<String, Boolean> getCheckedViewIDMap(FacesContext context)
     {
         if (_checkedViewIdMap == null)
         {
-            _checkedViewIdMap = Collections.synchronizedMap(
-                    new _CheckedViewIDMap<String, Boolean>(getViewIDCacheMaxSize(context)));
+            int maxSize = getViewIDCacheMaxSize(context);
+            _checkedViewIdMap = new ConcurrentLRUCache<String, Boolean>((maxSize * 4 + 3) / 3, maxSize);
         }
         return _checkedViewIdMap;
     }
@@ -585,24 +584,5 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 
         return WebConfigParamUtils.getIntegerInitParameter(externalContext,
                 CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE, CHECKED_VIEWID_CACHE_DEFAULT_SIZE);
-    }
-
-    private class _CheckedViewIDMap<K, V> extends LinkedHashMap<K, V>
-    {
-        private static final long serialVersionUID = 1L;
-        private int maxCapacity;
-
-        public _CheckedViewIDMap(int cacheSize)
-        {
-            // create map at max capacity and 1.1 load factor to avoid rehashing
-            super(cacheSize + 1, 1.1f, true);
-            maxCapacity = cacheSize;
-        }
-
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<K, V> eldest)
-        {
-            return size() > maxCapacity;
-        }
     }
 }

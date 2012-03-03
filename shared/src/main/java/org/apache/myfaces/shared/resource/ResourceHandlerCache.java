@@ -18,17 +18,16 @@
  */
 package org.apache.myfaces.shared.resource;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.util.ConcurrentLRUCache;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 public class ResourceHandlerCache
 {
@@ -36,34 +35,43 @@ public class ResourceHandlerCache
             .getLogger(ResourceHandlerCache.class.getName());
 
     private Boolean _resourceCacheEnabled = null;
-    private Map<ResourceKey, ResourceValue> _resourceCacheMap = null;
+    private volatile ConcurrentLRUCache<ResourceKey, ResourceValue> _resourceCacheMap = null;
 
     /**
      * Controls the size of the cache used to check if a resource exists or not. 
      * 
      * <p>See org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED for details.</p>
      */
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="resources", classType="java.lang.Integer", tags="performance")
-    private static final String RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.RESOURCE_HANDLER_CACHE_SIZE";
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="resources", 
+            classType="java.lang.Integer", tags="performance")
+    private static final String RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE = 
+        "org.apache.myfaces.RESOURCE_HANDLER_CACHE_SIZE";
     private static final int RESOURCE_HANDLER_CACHE_DEFAULT_SIZE = 500;
 
     /**
-     * Enable or disable the cache used to "remember" if a resource handled by the default ResourceHandler exists or not.
+     * Enable or disable the cache used to "remember" if a resource handled by 
+     * the default ResourceHandler exists or not.
      * 
      */
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="resources", expectedValues="true,false", tags="performance")
-    private static final String RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE = "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="resources", 
+            expectedValues="true,false", tags="performance")
+    private static final String RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE = 
+        "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
     private static final boolean RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT = true;
 
     public ResourceValue getResource(String resourceName, String libraryName,
             String contentType, String localePrefix)
     {
         if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        {
             return null;
+        }
 
         if (log.isLoggable(Level.FINE))
+        {
             log.log(Level.FINE, "Attemping to get resource from cache for "
                     + resourceName);
+        }
 
         ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix);
 
@@ -73,29 +81,37 @@ public class ResourceHandlerCache
     public boolean containsResource(String resourceName, String libraryName, String contentType, String localePrefix)
     {
         if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        {
             return false;
+        }
 
         ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix);
-        return _resourceCacheMap.containsKey(key);
+        return _resourceCacheMap.get(key) != null;
     }
 
     public void putResource(String resourceName, String libraryName,
             String contentType, String localePrefix, ResourceMeta resource, ResourceLoader loader)
     {
         if (!isResourceCachingEnabled())
+        {
             return;
+        }
 
         if (log.isLoggable(Level.FINE))
+        {
             log.log(Level.FINE, "Attemping to put resource to cache for "
                     + resourceName);
+        }
 
         if (_resourceCacheMap == null)
         {
             if (log.isLoggable(Level.FINE))
+            {
                 log.log(Level.FINE, "Initializing resource cache map");
-            _resourceCacheMap = Collections
-                    .synchronizedMap(new _ResourceMap<ResourceKey, ResourceValue>(
-                            getMaxSize()));
+            }
+            int maxSize = getMaxSize();
+            _resourceCacheMap = new ConcurrentLRUCache<ResourceKey, ResourceValue>(
+                    (maxSize * 4 + 3) / 3, maxSize);
         }
 
         _resourceCacheMap.put(new ResourceKey(resourceName, libraryName,
@@ -111,12 +127,15 @@ public class ResourceHandlerCache
             //first, check to make sure that ProjectStage is production, if not, skip caching
             if (!facesContext.isProjectStage(ProjectStage.Production))
             {
-                return _resourceCacheEnabled = Boolean.FALSE;
+                _resourceCacheEnabled = Boolean.FALSE;
+                return _resourceCacheEnabled;
             }
 
             ExternalContext externalContext = facesContext.getExternalContext();
             if (externalContext == null)
+            {
                 return false; //don't cache right now, but don't disable it yet either
+            }
 
             //if in production, make sure that the cache is not explicitly disabled via context param
             _resourceCacheEnabled = WebConfigParamUtils.getBooleanInitParameter(externalContext, 
@@ -227,22 +246,4 @@ public class ResourceHandlerCache
         }
     }
 
-    private static class _ResourceMap<K, V> extends LinkedHashMap<K, V>
-    {
-        private static final long serialVersionUID = 1L;
-        private int maxCapacity;
-
-        public _ResourceMap(int cacheSize)
-        {
-            // create map at max capacity and 1.1 load factor to avoid rehashing
-            super(cacheSize + 1, 1.1f, true);
-            maxCapacity = cacheSize;
-        }
-
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<K, V> eldest)
-        {
-            return size() > maxCapacity;
-        }
-    }
 }
