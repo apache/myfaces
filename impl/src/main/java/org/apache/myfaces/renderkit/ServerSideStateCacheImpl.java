@@ -78,12 +78,16 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * 
      * <p>Only applicable if state saving method is "server" (= default). For example, if this param has value = 2 and 
      * in your custom webapp there is a form that is clicked 3 times, only 2 views
-     * will be stored and the third one (the one stored the first time) will be removed from session, even if the view can
-     * store more sessions org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION. This feature becomes useful for multi-window applications.
-     * where without this feature a window can swallow all view slots so the other ones will throw ViewExpiredException.</p>
+     * will be stored and the third one (the one stored the first time) will be
+     * removed from session, even if the view can
+     * store more sessions org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION.
+     * This feature becomes useful for multi-window applications.
+     * where without this feature a window can swallow all view slots so
+     * the other ones will throw ViewExpiredException.</p>
      */
     @JSFWebConfigParam(since="2.0.6", classType="java.lang.Integer", group="state", tags="performance")
-    private static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
+    private static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM
+            = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
     
     /**
      * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
@@ -104,7 +108,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     /**
      * Indicates that the serialized state will be compressed before it is written to the session. By default true.
      * 
-     * Only applicable if state saving method is "server" (= default) and if <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
+     * Only applicable if state saving method is "server" (= default) and if
+     * <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
      * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
      * If <code>false</code> the state will not be compressed.
      */
@@ -144,7 +149,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * </ul>
      * 
      */
-    @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak", since="1.2.5", group="state", tags="performance")
+    @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak",
+                       since="1.2.5", group="state", tags="performance")
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
     
     /**
@@ -171,7 +177,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * The default value is false.</p>
      */
     @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false", group="state")
-    private static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
+    private static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
+            = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
 
     private static final int UNCOMPRESSED_FLAG = 0;
     private static final int COMPRESSED_FLAG = 1;
@@ -221,9 +228,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             if (key == null )
             {
                 if (isUseFlashScopePurgeViewsInSession(context.getExternalContext()) && 
-                    Boolean.TRUE.equals(context.getExternalContext().getRequestMap().get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
+                    Boolean.TRUE.equals(context.getExternalContext().getRequestMap()
+                            .get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
                 {
-                    key = (SerializedViewKey) context.getExternalContext().getFlash().get(RESTORED_VIEW_KEY_REQUEST_ATTR);
+                    key = (SerializedViewKey)
+                            context.getExternalContext().getFlash().get(RESTORED_VIEW_KEY_REQUEST_ATTR);
                 }
             }
         }
@@ -283,7 +292,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             }
             attributeMap.put(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
             
-            if (getNumberOfSequentialViewsInSession(externalContext) != null && getNumberOfSequentialViewsInSession(externalContext) > 0)
+            if (getNumberOfSequentialViewsInSession(externalContext) != null &&
+                getNumberOfSequentialViewsInSession(externalContext) > 0)
             {
                 SerializedViewKey key = new SerializedViewKey(viewId, sequence);
                 attributeMap.put(RESTORED_VIEW_KEY_REQUEST_ATTR, key);
@@ -302,14 +312,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     public int getNextViewSequence(FacesContext context)
     {
-        ExternalContext externalContext = context.getExternalContext();
-
-        if (!externalContext.getRequestMap().containsKey(RendererUtils.SEQUENCE_PARAM))
+        if (!context.getAttributes().containsKey(RendererUtils.SEQUENCE_PARAM))
         {
             nextViewSequence(context);
         }
 
-        Integer sequence = (Integer) externalContext.getRequestMap().get(RendererUtils.SEQUENCE_PARAM);
+        Integer sequence = (Integer) context.getAttributes().get(RendererUtils.SEQUENCE_PARAM);
         return sequence.intValue();
     }
 
@@ -317,11 +325,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     {
         ExternalContext externalContext = facescontext.getExternalContext();
         Object sessionObj = externalContext.getSession(true);
+        Integer sequence = null;
         synchronized(sessionObj) // synchronized to increase sequence if multiple requests
                                  // are handled at the same time for the session
         {
             Map<String, Object> map = externalContext.getSessionMap();
-            Integer sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
+            sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
             if(sequence == null || sequence.intValue() == Integer.MAX_VALUE)
             {
                 sequence = Integer.valueOf(1);
@@ -331,17 +340,23 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 sequence = Integer.valueOf(sequence.intValue() + 1);
             }
             map.put(RendererUtils.SEQUENCE_PARAM, sequence);
-            externalContext.getRequestMap().put(RendererUtils.SEQUENCE_PARAM, sequence);
         }
+        facescontext.getAttributes().put(RendererUtils.SEQUENCE_PARAM, sequence);
     }
 
     protected Object serializeView(FacesContext context, Object serializedView)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering serializeView");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering serializeView");
+        }
 
         if(isSerializeStateInSession(context))
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize state in session");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Processing serializeView - serialize state in session");
+            }
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
             try
@@ -349,14 +364,20 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 OutputStream os = baos;
                 if(isCompressStateInSession(context))
                 {
-                    if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize compressed");
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("Processing serializeView - serialize compressed");
+                    }
 
                     os.write(COMPRESSED_FLAG);
                     os = new GZIPOutputStream(os, 1024);
                 }
                 else
                 {
-                    if (log.isLoggable(Level.FINEST)) log.finest("Processing serializeView - serialize uncompressed");
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("Processing serializeView - serialize uncompressed");
+                    }
 
                     os.write(UNCOMPRESSED_FLAG);
                 }
@@ -371,7 +392,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 out.close();
                 baos.close();
 
-                if (log.isLoggable(Level.FINEST)) log.finest("Exiting serializeView - serialized. Bytes : "+baos.size());
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Exiting serializeView - serialized. Bytes : " + baos.size());
+                }
                 return baos.toByteArray();
             }
             catch (IOException e)
@@ -383,7 +407,9 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Exiting serializeView - do not serialize state in session.");
+        }
 
         return serializedView;
 
@@ -391,7 +417,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     /**
      * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
-     * @see SERIALIZE_STATE_IN_SESSION_PARAM
+     * @see #SERIALIZE_STATE_IN_SESSION_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state should be serialized in the session
      */
@@ -409,7 +435,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     /**
      * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
-     * @see COMPRESS_SERVER_STATE_PARAM
+     * @see #COMPRESS_SERVER_STATE_PARAM
      * @param context <code>FacesContext</code> for the request we are processing.
      * @return boolean true, if the server state steam should be compressed
      */
@@ -427,11 +453,18 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     protected Object deserializeView(Object state)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering deserializeView");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering deserializeView");
+        }
 
         if(state instanceof byte[])
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing deserializeView - deserializing serialized state. Bytes : "+((byte[]) state).length);
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Processing deserializeView - deserializing serialized state. Bytes : "
+                           + ((byte[]) state).length);
+            }
 
             try
             {
@@ -492,7 +525,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         else if (state instanceof Object[])
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Exiting deserializeView - state not serialized.");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Exiting deserializeView - state not serialized.");
+            }
 
             return state;
         }
@@ -503,7 +539,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         else
         {
-            log.severe("Exiting deserializeView - this method should not be called with a state of type : "+state.getClass());
+            log.severe("Exiting deserializeView - this method should not be called with a state of type : "
+                       + state.getClass());
             return null;
         }
     }
@@ -530,7 +567,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     {
         private static final long serialVersionUID = -3734849062185115847L;
 
-        private final List<SerializedViewKey> _keys = new ArrayList<SerializedViewKey>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
+        private final List<SerializedViewKey> _keys
+                = new ArrayList<SerializedViewKey>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
         private final Map<SerializedViewKey, Object> _serializedViews = new HashMap<SerializedViewKey, Object>();
         
         private final Map<SerializedViewKey, SerializedViewKey> _precedence = 
@@ -540,7 +578,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         // the garbage collector if free memory is low
         private transient Map<Object, Object> _oldSerializedViews = null;
 
-        public synchronized void add(FacesContext context, Object state, Integer nextSequence, SerializedViewKey previousRestoredKey)
+        public synchronized void add(FacesContext context, Object state, Integer nextSequence,
+                                     SerializedViewKey previousRestoredKey)
         {
             SerializedViewKey key = new SerializedViewKey(context.getViewRoot().getViewId(), nextSequence);
             _serializedViews.put(key, state);
@@ -554,7 +593,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 }
             }
 
-            while (_keys.remove(key));
+            while (_keys.remove(key))
+            {
+                // do nothing
+            }
             _keys.add(key);
 
             if (previousRestoredKey != null && maxCount != null && maxCount > 0)
@@ -575,7 +617,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     // put on that map.
                     do
                     {
-                        while (_keys.remove(keyToRemove));
+                        while (_keys.remove(keyToRemove))
+                        {
+                            // do nothing
+                        }
 
                         Object oldView = _serializedViews.remove(keyToRemove);
                         if (oldView != null && 
@@ -623,7 +668,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         
         /**
          * Reads the amount (default = 20) of views to be stored in session.
-         * @see NUMBER_OF_VIEWS_IN_SESSION_PARAM
+         * @see #NUMBER_OF_VIEWS_IN_SESSION_PARAM
          * @param context FacesContext for the current request, we are processing
          * @return Number vf views stored in the session
          */
@@ -692,7 +737,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
          * @since 1.2.5
          * @param context
          * @return constant indicating caching mode
-         * @see CACHE_OLD_VIEWS_IN_SESSION_MODE
+         * @see #CACHE_OLD_VIEWS_IN_SESSION_MODE
          */
         protected String getCacheOldViewsInSessionMode(FacesContext context)
         {
@@ -763,10 +808,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         @Override
         public int hashCode()
         {
-            final int PRIME = 31;
+            final int prime = 31;
             int result = 1;
-            result = PRIME * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
-            result = PRIME * result + ((_viewId == null) ? 0 : _viewId.hashCode());
+            result = prime * result + ((_sequenceId == null) ? 0 : _sequenceId.hashCode());
+            result = prime * result + ((_viewId == null) ? 0 : _viewId.hashCode());
             return result;
         }
 
@@ -774,26 +819,40 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             final SerializedViewKey other = (SerializedViewKey) obj;
             if (_sequenceId == null)
             {
                 if (other._sequenceId != null)
+                {
                     return false;
+                }
             }
             else if (!_sequenceId.equals(other._sequenceId))
+            {
                 return false;
+            }
             if (_viewId == null)
             {
                 if (other._viewId != null)
+                {
                     return false;
+                }
             }
             else if (!_viewId.equals(other._viewId))
+            {
                 return false;
+            }
             return true;
         }
 
@@ -804,11 +863,17 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     @Override
     public Object saveSerializedView(FacesContext facesContext, Object serializedView)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - server-side state saving - save state");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Processing saveSerializedView - server-side state saving - save state");
+        }
         //save state in server session
         saveSerializedViewInServletSession(facesContext, serializedView);
         
-        if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveSerializedView - server-side state saving - saved state");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Exiting saveSerializedView - server-side state saving - saved state");
+        }
         
         return encodeSerializedState(facesContext, serializedView);
     }
@@ -816,11 +881,16 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     @Override
     public Object restoreSerializedView(FacesContext facesContext, String viewId, Object viewState)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Restoring view from session");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Restoring view from session");
+        }
 
         Integer serverStateId = getServerStateId((Object[]) viewState);
 
-        return (serverStateId == null) ? null : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
+        return (serverStateId == null)
+                ? null
+                : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
     }
 
     public Object encodeSerializedState(FacesContext facesContext, Object serializedView)

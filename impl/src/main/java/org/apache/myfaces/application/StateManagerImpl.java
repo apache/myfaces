@@ -58,7 +58,10 @@ public class StateManagerImpl extends StateManager
     @Override
     protected Object getComponentStateToSave(FacesContext facesContext)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering getComponentStateToSave");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering getComponentStateToSave");
+        }
 
         UIViewRoot viewRoot = facesContext.getViewRoot();
         if (viewRoot.isTransient())
@@ -68,7 +71,10 @@ public class StateManagerImpl extends StateManager
 
         Object serializedComponentStates = viewRoot.processSaveState(facesContext);
         //Locale is a state attribute of UIViewRoot and need not be saved explicitly
-        if (log.isLoggable(Level.FINEST)) log.finest("Exiting getComponentStateToSave");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Exiting getComponentStateToSave");
+        }
         return serializedComponentStates;
     }
 
@@ -81,7 +87,10 @@ public class StateManagerImpl extends StateManager
     @Override
     protected Object getTreeStructureToSave(FacesContext facesContext)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering getTreeStructureToSave");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering getTreeStructureToSave");
+        }
         UIViewRoot viewRoot = facesContext.getViewRoot();
         if (viewRoot.isTransient())
         {
@@ -89,14 +98,20 @@ public class StateManagerImpl extends StateManager
         }
         TreeStructureManager tsm = new TreeStructureManager();
         Object retVal = tsm.buildTreeStructureToSave(viewRoot);
-        if (log.isLoggable(Level.FINEST)) log.finest("Exiting getTreeStructureToSave");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Exiting getTreeStructureToSave");
+        }
         return retVal;
     }
 
     @Override
     public UIViewRoot restoreView(FacesContext facesContext, String viewId, String renderKitId)
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering restoreView - viewId: "+viewId+" ; renderKitId: "+renderKitId);
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering restoreView - viewId: " + viewId + " ; renderKitId: " + renderKitId);
+        }
 
         UIViewRoot uiViewRoot = null;
         
@@ -110,7 +125,10 @@ public class StateManagerImpl extends StateManager
         
         if (sms != null)
         {
-            if (log.isLoggable(Level.FINEST)) log.finest("Redirect to StateManagementStrategy: "+sms.getClass().getName());
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Redirect to StateManagementStrategy: " + sms.getClass().getName());
+            }
             
             uiViewRoot = sms.restoreView(facesContext, viewId, renderKitId);
         }
@@ -121,18 +139,23 @@ public class StateManagerImpl extends StateManager
 
             Object state = responseStateManager.getState(facesContext, viewId);
 
-            if (state != null) {
+            if (state != null)
+            {
                 Object[] stateArray = (Object[])state;
                 TreeStructureManager tsm = new TreeStructureManager();
                 uiViewRoot = tsm.restoreTreeStructure(stateArray[0]);
 
-                if (uiViewRoot != null) {
+                if (uiViewRoot != null)
+                {
                     facesContext.setViewRoot (uiViewRoot);
                     uiViewRoot.processRestoreState(facesContext, stateArray[1]);
                 }
             }            
         }
-        if (log.isLoggable(Level.FINEST)) log.finest("Exiting restoreView - "+viewId);
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Exiting restoreView - " + viewId);
+        }
 
         return uiViewRoot;
     }
@@ -161,7 +184,10 @@ public class StateManagerImpl extends StateManager
                 
                 if (sms != null)
                 {
-                    if (log.isLoggable(Level.FINEST)) log.finest("Calling saveView of StateManagementStrategy: "+sms.getClass().getName());
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("Calling saveView of StateManagementStrategy: " + sms.getClass().getName());
+                    }
                     
                     serializedView = sms.saveView(facesContext);
                     
@@ -169,7 +195,8 @@ public class StateManagerImpl extends StateManager
                     // additional operations for save the state if is necessary.
                     if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
                     {
-                        StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
+                        StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).
+                                saveState(facesContext, serializedView);
                     }
                     
                     return serializedView; 
@@ -185,39 +212,55 @@ public class StateManagerImpl extends StateManager
                 return null;
             }
     
-            if (log.isLoggable(Level.FINEST)) log.finest("Entering saveSerializedView");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Entering saveSerializedView");
+            }
     
             checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<String>());
     
-            if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - Checked for duplicate Ids");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Processing saveSerializedView - Checked for duplicate Ids");
+            }
     
             ExternalContext externalContext = facesContext.getExternalContext();
     
             // SerializedView already created before within this request?
-            serializedView = externalContext.getRequestMap()
+            serializedView = facesContext.getAttributes()
                                                                 .get(SERIALIZED_VIEW_REQUEST_ATTR);
             if (serializedView == null)
             {
-                if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - create new serialized view");
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Processing saveSerializedView - create new serialized view");
+                }
     
                 // first call to saveSerializedView --> create SerializedView
                 Object treeStruct = getTreeStructureToSave(facesContext);
                 Object compStates = getComponentStateToSave(facesContext);
                 serializedView = new Object[] {treeStruct, compStates};
-                externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
+                facesContext.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR,
                                                     serializedView);
     
-                if (log.isLoggable(Level.FINEST)) log.finest("Processing saveSerializedView - new serialized view created");
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Processing saveSerializedView - new serialized view created");
+                }
             }
             
             // If MyfacesResponseStateManager is used, give the option to do
             // additional operations for save the state if is necessary.
             if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
             {
-                StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).saveState(facesContext, serializedView);
+                StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).
+                        saveState(facesContext, serializedView);
             }
     
-            if (log.isLoggable(Level.FINEST)) log.finest("Exiting saveView");
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Exiting saveView");
+            }
         }
         finally
         {
@@ -282,7 +325,9 @@ public class StateManagerImpl extends StateManager
     private static void getPathToComponent(UIComponent component, StringBuffer buf)
     {
         if(component == null)
+        {
             return;
+        }
 
         StringBuffer intBuf = new StringBuffer();
 
@@ -309,7 +354,10 @@ public class StateManagerImpl extends StateManager
     public void writeState(FacesContext facesContext,
                            Object state) throws IOException
     {
-        if (log.isLoggable(Level.FINEST)) log.finest("Entering writeState");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Entering writeState");
+        }
 
         //UIViewRoot uiViewRoot = facesContext.getViewRoot();
         //save state in response (client)
@@ -318,7 +366,10 @@ public class StateManagerImpl extends StateManager
 
         responseStateManager.writeState(facesContext, state);
 
-        if (log.isLoggable(Level.FINEST)) log.finest("Exiting writeState");
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("Exiting writeState");
+        }
 
     }
 

@@ -291,9 +291,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      */
     public final static String MARK_INITIAL_STATE_KEY = "org.apache.myfaces.MARK_INITIAL_STATE";
     
-    public final static String IS_BUILDING_INITIAL_STATE_KEY_ALIAS = "javax.faces.view.ViewDeclarationLanguage.IS_BUILDING_INITIAL_STATE"; 
+    public final static String IS_BUILDING_INITIAL_STATE_KEY_ALIAS
+            = "javax.faces.view.ViewDeclarationLanguage.IS_BUILDING_INITIAL_STATE";
 
-    public final static String CLEAN_TRANSIENT_BUILD_ON_RESTORE = "org.apache.myfaces.CLEAN_TRANSIENT_BUILD_ON_RESTORE";
+    public final static String CLEAN_TRANSIENT_BUILD_ON_RESTORE
+            = "org.apache.myfaces.CLEAN_TRANSIENT_BUILD_ON_RESTORE";
 
     private final static String STATE_KEY = "<!--@@JSF_FORM_STATE_MARKER@@-->";
 
@@ -511,7 +513,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     public static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
     {
-        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class, component.getClass(), component);
+        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class,
+                                              component.getClass(), component);
 
         if (component.getChildCount() > 0)
         {
@@ -585,7 +588,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             FaceletFactory.setInstance(_faceletFactory);
             try
             {
-                compositeComponentFacelet = _faceletFactory.getCompositeComponentMetadataFacelet(componentResource.getURL());
+                compositeComponentFacelet
+                        = _faceletFactory.getCompositeComponentMetadataFacelet(componentResource.getURL());
             }
             finally
             {
@@ -595,7 +599,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
             // Create a temporal tree where all components will be put, but we are only
             // interested in metadata.
-            UINamingContainer compositeComponentBase = (UINamingContainer) context.getApplication().createComponent(UINamingContainer.COMPONENT_TYPE);
+            UINamingContainer compositeComponentBase
+                    = (UINamingContainer) context.getApplication().createComponent(UINamingContainer.COMPONENT_TYPE);
 
             // Fill the component resource key, because this information should be available
             // on metadata to recognize which is the component used as composite component base.
@@ -716,7 +721,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     public void retargetAttachedObjects(FacesContext context,
                                         UIComponent topLevelComponent, List<AttachedObjectHandler> handlerList)
     {
-        BeanInfo compositeComponentMetadata = (BeanInfo) topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
+        BeanInfo compositeComponentMetadata
+                = (BeanInfo) topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
 
         if (compositeComponentMetadata == null)
         {
@@ -960,8 +966,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 {
                                     if (log.isLoggable(Level.SEVERE))
                                     {
-                                        log.severe("attributeValueExpression not found under the key \"" + attributeName +
-                                                "\". Looking for the next attribute");
+                                        log.severe("attributeValueExpression not found under the key \""
+                                                   + attributeName
+                                                   + "\". Looking for the next attribute");
                                     }
                                 }
                             }
@@ -1828,10 +1835,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
 
         // get our content type
-        String contentType = (String) extContext.getRequestMap().get("facelets.ContentType");
+        String contentType = (String) context.getAttributes().get("facelets.ContentType");
 
         // get the encoding
-        String encoding = (String) extContext.getRequestMap().get("facelets.Encoding");
+        String encoding = (String) context.getAttributes().get("facelets.Encoding");
 
         // -= Leonardo Uribe =- Add */* to the contentType is a fix done from FaceletViewHandler
         // to make old RI versions work, but since this is for JSF 2.0 it is not necessary that code.
@@ -1914,7 +1921,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         String contentType = orig;
 
         // see if we need to override the contentType
-        Map<String, Object> m = context.getExternalContext().getRequestMap();
+        Map<Object, Object> m = context.getAttributes();
         if (m.containsKey("facelets.ContentType"))
         {
             contentType = (String) m.get("facelets.ContentType");
@@ -1946,7 +1953,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         String encoding = orig;
 
         // see if we need to override the encoding
-        Map<String, Object> m = context.getExternalContext().getRequestMap();
+        Map<Object, Object> m = context.getAttributes();
         Map<String, Object> sm = context.getExternalContext().getSessionMap();
 
         // 1. check the request attribute

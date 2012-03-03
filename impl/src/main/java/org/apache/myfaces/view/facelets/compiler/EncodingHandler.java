@@ -45,15 +45,15 @@ public class EncodingHandler implements FaceletHandler
         this.next.apply(ctx, parent);
         if (this.encoding == null)
         {
-            if (!ctx.getFacesContext().getExternalContext().getRequestMap().containsKey("facelets.Encoding"))
+            if (!ctx.getFacesContext().getAttributes().containsKey("facelets.Encoding"))
             {
-                ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", "UTF-8");
+                ctx.getFacesContext().getAttributes().put("facelets.Encoding", "UTF-8");
             }
         }
         else
         {
             //Encoding of document takes precedence over f:view contentType
-            ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", this.encoding);
+            ctx.getFacesContext().getAttributes().put("facelets.Encoding", this.encoding);
         }
     }
 
