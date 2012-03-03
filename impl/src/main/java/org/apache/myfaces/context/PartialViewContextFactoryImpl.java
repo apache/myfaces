@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.context;
 
+import javax.faces.FactoryFinder;
+import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.context.PartialViewContextFactory;
@@ -26,10 +28,20 @@ import org.apache.myfaces.context.servlet.PartialViewContextImpl;
 
 public class PartialViewContextFactoryImpl extends PartialViewContextFactory
 {
+    private final VisitContextFactory _visitContextFactory;
+    
+    public PartialViewContextFactoryImpl()
+    {
+        super();
+        
+        _visitContextFactory = (VisitContextFactory) 
+            FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+    }
 
+    
     @Override
     public PartialViewContext getPartialViewContext(FacesContext context)
     {
-        return new PartialViewContextImpl(context);
+        return new PartialViewContextImpl(context, _visitContextFactory);
     }
 }

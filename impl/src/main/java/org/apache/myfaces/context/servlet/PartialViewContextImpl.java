@@ -35,6 +35,7 @@ import javax.faces.component.html.HtmlBody;
 import javax.faces.component.html.HtmlHead;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
@@ -87,10 +88,18 @@ public class PartialViewContextImpl extends PartialViewContext
     private Boolean _partialRequest = null;
     private Boolean _renderAll = null;
     private PartialResponseWriter _partialResponseWriter = null;
+    private VisitContextFactory _visitContextFactory = null;
 
     public PartialViewContextImpl(FacesContext context)
     {
         _facesContext = context;
+    }
+    
+    public PartialViewContextImpl(FacesContext context, 
+            VisitContextFactory visitContextFactory)
+    {
+        _facesContext = context;
+        _visitContextFactory = visitContextFactory;
     }
 
     @Override
@@ -400,7 +409,7 @@ public class PartialViewContextImpl extends PartialViewContext
         Set<VisitHint> hints = new HashSet<VisitHint>();
         hints.add(VisitHint.EXECUTE_LIFECYCLE);
         hints.add(VisitHint.SKIP_UNRENDERED);
-        VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, executeIds, hints);
+        VisitContext visitCtx = getVisitContextFactory().getVisitContext(_facesContext, executeIds, hints);
         viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
     }
 
@@ -501,7 +510,8 @@ public class PartialViewContextImpl extends PartialViewContext
                             }
                         }
 
-                        VisitContext visitCtx = VisitContext.createVisitContext(_facesContext, renderIds, hints);
+                        VisitContext visitCtx = getVisitContextFactory().getVisitContext(
+                                _facesContext, renderIds, hints);
                         viewRoot.visitTree(visitCtx,
                                            new PhaseAwareVisitCallback(_facesContext, phaseId, updatedComponents));
                     }
@@ -626,6 +636,7 @@ public class PartialViewContextImpl extends PartialViewContext
     public void release()
     {
         assertNotReleased();
+        _visitContextFactory = null;
         _executeClientIds = null;
         _renderClientIds = null;
         _ajaxRequest = null;
@@ -677,6 +688,15 @@ public class PartialViewContextImpl extends PartialViewContext
             }
         }
         return null;
+    }
+    
+    private VisitContextFactory getVisitContextFactory()
+    {
+        if (_visitContextFactory == null)
+        {
+            _visitContextFactory = (VisitContextFactory)FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        }
+        return _visitContextFactory;
     }
 
     private class PhaseAwareVisitCallback implements VisitCallback

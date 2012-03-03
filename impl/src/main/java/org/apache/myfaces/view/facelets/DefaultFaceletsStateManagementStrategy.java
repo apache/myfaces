@@ -40,6 +40,7 @@ import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
@@ -169,6 +170,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private ViewDeclarationLanguageFactory _vdlFactory;
     
     private RenderKitFactory _renderKitFactory = null;
+    
+    private VisitContextFactory _visitContextFactory = null;
     
     private Boolean _saveStateWithVisitTreeOnPSS;
     
@@ -714,7 +717,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         try
         {
             EnumSet<VisitHint> visitHints = EnumSet.of(VisitHint.SKIP_ITERATION);
-            uiViewRoot.visitTree( VisitContext.createVisitContext (facesContext, null, visitHints), new VisitCallback()
+            uiViewRoot.visitTree( getVisitContextFactory().getVisitContext(
+                    facesContext, null, visitHints), new VisitCallback()
             {
                 public VisitResult visit(VisitContext context, UIComponent target)
                 {
@@ -1011,6 +1015,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         }
         return _renderKitFactory;
+    }
+    
+    protected VisitContextFactory getVisitContextFactory()
+    {
+        if (_visitContextFactory == null)
+        {
+            _visitContextFactory = (VisitContextFactory)FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        }
+        return _visitContextFactory;
     }
 
     protected String getCheckIdProductionMode(FacesContext facesContext)

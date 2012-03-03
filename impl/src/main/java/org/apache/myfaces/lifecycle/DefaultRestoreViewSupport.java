@@ -87,6 +87,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     private Boolean _checkedViewIdCacheEnabled = null;
     
     private RenderKitFactory _renderKitFactory = null;
+    private VisitContextFactory _visitContextFactory = null;
 
     public void processComponentBinding(FacesContext facesContext, UIComponent component)
     {
@@ -101,7 +102,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
 
             EnumSet<VisitHint> visitHints = EnumSet.of(VisitHint.SKIP_ITERATION);
-            VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, visitHints);
+            VisitContext visitContext = (VisitContext) getVisitContextFactory().
+                    getVisitContext(facesContext, null, visitHints);
             component.visitTree(visitContext, new RestoreStateCallback());
         }
         finally
@@ -210,6 +212,15 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         }
         return _renderKitFactory;
+    }
+    
+    protected VisitContextFactory getVisitContextFactory()
+    {
+        if (_visitContextFactory == null)
+        {
+            _visitContextFactory = (VisitContextFactory)FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        }
+        return _visitContextFactory;
     }
         
     private static class RestoreStateCallback implements VisitCallback
