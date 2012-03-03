@@ -131,16 +131,16 @@ public final class ViewHandler extends TagHandler
                         }
                     }
                 }
-                ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.ContentType", v);
+                ctx.getFacesContext().getAttributes().put("facelets.ContentType", v);
             }
             if (this.encoding != null)
             {
                 String v = this.encoding.getValue(ctx);
-                ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", v);
+                ctx.getFacesContext().getAttributes().put("facelets.Encoding", v);
             }
             else if (encodingValue != null)
             {
-                ctx.getFacesContext().getExternalContext().getRequestMap().put("facelets.Encoding", encodingValue);
+                ctx.getFacesContext().getAttributes().put("facelets.Encoding", encodingValue);
             }
             if (this.beforePhase != null)
             {

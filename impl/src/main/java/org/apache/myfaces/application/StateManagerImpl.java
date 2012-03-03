@@ -224,7 +224,7 @@ public class StateManagerImpl extends StateManager
             ExternalContext externalContext = facesContext.getExternalContext();
     
             // SerializedView already created before within this request?
-            serializedView = externalContext.getRequestMap()
+            serializedView = facesContext.getAttributes()
                                                                 .get(SERIALIZED_VIEW_REQUEST_ATTR);
             if (serializedView == null)
             {
@@ -237,7 +237,7 @@ public class StateManagerImpl extends StateManager
                 Object treeStruct = getTreeStructureToSave(facesContext);
                 Object compStates = getComponentStateToSave(facesContext);
                 serializedView = new Object[] {treeStruct, compStates};
-                externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
+                facesContext.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR,
                                                     serializedView);
     
                 if (log.isLoggable(Level.FINEST))

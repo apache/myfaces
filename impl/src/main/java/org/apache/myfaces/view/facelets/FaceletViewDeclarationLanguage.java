@@ -2172,10 +2172,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
 
         // get our content type
-        String contentType = (String) extContext.getRequestMap().get("facelets.ContentType");
+        String contentType = (String) context.getAttributes().get("facelets.ContentType");
 
         // get the encoding
-        String encoding = (String) extContext.getRequestMap().get("facelets.Encoding");
+        String encoding = (String) context.getAttributes().get("facelets.Encoding");
 
         // -= Leonardo Uribe =- Add */* to the contentType is a fix done from FaceletViewHandler
         // to make old RI versions work, but since this is for JSF 2.0 it is not necessary that code.
@@ -2261,7 +2261,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         String contentType = orig;
 
         // see if we need to override the contentType
-        Map<String, Object> m = context.getExternalContext().getRequestMap();
+        Map<Object, Object> m = context.getAttributes();
         if (m.containsKey("facelets.ContentType"))
         {
             contentType = (String) m.get("facelets.ContentType");
@@ -2293,7 +2293,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         String encoding = orig;
 
         // see if we need to override the encoding
-        Map<String, Object> m = context.getExternalContext().getRequestMap();
+        Map<Object, Object> m = context.getAttributes();
         Map<String, Object> sm = context.getExternalContext().getSessionMap();
 
         // 1. check the request attribute

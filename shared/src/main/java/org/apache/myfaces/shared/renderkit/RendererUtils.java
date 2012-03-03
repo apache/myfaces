@@ -1212,6 +1212,10 @@ public final class RendererUtils
         dest.setValidator(src.getValidator());
     }
 
+    /**
+     * @deprecated Logic corrected and encapsulated better in org.apache.myfaces.renderkit.ServerSideStateCacheImpl
+     */
+    @Deprecated
     public static Integer getViewSequence(FacesContext facescontext)
     {
         Map map = facescontext.getExternalContext().getRequestMap();

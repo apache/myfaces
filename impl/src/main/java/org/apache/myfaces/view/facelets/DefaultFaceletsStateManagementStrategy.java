@@ -472,7 +472,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         
         ExternalContext externalContext = context.getExternalContext();
         
-        Object serializedView = externalContext.getRequestMap()
+        Object serializedView = context.getAttributes()
             .get(SERIALIZED_VIEW_REQUEST_ATTR);
         
         //Note on ajax case the method saveState could be called twice: once before start
@@ -553,7 +553,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             //externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
             //        getStateCache().encodeSerializedState(context, serializedView));
 
-            externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
+            context.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
 
         }
         

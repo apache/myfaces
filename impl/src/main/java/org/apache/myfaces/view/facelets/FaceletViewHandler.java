@@ -411,10 +411,10 @@ public class FaceletViewHandler extends ViewHandler
         }
 
         // get our content type
-        String contentType = (String) extContext.getRequestMap().get("facelets.ContentType");
+        String contentType = (String) context.getAttributes().get("facelets.ContentType");
 
         // get the encoding
-        String encoding = (String) extContext.getRequestMap().get("facelets.Encoding");
+        String encoding = (String) context.getAttributes().get("facelets.Encoding");
 
         ResponseWriter writer;
         // append */* to the contentType so createResponseWriter will succeed no matter
@@ -466,7 +466,7 @@ public class FaceletViewHandler extends ViewHandler
         String encoding = orig;
 
         // see if we need to override the encoding
-        Map<String, Object> m = context.getExternalContext().getRequestMap();
+        Map<Object, Object> m = context.getAttributes();
         Map<String, Object> sm = context.getExternalContext().getSessionMap();
 
         // 1. check the request attribute
@@ -522,7 +522,7 @@ public class FaceletViewHandler extends ViewHandler
         String contentType = orig;
 
         // see if we need to override the contentType
-        Map<String, Object> m = context.getExternalContext().getRequestMap();
+        Map<Object, Object> m = context.getAttributes();
         if (m.containsKey("facelets.ContentType"))
         {
             contentType = (String) m.get("facelets.ContentType");

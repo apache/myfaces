@@ -312,14 +312,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     public int getNextViewSequence(FacesContext context)
     {
-        ExternalContext externalContext = context.getExternalContext();
-
-        if (!externalContext.getRequestMap().containsKey(RendererUtils.SEQUENCE_PARAM))
+        if (!context.getAttributes().containsKey(RendererUtils.SEQUENCE_PARAM))
         {
             nextViewSequence(context);
         }
 
-        Integer sequence = (Integer) externalContext.getRequestMap().get(RendererUtils.SEQUENCE_PARAM);
+        Integer sequence = (Integer) context.getAttributes().get(RendererUtils.SEQUENCE_PARAM);
         return sequence.intValue();
     }
 
@@ -327,11 +325,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     {
         ExternalContext externalContext = facescontext.getExternalContext();
         Object sessionObj = externalContext.getSession(true);
+        Integer sequence = null;
         synchronized(sessionObj) // synchronized to increase sequence if multiple requests
                                  // are handled at the same time for the session
         {
             Map<String, Object> map = externalContext.getSessionMap();
-            Integer sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
+            sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
             if(sequence == null || sequence.intValue() == Integer.MAX_VALUE)
             {
                 sequence = Integer.valueOf(1);
@@ -341,8 +340,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 sequence = Integer.valueOf(sequence.intValue() + 1);
             }
             map.put(RendererUtils.SEQUENCE_PARAM, sequence);
-            externalContext.getRequestMap().put(RendererUtils.SEQUENCE_PARAM, sequence);
         }
+        facescontext.getAttributes().put(RendererUtils.SEQUENCE_PARAM, sequence);
     }
 
     protected Object serializeView(FacesContext context, Object serializedView)
