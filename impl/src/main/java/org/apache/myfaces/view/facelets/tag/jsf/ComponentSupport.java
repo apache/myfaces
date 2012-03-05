@@ -49,8 +49,8 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 public final class ComponentSupport
 {
 
-    private final static String MARK_DELETED = "org.apache.myfaces.view.facelets.MARK_DELETED";
-    public final static String MARK_CREATED = "org.apache.myfaces.view.facelets.MARK_ID";
+    private final static String MARK_DELETED = "oam.vf.MARK_DELETED";
+    public final static String MARK_CREATED = "oam.vf.MARK_ID";
     
     /**
      * The UIPanel components, which are dynamically generated to serve as a container for

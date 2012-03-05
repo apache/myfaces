@@ -98,6 +98,10 @@ public abstract class UIComponentBase extends UIComponent
     private String _id = null;
     private UIComponent _parent = null;
     private boolean _transient = false;
+    
+    private boolean _isRendererTypeSet = false;
+    private String _rendererType;
+    private String _markCreated;
 
     /**
      * This map holds ClientBehavior instances.
@@ -446,6 +450,7 @@ public abstract class UIComponentBase extends UIComponent
                 ((PartialStateHolder) entry.getValue()).clearInitialState();
             }
         }
+        _isRendererTypeSet = false;
     }
 
     /**
@@ -980,7 +985,16 @@ public abstract class UIComponentBase extends UIComponent
         // this part is essential to implement "delegated implementation" pattern,
         // so we can't do this optimization here. Instead, JSF developers could prevent
         // this evaluation overriding this method directly.
-        return (String) getStateHelper().eval(PropertyKeys.rendererType);
+        if (_rendererType != null)
+        {
+            return _rendererType;
+        }
+        ValueExpression expression = getValueExpression("rendererType");
+        if (expression != null)
+        {
+            return (String) expression.getValue(getFacesContext().getELContext());
+        }
+        return null;
     }
 
     /**
@@ -1818,18 +1832,28 @@ public abstract class UIComponentBase extends UIComponent
             }
             
             if (facesListenersSaved == null && stateHelperSaved == null && 
-                behaviorsMapSaved == null && systemEventListenerClassMapSaved == null)
+                behaviorsMapSaved == null && systemEventListenerClassMapSaved == null &&
+               !_isRendererTypeSet)
             {
                 return null;
             }
             
-            return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
-                                 systemEventListenerClassMapSaved};
+            if (_isRendererTypeSet)
+            {
+                return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
+                                    systemEventListenerClassMapSaved, 
+                                    _rendererType};
+            }
+            else
+            {
+                return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
+                    systemEventListenerClassMapSaved};
+            }
         }
         else
         {
             //Full
-            Object values[] = new Object[6];
+            Object values[] = new Object[9];
             values[0] = saveFacesListenersList(context);
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
@@ -1840,6 +1864,9 @@ public abstract class UIComponentBase extends UIComponent
             values[3] = saveSystemEventListenerClassMap(context);
             values[4] = _id;
             values[5] = _clientId;
+            values[6] = _markCreated;
+            values[7] = _rendererType;
+            values[8] = _isRendererTypeSet;
 
             return values;
         }
@@ -1875,7 +1902,7 @@ public abstract class UIComponentBase extends UIComponent
         
         Object values[] = (Object[]) state;
         
-        if ( values.length == 6 && initialStateMarked())
+        if ( values.length == 9 && initialStateMarked())
         {
             //Delta mode is active, but we are restoring a full state.
             //we need to clear the initial state, to restore state without
@@ -1893,7 +1920,7 @@ public abstract class UIComponentBase extends UIComponent
                         ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
             //}
         }
-        else if (values[0] != null || (values.length == 6))
+        else if (values[0] != null || (values.length == 9))
         {
             //Full
             _facesListeners = (_DeltaList<FacesListener>)
@@ -1906,7 +1933,7 @@ public abstract class UIComponentBase extends UIComponent
         
         getStateHelper().restoreState(context, values[1]);
         
-        if (values.length == 6)
+        if (values.length == 9)
         {
             //Full restore
             restoreFullBehaviorsMap(context, values[2]);
@@ -1919,10 +1946,18 @@ public abstract class UIComponentBase extends UIComponent
             restoreDeltaSystemEventListenerClassMap(context, values[3]);
         }
         
-        if (values.length == 6)
+        if (values.length == 9)
         {
             _id = (String) values[4];
             _clientId = (String) values[5];
+            _markCreated = (String) values[6];
+            _rendererType = (String) values[7];
+            _isRendererTypeSet = (Boolean) values[8];
+        }
+        else if (values.length == 5)
+        {
+            _rendererType = (String) values[4];
+            _isRendererTypeSet = true;
         }
     }
     
@@ -2267,6 +2302,16 @@ public abstract class UIComponentBase extends UIComponent
         return _ComponentUtils.getExpressionValue(this, attribute, explizitValue, defaultValueIfExpressionNull);
     }
 
+    void setOamVfMarkCreated(String markCreated)
+    {
+        _markCreated = markCreated;
+    }
+    
+    String getOamVfMarkCreated()
+    {
+        return _markCreated;
+    }
+    
 /**
      * <p>
      * This gets a single FacesContext-local shared stringbuilder instance, each time you call
@@ -2340,7 +2385,13 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void setRendererType(String rendererType)
     {
-        getStateHelper().put(PropertyKeys.rendererType, rendererType ); 
+        this._rendererType = rendererType;
+        if (initialStateMarked())
+        {
+            //This flag just indicates the rendererType 
+            //should be included on the delta
+            this._isRendererTypeSet = true;
+        }
     }
 
     // ------------------ GENERATED CODE END ---------------------------------------
