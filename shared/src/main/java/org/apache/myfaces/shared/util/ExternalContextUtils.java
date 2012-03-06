@@ -126,7 +126,7 @@ public final class ExternalContextUtils
     // performance. We want to do as few instanceof's as possible so
     // things are laid out according to the expected frequency of the
     // various requests occurring.
-    if(_PORTLET_10_SUPPORTED)
+    if(_PORTLET_10_SUPPORTED || _PORTLET_20_SUPPORTED)
     {
       if (_PORTLET_CONTEXT_CLASS.isInstance(ec.getContext()))
       {
