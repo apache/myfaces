@@ -40,7 +40,9 @@ public class SectionUniqueIdCounter
     private char[] _bufferConversion;
     
     private final int _radix;
-   
+    
+    private String[] _uniqueIdsCache;
+    
     public SectionUniqueIdCounter()
     {
         _activeSection = 0;
@@ -63,6 +65,18 @@ public class SectionUniqueIdCounter
         _bufferConversion = new char[15];
     }
     
+    public SectionUniqueIdCounter(String prefix, String[] cache)
+    {
+        _activeSection = 0;
+        _radix = Character.MAX_RADIX;
+        _counterStack = new ArrayList<Section>();
+        _counterStack.add(new Section(null,1,_radix));
+        _prefix = prefix;
+        _builder = new StringBuilder(30);
+        _bufferConversion = new char[15];
+        _uniqueIdsCache = cache;
+    }
+    
     public SectionUniqueIdCounter(String prefix, int radix)
     {
         _activeSection = 0;
@@ -72,6 +86,25 @@ public class SectionUniqueIdCounter
         _prefix = prefix;
         _builder = new StringBuilder(30);
         _bufferConversion = new char[15];
+    }
+
+    /**
+     * Creates an array of the generated unique ids for an specified prefix,
+     * than can be used later to prevent calculate the same String over and over.
+     * 
+     * @param prefix
+     * @param count
+     * @return 
+     */
+    public static String[] generateUniqueIdCache(String prefix, int count)
+    {
+        String[] cache = new String[count];
+        SectionUniqueIdCounter counter = new SectionUniqueIdCounter(prefix);
+        for (int i = 0; i < count ; i++)
+        {
+            cache[i] = counter.generateUniqueId();
+        }
+        return cache;
     }
 
     public String startUniqueIdSection()
@@ -122,12 +155,33 @@ public class SectionUniqueIdCounter
 
     public String generateUniqueId()
     {
-        return _counterStack.get(_activeSection).generateUniqueId(_prefix);
+        if (_activeSection == 0 && _uniqueIdsCache != null)
+        {
+            long i = _counterStack.get(_activeSection).getCounter();
+            if (((int)i) < (long)_uniqueIdsCache.length)
+            {
+                _counterStack.get(_activeSection).incrementUniqueId();
+                return _uniqueIdsCache[((int)i)-1];
+            }
+            else
+            {
+                return _counterStack.get(_activeSection).generateUniqueId(_prefix);
+            }
+        }
+        else
+        {
+            return _counterStack.get(_activeSection).generateUniqueId(_prefix);
+        }
     }
     
     public void generateUniqueId(StringBuilder builderToAdd)
     {
         _counterStack.get(_activeSection).generateUniqueId(_prefix, builderToAdd);
+    }
+    
+    public void incrementUniqueId()
+    {
+        _counterStack.get(_activeSection).incrementUniqueId();
     }
     
     public void endUniqueIdSection()
@@ -167,6 +221,11 @@ public class SectionUniqueIdCounter
         public long getCounter()
         {
             return counter;
+        }
+        
+        public void incrementUniqueId()
+        {
+            this.counter++;
         }
 
         public void generateUniqueId(String base, StringBuilder builder)

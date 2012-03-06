@@ -456,4 +456,67 @@ abstract public class FaceletCompositionContext
     {
     }
     
+    /**
+     * Set the iterator used to retrieve unique ids.
+     * 
+     * since 2.1.7, 2.0.13
+     * @param uniqueIdsIterator 
+     */
+    public void setUniqueIdsIterator(Iterator<String> uniqueIdsIterator)
+    {
+    }
+    
+    /**
+     * Activater record unique id mode, so an structure will be
+     * used to hold those values.
+     * 
+     * since 2.1.7, 2.0.13
+     */
+    public void initUniqueIdRecording()
+    {
+    }
+    
+    /**
+     * Add an unique id to the list if recording is enabled,
+     * if recording is not enabled it has no effect.
+     * 
+     * since 2.1.7, 2.0.13
+     * @param uniqueId 
+     */
+    public void addUniqueId(String uniqueId)
+    {
+    }
+    
+    /**
+     * Return the unique id from the iterator if applies
+     * 
+     * since 2.1.7, 2.0.13
+     * @return 
+     */
+    public String getUniqueIdFromIterator()
+    {
+        return null;
+    }
+    
+    /**
+     * Return the list of unique ids
+     * 
+     * since 2.1.7, 2.0.13
+     * @return 
+     */
+    public List<String> getUniqueIdList()
+    {
+        return null;
+    }
+
+    /**
+     * Increment the unique id without construct it.
+     * 
+     * since 2.1.7, 2.0.13
+     * @return 
+     */
+    public void incrementUniqueId()
+    {
+    }
+
 }

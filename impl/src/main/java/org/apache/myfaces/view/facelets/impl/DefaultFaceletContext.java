@@ -314,12 +314,24 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         // per facelet because prefix is calculated from faceletHierarchy and base is
         // related to the tagId, which depends on the location.
         //_uniqueIdBuilder.append(getFaceletCompositionContext().generateUniqueId());
-        getFaceletCompositionContext().generateUniqueId(_uniqueIdBuilder);
-        _uniqueIdBuilder.append("_");
-        _uniqueIdBuilder.append(_prefix);
-        _uniqueIdBuilder.append("_");
-        _uniqueIdBuilder.append(base);
-        return _uniqueIdBuilder.toString();
+        
+        String uniqueIdFromIterator = getFaceletCompositionContext().getUniqueIdFromIterator();
+        if (uniqueIdFromIterator == null)
+        {
+            getFaceletCompositionContext().generateUniqueId(_uniqueIdBuilder);
+            _uniqueIdBuilder.append("_");
+            _uniqueIdBuilder.append(_prefix);
+            _uniqueIdBuilder.append("_");
+            _uniqueIdBuilder.append(base);
+            uniqueIdFromIterator = _uniqueIdBuilder.toString();
+            getFaceletCompositionContext().addUniqueId(uniqueIdFromIterator);
+            return uniqueIdFromIterator;
+        }
+        else
+        {
+            getFaceletCompositionContext().incrementUniqueId();
+            return uniqueIdFromIterator;
+        }
     }
 
     /**
