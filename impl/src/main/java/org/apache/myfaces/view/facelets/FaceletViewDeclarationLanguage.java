@@ -127,6 +127,7 @@ import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 import static org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy.*;
+import org.apache.myfaces.view.facelets.impl.SectionUniqueIdCounter;
 
 /**
  * This class represents the abstraction of Facelets as a ViewDeclarationLanguage.
@@ -304,6 +305,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private final static String STATE_KEY = "<!--@@JSF_FORM_STATE_MARKER@@-->";
 
     private final static int STATE_KEY_LEN = STATE_KEY.length();
+    
+    /**
+     * Key used to cache component ids for the counter
+     */
+    public final static String CACHED_COMPONENT_IDS = "oam.CACHED_COMPONENT_IDS"; 
 
     private int _bufferSize;
 
@@ -2392,6 +2398,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         ExternalContext eContext = context.getExternalContext();
         _initializeBuffer(eContext);
         _initializeMode(eContext);
+        
+        // Create a component ids cache and store it on application map to
+        // reduce the overhead associated with create such ids over and over.
+        MyfacesConfig mfConfig = MyfacesConfig.getCurrentInstance(eContext);
+        if (mfConfig.getComponentUniqueIdsCacheSize() > 0)
+        {
+            String[] componentIdsCached = SectionUniqueIdCounter.generateUniqueIdCache("_", 
+                    mfConfig.getComponentUniqueIdsCacheSize());
+            eContext.getApplicationMap().put(
+                    CACHED_COMPONENT_IDS, componentIdsCached);
+        }
 
         log.finest("Initialization Successful");
     }

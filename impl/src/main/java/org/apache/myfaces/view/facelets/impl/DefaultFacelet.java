@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -44,10 +45,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.compiler.EncodingHandler;
 
 
 /**
@@ -81,6 +84,8 @@ final class DefaultFacelet extends AbstractFacelet
     private final URL _src;
 
     private final boolean _isBuildingCompositeComponentMetadata; 
+    
+    private final boolean _encodingHandler;
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
                           FaceletHandler root)
@@ -94,6 +99,7 @@ final class DefaultFacelet extends AbstractFacelet
         _refreshPeriod = _factory.getRefreshPeriod();
         _relativePaths = new WeakHashMap<String, URL>();
         _isBuildingCompositeComponentMetadata = false;
+        _encodingHandler = (root instanceof EncodingHandler);
     }
     
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
@@ -108,6 +114,7 @@ final class DefaultFacelet extends AbstractFacelet
         _refreshPeriod = _factory.getRefreshPeriod();
         _relativePaths = new WeakHashMap<String, URL>();
         _isBuildingCompositeComponentMetadata = isBuildingCompositeComponentMetadata;
+        _encodingHandler = (root instanceof EncodingHandler);
     }    
 
     /**
@@ -119,12 +126,28 @@ final class DefaultFacelet extends AbstractFacelet
     {
         FaceletCompositionContext myFaceletContext = null;
         boolean faceletCompositionContextInitialized = false;
+        boolean recordUniqueIds = false;
         myFaceletContext = FaceletCompositionContext.getCurrentInstance(facesContext);
         if (myFaceletContext == null)
         {
             myFaceletContext = new FaceletCompositionContextImpl(_factory, facesContext);
             myFaceletContext.init(facesContext);
             faceletCompositionContextInitialized = true;
+            if (_encodingHandler && MyfacesConfig.getCurrentInstance(
+                    facesContext.getExternalContext()).isViewUniqueIdsCacheEnabled() && 
+                    _refreshPeriod <= 0)
+            {
+                List<String> uniqueIdList = ((EncodingHandler)_root).getUniqueIdList();
+                if (uniqueIdList == null)
+                {
+                    myFaceletContext.initUniqueIdRecording();
+                    recordUniqueIds = true;
+                }
+                else
+                {
+                    myFaceletContext.setUniqueIdsIterator(uniqueIdList.iterator());
+                }
+            }
         }
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, myFaceletContext);
         
@@ -165,6 +188,13 @@ final class DefaultFacelet extends AbstractFacelet
             if (faceletCompositionContextInitialized)
             {
                 myFaceletContext.release(facesContext);
+                List<String> uniqueIdList = ((EncodingHandler)_root).getUniqueIdList();
+                if (recordUniqueIds &&  uniqueIdList == null)
+                {
+                    uniqueIdList = Collections.unmodifiableList(
+                            myFaceletContext.getUniqueIdList());
+                    ((EncodingHandler)_root).setUniqueIdList(uniqueIdList);
+                }
             }
         }
     }

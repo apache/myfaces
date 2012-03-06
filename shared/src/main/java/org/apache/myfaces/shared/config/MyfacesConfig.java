@@ -353,7 +353,29 @@ public class MyfacesConfig
     public final static String INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE = 
         "org.apache.myfaces.DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE";
     public final static String INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT = "text/html";
+
+    /**
+     * Enable or disable a cache used to "remember" the generated facelets unique ids and reduce 
+     * the impact on memory usage, only active if javax.faces.FACELETS_REFRESH_PERIOD is -1 (no refresh).
+     */
+    @JSFWebConfigParam(defaultValue = "false", since = "2.0.13, 2.1.7", expectedValues="true, false", 
+            group="viewhandler", tags="performance",
+            desc="Enable or disable a cache used to 'remember'  the generated facelets unique ids " + 
+                 "and reduce the impact over memory usage.")
+    public static final String INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED = 
+        "org.apache.myfaces.VIEW_UNIQUE_IDS_CACHE_ENABLED";
+    public static final boolean INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT = false;
     
+    /**
+     * Set the size of the cache used to store strings generated using SectionUniqueIdCounter
+     * for component ids. If this is set to 0, no cache is used. By default is set to 100.
+     */
+    @JSFWebConfigParam(defaultValue = "100", since = "2.0.13, 2.1.7",
+            group="viewhandler", tags="performance")
+    public static final String INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE =
+        "org.apache.myfaces.COMPONENT_UNIQUE_IDS_CACHE_SIZE";
+    public static final int INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 100;
+
     /**
     * If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in JSF 2.X, javax.faces.el in 
     * in JSF 1.2. Default value is true. 
@@ -394,6 +416,8 @@ public class MyfacesConfig
     private boolean _strictJsf2RefreshTargetAjax;
     private boolean _strictJsf2CCELResolver;
     private String _defaultResponseWriterContentTypeMode;
+    private boolean _viewUniqueIdsCacheEnabled;
+    private int _componentUniqueIdsCacheSize;
     private boolean _supportJSPAndFacesEL;
 
     private static final boolean TOMAHAWK_AVAILABLE;
@@ -490,6 +514,8 @@ public class MyfacesConfig
         setStrictJsf2RefreshTargetAjax(INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT);
         setStrictJsf2CCELResolver(INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT);
         setDefaultResponseWriterContentTypeMode(INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT);
+        setViewUniqueIdsCacheEnabled(INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT);
+        setComponentUniqueIdsCacheSize(INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT);
         setSupportJSPAndFacesEL(INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT);
     }
 
@@ -584,7 +610,12 @@ public class MyfacesConfig
                 extCtx, INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE,
                 INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT));
 
-        
+        myfacesConfig.setViewUniqueIdsCacheEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED, INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT));
+        myfacesConfig.setComponentUniqueIdsCacheSize(
+                WebConfigParamUtils.getIntegerInitParameter(extCtx,
+                INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE, 
+                INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT));
         myfacesConfig.setSupportJSPAndFacesEL(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                 INIT_PARAM_SUPPORT_JSP_AND_FACES_EL, INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT));
         
@@ -1054,7 +1085,17 @@ public class MyfacesConfig
     {
         this._defaultResponseWriterContentTypeMode = defaultResponseWriterContentTypeMode;
     }
-    
+
+    public boolean isViewUniqueIdsCacheEnabled()
+    {
+        return _viewUniqueIdsCacheEnabled;
+    }
+
+    public void setViewUniqueIdsCacheEnabled(boolean viewUniqueIdsCacheEnabled)
+    {
+        _viewUniqueIdsCacheEnabled = viewUniqueIdsCacheEnabled;
+    }
+
     public boolean isSupportJSPAndFacesEL()
     {
         return _supportJSPAndFacesEL;
@@ -1064,5 +1105,15 @@ public class MyfacesConfig
             boolean supportJSPANDFacesEL)
     {
         _supportJSPAndFacesEL = supportJSPANDFacesEL;
-    } 
+    }
+
+    public int getComponentUniqueIdsCacheSize()
+    {
+        return _componentUniqueIdsCacheSize;
+    }
+
+    public void setComponentUniqueIdsCacheSize(int componentUniqueIdsCacheSize)
+    {
+        this._componentUniqueIdsCacheSize = componentUniqueIdsCacheSize;
+    }
 }

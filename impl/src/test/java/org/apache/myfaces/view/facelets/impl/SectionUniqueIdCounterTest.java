@@ -126,4 +126,35 @@ public class SectionUniqueIdCounterTest extends AbstractJsfTestCase
         System.out.println(UIViewRoot.UNIQUE_ID_PREFIX+counter.generateUniqueId());
         */
     }
+    
+    @Test
+    public void testCachedCounter()
+    {
+        String[] cache = SectionUniqueIdCounter.generateUniqueIdCache("_", 10);
+        
+        SectionUniqueIdCounter counter = new SectionUniqueIdCounter("_", cache);
+        SectionUniqueIdCounter counterOrig = new SectionUniqueIdCounter("_");
+        
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        
+        counterOrig.startUniqueIdSection();
+        counter.startUniqueIdSection();
+        
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+
+        counterOrig.endUniqueIdSection();
+        counter.endUniqueIdSection();
+        
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+        Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
+    }
+    
 }

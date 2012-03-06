@@ -125,6 +125,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private SectionUniqueIdCounter _sectionUniqueComponentIdCounter;
     
+    private List<String> _uniqueIdsList;
+    private Iterator<String> _uniqueIdsIterator;
+    private int _level;
+    
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
         super();
@@ -136,7 +140,69 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _compositeComponentAttributesMarked = new HashMap<UIComponent, Map<String, Boolean>>();
         _deletionLevel = -1;
         _sectionUniqueIdCounter = new SectionUniqueIdCounter();
-        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_");
+        //Cached at facelet view
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(
+                facesContext.getExternalContext());
+        if (myfacesConfig.getComponentUniqueIdsCacheSize() > 0)
+        {
+            String[] componentIdsCache = (String [])facesContext.getExternalContext().
+                    getApplicationMap().get(FaceletViewDeclarationLanguage.CACHED_COMPONENT_IDS);
+            if (componentIdsCache != null)
+            {
+                _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_", 
+                        componentIdsCache);
+            }
+            else
+            {
+                _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_");
+            }
+        }
+        else
+        {
+            _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_");
+        }
+        _uniqueIdsList = null;
+        _uniqueIdsIterator = null;
+        _level = 0;
+    }
+    
+    @Override
+    public void setUniqueIdsIterator(Iterator<String> uniqueIdsIterator)
+    {
+        _uniqueIdsList = null;
+        _uniqueIdsIterator = uniqueIdsIterator;
+    }
+    
+    @Override
+    public void initUniqueIdRecording()
+    {
+        _uniqueIdsList = new LinkedList<String>();
+        _uniqueIdsIterator = null;
+    }
+    
+    @Override
+    public void addUniqueId(String uniqueId)
+    {
+        if (_uniqueIdsList != null && _level == 0)
+        {
+            _uniqueIdsList.add(uniqueId);
+        }
+    }
+    
+    @Override
+    public String getUniqueIdFromIterator()
+    {
+        if (_uniqueIdsIterator != null && _uniqueIdsIterator.hasNext() && _level == 0)
+        {
+            return _uniqueIdsIterator.next();
+        }
+        return null;
+    }
+    
+    @Override
+    public List<String> getUniqueIdList()
+    {
+        return _uniqueIdsList;
     }
 
     public FaceletFactory getFaceletFactory()
@@ -737,8 +803,15 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     public String startComponentUniqueIdSection()
     {
+        _level++;
         _sectionUniqueComponentIdCounter.startUniqueIdSection();
         return _sectionUniqueIdCounter.startUniqueIdSection();
+    }
+
+    @Override
+    public void incrementUniqueId()
+    {
+        _sectionUniqueIdCounter.incrementUniqueId();
     }
     
     public String generateUniqueId()
@@ -758,6 +831,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     public void endComponentUniqueIdSection()
     {
+        _level--;
         _sectionUniqueIdCounter.endUniqueIdSection();
         _sectionUniqueComponentIdCounter.endUniqueIdSection();
     }
