@@ -122,6 +122,8 @@ public abstract class UIComponentBase extends UIComponent
     private transient Map<String, List<ClientBehavior>> _unmodifiableBehaviorsMap = null;
     
     private transient FacesContext _facesContext;
+    private transient Boolean _cachedIsRendered;
+    private transient Renderer _cachedRenderer;
     
     public UIComponentBase()
     {
@@ -467,12 +469,78 @@ public abstract class UIComponentBase extends UIComponent
             throw new NullPointerException("context");
         }
         
+        setCachedRenderer(null);
         Renderer renderer = getRenderer(context);
         if (renderer != null)
         {
-            renderer.decode(context, this);
+            setCachedRenderer(renderer);
+            try
+            {
+                renderer.decode(context, this);
+            }
+            finally
+            {
+                setCachedRenderer(null);
+            }
         }
 
+    }
+
+    public void encodeAll(FacesContext context) throws IOException
+    {
+        if (context == null)
+        {
+            throw new NullPointerException();
+        }
+
+        pushComponentToEL(context, this);
+        try
+        {
+            setCachedIsRendered(null);
+            boolean rendered = isRendered(); 
+            setCachedIsRendered(rendered);
+            if (!rendered)
+            {
+                setCachedIsRendered(null);
+                return;
+            }
+            setCachedRenderer(null);
+            setCachedRenderer(getRenderer(context));
+        }
+        finally
+        {
+            popComponentFromEL(context);
+        }
+
+        try
+        {
+            //if (isRendered()) {
+            this.encodeBegin(context);
+
+            // rendering children
+            if (this.getRendersChildren())
+            {
+                this.encodeChildren(context);
+            } // let children render itself
+            else
+            {
+                if (this.getChildCount() > 0)
+                {
+                    for (int i = 0; i < this.getChildCount(); i++)
+                    {
+                        UIComponent comp = this.getChildren().get(i);
+                        comp.encodeAll(context);
+                    }
+                }
+            }
+            this.encodeEnd(context);
+            //}
+        }
+        finally
+        {
+            setCachedIsRendered(null);
+            setCachedRenderer(null);
+        }
     }
 
     @Override
@@ -1103,6 +1171,10 @@ public abstract class UIComponentBase extends UIComponent
     @JSFProperty
     public boolean isRendered()
     {
+        if (_cachedIsRendered != null)
+        {
+            return Boolean.TRUE.equals(_cachedIsRendered);
+        }
         return (Boolean) getStateHelper().eval(PropertyKeys.rendered, DEFAULT_RENDERED);
     }
 
@@ -1210,6 +1282,11 @@ public abstract class UIComponentBase extends UIComponent
         {
             throw new NullPointerException("context");
         }
+        Renderer renderer = getCachedRenderer();
+        if (renderer != null)
+        {
+            return renderer;
+        }
         String rendererType = getRendererType();
         if (rendererType == null)
         {
@@ -1217,7 +1294,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         
         RenderKit renderKit = context.getRenderKit();
-        Renderer renderer = renderKit.getRenderer(getFamily(), rendererType);
+        renderer = renderKit.getRenderer(getFamily(), rendererType);
         if (renderer == null)
         {
             String location = getComponentLocation(this);
@@ -2300,6 +2377,26 @@ public abstract class UIComponentBase extends UIComponent
         _facesContext = facesContext;
     }
     
+    Renderer getCachedRenderer()
+    {
+        return _cachedRenderer;
+    }
+    
+    void setCachedRenderer(Renderer renderer)
+    {
+        _cachedRenderer = renderer;
+    }
+
+    Boolean isCachedIsRendered()
+    {
+        return _cachedIsRendered;
+    }
+    
+    void setCachedIsRendered(Boolean rendered)
+    {
+       _cachedIsRendered = rendered;
+    }
+    
     <T> T getExpressionValue(String attribute, T explizitValue, T defaultValueIfExpressionNull)
     {
         return _ComponentUtils.getExpressionValue(this, attribute, explizitValue, defaultValueIfExpressionNull);
@@ -2382,7 +2479,8 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void setRendered(boolean rendered)
     {
-        getStateHelper().put(PropertyKeys.rendered, rendered ); 
+        getStateHelper().put(PropertyKeys.rendered, rendered );
+        setCachedIsRendered(null);
     }
 
     @Override
@@ -2395,6 +2493,7 @@ public abstract class UIComponentBase extends UIComponent
             //should be included on the delta
             this._isRendererTypeSet = true;
         }
+        setCachedRenderer(null);
     }
 
     // ------------------ GENERATED CODE END ---------------------------------------
