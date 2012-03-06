@@ -786,7 +786,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
         
         if (_validatorList == null)
         {
-            _validatorList = new _DeltaList<Validator>(new ArrayList<Validator>());
+            //normally add user 0-3 validators: 
+            _validatorList = new _DeltaList<Validator>(new ArrayList<Validator>(3));
         }
 
         _validatorList.add(validator);

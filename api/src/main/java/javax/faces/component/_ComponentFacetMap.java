@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +34,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
 {
     private static final long serialVersionUID = -3456937594422167629L;
     private UIComponent _component;
-    private Map<String, V> _map = new HashMap<String, V>();
+    private Map<String, V> _map = new _ArrayMap<String, V>(0,5);
     private Set<Entry<String, V>> _entrySet = null;
     private Set<String> _keySet = null;
     private Collection<V> _valueCollection = null;
