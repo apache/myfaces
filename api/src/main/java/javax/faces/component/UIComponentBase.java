@@ -359,7 +359,9 @@ public abstract class UIComponentBase extends UIComponent
             List<ClientBehavior> behaviorsForEvent = _behaviorsMap.get(eventName);
             if(behaviorsForEvent == null)
             {
-                behaviorsForEvent = new _DeltaList<ClientBehavior>(new ArrayList<ClientBehavior>());
+                // Normally have client only 1 client behaviour per event name,
+                // so size 2 must be sufficient: 
+                behaviorsForEvent = new _DeltaList<ClientBehavior>(new ArrayList<ClientBehavior>(2));
                 _behaviorsMap.put(eventName, behaviorsForEvent);
             }
             
@@ -1143,7 +1145,8 @@ public abstract class UIComponentBase extends UIComponent
         }
         if (_facesListeners == null)
         {
-            _facesListeners = new _DeltaList<FacesListener>(new ArrayList<FacesListener>());
+            // How many facesListeners have single component normally? 
+            _facesListeners = new _DeltaList<FacesListener>(new ArrayList<FacesListener>(5));
         }
         _facesListeners.add(listener);
     }

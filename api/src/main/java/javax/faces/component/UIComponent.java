@@ -789,7 +789,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         // Make sure the list for class exists
         if (listeners == null)
         {
-            listeners = new _DeltaList<SystemEventListener>(new ArrayList<SystemEventListener>(2));
+            // how many listeners per event type can single component have? 
+            // We use 3 here as expected number, but it is a question 
+            listeners = new _DeltaList<SystemEventListener>(new ArrayList<SystemEventListener>(3));
             _systemEventListenerClassMap.put(eventClass, listeners);
         }
 
