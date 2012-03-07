@@ -102,6 +102,7 @@ public abstract class UIComponentBase extends UIComponent
     private boolean _isRendererTypeSet = false;
     private String _rendererType;
     private String _markCreated;
+    private String _facetName;
 
     /**
      * This map holds ClientBehavior instances.
@@ -2410,6 +2411,16 @@ public abstract class UIComponentBase extends UIComponent
     String getOamVfMarkCreated()
     {
         return _markCreated;
+    }
+    
+    String getOamVfFacetName()
+    {
+        return _facetName;
+    }
+    
+    void setOamVfFacetName(String facetName)
+    {
+        _facetName = facetName;
     }
     
 /**
