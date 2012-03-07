@@ -218,7 +218,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Collection<Object> values()
     {
-        return getUnderlyingMap(true).values();
+        return getUnderlyingMap().values();
     }
 
     /**
@@ -238,7 +238,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Set<Map.Entry<String, Object>> entrySet()
     {
-        return getUnderlyingMap(true).entrySet();
+        return getUnderlyingMap().entrySet();
     }
 
     /**
@@ -247,7 +247,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Set<String> keySet()
     {
-        return getUnderlyingMap(true).keySet();
+        return getUnderlyingMap().keySet();
     }
 
     /**
@@ -620,20 +620,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         return attributes == null ? Collections.EMPTY_MAP : attributes;
     }
     
-    Map<String, Object> getUnderlyingMap(boolean create)
-    {
-        if (create)
-        {
-            Map attributes
-                    = (Map<String, Object>) _component.getStateHelper().get(UIComponentBase.PropertyKeys.attributesMap);
-            return attributes == null ? Collections.EMPTY_MAP : attributes;
-        }
-        else
-        {
-            return getUnderlyingMap();
-        }
-    }
-
     /**
      * TODO: Document why this method is necessary, and why it doesn't try to
      * compare the _component field.
