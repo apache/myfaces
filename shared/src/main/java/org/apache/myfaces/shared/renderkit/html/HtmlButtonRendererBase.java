@@ -20,6 +20,7 @@ package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -140,8 +141,17 @@ public class HtmlButtonRendererBase
         // we should write the form submit script
         // (define oamSetHiddenInput, oamClearHiddenInput, oamSubmitForm)
         // because oamSetHiddenInput is called on onclick function
+        List<UIComponent> childrenList = null;
+        if (getChildCount(uiComponent) > 0)
+        {
+            childrenList = getChildren(uiComponent);
+        }
+        else
+        {
+           childrenList = Collections.emptyList();
+        }
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                facesContext, getChildren(uiComponent), false, false);
+                facesContext, childrenList, false, false);
         
         boolean javascriptAllowed = JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext());
         
