@@ -21,7 +21,8 @@ package org.apache.myfaces.context.servlet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -67,6 +68,13 @@ public class PartialViewContextImpl extends PartialViewContext
      * will be changed for 2.1 to the official marker
      */
     private static final String PARTIAL_IFRAME = "org.apache.myfaces.partial.iframe";
+    
+    private static final  Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet( 
+            EnumSet.of(VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_UNRENDERED));
+    
+    // unrendered have to be skipped, transient definitely must be added to our list!
+    private static final  Set<VisitHint> PARTIAL_RENDER_HINTS = 
+            Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
 
     private FacesContext _facesContext = null;
     private boolean _released = false;
@@ -406,10 +414,9 @@ public class PartialViewContextImpl extends PartialViewContext
         {
             return;
         }
-        Set<VisitHint> hints = new HashSet<VisitHint>();
-        hints.add(VisitHint.EXECUTE_LIFECYCLE);
-        hints.add(VisitHint.SKIP_UNRENDERED);
-        VisitContext visitCtx = getVisitContextFactory().getVisitContext(_facesContext, executeIds, hints);
+        
+        VisitContext visitCtx = getVisitContextFactory().getVisitContext(_facesContext, executeIds, 
+                PARTIAL_EXECUTE_HINTS);
         viewRoot.visitTree(visitCtx, new PhaseAwareVisitCallback(_facesContext, phaseId));
     }
 
@@ -462,10 +469,6 @@ public class PartialViewContextImpl extends PartialViewContext
                 //Only apply partial visit if we have ids to traverse
                 if (renderIds != null && !renderIds.isEmpty())
                 {
-                    Set<VisitHint> hints = new HashSet<VisitHint>();
-                    // unrendered have to be skipped, transient definitely must be added to our list!
-                    hints.add(VisitHint.SKIP_UNRENDERED);
-
                     // render=@all, so output the body.
                     if (renderIds.contains(PartialResponseWriter.RENDER_ALL_MARKER))
                     {
@@ -511,7 +514,7 @@ public class PartialViewContextImpl extends PartialViewContext
                         }
 
                         VisitContext visitCtx = getVisitContextFactory().getVisitContext(
-                                _facesContext, renderIds, hints);
+                                _facesContext, renderIds, PARTIAL_RENDER_HINTS);
                         viewRoot.visitTree(visitCtx,
                                            new PhaseAwareVisitCallback(_facesContext, phaseId, updatedComponents));
                     }

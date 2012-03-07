@@ -19,8 +19,10 @@
 package org.apache.myfaces.lifecycle;
 
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,6 +84,9 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
     
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    
+    private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet( 
+            EnumSet.of(VisitHint.SKIP_ITERATION));
 
     private volatile ConcurrentLRUCache<String, Boolean> _checkedViewIdMap = null;
     private Boolean _checkedViewIdCacheEnabled = null;
@@ -101,9 +106,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         {
             facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
 
-            EnumSet<VisitHint> visitHints = EnumSet.of(VisitHint.SKIP_ITERATION);
             VisitContext visitContext = (VisitContext) getVisitContextFactory().
-                    getVisitContext(facesContext, null, visitHints);
+                    getVisitContext(facesContext, null, VISIT_HINTS);
             component.visitTree(visitContext, new RestoreStateCallback());
         }
         finally

@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -166,6 +167,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     
     private static final Object[] EMPTY_STATES = new Object[]{null, null};
+    
+    private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet( 
+            EnumSet.of(VisitHint.SKIP_ITERATION));
     
     private ViewDeclarationLanguageFactory _vdlFactory;
     
@@ -716,9 +720,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
         try
         {
-            EnumSet<VisitHint> visitHints = EnumSet.of(VisitHint.SKIP_ITERATION);
             uiViewRoot.visitTree( getVisitContextFactory().getVisitContext(
-                    facesContext, null, visitHints), new VisitCallback()
+                    facesContext, null, VISIT_HINTS), new VisitCallback()
             {
                 public VisitResult visit(VisitContext context, UIComponent target)
                 {
