@@ -62,6 +62,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     private static final Object[] EMPTY_ARGS = new Object[0];
     
     private final static String MARK_CREATED = "oam.vf.MARK_ID";
+    
+    private final static String FACET_NAME_KEY = "facelets.FACET_NAME";
 
     // The component that is read/written via this map.
     private UIComponentBase _component;
@@ -167,10 +169,21 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     {
         checkKey(key);
 
+        int keyLength = ((String)key).length();
+        if (MARK_CREATED.length() == keyLength &&
+            MARK_CREATED.equals(key))
+        {
+            return ((UIComponentBase)_component).getOamVfMarkCreated() != null;
+        }
+        else if (FACET_NAME_KEY.length() == keyLength &&
+            FACET_NAME_KEY.equals(key))
+        {
+            return _component.getOamVfFacetName() != null;
+        }
         // The most common call to this method comes from UIComponent.isCompositeComponent()
         // to reduce the impact. This is better than two lookups, once over property descriptor map
         // and the other one from the underlying map.
-        if (Resource.COMPONENT_RESOURCE_KEY.length() == ((String)key).length() &&
+        if (Resource.COMPONENT_RESOURCE_KEY.length() == keyLength &&
             Resource.COMPONENT_RESOURCE_KEY.equals(key))
         {
             if (!_isCompositeComponentSet)
@@ -184,12 +197,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             }
             return _isCompositeComponent;
         }
-        if (MARK_CREATED.length() == ((String)key).length() &&
-            MARK_CREATED.equals(key))
-        {
-            return ((UIComponentBase)_component).getOamVfMarkCreated() != null;
-        }
-
         return getPropertyDescriptor((String) key) == null ? getUnderlyingMap().containsKey(key) : false;
     }
 
@@ -256,10 +263,16 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         
         Object value;
 
-        if (MARK_CREATED.length() == ((String)key).length() &&
+        int keyLength = ((String)key).length();
+        if (MARK_CREATED.length() == keyLength &&
             MARK_CREATED.equals(key))
         {
             return _component.getOamVfMarkCreated();
+        }
+        else if (FACET_NAME_KEY.length() == keyLength &&
+            FACET_NAME_KEY.equals(key))
+        {
+            return _component.getOamVfFacetName();
         }
         // is there a javabean property to read?
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
@@ -358,11 +371,19 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     public Object remove(Object key)
     {
         checkKey(key);
-        if (MARK_CREATED.length() == ((String)key).length() &&
+        int keyLength = ((String)key).length();
+        if (MARK_CREATED.length() == keyLength &&
             MARK_CREATED.equals(key))
         {
             Object oldValue = _component.getOamVfMarkCreated();
             _component.setOamVfMarkCreated(null);
+            return oldValue;
+        }
+        else if (FACET_NAME_KEY.length() == keyLength &&
+            FACET_NAME_KEY.equals(key))
+        {
+            Object oldValue = _component.getOamVfFacetName();
+            _component.setOamVfFacetName(null);
             return oldValue;
         }
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
@@ -407,7 +428,20 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             throw new NullPointerException("key");
         }
-
+        if (MARK_CREATED.length() == key.length() &&
+            MARK_CREATED.equals(key))
+        {
+            String oldValue = _component.getOamVfMarkCreated();
+            _component.setOamVfMarkCreated((String)value);
+            return oldValue;
+        }
+        else if (FACET_NAME_KEY.length() == key.length() &&
+            FACET_NAME_KEY.equals(key))
+        {
+            Object oldValue = _component.getOamVfFacetName();
+            _component.setOamVfFacetName((String)value);
+            return oldValue;
+        }
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor(key);
         if (propertyDescriptor == null)
         {
@@ -434,13 +468,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             _isCompositeComponent = true;
             _isCompositeComponentSet = true;
-        }
-        if (MARK_CREATED.length() == key.length() &&
-            MARK_CREATED.equals(key))
-        {
-            String oldValue = _component.getOamVfMarkCreated();
-            _component.setOamVfMarkCreated((String)value);
-            return oldValue;
         }
         return _component.getStateHelper().put(UIComponentBase.PropertyKeys.attributesMap, key, value);
     }
