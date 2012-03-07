@@ -141,7 +141,7 @@ public class TemplateContextImpl extends TemplateContext
 
         private final boolean _root;
 
-        private final Set<String> _names = new HashSet<String>();
+        private Set<String> _names;
         
         private final PageContext _pageContext;
         
@@ -165,12 +165,16 @@ public class TemplateContextImpl extends TemplateContext
             {
                 return false;
             }
-            if (this._names.contains(testName))
+            if (this._names != null && this._names.contains(testName))
             {
                 return false;
             }
             else
             {
+                if (this._names == null)
+                {
+                    this._names =  new HashSet<String>();
+                }
                 this._names.add(testName);
                 boolean found = false;
                 AbstractFaceletContext actx = new DefaultFaceletContext(

@@ -113,11 +113,11 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private int _deletionLevel;
     
-    private final Map<UIComponent, List<AttachedObjectHandler>> _attachedObjectHandlers;
+    private Map<UIComponent, List<AttachedObjectHandler>> _attachedObjectHandlers;
     
-    private final Map<UIComponent, Map<String, Object> > _methodExpressionsTargeted;
+    private Map<UIComponent, Map<String, Object> > _methodExpressionsTargeted;
     
-    private final Map<UIComponent, Map<String, Boolean> > _compositeComponentAttributesMarked;
+    private Map<UIComponent, Map<String, Boolean> > _compositeComponentAttributesMarked;
 
     private static final String VIEWROOT_FACELET_ID = "oam.VIEW_ROOT";
     
@@ -134,10 +134,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         super();
         _factory = factory;
         _facesContext = facesContext;
-        _attachedObjectHandlers = new HashMap<UIComponent, List<AttachedObjectHandler>>();
         _componentsMarkedForDeletion = new ArrayList<Map<String,UIComponent>>();
-        _methodExpressionsTargeted = new HashMap<UIComponent, Map<String, Object>>();
-        _compositeComponentAttributesMarked = new HashMap<UIComponent, Map<String, Boolean>>();
         _deletionLevel = -1;
         _sectionUniqueIdCounter = new SectionUniqueIdCounter();
         //Cached at facelet view
@@ -545,7 +542,15 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @Override
     public void addAttachedObjectHandler(UIComponent compositeComponentParent, AttachedObjectHandler handler)
     {
-        List<AttachedObjectHandler> list = _attachedObjectHandlers.get(compositeComponentParent);
+        List<AttachedObjectHandler> list = null;
+        if (_attachedObjectHandlers == null)
+        {
+            _attachedObjectHandlers = new HashMap<UIComponent, List<AttachedObjectHandler>>();
+        }
+        else
+        {
+            list = _attachedObjectHandlers.get(compositeComponentParent);
+        }
 
         if (list == null)
         {
@@ -559,19 +564,35 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @Override
     public void removeAttachedObjectHandlers(UIComponent compositeComponentParent)
     {
+        if (_attachedObjectHandlers == null)
+        {
+            return;
+        }
         _attachedObjectHandlers.remove(compositeComponentParent);
     }
 
     @Override
     public List<AttachedObjectHandler> getAttachedObjectHandlers(UIComponent compositeComponentParent)
     {
+        if (_attachedObjectHandlers == null)
+        {
+            return null;
+        }
         return _attachedObjectHandlers.get(compositeComponentParent);
     }
     
     @Override
     public void addMethodExpressionTargeted(UIComponent targetedComponent, String attributeName, Object backingValue)
     {
-        Map<String, Object> map = _methodExpressionsTargeted.get(targetedComponent);
+        Map<String, Object> map = null;
+        if (_methodExpressionsTargeted == null)
+        {
+            _methodExpressionsTargeted = new HashMap<UIComponent, Map<String, Object>>();
+        }
+        else
+        {
+            map = _methodExpressionsTargeted.get(targetedComponent);
+        }
 
         if (map == null)
         {
@@ -584,6 +605,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
 
     public boolean isMethodExpressionAttributeApplied(UIComponent compositeComponentParent, String attributeName)
     {
+        if (_compositeComponentAttributesMarked == null)
+        {
+            return false;
+        }
         Map<String, Boolean> map = _compositeComponentAttributesMarked.get(compositeComponentParent);
         if (map == null)
         {
@@ -595,7 +620,16 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     public void markMethodExpressionAttribute(UIComponent compositeComponentParent, String attributeName)
     {
-        Map<String, Boolean> map = _compositeComponentAttributesMarked.get(compositeComponentParent);
+        Map<String, Boolean> map = null;
+        if (_compositeComponentAttributesMarked == null)
+        {
+            _compositeComponentAttributesMarked = new HashMap<UIComponent, Map<String, Boolean>>(); 
+        }
+        else
+        {
+            map = _compositeComponentAttributesMarked.get(compositeComponentParent);
+        }
+        
         if (map == null)
         {
             map = new HashMap<String, Boolean>(8);
@@ -607,6 +641,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     public void clearMethodExpressionAttribute(UIComponent compositeComponentParent, String attributeName)
     {
+        if (_compositeComponentAttributesMarked == null)
+        {
+            return;
+        }
         Map<String, Boolean> map = _compositeComponentAttributesMarked.get(compositeComponentParent);
         if (map == null)
         {
@@ -620,6 +658,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @Override
     public Object removeMethodExpressionTargeted(UIComponent targetedComponent, String attributeName)
     {
+        if (_methodExpressionsTargeted == null)
+        {
+            return null;
+        }
         Map<String, Object> map = _methodExpressionsTargeted.get(targetedComponent);
         if (map != null)
         {
