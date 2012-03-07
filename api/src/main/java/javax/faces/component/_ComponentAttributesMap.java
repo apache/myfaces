@@ -218,7 +218,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Collection<Object> values()
     {
-        return getUnderlyingMap().values();
+        return getUnderlyingMap(true).values();
     }
 
     /**
@@ -238,7 +238,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Set<Map.Entry<String, Object>> entrySet()
     {
-        return getUnderlyingMap().entrySet();
+        return getUnderlyingMap(true).entrySet();
     }
 
     /**
@@ -247,7 +247,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     public Set<String> keySet()
     {
-        return getUnderlyingMap().keySet();
+        return getUnderlyingMap(true).keySet();
     }
 
     /**
@@ -604,8 +604,27 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      */
     Map<String, Object> getUnderlyingMap()
     {
-        Map _attributes = (Map<String, Object>) _component.getStateHelper().get(UIComponentBase.PropertyKeys.attributesMap);
-        return _attributes == null ? Collections.EMPTY_MAP : _attributes; 
+        StateHelper stateHelper = _component.getStateHelper(false);
+        Map attributes = null;
+        if (stateHelper != null)
+        {
+            attributes = (Map<String, Object>) stateHelper.get(UIComponentBase.PropertyKeys.attributesMap);
+        }
+        return attributes == null ? Collections.EMPTY_MAP : attributes;
+    }
+    
+    Map<String, Object> getUnderlyingMap(boolean create)
+    {
+        if (create)
+        {
+            Map attributes
+                    = (Map<String, Object>) _component.getStateHelper().get(UIComponentBase.PropertyKeys.attributesMap);
+            return attributes == null ? Collections.EMPTY_MAP : attributes;
+        }
+        else
+        {
+            return getUnderlyingMap();
+        }
     }
 
     /**

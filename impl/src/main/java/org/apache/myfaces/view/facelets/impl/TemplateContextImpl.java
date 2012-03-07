@@ -107,7 +107,8 @@ public class TemplateContextImpl extends TemplateContext
     }
     
     @Override
-    public void extendClient(final AbstractFaceletContext actx, final AbstractFacelet owner, final TemplateClient client)
+    public void extendClient(final AbstractFaceletContext actx, final AbstractFacelet owner,
+                             final TemplateClient client)
     {
         _clients.addLast(new TemplateManagerImpl(owner, client, false, actx.getPageContext()));
         _lastClient = _clients.getLast();
@@ -124,7 +125,9 @@ public class TemplateContextImpl extends TemplateContext
         {
             client = itr.next();
             if (client.equals(owner))
+            {
                 continue;
+            }
             found = client.apply(ctx, parent, name);
         }
         return found;
@@ -138,7 +141,7 @@ public class TemplateContextImpl extends TemplateContext
 
         private final boolean _root;
 
-        private final Set<String> _names = new HashSet<String>();
+        private Set<String> _names;
         
         private final PageContext _pageContext;
         
@@ -162,12 +165,16 @@ public class TemplateContextImpl extends TemplateContext
             {
                 return false;
             }
-            if (this._names.contains(testName))
+            if (this._names != null && this._names.contains(testName))
             {
                 return false;
             }
             else
             {
+                if (this._names == null)
+                {
+                    this._names =  new HashSet<String>();
+                }
                 this._names.add(testName);
                 boolean found = false;
                 AbstractFaceletContext actx = new DefaultFaceletContext(
@@ -206,8 +213,6 @@ public class TemplateContextImpl extends TemplateContext
 
         public boolean equals(Object o)
         {
-            // System.out.println(this.owner.getAlias() + " == " +
-            // ((DefaultFacelet) o).getAlias());
             if (this._owner != null)
             {
                 return this._owner == o || this._target == o;
@@ -216,6 +221,14 @@ public class TemplateContextImpl extends TemplateContext
             {
                 return this._target == o;
             }
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int result = _owner != null ? _owner.hashCode() : 0;
+            result = 31 * result + (_target != null ? _target.hashCode() : 0);
+            return result;
         }
 
         public boolean isRoot()
@@ -255,7 +268,8 @@ public class TemplateContextImpl extends TemplateContext
     }
 
     @Override
-    public void setParameter(String key, ValueExpression value) {
+    public void setParameter(String key, ValueExpression value)
+    {
         if (_lastClient != null)
         {
             _lastClient.getParametersMap().put(key, value);
@@ -263,7 +277,8 @@ public class TemplateContextImpl extends TemplateContext
     }
 
     @Override
-    public boolean isParameterEmpty() {
+    public boolean isParameterEmpty()
+    {
         TemplateManagerImpl client;
         Iterator<TemplateManagerImpl> itr = _clients.iterator();
         while (itr.hasNext())
@@ -282,7 +297,8 @@ public class TemplateContextImpl extends TemplateContext
         return new TemplateClientAttributeMap();
     }
 
-    private final class TemplateClientAttributeMap extends AbstractAttributeMap<ValueExpression> {
+    private final class TemplateClientAttributeMap extends AbstractAttributeMap<ValueExpression>
+    {
 
         public TemplateClientAttributeMap()
         {
@@ -377,8 +393,8 @@ public class TemplateContextImpl extends TemplateContext
     public static final class InitialTemplateClient implements TemplateClient
     {
         public boolean apply(FaceletContext ctx, UIComponent parent, String name)
-                throws IOException, FacesException, FaceletException,
-                ELException {
+                throws IOException, FacesException, FaceletException, ELException
+        {
             return false;
         }
     }

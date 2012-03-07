@@ -37,8 +37,9 @@ public class RequestViewContext
 
     public static final String VIEW_CONTEXT_KEY = "oam.VIEW_CONTEXT";
     
-    private Map<ResourceDependency, Boolean> addedResources = new HashMap<ResourceDependency,Boolean>();
+    private Map<ResourceDependency, Boolean> addedResources;
     
+    // No lazy init: every view has one (UIView.class) or more classes to process   
     private Map<Class<?>, Boolean> processedClasses = new HashMap<Class<?>,Boolean>();
     
     private Map<String, Boolean> renderTargetMap = null;
@@ -81,11 +82,19 @@ public class RequestViewContext
 
     public boolean isResourceDependencyAlreadyProcessed(ResourceDependency dependency)
     {
+        if (addedResources == null)
+        {
+            return false;
+        }
         return addedResources.containsKey(dependency); 
     }
     
     public void setResourceDependencyAsProcessed(ResourceDependency dependency)
     {
+        if (addedResources == null)
+        {
+            addedResources = new HashMap<ResourceDependency,Boolean>();
+        }
         addedResources.put(dependency, true);
     }
 

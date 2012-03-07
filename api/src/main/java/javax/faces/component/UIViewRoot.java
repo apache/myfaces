@@ -109,7 +109,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     // Tracks success in the beforePhase. Listeners that threw an exception
     // in beforePhase or were never called, because a previous listener threw
     // an exception, should not have their afterPhase method called
-    private transient Map<PhaseId, boolean[]> listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
+    private transient Map<PhaseId, boolean[]> listenerSuccessMap;
     
     private static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
     private static final String JAVAX_FACES_LOCATION_HEAD = "javax_faces_location_head";
@@ -122,8 +122,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     public UIViewRoot()
     {
         setRendererType(null);
-        
-        _systemEventListeners = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>();
     }
 
     /**
@@ -835,12 +833,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             if (beforePhase)
             {
                 beforePhaseSuccess = new boolean[listenerCount];
-                listenerSuccessMap.put(phaseId, beforePhaseSuccess);
+                _getListenerSuccessMap().put(phaseId, beforePhaseSuccess);
             }
             else
             {
                 // afterPhase - get beforePhaseSuccess from the Map
-                beforePhaseSuccess = listenerSuccessMap.get(phaseId);
+                beforePhaseSuccess = _getListenerSuccessMap().get(phaseId);
                 if (beforePhaseSuccess == null)
                 {
                     // no Map available - assume that everything went well
@@ -1240,7 +1238,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent)
     {
         checkNull (systemEvent, "systemEvent");
-        
+        if (_systemEventListeners == null)
+        {
+            return null;
+        }
         return _systemEventListeners.get (systemEvent);
     }
     
@@ -1251,6 +1252,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         checkNull (systemEvent, "systemEvent");
         checkNull (listener, "listener");
+        
+        if (_systemEventListeners == null)
+        {
+            _systemEventListeners = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>();
+        }
         
         listeners = _systemEventListeners.get (systemEvent);
         
@@ -1271,6 +1277,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         checkNull (systemEvent, "systemEvent");
         checkNull (listener, "listener");
+        
+        if (_systemEventListeners == null)
+        {
+            return;
+        }
         
         listeners = _systemEventListeners.get (systemEvent);
         
@@ -1390,6 +1401,16 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             logger = Logger.getLogger(UIViewRoot.class.getName());
         }
         return logger;
+    }
+
+    private Map<PhaseId, boolean[]> _getListenerSuccessMap()
+    {
+        // lazy init: 
+        if (listenerSuccessMap == null)
+        {
+            listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
+        }
+        return listenerSuccessMap;
     }
 
     private static interface PhaseProcessor
