@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
@@ -659,8 +660,17 @@ public abstract class HtmlLinkRendererBase
         StringBuilder params = new StringBuilder();
         params.append("[");
         
+        List<UIComponent> childrenList = null;
+        if (getChildCount(component) > 0)
+        {
+            childrenList = getChildren(component);
+        }
+        else
+        {
+           childrenList = Collections.emptyList();
+        }
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                FacesContext.getCurrentInstance(), getChildren(component), false, false);
+                context, childrenList, false, false);
         for (int j = 0, size = validParams.size(); j < size; j++) 
         {
             UIParameter param = validParams.get(j);
@@ -808,9 +818,17 @@ public abstract class HtmlLinkRendererBase
     {
         boolean strictXhtmlLinks
                 = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isStrictXhtmlLinks();
-        
+        List<UIComponent> childrenList = null;
+        if (getChildCount(linkComponent) > 0)
+        {
+            childrenList = getChildren(linkComponent);
+        }
+        else
+        {
+           childrenList = Collections.emptyList();
+        }
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                facesContext, getChildren(linkComponent), false, false);
+                facesContext, childrenList, false, false);
         
         for (int i = 0, size = validParams.size(); i < size; i++)
         {

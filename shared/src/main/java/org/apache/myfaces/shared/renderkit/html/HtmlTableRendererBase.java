@@ -470,9 +470,13 @@ public class HtmlTableRendererBase extends HtmlRenderer
                     rowStartRendered = true;
                 }
 
-                List children = getChildren(component);
+                List children = null;
                 for (int j = 0, size = getChildCount(component); j < size; j++)
                 {
+                    if (children == null)
+                    {
+                        children = getChildren(component);
+                    }
                     UIComponent child = (UIComponent) children.get(j);
                     if (child.isRendered())
                     {
