@@ -482,7 +482,7 @@ public abstract class HtmlMessagesRendererBase
             // The for attribute is mutually exclusive with globalOnly and take precedence if used.
             if(forComponent != null)
             {
-                _clientId = forComponent.getClientId();
+                _clientId = forComponent.getClientId(facesContext);
                 _componentMessagesIterator = facesContext.getMessages(_clientId);
                 _globalMessagesIterator = org.apache.myfaces.shared.util.NullIterator.instance();
                 _clientIdsWithMessagesIterator = org.apache.myfaces.shared.util.NullIterator.instance();

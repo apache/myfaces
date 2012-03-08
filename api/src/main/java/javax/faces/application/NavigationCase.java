@@ -139,7 +139,8 @@ public class NavigationCase
                 externalContext.getRequestServerName(),
                 externalContext.getRequestServerPort(),
                 context.getApplication().getViewHandler().getBookmarkableURL(context, getToViewId(context), 
-                        _NavigationUtils.getEvaluatedNavigationParameters(getParameters()), isIncludeViewParams()));
+                        _NavigationUtils.getEvaluatedNavigationParameters(context,
+                             getParameters()), isIncludeViewParams()));
     }
 
     public URL getResourceURL(FacesContext context) throws MalformedURLException
@@ -157,7 +158,8 @@ public class NavigationCase
                 externalContext.getRequestServerName(),
                 externalContext.getRequestServerPort(),
                 context.getApplication().getViewHandler().getRedirectURL(context, getToViewId(context), 
-                        _NavigationUtils.getEvaluatedNavigationParameters(getParameters()), isIncludeViewParams()));
+                        _NavigationUtils.getEvaluatedNavigationParameters(context,
+                             getParameters()), isIncludeViewParams()));
     }
     
     public Map<String,List<String>> getParameters()

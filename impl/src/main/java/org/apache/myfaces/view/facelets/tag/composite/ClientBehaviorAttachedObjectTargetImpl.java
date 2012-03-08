@@ -87,7 +87,7 @@ public class ClientBehaviorAttachedObjectTargetImpl
                     }
                     else
                     {
-                        throw new FacesException("Component with clientId " + innerComponent.getClientId()
+                        throw new FacesException("Component with clientId " + innerComponent.getClientId(facesContext)
                                                  + "should be instance of ClientBehaviorHolder");
                     }
                 }
@@ -116,7 +116,7 @@ public class ClientBehaviorAttachedObjectTargetImpl
                     }
                     else
                     {
-                        throw new FacesException("Component with clientId "+ innerComponent.getClientId()
+                        throw new FacesException("Component with clientId "+ innerComponent.getClientId(facesContext)
                                                  + "should be instance of ClientBehaviorHolder");
                     }
                 }

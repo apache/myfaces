@@ -160,7 +160,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
             {
                 if (!facesContext.isProjectStage(ProjectStage.Production))
                 {
-                    facesContext.addMessage(component.getClientId(), 
+                    facesContext.addMessage(component.getClientId(facesContext), 
                             new FacesMessage("Component with no name and no body content, so nothing rendered."));
                 }
             }            

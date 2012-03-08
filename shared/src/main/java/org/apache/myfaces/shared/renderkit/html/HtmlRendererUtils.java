@@ -304,7 +304,7 @@ public final class HtmlRendererUtils
                             && !clientBehaviorList.isEmpty())
                     {
                         String clientId = paramMap.get("javax.faces.source");
-                        if (component.getClientId().equals(clientId))
+                        if (component.getClientId(facesContext).equals(clientId))
                         {
                             if (clientBehaviorList instanceof RandomAccess)
                             {
@@ -1683,7 +1683,8 @@ public final class HtmlRendererUtils
         }
         // handle NavigationCase parameters
         Map<String, List<String>> navigationCaseParams = 
-            NavigationUtils.getEvaluatedNavigationParameters(navigationCase.getParameters());
+            NavigationUtils.getEvaluatedNavigationParameters(facesContext,
+                navigationCase.getParameters());
         if (navigationCaseParams != null)
         {
             if (parameters == null)

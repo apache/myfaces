@@ -584,7 +584,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             //Restore view
             component.pushComponentToEL(context, component);
-            Object state = states.get(component.getClientId());
+            Object state = states.get(component.getClientId(context));
             if (state != null)
             {
                 if (state instanceof AttachedFullStateWrapper)
@@ -598,7 +598,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
                 catch(Exception e)
                 {
-                    throw new IllegalStateException("Error restoring component: "+component.getClientId(), e);
+                    throw new IllegalStateException("Error restoring component: "+component.getClientId(context), e);
                 }
             }
     
@@ -661,9 +661,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     }
     
     @SuppressWarnings("unchecked")
-    private void registerOnAddRemoveList(String clientId)
+    private void registerOnAddRemoveList(FacesContext facesContext, String clientId)
     {
-        UIViewRoot uiViewRoot = FacesContext.getCurrentInstance().getViewRoot();
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
 
         List<String> clientIdsAdded = (List<String>) getClientIdsAdded(uiViewRoot);
         if (clientIdsAdded == null)
@@ -688,9 +688,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     }
     
     @SuppressWarnings("unchecked")
-    private void registerOnAddList(String clientId)
+    private void registerOnAddList(FacesContext facesContext, String clientId)
     {
-        UIViewRoot uiViewRoot = FacesContext.getCurrentInstance().getViewRoot();
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
 
         List<String> clientIdsAdded = (List<String>) getClientIdsAdded(uiViewRoot);
         if (clientIdsAdded == null)
@@ -743,17 +743,17 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     {
                         if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
                         {
-                            registerOnAddRemoveList(target.getClientId());
+                            registerOnAddRemoveList(facesContext, target.getClientId(facesContext));
                             target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                         }
                         else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
                         {
-                            registerOnAddList(target.getClientId());
+                            registerOnAddList(facesContext, target.getClientId(facesContext));
                             target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                         }
                         else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
                         {
-                            registerOnAddList(target.getClientId());
+                            registerOnAddList(facesContext, target.getClientId(facesContext));
                         }
                         ensureClearInitialState(target);
                         //Save all required info to restore the subtree.
@@ -839,7 +839,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             //Scan children
             if (component.getChildCount() > 0)
             {
-                String currentClientId = component.getClientId();
+                String currentClientId = component.getClientId(context);
                 
                 List<UIComponent> children  = component.getChildren();
                 for (int i = 0; i < children.size(); i++)
@@ -853,22 +853,22 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         {
                             if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
                             {
-                                registerOnAddRemoveList(child.getClientId());
+                                registerOnAddRemoveList(context, child.getClientId(context));
                                 child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                             }
                             else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
                             {
-                                registerOnAddList(child.getClientId());
+                                registerOnAddList(context, child.getClientId(context));
                                 child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                             }
                             else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
                             {
-                                registerOnAddList(child.getClientId());
+                                registerOnAddList(context, child.getClientId(context));
                             }
                             ensureClearInitialState(child);
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
-                            states.put(child.getClientId(), new AttachedFullStateWrapper( 
+                            states.put(child.getClientId(context), new AttachedFullStateWrapper( 
                                     new Object[]{
                                         currentClientId,
                                         null,
@@ -889,7 +889,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (component.getFacetCount() > 0)
             {
                 Map<String, UIComponent> facetMap = component.getFacets();
-                String currentClientId = component.getClientId();
+                String currentClientId = component.getClientId(context);
                 
                 for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
                 {
@@ -903,22 +903,22 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         {
                             if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
                             {
-                                registerOnAddRemoveList(child.getClientId());
+                                registerOnAddRemoveList(context, child.getClientId(context));
                                 child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                             }
                             else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
                             {
-                                registerOnAddList(child.getClientId());
+                                registerOnAddList(context, child.getClientId(context));
                                 child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
                             }
                             else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
                             {
-                                registerOnAddList(child.getClientId());
+                                registerOnAddList(context, child.getClientId(context));
                             }
                             //Save all required info to restore the subtree.
                             //This includes position, structure and state of subtree
                             ensureClearInitialState(child);
-                            states.put(child.getClientId(),new AttachedFullStateWrapper(new Object[]{
+                            states.put(child.getClientId(context),new AttachedFullStateWrapper(new Object[]{
                                 currentClientId,
                                 facetName,
                                 null,
@@ -939,7 +939,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             //Only save if the value returned is null
             if (savedState != null)
             {
-                states.put(component.getClientId(), savedState);            
+                states.put(component.getClientId(context), savedState);            
             }
         }
         finally

@@ -854,7 +854,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         if (compositeComponentMetadata == null)
         {
-            log.severe("Composite component metadata not found for: " + topLevelComponent.getClientId());
+            log.severe("Composite component metadata not found for: " + topLevelComponent.getClientId(context));
             return;
         }
 
@@ -996,7 +996,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         if (compositeComponentMetadata == null)
         {
-            log.severe("Composite component metadata not found for: " + topLevelComponent.getClientId());
+            log.severe("Composite component metadata not found for: " + topLevelComponent.getClientId(context));
             return;
         }
 

@@ -204,7 +204,7 @@ class _SharedRendererUtils
                                     "The attribute "
                                             + COLLECTION_TYPE_KEY
                                             + " of component "
-                                            + component.getClientId()
+                                            + component.getClientId(facesContext)
                                             + " does not evaluate to a "
                                             + "String, a Class object or a ValueExpression pointing "
                                             + "to a String or a Class object.");
@@ -214,7 +214,7 @@ class _SharedRendererUtils
                         {
                             throw new FacesException("The attribute "
                                     + COLLECTION_TYPE_KEY + " of component "
-                                    + component.getClientId()
+                                    + component.getClientId(facesContext)
                                     + " does not point to a valid type of Collection.");
                         }
                         // now we have a real collectionType --> try to instantiate it
@@ -423,7 +423,7 @@ class _SharedRendererUtils
                         "The attribute "
                                 + VALUE_TYPE_KEY
                                 + " of component "
-                                + component.getClientId()
+                                + component.getClientId(facesContext)
                                 + " does not evaluate to a "
                                 + "String, a Class object or a ValueExpression pointing "
                                 + "to a String or a Class object.");
