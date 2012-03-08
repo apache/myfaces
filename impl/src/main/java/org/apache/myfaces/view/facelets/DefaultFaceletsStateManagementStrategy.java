@@ -293,12 +293,43 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 states = (Map<String, Object>) state[1];
                 
                 // Visit the children and restore their state.
-                
-                //view.visitTree (VisitContext.createVisitContext (context), new RestoreStateVisitor (states));
-                
+                boolean emptyState = false;
+                boolean containsFaceletState = states.containsKey(
+                        ComponentSupport.FACELET_STATE_INSTANCE);
+                if (states.isEmpty())
+                {
+                    emptyState = true; 
+                }
+                else if (states.size() == 1 && 
+                        containsFaceletState)
+                {
+                    emptyState = true; 
+                }
                 //Restore state of current components
-                restoreStateFromMap(context, states, view);
-                
+                if (!emptyState)
+                {
+                    // Check if there is only one component state
+                    // and that state is UIViewRoot instance (for example
+                    // when using ViewScope)
+                    if ((states.size() == 1 && !containsFaceletState) || 
+                        (states.size() == 2 && containsFaceletState))
+                    {
+                        Object viewState = states.get(view.getClientId(context));
+                        if (viewState != null)
+                        {
+                            restoreViewRootOnlyFromMap(context,viewState, view);
+                        }
+                        else
+                        {
+                            //The component is not viewRoot, restore as usual.
+                            restoreStateFromMap(context, states, view);
+                        }
+                    }
+                    else
+                    {
+                        restoreStateFromMap(context, states, view);
+                    }
+                }
                 if (faceletViewState != null)
                 {
                     view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
@@ -572,6 +603,39 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         return serializedView;
     }
     
+    private void restoreViewRootOnlyFromMap(
+            final FacesContext context, final Object viewState,
+            final UIComponent view)
+    {
+        // Only viewState found, process it but skip tree
+        // traversal, saving some time.
+        try
+        {
+            //Restore view
+            view.pushComponentToEL(context, view);
+            if (viewState != null)
+            {
+                if (!(viewState instanceof AttachedFullStateWrapper))
+                {
+                    try
+                    {
+                        view.restoreState(context, viewState);
+                    }
+                    catch(Exception e)
+                    {
+                        throw new IllegalStateException(
+                                "Error restoring component: "+
+                                view.getClientId(context), e);
+                    }
+                }
+            }
+        }
+        finally
+        {
+             view.popComponentFromEL(context);
+        }
+    }
+    
     private void restoreStateFromMap(final FacesContext context, final Map<String,Object> states,
             final UIComponent component)
     {
@@ -839,8 +903,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             //Scan children
             if (component.getChildCount() > 0)
             {
-                String currentClientId = component.getClientId(context);
-                
                 List<UIComponent> children  = component.getChildren();
                 for (int i = 0; i < children.size(); i++)
                 {
@@ -870,7 +932,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                             //This includes position, structure and state of subtree
                             states.put(child.getClientId(context), new AttachedFullStateWrapper( 
                                     new Object[]{
-                                        currentClientId,
+                                        component.getClientId(context),
                                         null,
                                         i,
                                         internalBuildTreeStructureToSave(child),
@@ -889,7 +951,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (component.getFacetCount() > 0)
             {
                 Map<String, UIComponent> facetMap = component.getFacets();
-                String currentClientId = component.getClientId(context);
                 
                 for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
                 {
@@ -919,7 +980,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                             //This includes position, structure and state of subtree
                             ensureClearInitialState(child);
                             states.put(child.getClientId(context),new AttachedFullStateWrapper(new Object[]{
-                                currentClientId,
+                                component.getClientId(context),
                                 facetName,
                                 null,
                                 internalBuildTreeStructureToSave(child),
