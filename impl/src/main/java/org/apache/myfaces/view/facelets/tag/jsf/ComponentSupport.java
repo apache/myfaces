@@ -57,7 +57,7 @@ public final class ComponentSupport
      * facets with multiple non panel children, are marked with this attribute.
      * This constant is duplicate in javax.faces.webapp.UIComponentClassicTagBase
      */
-    public final static String FACET_CREATED_UIPANEL_MARKER = "org.apache.myfaces.facet.createdUIPanel";
+    public final static String FACET_CREATED_UIPANEL_MARKER = "oam.vf.createdUIPanel";
     
     /**
      * The key under the facelet state map is stored
