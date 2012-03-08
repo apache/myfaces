@@ -119,6 +119,8 @@ public class BeanValidator implements Validator, PartialStateHolder
     
     private static final Class<?>[] DEFAULT_VALIDATION_GROUPS_ARRAY = new Class<?>[] { Default.class };
 
+    private static final String DEFAULT_VALIDATION_GROUP_NAME = "javax.validation.groups.Default";
+
     private String validationGroups;
 
     private Class<?>[] validationGroupsArray;
@@ -381,14 +383,38 @@ public class BeanValidator implements Validator, PartialStateHolder
     /** {@inheritDoc} */
     public Object saveState(final FacesContext context)
     {
-        return this.validationGroups;
+        if (!initialStateMarked())
+        {
+           //Full state saving.
+           return this.validationGroups;
+        }
+        else if (DEFAULT_VALIDATION_GROUP_NAME.equals(this.validationGroups))
+        {
+            // default validation groups can be saved as null.
+            return null;
+        }
+        else
+        {
+            // Save it fully. Remember that by MYFACES-2528
+            // validationGroups needs to be stored into the state
+            // because this value is often susceptible to use in "combo"
+            return this.validationGroups;
+        }
     }
 
     /** {@inheritDoc} */
     public void restoreState(final FacesContext context, final Object state)
     {
-        this.validationGroups = (String) state;
-
+        if (state != null)
+        {
+            this.validationGroups = (String) state;
+        }
+        else
+        {
+            // When the value is being validated, postSetValidationGroups() sets
+            // validationGroups to javax.validation.groups.Default. 
+            this.validationGroups = null;
+        }
         // Only the String is saved, recalculate the Class[] on state restoration.
         //postSetValidationGroups();
     }
@@ -411,6 +437,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     public void setValidationGroups(final String validationGroups)
     {
         this.validationGroups = validationGroups;
+        this.clearInitialState();
         //postSetValidationGroups();
     }
 
