@@ -30,8 +30,8 @@ import java.lang.reflect.Field;
  *
  * java.lang.String creation reusing a char[] buffer requires Java 1.5+
  *
- * System property "stringchararrayaccessor.disabled" disables this hack.
- * -Dstringchararrayaccessor.disabled=true
+ * System property "oam.stringchararrayaccessor.enabled" enables this hack.
+ * -Doam.stringchararrayaccessor.enabled=true
  *
  * Read JSR-133, "9.1.1 Post-Construction Modification of Final Fields"
  * http://www.cs.umd.edu/~pugh/java/memoryModel/jsr133.pdf
@@ -44,8 +44,12 @@ import java.lang.reflect.Field;
 public class StringCharArrayAccessor
 {
 
-    static volatile boolean enabled = !Boolean
-            .getBoolean("oam.stringchararrayaccessor.disabled");
+    //static volatile boolean enabled = !Boolean
+    //        .getBoolean("oam.stringchararrayaccessor.disabled");
+    // In Google Application Engine this hack is not valid. We should
+    // set this one as default disabled.
+    static volatile boolean enabled = Boolean
+            .getBoolean("oam.stringchararrayaccessor.enabled");
 
     static Field valueField;
     static Field countField;
