@@ -115,7 +115,8 @@ public class NavigationHandlerImpl
 
                 String redirectPath = viewHandler.getRedirectURL(
                         facesContext, toViewId, 
-                        NavigationUtils.getEvaluatedNavigationParameters(navigationCase.getParameters()) ,
+                        NavigationUtils.getEvaluatedNavigationParameters(facesContext,
+                        navigationCase.getParameters()) ,
                         navigationCase.isIncludeViewParams());
                 
                 //Clear ViewMap if we are redirecting to other resource

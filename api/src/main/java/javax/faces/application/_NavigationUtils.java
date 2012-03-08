@@ -39,7 +39,9 @@ class _NavigationUtils
      * @param parameters parameter map retrieved from NavigationCase.getParameters()
      * @return
      */
-    public static Map<String, List<String> > getEvaluatedNavigationParameters(Map<String, List<String> > parameters)
+    public static Map<String, List<String> > getEvaluatedNavigationParameters(
+            FacesContext facesContext, 
+            Map<String, List<String> > parameters)
     {
         Map<String,List<String>> evaluatedParameters = null;
         if (parameters != null && parameters.size() > 0)
@@ -58,7 +60,8 @@ class _NavigationUtils
                 }
                 if (containsEL)
                 {
-                    evaluatedParameters.put(pair.getKey(), _evaluateValueExpressions(pair.getValue()));
+                    evaluatedParameters.put(pair.getKey(), 
+                            _evaluateValueExpressions(facesContext, pair.getValue()));
                 }
                 else
                 {
@@ -80,13 +83,12 @@ class _NavigationUtils
      * @param values
      * @return
      */
-    private static List<String> _evaluateValueExpressions(List<String> values)
+    private static List<String> _evaluateValueExpressions(FacesContext context, List<String> values)
     {
         // note that we have to create a new List here, because if we
         // change any value on the given List, it will be changed in the
         // NavigationCase too and the EL expression won't be evaluated again
         List<String> target = new ArrayList<String>(values.size());
-        FacesContext context = FacesContext.getCurrentInstance();
         for (String value : values)
         {
             if (_isExpression(value))

@@ -452,7 +452,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             setFilledView(context, view);
         }
         //At this point refreshTransientBuild = false && refreshTransientBuildOnPSS is true
-        else if (_refreshTransientBuildOnPSSAuto && !context.getAttributes().containsKey(CLEAN_TRANSIENT_BUILD_ON_RESTORE))
+        else if (_refreshTransientBuildOnPSSAuto &&
+                 !context.getAttributes().containsKey(CLEAN_TRANSIENT_BUILD_ON_RESTORE))
         {
             setFilledView(context, view);
         }
@@ -733,7 +734,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         if (compositeComponentMetadata == null)
         {
-            log.severe("Composite component metadata not found for: " + topLevelComponent.getClientId());
+            log.severe("Composite component metadata not found for: " + topLevelComponent.getClientId(context));
             return;
         }
 
@@ -873,7 +874,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         if (compositeComponentMetadata == null)
         {
-            log.severe("Composite component metadata not found for: " + topLevelComponent.getClientId());
+            log.severe("Composite component metadata not found for: " + topLevelComponent.getClientId(context));
             return;
         }
 

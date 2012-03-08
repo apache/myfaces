@@ -185,7 +185,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                 if (!facesContext.getApplication().getProjectStage().equals(
                         ProjectStage.Production))
                 {
-                    facesContext.addMessage(component.getClientId(),
+                    facesContext.addMessage(component.getClientId(facesContext),
                             new FacesMessage("Component with no name and no body content, so nothing rendered."));
                 }
             }

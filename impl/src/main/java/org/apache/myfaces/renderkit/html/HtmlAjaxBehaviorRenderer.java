@@ -406,7 +406,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         }
         if (target != null)
         {
-            return target.getClientId();
+            return target.getClientId(context.getFacesContext());
         }
         throw new FacesException("Component with id:" + id + " not found");
     }

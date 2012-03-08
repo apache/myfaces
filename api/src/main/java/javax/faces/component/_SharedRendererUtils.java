@@ -60,19 +60,27 @@ class _SharedRendererUtils
 
         Converter converter = component.getConverter();
         if (converter != null)
+        {
             return converter;
+        }
 
         // Try to find out by value expression
         ValueExpression expression = component.getValueExpression("value");
         if (expression == null)
+        {
             return null;
+        }
 
         Class<?> valueType = expression.getType(facesContext.getELContext());
         if (valueType == null)
+        {
             return null;
+        }
 
         if (Object.class.equals(valueType))
+        {
             return null; // There is no converter for Object class
+        }
 
         try
         {
@@ -173,7 +181,7 @@ class _SharedRendererUtils
                                     "The attribute "
                                             + COLLECTION_TYPE_KEY
                                             + " of component "
-                                            + component.getClientId()
+                                            + component.getClientId(facesContext)
                                             + " does not evaluate to a "
                                             + "String, a Class object or a ValueExpression pointing "
                                             + "to a String or a Class object.");
@@ -183,7 +191,7 @@ class _SharedRendererUtils
                         {
                             throw new FacesException("The attribute "
                                     + COLLECTION_TYPE_KEY + " of component "
-                                    + component.getClientId()
+                                    + component.getClientId(facesContext)
                                     + " does not point to a valid type of Collection.");
                         }
                         // now we have a real collectionType --> try to instantiate it
@@ -388,7 +396,8 @@ class _SharedRendererUtils
             SelectItem item = iterator.next();
             if (item instanceof SelectItemGroup)
             {
-                Iterator<SelectItem> groupIterator = Arrays.asList(((SelectItemGroup) item).getSelectItems()).iterator();
+                Iterator<SelectItem> groupIterator
+                        = Arrays.asList(((SelectItemGroup) item).getSelectItems()).iterator();
                 converter = getSelectItemsValueConverter(groupIterator, facesContext);
             }
             else

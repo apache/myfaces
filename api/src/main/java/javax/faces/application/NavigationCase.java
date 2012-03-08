@@ -100,7 +100,8 @@ public class NavigationCase
     public URL getActionURL(FacesContext context) throws MalformedURLException
     {
         ExternalContext externalContext = context.getExternalContext();
-        return new URL(externalContext.getRequestScheme(), externalContext.getRequestServerName(), externalContext.getRequestServerPort(),
+        return new URL(externalContext.getRequestScheme(), externalContext.getRequestServerName(),
+                externalContext.getRequestServerPort(),
                 context.getApplication().getViewHandler().getActionURL(context, getToViewId(context)));
     }
 
@@ -138,14 +139,16 @@ public class NavigationCase
                 externalContext.getRequestServerName(),
                 externalContext.getRequestServerPort(),
                 context.getApplication().getViewHandler().getBookmarkableURL(context, getToViewId(context), 
-                        _NavigationUtils.getEvaluatedNavigationParameters(getParameters()), isIncludeViewParams()));  
+                        _NavigationUtils.getEvaluatedNavigationParameters(context,
+                             getParameters()), isIncludeViewParams()));
     }
 
     public URL getResourceURL(FacesContext context) throws MalformedURLException
     {
         ExternalContext externalContext = context.getExternalContext();
-        return new URL(externalContext.getRequestScheme(), externalContext.getRequestServerName(), externalContext.getRequestServerPort(),
-                context.getApplication().getViewHandler().getResourceURL(context, getToViewId(context)));      
+        return new URL(externalContext.getRequestScheme(), externalContext.getRequestServerName(),
+                       externalContext.getRequestServerPort(),
+                       context.getApplication().getViewHandler().getResourceURL(context, getToViewId(context)));
     }
     
     public URL getRedirectURL(FacesContext context) throws MalformedURLException
@@ -155,7 +158,8 @@ public class NavigationCase
                 externalContext.getRequestServerName(),
                 externalContext.getRequestServerPort(),
                 context.getApplication().getViewHandler().getRedirectURL(context, getToViewId(context), 
-                        _NavigationUtils.getEvaluatedNavigationParameters(getParameters()), isIncludeViewParams()));
+                        _NavigationUtils.getEvaluatedNavigationParameters(context,
+                             getParameters()), isIncludeViewParams()));
     }
     
     public Map<String,List<String>> getParameters()
@@ -247,7 +251,7 @@ public class NavigationCase
                 builder.append("\">\n");
                 for (Map.Entry<String, List<String>> entry : _parameters.entrySet())
                 {
-                    final String name = entry.getKey();
+                    String name = entry.getKey();
                     for (String value : entry.getValue())
                     {
                         builder.append("    <view-param>\n");
