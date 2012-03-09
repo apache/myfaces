@@ -251,8 +251,8 @@ public class HtmlButtonRendererBase
             }
         }
         
-        if (javascriptAllowed)
-        {
+        //if (javascriptAllowed)
+        //{
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderButtonPassthroughPropertiesWithoutDisabledAndEvents(writer, 
@@ -263,9 +263,8 @@ public class HtmlButtonRendererBase
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
                                                        HTML.BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
             }
-        }
+        //}
 
-        
         if (behaviors != null && !behaviors.isEmpty())
         {
             HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
