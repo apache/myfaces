@@ -42,18 +42,10 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x/parent</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x/parent</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.0.x/parent</url>
     </scm>
-
-    <modules>
-        <module>api</module>
-        <module>implee6</module>
-        <module>shared</module>
-        <module>impl</module>
-        <module>bundle</module>
-    </modules>
 
     <build>
     
@@ -198,9 +190,6 @@
                     <name>prepareRelease</name>
                 </property>
             </activation>
-            <modules>
-                <module>assembly</module>
-            </modules>
             <build>
                 <plugins>
                     <plugin>
@@ -220,9 +209,6 @@
                     <value>true</value>
                 </property>
             </activation>
-            <modules>
-                <module>assembly</module>
-            </modules>
             <build>
                 <plugins>
                     <plugin>
@@ -233,14 +219,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-
-        <!-- run MyFaces core integration tests with mvn clean install -Pintegration-tests -->
-        <profile>
-            <id>integration-tests</id>
-            <modules>
-                <module>integration-tests</module>
-            </modules>
         </profile>
 
     </profiles>
@@ -286,7 +264,7 @@
                 <artifactId>myfaces-impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.myfaces.core.internal</groupId>
                 <artifactId>myfaces-impl-shared</artifactId>
