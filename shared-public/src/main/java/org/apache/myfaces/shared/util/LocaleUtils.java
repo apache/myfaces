@@ -52,13 +52,17 @@ public final class LocaleUtils
         {
             Locale locale = Locale.getDefault();
             if(log.isLoggable(Level.WARNING))
-                log.warning("Locale name in faces-config.xml null or empty, setting locale to default locale : "+locale.toString());
+            {
+                log.warning("Locale name in faces-config.xml null or empty, setting locale to default locale : "
+                        + locale.toString());
+            }
             return locale;
         }
 
         int separatorCountry = localeString.indexOf('_');
         char separator;
-        if (separatorCountry >= 0) {
+        if (separatorCountry >= 0)
+        {
             separator = '_';
         }
         else
@@ -67,11 +71,14 @@ public final class LocaleUtils
             separator = '-';
         }
 
-        String language, country, variant;
+        String language;
+        String country;
+        String variant;
         if (separatorCountry < 0)
         {
             language = localeString;
-            country = variant = "";
+            country = "";
+            variant = "";
         }
         else
         {

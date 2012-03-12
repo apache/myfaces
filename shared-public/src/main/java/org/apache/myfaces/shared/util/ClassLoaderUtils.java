@@ -123,20 +123,25 @@ public final class ClassLoaderUtils
       ClassLoader loader = getContextClassLoader();
 
       if (loader != null)
-        clazz = loader.loadClass(name);
+      {
+          clazz = loader.loadClass(name);
+      }
     }
     catch (ClassNotFoundException e)
     {
       // treat as though loader not set
-      ;
     }
 
     if (clazz == null)
     {
       if (callerClassLoader != null)
-        clazz = callerClassLoader.loadClass(name);
+      {
+          clazz = callerClassLoader.loadClass(name);
+      }
       else
-        clazz = Class.forName(name);
+      {
+          clazz = Class.forName(name);
+      }
     }
 
     return clazz;
@@ -164,14 +169,20 @@ public final class ClassLoaderUtils
     ClassLoader loader = getContextClassLoader();
 
     if (loader != null)
-      url = loader.getResource(name);
+    {
+        url = loader.getResource(name);
+    }
 
     if (url == null)
     {
       if (callerClassLoader != null)
-        url = callerClassLoader.getResource(name);
+      {
+          url = callerClassLoader.getResource(name);
+      }
       else
-        url = ClassLoader.getSystemResource(name);
+      {
+          url = ClassLoader.getSystemResource(name);
+      }
     }
 
     return url;
@@ -199,14 +210,20 @@ public final class ClassLoaderUtils
     ClassLoader loader = getContextClassLoader();
 
     if (loader != null)
-      stream = loader.getResourceAsStream(name);
+    {
+        stream = loader.getResourceAsStream(name);
+    }
 
     if (stream == null)
     {
       if (callerClassLoader != null)
-        stream = callerClassLoader.getResourceAsStream(name);
+      {
+          stream = callerClassLoader.getResourceAsStream(name);
+      }
       else
-        stream = ClassLoader.getSystemResourceAsStream(name);
+      {
+          stream = ClassLoader.getSystemResourceAsStream(name);
+      }
     }
 
     return stream;
@@ -222,7 +239,8 @@ public final class ClassLoaderUtils
   {
       if (System.getSecurityManager() != null) 
       {
-          try {
+          try 
+          {
               ClassLoader cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
                       {
                           public ClassLoader run() throws PrivilegedActionException
@@ -287,7 +305,9 @@ public final class ClassLoaderUtils
               {
                 String line = in.readLine();
                 if (line == null)
-                  break;
+                {
+                    break;
+                }
                 
                 String className = _parseLine(line);
                 
@@ -314,7 +334,9 @@ public final class ClassLoaderUtils
         while(urls.hasMoreElements());
         
         if (services.size() == 1)
-          return Collections.singletonList(services.get(0));
+        {
+            return Collections.singletonList(services.get(0));
+        }
         
         return Collections.unmodifiableList(services);
       }
@@ -335,7 +357,9 @@ public final class ClassLoaderUtils
     // Eliminate any comments
     int hashIndex = line.indexOf('#');
     if (hashIndex >= 0)
-      line = line.substring(0, hashIndex);
+    {
+        line = line.substring(0, hashIndex);
+    }
 
     // and any whitespace
     line = line.trim();

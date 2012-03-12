@@ -70,7 +70,9 @@ public final class WebConfigParamUtils
     public static String getStringInitParameter(ExternalContext context, String name, String defaultValue)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = context.getInitParameter(name);
         
@@ -89,13 +91,15 @@ public final class WebConfigParamUtils
     }
     
     /**
-     * Gets the String init parameter value from the specified context. If the parameter is an empty String or a String
+     * Gets the String init parameter value from the specified context. If the parameter is an 
+     * empty String or a String
      * containing only white space, this method returns <code>null</code>
      * 
      * @param context
      *            the application's external context
      * @param names
-     *            the init parameter's names, the first one is scanned first. Usually used when a param has multiple aliases
+     *            the init parameter's names, the first one is scanned first. Usually used when a 
+     *            param has multiple aliases
      *            
      * @return the parameter if it was specified and was not empty, <code>null</code> otherwise
      * 
@@ -108,13 +112,14 @@ public final class WebConfigParamUtils
     }
     
     /**
-     * Gets the String init parameter value from the specified context. If the parameter is an empty String or a String
-     * containing only white space, this method returns <code>null</code>
+     * Gets the String init parameter value from the specified context. If the parameter is an empty 
+     * String or a String containing only white space, this method returns <code>null</code>
      * 
      * @param context
      *            the application's external context
      * @param names
-     *            the init parameter's names, the first one is scanned first. Usually used when a param has multiple aliases
+     *            the init parameter's names, the first one is scanned first. Usually used when a param has 
+     *            multiple aliases
      * @param defaultValue
      *            the value by default if null or empty
      *            
@@ -126,14 +131,18 @@ public final class WebConfigParamUtils
     public static String getStringInitParameter(ExternalContext context, String[] names, String defaultValue)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = context.getInitParameter(name);
             if (param != null)
@@ -200,7 +209,9 @@ public final class WebConfigParamUtils
     public static boolean getBooleanInitParameter(ExternalContext context, String name, boolean defaultValue)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
 
         String param = getStringInitParameter(context, name);
         if (param == null)
@@ -214,7 +225,8 @@ public final class WebConfigParamUtils
     }
     
     /**
-     * Gets the boolean init parameter value from the specified context. If the parameter was not specified, the default
+     * Gets the boolean init parameter value from the specified context. If the parameter 
+     * was not specified, the default
      * value is used instead.
      * 
      * @param context
@@ -235,10 +247,13 @@ public final class WebConfigParamUtils
      * @throws NullPointerException
      *             if context or name is <code>null</code>
      */
-    public static boolean getBooleanInitParameter(ExternalContext context, String name, boolean defaultValue, String [] valuesIgnoreCase, boolean returnOnValueEqualsIgnoreCase)
+    public static boolean getBooleanInitParameter(ExternalContext context, String name, 
+            boolean defaultValue, String [] valuesIgnoreCase, boolean returnOnValueEqualsIgnoreCase)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
 
         String param = getStringInitParameter(context, name);
         if (param == null)
@@ -266,8 +281,8 @@ public final class WebConfigParamUtils
     }    
 
     /**
-     * Gets the boolean init parameter value from the specified context. If the parameter was not specified, the default
-     * value is used instead.
+     * Gets the boolean init parameter value from the specified context. If the parameter was not specified, 
+     * the default value is used instead.
      * 
      * @param context
      *            the application's external context
@@ -286,8 +301,8 @@ public final class WebConfigParamUtils
     }
 
     /**
-     * Gets the boolean init parameter value from the specified context. If the parameter was not specified, the default
-     * value is used instead.
+     * Gets the boolean init parameter value from the specified context. If the parameter was not specified,
+     * the default value is used instead.
      * 
      * @param context
      *            the application's external context
@@ -304,13 +319,17 @@ public final class WebConfigParamUtils
     public static boolean getBooleanInitParameter(ExternalContext context, String[] names, boolean defaultValue)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = getStringInitParameter(context, name);
             if (param != null)
@@ -329,8 +348,8 @@ public final class WebConfigParamUtils
     }
     
     /**
-     * Gets the boolean init parameter value from the specified context. If the parameter was not specified, the default
-     * value is used instead.
+     * Gets the boolean init parameter value from the specified context. If the parameter was not specified,
+     * the default value is used instead.
      * 
      * @param context
      *            the application's external context
@@ -349,16 +368,21 @@ public final class WebConfigParamUtils
      *             if context or name is <code>null</code>
      */
     
-    public static boolean getBooleanInitParameter(ExternalContext context, String[] names, boolean defaultValue, String [] valuesIgnoreCase, boolean returnOnValueEqualsIgnoreCase)
+    public static boolean getBooleanInitParameter(ExternalContext context, String[] names, boolean defaultValue,
+            String [] valuesIgnoreCase, boolean returnOnValueEqualsIgnoreCase)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = getStringInitParameter(context, name);
             if (param != null)
@@ -391,8 +415,8 @@ public final class WebConfigParamUtils
     }
     
     /**
-     * Gets the int init parameter value from the specified context. If the parameter was not specified, the default
-     * value is used instead.
+     * Gets the int init parameter value from the specified context. If the parameter was not 
+     * specified, the default value is used instead.
      * 
      * @param context
      *            the application's external context
@@ -414,8 +438,8 @@ public final class WebConfigParamUtils
     }
     
     /**
-     * Gets the int init parameter value from the specified context. If the parameter was not specified, the default
-     * value is used instead.
+     * Gets the int init parameter value from the specified context. If the parameter was not specified,
+     * the default value is used instead.
      * 
      * @param context
      *            the application's external context
@@ -434,7 +458,9 @@ public final class WebConfigParamUtils
     public static int getIntegerInitParameter(ExternalContext context, String name, int defaultValue)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
 
         String param = getStringInitParameter(context, name);
         if (param == null)
@@ -448,8 +474,8 @@ public final class WebConfigParamUtils
     }
 
     /**
-     * Gets the int init parameter value from the specified context. If the parameter was not specified, the default
-     * value is used instead.
+     * Gets the int init parameter value from the specified context. If the parameter was not specified,
+     * the default value is used instead.
      * 
      * @param context
      *            the application's external context
@@ -486,13 +512,17 @@ public final class WebConfigParamUtils
     public static int getIntegerInitParameter(ExternalContext context, String[] names, int defaultValue)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = getStringInitParameter(context, name);
             if (param != null)
@@ -554,7 +584,9 @@ public final class WebConfigParamUtils
     public static long getLongInitParameter(ExternalContext context, String name, long defaultValue)
     {
         if (name == null)
+        {
             throw new NullPointerException();
+        }
 
         String param = getStringInitParameter(context, name);
         if (param == null)
@@ -607,13 +639,17 @@ public final class WebConfigParamUtils
     public static long getLongInitParameter(ExternalContext context, String[] names, long defaultValue)
     {
         if (names == null)
+        {
             throw new NullPointerException();
+        }
         
         String param = null;
         for (String name : names)
         {
             if (name == null)
+            {
                 throw new NullPointerException();
+            }
             
             param = getStringInitParameter(context, name);
             if (param != null)
@@ -632,8 +668,8 @@ public final class WebConfigParamUtils
     }
 
     /**
-     * Gets the init parameter value from the specified context and instanciate it. If the parameter was not specified,
-     * the default value is used instead.
+     * Gets the init parameter value from the specified context and instanciate it. 
+     * If the parameter was not specified, the default value is used instead.
      * 
      * @param context
      *            the application's external context
@@ -650,7 +686,8 @@ public final class WebConfigParamUtils
      *             if context or name is <code>null</code>
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getInstanceInitParameter(ExternalContext context, String name, String deprecatedName, T defaultValue)
+    public static <T> T getInstanceInitParameter(ExternalContext context, String name, 
+            String deprecatedName, T defaultValue)
     {
         String param = getStringInitParameter(context, name, deprecatedName);
         if (param == null)

@@ -126,7 +126,8 @@ public final class ClassUtils
 
     //~ Methods ------------------------------------------------------------------------------------
 
-    public synchronized static void addClassLoadingExtension(ClassLoaderExtension extension, boolean top) {
+    public synchronized static void addClassLoadingExtension(ClassLoaderExtension extension, boolean top)
+    {
       /**
        * now at the first look this looks somewhat strange
        * but to get the best performance access we assign new native
@@ -138,11 +139,13 @@ public final class ClassUtils
         ClassLoaderExtension [] retVal = new ClassLoaderExtension[classLoadingExtensions.length+1];
         ArrayList extensions = new ArrayList(classLoadingExtensions.length+1);
 
-        if(!top) {
+        if(!top)
+        {
             extensions.addAll(Arrays.asList(classLoadingExtensions));
         }
         extensions.add(extension);
-        if(top) {
+        if(top)
+        {
             extensions.addAll(Arrays.asList(classLoadingExtensions));
         }    
 
@@ -168,16 +171,21 @@ public final class ClassUtils
         ClassLoaderExtension [] loaderPlugins = classLoadingExtensions;
 
         int plugins = loaderPlugins.length;
-        for(int cnt = 0; cnt < loaderPlugins.length; cnt ++) {
+        for(int cnt = 0; cnt < loaderPlugins.length; cnt ++)
+        {
             ClassLoaderExtension extension = loaderPlugins[cnt];
             Class retVal = extension.forName(type);
-            if(retVal != null) {
+            if(retVal != null)
+            {
                 return retVal;
             }
         }
 
 
-        if (type == null) throw new NullPointerException("type");
+        if (type == null)
+        {
+            throw new NullPointerException("type");
+        }
         try
         {
             // Try WebApp ClassLoader first
@@ -230,7 +238,10 @@ public final class ClassUtils
     public static Class javaTypeToClass(String type)
         throws ClassNotFoundException
     {
-        if (type == null) throw new NullPointerException("type");
+        if (type == null)
+        {
+            throw new NullPointerException("type");
+        }
 
         // try common types and arrays of common types first
         Class clazz = (Class) COMMON_TYPES.get(type);
@@ -297,7 +308,8 @@ public final class ClassUtils
 
     /**
      * @param resource       Name of resource(s) to find in classpath
-     * @param defaultObject  The default object to use to determine the class loader (if none associated with current thread.)
+     * @param defaultObject  The default object to use to determine the class loader 
+     *                       (if none associated with current thread.)
      * @return Iterator over URL Objects
      */
     public static Iterator getResources(String resource, Object defaultObject)
@@ -323,7 +335,10 @@ public final class ClassUtils
     public static Object newInstance(String type)
         throws FacesException
     {
-        if (type == null) return null;
+        if (type == null)
+        {
+            return null;
+        }
         return newInstance(simpleClassForName(type));
     }
 
@@ -335,7 +350,9 @@ public final class ClassUtils
     public static Object newInstance(String type, Class[] expectedTypes)
     {
         if (type == null)
-            return null;        
+        {
+            return null;
+        }
         
         Class clazzForName = simpleClassForName(type);
         
@@ -404,7 +421,10 @@ public final class ClassUtils
 
     public static Object convertToType(Object value, Class desiredClass)
     {
-        if (value == null) return null;
+        if (value == null)
+        {
+            return null;
+        }
 
         try
         {
@@ -424,7 +444,8 @@ public final class ClassUtils
      * Gets the ClassLoader associated with the current thread.  Returns the class loader associated with
      * the specified default object if no context loader is associated with the current thread.
      *
-     * @param defaultObject The default object to use to determine the class loader (if none associated with current thread.)
+     * @param defaultObject The default object to use to determine the class loader 
+     *        (if none associated with current thread.)
      * @return ClassLoader
      */
     protected static ClassLoader getCurrentLoader(Object defaultObject)
@@ -460,7 +481,8 @@ public final class ClassUtils
      * @param defaultObject The default implementation for the given ApplicationObject.
      * @return
      */    
-    public static <T> T buildApplicationObject(Class<T> interfaceClass, Collection<String> classNamesIterator, T defaultObject)
+    public static <T> T buildApplicationObject(Class<T> interfaceClass, 
+            Collection<String> classNamesIterator, T defaultObject)
     {
         return buildApplicationObject(interfaceClass, null, null, classNamesIterator, defaultObject);
     }
