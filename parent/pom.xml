@@ -42,19 +42,10 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/parent</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/parent</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/parent</url>
     </scm>
-
-    <modules>
-        <module>api</module>
-        <module>shaded-impl</module>
-        <module>implee6</module>
-        <module>shared</module>
-        <module>impl</module>
-        <module>bundle</module>
-    </modules>
 
     <build>
     
@@ -189,6 +180,7 @@
 
     
     <profiles>
+
         <!-- TODO jakobk: we could change this to -Papache-release -->
         <!--
             This profile is invoked by -DprepareRelease=true.
@@ -201,9 +193,6 @@
                     <name>prepareRelease</name>
                 </property>
             </activation>
-            <modules>
-                <module>assembly</module>
-            </modules>
             <build>
                 <plugins>
                     <plugin>
@@ -223,9 +212,6 @@
                     <value>true</value>
                 </property>
             </activation>
-            <modules>
-                <module>assembly</module>
-            </modules>
             <build>
                 <plugins>
                     <plugin>
@@ -281,7 +267,7 @@
                 <artifactId>myfaces-impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.myfaces.core.internal</groupId>
                 <artifactId>myfaces-impl-shared</artifactId>
