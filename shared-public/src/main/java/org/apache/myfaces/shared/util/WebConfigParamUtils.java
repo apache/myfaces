@@ -25,7 +25,7 @@ import javax.faces.context.ExternalContext;
  * Utility class to handle web config parameters
  * 
  * @author Leonardo Uribe
- * @since 4.0.4
+ * @since 2.0.10 (4.0.4 in shared, 1.0.1 in commons)
  */
 public final class WebConfigParamUtils
 {
