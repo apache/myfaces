@@ -34,7 +34,7 @@
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
     <version>2.0.13-SNAPSHOT</version>
-    <url>http://myfaces.apache.org/core20</url>
+    <url>http://myfaces.apache.org/core20/module</url>
     
     <issueManagement>
         <system>jira</system>
@@ -51,6 +51,7 @@
         <module>parent</module>
         <module>api</module>
         <module>implee6</module>
+        <module>shared-public</module>
         <module>shared</module>
         <module>impl</module>
         <module>bundle</module>
