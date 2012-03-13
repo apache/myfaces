@@ -142,7 +142,10 @@ public class ExceptionTestCase extends FaceletTestCase
         {
             return;
         }
-        Assert.fail("Exception should be thrown at this point.");
+        Iterable<ExceptionQueuedEvent> unhandledExceptionQueuedEvents = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents();
+        ExceptionQueuedEvent exceptionQueuedEvent = unhandledExceptionQueuedEvents.iterator().next();
+         
+        Assert.assertNotNull(exceptionQueuedEvent.getContext().getException(), "Exception should be queued at this point.");
     }
     
     /**
@@ -178,7 +181,10 @@ public class ExceptionTestCase extends FaceletTestCase
         {
             return;
         }
-        Assert.fail("Exception should be thrown at this point.");
+        Iterable<ExceptionQueuedEvent> unhandledExceptionQueuedEvents = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents();
+        ExceptionQueuedEvent exceptionQueuedEvent = unhandledExceptionQueuedEvents.iterator().next();
+         
+        Assert.assertNotNull(exceptionQueuedEvent.getContext().getException(), "Exception should be queued at this point.");
     }
 
     @Test

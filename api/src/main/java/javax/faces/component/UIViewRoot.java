@@ -1024,12 +1024,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
             catch (Exception e)
             {
-                // for any other exception publish ExceptionQueuedEvent
-                // publish the Exception to be handled by the ExceptionHandler
-                // to publish or to not publish APE? That is the question : MYFACES-3199 
-                ExceptionQueuedEventContext exceptionContext 
-                        = new ExceptionQueuedEventContext(context, e, source, context.getCurrentPhaseId());
-                context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, exceptionContext);
 
                 Throwable cause = e;
                 AbortProcessingException ape = null;
@@ -1043,6 +1037,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                     cause = cause.getCause();
                 }
                 while (cause != null);
+                
+                // for any other exception publish ExceptionQueuedEvent
+                // publish the Exception to be handled by the ExceptionHandler
+                // to publish or to not publish APE? That is the question : MYFACES-3199. We publish it,
+                // because user can handle it in custom exception handler then. 
+                if (ape != null)
+                {
+                    e = ape;
+                }
+                ExceptionQueuedEventContext exceptionContext 
+                        = new ExceptionQueuedEventContext(context, e, source, context.getCurrentPhaseId());
+                context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, exceptionContext);
+
                 
                 if (ape != null)
                 {
