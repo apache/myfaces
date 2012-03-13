@@ -38,12 +38,14 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
+import javax.servlet.ServletResponse;
+import javax.servlet.ServletResponseWrapper;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
-import org.apache.myfaces.shared.util.ExternalContextUtils;
 
 
 public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLanguageBase
@@ -73,11 +75,11 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
       {
           // try to get (or create) a ResponseSwitch and turn off the output
           Object origResponse = context.getExternalContext().getResponse();
-          ResponseSwitch responseSwitch = ExternalContextUtils.getResponseSwitch(origResponse);
+          ResponseSwitch responseSwitch = getResponseSwitch(origResponse);
           if (responseSwitch == null)
           {
               // no ResponseSwitch installed yet - create one 
-              responseSwitch = ExternalContextUtils.createResponseSwitch(origResponse);
+              responseSwitch = createResponseSwitch(origResponse);
               if (responseSwitch != null)
               {
                   // install the ResponseSwitch
@@ -170,7 +172,7 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
       
       // try to enable the ResponseSwitch again (disabled in buildView())
       Object response = context.getExternalContext().getResponse();
-      ResponseSwitch responseSwitch = ExternalContextUtils.getResponseSwitch(response);
+      ResponseSwitch responseSwitch = getResponseSwitch(response);
       if (responseSwitch != null)
       {
           responseSwitch.setEnabled(true);
@@ -413,6 +415,51 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
   protected void setViewBuilt(FacesContext facesContext, UIViewRoot view)
   {
       facesContext.getAttributes().put(view, Boolean.TRUE);
+  }
+
+  /**
+   * Trys to obtain a ResponseSwitch from the Response.
+   * @param response
+   * @return if found, the ResponseSwitch, null otherwise
+   */
+  private static ResponseSwitch getResponseSwitch(Object response)
+  {
+      // unwrap the response until we find a ResponseSwitch
+      while (response != null)
+      {
+          if (response instanceof ResponseSwitch)
+          {
+              // found
+              return (ResponseSwitch) response;
+          }
+          if (response instanceof ServletResponseWrapper)
+          {
+              // unwrap
+              response = ((ServletResponseWrapper) response).getResponse();
+          }
+          // no more possibilities to find a ResponseSwitch
+          break; 
+      }
+      return null; // not found
+  }
+  
+  /**
+   * Try to create a ResponseSwitch for this response.
+   * @param response
+   * @return the created ResponseSwitch, if there is a ResponseSwitch 
+   *         implementation for the given response, null otherwise
+   */
+  private static ResponseSwitch createResponseSwitch(Object response)
+  {
+      if (response instanceof HttpServletResponse)
+      {
+          return new HttpServletResponseSwitch((HttpServletResponse) response);
+      }
+      else if (response instanceof ServletResponse)
+      {
+          return new ServletResponseSwitch((ServletResponse) response);
+      }
+      return null;
   }
 
   /**

@@ -45,6 +45,12 @@
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.myfaces.core.internal</groupId>
+            <artifactId>myfaces-impl-shared-public</artifactId>
+            <optional>true</optional> 
+        </dependency>
 
         <!-- Servlet 2.5 -->
         <dependency>
@@ -114,9 +120,40 @@
          </executions>
       </plugin>
       <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <executions>
+              <execution>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>shade</goal>
+                  </goals>
+              </execution>
+          </executions>
+          <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <createSourcesJar>true</createSourcesJar>
+              <artifactSet>
+                  <includes>
+                      <include>org.apache.myfaces.core.internal:myfaces-impl-shared-public</include>
+                  </includes>
+              </artifactSet>
+              <filters>
+                  <filter>
+                      <artifact>org.apache.myfaces.core.internal:myfaces-impl-shared-public</artifact>
+                      <includes>
+                          <include>org/apache/myfaces/**</include>
+                      </includes>
+                      <excludes>
+                          <exclude>META-INF/**</exclude>
+                      </excludes>
+                  </filter>
+              </filters>
+          </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.5</version>
         <executions>
           <execution>
             <id>add-resource</id>
@@ -137,7 +174,6 @@
       <plugin>
           <artifactId>myfaces-javascript-plugin</artifactId>
           <groupId>org.apache.myfaces.buildtools</groupId>
-          <version>1.0.1</version>
           <extensions>true</extensions>
           <executions>
                <execution>
@@ -196,17 +232,6 @@
         </configuration>
       </plugin>
        -->
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-source</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <profiles>

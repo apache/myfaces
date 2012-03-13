@@ -52,6 +52,7 @@
         <module>api</module>
         <module>shaded-impl</module>
         <module>implee6</module>
+        <module>shared-public</module>
         <module>shared</module>
         <module>impl</module>
         <module>bundle</module>
