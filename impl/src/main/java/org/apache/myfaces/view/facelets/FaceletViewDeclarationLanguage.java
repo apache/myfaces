@@ -2462,7 +2462,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         compiler.addTagLibrary(new JstlCoreLibrary());
         compiler.addTagLibrary(new JstlFnLibrary());
         compiler.addTagLibrary(new CompositeLibrary());
-        compiler.addTagLibrary(new CompositeResourceLibrary());
+        compiler.addTagLibrary(new CompositeResourceLibrary(context));
 
         String param = WebConfigParamUtils.getStringInitParameter(eContext, PARAMS_LIBRARIES);
         if (param != null)
@@ -2477,7 +2477,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         throw new FileNotFoundException(library);
                     }
 
-                    TagLibrary tl = TagLibraryConfig.create(src);
+                    TagLibrary tl = TagLibraryConfig.create(context, src);
                     if (tl != null)
                     {
                         compiler.addTagLibrary(tl);

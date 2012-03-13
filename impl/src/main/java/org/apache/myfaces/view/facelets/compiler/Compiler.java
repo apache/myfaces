@@ -98,7 +98,7 @@ public abstract class Compiler
         try
         {
             TagLibraryConfig cfg = new TagLibraryConfig();
-            cfg.loadImplicit(this);
+            cfg.loadImplicit(FacesContext.getCurrentInstance(), this);
 
             if (!this.createTagLibrary().containsNamespace(UILibrary.NAMESPACE))
             {

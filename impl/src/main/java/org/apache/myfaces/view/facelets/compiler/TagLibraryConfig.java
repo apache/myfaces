@@ -84,16 +84,17 @@ public final class TagLibraryConfig
     {
         private String _compositeLibraryName;
         
+        private final ResourceHandler _resourceHandler;
         private Pattern _acceptPatterns;
         private String _extension;
         private String[] _defaultSuffixesArray;
         
-        public TagLibraryImpl(String namespace)
+        public TagLibraryImpl(FacesContext facesContext, String namespace)
         {
             super(namespace);
             _compositeLibraryName = null;
-            
-            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            _resourceHandler = facesContext.getApplication().getResourceHandler();
+            ExternalContext externalContext = facesContext.getExternalContext();
             
             _acceptPatterns = loadAcceptPattern(externalContext);
 
@@ -219,15 +220,12 @@ public final class TagLibraryConfig
             
             if (!result && _compositeLibraryName != null && containsNamespace(ns))
             {
-                ResourceHandler resourceHandler = 
-                    FacesContext.getCurrentInstance().getApplication().getResourceHandler();
-
                 for (String defaultSuffix : _defaultSuffixesArray)
                 {
                     String resourceName = localName + defaultSuffix;
                     if (handles(resourceName))
                     {
-                        Resource compositeComponentResource = resourceHandler.createResource(
+                        Resource compositeComponentResource = _resourceHandler.createResource(
                                 resourceName, _compositeLibraryName);
                         
                         if (compositeComponentResource != null)
@@ -249,9 +247,6 @@ public final class TagLibraryConfig
             
             if (tagHandler == null && _compositeLibraryName != null && containsNamespace(ns))
             {
-                ResourceHandler resourceHandler = 
-                    FacesContext.getCurrentInstance().getApplication().getResourceHandler();
-
                 for (String defaultSuffix : _defaultSuffixesArray)
                 {
                     String resourceName = localName + defaultSuffix;
@@ -266,7 +261,7 @@ public final class TagLibraryConfig
                         // (resourceName, libraryName) will be used to derive the real instance
                         // to use in a view, based on the locale used.
                         Resource compositeComponentResource = new CompositeResouceWrapper(
-                            resourceHandler.createResource(resourceName, _compositeLibraryName));
+                            _resourceHandler.createResource(resourceName, _compositeLibraryName));
                         
                         if (compositeComponentResource != null)
                         {
@@ -416,6 +411,8 @@ public final class TagLibraryConfig
     private static class LibraryHandler extends DefaultHandler
     {
         private final URL source;
+        
+        private final FacesContext facesContext;
 
         private TagLibrary library;
 
@@ -445,10 +442,11 @@ public final class TagLibraryConfig
         
         private String compositeLibraryName;
         
-        public LibraryHandler(URL source)
+        public LibraryHandler(FacesContext facesContext, URL source)
         {
             this.source = source;
             this.buffer = new StringBuffer(64);
+            this.facesContext = facesContext;
         }
 
         public TagLibrary getLibrary()
@@ -470,7 +468,7 @@ public final class TagLibraryConfig
                 }
                 else if ("namespace".equals(qName))
                 {
-                    this.library = new TagLibraryImpl(this.captureBuffer());
+                    this.library = new TagLibraryImpl(facesContext, this.captureBuffer());
                     if (this.compositeLibraryName != null)
                     {
                         ((TagLibraryImpl)this.library).setCompositeLibrary(compositeLibraryName);
@@ -760,14 +758,14 @@ public final class TagLibraryConfig
         super();
     }
 
-    public static TagLibrary create(URL url) throws IOException
+    public static TagLibrary create(FacesContext facesContext, URL url) throws IOException
     {
         InputStream is = null;
         TagLibrary t = null;
         URLConnection conn = null;
         try
         {
-            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            ExternalContext externalContext = facesContext.getExternalContext();
             boolean schemaValidating = false;
 
             // validate XML
@@ -782,7 +780,7 @@ public final class TagLibraryConfig
             }
             
             // parse file
-            LibraryHandler handler = new LibraryHandler(url);
+            LibraryHandler handler = new LibraryHandler(facesContext, url);
             SAXParser parser = createSAXParser(handler, externalContext, schemaValidating);
             conn = url.openConnection();
             conn.setUseCaches(false);
@@ -812,11 +810,11 @@ public final class TagLibraryConfig
         return t;
     }
 
-    public void loadImplicit(Compiler compiler) throws IOException
+    public void loadImplicit(FacesContext facesContext, Compiler compiler) throws IOException
     {
         //URL[] urls = Classpath.search(cl, "META-INF/", SUFFIX);
         //for (int i = 0; i < urls.length; i++)
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        ExternalContext externalContext = facesContext.getExternalContext();
         FaceletConfigResourceProvider provider = FaceletConfigResourceProviderFactory.
             getFacesConfigResourceProviderFactory(externalContext).
                 createFaceletConfigResourceProvider(externalContext);
@@ -826,7 +824,7 @@ public final class TagLibraryConfig
             try
             {
                 //TagLibrary tl = create(urls[i]);
-                TagLibrary tl = create(url);
+                TagLibrary tl = create(facesContext, url);
                 if (tl != null)
                 {
                     compiler.addTagLibrary(tl);
