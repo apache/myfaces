@@ -272,14 +272,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         do
         {
             // First broadcast events that have been queued for PhaseId.ANY_PHASE.
-            _broadcastAll(context, events.getAnyPhase(), eventsAborted);
+            boolean noUnexpectedException = _broadcastAll(context, events.getAnyPhase(), eventsAborted);
+            if (!noUnexpectedException)
+            {
+                return;
+            }
             List<FacesEvent> eventsOnPhase = events.getOnPhase();
             if (!eventsAborted.isEmpty())
             {
                 eventsOnPhase.removeAll(eventsAborted);
                 eventsAborted.clear();
             }
-            _broadcastAll(context, eventsOnPhase, eventsAborted);
+            noUnexpectedException = _broadcastAll(context, eventsOnPhase, eventsAborted);
+            if (!noUnexpectedException)
+            {
+                return;
+            }
 
             events = _getEvents(phaseId);
             loops++;
@@ -986,10 +994,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      *
      * @param context the current JSF context
      * @param events the events to broadcast
+     * @return 
      *
-     * @return <code>true</code> if the broadcast was completed without abortion, <code>false</code> otherwise
+     * @return <code>true</code> if the broadcast was completed without unexpected abortion/exception,
+     *  <code>false</code> otherwise
      */
-    private void _broadcastAll(FacesContext context,
+    private boolean _broadcastAll(FacesContext context,
                                List<? extends FacesEvent> events,
                                Collection<FacesEvent> eventsAborted)
     {
@@ -1012,15 +1022,39 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 // Actual event broadcasting
                 source.broadcast(event);
             }
-            catch (AbortProcessingException e)
+            catch (Exception e)
             {
+                // for any other exception publish ExceptionQueuedEvent
                 // publish the Exception to be handled by the ExceptionHandler
+                // to publish or to not publish APE? That is the question : MYFACES-3199 
                 ExceptionQueuedEventContext exceptionContext 
                         = new ExceptionQueuedEventContext(context, e, source, context.getCurrentPhaseId());
                 context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, exceptionContext);
+
+                Throwable cause = e;
+                AbortProcessingException ape = null;
+                do
+                {
+                    if (cause != null && cause instanceof AbortProcessingException)
+                    {
+                        ape = (AbortProcessingException) cause;
+                        break;
+                    }
+                    cause = cause.getCause();
+                }
+                while (cause != null);
                 
-                // Abortion
-                eventsAborted.add(event);
+                if (ape != null)
+                {
+                    // APE found,  abortion for this event only
+                    eventsAborted.add(event);
+                    return true;
+                }
+                else
+                {
+                    // We can't continue broadcast processing if other exception is thrown:
+                    return false;
+                }
             }
             finally
             {
@@ -1032,7 +1066,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 }
             }
         }
-
+        return true;
     }
 
     private void clearEvents()
