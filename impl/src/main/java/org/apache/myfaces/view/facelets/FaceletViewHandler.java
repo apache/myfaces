@@ -301,7 +301,7 @@ public class FaceletViewHandler extends ViewHandler
                     {
                         throw new FileNotFoundException(libs[i]);
                     }
-                    libObj = TagLibraryConfig.create(src);
+                    libObj = TagLibraryConfig.create(ctx, src);
                     c.addTagLibrary(libObj);
                     log.fine("Successfully Loaded Library: " + libs[i]);
                 }

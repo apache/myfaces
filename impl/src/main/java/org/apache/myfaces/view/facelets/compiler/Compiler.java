@@ -87,17 +87,19 @@ public abstract class Compiler
     private synchronized void initialize()
     {
         if (this.initialized)
+        {
             return;
+        }
         log.fine("Initializing");
         try
         {
             TagLibraryConfig cfg = new TagLibraryConfig();
-            cfg.loadImplicit(this);
+            cfg.loadImplicit(FacesContext.getCurrentInstance(), this);
 
             if (!this.createTagLibrary().containsNamespace(UILibrary.Namespace))
             {
-                log
-                        .severe("Missing Built-in Tag Libraries! Make sure they are included within the META-INF directory of Facelets' Jar");
+                log.severe("Missing Built-in Tag Libraries! Make sure they are included within "
+                           + "the META-INF directory of Facelets' Jar");
             }
 
         }
@@ -116,34 +118,40 @@ public abstract class Compiler
             FacesException
     {
         if (!this.initialized)
+        {
             this.initialize();
+        }
         return this.doCompile(src, alias);
     }
     
-    public final FaceletHandler compileViewMetadata(URL src, String alias) throws IOException, FaceletException, ELException,
-            FacesException
+    public final FaceletHandler compileViewMetadata(URL src, String alias)
+            throws IOException, FaceletException, ELException, FacesException
     {
         if (!this.initialized)
+        {
             this.initialize();
+        }
         return this.doCompileViewMetadata(src, alias);
     }
     
-    public final FaceletHandler compileCompositeComponentMetadata(URL src, String alias) throws IOException, FaceletException, ELException,
-            FacesException
+    public final FaceletHandler compileCompositeComponentMetadata(URL src, String alias)
+            throws IOException, FaceletException, ELException, FacesException
     {
         if (!this.initialized)
+        {
             this.initialize();
+        }
         return this.doCompileCompositeComponentMetadata(src, alias);
     }
 
-    protected abstract FaceletHandler doCompile(URL src, String alias) throws IOException, FaceletException,
-            ELException, FacesException;
+    protected abstract FaceletHandler doCompile(URL src, String alias)
+            throws IOException, FaceletException, ELException, FacesException;
 
-    protected abstract FaceletHandler doCompileViewMetadata(URL src, String alias) throws IOException, FaceletException,
-            ELException, FacesException;
+    protected abstract FaceletHandler doCompileViewMetadata(URL src, String alias)
+            throws IOException, FaceletException, ELException, FacesException;
     
-    protected abstract FaceletHandler doCompileCompositeComponentMetadata(URL src, String alias) throws IOException, FaceletException,
-            ELException, FacesException;
+    protected abstract FaceletHandler doCompileCompositeComponentMetadata(URL src, String alias)
+            throws IOException, FaceletException, ELException, FacesException;
     
     public final TagDecorator createTagDecorator()
     {
@@ -174,7 +182,8 @@ public abstract class Compiler
                 el = FacesContext.getCurrentInstance().getApplication().getExpressionFactory();
                 if (el == null)
                 {
-                    log.warning("No default ExpressionFactory from Faces Implementation, attempting to load from Feature["
+                    log.warning("No default ExpressionFactory from Faces Implementation, "
+                                + "attempting to load from Feature["
                                 + EXPRESSION_FACTORY + "]");
                 }
             }

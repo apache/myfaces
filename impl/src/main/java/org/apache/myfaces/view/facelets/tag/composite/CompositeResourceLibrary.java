@@ -45,6 +45,12 @@ public class CompositeResourceLibrary implements TagLibrary
 {
     public final static String NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
     
+    private final ResourceHandler _resourceHandler;
+    
+    public CompositeResourceLibrary(FacesContext facesContext)
+    {
+        _resourceHandler = facesContext.getApplication().getResourceHandler();
+    }
     
     public boolean containsFunction(String ns, String name)
     {
@@ -56,13 +62,10 @@ public class CompositeResourceLibrary implements TagLibrary
     {
         if (ns != null && ns.startsWith(NAMESPACE_PREFIX))
         {
-            ResourceHandler resourceHandler = 
-                FacesContext.getCurrentInstance().getApplication().getResourceHandler();
-            
             if (ns.length() > NAMESPACE_PREFIX.length())
             {
                 String libraryName = ns.substring(NAMESPACE_PREFIX.length());
-                return resourceHandler.libraryExists(libraryName);
+                return _resourceHandler.libraryExists(libraryName);
             }
         }        
         return false;
@@ -72,14 +75,11 @@ public class CompositeResourceLibrary implements TagLibrary
     {
         if (ns != null && ns.startsWith(NAMESPACE_PREFIX))
         {
-            ResourceHandler resourceHandler = 
-                FacesContext.getCurrentInstance().getApplication().getResourceHandler();
-            
             if (ns.length() > NAMESPACE_PREFIX.length())
             {
                 String libraryName = ns.substring(NAMESPACE_PREFIX.length());
                 String resourceName = localName + ".xhtml";
-                Resource compositeComponentResource = resourceHandler.createResource(resourceName, libraryName);
+                Resource compositeComponentResource = _resourceHandler.createResource(resourceName, libraryName);
                 if (compositeComponentResource != null)
                 {
                     URL url = compositeComponentResource.getURL();
@@ -101,9 +101,6 @@ public class CompositeResourceLibrary implements TagLibrary
     {
         if (ns != null && ns.startsWith(NAMESPACE_PREFIX))
         {
-            ResourceHandler resourceHandler = 
-                FacesContext.getCurrentInstance().getApplication().getResourceHandler();
-            
             if (ns.length() > NAMESPACE_PREFIX.length())
             {
                 String libraryName = ns.substring(NAMESPACE_PREFIX.length());
@@ -117,7 +114,7 @@ public class CompositeResourceLibrary implements TagLibrary
                 // (resourceName, libraryName) will be used to derive the real instance
                 // to use in a view, based on the locale used.
                 Resource compositeComponentResource = new CompositeResouceWrapper(
-                    resourceHandler.createResource(resourceName, libraryName));
+                    _resourceHandler.createResource(resourceName, libraryName));
                 if (compositeComponentResource != null)
                 {
                     ComponentConfig componentConfig = new ComponentConfigWrapper(tag,

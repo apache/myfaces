@@ -78,10 +78,13 @@ public final class TagLibraryConfig
     {
         private String _compositeLibraryName;
         
-        public TagLibraryImpl(String namespace)
+        private final ResourceHandler _resourceHandler;
+
+        public TagLibraryImpl(FacesContext facesContext, String namespace)
         {
             super(namespace);
             _compositeLibraryName = null;
+            _resourceHandler = facesContext.getApplication().getResourceHandler();
         }
         
         @Override
@@ -91,10 +94,7 @@ public final class TagLibraryConfig
             
             if (!result && _compositeLibraryName != null && containsNamespace(ns))
             {
-                ResourceHandler resourceHandler = 
-                    FacesContext.getCurrentInstance().getApplication().getResourceHandler();
-
-                Resource compositeComponentResource = resourceHandler.createResource(
+                Resource compositeComponentResource = _resourceHandler.createResource(
                         localName +".xhtml", _compositeLibraryName);
                 
                 if (compositeComponentResource != null)
@@ -114,9 +114,6 @@ public final class TagLibraryConfig
             
             if (tagHandler == null && _compositeLibraryName != null && containsNamespace(ns))
             {
-                ResourceHandler resourceHandler = 
-                    FacesContext.getCurrentInstance().getApplication().getResourceHandler();
-
                 String resourceName = localName + ".xhtml";
                 // MYFACES-3308 If a composite component exists, it requires to 
                 // be always resolved. In other words, it should always exists a default.
@@ -127,7 +124,7 @@ public final class TagLibraryConfig
                 // (resourceName, libraryName) will be used to derive the real instance
                 // to use in a view, based on the locale used.
                 Resource compositeComponentResource = new CompositeResouceWrapper(
-                    resourceHandler.createResource(resourceName, _compositeLibraryName));
+                    _resourceHandler.createResource(resourceName, _compositeLibraryName));
                 
                 if (compositeComponentResource != null)
                 {
@@ -228,7 +225,8 @@ public final class TagLibraryConfig
         }
     }
     
-    private static class ComponentConfigWrapper implements ComponentConfig {
+    private static class ComponentConfigWrapper implements ComponentConfig
+    {
 
         protected final TagConfig parent;
 
@@ -237,29 +235,35 @@ public final class TagLibraryConfig
         protected final String rendererType;
 
         public ComponentConfigWrapper(TagConfig parent, String componentType,
-                String rendererType) {
+                String rendererType)
+        {
             this.parent = parent;
             this.componentType = componentType;
             this.rendererType = rendererType;
         }
 
-        public String getComponentType() {
+        public String getComponentType()
+        {
             return this.componentType;
         }
 
-        public String getRendererType() {
+        public String getRendererType()
+        {
             return this.rendererType;
         }
 
-        public FaceletHandler getNextHandler() {
+        public FaceletHandler getNextHandler()
+        {
             return this.parent.getNextHandler();
         }
 
-        public Tag getTag() {
+        public Tag getTag()
+        {
             return this.parent.getTag();
         }
 
-        public String getTagId() {
+        public String getTagId()
+        {
             return this.parent.getTagId();
         }
     }    
@@ -267,6 +271,8 @@ public final class TagLibraryConfig
     private static class LibraryHandler extends DefaultHandler
     {
         private final URL source;
+        
+        private final FacesContext facesContext;
 
         private TagLibrary library;
 
@@ -296,10 +302,11 @@ public final class TagLibraryConfig
         
         private String compositeLibraryName;
         
-        public LibraryHandler(URL source)
+        public LibraryHandler(FacesContext facesContext, URL source)
         {
             this.source = source;
             this.buffer = new StringBuffer(64);
+            this.facesContext = facesContext;
         }
 
         public TagLibrary getLibrary()
@@ -321,7 +328,7 @@ public final class TagLibraryConfig
                 }
                 else if ("namespace".equals(qName))
                 {
-                    this.library = new TagLibraryImpl(this.captureBuffer());
+                    this.library = new TagLibraryImpl(facesContext, this.captureBuffer());
                     if (this.compositeLibraryName != null)
                     {
                         ((TagLibraryImpl)this.library).setCompositeLibrary(compositeLibraryName);
@@ -611,14 +618,14 @@ public final class TagLibraryConfig
         super();
     }
 
-    public static TagLibrary create(URL url) throws IOException
+    public static TagLibrary create(FacesContext facesContext, URL url) throws IOException
     {
         InputStream is = null;
         TagLibrary t = null;
         URLConnection conn = null;
         try
         {
-            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            ExternalContext externalContext = facesContext.getExternalContext();
             boolean schemaValidating = false;
 
             // validate XML
@@ -632,7 +639,7 @@ public final class TagLibraryConfig
             }
             
             // parse file
-            LibraryHandler handler = new LibraryHandler(url);
+            LibraryHandler handler = new LibraryHandler(facesContext, url);
             SAXParser parser = createSAXParser(handler, externalContext, schemaValidating);
             conn = url.openConnection();
             conn.setUseCaches(false);
@@ -655,25 +662,28 @@ public final class TagLibraryConfig
         finally
         {
             if (is != null)
+            {
                 is.close();
+            }
         }
         return t;
     }
 
-    public void loadImplicit(Compiler compiler) throws IOException
+    public void loadImplicit(FacesContext facesContext, Compiler compiler) throws IOException
     {
         //URL[] urls = Classpath.search(cl, "META-INF/", SUFFIX);
         //for (int i = 0; i < urls.length; i++)
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        ExternalContext externalContext = facesContext.getExternalContext();
         FaceletConfigResourceProvider provider = FaceletConfigResourceProviderFactory.
-            getFacesConfigResourceProviderFactory(externalContext).createFaceletConfigResourceProvider(externalContext);
+            getFacesConfigResourceProviderFactory(externalContext).
+                createFaceletConfigResourceProvider(externalContext);
         Collection<URL> urls = provider.getFaceletTagLibConfigurationResources(externalContext);
         for (URL url : urls)
         {
             try
             {
                 //TagLibrary tl = create(urls[i]);
-                TagLibrary tl = create(url);
+                TagLibrary tl = create(facesContext, url);
                 if (tl != null)
                 {
                     compiler.addTagLibrary(tl);
@@ -692,8 +702,9 @@ public final class TagLibraryConfig
         }
     }
 
-    private static final SAXParser createSAXParser(LibraryHandler handler, ExternalContext externalContext, boolean schemaValidating) throws SAXException,
-            ParserConfigurationException
+    private static final SAXParser createSAXParser(LibraryHandler handler, ExternalContext externalContext,
+                                                   boolean schemaValidating)
+            throws SAXException, ParserConfigurationException
     {
         SAXParserFactory factory = SAXParserFactory.newInstance();
 
@@ -704,7 +715,8 @@ public final class TagLibraryConfig
             factory.setFeature("http://xml.org/sax/features/validation", true);
             factory.setValidating(true);
         }
-        else {
+        else
+        {
             //Just parse it and do not validate, because it is not necessary.
             factory.setNamespaceAware(true);
             factory.setFeature("http://xml.org/sax/features/validation", false);
