@@ -133,7 +133,8 @@ final class DefaultFacelet extends AbstractFacelet
             myFaceletContext = new FaceletCompositionContextImpl(_factory, facesContext);
             myFaceletContext.init(facesContext);
             faceletCompositionContextInitialized = true;
-            if (_encodingHandler && MyfacesConfig.getCurrentInstance(
+            if (_encodingHandler && !myFaceletContext.isBuildingViewMetadata()
+                    && MyfacesConfig.getCurrentInstance(
                     facesContext.getExternalContext()).isViewUniqueIdsCacheEnabled() && 
                     _refreshPeriod <= 0)
             {

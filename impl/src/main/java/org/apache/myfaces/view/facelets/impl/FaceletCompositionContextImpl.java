@@ -99,6 +99,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private Boolean _isMarkInitialState;
     
+    private Boolean _isBuildingViewMetadata;
+    
     private Boolean _refreshTransientBuildOnPSS;
     
     private Boolean _refreshTransientBuildOnPSSPreserveState;
@@ -495,6 +497,17 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                     _facesContext.getExternalContext()).isRefreshTransientBuildOnPSSPreserveState();
         }
         return _refreshTransientBuildOnPSSPreserveState;
+    }
+    
+    @Override
+    public boolean isBuildingViewMetadata()
+    {
+        if (_isBuildingViewMetadata == null)
+        {
+            _isBuildingViewMetadata = FaceletViewDeclarationLanguage.
+                    isBuildingViewMetadata(_facesContext);
+        }
+        return _isBuildingViewMetadata;
     }
 
     @Override

@@ -519,4 +519,15 @@ abstract public class FaceletCompositionContext
     {
     }
 
+    /**
+     * Check if the view
+     * 
+     * since 2.1.7, 2.0.13
+     * @return 
+     */
+    public boolean isBuildingViewMetadata()
+    {
+        return FaceletViewDeclarationLanguage.isBuildingViewMetadata(
+                FacesContext.getCurrentInstance());
+    }
 }
