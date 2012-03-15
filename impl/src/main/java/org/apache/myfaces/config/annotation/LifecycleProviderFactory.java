@@ -20,6 +20,7 @@ package org.apache.myfaces.config.annotation;
 
 import org.apache.commons.discovery.tools.DiscoverSingleton;
 
+import java.util.Map;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
