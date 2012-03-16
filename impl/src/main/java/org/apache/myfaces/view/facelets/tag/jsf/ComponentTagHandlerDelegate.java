@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,6 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
@@ -69,7 +67,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
  */
 public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 {
-    //private final static Logger log = Logger.getLogger("facelets.tag.component");
     private final static Logger log = Logger.getLogger(ComponentTagHandlerDelegate.class.getName());
 
     private final ComponentHandler _delegate;
@@ -153,21 +150,24 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * <ol>
      * <li>First determines this UIComponent's id by calling {@link #getId(FaceletContext) getId(FaceletContext)}.</li>
      * <li>Search the parent for an existing UIComponent of the id we just grabbed</li>
-     * <li>If found, {@link #FaceletCompositionContext.markForDeletion(UIComponent) mark} its children for deletion.</li>
+     * <li>If found, {@link FaceletCompositionContext#markForDeletion(UIComponent) mark} its children for deletion.</li>
      * <li>If <i>not</i> found, call {@link #createComponent(FaceletContext) createComponent}.
      * <ol>
-     * <li>Only here do we apply {@link TagHandler#setAttributes(FaceletCompositionContext, Object) attributes}</li>
+     * <li>Only here do we apply
+     * {@link javax.faces.view.facelets.TagHandler#setAttributes(FaceletCompositionContext, Object) attributes}</li>
      * <li>Set the UIComponent's id</li>
      * <li>Set the RendererType of this instance</li>
      * </ol>
      * </li>
      * <li>Now apply the nextHandler, passing the UIComponent we've created/found.</li>
      * <li>Now add the UIComponent to the passed parent</li>
-     * <li>Lastly, if the UIComponent already existed (found), then {@link #finalizeForDeletion(FaceletCompositionContext, UIComponent) finalize}
+     * <li>Lastly, if the UIComponent already existed (found),
+     * then {@link #finalizeForDeletion(FaceletCompositionContext, UIComponent) finalize}
      * for deletion.</li>
      * </ol>
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
+     * javax.faces.component.UIComponent)
      * 
      * @throws TagException
      *             if the UIComponent parent is null
@@ -203,7 +203,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         //another component.
         UIComponent oldParent = parent;
         
-        if (mctx.isRefreshingTransientBuild())
+        if (mctx.isRefreshingSection())
         {
             if (_relocatableResourceHandler != null)
             {
@@ -213,48 +213,6 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 c = ComponentSupport.findChildByTagId(parent, id); 
             }
-    
-            // Check if the component was relocated using
-            // composite:insertChildren or composite:insertFacet
-            /*
-            if (c == null && UIComponent.isCompositeComponent(parent))
-            {
-                if (facetName == null)
-                {
-                    String targetClientId = (String) parent.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID);
-                    if (targetClientId != null)
-                    {
-                        UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
-                        if (targetComponent != null)
-                        {
-                            c = ComponentSupport.findChildByTagId(targetComponent, id);
-                        }
-                    }
-                    if (c != null)
-                    {
-                        c.getAttributes().put(InsertChildrenHandler.USES_INSERT_CHILDREN, Boolean.TRUE);
-                        componentFoundInserted = true;
-                    }
-                }
-                else
-                {
-                    String targetClientId = (String) parent.getAttributes().get(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName);
-                    if (targetClientId != null)
-                    {
-                        UIComponent targetComponent = parent.findComponent(targetClientId.substring(parent.getClientId().length()+1));
-                        if (targetComponent != null)
-                        {
-                            c = ComponentSupport.findChildByTagId(targetComponent, id);
-                            if (c != null)
-                            {
-                                c.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
-                                componentFoundInserted = true;
-                            }
-                        }
-                    }
-                }
-            }
-            */
         }
         boolean componentFound = false;
         if (c != null)
@@ -340,7 +298,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
             //if (!componentFoundInserted)
             //{
-                if (mctx.isRefreshingTransientBuild())
+                if (mctx.isRefreshingSection())
                 {
                     facesContext.setProcessingEvents(false);
                     if (_relocatableResourceHandler != null &&
@@ -358,52 +316,13 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 {
                     ComponentSupport.removeFacet(ctx, parent, c, facetName);
                 }
-                if (mctx.isRefreshingTransientBuild())
+                if (mctx.isRefreshingSection())
                 {
                     facesContext.setProcessingEvents(oldProcessingEvents);
                 }
             //}
         }
-        
-        /*
-        if (mctx.isRefreshingTransientBuild() && 
-                UIComponent.isCompositeComponent(parent))
-        {
-            // Save the child structure behind this component, so it can be
-            // used later by InsertChildrenHandler and InsertFacetHandler
-            // to update components correctly.
-            if (facetName != null)
-            {
-                if (parent.getAttributes().containsKey(InsertFacetHandler.INSERT_FACET_TARGET_ID+facetName))
-                {
-                    List<String> ordering = (List<String>) parent.getAttributes().get(
-                            InsertFacetHandler.INSERT_FACET_ORDERING+facetName);
-                    if (ordering == null)
-                    {
-                        ordering = new ArrayList<String>();
-                        parent.getAttributes().put(InsertFacetHandler.INSERT_FACET_ORDERING+facetName, ordering);
-                    }
-                    ordering.remove(id);
-                    ordering.add(id);
-                }
-            }
-            else
-            {
-                if (parent.getAttributes().containsKey(InsertChildrenHandler.INSERT_CHILDREN_TARGET_ID))
-                {
-                    List<String> ordering = (List<String>) parent.getAttributes().get(
-                            InsertChildrenHandler.INSERT_CHILDREN_ORDERING);
-                    if (ordering == null)
-                    {
-                        ordering = new ArrayList<String>();
-                        parent.getAttributes().put(InsertChildrenHandler.INSERT_CHILDREN_ORDERING, ordering);
-                    }
-                    ordering.remove(id);
-                    ordering.add(id);
-                }
-            }
-        }
-        */
+
 
         if (!componentFound)
         {
@@ -429,44 +348,23 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         
         _delegate.onComponentPopulated(ctx, c, oldParent);
 
-        //if (!componentFoundInserted)
-        //{
-            // add to the tree afterwards
-            // this allows children to determine if it's
-            // been part of the tree or not yet
-            if (componentFound && mctx.isRefreshingTransientBuild())
-            {
-                facesContext.setProcessingEvents(false); 
-            }
-            if (facetName == null)
-            {
-                parent.getChildren().add(c);
-            }
-            else
-            {
-                ComponentSupport.addFacet(ctx, parent, c, facetName);
-            }
-            if (componentFound && mctx.isRefreshingTransientBuild())
-            {
-                facesContext.setProcessingEvents(oldProcessingEvents);
-            }
-        //}
-        /*
+        if (componentFound && mctx.isRefreshingSection())
+        {
+            facesContext.setProcessingEvents(false);
+        }
+        if (facetName == null)
+        {
+            parent.getChildren().add(c);
+        }
         else
         {
-            if (facetName != null)
-            {
-                if (UIComponent.isCompositeComponent(parent))
-                {
-                    UIComponent facet = parent.getFacet(facetName);
-                    if (Boolean.TRUE.equals(facet.getAttributes().get(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
-                    {
-                        facet.getAttributes().put(InsertFacetHandler.USES_INSERT_FACET, Boolean.TRUE);
-                    }
-                }
-            }
-        }*/
-        
+            ComponentSupport.addFacet(ctx, parent, c, facetName);
+        }
+        if (componentFound && mctx.isRefreshingSection())
+        {
+            facesContext.setProcessingEvents(oldProcessingEvents);
+        }
+
         if (c instanceof UniqueIdVendor)
         {
             mctx.popUniqueIdVendorToStack();
@@ -609,11 +507,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * @param mctx the AbstractFaceletContext
      * @param component The EditableValueHolder to which the validators should be added
      */
-    private void addEnclosingAndDefaultValidators(FaceletContext ctx, FaceletCompositionContext mctx, FacesContext context, 
+    private void addEnclosingAndDefaultValidators(FaceletContext ctx, 
+                                      FaceletCompositionContext mctx, 
+                                      FacesContext context, 
                                       EditableValueHolder component)
     {
         // add all enclosing validators, because they have precedence over default validators.
-        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds = mctx.getEnclosingValidatorIdsAndHandlers();
+        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds =
+            mctx.getEnclosingValidatorIdsAndHandlers();
         if (enclosingValidatorIds != null)
         {
             while (enclosingValidatorIds.hasNext())
@@ -759,7 +660,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
         }*/
-        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds = mctx.getEnclosingValidatorIdsAndHandlers();
+        Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds =
+            mctx.getEnclosingValidatorIdsAndHandlers();
         if (enclosingValidatorIds != null)
         {
             while (enclosingValidatorIds.hasNext())
@@ -768,7 +670,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 boolean validatorIdAvailable = entry.getKey() != null && !"".equals(entry.getKey());
                 if (validatorIdAvailable && entry.getKey().equals(validatorId))
                 {
-                    if (((ValidatorHandler)((FacesWrapper<ValidatorHandler>)entry.getValue()).getWrapped()).isDisabled(ctx))
+                    if (((ValidatorHandler)((FacesWrapper<ValidatorHandler>)entry.getValue()).getWrapped())
+                            .isDisabled(ctx))
                     {
                         return false;
                     }
@@ -796,7 +699,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     }
 
     private void addEnclosingValidator(FaceletContext ctx, FaceletCompositionContext mctx, FacesContext context, 
-            EditableValueHolder component, String validatorId, EditableValueHolderAttachedObjectHandler attachedObjectHandler)
+            EditableValueHolder component, String validatorId, 
+            EditableValueHolderAttachedObjectHandler attachedObjectHandler)
     {
         if (shouldAddEnclosingValidator(mctx, context, component, validatorId))
         {

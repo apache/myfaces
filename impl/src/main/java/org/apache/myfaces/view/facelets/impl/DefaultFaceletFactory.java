@@ -18,19 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
-import org.apache.myfaces.view.facelets.Facelet;
-import org.apache.myfaces.view.facelets.FaceletFactory;
-import org.apache.myfaces.view.facelets.compiler.Compiler;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
-
-import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.ResourceResolver;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -38,6 +29,18 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
+import javax.el.ELException;
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
+import javax.faces.view.facelets.FaceletException;
+import javax.faces.view.facelets.FaceletHandler;
+import javax.faces.view.facelets.ResourceResolver;
+
+import org.apache.myfaces.view.facelets.Facelet;
+import org.apache.myfaces.view.facelets.FaceletFactory;
+import org.apache.myfaces.view.facelets.compiler.Compiler;
+import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
 /**
  * Default FaceletFactory implementation.
@@ -278,7 +281,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         try
         {
             FaceletHandler h = _compiler.compile(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, alias, h);
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -296,7 +299,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    private DefaultFacelet _createViewMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
+    private DefaultFacelet _createViewMetadataFacelet(URL url)
+            throws IOException, FaceletException, FacesException, ELException
     {
         if (log.isLoggable(Level.FINE))
         {
@@ -305,11 +309,13 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String alias = "/viewMetadata/" + _removeFirst(url.getFile(), _baseUrl.getFile());
+        String faceletId = "/"+ _removeFirst(url.getFile(), _baseUrl.getFile());
+        String alias = "/viewMetadata" + faceletId;
         try
         {
             FaceletHandler h = _compiler.compileViewMetadata(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, 
+                    faceletId, h);
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -328,7 +334,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    private DefaultFacelet _createCompositeComponentMetadataFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
+    private DefaultFacelet _createCompositeComponentMetadataFacelet(URL url)
+            throws IOException, FaceletException, FacesException, ELException
     {
         if (log.isLoggable(Level.FINE))
         {
@@ -341,7 +348,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         try
         {
             FaceletHandler h = _compiler.compileCompositeComponentMetadata(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h, true);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias,
+                    alias, h, true);
             return f;
         }
         catch (FileNotFoundException fnfe)

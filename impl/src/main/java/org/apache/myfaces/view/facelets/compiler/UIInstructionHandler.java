@@ -91,7 +91,7 @@ final class UIInstructionHandler extends AbstractUIHandler
             
             String componentId = mctx.generateUniqueComponentId();
             
-            if (mctx.isRefreshingTransientBuild())
+            if (mctx.isRefreshingSection())
             {
                 c = ComponentSupport.findChildByTagId(parent, id);
             }
@@ -152,12 +152,12 @@ final class UIInstructionHandler extends AbstractUIHandler
                 mctx.finalizeForDeletion(c);
                 if (!componentFoundInserted)
                 {
-                    if (mctx.isRefreshingTransientBuild())
+                    if (mctx.isRefreshingSection())
                     {
                         ctx.getFacesContext().setProcessingEvents(false); 
                     }
                     parent.getChildren().remove(c);
-                    if (mctx.isRefreshingTransientBuild())
+                    if (mctx.isRefreshingSection())
                     {
                         ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
                     }
@@ -165,12 +165,12 @@ final class UIInstructionHandler extends AbstractUIHandler
             }
             if (!componentFoundInserted)
             {
-                if (componentFound && mctx.isRefreshingTransientBuild())
+                if (componentFound && mctx.isRefreshingSection())
                 {
                     ctx.getFacesContext().setProcessingEvents(false); 
                 }
                 this.addComponent(ctx, parent, c);
-                if (componentFound && mctx.isRefreshingTransientBuild())
+                if (componentFound && mctx.isRefreshingSection())
                 {
                     ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
                 }

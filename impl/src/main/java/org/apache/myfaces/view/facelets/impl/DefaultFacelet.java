@@ -68,6 +68,8 @@ final class DefaultFacelet extends AbstractFacelet
     private final static String APPLIED_KEY = "org.apache.myfaces.view.facelets.APPLIED";
 
     private final String _alias;
+    
+    private final String _faceletId;
 
     private final ExpressionFactory _elFactory;
 
@@ -88,28 +90,30 @@ final class DefaultFacelet extends AbstractFacelet
     private final boolean _encodingHandler;
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
-                          FaceletHandler root)
+                          String faceletId, FaceletHandler root)
     {
         _factory = factory;
         _elFactory = el;
         _src = src;
         _root = root;
         _alias = alias;
+        _faceletId = faceletId;
         _createTime = System.currentTimeMillis();
         _refreshPeriod = _factory.getRefreshPeriod();
         _relativePaths = new WeakHashMap<String, URL>();
         _isBuildingCompositeComponentMetadata = false;
         _encodingHandler = (root instanceof EncodingHandler);
     }
-    
+
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
-            FaceletHandler root, boolean isBuildingCompositeComponentMetadata)
+            String faceletId, FaceletHandler root, boolean isBuildingCompositeComponentMetadata)
     {
         _factory = factory;
         _elFactory = el;
         _src = src;
         _root = root;
         _alias = alias;
+        _faceletId = faceletId;
         _createTime = System.currentTimeMillis();
         _refreshPeriod = _factory.getRefreshPeriod();
         _relativePaths = new WeakHashMap<String, URL>();
@@ -308,6 +312,11 @@ final class DefaultFacelet extends AbstractFacelet
     public String getAlias()
     {
         return _alias;
+    }
+    
+    public String getFaceletId()
+    {
+        return _faceletId;
     }
 
     /**

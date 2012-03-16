@@ -26,10 +26,8 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
-import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -47,11 +45,9 @@ public abstract class AbstractFacelet extends Facelet
     public abstract ExpressionFactory getExpressionFactory();
     
     /**
-     * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
-     * getRelativePath(String)}, then calls {@link #include(FaceletContext, UIComponent, URL) include(FaceletContext,
-     * UIComponent, URL)}.
+     * Used for delegation by the DefaultFaceletContext.
      * 
-     * @see FaceletContext#includeFacelet(UIComponent, String)
+     * @see javax.faces.view.facelets.FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx
      *            FaceletContext to pass to the included Facelet
      * @param parent
@@ -63,13 +59,13 @@ public abstract class AbstractFacelet extends Facelet
      * @throws FaceletException
      * @throws ELException
      */
-    public abstract void include(AbstractFaceletContext ctx, UIComponent parent, String path) throws IOException, FacesException,
-            FaceletException, ELException;
+    public abstract void include(AbstractFaceletContext ctx, UIComponent parent, String path)
+            throws IOException, FacesException, FaceletException, ELException;
     
     /**
      * Grabs a DefaultFacelet from referenced DefaultFaceletFacotry
      * 
-     * @see DefaultFaceletFactory#getFacelet(URL)
+     * @see org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory#getFacelet(URL)
      * @param ctx
      *            FaceletContext to pass to the included Facelet
      * @param parent
@@ -81,8 +77,8 @@ public abstract class AbstractFacelet extends Facelet
      * @throws FaceletException
      * @throws ELException
      */
-    public abstract void include(AbstractFaceletContext ctx, UIComponent parent, URL url) throws IOException, FacesException,
-            FaceletException, ELException;
+    public abstract void include(AbstractFaceletContext ctx, UIComponent parent, URL url)
+            throws IOException, FacesException, FaceletException, ELException;
     
     /**
      * Return the alias name for error messages and logging
@@ -91,8 +87,19 @@ public abstract class AbstractFacelet extends Facelet
      */
     public abstract String getAlias();
     
-    public abstract void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource) throws IOException, FacesException,
-            FaceletException, ELException;
+    public abstract void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource)
+            throws IOException, FacesException, FaceletException, ELException;
     
     public abstract boolean isBuildingCompositeComponentMetadata();
+    
+    /**
+     * Return an identifier used to derive an unique id per facelet instance. This
+     * value should be the same for viewMetadata and normal facelet instances.
+     * 
+     * @return 
+     */
+    public String getFaceletId()
+    {
+        return getAlias(); 
+    }
 }
