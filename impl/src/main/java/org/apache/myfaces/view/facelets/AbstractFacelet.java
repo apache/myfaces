@@ -91,4 +91,15 @@ public abstract class AbstractFacelet extends Facelet
             throws IOException, FacesException, FaceletException, ELException;
     
     public abstract boolean isBuildingCompositeComponentMetadata();
+    
+    /**
+     * Return an identifier used to derive an unique id per facelet instance. This
+     * value should be the same for viewMetadata and normal facelet instances.
+     * 
+     * @return 
+     */
+    public String getFaceletId()
+    {
+        return getAlias(); 
+    }
 }

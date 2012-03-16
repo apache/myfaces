@@ -520,7 +520,7 @@ abstract public class FaceletCompositionContext
     }
 
     /**
-     * Check if the view
+     * Check if the facelet is building view metadata
      * 
      * since 2.1.7, 2.0.13
      * @return 
@@ -529,5 +529,47 @@ abstract public class FaceletCompositionContext
     {
         return FaceletViewDeclarationLanguage.isBuildingViewMetadata(
                 FacesContext.getCurrentInstance());
+    }
+    
+    /**
+     * Call this method to indicate a f:metadata section is about to be processed
+     * 
+     * since 2.1.7, 2.0.13
+     * @return 
+     */
+    public void startMetadataSection()
+    {
+    }
+    
+    /**
+     * Call this method to indicate f:metadata section has been already processed
+     * 
+     * since 2.1.7, 2.0.13
+     * @return 
+     */
+    public void endMetadataSection()
+    {
+    }
+    
+    /**
+     * Check if the component is created inside f:metadata section
+     * 
+     * since 2.1.7, 2.0.13
+     * @return 
+     */
+    public boolean isInMetadataSection()
+    {
+       return false;
+    }
+    
+    /**
+     * Check if the section to be processed is being refreshed.
+     * 
+     * since 2.1.7, 2.0.13
+     * @return 
+     */
+    public boolean isRefreshingSection()
+    {
+       return isRefreshingTransientBuild() ||  (!isBuildingViewMetadata() && isInMetadataSection());
     }
 }

@@ -203,7 +203,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         //another component.
         UIComponent oldParent = parent;
         
-        if (mctx.isRefreshingTransientBuild())
+        if (mctx.isRefreshingSection())
         {
             if (_relocatableResourceHandler != null)
             {
@@ -298,7 +298,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
             //if (!componentFoundInserted)
             //{
-                if (mctx.isRefreshingTransientBuild())
+                if (mctx.isRefreshingSection())
                 {
                     facesContext.setProcessingEvents(false);
                     if (_relocatableResourceHandler != null &&
@@ -316,7 +316,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 {
                     ComponentSupport.removeFacet(ctx, parent, c, facetName);
                 }
-                if (mctx.isRefreshingTransientBuild())
+                if (mctx.isRefreshingSection())
                 {
                     facesContext.setProcessingEvents(oldProcessingEvents);
                 }
@@ -348,7 +348,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         
         _delegate.onComponentPopulated(ctx, c, oldParent);
 
-        if (componentFound && mctx.isRefreshingTransientBuild())
+        if (componentFound && mctx.isRefreshingSection())
         {
             facesContext.setProcessingEvents(false);
         }
@@ -360,7 +360,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             ComponentSupport.addFacet(ctx, parent, c, facetName);
         }
-        if (componentFound && mctx.isRefreshingTransientBuild())
+        if (componentFound && mctx.isRefreshingSection())
         {
             facesContext.setProcessingEvents(oldProcessingEvents);
         }

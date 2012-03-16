@@ -295,7 +295,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             for (int i = 0; i < _faceletHierarchy.size(); i++)
             {
                 AbstractFacelet facelet = _faceletHierarchy.get(i);
-                builder.append(facelet.getAlias());
+                builder.append(facelet.getFaceletId());
             }
 
             // Integer prefixInt = new Integer(builder.toString().hashCode());
@@ -321,8 +321,17 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             getFaceletCompositionContext().generateUniqueId(_uniqueIdBuilder);
             _uniqueIdBuilder.append("_");
             _uniqueIdBuilder.append(_prefix);
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(base);
+            // Since two different facelets are used to build the metadata, it is necessary
+            // to trim the "base" part from the returned unique id, to ensure the components will be
+            // refreshed properly. Note the "base" part is the one that allows to ensure
+            // uniqueness between two different facelets with the same <f:metadata>, but since by 
+            // spec view metadata sections cannot live on template client facelets, this case is
+            // just not possible. 
+            if (!getFaceletCompositionContext().isInMetadataSection())
+            {
+                _uniqueIdBuilder.append("_");
+                _uniqueIdBuilder.append(base);
+            }
             uniqueIdFromIterator = _uniqueIdBuilder.toString();
             getFaceletCompositionContext().addUniqueId(uniqueIdFromIterator);
             return uniqueIdFromIterator;

@@ -131,6 +131,12 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private Iterator<String> _uniqueIdsIterator;
     private int _level;
     
+    private int _isInMetadataSection;
+    private SectionUniqueIdCounter _sectionUniqueMetadataIdCounter;
+    private SectionUniqueIdCounter _sectionUniqueNormalIdCounter;
+    private SectionUniqueIdCounter _sectionUniqueComponentMetadataIdCounter;
+    private SectionUniqueIdCounter _sectionUniqueComponentNormalIdCounter;
+    
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
         super();
@@ -160,9 +166,12 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         {
             _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_");
         }
+        _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
+        _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
         _uniqueIdsList = null;
         _uniqueIdsIterator = null;
         _level = 0;
+        _isInMetadataSection = 0;
     }
     
     @Override
@@ -182,7 +191,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @Override
     public void addUniqueId(String uniqueId)
     {
-        if (_uniqueIdsList != null && _level == 0)
+        if (_uniqueIdsList != null && _level == 0 && !(_isInMetadataSection > 0))
         {
             _uniqueIdsList.add(uniqueId);
         }
@@ -191,7 +200,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @Override
     public String getUniqueIdFromIterator()
     {
-        if (_uniqueIdsIterator != null && _uniqueIdsIterator.hasNext() && _level == 0)
+        if (_uniqueIdsIterator != null && _uniqueIdsIterator.hasNext() && 
+                _level == 0 && !(_isInMetadataSection > 0))
         {
             return _uniqueIdsIterator.next();
         }
@@ -889,6 +899,50 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _level--;
         _sectionUniqueIdCounter.endUniqueIdSection();
         _sectionUniqueComponentIdCounter.endUniqueIdSection();
+    }
+    
+    @Override
+    public void startMetadataSection()
+    {
+        if (_isInMetadataSection == 0)
+        {
+            if (_sectionUniqueMetadataIdCounter == null)
+            {
+                _sectionUniqueMetadataIdCounter = new SectionUniqueIdCounter("__md_");
+            }
+            if (_sectionUniqueComponentMetadataIdCounter == null)
+            {
+                _sectionUniqueComponentMetadataIdCounter = new SectionUniqueIdCounter("__md_");
+            }
+            //Replace the counter with metadata counter
+            _sectionUniqueIdCounter = _sectionUniqueMetadataIdCounter;
+            _sectionUniqueComponentIdCounter = _sectionUniqueComponentMetadataIdCounter;
+        }
+        _isInMetadataSection++;
+    }
+    
+    @Override
+    public void endMetadataSection()
+    {
+        _isInMetadataSection--;
+        if (_isInMetadataSection == 0)
+        {
+            //Use normal id counter again
+            _sectionUniqueIdCounter = _sectionUniqueNormalIdCounter;
+            _sectionUniqueComponentIdCounter = _sectionUniqueComponentNormalIdCounter;
+        }
+    }
+    
+    @Override
+    public boolean isInMetadataSection()
+    {
+       return _isInMetadataSection > 0;
+    }
+    
+    @Override
+    public boolean isRefreshingSection()
+    {
+       return isRefreshingTransientBuild() ||  (!isBuildingViewMetadata() && isInMetadataSection());
     }
     
     private static class KeyEntryIterator<K, V> implements Iterator<K>

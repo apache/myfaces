@@ -306,7 +306,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         try
         {
             FaceletHandler h = _compiler.compile(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, alias, h);
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -334,11 +334,13 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String alias = "/viewMetadata/" + _removeFirst(url.getFile(), _baseUrl.getFile());
+        String faceletId = "/"+ _removeFirst(url.getFile(), _baseUrl.getFile());
+        String alias = "/viewMetadata" + faceletId;
         try
         {
             FaceletHandler h = _compiler.compileViewMetadata(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, 
+                    faceletId, h);
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -371,7 +373,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         try
         {
             FaceletHandler h = _compiler.compileCompositeComponentMetadata(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, h, true);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias,
+                    alias, h, true);
             return f;
         }
         catch (FileNotFoundException fnfe)

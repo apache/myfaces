@@ -29,7 +29,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -59,8 +59,8 @@ public final class ViewMetadataHandler extends TagHandler
         {
             throw new TagException(this.tag, "Parent UIComponent "+parent.getId()+" should be instance of UIViewRoot");
         }
-        if (FaceletViewDeclarationLanguage.
-                isBuildingViewMetadata(ctx.getFacesContext()))
+        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
+        if (mctx.isBuildingViewMetadata())
         {
             UIComponent metadataFacet = parent.getFacet(UIViewRoot.METADATA_FACET_NAME);
             if (metadataFacet == null)
@@ -77,12 +77,14 @@ public final class ViewMetadataHandler extends TagHandler
         // (The only tag that needs to do something special is f:event, because in this case
         // ComponentHandler.isNew(parent) does not work for UIViewRoot.)
         parent.getAttributes().put(FacetHandler.KEY, UIViewRoot.METADATA_FACET_NAME);
+        mctx.startMetadataSection();
         try
         {
             this.nextHandler.apply(ctx, parent);
         }
         finally
         {
+            mctx.endMetadataSection();
             parent.getAttributes().remove(FacetHandler.KEY);
         }
     }
