@@ -2016,19 +2016,6 @@ public abstract class UIComponentBase extends UIComponent
         
         if (values.length == 9)
         {
-            //Full restore
-            restoreFullBehaviorsMap(context, values[2]);
-            restoreFullSystemEventListenerClassMap(context, values[3]);
-        }
-        else
-        {
-            //Delta restore
-            restoreDeltaBehaviorsMap(context, values[2]);
-            restoreDeltaSystemEventListenerClassMap(context, values[3]);
-        }
-        
-        if (values.length == 9)
-        {
             _id = (String) values[4];
             _clientId = (String) values[5];
             _markCreated = (String) values[6];
@@ -2039,6 +2026,22 @@ public abstract class UIComponentBase extends UIComponent
         {
             _rendererType = (String) values[4];
             _isRendererTypeSet = true;
+        }
+
+        // rendererType needs to be restored before SystemEventListener,
+        // otherwise UIComponent.getCurrentComponent(context).getRenderer(context)
+        // will not work correctly
+        if (values.length == 9)
+        {
+            //Full restore
+            restoreFullBehaviorsMap(context, values[2]);
+            restoreFullSystemEventListenerClassMap(context, values[3]);
+        }
+        else
+        {
+            //Delta restore
+            restoreDeltaBehaviorsMap(context, values[2]);
+            restoreDeltaSystemEventListenerClassMap(context, values[3]);
         }
     }
     
