@@ -23,6 +23,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,8 +81,9 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     private transient Map<String, _PropertyDescriptorHolder> _propertyDescriptorMap = null;
 
     // Cache for component property descriptors
-    private static Map<Class<?>, Map<String, _PropertyDescriptorHolder>> propertyDescriptorCache =
-        new WeakHashMap<Class<?>, Map<String, _PropertyDescriptorHolder>>();
+    private static Map<ClassLoader, SoftReference<Map<Class<?>, Map<String, _PropertyDescriptorHolder>>>>
+            propertyDescriptorCacheMap = new WeakHashMap<ClassLoader, SoftReference<Map<Class<?>, 
+                Map<String, _PropertyDescriptorHolder>>>>();
     
     private boolean _isCompositeComponent;
     private boolean _isCompositeComponentSet;
@@ -94,6 +96,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     _ComponentAttributesMap(UIComponentBase component)
     {
         _component = component;
+    }
+    
+    public static void clearPropertyDescriptorCache()
+    {
+        propertyDescriptorCacheMap.remove(_ClassUtils.getContextClassLoader());
     }
 
     /**
@@ -488,6 +495,24 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     {
         if (_propertyDescriptorMap == null)
         {
+            ClassLoader cl = _ClassUtils.getContextClassLoader();
+            SoftReference<Map<Class<?>, Map<String, _PropertyDescriptorHolder>>> 
+                    propertyDescriptorCacheRef =
+                        propertyDescriptorCacheMap.get(cl);
+            Map<Class<?>, Map<String, _PropertyDescriptorHolder>> 
+                    propertyDescriptorCache = (propertyDescriptorCacheRef != null) ?
+                        propertyDescriptorCacheRef.get() : null;
+            if (propertyDescriptorCache == null)
+            {
+                 propertyDescriptorCache = new WeakHashMap<Class<?>, 
+                                 Map<String, _PropertyDescriptorHolder>>();
+                 synchronized(propertyDescriptorCacheMap)
+                 {
+                     propertyDescriptorCacheMap.put(cl, new SoftReference
+                         <Map<Class<?>, Map<String, _PropertyDescriptorHolder>>>
+                             (propertyDescriptorCache));
+                 }
+            }
             // Try to get descriptor map from cache
             _propertyDescriptorMap = propertyDescriptorCache.get(_component.getClass());
             // Cache miss: create descriptor map and put it in cache

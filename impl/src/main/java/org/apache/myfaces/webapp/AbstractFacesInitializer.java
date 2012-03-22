@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.lang.reflect.Method;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
@@ -51,6 +52,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  * Performs common initialization tasks.
@@ -315,6 +317,21 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         // clear the cache of MetaRulesetImpl in order to prevent a memory leak
         MetaRulesetImpl.clearMetadataTargetCache();
 
+        try
+        {
+            Class clazz = ClassUtils.simpleClassForName(
+                    "javax.faces.component._ComponentAttributesMap");
+            if (clazz != null)
+            {
+                Method clearMethod = clazz.getMethod("clearPropertyDescriptorCache", new Class[]{});
+                clearMethod.setAccessible(true);
+                clearMethod.invoke(null, new Object[]{});
+            }
+        }
+        catch(Throwable t)
+        {
+            // cannot clear cache, just swallow it, the gc will do the job for us
+        }
         // TODO is it possible to make a real cleanup?
     }
 
