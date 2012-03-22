@@ -23,6 +23,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,8 +81,9 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     private transient Map<String, _PropertyDescriptorHolder> _propertyDescriptorMap = null;
 
     // Cache for component property descriptors
-    private static Map<Class<?>, Map<String, _PropertyDescriptorHolder>> _propertyDescriptorCache = 
-        new WeakHashMap<Class<?>, Map<String, _PropertyDescriptorHolder>>();
+    private static Map<ClassLoader, SoftReference<Map<Class<?>, Map<String, _PropertyDescriptorHolder>>>>
+            propertyDescriptorCacheMap = new WeakHashMap<ClassLoader, SoftReference<Map<Class<?>, 
+                Map<String, _PropertyDescriptorHolder>>>>();
     
     private boolean _isCompositeComponent;
     private boolean _isCompositeComponentSet;
@@ -94,6 +96,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     _ComponentAttributesMap(UIComponentBase component)
     {
         _component = component;
+    }
+    
+    public static void clearPropertyDescriptorCache()
+    {
+        propertyDescriptorCacheMap.remove(_ClassUtils.getContextClassLoader());
     }
 
     /**
@@ -484,8 +491,26 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     {
         if (_propertyDescriptorMap == null)
         {
+            ClassLoader cl = _ClassUtils.getContextClassLoader();
+            SoftReference<Map<Class<?>, Map<String, _PropertyDescriptorHolder>>> 
+                    propertyDescriptorCacheRef =
+                        propertyDescriptorCacheMap.get(cl);
+            Map<Class<?>, Map<String, _PropertyDescriptorHolder>> 
+                    propertyDescriptorCache = (propertyDescriptorCacheRef != null) ?
+                        propertyDescriptorCacheRef.get() : null;
+            if (propertyDescriptorCache == null)
+            {
+                 propertyDescriptorCache = new WeakHashMap<Class<?>, 
+                                 Map<String, _PropertyDescriptorHolder>>();
+                 synchronized(propertyDescriptorCacheMap)
+                 {
+                     propertyDescriptorCacheMap.put(cl, new SoftReference
+                         <Map<Class<?>, Map<String, _PropertyDescriptorHolder>>>
+                             (propertyDescriptorCache));
+                 }
+            }
             // Try to get descriptor map from cache
-            _propertyDescriptorMap = _propertyDescriptorCache.get(_component.getClass());
+            _propertyDescriptorMap = propertyDescriptorCache.get(_component.getClass());
             // Cache miss: create descriptor map and put it in cache
             if (_propertyDescriptorMap == null)
             {
@@ -512,14 +537,14 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                     }
                 }
                 // ... and put it in cache
-                synchronized(_propertyDescriptorCache)
+                synchronized(propertyDescriptorCache)
                 {
                     // Use a synchronized block to ensure proper operation on concurrent use cases.
                     // This is a racy single check, because initialization over the same class could happen
                     // multiple times, but the same result is always calculated. The synchronized block 
                     // just ensure thread-safety, because only one thread will modify the cache map
                     // at the same time.
-                    _propertyDescriptorCache.put(_component.getClass(), _propertyDescriptorMap);
+                    propertyDescriptorCache.put(_component.getClass(), _propertyDescriptorMap);
                 }
             }
         }
@@ -542,7 +567,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         Method readMethod = propertyDescriptor.getReadMethod();
         if (readMethod == null)
         {
-            throw new IllegalArgumentException("Component property " + propertyDescriptor.getName() + " is not readable");
+            throw new IllegalArgumentException("Component property " + propertyDescriptor.getName()
+                                               + " is not readable");
         }
         try
         {
@@ -551,7 +577,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         catch (Exception e)
         {
             FacesContext facesContext = _component.getFacesContext();
-            throw new FacesException("Could not get property " + propertyDescriptor.getName() + " of component " + _component.getClientId(facesContext), e);
+            throw new FacesException("Could not get property " + propertyDescriptor.getName() + " of component "
+                                     + _component.getClientId(facesContext), e);
         }
     }
 
@@ -569,7 +596,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         Method writeMethod = propertyDescriptor.getWriteMethod();
         if (writeMethod == null)
         {
-            throw new IllegalArgumentException("Component property " + propertyDescriptor.getName() + " is not writable");
+            throw new IllegalArgumentException("Component property " + propertyDescriptor.getName()
+                                               + " is not writable");
         }
         try
         {
