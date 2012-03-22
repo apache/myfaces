@@ -60,10 +60,10 @@
 
         <menu name="MyFaces Projects" inherit="top">
             <item name="Core JSF-2.1"   href="./index.html" collapse="false">
-              <item name="API"          href="./myfaces-api/index.html"/>
-              <item name="Impl"         href="./myfaces-impl/index.html"/>
-              <item name="Shared"       href="./myfaces-impl-shared/index.html"/>
-              <item name="Bundle"       href="./myfaces-bundle/index.html"/>
+              <item name="API"          href="http://myfaces.apache.org/core21/myfaces-api/index.html"/>
+              <item name="Impl"         href="http://myfaces.apache.org/core21/myfaces-impl/index.html"/>
+              <item name="Shared"       href="http://myfaces.apache.org/core21/myfaces-impl-shared/index.html"/>
+              <item name="Bundle"       href="http://myfaces.apache.org/core21/myfaces-bundle/index.html"/>
             </item>
             <item name="Core JSF-2.0"   href="../core20/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
@@ -86,7 +86,9 @@
 
         <menu name="Add-ons and Extensions" inherit="top">
             <item name="CODI"           href="../extensions/cdi/index.html"/>
-            <item name="Orchestra"      href="../orchestra/index.html"/>
+            <item name="Orchestra"      href="../orchestra/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
             <item name="ExtVal"         href="../extensions/validator/index.html"/>
             <item name="Portlet Bridge" href="../portlet-bridge/index.html"/>
             <item name="Test"           href="../test/index.html"/>
