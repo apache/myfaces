@@ -25,6 +25,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
 import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextAttributeListener;
@@ -38,25 +39,32 @@ import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Initialise the MyFaces system.
- * <p>
+ * <p/>
  * This context listener is registered by the JSP TLD file for the standard JSF "f" components. Normally, servlet
  * containers will automatically load and process .tld files at startup time, and therefore register and run this class
  * automatically.
- * <p>
+ * <p/>
  * Some very old servlet containers do not do this correctly, so in those cases this listener may be registered manually
  * in web.xml. Registering it twice (ie in both .tld and web.xml) will result in a harmless warning message being
  * generated. Very old versions of MyFaces Core do not register the listener in the .tld file, so those also need a
  * manual entry in web.xml. However all versions since at least 1.1.2 have this entry in the tld.
- * 
- * This listener also delegates all session, request and context events to ManagedBeanDestroyer. 
+ * <p/>
+ * This listener also delegates all session, request and context events to ManagedBeanDestroyer.
  * Because of that we only need to register one listener in the tld.
- * 
+ *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
@@ -68,9 +76,9 @@ public class StartupServletContextListener implements ServletContextListener,
     static final String FACES_INIT_DONE = "org.apache.myfaces.webapp.StartupServletContextListener.FACES_INIT_DONE";
 
     /**
-     * comma delimited list of plugin classes which can be hooked into myfaces 
+     * comma delimited list of plugin classes which can be hooked into myfaces
      */
-    @JSFWebConfigParam(since="2.0")
+    @JSFWebConfigParam(since = "2.0")
     static final String FACES_INIT_PLUGINS = "org.apache.myfaces.FACES_INIT_PLUGINS";
 
     private static final byte FACES_INIT_PHASE_PREINIT = 0;
@@ -84,7 +92,7 @@ public class StartupServletContextListener implements ServletContextListener,
     private FacesInitializer _facesInitializer;
     private ServletContext _servletContext;
     private ManagedBeanDestroyerListener _detroyerListener = new ManagedBeanDestroyerListener();
-    
+
     public void contextInitialized(ServletContextEvent event)
     {
         if (_servletContext != null)
@@ -92,7 +100,7 @@ public class StartupServletContextListener implements ServletContextListener,
             throw new IllegalStateException("context is already initialized");
         }
         _servletContext = event.getServletContext();
-        
+
         Boolean b = (Boolean) _servletContext.getAttribute(FACES_INIT_DONE);
         if (b == null || b.booleanValue() == false)
         {
@@ -106,7 +114,7 @@ public class StartupServletContextListener implements ServletContextListener,
 
             // publish the ManagedBeanDestroyerListener instance in the application map
             _publishManagedBeanDestroyerListener(facesContext);
-            
+
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
             _facesInitializer.initFaces(_servletContext);
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
@@ -114,7 +122,7 @@ public class StartupServletContextListener implements ServletContextListener,
 
             // call contextInitialized on ManagedBeanDestroyerListener
             _detroyerListener.contextInitialized(event);
-            
+
             //Destroy startup FacesContext
             _facesInitializer.destroyStartupFacesContext(facesContext);
         }
@@ -138,20 +146,20 @@ public class StartupServletContextListener implements ServletContextListener,
 
         applicationMap.put(ManagedBeanDestroyerListener.APPLICATION_MAP_KEY, _detroyerListener);
     }
-    
+
     public void contextDestroyed(ServletContextEvent event)
     {
         if (_facesInitializer != null && _servletContext != null)
         {
             // Create startup FacesContext before start undeploy
             FacesContext facesContext = _facesInitializer.initShutdownFacesContext(_servletContext);
-            
+
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
             // call contextDestroyed on ManagedBeanDestroyerListener to destroy the attributes
             _detroyerListener.contextDestroyed(event);
 
             _facesInitializer.destroyFaces(_servletContext);
-            
+
             LifecycleProviderFactory.getLifecycleProviderFactory().release();
 
             // Destroy startup FacesContext, but note we do before publish postdestroy event on
@@ -160,19 +168,19 @@ public class StartupServletContextListener implements ServletContextListener,
             {
                 _facesInitializer.destroyShutdownFacesContext(facesContext);
             }
-            
+
             FactoryFinder.releaseFactories();
 
             //DiscoverSingleton.release(); //clears EnvironmentCache and prevents leaking classloader references
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTDESTROY);
         }
-        
+
         _servletContext = null;
     }
-    
+
     /**
      * configure the faces initializer
-     * 
+     *
      * @param facesInitializer
      */
     public void setFacesInitializer(FacesInitializer facesInitializer) // TODO who uses this method?
@@ -187,68 +195,84 @@ public class StartupServletContextListener implements ServletContextListener,
             facesInitializer.initFaces(_servletContext);
         }
     }
-    
+
     /**
-     * the central initialisation event dispatcher which calls
-     * our listeners
-     * @param event
-     * @param operation
+     * loads the faces init plugins per reflection and Service loader
+     * in a jdk6 environment
+     *
+     * @return false in case of a failed attempt or no listeners found
+     *         which then will cause the jdk5 context.xml code to trigger
      */
-    private void dispatchInitializationEvent(ServletContextEvent event, int operation)
+    private boolean loadFacesInitPluginsJDK6()
     {
-        String [] pluginEntries = (String []) _servletContext.getAttribute(FACES_INIT_PLUGINS);
-
-        if(pluginEntries == null)
+        String[] pluginEntries = null;
+        try
         {
-            String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
-            if(plugins == null)
+            Class serviceLoader = ClassUtils.getContextClassLoader().loadClass("java.util.ServiceLoader");
+            Method m = serviceLoader.getDeclaredMethod("load", Class.class, ClassLoader.class);
+            Object loader = m.invoke(serviceLoader, StartupListener.class, ClassUtils.getContextClassLoader());
+            m = loader.getClass().getDeclaredMethod("iterator");
+            Iterator<StartupListener> it = (Iterator<StartupListener>) m.invoke(loader);
+            List<StartupListener> listeners = new LinkedList<StartupListener>();
+            if (!it.hasNext())
             {
-                return;
+                return false;
             }
-            log.info("MyFaces Plugins found");
-            pluginEntries = plugins.split(",");
-            _servletContext.setAttribute(FACES_INIT_PLUGINS, pluginEntries);
+            while (it.hasNext())
+            {
+                listeners.add(it.next());
+            }
+            //StartupListener[] listeners1 = listeners.toArray(new StartupListener[listeners.size()]);
+            _servletContext.setAttribute(FACES_INIT_PLUGINS, listeners);
+            return true;
         }
-
-        //now we process the plugins
-        for(String plugin: pluginEntries)
+        catch (ClassNotFoundException e)
         {
-            log.info("Processing plugin:"+plugin);
+
+        }
+        catch (NoSuchMethodException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        catch (InvocationTargetException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        catch (IllegalAccessException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return false;
+    }
+
+    /**
+     * loads the faces init plugins per reflection and Service loader
+     * in a jdk6 environment
+     */
+    private void loadFacesInitPluginsJDK5()
+    {
+
+        String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
+        if (plugins == null)
+        {
+            return;
+        }
+        log.info("MyFaces Plugins found");
+        String[] pluginEntries = plugins.split(",");
+        List<StartupListener> listeners = new ArrayList<StartupListener>(pluginEntries.length);
+        for (String pluginEntry : pluginEntries)
+        {
             try
             {
-                //for now the initializers have to be stateless to
-                //so that we do not have to enforce that the initializer
-                //must be serializable
-                Class<?> pluginClass = ClassUtils.getContextClassLoader().loadClass(plugin);
+                Class pluginClass = null;
+                pluginClass = ClassUtils.getContextClassLoader().loadClass(pluginEntry);
                 if (pluginClass == null)
                 {
-                    pluginClass = this.getClass().getClassLoader().loadClass(plugin);
+                    pluginClass = this.getClass().getClassLoader().loadClass(pluginEntry);
                 }
-                StartupListener initializer = (StartupListener) pluginClass.newInstance();
-                
-                switch(operation)
-                {
-                    case FACES_INIT_PHASE_PREINIT:
-                        initializer.preInit(event);
-                        break;
-                    case FACES_INIT_PHASE_POSTINIT:
-                        initializer.postInit(event);
-                        break;
-                    case FACES_INIT_PHASE_PREDESTROY:
-                        initializer.preDestroy(event);
-                        break;
-                    default:
-                        initializer.postDestroy(event);
-                        break;
-                }
-
-               
+                listeners.add((StartupListener) pluginClass.newInstance());
             }
             catch (ClassNotFoundException e)
-            {
-                log.log(Level.SEVERE, e.getMessage(), e);
-            }
-            catch (IllegalAccessException e)
             {
                 log.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -256,14 +280,70 @@ public class StartupServletContextListener implements ServletContextListener,
             {
                 log.log(Level.SEVERE, e.getMessage(), e);
             }
+            catch (IllegalAccessException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+        // StartupListener[] listeners1 = listeners.toArray(new StartupListener[listeners.size()]);
+        _servletContext.setAttribute(FACES_INIT_PLUGINS, listeners);
 
+    }
+
+    /**
+     * the central initialisation event dispatcher which calls
+     * our listeners
+     *
+     * @param event
+     * @param operation
+     */
+    private void dispatchInitializationEvent(ServletContextEvent event, int operation)
+    {
+
+        if (operation == FACES_INIT_PHASE_PREINIT)
+        {
+            if (!loadFacesInitPluginsJDK6())
+            {
+                loadFacesInitPluginsJDK5();
+            }
+        }
+
+        List<StartupListener> pluginEntries = (List<StartupListener>) _servletContext.getAttribute(FACES_INIT_PLUGINS);
+        if (pluginEntries == null)
+        {
+            return;
+        }
+
+        //now we process the plugins
+        for (StartupListener initializer : pluginEntries)
+        {
+            log.info("Processing plugin");
+
+            //for now the initializers have to be stateless to
+            //so that we do not have to enforce that the initializer
+            //must be serializable
+            switch (operation)
+            {
+                case FACES_INIT_PHASE_PREINIT:
+                    initializer.preInit(event);
+                    break;
+                case FACES_INIT_PHASE_POSTINIT:
+                    initializer.postInit(event);
+                    break;
+                case FACES_INIT_PHASE_PREDESTROY:
+                    initializer.preDestroy(event);
+                    break;
+                default:
+                    initializer.postDestroy(event);
+                    break;
+            }
         }
         log.info("Processing MyFaces plugins done");
     }
-    
+
     /* the following methods are needed to serve ManagedBeanDestroyerListener */
     /* Session related methods ***********************************************/
-    
+
     public void attributeAdded(HttpSessionBindingEvent event)
     {
         _detroyerListener.attributeAdded(event);
@@ -288,9 +368,9 @@ public class StartupServletContextListener implements ServletContextListener,
     {
         _detroyerListener.sessionDestroyed(event);
     }
-    
+
     /* Context related methods ***********************************************/
-    
+
     public void attributeAdded(ServletContextAttributeEvent event)
     {
         _detroyerListener.attributeAdded(event);
@@ -305,9 +385,9 @@ public class StartupServletContextListener implements ServletContextListener,
     {
         _detroyerListener.attributeReplaced(event);
     }
-    
+
     /* Request related methods ***********************************************/
-    
+
     public void attributeAdded(ServletRequestAttributeEvent event)
     {
         _detroyerListener.attributeAdded(event);
@@ -327,9 +407,9 @@ public class StartupServletContextListener implements ServletContextListener,
     {
         _detroyerListener.requestInitialized(event);
     }
-    
+
     public void requestDestroyed(ServletRequestEvent event)
-    {        
+    {
         _detroyerListener.requestDestroyed(event);
     }
 
