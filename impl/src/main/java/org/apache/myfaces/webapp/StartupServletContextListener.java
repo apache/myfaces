@@ -38,6 +38,12 @@ import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -187,62 +193,149 @@ public class StartupServletContextListener implements ServletContextListener,
             facesInitializer.initFaces(_servletContext);
         }
     }
-    
+
+    /**
+     * loads the faces init plugins per reflection and Service loader
+     * in a jdk6 environment
+     *
+     * @return false in case of a failed attempt or no listeners found
+     *         which then will cause the jdk5 context.xml code to trigger
+     */
+    private boolean loadFacesInitPluginsJDK6()
+    {
+        String[] pluginEntries = null;
+        try
+        {
+            Class serviceLoader = ClassUtils.getContextClassLoader().loadClass("java.util.ServiceLoader");
+            Method m = serviceLoader.getDeclaredMethod("load", Class.class, ClassLoader.class);
+            Object loader = m.invoke(serviceLoader, StartupListener.class, ClassUtils.getContextClassLoader());
+            m = loader.getClass().getDeclaredMethod("iterator");
+            Iterator<StartupListener> it = (Iterator<StartupListener>) m.invoke(loader);
+            List<StartupListener> listeners = new LinkedList<StartupListener>();
+            if (!it.hasNext())
+            {
+                return false;
+            }
+            while (it.hasNext())
+            {
+                listeners.add(it.next());
+            }
+            //StartupListener[] listeners1 = listeners.toArray(new StartupListener[listeners.size()]);
+            _servletContext.setAttribute(FACES_INIT_PLUGINS, listeners);
+            return true;
+        }
+        catch (ClassNotFoundException e)
+        {
+
+        }
+        catch (NoSuchMethodException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        catch (InvocationTargetException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        catch (IllegalAccessException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return false;
+    }
+
+    /**
+     * loads the faces init plugins per reflection and Service loader
+     * in a jdk6 environment
+     */
+    private void loadFacesInitPluginsJDK5()
+    {
+
+        String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
+        if (plugins == null)
+        {
+            return;
+        }
+        log.info("MyFaces Plugins found");
+        String[] pluginEntries = plugins.split(",");
+        List<StartupListener> listeners = new ArrayList<StartupListener>(pluginEntries.length);
+        for (String pluginEntry : pluginEntries)
+        {
+            try
+            {
+                Class pluginClass = null;
+                pluginClass = ClassUtils.getContextClassLoader().loadClass(pluginEntry);
+                if (pluginClass == null)
+                {
+                    pluginClass = this.getClass().getClassLoader().loadClass(pluginEntry);
+                }
+                listeners.add((StartupListener) pluginClass.newInstance());
+            }
+            catch (ClassNotFoundException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+            }
+            catch (InstantiationException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+            }
+            catch (IllegalAccessException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+        // StartupListener[] listeners1 = listeners.toArray(new StartupListener[listeners.size()]);
+        _servletContext.setAttribute(FACES_INIT_PLUGINS, listeners);
+
+    }
+
+
     /**
      * the central initialisation event dispatcher which calls
      * our listeners
+     *
      * @param event
      * @param operation
      */
-    private void dispatchInitializationEvent(ServletContextEvent event, int operation) {
-        String [] pluginEntries = (String []) _servletContext.getAttribute(FACES_INIT_PLUGINS);
+    private void dispatchInitializationEvent(ServletContextEvent event, int operation)
+    {
 
-        if(pluginEntries == null) {
-            String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
-            if(plugins == null) return;
-            log.info("MyFaces Plugins found");
-            pluginEntries = plugins.split(",");
-            _servletContext.setAttribute(FACES_INIT_PLUGINS, pluginEntries);
+        if (operation == FACES_INIT_PHASE_PREINIT)
+        {
+            if (!loadFacesInitPluginsJDK6())
+            {
+                loadFacesInitPluginsJDK5();
+            }
+        }
+
+        List<StartupListener> pluginEntries = (List<StartupListener>) _servletContext.getAttribute(FACES_INIT_PLUGINS);
+        if (pluginEntries == null)
+        {
+            return;
         }
 
         //now we process the plugins
-        for(String plugin: pluginEntries) {
-            log.info("Processing plugin:"+plugin);
-            try {
-                //for now the initializers have to be stateless to
-                //so that we do not have to enforce that the initializer
-                //must be serializable
-                Class<?> pluginClass = ClassUtils.getContextClassLoader().loadClass(plugin);
-                if (pluginClass == null)
-                {
-                    pluginClass = this.getClass().getClassLoader().loadClass(plugin);
-                }
-                StartupListener initializer = (StartupListener) pluginClass.newInstance();
-                
-                switch(operation) {
-                    case FACES_INIT_PHASE_PREINIT:
-                        initializer.preInit(event);
-                        break;
-                    case FACES_INIT_PHASE_POSTINIT:
-                        initializer.postInit(event);
-                        break;
-                    case FACES_INIT_PHASE_PREDESTROY:
-                        initializer.preDestroy(event);
-                        break;
-                    default:
-                        initializer.postDestroy(event);
-                        break;
-                }
+        for (StartupListener initializer : pluginEntries)
+        {
+            log.info("Processing plugin");
 
-               
-            } catch (ClassNotFoundException e) {
-                log.log(Level.SEVERE, e.getMessage(), e);
-            } catch (IllegalAccessException e) {
-                log.log(Level.SEVERE, e.getMessage(), e);
-            } catch (InstantiationException e) {
-                log.log(Level.SEVERE, e.getMessage(), e);
+            //for now the initializers have to be stateless to
+            //so that we do not have to enforce that the initializer
+            //must be serializable
+            switch (operation)
+            {
+                case FACES_INIT_PHASE_PREINIT:
+                    initializer.preInit(event);
+                    break;
+                case FACES_INIT_PHASE_POSTINIT:
+                    initializer.postInit(event);
+                    break;
+                case FACES_INIT_PHASE_PREDESTROY:
+                    initializer.preDestroy(event);
+                    break;
+                default:
+                    initializer.postDestroy(event);
+                    break;
             }
-
         }
         log.info("Processing MyFaces plugins done");
     }
