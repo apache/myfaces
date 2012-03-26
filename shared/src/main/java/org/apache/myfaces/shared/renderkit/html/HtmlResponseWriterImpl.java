@@ -183,7 +183,8 @@ public class HtmlResponseWriterImpl
             // Check if encoding is valid by javadoc of RenderKit.createResponseWriter()
             if (!Charset.isSupported(_characterEncoding))
             {
-                throw new IllegalStateException("Encoding "+_characterEncoding+" not supported by HtmlResponseWriterImpl");
+                throw new IllegalArgumentException("Encoding "+_characterEncoding
+                        +" not supported by HtmlResponseWriterImpl");
             }
         }
         _isUTF8 = UTF8.equals(_characterEncoding);
