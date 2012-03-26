@@ -2508,6 +2508,7 @@ public final class HtmlRendererUtils
                 serverSideScript);
     }
 
+    // CHECKSTYLE:OFF
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer,
             String componentProperty, UIComponent component,
@@ -2633,7 +2634,8 @@ public final class HtmlRendererUtils
                             clientBehaviors, attributeValue, serverSideScript));
         }
     }
-
+    // CHECKSTYLE: ON
+    
     /**
      * @since 4.0.0
      */
