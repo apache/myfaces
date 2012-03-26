@@ -20,6 +20,7 @@ package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -178,6 +179,12 @@ public class HtmlResponseWriterImpl
         {
             // canonize to uppercase, that's the standard format
             _characterEncoding = characterEncoding.toUpperCase();
+            
+            // Check if encoding is valid by javadoc of RenderKit.createResponseWriter()
+            if (!Charset.isSupported(_characterEncoding))
+            {
+                throw new IllegalStateException("Encoding "+_characterEncoding+" not supported by HtmlResponseWriterImpl");
+            }
         }
         _isUTF8 = UTF8.equals(_characterEncoding);
     }
