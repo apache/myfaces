@@ -1055,7 +1055,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 {
                     // APE found,  abortion for this event only
                     eventsAborted.add(event);
-                    return true;
                 }
                 else
                 {
