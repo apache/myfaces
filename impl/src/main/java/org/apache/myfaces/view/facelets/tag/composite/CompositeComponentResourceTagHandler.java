@@ -226,7 +226,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 else if (insertChildrenUsed)
                 {
                     if (!(handler instanceof javax.faces.view.facelets.ComponentHandler ||
-                            nextHandler instanceof ComponentContainerHandler ||
+                            handler instanceof ComponentContainerHandler ||
                             handler instanceof TextHandler))
                     {
                         handler.apply(ctx, c);
