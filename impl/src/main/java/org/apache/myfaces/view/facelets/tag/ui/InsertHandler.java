@@ -34,6 +34,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
+import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 
 /**
  * The insert tag is used within your templates to declare spots of replicable data.
@@ -42,7 +43,7 @@ import org.apache.myfaces.view.facelets.TemplateClient;
  * @version $Id$
  */
 @JSFFaceletTag(name="ui:insert")
-public final class InsertHandler extends TagHandler implements TemplateClient
+public final class InsertHandler extends TagHandler implements TemplateClient, ComponentContainerHandler
 {
 
     /**

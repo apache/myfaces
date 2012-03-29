@@ -36,6 +36,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -48,7 +49,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @version $Id$
  */
 @JSFFaceletTag(name="c:choose")
-public final class ChooseHandler extends TagHandler
+public final class ChooseHandler extends TagHandler implements ComponentContainerHandler
 {
 
     private final ChooseOtherwiseHandler otherwise;
