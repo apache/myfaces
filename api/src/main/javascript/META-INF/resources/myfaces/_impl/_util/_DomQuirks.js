@@ -45,12 +45,19 @@ if (_MF_SINGLTN) {
 
             var b = myfaces._impl.core._Runtime.browser;
 
-            if (b.isIE <= 6 && b.isIEMobile) {
+            if (b.isIEMobile && b.isIE <= 6) {
                 //winmobile hates add onLoad, and checks on the construct
                 //it does not eval scripts anyway
                 myfaces.config = myfaces.config || {};
                 myfaces.config._autoeval = false;
                 return;
+            }  else {
+                //for whatever reason autoeval is set here on Firefox 3.5 only
+                // could be a firebug problem, by setting setters
+                //and getters no assignment was revealed.
+                if('undefined' != typeof myfaces.config._autoeval) {
+                    delete myfaces.config._autoeval;
+                }
             }
             this._callSuper("constructor_");
             myfaces._impl._util._Dom = this;
@@ -550,7 +557,43 @@ if (_MF_SINGLTN) {
                     node[key] = null;
                 }
             }
-        }
+        },
+
+        isManualScriptEval: function() {
+
+                if (!this._Lang.exists(myfaces, "config._autoeval")) {
+
+                    //now we rely on the document being processed if called for the first time
+                    var evalDiv = document.createElement("div");
+                    this._Lang.reserveNamespace("myfaces.config._autoeval");
+                    //null not swallowed
+                    myfaces.config._autoeval = false;
+
+                    var markup = "<script type='text/javascript'> myfaces.config._autoeval = true; </script>";
+                    //now we rely on the same replacement mechanisms as outerhtml because
+                    //some browsers have different behavior of embedded scripts in the contextualfragment
+                    //or innerhtml case (opera for instance), this way we make sure the
+                    //eval detection is covered correctly
+                    this.setAttribute(evalDiv, "style", "display:none");
+
+                    //it is less critical in some browsers (old ie versions)
+                    //to append as first element than as last
+                    //it should not make any difference layoutwise since we are on display none anyway.
+                    this.insertFirst(evalDiv);
+
+                    //we remap it into a real boolean value
+                    if (window.Range
+                            && typeof Range.prototype.createContextualFragment == 'function') {
+                        this._outerHTMLCompliant(evalDiv, markup);
+                    } else {
+                        //will not be called placeholder for quirks class
+                        this._outerHTMLNonCompliant(evalDiv, markup);
+                    }
+
+                }
+
+                return  !myfaces.config._autoeval;
+            }
     });
 
 }
