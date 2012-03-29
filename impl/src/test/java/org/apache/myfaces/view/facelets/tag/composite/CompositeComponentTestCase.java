@@ -58,6 +58,14 @@ public class CompositeComponentTestCase extends FaceletTestCase
     }
     
     @Override
+    protected void setUpServletObjects() throws Exception
+    {
+        super.setUpServletObjects();
+        servletContext.addInitParameter("javax.faces.FACELETS_LIBRARIES", "/test-facelet.taglib.xml");
+    }
+    
+    
+    @Override
     protected void setUpExternalContext() throws Exception
     {
         super.setUpExternalContext();
@@ -573,6 +581,75 @@ public class CompositeComponentTestCase extends FaceletTestCase
         Assert.assertTrue(resp.contains("OMEGA"));
     }
     
+        
+    @Test
+    public void testCompositeInsertChildren5() throws Exception
+    {
+        HelloWorld helloWorld = new HelloWorld(); 
+        
+        facesContext.getExternalContext().getRequestMap().put("helloWorldBean",
+                helloWorld);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testCompositeInsertChildren5.xhtml");
+        
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        //UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
+        //Assert.assertNotNull(compositeComponent1);
+        //UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        //Assert.assertNotNull(facet1);
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+
+        panelGroup1.encodeAll(facesContext);
+
+        sw.flush();
+        
+        String resp = sw.toString();
+
+        Assert.assertTrue(resp.contains("ALFA"));
+        Assert.assertTrue(resp.contains("BETA"));
+        Assert.assertTrue(resp.contains("GAMMA"));
+        Assert.assertTrue(resp.contains("OMEGA"));
+    }
+
+    @Test
+    public void testCompositeInsertChildren6() throws Exception
+    {
+        HelloWorld helloWorld = new HelloWorld(); 
+        
+        facesContext.getExternalContext().getRequestMap().put("helloWorldBean",
+                helloWorld);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testCompositeInsertChildren6.xhtml");
+        
+        UIComponent panelGroup1 = root.findComponent("testGroup1");
+        Assert.assertNotNull(panelGroup1);
+        //UINamingContainer compositeComponent1 = (UINamingContainer) panelGroup1.getChildren().get(0);
+        //Assert.assertNotNull(compositeComponent1);
+        //UIComponent facet1 = compositeComponent1.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        //Assert.assertNotNull(facet1);
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+
+        panelGroup1.encodeAll(facesContext);
+
+        sw.flush();
+        
+        String resp = sw.toString();
+
+        Assert.assertTrue(resp.contains("ALFA"));
+        Assert.assertTrue(resp.contains("BETA"));
+        Assert.assertTrue(resp.contains("GAMMA"));
+        Assert.assertTrue(resp.contains("OMEGA"));
+    }
+
     @Test
     public void testCompositeInsertFacet() throws Exception
     {

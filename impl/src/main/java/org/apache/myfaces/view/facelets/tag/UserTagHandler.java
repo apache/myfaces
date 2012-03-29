@@ -49,7 +49,7 @@ import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
  * @author Jacob Hookom
  * @version $Id$
  */
-final class UserTagHandler extends TagHandler implements TemplateClient
+final class UserTagHandler extends TagHandler implements TemplateClient, ComponentContainerHandler
 {
 
     protected final TagAttribute[] _vars;

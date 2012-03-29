@@ -41,6 +41,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
+import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -58,7 +59,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @version $Id$
  */
 @JSFFaceletTag(name="ui:decorate")
-public final class DecorateHandler extends TagHandler implements TemplateClient
+public final class DecorateHandler extends TagHandler implements TemplateClient, ComponentContainerHandler
 {
 
     //private static final Logger log = Logger.getLogger("facelets.tag.ui.decorate");

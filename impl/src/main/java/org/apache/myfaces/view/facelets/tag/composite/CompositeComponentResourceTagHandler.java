@@ -59,6 +59,7 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentBuilderHandler;
@@ -66,9 +67,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.EditableValueHolderRule;
 import org.apache.myfaces.view.facelets.tag.jsf.ValueHolderRule;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
-import org.apache.myfaces.view.facelets.tag.ui.DecorateHandler;
-import org.apache.myfaces.view.facelets.tag.ui.IncludeHandler;
-import org.apache.myfaces.view.facelets.tag.ui.InsertHandler;
 
 /**
  * This handler is responsible for apply composite components. It
@@ -101,8 +99,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                                                         InsertFacetHandler.class);
         _componentHandlers = TagHandlerUtils.findNextByType(nextHandler,
                 javax.faces.view.facelets.ComponentHandler.class,
-                InsertChildrenHandler.class, InsertHandler.class,
-                DecorateHandler.class, IncludeHandler.class, TextHandler.class);
+                ComponentContainerHandler.class, TextHandler.class);
     }
 
     public UIComponent createComponent(FaceletContext ctx)
@@ -229,10 +226,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 else if (insertChildrenUsed)
                 {
                     if (!(handler instanceof javax.faces.view.facelets.ComponentHandler ||
-                            handler instanceof InsertChildrenHandler ||
-                            handler instanceof InsertHandler ||
-                            handler instanceof DecorateHandler ||
-                            handler instanceof IncludeHandler ||
+                            nextHandler instanceof ComponentContainerHandler ||
                             handler instanceof TextHandler))
                     {
                         handler.apply(ctx, c);
@@ -265,11 +259,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             else if (insertChildrenUsed)
             {
                 if (!(nextHandler instanceof javax.faces.view.facelets.ComponentHandler ||
-                        nextHandler instanceof InsertChildrenHandler ||
-                        nextHandler instanceof InsertHandler ||
-                        nextHandler instanceof DecorateHandler ||
-                        nextHandler instanceof IncludeHandler ||
-                        nextHandler instanceof TextHandler))
+                      nextHandler instanceof ComponentContainerHandler ||
+                      nextHandler instanceof TextHandler))
                 {
                     nextHandler.apply(ctx, c);
                 }

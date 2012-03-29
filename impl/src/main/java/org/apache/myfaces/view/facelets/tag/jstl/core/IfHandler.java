@@ -33,6 +33,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -48,7 +49,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
         name="scope",
         className="java.lang.String",
         longDescription="Scope for var.")
-public final class IfHandler extends TagHandler
+public final class IfHandler extends TagHandler implements ComponentContainerHandler
 {
 
     /**

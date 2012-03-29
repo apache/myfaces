@@ -30,13 +30,14 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFFaceletTag(name="composite:insertChildren")
-public class InsertChildrenHandler extends TagHandler
+public class InsertChildrenHandler extends TagHandler implements ComponentContainerHandler
 {
     public static final String INSERT_CHILDREN_USED = "org.apache.myfaces.INSERT_CHILDREN_USED";
     

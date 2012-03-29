@@ -31,6 +31,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 
 /**
  * Subtag of &lt;choose&gt; that includes its body if its
@@ -40,7 +41,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @version $Id$
  */
 @JSFFaceletTag(name="c:when")
-public final class ChooseWhenHandler extends TagHandler
+public final class ChooseWhenHandler extends TagHandler implements ComponentContainerHandler
 {
 
     /**
