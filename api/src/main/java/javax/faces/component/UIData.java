@@ -1063,15 +1063,17 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     {
         StringBuilder bld = __getSharedStringBuilder(context);
 
-        Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
-        uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
-        getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
-        // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot. 
+        // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX,
+        // and will be unique within this UIViewRoot.
         if(seed==null)
         {
+            Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
+            uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
+            getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();    
         }
-        // Optionally, a unique seed value can be supplied by component creators which should be included in the generated unique id.
+        // Optionally, a unique seed value can be supplied by component creators
+        // which should be included in the generated unique id.
         else
         {
             return bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append(seed).toString();

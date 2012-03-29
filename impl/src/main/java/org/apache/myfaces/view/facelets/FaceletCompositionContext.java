@@ -572,4 +572,9 @@ abstract public class FaceletCompositionContext
     {
        return isRefreshingTransientBuild() ||  (!isBuildingViewMetadata() && isInMetadataSection());
     }
+    
+    public StringBuilder getSharedStringBuilder()
+    {
+        return new StringBuilder();
+    }
 }

@@ -331,7 +331,11 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             {
                 // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
                 // and call createUniqueId()
-                String uid = uniqueIdVendor.createUniqueId(faceletContext.getFacesContext(),null);
+                String uid = uniqueIdVendor.createUniqueId(faceletContext.getFacesContext(),
+                        mctx.getSharedStringBuilder()
+                        .append(compositeComponentBase.getId())
+                        .append("__f_")
+                        .append("cc_facet").toString());
                 compositeFacetPanel.setId(uid);
             }            
         }

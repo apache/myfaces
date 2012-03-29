@@ -137,6 +137,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private SectionUniqueIdCounter _sectionUniqueComponentMetadataIdCounter;
     private SectionUniqueIdCounter _sectionUniqueComponentNormalIdCounter;
     
+    private StringBuilder _sharedStringBuilder;
+    
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
         super();
@@ -172,6 +174,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _uniqueIdsIterator = null;
         _level = 0;
         _isInMetadataSection = 0;
+        _sharedStringBuilder = null;
     }
     
     @Override
@@ -232,7 +235,12 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _validationGroupsStack = null;
         _componentsMarkedForDeletion = null;
         _sectionUniqueIdCounter = null;
+        _sectionUniqueNormalIdCounter = null;
+        _sectionUniqueMetadataIdCounter = null;
         _sectionUniqueComponentIdCounter = null;
+        _sectionUniqueComponentNormalIdCounter = null;
+        _sectionUniqueComponentMetadataIdCounter = null;
+        _sharedStringBuilder = null;
     }
    
     @Override
@@ -943,6 +951,20 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public boolean isRefreshingSection()
     {
        return isRefreshingTransientBuild() ||  (!isBuildingViewMetadata() && isInMetadataSection());
+    }
+    
+    @Override
+    public StringBuilder getSharedStringBuilder()
+    {
+        if (_sharedStringBuilder == null)
+        {
+            _sharedStringBuilder = new StringBuilder();
+        }
+        else
+        {
+            _sharedStringBuilder.setLength(0);
+        }
+        return _sharedStringBuilder;
     }
     
     private static class KeyEntryIterator<K, V> implements Iterator<K>
