@@ -327,6 +327,29 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
     }
 
+    private Integer[] getBodyRows(FacesContext facesContext, UIComponent component)
+    {
+        Integer[] bodyrows = null;
+        String bodyrowsAttr = (String) component.getAttributes().get(JSFAttr.BODYROWS_ATTR);
+        if(bodyrowsAttr != null && !"".equals(bodyrowsAttr)) 
+        {   
+            String[] bodyrowsString = StringUtils.trim(StringUtils.splitShortString(bodyrowsAttr, ','));
+            // parsing with no exception handling, because of JSF-spec: 
+            // "If present, this must be a comma separated list of integers."
+            bodyrows = new Integer[bodyrowsString.length];
+            for(int i = 0; i < bodyrowsString.length; i++) 
+            {
+                bodyrows[i] = new Integer(bodyrowsString[i]);
+            }
+            
+        }
+        else
+        {
+            bodyrows = ZERO_INT_ARRAY;
+        }
+        return bodyrows;
+    }
+
     /**
      * Renders everything inside the TBODY tag by iterating over the row objects
      * between offsets first and first+rows and applying the UIColumn components
@@ -337,12 +360,19 @@ public class HtmlTableRendererBase extends HtmlRenderer
      */
      public void encodeInnerHtml(FacesContext facesContext, UIComponent component)throws IOException
      {
-
         UIData uiData = (UIData) component;
         ResponseWriter writer = facesContext.getResponseWriter();
 
         int rowCount = uiData.getRowCount();
 
+        int newspaperColumns = getNewspaperColumns(component);
+
+        if (rowCount == -1 && newspaperColumns == 1)
+        {
+            encodeInnerHtmlUnknownRowCount(facesContext, component);
+            return;
+        }
+        
         if (rowCount == 0)
         {
             //nothing to render, to get valid xhtml we render an empty dummy row
@@ -377,7 +407,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
            }
         }
 
-        int newspaperColumns = getNewspaperColumns(component);
         int newspaperRows;
         if((last - first) % newspaperColumns == 0)
         {
@@ -390,24 +419,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         boolean newspaperHorizontalOrientation = isNewspaperHorizontalOrientation(component);
         
         // get the row indizes for which a new TBODY element should be created
-        Integer[] bodyrows = null;
-        String bodyrowsAttr = (String) component.getAttributes().get(JSFAttr.BODYROWS_ATTR);
-        if(bodyrowsAttr != null && !"".equals(bodyrowsAttr)) 
-        {   
-            String[] bodyrowsString = StringUtils.trim(StringUtils.splitShortString(bodyrowsAttr, ','));
-            // parsing with no exception handling, because of JSF-spec: 
-            // "If present, this must be a comma separated list of integers."
-            bodyrows = new Integer[bodyrowsString.length];
-            for(int i = 0; i < bodyrowsString.length; i++) 
-            {
-                bodyrows[i] = new Integer(bodyrowsString[i]);
-            }
-            
-        }
-        else
-        {
-            bodyrows = ZERO_INT_ARRAY;
-        }
+        Integer[] bodyrows = getBodyRows(facesContext, component);
         int bodyrowsCount = 0;
 
         // walk through the newspaper rows
@@ -513,6 +525,113 @@ public class HtmlTableRendererBase extends HtmlRenderer
             }
         }
         
+        if(bodyrowsCount != 0)
+        {
+            // close the last TBODY element
+            HtmlRendererUtils.writePrettyLineSeparator(facesContext);
+            writer.endElement(HTML.TBODY_ELEM);
+        }
+    }
+     
+    private void encodeInnerHtmlUnknownRowCount(FacesContext facesContext, UIComponent component)throws IOException
+    {
+        UIData uiData = (UIData) component;
+        ResponseWriter writer = facesContext.getResponseWriter();
+
+        Styles styles = getStyles(uiData);
+        
+        Integer[] bodyrows = getBodyRows(facesContext, component);
+        int bodyrowsCount = 0;
+        
+        int first = uiData.getFirst();
+        int rows = uiData.getRows();
+        int currentRow = first;
+        boolean isRowRendered = false;
+        
+        while(true)
+        {
+            uiData.setRowIndex(currentRow);
+            if (!uiData.isRowAvailable())
+            {
+                break;
+            }
+            
+            isRowRendered = true;
+            
+            // first column in table, start new row
+            beforeRow(facesContext, uiData);
+
+            // is the current row listed in the bodyrows attribute
+            if(ArrayUtils.contains(bodyrows, currentRow))  
+            {
+                // close any preopened TBODY element first
+                if(bodyrowsCount != 0) 
+                {
+                    HtmlRendererUtils.writePrettyLineSeparator(facesContext);
+                    writer.endElement(HTML.TBODY_ELEM);
+                }
+                HtmlRendererUtils.writePrettyLineSeparator(facesContext);
+                writer.startElement(HTML.TBODY_ELEM, uiData); 
+                // Do not attach bodyrowsCount to the first TBODY element, because of backward compatibility
+                writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext) + ":tbody_element" + 
+                    (bodyrowsCount == 0 ? "" : bodyrowsCount), null);
+                bodyrowsCount++;
+            }
+            
+            HtmlRendererUtils.writePrettyLineSeparator(facesContext);
+            renderRowStart(facesContext, writer, uiData, styles, currentRow);
+            
+            List<UIComponent> children = null;
+            for (int j = 0, size = getChildCount(component); j < size; j++)
+            {
+                if (children == null)
+                {
+                    children = getChildren(component);
+                }
+                UIComponent child = (UIComponent) children.get(j);
+                if (child.isRendered())
+                {
+                    boolean columnRendering = child instanceof UIColumn;
+                    
+                    if (columnRendering)
+                    {
+                        beforeColumn(facesContext, uiData, j);
+                    }
+                       
+                    encodeColumnChild(facesContext, writer, uiData, child, 
+                            styles, j);                    
+                   
+                    if (columnRendering)
+                    {
+                        afterColumn(facesContext, uiData, j);
+                    }
+                }
+            }
+
+            renderRowEnd(facesContext, writer, uiData);
+            afterRow(facesContext, uiData);
+            
+            currentRow++;
+
+            if (rows > 0 && currentRow-first > rows )
+            {
+                break;
+            }
+        }
+        
+        if (!isRowRendered)
+        {
+            //nothing to render, to get valid xhtml we render an empty dummy row
+            writer.startElement(HTML.TBODY_ELEM, uiData);
+            writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext) + ":tbody_element", null);
+            writer.startElement(HTML.TR_ELEM, uiData);
+            writer.startElement(HTML.TD_ELEM, uiData);
+            writer.endElement(HTML.TD_ELEM);
+            writer.endElement(HTML.TR_ELEM);
+            writer.endElement(HTML.TBODY_ELEM);
+            return;
+        }
+
         if(bodyrowsCount != 0)
         {
             // close the last TBODY element
