@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.component.UIColumn;
-import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.model.ListDataModel;
@@ -107,31 +106,11 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
     }
     
     /**
-     * Components that render client behaviors should always render "id" and "name" attribute
-     */
-    public void testClientBehaviorHolderRendersIdAndName() 
-    {
-        dataTable.addClientBehavior("keypress", new AjaxBehavior());
-        try 
-        {
-            dataTable.encodeAll(facesContext);
-            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches("(?s).+id=\".+\".+"));
-            assertTrue(output.matches("(?s).+name=\".+\".+"));
-        }
-        catch (Exception e)
-        {
-            fail(e.getMessage());
-        }
-        
-    }
-    
-    /**
      * Check table renderer behavior when DataModel returns -1 from getRowCount(). It should
      * render the same as if that value is provided. Note t:dataTable newspaper mode requires
      * row count to calculate newspaperRows and newspaperColumns. 
      */
-    public void testNoRowCountRender()
+    public void testNoRowCountRender() throws Exception
     {
         List<Person> list = new ArrayList<Person>();
         list.add(new Person("John"  , "Smith"));
@@ -158,7 +137,9 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         column2.getChildren().add(text2);
         dataTable.getChildren().add(column2);
 
-        dataTable.setValue(new UnknownRowCountDemoDataModel<Person>(list));
+        UnknownRowCountDemoDataModel urdm = new UnknownRowCountDemoDataModel();
+        urdm.setWrappedData(list);
+        dataTable.setValue(urdm);
 
         String output1 = null;
         try 
@@ -171,7 +152,9 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
             fail(e.getMessage());
         }
         
-        dataTable.setValue(new ListDataModel<Person>(list));
+        ListDataModel ldm = new ListDataModel();
+        ldm.setWrappedData(list);
+        dataTable.setValue(ldm);
         ((StringWriter) writer.getWriter()).getBuffer().setLength(0);
         
         String output2 = null;
@@ -184,7 +167,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         {
             fail(e.getMessage());
         }
-        
+
         assertTrue(output2.contains("John"));
         assertTrue(output2.contains("Smith"));
         assertTrue(output2.contains("class1"));
@@ -231,16 +214,11 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         }
     }
     
-    public class UnknownRowCountDemoDataModel<E> extends ListDataModel<E>
+    public class UnknownRowCountDemoDataModel extends ListDataModel
     {
         public UnknownRowCountDemoDataModel()
         {
             super();
-        }
-
-        public UnknownRowCountDemoDataModel(List<E> list)
-        {
-            super(list);
         }
         
         @Override
