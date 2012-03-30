@@ -19,8 +19,14 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.faces.component.UIColumn;
+import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlDataTable;
+import javax.faces.component.html.HtmlOutputText;
+import javax.faces.model.ListDataModel;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -64,6 +70,11 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
                 dataTable.getRendererType(),
                 new HtmlTableRenderer());
 
+        HtmlOutputText text = new HtmlOutputText();
+        facesContext.getRenderKit().addRenderer(
+                text.getFamily(),
+                text.getRendererType(),
+                new HtmlTextRenderer());
     }
 
     public void tearDown() throws Exception
@@ -92,6 +103,150 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
                 dataTable, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
+    }
+    
+    /**
+     * Components that render client behaviors should always render "id" and "name" attribute
+     */
+    public void testClientBehaviorHolderRendersIdAndName() 
+    {
+        dataTable.addClientBehavior("keypress", new AjaxBehavior());
+        try 
+        {
+            dataTable.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches("(?s).+id=\".+\".+"));
+            assertTrue(output.matches("(?s).+name=\".+\".+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
+    }
+    
+    /**
+     * Check table renderer behavior when DataModel returns -1 from getRowCount(). It should
+     * render the same as if that value is provided. Note t:dataTable newspaper mode requires
+     * row count to calculate newspaperRows and newspaperColumns. 
+     */
+    public void testNoRowCountRender()
+    {
+        List<Person> list = new ArrayList<Person>();
+        list.add(new Person("John"  , "Smith"));
+        list.add(new Person("Pepito", "Perez"));
+        list.add(new Person("Kurt",   "Kobain"));
+        
+        dataTable.setId("data");
+        dataTable.setRowClasses("class1, class2");
+        dataTable.setVar("person");
+        
+        UIColumn column1 = new UIColumn();
+        HtmlOutputText text = new HtmlOutputText();
+        text.setValueExpression("value", 
+                facesContext.getApplication().getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(), "#{person.firstName}", String.class));
+        column1.getChildren().add(text);
+        
+        dataTable.getChildren().add(column1);
+        UIColumn column2 = new UIColumn();
+        HtmlOutputText text2 = new HtmlOutputText();
+        text2.setValueExpression("value", 
+                facesContext.getApplication().getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(), "#{person.lastName}", String.class));
+        column2.getChildren().add(text2);
+        dataTable.getChildren().add(column2);
+
+        dataTable.setValue(new UnknownRowCountDemoDataModel<Person>(list));
+
+        String output1 = null;
+        try 
+        {
+            dataTable.encodeAll(facesContext);
+            output1 = ((StringWriter) writer.getWriter()).getBuffer().toString();
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
+        dataTable.setValue(new ListDataModel<Person>(list));
+        ((StringWriter) writer.getWriter()).getBuffer().setLength(0);
+        
+        String output2 = null;
+        try 
+        {
+            dataTable.encodeAll(facesContext);
+            output2 = ((StringWriter) writer.getWriter()).getBuffer().toString();
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+        
+        assertTrue(output2.contains("John"));
+        assertTrue(output2.contains("Smith"));
+        assertTrue(output2.contains("class1"));
+        assertTrue(output2.contains("class2"));
+        
+        assertTrue(output1.contains("John"));
+        assertTrue(output1.contains("Smith"));
+        assertTrue(output1.contains("class1"));
+        assertTrue(output1.contains("class2"));
+        
+        assertEquals(output2, output1);
+    }
+
+    public class Person
+    {
+        private String firstName;
+        
+        private String lastName;
+        
+        public Person(String firstName, String lastName)
+        {
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
+        
+        public String getFirstName()
+        {
+            return firstName;
+        }
+        
+        public void setFirstName(String firstName)
+        {
+            this.firstName = firstName;
+        }
+        
+        public String getLastName()
+        {
+            return lastName;
+        }
+        
+        public void setLastName(String lastName)
+        {
+            this.lastName = lastName;
+        }
+    }
+    
+    public class UnknownRowCountDemoDataModel<E> extends ListDataModel<E>
+    {
+        public UnknownRowCountDemoDataModel()
+        {
+            super();
+        }
+
+        public UnknownRowCountDemoDataModel(List<E> list)
+        {
+            super(list);
+        }
+        
+        @Override
+        public int getRowCount()
+        {
+            return -1;
         }
     }
 }
