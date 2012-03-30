@@ -35,6 +35,7 @@ if (!window.jsf) {
     _ls("#{resource['org.apache.myfaces.core.impl.util:_Queue.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_ListenerQueue.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_Dom.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.util:_DomExperimental.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_DomQuirks.js']}", null, null, "UTF-8", false);
 
     _ls("#{resource['org.apache.myfaces.core.impl.util:_HtmlStripper.js']}", null, null, "UTF-8", false);
@@ -45,11 +46,11 @@ if (!window.jsf) {
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequestQueue.js']}", null, null, "UTF-8", false);
 
 
-    //_ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_BaseRequest.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore.engine:_XhrConst.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore.engine:FormData.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore.engine:Xhr1.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore.engine:IFrame.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/XhrConst.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/FormData.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/BaseRequest.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/Xhr1.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/IFrame.js']}", null, null, "UTF-8", false);
 
 
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequest.js']}", null, null, "UTF-8", false);
@@ -58,6 +59,7 @@ if (!window.jsf) {
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_IFrameRequest.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxResponse.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_Transports.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_ExtTransport.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.core:Impl.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.core:_EndImpl.js']}", null, null, "UTF-8", false);
 
