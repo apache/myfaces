@@ -226,6 +226,8 @@ public abstract class HtmlMessageRendererBase
                 (facesContext.getExternalContext()))
         {
             behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
+            // If there is a behavior registered, force wrapSpan
+            wrapSpan = wrapSpan || !behaviors.isEmpty();
         }
         
         if ( wrapSpan )
