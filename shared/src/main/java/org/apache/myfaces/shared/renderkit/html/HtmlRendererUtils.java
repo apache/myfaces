@@ -2150,15 +2150,22 @@ public final class HtmlRendererUtils
         boolean submitting1 = getClientBehaviorScript(facesContext,
                 uiComponent, targetClientId, eventName1, clientBehaviors,
                 behaviorCode, params);
+        ScriptContext behaviorCode2 = new ScriptContext();
         boolean submitting2 = getClientBehaviorScript(facesContext,
                 uiComponent, targetClientId, eventName2, clientBehaviors,
-                behaviorCode, params2);
+                behaviorCode2, params2);
+
         // ClientBehaviors for both events have to be checked for the Submitting hint
         boolean submitting = submitting1 || submitting2;
         if (behaviorCode != null
                 && !behaviorCode.toString().trim().equals(STR_EMPTY))
         {
             finalParams.add(behaviorCode.toString());
+        }
+        if (behaviorCode2 != null
+                && !behaviorCode2.toString().trim().equals(STR_EMPTY))
+        {
+            finalParams.add(behaviorCode2.toString());
         }
         if (serverEventCode != null
                 && !serverEventCode.trim().equals(STR_EMPTY))
