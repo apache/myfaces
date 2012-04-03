@@ -147,7 +147,7 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
-                  <artifactId>myfaces-core-project</artifactId>
+                  <artifactId>myfaces-core-module</artifactId>
                   <version>${project.version}</version>
                   <type>zip</type>
                   <classifier>source-release</classifier>
