@@ -55,7 +55,7 @@ if (_MF_SINGLTN) {
                 //for whatever reason autoeval is set here on Firefox 3.5 only
                 // could be a firebug problem, by setting setters
                 //and getters no assignment was revealed.
-                if('undefined' != typeof myfaces.config._autoeval) {
+                if('undefined' != typeof myfaces.config && 'undefined' != typeof myfaces.config._autoeval) {
                     delete myfaces.config._autoeval;
                 }
             }
