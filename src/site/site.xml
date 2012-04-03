@@ -32,59 +32,78 @@
     <bannerRight>
         <name>Apache Banner</name>
         <src>img/banners/apache_banner.png</src>
-        <href>http://myfaces.apache.org/</href>
+        <href>http://www.apache.org</href>
     </bannerRight>
     
     <publishDate format="dd MMM yyyy" />
     
     <skin>
-      <groupId>org.apache.myfaces.maven</groupId>
-      <artifactId>myfaces-site-skin</artifactId>
-      <version>1</version>
+        <groupId>org.apache.myfaces.maven</groupId>
+        <artifactId>myfaces-site-skin</artifactId>
+        <version>3</version>
     </skin>
     
     <body>
-    	<links>            
-            <item name="Apache"         href="http://www.apache.org/"/>            
-            <item name="Overview"       href="http://myfaces.apache.org/index.html"/>
-            <item name="News archive"   href="http://myfaces.apache.org/news-archive.html"/>
-            <item name="Download"       href="http://myfaces.apache.org/download.html" />
-            <item name="Mailing Lists"  href="http://myfaces.apache.org/mail-lists.html" />
+        <links>
+            <item name="FAQ"            href="https://cwiki.apache.org/confluence/display/MYFACES/FAQ"/>
+            <item name="Generated Doc"  href="./javadoc.html"/>
+            <item name="Quick Start"    href="https://cwiki.apache.org/confluence/display/MYFACES/Quick+Start"/>
+            <item name="User Guide"     href="https://cwiki.apache.org/confluence/display/MYFACES/MyFaces+Core+User+Guide"/>
+            <item name="Apache"         href="http://www.apache.org/"/>
+            <item name="MyFaces"        href="http://myfaces.apache.org/index.html"/>
         </links>
-    	
+
+        <menu name="Apache MyFaces" inherit="top">
+            <item name="Overview"       href="http://myfaces.apache.org/index.html"/>
+            <item name="Download"       href="http://myfaces.apache.org/download.html" />
+        </menu>
+
         <menu name="MyFaces Projects" inherit="top">
+            <item name="Core JSF-2.1"   href="../core21/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
+            <item name="Core JSF-2.0"   href="../core20/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
+            <item name="Core JSF-1.2"   href="../core12/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
             <item name="Core JSF-1.1"   href="http://myfaces.apache.org/core11/index.html" collapse="false">
               <item name="API"          href="http://myfaces.apache.org/core11/myfaces-api/index.html"/>
               <item name="Impl"         href="http://myfaces.apache.org/core11/myfaces-impl/index.html"/>
             </item>
-            <item name="Core JSF-1.2"   href="http://myfaces.apache.org/core12/index.html" collapse="true">
+        </menu>
+
+        <menu name="UI-Component Sets" inherit="top">
+            <item name="Trinidad"       href="../trinidad/index.html"/>
+            <item name="Tobago"         href="../tobago/index.html"/>
+            <item name="Tomahawk"       href="../tomahawk/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
-            <item name="Core JSF-2.0"   href="http://myfaces.apache.org/core20/index.html" collapse="true">
+        </menu>
+
+        <menu name="Add-ons and Extensions" inherit="top">
+            <item name="CODI"           href="../extensions/cdi/index.html"/>
+            <item name="Orchestra"      href="../orchestra/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
-            <item name="Trinidad"       href="http://myfaces.apache.org/trinidad/index.html"/>
-            <item name="Tobago"         href="http://myfaces.apache.org/tobago/index.html"/>
-            <item name="Tomahawk"       href="http://myfaces.apache.org/tomahawk/index.html" collapse="true">
+            <item name="ExtVal"         href="../extensions/validator/index.html"/>
+            <item name="Portlet Bridge" href="../portlet-bridge/index.html"/>
+            <item name="Test"           href="../test/index.html"/>
+            <item name="Commons"        href="../commons/index.html"/>
+            <item name="HTML5"          href="../html5/index.html"/>
+            <item name="Sandbox"        href="../sandbox/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
-            <item name="Sandbox"        href="http://myfaces.apache.org/sandbox/index.html" collapse="true">
-              <item name="dummy"        href="dummy"/>
-            </item>
-            <item name="Orchestra"      href="http://myfaces.apache.org/orchestra/index.html"/>
-            <item name="Portlet Bridge" href="http://myfaces.apache.org/portlet-bridge/index.html"/>
-            <item name="ExtVal"         href="http://myfaces.apache.org/extensions/validator/index.html"/>
-            <item name="Commons"        href="http://myfaces.apache.org/commons/index.html"/>
-            <item name="Test"           href="http://myfaces.apache.org/test/index.html"/>
-            <item name="Others"         href="http://myfaces.apache.org/otherProjects.html"/>
+            <item name="Others"         href="../otherProjects.html"/>
         </menu>
         
         <menu name="Documentation" inherit="top">
-            <item name="Getting Started" href="http://myfaces.apache.org/core11/gettingstarted.html"/>
-            <item name="MyFaces and RI"  href="http://myfaces.apache.org/core11/risamples.html"/>
-            <item name="Tomcat Config"   href="http://myfaces.apache.org/core11/tomcat.html"/>
-            <item name="Javadocs"        href="http://myfaces.apache.org/core11/javadoc.html"/>
-            <item name="FAQ"             href="http://myfaces.apache.org/core11/faq.html"/>
+            <item name="Quick Start"     href="https://cwiki.apache.org/confluence/display/MYFACES/Quick+Start"/>
+            <item name="Getting Started" href="https://cwiki.apache.org/confluence/display/MYFACES/Getting+Started"/>
+            <item name="MyFaces and Google App Engine"  href="http://myfaces.apache.org/core20/googleappenginesupport.html"/>
+            <item name="Generated Javadoc, Tlddoc and Others"        href="./javadoc.html"/>
+            <item name="FAQ"             href="https://cwiki.apache.org/confluence/display/MYFACES/FAQ"/>
         </menu>
 
         <menu ref="reports" inherit="top"/>
