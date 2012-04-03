@@ -189,104 +189,100 @@ class _SharedRendererUtils
                     SelectItemsIterator iterator = new SelectItemsIterator(component, facesContext);
                     converter = getSelectItemsValueConverter(iterator, facesContext);
                 }
-                
-                if (Collection.class.isAssignableFrom(modelType))
+
+                Object collectionTypeAttr = component.getAttributes().get(
+                        COLLECTION_TYPE_KEY);
+                if (collectionTypeAttr != null)
                 {
-                    // the target should be a Collection
-                    Object collectionTypeAttr = component.getAttributes().get(
-                            COLLECTION_TYPE_KEY);
-                    if (collectionTypeAttr != null)
+                    Class<?> collectionType = getClassFromAttribute(facesContext, collectionTypeAttr);
+                    if (collectionType == null)
                     {
-                        Class<?> collectionType = getClassFromAttribute(facesContext, collectionTypeAttr);
-                        if (collectionType == null)
-                        {
-                            throw new FacesException(
-                                    "The attribute "
-                                            + COLLECTION_TYPE_KEY
-                                            + " of component "
-                                            + component.getClientId(facesContext)
-                                            + " does not evaluate to a "
-                                            + "String, a Class object or a ValueExpression pointing "
-                                            + "to a String or a Class object.");
-                        }
-                        // now we have a collectionType --> but is it really some kind of Collection
-                        if (!Collection.class.isAssignableFrom(collectionType))
-                        {
-                            throw new FacesException("The attribute "
-                                    + COLLECTION_TYPE_KEY + " of component "
-                                    + component.getClientId(facesContext)
-                                    + " does not point to a valid type of Collection.");
-                        }
-                        // now we have a real collectionType --> try to instantiate it
+                        throw new FacesException(
+                                "The attribute "
+                                        + COLLECTION_TYPE_KEY
+                                        + " of component "
+                                        + component.getClientId(facesContext)
+                                        + " does not evaluate to a "
+                                        + "String, a Class object or a ValueExpression pointing "
+                                        + "to a String or a Class object.");
+                    }
+                    // now we have a collectionType --> but is it really some kind of Collection
+                    if (!Collection.class.isAssignableFrom(collectionType))
+                    {
+                        throw new FacesException("The attribute "
+                                + COLLECTION_TYPE_KEY + " of component "
+                                + component.getClientId(facesContext)
+                                + " does not point to a valid type of Collection.");
+                    }
+                    // now we have a real collectionType --> try to instantiate it
+                    try
+                    {
+                        targetForConvertedValues = collectionType.newInstance();
+                    }
+                    catch (Exception e)
+                    {
+                        throw new FacesException("The Collection "
+                                + collectionType.getName()
+                                + "can not be instantiated.", e);
+                    }
+                }
+                else if (Collection.class.isAssignableFrom(modelType))
+                {
+                    // component.getValue() will implement Collection at this point
+                    Collection<?> componentValue = (Collection<?>) component
+                            .getValue();
+                    // can we clone the Collection
+                    if (componentValue instanceof Cloneable)
+                    {
+                        // clone method of Object is protected --> use reflection
                         try
                         {
-                            targetForConvertedValues = collectionType.newInstance();
+                            Method cloneMethod = componentValue.getClass()
+                                    .getMethod("clone");
+                            Collection<?> clone = (Collection<?>) cloneMethod
+                                    .invoke(componentValue);
+                            clone.clear();
+                            targetForConvertedValues = clone;
                         }
                         catch (Exception e)
                         {
-                            throw new FacesException("The Collection "
-                                    + collectionType.getName()
-                                    + "can not be instantiated.", e);
+                            log(facesContext, "Could not clone "
+                                    + componentValue.getClass().getName(), e);
                         }
                     }
-                    else
+
+                    // if clone did not work
+                    if (targetForConvertedValues == null)
                     {
-                        // component.getValue() will implement Collection at this point
-                        Collection<?> componentValue = (Collection<?>) component
-                                .getValue();
-                        // can we clone the Collection
-                        if (componentValue instanceof Cloneable)
+                        // try to create the (concrete) collection from modelType 
+                        // or with the class object of componentValue (if any)
+                        try
                         {
-                            // clone method of Object is protected --> use reflection
-                            try
-                            {
-                                Method cloneMethod = componentValue.getClass()
-                                        .getMethod("clone");
-                                Collection<?> clone = (Collection<?>) cloneMethod
-                                        .invoke(componentValue);
-                                clone.clear();
-                                targetForConvertedValues = clone;
-                            }
-                            catch (Exception e)
-                            {
-                                log(facesContext, "Could not clone "
-                                        + componentValue.getClass().getName(), e);
-                            }
+                            targetForConvertedValues = (componentValue != null 
+                                    ? componentValue.getClass()
+                                    : modelType).newInstance();
                         }
-    
-                        // if clone did not work
-                        if (targetForConvertedValues == null)
+                        catch (Exception e)
                         {
-                            // try to create the (concrete) collection from modelType 
-                            // or with the class object of componentValue (if any)
-                            try
+                            // this did not work either
+                            // use the standard concrete type
+                            if (SortedSet.class.isAssignableFrom(modelType))
                             {
-                                targetForConvertedValues = (componentValue != null 
-                                        ? componentValue.getClass()
-                                        : modelType).newInstance();
+                                targetForConvertedValues = new TreeSet();
                             }
-                            catch (Exception e)
+                            else if (Queue.class.isAssignableFrom(modelType))
                             {
-                                // this did not work either
-                                // use the standard concrete type
-                                if (SortedSet.class.isAssignableFrom(modelType))
-                                {
-                                    targetForConvertedValues = new TreeSet();
-                                }
-                                else if (Queue.class.isAssignableFrom(modelType))
-                                {
-                                    targetForConvertedValues = new LinkedList();
-                                }
-                                else if (Set.class.isAssignableFrom(modelType))
-                                {
-                                    targetForConvertedValues = new HashSet(
-                                            submittedValue.length);
-                                }
-                                else
-                                {
-                                    targetForConvertedValues = new ArrayList(
-                                            submittedValue.length);
-                                }
+                                targetForConvertedValues = new LinkedList();
+                            }
+                            else if (Set.class.isAssignableFrom(modelType))
+                            {
+                                targetForConvertedValues = new HashSet(
+                                        submittedValue.length);
+                            }
+                            else
+                            {
+                                targetForConvertedValues = new ArrayList(
+                                        submittedValue.length);
                             }
                         }
                     }
