@@ -28,13 +28,13 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>1.1.10-SNAPSHOT</version>
+    <version>1.1.10</version>
   </parent>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x/assembly</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x/assembly</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/branches/1.1.x/assembly</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-project-1.1.10/assembly</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-project-1.1.10/assembly</developerConnection>
+    <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-project-1.1.10/assembly</url>
   </scm>
 
   <build>
