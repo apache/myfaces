@@ -32,7 +32,7 @@ import javax.servlet.jsp.tagext.BodyContent;
  * simply as literal text to be copied to the response.
  * <p>
  * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
+ * or EL expressions.</p>
  * 
  * @JSFJspTag
  *   name="f:verbatim"

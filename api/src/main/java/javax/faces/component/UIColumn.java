@@ -25,10 +25,10 @@ package javax.faces.component;
  * It can be decorated with "header" and "footer" facets to drive
  * the output of header and footer rows. Row values are specified
  * via its children.
- * <p>
+ * </p><p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * <p>
+ * </p>
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent

@@ -28,9 +28,9 @@ import javax.faces.el.ValueBinding;
  * A UIComponent is created to represent this name-value pair, and stored as
  * a child of the parent component; what effect this has depends upon the
  * renderer of that parent component.
- * <p>
+ * </p><p>
  * Unless otherwise specified, all attributes accept static values or EL expressions.
- * <p>
+ * </p>
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent

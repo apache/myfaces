@@ -42,7 +42,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * the object's processValueChange method is invoked.
  * <p>
  * Unless otherwise specified, all attributes accept static values
- * or EL expressions.
+ * or EL expressions.</p>
  * 
  * @JSFJspTag
  *   name="f:valueChangeListener"

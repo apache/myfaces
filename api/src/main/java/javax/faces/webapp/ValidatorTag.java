@@ -38,13 +38,13 @@ import javax.servlet.jsp.tagext.TagSupport;
  * <p>
  * Commonly associated with an h:inputText entity, but may be applied to
  * any input component.
- * <p>
+ * </p><p>
  * Some validators may allow the component to use attributes to define
  * component-specific validation constraints; see the f:attribute tag.
  * See also the "validator" attribute of all input components, which
  * allows a component to specify an arbitrary validation <i>method</i>
  * (rather than a registered validation type, as this tag does).
- * <p>
+ * </p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
  * 

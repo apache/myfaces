@@ -31,7 +31,7 @@ import javax.faces.context.FacesContext;
  * <p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions. 
- * <p>
+ * </p>
  * Extend standard UIData component to add support for html-specific features
  * such as CSS style attributes and event handler scripts.
  * <p>

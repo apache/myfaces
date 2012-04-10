@@ -27,10 +27,10 @@ import javax.faces.component.UISelectBoolean;
  * Renders as an HTML input tag with its type set to "checkbox", and
  * its name attribute set to the id. The "checked" attribute is rendered
  * if the value of this component is true.
- * <p>
+ * </p><p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * <p>
+ * </p>
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent

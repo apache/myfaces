@@ -24,18 +24,18 @@ import javax.faces.component.UIMessages;
  * Renders all or some FacesMessages depending on the "for" and
  * "globalOnly" attributes.
  * <p>
- * The behaviour of this component is:
+ * The behaviour of this component is:</p>
  * <ul>
  * <li>If globalOnly = true, only global messages, that have no associated
- * clientId, will be displayed.
+ * clientId, will be displayed.</li>
  * <li>else if there is a "for" attribute, only messages that are
  * assigned to the component referenced by the "for" attribute
- * are displayed.
- * <li>else all messages are displayed.
+ * are displayed.</li>
+ * <li>else all messages are displayed.</li>
  * </ul>
- * Unless otherwise specified, all attributes accept static values
+ * <p>Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * <p>
+ * </p>
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent

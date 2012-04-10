@@ -22,7 +22,7 @@ import javax.faces.component.UIInput;
 
 /**
  * Renders a HTML input element.
- * <p>
+ * 
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent

@@ -27,11 +27,11 @@ import javax.faces.component.UISelectMany;
  * <p>
  * The set of available options is defined by adding child
  * f:selectItem or f:selectItems components to this component.
- * <p>
+ * </p><p>
  * Renders as an HTML select element, with the choices made up of 
  * child f:selectItem or f:selectItems elements. The multiple
  * attribute is set and the size attribute is set to 1.
- * <p>
+ * </p><p>
  * The value attribute must be a value-binding expression to a
  * property of type List, Object array or primitive array. That
  * "collection" is expected to contain objects of the same type as
@@ -40,10 +40,10 @@ import javax.faces.component.UISelectMany;
  * selected initially. During the update phase, the property is set
  * to contain a "collection" of values for those child SelectItem
  * objects that are currently selected.
- * <p>
+ * </p><p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * <p>
+ * </p>
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent

@@ -27,18 +27,18 @@ import javax.faces.component.UISelectOne;
  * choices, of which only one can be chosen at a time. The available
  * choices are defined via child f:selectItem or f:selectItems
  * elements.
- * <p>
+ * </p><p>
  * The value attribute of this component is read to determine
  * which of the available options is initially selected; its value
  * should match the "value" property of one of the child SelectItem
  * objects.
- * <p>
+ * </p><p>
  * On submit of the enclosing form, the value attribute's bound property
  * is updated to contain the "value" property from the chosen SelectItem.
- * <p>
+ * </p><p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
- * <p> 
+ * </p> 
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent

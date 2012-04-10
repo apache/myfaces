@@ -43,7 +43,7 @@ import java.util.Locale;
 /**
  * Handle the f:view tag.
  * <p>
- * This class works tightly with JspViewHandlerImpl; see that class for more information.
+ * This class works tightly with JspViewHandlerImpl; see that class for more information.</p>
  *  
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$

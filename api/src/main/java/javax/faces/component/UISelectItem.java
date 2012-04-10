@@ -27,11 +27,11 @@ import javax.faces.el.ValueBinding;
  * The option attributes can either be defined directly on this component
  * (via the itemValue, itemLabel, itemDescription properties) or the value
  * property can reference a SelectItem object (directly or via an EL expression).
- * <p>
+ * </p><p>
  * The value expression (if defined) is read-only; the parent select component
  * will have a value attribute specifying where the value for the chosen
  * selection will be stored.
- * <p>
+ * </p>
  * See Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a>
  *
  * @JSFComponent

@@ -37,15 +37,15 @@ import javax.servlet.jsp.tagext.TagSupport;
  * make any use of these but other objects such as custom renderers,
  * validators or action listeners can later retrieve the attribute
  * from the component by name.
- * <p>
+ * </p><p>
  * When the value is an EL expression, this tag has the same effect
  * as calling component.setValueBinding. A call to method
  * component.getAttributes().get(name) will then cause that
  * expression to be evaluated and the result of the expression is
  * returned, not the original EL expression string.
- * <p>
+ * </p><p>
  * See the javadoc for UIComponent.getAttributes for more details.
- * <p>
+ * </p>
  * Unless otherwise specified, all attributes accept static values
  * or EL expressions.
  * 
