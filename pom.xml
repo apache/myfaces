@@ -59,7 +59,16 @@
     </properties>
 
     <build>
-        
+
+        <!-- Since Maven 3.0, this is required to add scpexe as protocol for deploy. -->
+        <extensions>
+          <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh-external</artifactId>
+            <version>1.0-beta-7</version>
+          </extension>
+        </extensions>
+
         <plugins>
 
             <!-- JDK 1.5 -->
