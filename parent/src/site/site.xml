@@ -45,20 +45,16 @@
     
     <body>
         <links>
-            <item name="FAQ"            href="https://cwiki.apache.org/confluence/display/MYFACES/FAQ"/>
-            <item name="Generated Doc"  href="./javadoc.html"/>
-            <item name="Quick Start"    href="https://cwiki.apache.org/confluence/display/MYFACES/Quick+Start"/>
-            <item name="User Guide"     href="https://cwiki.apache.org/confluence/display/MYFACES/MyFaces+Core+User+Guide"/>
             <item name="Apache"         href="http://www.apache.org/"/>
             <item name="MyFaces"        href="http://myfaces.apache.org/index.html"/>
+            <item name="Quick Start"    href="https://cwiki.apache.org/confluence/display/MYFACES/Quick+Start"/>
+            <item name="User Guide"     href="https://cwiki.apache.org/confluence/display/MYFACES/MyFaces+Core+User+Guide"/>
+            <item name="FAQ"            href="https://cwiki.apache.org/confluence/display/MYFACES/FAQ"/>
+            <item name="Generated Doc"  href="./javadoc.html"/>
+            <item name="Download"       href="http://myfaces.apache.org/download.html" />
         </links>
 
-        <menu name="Apache MyFaces" inherit="top">
-            <item name="Overview"       href="http://myfaces.apache.org/index.html"/>
-            <item name="Download"       href="http://myfaces.apache.org/download.html" />
-        </menu>
-
-        <menu name="MyFaces Projects" inherit="top">
+        <menu name="JSF Implementations" inherit="top">
             <item name="Core JSF-2.1"   href="./index.html" collapse="false">
               <item name="API"          href="http://myfaces.apache.org/core21/myfaces-api/index.html"/>
               <item name="Impl"         href="http://myfaces.apache.org/core21/myfaces-impl/index.html"/>
@@ -93,7 +89,7 @@
             <item name="Portlet Bridge" href="../portlet-bridge/index.html"/>
             <item name="Test"           href="../test/index.html"/>
             <item name="Commons"        href="../commons/index.html"/>
-            <item name="HTML5"          href="../html5/index.html"/>
+            <item name="Ext-Scripting"  href="../extensions/scripting/index.html"/>
             <item name="Sandbox"        href="../sandbox/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>
@@ -114,6 +110,8 @@
             <item name="ASF"            href="http://www.apache.org/" />
             <item name="Sponsorship"    href="http://www.apache.org/foundation/sponsorship.html" />
             <item name="Thanks"         href="http://www.apache.org/foundation/thanks.html" />
+            <item name="Security"       href="http://www.apache.org/security/" />
+            <item name="License"        href="http://www.apache.org/licenses/" />
         </menu>
     </body>
 </project>
