@@ -49,10 +49,11 @@ import javax.faces.model.SelectItemGroup;
  */
 class _SharedRendererUtils
 {
-    
     static final String COLLECTION_TYPE_KEY = "collectionType";
-    
-    static Converter findUIOutputConverter(FacesContext facesContext, UIOutput component)
+    static final String VALUE_TYPE_KEY = "valueType";
+
+    static Converter findUIOutputConverter(FacesContext facesContext,
+            UIOutput component)
     {
         // Attention!
         // This code is duplicated in jsfapi component package.
@@ -64,7 +65,7 @@ class _SharedRendererUtils
             return converter;
         }
 
-        // Try to find out by value expression
+        //Try to find out by value expression
         ValueExpression expression = component.getValueExpression("value");
         if (expression == null)
         {
@@ -79,7 +80,7 @@ class _SharedRendererUtils
 
         if (Object.class.equals(valueType))
         {
-            return null; // There is no converter for Object class
+            return null; //There is no converter for Object class
         }
 
         try
@@ -88,13 +89,33 @@ class _SharedRendererUtils
         }
         catch (FacesException e)
         {
-            log(facesContext, "No Converter for type " + valueType.getName() + " found", e);
+            log(facesContext, "No Converter for type " + valueType.getName()
+                    + " found", e);
             return null;
         }
     }
 
     static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,
-                                                String[] submittedValue) throws ConverterException
+            String[] submittedValue) throws ConverterException
+    {
+        return  getConvertedUISelectManyValue(facesContext, component,
+            submittedValue, false);
+    }
+
+    /**
+     * Gets the converted value of a UISelectMany component.
+     * If the considerValueType is true, this method will also consider the
+     * valueType attribute of Tomahawk UISelectMany components.
+     * 
+     * @param facesContext
+     * @param component
+     * @param submittedValue
+     * @param considerValueType
+     * @return
+     * @throws ConverterException
+     */
+    static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,  
+            String[] submittedValue, boolean considerValueType) throws ConverterException
     {
         // Attention!
         // This code is duplicated in shared renderkit package (except for considerValueType).
@@ -110,8 +131,12 @@ class _SharedRendererUtils
         
         // if the component has an attached converter, use it
         Converter converter = component.getConverter();
-        
         // at this point the valueType attribute is handled in shared.
+        if (converter == null && considerValueType)
+        {
+            // try to get a converter from the valueType attribute
+            converter = getValueTypeConverter(facesContext, component);
+        }
         
         if (expression != null)
         {
@@ -166,104 +191,100 @@ class _SharedRendererUtils
                     _SelectItemsIterator iterator = new _SelectItemsIterator(component, facesContext);
                     converter = getSelectItemsValueConverter(iterator, facesContext);
                 }
-                
-                if (Collection.class.isAssignableFrom(modelType))
+
+                Object collectionTypeAttr = component.getAttributes().get(
+                        COLLECTION_TYPE_KEY);
+                if (collectionTypeAttr != null)
                 {
-                    // the target should be a Collection
-                    Object collectionTypeAttr = component.getAttributes().get(
-                            COLLECTION_TYPE_KEY);
-                    if (collectionTypeAttr != null)
+                    Class<?> collectionType = getClassFromAttribute(facesContext, collectionTypeAttr);
+                    if (collectionType == null)
                     {
-                        Class<?> collectionType = getClassFromAttribute(facesContext, collectionTypeAttr);
-                        if (collectionType == null)
-                        {
-                            throw new FacesException(
-                                    "The attribute "
-                                            + COLLECTION_TYPE_KEY
-                                            + " of component "
-                                            + component.getClientId(facesContext)
-                                            + " does not evaluate to a "
-                                            + "String, a Class object or a ValueExpression pointing "
-                                            + "to a String or a Class object.");
-                        }
-                        // now we have a collectionType --> but is it really some kind of Collection
-                        if (!Collection.class.isAssignableFrom(collectionType))
-                        {
-                            throw new FacesException("The attribute "
-                                    + COLLECTION_TYPE_KEY + " of component "
-                                    + component.getClientId(facesContext)
-                                    + " does not point to a valid type of Collection.");
-                        }
-                        // now we have a real collectionType --> try to instantiate it
+                        throw new FacesException(
+                                "The attribute "
+                                        + COLLECTION_TYPE_KEY
+                                        + " of component "
+                                        + component.getClientId(facesContext)
+                                        + " does not evaluate to a "
+                                        + "String, a Class object or a ValueExpression pointing "
+                                        + "to a String or a Class object.");
+                    }
+                    // now we have a collectionType --> but is it really some kind of Collection
+                    if (!Collection.class.isAssignableFrom(collectionType))
+                    {
+                        throw new FacesException("The attribute "
+                                + COLLECTION_TYPE_KEY + " of component "
+                                + component.getClientId(facesContext)
+                                + " does not point to a valid type of Collection.");
+                    }
+                    // now we have a real collectionType --> try to instantiate it
+                    try
+                    {
+                        targetForConvertedValues = collectionType.newInstance();
+                    }
+                    catch (Exception e)
+                    {
+                        throw new FacesException("The Collection "
+                                + collectionType.getName()
+                                + "can not be instantiated.", e);
+                    }
+                }
+                else if (Collection.class.isAssignableFrom(modelType))
+                {
+                    // component.getValue() will implement Collection at this point
+                    Collection<?> componentValue = (Collection<?>) component
+                            .getValue();
+                    // can we clone the Collection
+                    if (componentValue instanceof Cloneable)
+                    {
+                        // clone method of Object is protected --> use reflection
                         try
                         {
-                            targetForConvertedValues = collectionType.newInstance();
+                            Method cloneMethod = componentValue.getClass()
+                                    .getMethod("clone");
+                            Collection<?> clone = (Collection<?>) cloneMethod
+                                    .invoke(componentValue);
+                            clone.clear();
+                            targetForConvertedValues = clone;
                         }
                         catch (Exception e)
                         {
-                            throw new FacesException("The Collection "
-                                    + collectionType.getName()
-                                    + "can not be instantiated.", e);
+                            log(facesContext, "Could not clone "
+                                    + componentValue.getClass().getName(), e);
                         }
                     }
-                    else
+
+                    // if clone did not work
+                    if (targetForConvertedValues == null)
                     {
-                        // component.getValue() will implement Collection at this point
-                        Collection<?> componentValue = (Collection<?>) component
-                                .getValue();
-                        // can we clone the Collection
-                        if (componentValue instanceof Cloneable)
+                        // try to create the (concrete) collection from modelType 
+                        // or with the class object of componentValue (if any)
+                        try
                         {
-                            // clone method of Object is protected --> use reflection
-                            try
-                            {
-                                Method cloneMethod = componentValue.getClass()
-                                        .getMethod("clone");
-                                Collection<?> clone = (Collection<?>) cloneMethod
-                                        .invoke(componentValue);
-                                clone.clear();
-                                targetForConvertedValues = clone;
-                            }
-                            catch (Exception e)
-                            {
-                                log(facesContext, "Could not clone "
-                                        + componentValue.getClass().getName(), e);
-                            }
+                            targetForConvertedValues = (componentValue != null 
+                                    ? componentValue.getClass()
+                                    : modelType).newInstance();
                         }
-    
-                        // if clone did not work
-                        if (targetForConvertedValues == null)
+                        catch (Exception e)
                         {
-                            // try to create the (concrete) collection from modelType 
-                            // or with the class object of componentValue (if any)
-                            try
+                            // this did not work either
+                            // use the standard concrete type
+                            if (SortedSet.class.isAssignableFrom(modelType))
                             {
-                                targetForConvertedValues = (componentValue != null ? componentValue
-                                        .getClass()
-                                        : modelType).newInstance();
+                                targetForConvertedValues = new TreeSet();
                             }
-                            catch (Exception e)
+                            else if (Queue.class.isAssignableFrom(modelType))
                             {
-                                // this did not work either
-                                // use the standard concrete type
-                                if (SortedSet.class.isAssignableFrom(modelType))
-                                {
-                                    targetForConvertedValues = new TreeSet();
-                                }
-                                else if (Queue.class.isAssignableFrom(modelType))
-                                {
-                                    targetForConvertedValues = new LinkedList();
-                                }
-                                else if (Set.class.isAssignableFrom(modelType))
-                                {
-                                    targetForConvertedValues = new HashSet(
-                                            submittedValue.length);
-                                }
-                                else
-                                {
-                                    targetForConvertedValues = new ArrayList(
-                                            submittedValue.length);
-                                }
+                                targetForConvertedValues = new LinkedList();
+                            }
+                            else if (Set.class.isAssignableFrom(modelType))
+                            {
+                                targetForConvertedValues = new HashSet(
+                                        submittedValue.length);
+                            }
+                            else
+                            {
+                                targetForConvertedValues = new ArrayList(
+                                        submittedValue.length);
                             }
                         }
                     }
@@ -378,6 +399,50 @@ class _SharedRendererUtils
     }
     
     /**
+     * Uses the valueType attribute of the given UISelectMany component to
+     * get a by-type converter.
+     * 
+     * @param facesContext
+     * @param component
+     * @return
+     */
+    static Converter getValueTypeConverter(FacesContext facesContext, UISelectMany component)
+    {
+        Converter converter = null;
+        
+        Object valueTypeAttr = component.getAttributes().get(VALUE_TYPE_KEY);
+        if (valueTypeAttr != null)
+        {
+            // treat the valueType attribute exactly like the collectionType attribute
+            Class<?> valueType = getClassFromAttribute(facesContext, valueTypeAttr);
+            if (valueType == null)
+            {
+                throw new FacesException(
+                        "The attribute "
+                                + VALUE_TYPE_KEY
+                                + " of component "
+                                + component.getClientId(facesContext)
+                                + " does not evaluate to a "
+                                + "String, a Class object or a ValueExpression pointing "
+                                + "to a String or a Class object.");
+            }
+            // now we have a valid valueType
+            // --> try to get a registered-by-class converter
+            converter = facesContext.getApplication().createConverter(valueType);
+            
+            if (converter == null)
+            {
+                facesContext.getExternalContext().log("Found attribute valueType on component " +
+                        _ComponentUtils.getPathToComponent(component) +
+                        ", but could not get a by-type converter for type " + 
+                        valueType.getName());
+            }
+        }
+        
+        return converter;
+    }
+    
+    /**
      * Iterates through the SelectItems with the given Iterator and tries to obtain
      * a by-class-converter based on the Class of SelectItem.getValue().
      * @param iterator
@@ -396,14 +461,14 @@ class _SharedRendererUtils
             SelectItem item = iterator.next();
             if (item instanceof SelectItemGroup)
             {
-                Iterator<SelectItem> groupIterator
-                        = Arrays.asList(((SelectItemGroup) item).getSelectItems()).iterator();
+                Iterator<SelectItem> groupIterator = Arrays.asList(
+                        ((SelectItemGroup) item).getSelectItems()).iterator();
                 converter = getSelectItemsValueConverter(groupIterator, facesContext);
             }
             else
             {
                 Class<?> selectItemsType = item.getValue().getClass();
-
+                
                 // optimization: no conversion for String values
                 if (String.class.equals(selectItemsType))
                 {

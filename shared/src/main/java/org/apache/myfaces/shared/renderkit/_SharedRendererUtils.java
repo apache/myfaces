@@ -78,7 +78,7 @@ class _SharedRendererUtils
             return null;
         }
 
-        Class valueType = expression.getType(facesContext.getELContext());
+        Class<?> valueType = expression.getType(facesContext.getELContext());
         if (valueType == null)
         {
             return null;
@@ -99,6 +99,13 @@ class _SharedRendererUtils
                     + " found", e);
             return null;
         }
+    }
+
+    static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,
+            String[] submittedValue) throws ConverterException
+    {
+        return  getConvertedUISelectManyValue(facesContext, component,
+            submittedValue, false);
     }
 
     /**
