@@ -724,7 +724,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 // move off it, so save the (partial) state of the components
                 // representing the current row. Later if this row is revisited
                 // then we can restore this state.
-                Collection<Object[]> savedRowState = saveDescendantComponentStates(this, false, false);
+                Collection<Object[]> savedRowState = saveDescendantComponentStates(this, true, true);
                 if (savedRowState != null)
                 {
                     _rowStates.put(getContainerClientId(facesContext), savedRowState);
