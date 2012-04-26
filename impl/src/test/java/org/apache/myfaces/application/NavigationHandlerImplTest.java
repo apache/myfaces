@@ -598,7 +598,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         underTest.handleNavigation(facesContext, null, "viewExpired");
 
         assertNotNull(facesContext.getViewRoot());
-        assertEquals("viewExpired", facesContext.getViewRoot().getViewId());
+        assertEquals("/viewExpired", facesContext.getViewRoot().getViewId());
         
     }
     
