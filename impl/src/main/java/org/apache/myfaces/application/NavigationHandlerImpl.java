@@ -139,6 +139,7 @@ public class NavigationHandlerImpl
                 String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
                 if ( partialViewContext.isPartialRequest() && 
                      !partialViewContext.isRenderAll() && 
+                     toViewId != null &&
                      !toViewId.equals(viewId))
                 {
                     partialViewContext.setRenderAll(true);
@@ -169,6 +170,7 @@ public class NavigationHandlerImpl
                 String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
                 if ( partialViewContext.isPartialRequest() && 
                      !partialViewContext.isRenderAll() && 
+                     newViewId != null &&
                      !newViewId.equals(viewId))
                 {
                     partialViewContext.setRenderAll(true);
@@ -383,9 +385,13 @@ public class NavigationHandlerImpl
         {
             startWithSlash = (viewIdToTest.charAt(0) == '/');
         } 
-        if (!startWithSlash && viewId != null)
+        if (!startWithSlash) 
         {
-            index = viewId.lastIndexOf ("/");
+            index = -1;
+            if( viewId != null )
+            {
+               index = viewId.lastIndexOf ("/");
+            }
             
             if (index == -1)
             {
