@@ -325,7 +325,18 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             was /faces/faces/faces/view.xhtml the result would be simply view.xhtml.
          */
         String uri = viewId;
-        prefix = prefix + '/';  //need to make sure its really /faces/* and not /facesPage.xhtml
+        if ( "".equals(prefix) )
+        {
+            // if prefix is an empty string, we let it be "//"
+            // in order to prevent an infinite loop in uri.startsWith(-emptyString-).
+            // Furthermore a prefix of "//" is just another double slash prevention.
+            prefix = "//";
+        }
+        else
+        {
+            //need to make sure its really /faces/* and not /facesPage.xhtml
+            prefix = prefix + '/';  
+        }
         while (uri.startsWith(prefix) || uri.startsWith("//")) 
         {
             if(uri.startsWith(prefix))
