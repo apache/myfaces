@@ -28,7 +28,7 @@
  */
 
 //html5 ecmascript 3 compliant browser, no quirks mode needed
-if(!Array.prototype.indexOf  && _MF_SINGLTN) {
+if(!Array.prototype.forEach  && _MF_SINGLTN) {
 /**
  * @memberOf myfaces._impl
  * @namespace
