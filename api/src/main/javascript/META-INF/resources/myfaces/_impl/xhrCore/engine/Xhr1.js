@@ -135,6 +135,7 @@ _MF_CLS(_PFX_XHR + "engine.Xhr1", myfaces._impl.xhrCore.engine.BaseRequest, /** 
                         this.onerror(myevt);
                     }
                 } finally {
+					//remove for xhr level2 support
                     this.onloadend(myevt);
                 }
         }
@@ -154,17 +155,22 @@ _MF_CLS(_PFX_XHR + "engine.Xhr1", myfaces._impl.xhrCore.engine.BaseRequest, /** 
     },
 
     _startTimeout: function() {
+        if (this.timeout == 0) return;
 
         var xhr = this._xhrObject;
         //some browsers have timeouts in their xhr level 1.x objects implemented
         //we leverage them whenever they exist
-        if ('undefined' != typeof xhr.timeout) {
-            xhr.timeout = this.timeout;
-            xhr.ontimeout = this.ontimeout;
-            return;
+        try {
+            if ('undefined' != typeof xhr.timeout) {
+                xhr.timeout = this.timeout;
+                xhr.ontimeout = this.ontimeout;
+                return;
+            }
+        } catch (e) {
+            //firefox 12 has a bug here
         }
 
-        if (this.timeout == 0) return;
+
         this._timeoutTimer = setTimeout(this._Lang.hitch(this, function() {
             if (xhr.readyState != this._XHRConst.READY_STATE_DONE) {
 
