@@ -114,6 +114,7 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
     send : function() {
 
         var _Lang = this._Lang;
+        var _RT = this._RT;
 
         try {
 
@@ -152,6 +153,11 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             xhr.setRequestHeader(this._CONTENT_TYPE, contentType);
             xhr.setRequestHeader(this._HEAD_FACES_REQ, this._VAL_AJAX);
 
+            //some webkit based mobile browsers do not follow the w3c spec of
+            // setting the accept headers automatically
+            if(this._RT.browser.isWebKit) {
+                xhr.setRequestHeader("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            }
             this._sendEvent("BEGIN");
             //Check if it is a custom form data object
             //if yes we use makefinal for the final handling
