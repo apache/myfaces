@@ -225,8 +225,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         var _Lang = this._Lang, _Dom = this._Dom;
         elem = _Dom.byIdOrName(elem);
+        //elem not found for whatever reason
+        //https://issues.apache.org/jira/browse/MYFACES-3544
+        if(!elem) return;
 
         var replacedForms = _Dom.findByTagName(elem, "form", false);
+
         var applyVST = _Lang.hitch(this, function(elem) {
             this._setVSTForm(context, elem);
         });
