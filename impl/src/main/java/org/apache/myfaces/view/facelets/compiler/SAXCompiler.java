@@ -24,6 +24,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedActionException;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -768,9 +771,40 @@ public final class SAXCompiler extends Compiler
             is = new BufferedInputStream(src.openStream(), 1024);
             mngr = new CompilationManager(alias, this, getFaceletsProcessingInstructions(src, alias));
             encoding = getXmlDecl(is, mngr);
-            ViewMetadataHandler handler = new ViewMetadataHandler(mngr, alias);
-            SAXParser parser = this.createSAXParser(handler);
-            parser.parse(is, handler);
+            final ViewMetadataHandler handler = new ViewMetadataHandler(mngr, alias);
+            final SAXParser parser = this.createSAXParser(handler);
+            
+            if (System.getSecurityManager() != null)
+            {
+                try
+                {
+                    final InputStream finalInputStream = is;
+                    AccessController.doPrivileged(new PrivilegedExceptionAction() 
+                    {
+                        public Object run() throws SAXException, IOException 
+                        {
+                            parser.parse(finalInputStream, handler);
+                            return null; 
+                        }
+                    });
+                }
+                catch (PrivilegedActionException pae)
+                {
+                    Exception e = pae.getException();
+                    if(e instanceof SAXException)
+                    {
+                        throw new FaceletException("Error Parsing " + alias + ": " + e.getMessage(), e.getCause());
+                    } 
+                    else if(e instanceof IOException)
+                    {
+                        throw (IOException)e;
+                    }
+                }
+            }
+            else
+            {
+                parser.parse(is, handler);
+            }
         }
         catch (SAXException e)
         {
