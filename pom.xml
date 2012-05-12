@@ -35,7 +35,7 @@
     </description>
     <version>2.1.8-SNAPSHOT</version>
     <url>http://myfaces.apache.org/core21</url>
-    
+
     <issueManagement>
         <system>jira</system>
         <url>https://issues.apache.org/jira/browse/MYFACES</url>
