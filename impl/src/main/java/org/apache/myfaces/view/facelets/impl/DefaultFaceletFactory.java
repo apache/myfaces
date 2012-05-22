@@ -238,17 +238,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
             try
             {
                 URLConnection conn = facelet.getSource().openConnection();
-                InputStream is = conn.getInputStream();
-                try
-                {
-                    long lastModified = conn.getLastModified();
+                long lastModified = ResourceLoaderUtils.getResourceLastModified(conn);
 
-                    return lastModified == 0 || lastModified > target;
-                }
-                finally
-                {
-                    is.close();
-                }
+                return lastModified == 0 || lastModified > target;
             }
             catch (IOException e)
             {
