@@ -292,106 +292,95 @@ public final class RendererUtils
     public static String getStringValue(FacesContext facesContext,
             UIComponent component)
     {
-        try
+        if (!(component instanceof ValueHolder))
         {
-            if (!(component instanceof ValueHolder))
+            throw new IllegalArgumentException("Component : "
+                    + getPathToComponent(component)
+                    + "is not a ValueHolder");
+        }
+
+        if (component instanceof EditableValueHolder)
+        {
+            Object submittedValue = ((EditableValueHolder) component)
+                    .getSubmittedValue();
+            if (submittedValue != null)
             {
-                throw new IllegalArgumentException("Component : "
-                        + getPathToComponent(component)
-                        + "is not a ValueHolder");
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("returning 1 '" + submittedValue + "'");
+                }
+                return submittedValue.toString();
             }
+        }
 
-            if (component instanceof EditableValueHolder)
+        Object value;
+
+        if (component instanceof EditableValueHolder)
+        {
+
+            EditableValueHolder holder = (EditableValueHolder) component;
+
+            if (holder.isLocalValueSet())
             {
-                Object submittedValue = ((EditableValueHolder) component)
-                        .getSubmittedValue();
-                if (submittedValue != null)
-                {
-                    if (log.isLoggable(Level.FINE))
-                    {
-                        log.fine("returning 1 '" + submittedValue + "'");
-                    }
-                    return submittedValue.toString();
-                }
-            }
-
-            Object value;
-
-            if (component instanceof EditableValueHolder)
-            {
-
-                EditableValueHolder holder = (EditableValueHolder) component;
-
-                if (holder.isLocalValueSet())
-                {
-                    value = holder.getLocalValue();
-                }
-                else
-                {
-                    value = getValue(component);
-                }
+                value = holder.getLocalValue();
             }
             else
             {
                 value = getValue(component);
             }
+        }
+        else
+        {
+            value = getValue(component);
+        }
 
-            Converter converter = ((ValueHolder) component).getConverter();
-            if (converter == null && value != null)
+        Converter converter = ((ValueHolder) component).getConverter();
+        if (converter == null && value != null)
+        {
+
+            try
             {
-
-                try
-                {
-                    converter = facesContext.getApplication().createConverter(
-                            value.getClass());
-                    if (log.isLoggable(Level.FINE))
-                    {
-                        log.fine("the created converter is " + converter);
-                    }
-                }
-                catch (FacesException e)
-                {
-                    log.log(Level.SEVERE, "No converter for class "
-                            + value.getClass().getName()
-                            + " found (component id=" + component.getId()
-                            + ").", e);
-                    // converter stays null
-                }
-            }
-
-            if (converter == null)
-            {
-                if (value == null)
-                {
-                    if (log.isLoggable(Level.FINE))
-                    {
-                        log.fine("returning an empty string");
-                    }
-                    return "";
-                }
-
+                converter = facesContext.getApplication().createConverter(
+                        value.getClass());
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("returning an .toString");
+                    log.fine("the created converter is " + converter);
                 }
-                return value.toString();
+            }
+            catch (FacesException e)
+            {
+                log.log(Level.SEVERE, "No converter for class "
+                        + value.getClass().getName()
+                        + " found (component id=" + component.getId()
+                        + ").", e);
+                // converter stays null
+            }
+        }
 
+        if (converter == null)
+        {
+            if (value == null)
+            {
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine("returning an empty string");
+                }
+                return "";
             }
 
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("returning converter get as string " + converter);
+                log.fine("returning an .toString");
             }
-            return converter.getAsString(facesContext, component, value);
+            return value.toString();
 
         }
-        catch (PropertyNotFoundException ex)
+
+        if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.SEVERE, "Property not found - called by component : "
-                    + getPathToComponent(component), ex);
-
-            throw ex;
+            log.fine("returning converter get as string " + converter);
         }
+        return converter.getAsString(facesContext, component, value);
     }
 
     public static String getStringFromSubmittedValueOrLocalValueReturnNull(
@@ -499,17 +488,7 @@ public final class RendererUtils
 
     private static Object getValue(UIComponent component)
     {
-        Object value;
-        try
-        {
-            value = ((ValueHolder) component).getValue();
-        }
-        catch (Exception ex)
-        {
-            throw new FacesException(
-                    "Could not retrieve value of component with path : "
-                            + getPathToComponent(component), ex);
-        }
+        Object value = ((ValueHolder) component).getValue();
         return value;
     }
 

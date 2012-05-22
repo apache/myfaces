@@ -21,7 +21,6 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.io.IOException;
 
 import javax.el.ELContext;
-import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -43,19 +42,7 @@ final class TextInstruction implements Instruction
     public void write(FacesContext context) throws IOException
     {
         ResponseWriter out = context.getResponseWriter();
-        try
-        {
-            txt.writeText(out, context.getELContext());
-            // out.writeText(txt.toString(elContext), null);
-        }
-        catch (ELException e)
-        {
-            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
-        }
-        catch (Exception e)
-        {
-            throw new ELException(this.alias + ": " + e.getMessage(), e);
-        }
+        txt.writeText(out, context.getELContext());
     }
 
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
