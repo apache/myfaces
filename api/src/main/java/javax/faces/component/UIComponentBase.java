@@ -398,38 +398,25 @@ public abstract class UIComponentBase extends UIComponent
         {
             throw new NullPointerException("event");
         }
-        try
+        
+        if (event instanceof BehaviorEvent && event.getComponent() == this)
         {
-            if (event instanceof BehaviorEvent && event.getComponent() == this)
-            {
-                Behavior behavior = ((BehaviorEvent) event).getBehavior();
-                behavior.broadcast((BehaviorEvent) event);
-            }
-            
-            if (_facesListeners == null)
-            {
-                return;
-            }
-            // perf: _facesListeners is RandomAccess instance (javax.faces.component._DeltaList)
-            for (int i = 0, size = _facesListeners.size(); i < size; i++)
-            {
-                FacesListener facesListener = _facesListeners.get(i);
-                if (event.isAppropriateListener(facesListener))
-                {
-                    event.processListener(facesListener);
-                }
-            }
+            Behavior behavior = ((BehaviorEvent) event).getBehavior();
+            behavior.broadcast((BehaviorEvent) event);
         }
-        catch (Exception ex)
+
+        if (_facesListeners == null)
         {
-            if (ex instanceof AbortProcessingException)
+            return;
+        }
+        // perf: _facesListeners is RandomAccess instance (javax.faces.component._DeltaList)
+        for (int i = 0, size = _facesListeners.size(); i < size; i++)
+        {
+            FacesListener facesListener = _facesListeners.get(i);
+            if (event.isAppropriateListener(facesListener))
             {
-                throw (AbortProcessingException) ex;
+                event.processListener(facesListener);
             }
-            String location = getComponentLocation(this);
-            throw new FacesException("Exception while calling broadcast on component : " 
-                    + getPathToComponent(this) 
-                    + (location != null ? " created from: " + location : ""), ex);
         }
     }
     
