@@ -1098,6 +1098,17 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         //moved to the static method
         return UIComponent.isCompositeComponent(this);
     }
+    
+    boolean isCachedFacesContext()
+    {
+        return false;
+    }
+
+    // Dummy method to prevent cast for UIComponentBase when caching
+    void setCachedFacesContext(FacesContext facesContext)
+    {
+    }
+
 
     private static class BundleMap implements Map<String, String>
     {
@@ -1246,19 +1257,9 @@ public abstract class UIComponent implements PartialStateHolder, SystemEventList
         {
             //need a no-arg constructor for state saving purposes
             super();
-    }
-    
-    boolean isCachedFacesContext()
-    {
-        return false;
-    }
+        }
 
-    // Dummy method to prevent cast for UIComponentBase when caching
-    void setCachedFacesContext(FacesContext facesContext)
-    {
-    }
-
-    /**
+        /**
          * Note we have two cases:
          *
          * 1. listener is an instance of UIComponent. In this case we cannot save and restore
