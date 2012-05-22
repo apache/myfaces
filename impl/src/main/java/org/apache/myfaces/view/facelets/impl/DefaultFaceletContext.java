@@ -83,7 +83,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     //private final Map<Integer, Integer> _prefixes;
     private String _prefix;
 
-    private final StringBuilder _uniqueIdBuilder = new StringBuilder(30);
+    private StringBuilder _uniqueIdBuilder;
 
     //private final LinkedList<TemplateManager> _clients;
     
@@ -290,12 +290,12 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         if (_prefix == null)
         {
-            StringBuilder builder = new StringBuilder(
+            _uniqueIdBuilder = new StringBuilder(
                     _faceletHierarchy.size() * 30);
             for (int i = 0; i < _faceletHierarchy.size(); i++)
             {
                 AbstractFacelet facelet = _faceletHierarchy.get(i);
-                builder.append(facelet.getFaceletId());
+                _uniqueIdBuilder.append(facelet.getFaceletId());
             }
 
             // Integer prefixInt = new Integer(builder.toString().hashCode());
@@ -304,11 +304,11 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             // with htmlunit 2.4 or lower, so in order to prevent it it is better to use
             // only positive values instead.
             // Take into account CompilationManager.nextTagId() uses Math.abs too.
-            Integer prefixInt = new Integer(Math.abs(builder.toString().hashCode()));
+            Integer prefixInt = new Integer(Math.abs(_uniqueIdBuilder.toString().hashCode()));
             _prefix = prefixInt.toString();
         }
 
-        _uniqueIdBuilder.delete(0, _uniqueIdBuilder.length());
+        _uniqueIdBuilder.setLength(0);
         // getFaceletCompositionContext().generateUniqueId() is the one who ensures
         // the final id will be unique, but prefix and base ensure it will be unique
         // per facelet because prefix is calculated from faceletHierarchy and base is
