@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.impl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
@@ -39,6 +38,7 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.ResourceResolver;
 
+import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
@@ -263,17 +263,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
             try
             {
                 URLConnection conn = facelet.getSource().openConnection();
-                InputStream is = conn.getInputStream();
-                try
-                {
-                    long lastModified = conn.getLastModified();
+                long lastModified = ResourceLoaderUtils.getResourceLastModified(conn);
 
-                    return lastModified == 0 || lastModified > target;
-                }
-                finally
-                {
-                    is.close();
-                }
+                return lastModified == 0 || lastModified > target;
             }
             catch (IOException e)
             {

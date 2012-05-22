@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -28,6 +27,7 @@ import java.util.Map;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletException;
 
+import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
 /**
@@ -157,17 +157,9 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
             try
             {
                 URLConnection conn = facelet.getSource().openConnection();
-                InputStream is = conn.getInputStream();
-                try
-                {
-                    long lastModified = conn.getLastModified();
+                long lastModified = ResourceLoaderUtils.getResourceLastModified(conn);
 
-                    return lastModified == 0 || lastModified > target;
-                }
-                finally
-                {
-                    is.close();
-                }
+                return lastModified == 0 || lastModified > target;
             }
             catch (IOException e)
             {
