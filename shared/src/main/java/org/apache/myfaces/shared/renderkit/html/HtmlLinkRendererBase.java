@@ -87,7 +87,7 @@ public abstract class HtmlLinkRendererBase
             if (formInfo != null)
             {
                 String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
-                        HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo));
+                        HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
                 if (reqValue != null && reqValue.equals(clientId)
                     || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId))
                 {
@@ -475,7 +475,8 @@ public abstract class HtmlLinkRendererBase
             if (MyfacesConfig.getCurrentInstance(
                     facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
             {
-                String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo);
+                String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(
+                        formInfo, facesContext);
                 addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
             }
 
@@ -790,7 +791,8 @@ public abstract class HtmlLinkRendererBase
                 hrefBuf.append('&');
             }
         }
-        String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo);
+        String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(
+                formInfo, facesContext);
         hrefBuf.append(hiddenFieldName);
         hrefBuf.append('=');
         hrefBuf.append(clientId);

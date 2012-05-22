@@ -369,7 +369,7 @@ public final class ComponentSupport
     private static UIComponent createFacetUIPanel(FaceletContext ctx, UIComponent parent, String facetName)
     {
         FacesContext facesContext = ctx.getFacesContext();
-        UIComponent panel = facesContext.getApplication().createComponent(UIPanel.COMPONENT_TYPE);
+        UIComponent panel = facesContext.getApplication().createComponent(facesContext, UIPanel.COMPONENT_TYPE, null);
         
         // The panel created by this method is special. To be restored properly and do not
         // create duplicate ids or any other unwanted conflicts, it requires an unique id.

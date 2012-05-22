@@ -103,7 +103,7 @@ public class HtmlButtonRendererBase
         if (formInfo != null)
         {
             hiddenLink = (String) facesContext.getExternalContext().getRequestParameterMap().get(
-                HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo));
+                HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
         }
         return paramMap.containsKey(clientId) || paramMap.containsKey(clientId + IMAGE_BUTTON_SUFFIX_X) 
             || paramMap.containsKey(clientId + IMAGE_BUTTON_SUFFIX_Y)
@@ -622,7 +622,8 @@ public class HtmlButtonRendererBase
                 if (MyfacesConfig.getCurrentInstance(
                         facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
                 {
-                    String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(nestedFormInfo);
+                    String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(
+                            nestedFormInfo, facesContext);
                     addHiddenCommandParameter(facesContext, nestedFormInfo.getForm(), hiddenFieldName);
                 }
             }

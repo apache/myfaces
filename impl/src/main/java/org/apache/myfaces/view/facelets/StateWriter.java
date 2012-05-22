@@ -61,10 +61,29 @@ public final class StateWriter extends Writer
 
         return (StateWriter)facesContext.getAttributes().get(CURRENT_WRITER_KEY);
     }
+        
+    static public StateWriter getCurrentInstance(FacesContext facesContext)
+    {
+        return (StateWriter)facesContext.getAttributes().get(CURRENT_WRITER_KEY);
+    }
 
     private static void setCurrentInstance(StateWriter stateWriter)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
+
+        if (stateWriter == null)
+        {
+            facesContext.getAttributes().remove(CURRENT_WRITER_KEY);
+        }
+        else
+        {
+            facesContext.getAttributes().put(CURRENT_WRITER_KEY, stateWriter);
+        }
+    }
+    
+    private static void setCurrentInstance(StateWriter stateWriter, FacesContext facesContext)
+    {
+        //FacesContext facesContext = FacesContext.getCurrentInstance();
 
         if (stateWriter == null)
         {
@@ -85,8 +104,19 @@ public final class StateWriter extends Writer
 
         this.initialSize = initialSize;
         this.out = initialOut;
-
         setCurrentInstance(this);
+    }
+    
+    public StateWriter(Writer initialOut, int initialSize, FacesContext facesContext)
+    {
+        if (initialSize < 0)
+        {
+            throw new IllegalArgumentException("Initial Size cannot be less than 0");
+        }
+
+        this.initialSize = initialSize;
+        this.out = initialOut;
+        setCurrentInstance(this, facesContext);
     }
 
     /**
@@ -174,6 +204,12 @@ public final class StateWriter extends Writer
     {
         // remove from FacesContext attribute Map
         setCurrentInstance(null);
+    }
+    
+    public void release(FacesContext facesContext)
+    {
+        // remove from FacesContext attribute Map
+        setCurrentInstance(null, facesContext);
     }
 
 }

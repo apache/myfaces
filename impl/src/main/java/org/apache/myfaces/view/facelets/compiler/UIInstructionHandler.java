@@ -128,7 +128,7 @@ final class UIInstructionHandler extends AbstractUIHandler
                 //c.setId(ComponentSupport.getViewRoot(ctx, parent).createUniqueId());
 
                 UniqueIdVendor uniqueIdVendor
-                        = FaceletCompositionContext.getCurrentInstance(ctx).getUniqueIdVendorFromStack();
+                        = mctx.getUniqueIdVendorFromStack();
                 if (uniqueIdVendor == null)
                 {
                     uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);

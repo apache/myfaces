@@ -78,6 +78,7 @@ public class NavigationHandlerImpl
 
     private Map<String, Set<NavigationCase>> _navigationCases = null;
     private List<String> _wildcardKeys = new ArrayList<String>();
+    private Boolean _developmentStage;
 
     public NavigationHandlerImpl()
     {
@@ -682,15 +683,34 @@ public class NavigationHandlerImpl
     @Override
     public Map<String, Set<NavigationCase>> getNavigationCases()
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
-
-        if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
+        if (_developmentStage == null)
         {
-            calculateNavigationCases(facesContext, runtimeConfig);
+            _developmentStage = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
         }
-        return _navigationCases;
+        if (!Boolean.TRUE.equals(_developmentStage))
+        {
+            if (_navigationCases == null)
+            {
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                ExternalContext externalContext = facesContext.getExternalContext();
+                RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
+                
+                calculateNavigationCases(facesContext, runtimeConfig);
+            }
+            return _navigationCases;
+        }
+        else
+        {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = facesContext.getExternalContext();
+            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
+
+            if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
+            {
+                calculateNavigationCases(facesContext, runtimeConfig);
+            }
+            return _navigationCases;
+        }
     }
     
     private synchronized void calculateNavigationCases(FacesContext facesContext, RuntimeConfig runtimeConfig)

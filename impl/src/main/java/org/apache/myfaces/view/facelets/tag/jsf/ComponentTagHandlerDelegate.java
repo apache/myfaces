@@ -436,14 +436,20 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         else
         {
+            // According to the, spec call the second alternative with null rendererType gives
+            // the same result, but without the unnecesary call for FacesContext.getCurrentInstance().
+            // Saves 1 call per component without rendererType (f:viewParam, h:column, f:selectItem, ...)
+            // and it does not have any side effects (the spec javadoc mentions in a explicit way
+            // that rendererType can be null!).
+            /*
             if (this._rendererType == null)
             {
                 c = app.createComponent(this._componentType);
             }
             else
-            {
+            {*/
                 c = app.createComponent(faces, this._componentType, this._rendererType);
-            }
+            //}
         }
         return c;
     }

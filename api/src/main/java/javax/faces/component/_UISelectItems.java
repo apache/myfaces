@@ -18,6 +18,7 @@
  */
 package javax.faces.component;
 
+import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -63,6 +64,25 @@ abstract class _UISelectItems extends UIComponentBase
       //throw new UnsupportedOperationException();
   }
   
+  @Override
+  protected FacesContext getFacesContext()
+  {
+      //In theory the parent most of the times has 
+      //the cached FacesContext instance, because this
+      //element is purely logical, and the parent is the one
+      //where encodeXXX was invoked. But only limit the
+      //search to the closest parent.
+      UIComponent parent = getParent();
+      if (parent != null && parent.isCachedFacesContext())
+      {
+          return parent.getFacesContext();
+      }
+      else
+      {
+          return super.getFacesContext();
+      }
+  }
+
   /**
    * The initial value of this component.
    *

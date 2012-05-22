@@ -261,6 +261,25 @@ public class UIViewParameter extends UIInput
         return _delegateRenderer;
     }
 
+    @Override
+    protected FacesContext getFacesContext()
+    {
+        //In theory the parent most of the times has 
+        //the cached FacesContext instance, because this
+        //element is purely logical, and the parent is the one
+        //where encodeXXX was invoked. But only limit the
+        //search to the closest parent.
+        UIComponent parent = getParent();
+        if (parent != null && parent.isCachedFacesContext())
+        {
+            return parent.getFacesContext();
+        }
+        else
+        {
+            return super.getFacesContext();
+        }
+    }
+
     /**
      * @author Simon Lessard (latest modification by $Author$)
      * @version $Revision$ $Date$

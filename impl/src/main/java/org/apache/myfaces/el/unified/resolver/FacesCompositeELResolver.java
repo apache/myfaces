@@ -63,10 +63,20 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
         _scope = scope;
     }
 
+    private static FacesContext facesContext(final ELContext context)
+    {
+        FacesContext facesContext = (FacesContext)context.getContext(FacesContext.class);
+        if (facesContext == null)
+        {
+            facesContext = FacesContext.getCurrentInstance();
+        }
+        return facesContext;
+    }
+    
     @Override
     public Class<?> getCommonPropertyType(final ELContext context, final Object base)
     {
-        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        final FacesContext facesContext = facesContext(context);
         if (facesContext == null)
         {
             return null;
@@ -96,7 +106,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
     {
-        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        final FacesContext facesContext = facesContext(context);
         if (facesContext == null)
         {
             return null;
@@ -126,7 +136,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     @Override
     public Class<?> getType(final ELContext context, final Object base, final Object property)
     {
-        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        final FacesContext facesContext = facesContext(context);
         if (facesContext == null)
         {
             return null;
@@ -155,7 +165,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     @Override
     public Object getValue(final ELContext context, final Object base, final Object property)
     {
-        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        final FacesContext facesContext = facesContext(context);
         if (facesContext == null)
         {
             return null;
@@ -184,7 +194,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     @Override
     public boolean isReadOnly(final ELContext context, final Object base, final Object property)
     {
-        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        final FacesContext facesContext = facesContext(context);
         if (facesContext == null)
         {
             return false;
@@ -213,7 +223,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.Compos
     @Override
     public void setValue(final ELContext context, final Object base, final Object property, final Object val)
     {
-        final FacesContext facesContext = FacesContext.getCurrentInstance();
+        final FacesContext facesContext = facesContext(context);
         if (facesContext == null)
         {
             return;

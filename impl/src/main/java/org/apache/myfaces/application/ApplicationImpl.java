@@ -486,7 +486,7 @@ public class ApplicationImpl extends Application
             }
             else
             {
-                createdComponent = createComponent(componentType);
+                createdComponent = createComponent(facesContext, componentType);
                 componentExpression.setValue(elContext, createdComponent);
             }
 
@@ -509,7 +509,10 @@ public class ApplicationImpl extends Application
         // Like createComponent(ValueExpression, FacesContext, String)
         UIComponent component = createComponent(componentExpression, context, componentType);
 
-        _inspectRenderer(context, component, componentType, rendererType);
+        if (rendererType != null)
+        {
+            _inspectRenderer(context, component, componentType, rendererType);
+        }
 
         return component;
     }
@@ -1173,8 +1176,8 @@ public class ApplicationImpl extends Application
         try
         {
             Behavior behavior = (Behavior)behaviorClass.newInstance();
-
-            _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), behavior);
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            _handleAttachedResourceDependencyAnnotations(facesContext, behavior);
 
             if (behavior instanceof ClientBehaviorBase)
             {
@@ -1182,9 +1185,8 @@ public class ApplicationImpl extends Application
               String renderType = clientBehavior.getRendererType();
               if (renderType != null)
               {
-                FacesContext ctx = FacesContext.getCurrentInstance();
-                ClientBehaviorRenderer cbr = ctx.getRenderKit().getClientBehaviorRenderer(renderType);
-                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), cbr);
+                ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
+                _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
               }
             }
 
@@ -1335,7 +1337,7 @@ public class ApplicationImpl extends Application
                  */
                 if (component == null)
                 {
-                    component = application.createComponent(UINamingContainer.COMPONENT_TYPE);
+                    component = application.createComponent(context, UINamingContainer.COMPONENT_TYPE, null);
                     annotationsApplied = true;
                 }
             }
@@ -1381,13 +1383,53 @@ public class ApplicationImpl extends Application
         checkNull(componentType, "componentType");
 
         // Like createComponent(String)
-        UIComponent component = createComponent(componentType);
+        UIComponent component = createComponent(context, componentType);
 
-        _inspectRenderer(context, component, componentType, rendererType);
+        // A null value on this field is valid! If that so, no need to do any log
+        // or look on RenderKit map for a inexistent renderer!
+        if (rendererType != null)
+        {
+            _inspectRenderer(context, component, componentType, rendererType);
+        }
 
         return component;
     }
 
+    /**
+     * This works just like createComponent(String componentType), but without call
+     * FacesContext.getCurrentInstance()
+     * 
+     * @param facesContext
+     * @param componentType
+     * @return
+     * @throws FacesException 
+     */
+    private final UIComponent createComponent(FacesContext facesContext, 
+            final String componentType) throws FacesException
+    {
+        checkNull(componentType, "componentType");
+        checkEmpty(componentType, "componentType");
+
+        final Class<?> componentClass = getObjectFromClassMap(componentType, _componentClassMap);
+        if (componentClass == null)
+        {
+            log.log(Level.SEVERE, "Undefined component type " + componentType);
+            throw new FacesException("Undefined component type " + componentType);
+        }
+
+        try
+        {
+            UIComponent component = (UIComponent)componentClass.newInstance();            
+            _handleAnnotations(facesContext, component, component);
+            return component;
+        }
+        catch (Exception e)
+        {
+            log.log(Level.SEVERE, "Could not instantiate component componentType = " + componentType, e);
+            throw new FacesException("Could not instantiate component componentType = " + componentType, e);
+        }
+    }
+    
     @Override
     public final UIComponent createComponent(final String componentType) throws FacesException
     {
@@ -1766,7 +1808,7 @@ public class ApplicationImpl extends Application
             
             // Create a UIOutput instance by passing javax.faces.Output. to 
             // Application.createComponent(java.lang.String).
-            UIOutput output = (UIOutput) application.createComponent(UIOutput.COMPONENT_TYPE);
+            UIOutput output = (UIOutput) application.createComponent(context, UIOutput.COMPONENT_TYPE, null);
             
             // Get the annotation instance from the class and obtain the values of the name, library, and 
             // target attributes.
@@ -2241,7 +2283,7 @@ public class ApplicationImpl extends Application
         {
             // Create a UIOutput instance by passing javax.faces.Output. to
             // Application.createComponent(java.lang.String).
-            UIOutput output = (UIOutput) createComponent(UIOutput.COMPONENT_TYPE);
+            UIOutput output = (UIOutput) createComponent(context, UIOutput.COMPONENT_TYPE, null);
 
             // Get the annotation instance from the class and obtain the values of the name, library, and
             // target attributes.
