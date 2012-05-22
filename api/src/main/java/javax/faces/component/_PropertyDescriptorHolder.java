@@ -19,24 +19,26 @@
 package javax.faces.component;
 
 import java.beans.PropertyDescriptor;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 
 class _PropertyDescriptorHolder
 {
     private final PropertyDescriptor _descriptor;
-    private final Method _readMethod;
-    private Method _writeMethod;
+    private Reference<Method> _readMethodRef;
+    private Reference<Method> _writeMethodRef;
 
     public _PropertyDescriptorHolder(PropertyDescriptor descriptor)
     {
         _descriptor = descriptor;
-        _readMethod = _descriptor.getReadMethod();
+        _readMethodRef = new SoftReference<Method>(_descriptor.getReadMethod());
     }
 
     public _PropertyDescriptorHolder(PropertyDescriptor descriptor, Method readMethod)
     {
         _descriptor = descriptor;
-        _readMethod = readMethod;
+        _readMethodRef = new SoftReference<Method>(readMethod);
     }
     
     public String getName()
@@ -46,21 +48,28 @@ class _PropertyDescriptorHolder
     
     public Method getReadMethod()
     {
-        return _readMethod;
+        Method readMethod = _readMethodRef.get();
+        if (readMethod == null)
+        {
+            readMethod = _descriptor.getReadMethod();
+            _readMethodRef = new SoftReference<Method>(readMethod);
+        }
+        return readMethod;
     }
     
     public Method getWriteMethod()
     {
-        // In facelets, the Method instance used to write the variable is stored
-        // in a variable (see org.apache.myfaces.view.facelets.tag.BeanPropertyTagRule),
-        // so the impact of this synchronized call at the end is minimal compared with 
-        // getReadMethod. That's the reason why cache it here in a lazy way is enough
-        // instead retrieve it as soon as this holder is created.
-        if (_writeMethod == null)
+        if (_writeMethodRef == null || _writeMethodRef.get() == null)
         {
-            _writeMethod = _descriptor.getWriteMethod(); 
+            // In facelets, the Method instance used to write the variable is stored
+            // in a variable (see org.apache.myfaces.view.facelets.tag.BeanPropertyTagRule),
+            // so the impact of this synchronized call at the end is minimal compared with 
+            // getReadMethod. That's the reason why cache it here in a lazy way is enough
+            // instead retrieve it as soon as this holder is created.
+            Method writeMethod = _descriptor.getWriteMethod();
+            _writeMethodRef = new SoftReference<Method>(writeMethod);
         }
-        return _writeMethod;
+        return _writeMethodRef.get();
     }
     
     public PropertyDescriptor getPropertyDescriptor()
