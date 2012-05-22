@@ -65,14 +65,14 @@ public class _MessageUtilsTest
         expect(viewHandler.calculateLocale(facesContext)).andReturn(Locale.ENGLISH);
         expect(application.getMessageBundle()).andReturn("javax.faces.Messages");
         expect(application.getExpressionFactory()).andReturn(expressionFactory);
-        String s = "xxx: Validation Error: Value is greater than allowable maximum of \"xyz\"";
+        String s = "xxx: Validation Error: Value is greater than allowable maximum of ''xyz''";
         expect(expressionFactory.createValueExpression(elContext,s,String.class)).andReturn(valueExpression);
         expect(valueExpression.getValue(elContext)).andReturn(s);
         mocksControl.replay();
 
         assertEquals(_MessageUtils.getErrorMessage(facesContext, "javax.faces.validator.DoubleRangeValidator.MAXIMUM",
                 new Object[] { "xyz", "xxx" }).getDetail(),
-                "xxx: Validation Error: Value is greater than allowable maximum of \"xyz\"");
+                "xxx: Validation Error: Value is greater than allowable maximum of 'xyz'");
     }
 
 }
