@@ -33,6 +33,7 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.faces.view.ActionSource2AttachedObjectHandler;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
@@ -44,6 +45,8 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.el.ContextAware;
+import org.apache.myfaces.view.facelets.el.ContextAwareELException;
 
 @JSFFaceletTag(
         name = "f:setPropertyActionListener",
@@ -126,7 +129,32 @@ public class SetPropertyActionListenerHandler extends TagHandler
                 // the "target" expression value type following the Expression
                 // Language coercion rules. 
                 ExpressionFactory expressionFactory = facesContext.getApplication().getExpressionFactory();
-                value = expressionFactory.coerceToType(value, targetType);
+                try
+                {
+                    value = expressionFactory.coerceToType(value, targetType);
+                }
+                catch (ELException e)
+                {
+                    // Happens when type of attribute "value" is not convertible to type of attribute "target"
+                    // by EL coercion rules. 
+                    // For example: value="#{10}" target="#{bean.booleanProperty}" 
+                    // In this case is not sure if problematic attribute is "value" or "target". But EL
+                    // impls say:
+                    // JUEL: "Cannot coerce from class java.lang.Long to class java.lang.Boolean"
+                    // Tomcat EL: Cannot convert 10 of type class java.long.Long to class java.lang.Boolean
+                    // Thus we report "value" attribute as exception source - that should be enough for user
+                    // to solve the problem.
+                    Location location = null;
+                    // Wrapping of ValueExpressions to org.apache.myfaces.view.facelets.el.ContextAware
+                    // can be disabled:
+                    if (_value instanceof ContextAware)
+                    {
+                        ContextAware contextAware = (ContextAware) _value;
+                        location = contextAware.getLocation();
+                    }
+                    throw new ContextAwareELException(location,
+                            _value.getExpressionString(), "value", e);
+                }
             }
 
             // Call setValue()on the "target" ValueExpression with the resulting value.
