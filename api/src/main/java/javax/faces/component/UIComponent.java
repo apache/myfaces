@@ -1253,6 +1253,16 @@ public abstract class UIComponent
         //moved to the static method
         return UIComponent.isCompositeComponent(this);
     }
+    
+    boolean isCachedFacesContext()
+    {
+        return false;
+    }
+
+    // Dummy method to prevent cast for UIComponentBase when caching
+    void setCachedFacesContext(FacesContext facesContext)
+    {
+    }
 
     /**
      * Gets value of "javax.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES" parameter cached in facesContext.attributes 

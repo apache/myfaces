@@ -1586,6 +1586,17 @@ public final class HtmlRendererUtils
         return formInfo.getFormName() + UINamingContainer.getSeparatorChar(FacesContext
                         .getCurrentInstance()) + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
+    
+    public static String getHiddenCommandLinkFieldName(
+            FormInfo formInfo, FacesContext facesContext)
+    {
+        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
+        {
+            return HIDDEN_COMMANDLINK_FIELD_NAME_TRINIDAD;
+        }
+        return formInfo.getFormName() + UINamingContainer.getSeparatorChar(facesContext)
+                + HIDDEN_COMMANDLINK_FIELD_NAME;
+    }
 
     public static boolean isPartialOrBehaviorSubmit(FacesContext facesContext,
             String clientId)
@@ -1614,11 +1625,6 @@ public final class HtmlRendererUtils
         return partialOrBehaviorSubmit;
     }
 
-    /**
-     * @param formInfo
-     * @return
-     * @deprecated Use getHiddenCommandLinkFieldNameMyfaces(FormInfo) instead
-     */
     public static String getHiddenCommandLinkFieldNameMyfacesOld(
             FormInfo formInfo)
     {
@@ -1729,18 +1735,15 @@ public final class HtmlRendererUtils
     private static final String HTML_CONTENT_TYPE = "text/html";
     private static final String TEXT_ANY_CONTENT_TYPE = "text/*";
     private static final String ANY_CONTENT_TYPE = "*/*";
-
     public static final String DEFAULT_CHAR_ENCODING = "ISO-8859-1";
     private static final String XHTML_CONTENT_TYPE = "application/xhtml+xml";
     private static final String APPLICATION_XML_CONTENT_TYPE = "application/xml";
     private static final String TEXT_XML_CONTENT_TYPE = "text/xml";
-
     // The order is important in this case.
     private static final String[] SUPPORTED_CONTENT_TYPES = {
             HTML_CONTENT_TYPE, //Prefer this over any other, because IE does not support XHTML content type
             XHTML_CONTENT_TYPE, APPLICATION_XML_CONTENT_TYPE,
             TEXT_XML_CONTENT_TYPE, TEXT_ANY_CONTENT_TYPE, ANY_CONTENT_TYPE };
-
     /**
      * @deprecated use ContentTypeUtils instead
      */
@@ -2942,7 +2945,6 @@ public final class HtmlRendererUtils
 
     /**
      * Returns the value of the hideNoSelectionOption attribute of the given UIComponent
-     *
      * @param component
      * @return
      */
@@ -2959,7 +2961,6 @@ public final class HtmlRendererUtils
     /**
      * Renders all FacesMessages which have not been rendered yet with
      * the help of a HtmlMessages component.
-     *
      * @param facesContext
      */
     public static void renderUnhandledFacesMessages(FacesContext facesContext)

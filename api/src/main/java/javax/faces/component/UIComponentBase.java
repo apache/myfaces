@@ -498,7 +498,16 @@ public abstract class UIComponentBase extends UIComponent
         try
         {
             setCachedIsRendered(null);
-            boolean rendered = isRendered(); 
+            boolean rendered;
+            try
+            {
+                setCachedFacesContext(context);
+                rendered = isRendered();
+            }
+            finally
+            {
+                setCachedFacesContext(null);
+            } 
             setCachedIsRendered(rendered);
             if (!rendered)
             {
@@ -519,7 +528,17 @@ public abstract class UIComponentBase extends UIComponent
             this.encodeBegin(context);
 
             // rendering children
-            if (this.getRendersChildren())
+            boolean rendersChildren;
+            try
+            {
+                setCachedFacesContext(context);
+                rendersChildren = this.getRendersChildren();
+            }
+            finally
+            {
+                setCachedFacesContext(null);
+            }
+            if (rendersChildren)
             {
                 this.encodeChildren(context);
             } // let children render itself

@@ -357,7 +357,7 @@ public class ViewHandlerImpl extends ViewHandler
     {
         // Facelets specific hack:
         // Tell the StateWriter that we're about to write state
-        StateWriter stateWriter = StateWriter.getCurrentInstance();
+        StateWriter stateWriter = StateWriter.getCurrentInstance(context);
         if (stateWriter != null)
         {
             // Write the STATE_KEY out. Unfortunately, this will

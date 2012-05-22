@@ -724,7 +724,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // Create a temporal tree where all components will be put, but we are only
             // interested in metadata.
             UINamingContainer compositeComponentBase
-                    = (UINamingContainer) context.getApplication().createComponent(UINamingContainer.COMPONENT_TYPE);
+                    = (UINamingContainer) context.getApplication().createComponent(
+                    context, UINamingContainer.COMPONENT_TYPE, null);
 
             // Fill the component resource key, because this information should be available
             // on metadata to recognize which is the component used as composite component base.
@@ -1880,7 +1881,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             ExternalContext extContext = context.getExternalContext();
             Writer outputWriter = extContext.getResponseOutputWriter();
 
-            StateWriter stateWriter = new StateWriter(outputWriter, 1024);
+            StateWriter stateWriter = new StateWriter(outputWriter, 1024, context);
             try
             {
                 ResponseWriter writer = origWriter.cloneWithWriter(stateWriter);
@@ -1987,7 +1988,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             }
             finally
             {
-                stateWriter.release();
+                stateWriter.release(context);
             }
         }
         catch (FileNotFoundException fnfe)

@@ -1020,7 +1020,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             try
             {
                 // Actual event broadcasting
-                source.broadcast(event);
+                if (!source.isCachedFacesContext())
+                {
+                    try
+                    {
+                        source.setCachedFacesContext(context);
+                        source.broadcast(event);
+                    }
+                    finally
+                    {
+                        source.setCachedFacesContext(null);
+                    }
+                }
+                else
+                {
+                    source.broadcast(event);
+                }
             }
             catch (Exception e)
             {
