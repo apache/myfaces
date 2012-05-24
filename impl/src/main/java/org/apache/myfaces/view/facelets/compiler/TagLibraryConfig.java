@@ -320,7 +320,7 @@ public final class TagLibraryConfig
             {
                 if ("facelet-taglib".equals(qName))
                 {
-                    ; // Nothing to do
+                    // Nothing to do
                 }                
                 else if ("library-class".equals(qName))
                 {
@@ -363,6 +363,18 @@ public final class TagLibraryConfig
                     String className = this.captureBuffer();
                     this.functionClass = createClass(Object.class, className);
                 }
+                else if ("description".equals(qName))
+                {
+                    //Not used
+                }
+                else if ("display-name".equals(qName))
+                {
+                    //Not used
+                }
+                else if ("icon".equals(qName))
+                {
+                    //Not used
+                }                
                 else
                 {
                     // Make sure there we've seen a namespace element
