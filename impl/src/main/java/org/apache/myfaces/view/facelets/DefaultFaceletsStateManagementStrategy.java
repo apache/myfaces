@@ -1166,6 +1166,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
 
                 if (!isRefreshOnTransientBuildPreserveState() &&
+                    FaceletCompositionContext.getCurrentInstance(_facesContext) != null &&
                     (component.getAttributes().containsKey(ComponentSupport.MARK_CREATED) ||
                      component.getAttributes().containsKey(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)) ||
                      (component.getId() != null && component.getId().length() > 16 && 
@@ -1176,6 +1177,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     // Components removed by facelets algorithm does not need to be registered
                     // unless preserve state mode is used, because PSS initial state is changed
                     // to restore delta properly.
+                    // MYFACES-3554 It is possible to find use cases where a component
+                    // created by a facelet tag is changed dynamically in some way in render
+                    // response time, so we need to check here also when facelets algorithm
+                    // is running or not. 
                     return;
                 }
                 
