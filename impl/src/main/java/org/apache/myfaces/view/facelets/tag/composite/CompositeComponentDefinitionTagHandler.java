@@ -114,13 +114,19 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
         // to resolve the related composite component via #{cc} properly).
         if (_interfaceHandler != null)
         {
-            compositeBaseParent.getAttributes()
-                .put(CompositeComponentELUtils.LOCATION_KEY, this._interfaceHandler.getLocation());
+            if (!compositeBaseParent.getAttributes().containsKey(CompositeComponentELUtils.LOCATION_KEY))
+            {
+                compositeBaseParent.getAttributes()
+                    .put(CompositeComponentELUtils.LOCATION_KEY, this._interfaceHandler.getLocation());
+            }
         }
         else if (_implementationHandler != null)
         {
-            compositeBaseParent.getAttributes()
-                .put(CompositeComponentELUtils.LOCATION_KEY, this._implementationHandler.getLocation());
+            if (!compositeBaseParent.getAttributes().containsKey(CompositeComponentELUtils.LOCATION_KEY))
+            {
+                compositeBaseParent.getAttributes()
+                    .put(CompositeComponentELUtils.LOCATION_KEY, this._implementationHandler.getLocation());
+            }
         }
         
         // Only apply if we are building composite component metadata,
