@@ -60,7 +60,9 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * <p>
      * This param is used to keep compatibility with previous state managers implementations depending from old myfaces
      * way to deal with this. For example, JspStateManagerImpl requires this param set to false, but by default 
-     * it is set to true, to keep aligned with the Reference Implementation (RI).
+     * it is set to true, to keep aligned with the Reference Implementation (RI). Note also the default StateManagerImpl
+     * requires this property set to true in order to work correctly, so if you set this param to false, please
+     * remember to add an entry into your faces-config.xml setting up JspStateManagerImpl as the state manager to use.
      * </p> 
      */
     @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true", group="state")
