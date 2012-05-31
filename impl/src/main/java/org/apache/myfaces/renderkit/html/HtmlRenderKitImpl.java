@@ -284,22 +284,40 @@ public class HtmlRenderKitImpl extends RenderKit
                     }
                 }
                 
-                if (selectedContentType == null && contentTypeListStringFromAccept != null)
-                {
-                    String[] contentTypes = ContentTypeUtils.splitContentTypeListString(
-                            contentTypeListStringFromAccept);
-                    if (ContentTypeUtils.containsContentType(ContentTypeUtils.ANY_CONTENT_TYPE, contentTypes))
-                    {
-                        selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
-                    }
-                }
-                
                 if (selectedContentType == null)
                 {
-                    throw new IllegalArgumentException(
-                            "ContentTypeList does not contain a supported content type: "
-                                    + contentTypeListString != null ? 
-                                            contentTypeListString : contentTypeListStringFromAccept);
+                    if (contentTypeListStringFromAccept != null)
+                    {
+                        String[] contentTypes = ContentTypeUtils.splitContentTypeListString(
+                                contentTypeListStringFromAccept);
+                        if (ContentTypeUtils.containsContentType(ContentTypeUtils.ANY_CONTENT_TYPE, contentTypes))
+                        {
+                            selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
+                        }
+                    }
+                    else if (isAjaxRequest)
+                    {
+                        // If is an ajax request, contentTypeListStringFromAccept == null and 
+                        // contentTypeListString != null, contentTypeListString should not be taken 
+                        // into account, because the final content type in this case is for PartialResponseWriter 
+                        // implementation. In this case rfc2616-sec14 takes precedence:
+                        // 
+                        // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+                        // 14.1 Accept 
+                        // If no Accept header field is present, then it is assumed that the client 
+                        // accepts all media types.
+                        selectedContentType = myfacesConfig.getDefaultResponseWriterContentTypeMode();
+                    }
+                    if (selectedContentType == null)
+                    {
+                        // Note this case falls when contentTypeListStringFromAccept == null and 
+                        // contentTypeListString != null, but since this not an ajax request, 
+                        // contentTypeListString should be taken strictly and throw IllegalArgumentException
+                        throw new IllegalArgumentException(
+                                "ContentTypeList does not contain a supported content type: "
+                                        + contentTypeListString != null ? 
+                                                contentTypeListString : contentTypeListStringFromAccept);
+                    }
                 }
             }
         }
