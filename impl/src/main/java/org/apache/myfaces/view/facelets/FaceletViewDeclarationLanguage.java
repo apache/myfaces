@@ -125,6 +125,9 @@ import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 import org.apache.myfaces.view.facelets.impl.SectionUniqueIdCounter;
+import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionListener;
+import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValidator;
+import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValueChangeListener;
 
 /**
  * This class represents the abstraction of Facelets as a ViewDeclarationLanguage.
@@ -806,6 +809,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         {
                             currentHandler.applyAttachedObject(context, component);
                         }
+                        if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                        {
+                            component.markInitialState();
+                        }
                     }
                 }
                 else if ((currentTarget instanceof BehaviorHolderAttachedObjectTarget &&
@@ -859,6 +866,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 {
                                     currentHandler.applyAttachedObject(context, component);
                                 }
+                            }
+                            if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                            {
+                                component.markInitialState();
                             }
                         }
                     }
@@ -1096,6 +1107,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 mctx.clearMethodExpressionAttribute(innerComponent, attributeName);
 
                                 retargetMethodExpressions(context, innerComponent);
+                                if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                {
+                                    innerComponent.markInitialState();
+                                }
                             }
                             else
                             {
@@ -1114,6 +1129,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                     else
                                     {
                                         ((ActionSource2)innerComponent).setActionExpression(methodExpression);
+                                    }
+                                    if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                    {
+                                        innerComponent.markInitialState();
                                     }
                                 }
                                 else if ("actionListener".equals(attributeName))
@@ -1142,10 +1161,21 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                                 createMethodExpression(elContext,
                                                         attributeExpressionString, Void.TYPE, EMPTY_CLASS_ARRAY), attributeNameValueExpression);
 
-                                        actionListener = new MethodExpressionActionListener(methodExpression, methodExpression2);
+                                        if (mctx.isUsingPSSOnThisView())
+                                        {
+                                            actionListener = new PartialMethodExpressionActionListener(methodExpression, methodExpression2);
+                                        }
+                                        else
+                                        {
+                                            actionListener = new MethodExpressionActionListener(methodExpression, methodExpression2);
+                                        }
                                     }
                                     ((ActionSource2) innerComponent).addActionListener(actionListener);
                                     mctx.addMethodExpressionTargeted(innerComponent, attributeName, actionListener);
+                                    if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                    {
+                                        innerComponent.markInitialState();
+                                    }
                                 }
                                 else if ("validator".equals(attributeName))
                                 {
@@ -1169,11 +1199,21 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                                 createMethodExpression(elContext,
                                                         attributeExpressionString, Void.TYPE,
                                                         VALIDATOR_SIGNATURE), attributeNameValueExpression);
-
-                                        validator = new MethodExpressionValidator(methodExpression);
+                                        if (mctx.isUsingPSSOnThisView())
+                                        {
+                                            validator = new PartialMethodExpressionValidator(methodExpression);
+                                        }
+                                        else
+                                        {
+                                            validator = new MethodExpressionValidator(methodExpression);
+                                        }
                                     }
                                     ((EditableValueHolder) innerComponent).addValidator(validator);
                                     mctx.addMethodExpressionTargeted(innerComponent, attributeName, validator);
+                                    if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                    {
+                                        innerComponent.markInitialState();
+                                    }
                                 }
                                 else if ("valueChangeListener".equals(attributeName))
                                 {
@@ -1202,10 +1242,21 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                                         attributeExpressionString, Void.TYPE,
                                                         EMPTY_CLASS_ARRAY), attributeNameValueExpression);
 
-                                        valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression2);
+                                        if (mctx.isUsingPSSOnThisView())
+                                        {
+                                            valueChangeListener = new PartialMethodExpressionValueChangeListener(methodExpression, methodExpression2);
+                                        }
+                                        else
+                                        {
+                                            valueChangeListener = new MethodExpressionValueChangeListener(methodExpression, methodExpression2);
+                                        }
                                     }
                                     ((EditableValueHolder) innerComponent).addValueChangeListener(valueChangeListener);
                                     mctx.addMethodExpressionTargeted(innerComponent, attributeName, valueChangeListener);
+                                    if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                    {
+                                        innerComponent.markInitialState();
+                                    }
                                 }
                             }
                         }
@@ -1246,6 +1297,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 mctx.clearMethodExpressionAttribute(innerComponent, attributeName);
 
                                 retargetMethodExpressions(context, innerComponent);
+                                if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                {
+                                    innerComponent.markInitialState();
+                                }
                             }
                             else
                             {
@@ -1259,6 +1314,10 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 else
                                 {
                                     innerComponent.getAttributes().put(attributeName, methodExpression);
+                                }
+                                if (mctx.isUsingPSSOnThisView() && mctx.isMarkInitialState())
+                                {
+                                    innerComponent.markInitialState();
                                 }
                             }
                         }
