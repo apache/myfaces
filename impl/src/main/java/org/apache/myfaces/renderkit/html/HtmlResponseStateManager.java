@@ -60,11 +60,14 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * <p>
      * This param is used to keep compatibility with previous state managers implementations depending from old myfaces
      * way to deal with this. For example, JspStateManagerImpl requires this param set to false, but by default 
-     * it is set to true, to keep aligned with the Reference Implementation (RI).
+     * it is set to true, to keep aligned with the Reference Implementation (RI). Note also the default StateManagerImpl
+     * requires this property set to true in order to work correctly, so if you set this param to false, please
+     * remember to add an entry into your faces-config.xml setting up JspStateManagerImpl as the state manager to use.
      * </p> 
      */
     @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true", group="state")
-    public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
+    public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS
+            = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
     
     private Boolean _handleStateCachingMechanics;
     
@@ -79,7 +82,9 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     {
         if (_handleStateCachingMechanics == null)
         {
-            _handleStateCachingMechanics = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(), INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS, true);
+            _handleStateCachingMechanics
+                    = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
+                        INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS, true);
         }
         return _handleStateCachingMechanics.booleanValue();
     }
@@ -102,7 +107,9 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         }
 
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Writing state in client");
+        }
 
 
         if (token != null)
@@ -112,13 +119,17 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         else
         {
             if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("No component states to be saved in client response!");
+            }
         }
 
         savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
         
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("Writing view state and renderKit fields");
+        }
 
         // write the view state field
         writeViewStateField(facesContext, responseWriter, savedState);
@@ -236,11 +247,12 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * 
      * @return the reconstructed state, or <code>null</code> if there was no saved state
      */
-    private Object[] getSavedState(FacesContext facesContext) {
+    private Object[] getSavedState(FacesContext facesContext)
+    {
         Object encodedState = 
-            facesContext.getExternalContext().
-                getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
-        if(encodedState==null || (((String) encodedState).length() == 0)) { 
+            facesContext.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
+        if(encodedState==null || (((String) encodedState).length() == 0))
+        {
             return null;
         }
 
@@ -249,7 +261,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         if (savedState == null)
         {
-            if (log.isLoggable(Level.FINEST)) {
+            if (log.isLoggable(Level.FINEST))
+            {
                 log.finest("No saved state");
             }
             return null;
