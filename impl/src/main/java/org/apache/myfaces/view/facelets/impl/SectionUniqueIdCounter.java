@@ -41,7 +41,7 @@ public class SectionUniqueIdCounter
     
     private final int _radix;
     
-    private String[] _uniqueIdsCache;
+    private final String[] _uniqueIdsCache;
     
     public SectionUniqueIdCounter()
     {
@@ -52,6 +52,7 @@ public class SectionUniqueIdCounter
         _prefix = null;
         _builder = new StringBuilder(30);
         _bufferConversion = new char[15];
+        _uniqueIdsCache = null;
     }
     
     public SectionUniqueIdCounter(String prefix)
@@ -63,6 +64,7 @@ public class SectionUniqueIdCounter
         _prefix = prefix;
         _builder = new StringBuilder(30);
         _bufferConversion = new char[15];
+        _uniqueIdsCache = null;
     }
     
     public SectionUniqueIdCounter(String prefix, String[] cache)
@@ -86,6 +88,7 @@ public class SectionUniqueIdCounter
         _prefix = prefix;
         _builder = new StringBuilder(30);
         _bufferConversion = new char[15];
+        _uniqueIdsCache = null;
     }
 
     /**

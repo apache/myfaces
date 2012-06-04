@@ -89,8 +89,6 @@ final class UIInstructionHandler extends AbstractUIHandler
             FaceletCompositionContext mctx= FaceletCompositionContext.getCurrentInstance(ctx);
             boolean componentFoundInserted = false;
             
-            String componentId = mctx.generateUniqueComponentId();
-            
             if (mctx.isRefreshingSection())
             {
                 c = ComponentSupport.findChildByTagId(parent, id);
@@ -99,12 +97,15 @@ final class UIInstructionHandler extends AbstractUIHandler
             if (c != null)
             {
                 componentFound = true;
+
+                mctx.incrementUniqueComponentId();
                 // mark all children for cleaning
                 mctx.markForDeletion(c);
             }
             else
             {
                 Instruction[] applied;
+                String componentId = mctx.generateUniqueComponentId();
                 if (this.literal)
                 {
                     applied = this.instructions;
