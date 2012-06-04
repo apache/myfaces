@@ -116,4 +116,14 @@ public final class CompositeResouceWrapper extends Resource
         out.writeObject(getLibraryName());
         out.writeObject(getContentType());
     }
+    
+    @Override
+    public String toString()
+    {
+        // Delegate resource in this case could not be available in serialization, or
+        // serialization could happen in other context. So it is better to return
+        // a simple String representing the object without go into delegation.
+        return ( (getLibraryName() != null) ? getLibraryName() : "") + ":"+ 
+               ( (getResourceName() != null) ? getResourceName() : "") ;
+    }
 }
