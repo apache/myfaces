@@ -193,8 +193,6 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         // Cast to use UniqueIdVendor stuff
         FaceletCompositionContext mctx = (FaceletCompositionContext) FaceletCompositionContext.getCurrentInstance(ctx);
                 
-        String componentId = mctx.generateUniqueComponentId();
-            
         // grab our component
         UIComponent c = null;
         //boolean componentFoundInserted = false;
@@ -218,6 +216,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         if (c != null)
         {
             componentFound = true;
+            
+            mctx.incrementUniqueComponentId();
+            
             // mark all children for cleaning
             if (log.isLoggable(Level.FINE))
             {
@@ -247,10 +248,12 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             // assign our unique id
             if (this._id != null)
             {
+                mctx.incrementUniqueComponentId();
                 c.setId(this._id.getValue(ctx));
             }
             else
             {
+                String componentId = mctx.generateUniqueComponentId();
                 UniqueIdVendor uniqueIdVendor = mctx.getUniqueIdVendorFromStack();
                 if (uniqueIdVendor == null)
                 {

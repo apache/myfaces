@@ -887,19 +887,28 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sectionUniqueIdCounter.incrementUniqueId();
     }
     
+    @Override
     public String generateUniqueId()
     {
         return _sectionUniqueIdCounter.generateUniqueId();
     }
     
+    @Override
     public void generateUniqueId(StringBuilder builderToAdd)
     {
         _sectionUniqueIdCounter.generateUniqueId(builderToAdd);
     }
 
+    @Override
     public String generateUniqueComponentId()
     {
         return _sectionUniqueComponentIdCounter.generateUniqueId();
+    }
+    
+    @Override
+    public void incrementUniqueComponentId()
+    {
+        _sectionUniqueComponentIdCounter.incrementUniqueId();
     }
     
     public void endComponentUniqueIdSection()
