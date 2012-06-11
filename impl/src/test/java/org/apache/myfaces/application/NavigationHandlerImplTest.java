@@ -593,14 +593,64 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         NavigationHandlerImpl underTest = new NavigationHandlerImpl();
         // simulate no available ViewRoot (in case of VEE)
         facesContext.setViewRoot(null);
+        
+        facesContext.getExternalContext().getRequestMap().put("javax.servlet.include.servlet_path", "/faces/home.xhtml");
         // test is based on:
         // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
         underTest.handleNavigation(facesContext, null, "viewExpired");
 
         assertNotNull(facesContext.getViewRoot());
-        assertEquals("/viewExpired", facesContext.getViewRoot().getViewId());
+        assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
+    }
+    
+    @Test
+    public void testHandleViewExpiredExpcetion2() throws Exception {
+        NavigationHandlerImpl underTest = new NavigationHandlerImpl();
+        // simulate no available ViewRoot (in case of VEE)
+        facesContext.setViewRoot(null);
+        
+        facesContext.getExternalContext().getRequestMap().put("javax.servlet.include.servlet_path", "/home.jsf");
+        // test is based on:
+        // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
+        underTest.handleNavigation(facesContext, null, "viewExpired.xhtml");
+
+        assertNotNull(facesContext.getViewRoot());
+        assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
         
     }
+    
+    @Test
+    public void testHandleViewExpiredExpcetion3() throws Exception {
+        NavigationHandlerImpl underTest = new NavigationHandlerImpl();
+        // simulate no available ViewRoot (in case of VEE)
+        facesContext.setViewRoot(null);
+        
+        facesContext.getExternalContext().getRequestMap().put("javax.servlet.include.servlet_path", "/home.jsf");
+        // test is based on:
+        // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
+        underTest.handleNavigation(facesContext, null, "viewExpired");
+
+        assertNotNull(facesContext.getViewRoot());
+        
+        // In this case, we have /viewExpired.jsf, but note the default ViewHandlerImpl converts the viewId
+        // from /viewExpired.jsf to /viewExpired.xhtml, when deriveViewId() is called.
+        assertEquals("/viewExpired.jsf", facesContext.getViewRoot().getViewId());
+        
+    }
+
+   @Test
+    public void testHandleViewExpiredExpcetion4() throws Exception {
+        NavigationHandlerImpl underTest = new NavigationHandlerImpl();
+        // simulate no available ViewRoot (in case of VEE)
+        facesContext.setViewRoot(null);
+        // test is based on:
+        // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
+        underTest.handleNavigation(facesContext, null, "viewExpired.xhtml");
+
+        assertNotNull(facesContext.getViewRoot());
+        assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
+        
+    } 
     
     /**
      * Test for MYFACES-3101 - partial request (without redirect)

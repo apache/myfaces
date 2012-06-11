@@ -79,6 +79,8 @@ public class NavigationHandlerImpl
     private Map<String, Set<NavigationCase>> _navigationCases = null;
     private List<String> _wildcardKeys = new ArrayList<String>();
     private Boolean _developmentStage;
+    
+    private NavigationHandlerSupport navigationHandlerSupport;
 
     public NavigationHandlerImpl()
     {
@@ -232,6 +234,23 @@ public class NavigationHandlerImpl
         }
     }
 
+    /**
+    * @return the navigationHandlerSupport
+    */
+    protected NavigationHandlerSupport getNavigationHandlerSupport()
+    {
+        if (navigationHandlerSupport == null)
+        {
+            navigationHandlerSupport = new DefaultNavigationHandlerSupport();
+        }
+        return navigationHandlerSupport;
+    }
+
+    public void setNavigationHandlerSupport(NavigationHandlerSupport navigationHandlerSupport)
+    {
+        this.navigationHandlerSupport = navigationHandlerSupport;
+    }
+
     private static class PreDisposeViewCallback implements VisitCallback
     {
 
@@ -366,17 +385,44 @@ public class NavigationHandlerImpl
         
         // If viewIdToTest does not have a "file extension", use the one from the current viewId.
         index = viewIdToTest.indexOf (".");
-        if (index == -1 && viewId != null)
+        if (index == -1)
         {
-            index = viewId.lastIndexOf(".");
-            
-            if (index != -1)
+            if (viewId != null)
             {
-                //viewIdToTest += viewId.substring (index);
-                viewIdToTest.append(viewId.substring (index));
+                index = viewId.lastIndexOf(".");
+
+                if (index != -1)
+                {
+                    //viewIdToTest += viewId.substring (index);
+                    viewIdToTest.append(viewId.substring (index));
+                }
             }
+            else
+            {
+                // This case happens when for for example there is a ViewExpiredException,
+                // and a custom ExceptionHandler try to navigate using implicit navigation.
+                // In this case, there is no UIViewRoot set on the FacesContext, so viewId 
+                // is null.
+
+                // In this case, it should try to derive the viewId of the view that was
+                // not able to restore, to get the extension and apply it to
+                // the implicit navigation.
+                String tempViewId = getNavigationHandlerSupport().calculateViewId(facesContext);
+                if (tempViewId != null)
+                {
+                    index = tempViewId.lastIndexOf(".");
+                    if(index != -1)
+                    {
+                        viewIdToTest.append(tempViewId.substring (index));
+                    }
+                }
+            }
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("getOutcomeNavigationCase -> viewIdToTest: " + viewIdToTest);
+            } 
         }
-        
+
         // If viewIdToTest does not start with "/", look for the last "/" in viewId.  If not found, simply prepend "/".
         // Otherwise, prepend everything before and including the last "/" in viewId.
         
