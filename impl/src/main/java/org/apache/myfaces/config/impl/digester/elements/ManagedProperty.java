@@ -39,7 +39,7 @@ public class ManagedProperty extends org.apache.myfaces.config.element.ManagedPr
     private int                       _type    = TYPE_UNKNOWN;
     private String                    _propertyName;
     private String                    _propertyClass;
-    private ValueBinding              _valueBinding;
+    private transient ValueBinding    _valueBinding;
     private String                    _value;
     private org.apache.myfaces.config.element.MapEntries                _mapEntries;
     private org.apache.myfaces.config.element.ListEntries               _listEntries;
