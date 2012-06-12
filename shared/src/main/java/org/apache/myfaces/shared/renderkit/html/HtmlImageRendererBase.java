@@ -109,7 +109,7 @@ public class HtmlImageRendererBase
          */                
         if (uiComponent.getAttributes().get(HTML.ALT_ATTR) == null) 
         {
-            if(!facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
+            if(facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
             {
                 log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
                         + " has no attribute alt or attribute resolves to null. Path to component " 
