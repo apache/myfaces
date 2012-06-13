@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>2.1.8-SNAPSHOT</version>
+        <version>2.1.8</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -36,9 +36,9 @@
     <url>http://myfaces.apache.org/core21/myfaces-implee6</url>
         
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/implee6</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/implee6</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/implee6</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.1.8/implee6</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.1.8/implee6</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.1.8/implee6</url>
     </scm>
 
 
