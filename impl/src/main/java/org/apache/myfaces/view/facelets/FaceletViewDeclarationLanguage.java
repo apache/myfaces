@@ -186,7 +186,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
      */
     @JSFWebConfigParam(since = "2.0", alias = "facelets.DECORATORS")
-    public final static String PARAM_DECORATORS = "javax.faces.FACELETS_DECORATORS";
+    public final static String PARAM_DECORATORS = "javax.faces.DECORATORS";
 
     /**
      * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
