@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.faces.component.UIComponent;
@@ -50,6 +52,12 @@ public final class CompositeComponentELUtils
      * in the attributes map of the component by InterfaceHandler.
      */
     public static final String LOCATION_KEY = "org.apache.myfaces.compositecomponent.location";
+
+    /**
+     * Indicates the nesting level where the composite component was created, working as reference
+     * point to all EL expressions created in that point from Facelets engine.
+     */
+    public static final String LEVEL_KEY = "oam.cc.ccLevel";
     
     /**
      * A regular expression used to determine if cc is used in an expression String.
@@ -233,6 +241,170 @@ public final class CompositeComponentELUtils
             currentComponent.pushComponentToEL(facesContext, currentComponent);
         }
     }
+
+    private static int getCCLevel(UIComponent component)
+    {
+        Integer ccLevel = (Integer) component.getAttributes().get(LEVEL_KEY);
+        if (ccLevel == null)
+        {
+            return 0;
+        }
+        return ccLevel.intValue();
+    }
+    
+    /**
+     * Same as getCompositeComponentBasedOnLocation(final FacesContext facesContext, final Location location),
+     * but takes into account the ccLevel to resolve the composite component. 
+     * 
+     * @param facesContext
+     * @param location
+     * @param ccLevel
+     * @return 
+     */
+    public static UIComponent getCompositeComponentBasedOnLocation(final FacesContext facesContext, 
+            final Location location, int ccLevel)
+    {
+        //1 Use getCurrentComponent and getCurrentCompositeComponent to look on the component stack
+        UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
+        
+        if (currentComponent == null)
+        {
+            // Cannot found any component, because we don't have any reference!
+            return null;
+        }
+        
+        UIComponent currentCompositeComponent = UIComponent.getCurrentCompositeComponent(facesContext);
+        
+        //1.1 Use getCurrentCompositeComponent first!
+        if (currentCompositeComponent != null)
+        {
+            Location componentLocation = (Location) currentCompositeComponent.getAttributes().get(LOCATION_KEY);
+            if (componentLocation != null 
+                    && componentLocation.getPath().equals(location.getPath()) && 
+                    (ccLevel == getCCLevel(currentCompositeComponent)) )
+            {
+                return currentCompositeComponent;
+            }
+        }
+        
+        //2. Look on the stack using a recursive algorithm.
+        UIComponent matchingCompositeComponent
+                = lookForCompositeComponentOnStack(facesContext, location, ccLevel, currentComponent);
+        
+        if (matchingCompositeComponent != null)
+        {
+            return matchingCompositeComponent;
+        }
+        
+        //2. Try to find it using UIComponent.getCurrentCompositeComponent(). 
+        // This one will look the direct parent hierarchy of the component,
+        // to see if the composite component can be found.
+        if (currentCompositeComponent != null)
+        {
+            currentComponent = currentCompositeComponent;
+        }
+        else
+        {
+            //Try to find the composite component looking directly the parent
+            //ancestor of the current component
+            //currentComponent = UIComponent.getCurrentComponent(facesContext);
+            boolean found = false;
+            while (currentComponent != null && !found)
+            {
+                String findComponentExpr = (String) currentComponent.getAttributes().get(CC_FIND_COMPONENT_EXPRESSION);
+                if (findComponentExpr != null)
+                {
+                    UIComponent foundComponent = facesContext.getViewRoot().findComponent(findComponentExpr);
+                    if (foundComponent != null)
+                    {
+                        Location foundComponentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
+                        if (foundComponentLocation != null 
+                                && foundComponentLocation.getPath().equals(location.getPath()) &&
+                                ccLevel == getCCLevel(foundComponent))
+                        {
+                            return foundComponent;
+                        }
+                        else
+                        {
+                            while (foundComponent != null)
+                            {
+                                Location componentLocation
+                                        = (Location) foundComponent.getAttributes().get(LOCATION_KEY);
+                                if (componentLocation != null 
+                                        && componentLocation.getPath().equals(location.getPath()) &&
+                                        ccLevel == getCCLevel(foundComponent))
+                                {
+                                    return foundComponent;
+                                }
+                                // get the composite component's parent
+                                foundComponent = UIComponent.getCompositeComponentParent(foundComponent);
+                            }
+                        }
+                    }
+                }
+
+                if (UIComponent.isCompositeComponent(currentComponent))
+                {
+                    found = true;
+                }
+                else
+                {
+                    currentComponent = currentComponent.getParent();
+                }
+            }
+        }
+        
+        //if currentComponent != null means we have a composite component that we can check
+        //Use UIComponent.getCompositeComponentParent() to traverse here.
+        while (currentComponent != null)
+        {
+            Location componentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
+            if (componentLocation != null 
+                    && componentLocation.getPath().equals(location.getPath()) &&
+                    ccLevel == getCCLevel(currentComponent))
+            {
+                return currentComponent;
+            }
+            // get the composite component's parent
+            currentComponent = UIComponent.getCompositeComponentParent(currentComponent);
+        }
+        
+        // not found
+        return null;
+    }
+
+    private static UIComponent lookForCompositeComponentOnStack(final FacesContext facesContext,
+                                                                final Location location, int ccLevel,
+                                                                UIComponent currentComponent)
+    {
+        if (UIComponent.isCompositeComponent(currentComponent))
+        {
+            Location componentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
+            if (componentLocation != null 
+                    && componentLocation.getPath().equals(location.getPath()) &&
+                    (ccLevel == getCCLevel(currentComponent)) )
+            {
+                return currentComponent;
+            }
+        }
+        currentComponent.popComponentFromEL(facesContext);
+        try
+        {
+            UIComponent c = UIComponent.getCurrentComponent(facesContext);
+            if (c != null)
+            {
+                return lookForCompositeComponentOnStack( facesContext, location, ccLevel, c);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        finally
+        {
+            currentComponent.pushComponentToEL(facesContext, currentComponent);
+        }
+    }
     
     /**
      * Trys to get the composite component using getCompositeComponentBasedOnLocation()
@@ -241,10 +413,18 @@ public final class CompositeComponentELUtils
      * @param facesContext
      * @param location
      */
-    public static void saveCompositeComponentForResolver(FacesContext facesContext, Location location)
+    public static void saveCompositeComponentForResolver(FacesContext facesContext, Location location, int ccLevel)
     {
-        UIComponent cc = getCompositeComponentBasedOnLocation(facesContext, location);
-        facesContext.getAttributes().put(CURRENT_COMPOSITE_COMPONENT_KEY, cc);
+        UIComponent cc = ccLevel > 0 ? getCompositeComponentBasedOnLocation(facesContext, location, ccLevel)
+                : getCompositeComponentBasedOnLocation(facesContext, location);
+        //facesContext.getAttributes().put(CURRENT_COMPOSITE_COMPONENT_KEY, cc);
+        List<UIComponent> list = (List<UIComponent>) facesContext.getAttributes().get(CURRENT_COMPOSITE_COMPONENT_KEY);
+        if (list == null)
+        {
+            list = new ArrayList<UIComponent>();
+            facesContext.getAttributes().put(CURRENT_COMPOSITE_COMPONENT_KEY, list);
+        }
+        list.add(cc);
     }
     
     /**
@@ -254,6 +434,11 @@ public final class CompositeComponentELUtils
     public static void removeCompositeComponentForResolver(FacesContext facesContext)
     {
         facesContext.getAttributes().remove(CURRENT_COMPOSITE_COMPONENT_KEY);
+        List<UIComponent> list = (List<UIComponent>) facesContext.getAttributes().get(CURRENT_COMPOSITE_COMPONENT_KEY);
+        if (list != null)
+        {
+            list.remove(list.size()-1);
+        }
     }
     
     /**

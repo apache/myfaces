@@ -45,11 +45,28 @@ public class LocationValueExpressionUEL extends LocationValueExpression
         super(location, delegate);
     }
     
+    public LocationValueExpressionUEL(Location location, ValueExpression delegate, int ccLevel)
+    {
+        super(location, delegate, ccLevel);
+    }
+    
+    public LocationValueExpression apply(int newCCLevel)
+    {
+        if(this.ccLevel == newCCLevel)
+        {
+            return this;
+        }
+        else
+        {
+            return new LocationValueExpressionUEL(this.location, this.delegate, newCCLevel);
+        }
+    }
+    
     @Override
     public ValueReference getValueReference(ELContext context)
     {
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location);
+        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location, ccLevel);
         try
         {
             return delegate.getValueReference(context);

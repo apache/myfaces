@@ -585,4 +585,15 @@ abstract public class FaceletCompositionContext
     {
         return new StringBuilder();
     }
+
+    /**
+     * Returns the current nesting level of composite components found. If
+     * no composite component has been used returns 0.
+     * 
+     * @since 2.1.9, 2.0.15
+     */
+    public int getCompositeComponentLevel()
+    {
+        return 0;
+    }
 }

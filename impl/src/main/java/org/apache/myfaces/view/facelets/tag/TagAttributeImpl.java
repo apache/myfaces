@@ -217,6 +217,11 @@ public final class TagAttributeImpl extends TagAttribute
                      (type != null && type.equals(localCachedExpression[(i*3)])) ) &&
                      (Arrays.equals(paramTypes, (Class[]) localCachedExpression[(i*3)+1])) )
                 {
+                    if ((this.capabilities & EL_CC) != 0)
+                    {
+                        return ((LocationMethodExpression)localCachedExpression[(i*3)+2]).apply(
+                                actx.getFaceletCompositionContext().getCompositeComponentLevel());
+                    }
                     return (MethodExpression) localCachedExpression[(i*3)+2];
                 }
             }
@@ -263,7 +268,8 @@ public final class TagAttributeImpl extends TagAttribute
                 // (see MYFACES-2561 for details)
                 if ((this.capabilities & EL_CC) != 0)
                 {
-                    methodExpression = new LocationMethodExpression(getLocation(), methodExpression);
+                    methodExpression = new LocationMethodExpression(getLocation(), methodExpression, 
+                            actx.getFaceletCompositionContext().getCompositeComponentLevel());
                 }
             }
             
@@ -442,10 +448,22 @@ public final class TagAttributeImpl extends TagAttribute
             //If the expected type is the same return the cached one
             if (localCachedExpression[0] == null && type == null)
             {
+                // If #{cc} recalculate the composite component level
+                if ((this.capabilities & EL_CC) != 0)
+                {
+                    return ((LocationValueExpression)localCachedExpression[1]).apply(
+                            actx.getFaceletCompositionContext().getCompositeComponentLevel());
+                }
                 return (ValueExpression) localCachedExpression[1];
             }
             else if (localCachedExpression[0] != null && localCachedExpression[0].equals(type))
             {
+                // If #{cc} recalculate the composite component level
+                if ((this.capabilities & EL_CC) != 0)
+                {
+                    return ((LocationValueExpression)localCachedExpression[1]).apply(
+                            actx.getFaceletCompositionContext().getCompositeComponentLevel());
+                }
                 return (ValueExpression) localCachedExpression[1];
             }
         }
@@ -488,11 +506,13 @@ public final class TagAttributeImpl extends TagAttribute
             {
                 if (ExternalSpecifications.isUnifiedELAvailable())
                 {
-                    valueExpression = new LocationValueExpressionUEL(getLocation(), valueExpression);
+                    valueExpression = new LocationValueExpressionUEL(getLocation(), valueExpression, 
+                            actx.getFaceletCompositionContext().getCompositeComponentLevel());
                 }
                 else
                 {
-                    valueExpression = new LocationValueExpression(getLocation(), valueExpression);
+                    valueExpression = new LocationValueExpression(getLocation(), valueExpression, 
+                            actx.getFaceletCompositionContext().getCompositeComponentLevel());
                 }
             }
             else if ((this.capabilities & EL_RESOURCE) != 0)

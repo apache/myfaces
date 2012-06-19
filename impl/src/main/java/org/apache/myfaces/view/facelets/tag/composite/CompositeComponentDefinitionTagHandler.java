@@ -150,6 +150,13 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                         try
                         {
                             mctx.pushCompositeComponentToStack(compositeBaseParent);
+                            
+                            // Store the ccLevel key here
+                            if (!compositeBaseParent.getAttributes().containsKey(CompositeComponentELUtils.LEVEL_KEY))
+                            {
+                                compositeBaseParent.getAttributes()
+                                    .put(CompositeComponentELUtils.LEVEL_KEY, mctx.getCompositeComponentLevel());
+                            }
 
                             _nextHandler.apply(ctx, parent);
                             
@@ -195,6 +202,13 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                     try
                     {
                         mctx.pushCompositeComponentToStack(compositeBaseParent);
+                        
+                        // Store the ccLevel key here
+                        if (!compositeBaseParent.getAttributes().containsKey(CompositeComponentELUtils.LEVEL_KEY))
+                        {
+                            compositeBaseParent.getAttributes()
+                                .put(CompositeComponentELUtils.LEVEL_KEY, mctx.getCompositeComponentLevel());
+                        }
                     
                         _nextHandler.apply(ctx, parent);
                         
@@ -230,6 +244,13 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
             try
             {
                 mctx.pushCompositeComponentToStack(compositeBaseParent);
+
+                // Store the ccLevel key here
+                if (!compositeBaseParent.getAttributes().containsKey(CompositeComponentELUtils.LEVEL_KEY))
+                {
+                    compositeBaseParent.getAttributes()
+                        .put(CompositeComponentELUtils.LEVEL_KEY, mctx.getCompositeComponentLevel());
+                }
             
                 _nextHandler.apply(ctx, parent);
             }
