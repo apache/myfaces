@@ -19,29 +19,42 @@
 
 package org.apache.myfaces.view.facelets.tag.jstl.core;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.el.ExpressionFactory;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlForm;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
+import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
+import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
 
 public final class JstlCoreTestCase extends FaceletTestCase {
 
+    @Override
+    protected ExpressionFactory createExpressionFactory()
+    {
+        return new org.apache.el.ExpressionFactoryImpl();
+    }
+    
     @Override
     protected void setupComponents() throws Exception
     {
@@ -51,6 +64,11 @@ public final class JstlCoreTestCase extends FaceletTestCase {
                 HtmlForm.class.getName());
         application.addComponent(HtmlCommandButton.COMPONENT_TYPE,
                 HtmlCommandButton.class.getName());
+        application.addComponent(HtmlInputText.COMPONENT_TYPE,
+                HtmlInputText.class.getName());
+        application.addComponent(HtmlOutputText.COMPONENT_TYPE,
+                HtmlOutputText.class.getName());
+        
     }
 
     @Override
@@ -65,6 +83,10 @@ public final class JstlCoreTestCase extends FaceletTestCase {
                 "javax.faces.Form", new HtmlFormRenderer());
         renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
                 "javax.faces.Button", new HtmlButtonRenderer());
+        renderKit.addRenderer(HtmlInputText.COMPONENT_FAMILY,
+                "javax.faces.Text", new HtmlTextRenderer());
+        renderKit.addRenderer(HtmlOutputText.COMPONENT_FAMILY,
+                "javax.faces.Text", new HtmlTextRenderer());
     }
     
     @Test
@@ -109,13 +131,176 @@ public final class JstlCoreTestCase extends FaceletTestCase {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root,"forEach.xml");
         
-        FastWriter fw = new FastWriter();
-        MockResponseWriter mrw = new MockResponseWriter(fw);
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
         facesContext.setResponseWriter(mrw);
-        root.encodeAll(facesContext);
-        //System.out.println(fw);
         
-        //System.out.println(root);
+        root.encodeAll(facesContext);
+        sw.flush();
+    }
+    
+    @Test
+    public void testForEach1() throws Exception {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map session = facesContext.getExternalContext().getSessionMap();
+        Collection c = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            c.add(new Character((char)('A' + i)));
+        }
+        session.put("list", c);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root,"forEach1.xhtml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        root.encodeAll(facesContext);
+        sw.flush();
+        
+        Assert.assertTrue(sw.toString().contains("A = true/false"));
+        Assert.assertTrue(sw.toString().contains("B = false/false"));
+        Assert.assertTrue(sw.toString().contains("C = false/false"));
+        Assert.assertTrue(sw.toString().contains("D = false/false"));
+        Assert.assertTrue(sw.toString().contains("E = false/false"));
+        Assert.assertTrue(sw.toString().contains("F = false/false"));
+        Assert.assertTrue(sw.toString().contains("G = false/false"));
+        Assert.assertTrue(sw.toString().contains("H = false/false"));
+        Assert.assertTrue(sw.toString().contains("I = false/false"));
+        Assert.assertTrue(sw.toString().contains("J = false/true"));
+    }
+
+    /**
+     * Verify an outer c:set declaration does not affect the block
+     * after c:forEach
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testForEach2() throws Exception {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map session = facesContext.getExternalContext().getSessionMap();
+        Collection c = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            c.add(new Character((char)('A' + i)));
+        }
+        session.put("list", c);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root,"forEach2.xhtml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        root.encodeAll(facesContext);
+        sw.flush();
+        
+        Assert.assertTrue(sw.toString().contains("value1 = /"));
+    }
+    
+    @Test
+    public void testForEach2CacheAlways() throws Exception
+    {
+        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+                ELExpressionCacheMode.always.toString());
+        testForEach2();
+    }
+
+
+    /**
+     * Verify an outer c:set declaration does not affect the inner block
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testForEach3() throws Exception {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map session = facesContext.getExternalContext().getSessionMap();
+        Collection c = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            c.add(new Character((char)('A' + i)));
+        }
+        session.put("list", c);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root,"forEach3.xhtml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        root.encodeAll(facesContext);
+        sw.flush();
+        
+        Assert.assertTrue(sw.toString().contains("A = true/false"));
+        Assert.assertTrue(sw.toString().contains("B = false/false"));
+        Assert.assertTrue(sw.toString().contains("C = false/false"));
+        Assert.assertTrue(sw.toString().contains("D = false/false"));
+        Assert.assertTrue(sw.toString().contains("E = false/false"));
+        Assert.assertTrue(sw.toString().contains("F = false/false"));
+        Assert.assertTrue(sw.toString().contains("G = false/false"));
+        Assert.assertTrue(sw.toString().contains("H = false/false"));
+        Assert.assertTrue(sw.toString().contains("I = false/false"));
+        Assert.assertTrue(sw.toString().contains("J = false/true"));
+        Assert.assertFalse(sw.toString().contains("value1 ="));
+    }
+    
+    @Test
+    public void testForEach3CacheAlways() throws Exception
+    {
+        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+                ELExpressionCacheMode.always.toString());
+        testForEach3();
+    }
+
+
+    /**
+     * Verify encapsulation principle for definitions of c:forEach and ui:param
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testForEach4() throws Exception {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map session = facesContext.getExternalContext().getSessionMap();
+        Collection c = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            c.add(new Character((char)('A' + i)));
+        }
+        session.put("list", c);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root,"forEach4.xhtml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        root.encodeAll(facesContext);
+        sw.flush();
+        
+        Assert.assertTrue(sw.toString().contains("value = A"));
+        Assert.assertTrue(sw.toString().contains("value = B"));
+        Assert.assertTrue(sw.toString().contains("value = C"));
+        Assert.assertTrue(sw.toString().contains("value = D"));
+        Assert.assertTrue(sw.toString().contains("value = E"));
+        Assert.assertTrue(sw.toString().contains("value = F"));
+        Assert.assertTrue(sw.toString().contains("value = G"));
+        Assert.assertTrue(sw.toString().contains("value = H"));
+        Assert.assertTrue(sw.toString().contains("value = I"));
+        Assert.assertTrue(sw.toString().contains("value = J"));
+        Assert.assertTrue(!sw.toString().contains("value = value"));
+        Assert.assertTrue(!sw.toString().contains("A = A"));
+    }
+
+    @Test
+    public void testForEach4CacheAlways() throws Exception
+    {
+        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+                ELExpressionCacheMode.always.toString());
+        testForEach4();
     }
 
 }
