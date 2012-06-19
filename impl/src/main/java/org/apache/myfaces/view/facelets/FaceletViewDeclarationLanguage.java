@@ -1418,7 +1418,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             return new LocationMethodExpression(
                     ((LocationValueExpression) originalValueExpression).getLocation(),
                     reWrapMethodExpression(createdMethodExpression,
-                            ((LocationValueExpression) originalValueExpression).getWrapped()));
+                            ((LocationValueExpression) originalValueExpression).getWrapped()),
+                    ((LocationValueExpression) originalValueExpression).getCCLevel());
         }
         else if (originalValueExpression instanceof FacesWrapper &&
                 ((FacesWrapper) originalValueExpression).getWrapped() instanceof ValueExpression)

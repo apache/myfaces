@@ -139,6 +139,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private StringBuilder _sharedStringBuilder;
     
+    private int _ccLevel;
+    
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
         super();
@@ -175,6 +177,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _level = 0;
         _isInMetadataSection = 0;
         _sharedStringBuilder = null;
+        _ccLevel = 0;
     }
     
     @Override
@@ -261,6 +264,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
             _compositeComponentStack = new LinkedList<UIComponent>();
         }
         _compositeComponentStack.addFirst(parent);
+        _ccLevel++;
     }
 
     @Override
@@ -270,6 +274,13 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         {
             _compositeComponentStack.removeFirst();
         }
+        _ccLevel--;
+    }
+    
+    @Override
+    public int getCompositeComponentLevel()
+    {
+        return _ccLevel;
     }
 
     @Override

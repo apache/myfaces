@@ -19,6 +19,7 @@
 package org.apache.myfaces.el.unified.resolver.implicitobject;
 
 import java.beans.FeatureDescriptor;
+import java.util.List;
 
 import javax.el.ELContext;
 import javax.faces.component.UIComponent;
@@ -49,8 +50,15 @@ public class CompositeComponentImplicitObject extends ImplicitObject
         
         // Look for the attribute set by LocationValueExpression
         // or LocationMethodExpression on the FacesContext
-        UIComponent cc = (UIComponent) facesContext.getAttributes()
+        List<UIComponent> list = (List<UIComponent>) facesContext.getAttributes()
                 .get(CompositeComponentELUtils.CURRENT_COMPOSITE_COMPONENT_KEY);
+        
+        UIComponent cc = null;
+        
+        if (list != null && !list.isEmpty())
+        {
+            cc = list.get(list.size()-1);
+        }
         if (cc == null)
         {
             // take the composite component from the stack

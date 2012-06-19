@@ -253,6 +253,19 @@ public class ELText
             
             if (actx.isAllowCacheELExpressions() && cached != null)
             {
+                // In TagAttributeImpl.getValueExpression(), it is necessary to do an
+                // special logic to detect the cases where #{cc} is included into the
+                // EL expression and set the proper ccLevel. In this case, it is usual
+                // the parent composite component is always on top, but it is possible to
+                // write a nesting case with <composite:insertChildren>, and
+                // pass a flat EL expression over itself. So, it is necessary to update
+                // the ccLevel to make possible to find the right parent where this 
+                // expression belongs to.
+                if ((this.capabilities & EL_CC) != 0)
+                {
+                    return new ELTextVariable(((LocationValueExpression)cached.ve).apply(
+                            actx.getFaceletCompositionContext().getCompositeComponentLevel()));
+                }
                 return cached;
             }
             
@@ -271,11 +284,13 @@ public class ELText
                         {
                             if (ExternalSpecifications.isUnifiedELAvailable())
                             {
-                                valueExpression = new LocationValueExpressionUEL(location, valueExpression);
+                                valueExpression = new LocationValueExpressionUEL(location, valueExpression,
+                                        actx.getFaceletCompositionContext().getCompositeComponentLevel());
                             }
                             else
                             {
-                                valueExpression = new LocationValueExpression(location, valueExpression);
+                                valueExpression = new LocationValueExpression(location, valueExpression,
+                                        actx.getFaceletCompositionContext().getCompositeComponentLevel());
                             }
                         }
                     }

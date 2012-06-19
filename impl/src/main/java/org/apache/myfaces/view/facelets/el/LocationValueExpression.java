@@ -53,6 +53,7 @@ public class LocationValueExpression extends ValueExpression
     // location and delegate need to be available in LocationValueExpressionUEL
     Location location;
     ValueExpression delegate;
+    int ccLevel;
     
     public LocationValueExpression()
     {
@@ -63,11 +64,36 @@ public class LocationValueExpression extends ValueExpression
     {
         this.location = location;
         this.delegate = delegate;
+        this.ccLevel = 0;
+    }
+
+    public LocationValueExpression(Location location, ValueExpression delegate, int ccLevel)
+    {
+        this.location = location;
+        this.delegate = delegate;
+        this.ccLevel = ccLevel;
     }
     
     public Location getLocation()
     {
         return location;
+    }
+    
+    public int getCCLevel()
+    {
+        return ccLevel;
+    }
+    
+    public LocationValueExpression apply(int newCCLevel)
+    {
+        if(this.ccLevel == newCCLevel)
+        {
+            return this;
+        }
+        else
+        {
+            return new LocationValueExpression(this.location, this.delegate, newCCLevel);
+        }
     }
     
     @Override
@@ -80,7 +106,7 @@ public class LocationValueExpression extends ValueExpression
     public Class<?> getType(ELContext context)
     {
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location);
+        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location, ccLevel);
         try
         {
             return delegate.getType(context);
@@ -95,7 +121,7 @@ public class LocationValueExpression extends ValueExpression
     public Object getValue(ELContext context)
     {
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location);
+        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location, ccLevel);
         try
         {
             return delegate.getValue(context);
@@ -110,7 +136,7 @@ public class LocationValueExpression extends ValueExpression
     public boolean isReadOnly(ELContext context)
     {
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location);
+        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location, ccLevel);
         try
         {
             return delegate.isReadOnly(context);
@@ -125,7 +151,7 @@ public class LocationValueExpression extends ValueExpression
     public void setValue(ELContext context, Object value)
     {
         FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
-        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location);
+        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location, ccLevel);
         try
         {
             delegate.setValue(context, value);
@@ -169,11 +195,13 @@ public class LocationValueExpression extends ValueExpression
     {
         this.delegate = (ValueExpression) in.readObject();
         this.location = (Location) in.readObject();
+        this.ccLevel = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.delegate);
         out.writeObject(this.location);
+        out.writeInt(this.ccLevel);
     }
 }
