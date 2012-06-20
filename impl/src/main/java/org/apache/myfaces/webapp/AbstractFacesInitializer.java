@@ -51,6 +51,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * Performs common initialization tasks.
@@ -158,6 +159,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
 
             WebConfigParamsLogger.logWebContextParams(facesContext);
+            
+            //Force output EL message
+            ExternalSpecifications.isUnifiedELAvailable();
+            ExternalSpecifications.isBeanValidationAvailable();
 
             // print out a very prominent log message if the project stage is != Production
             if (!facesContext.isProjectStage(ProjectStage.Production) &&

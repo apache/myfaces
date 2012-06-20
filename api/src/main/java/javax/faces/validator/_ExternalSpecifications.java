@@ -87,7 +87,7 @@ final class _ExternalSpecifications
                 beanValidationAvailable = false;
             }
 
-            log.info("MyFaces Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
+            //log.info("MyFaces Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
         }
         return beanValidationAvailable; 
     }
@@ -120,7 +120,7 @@ final class _ExternalSpecifications
                 unifiedELAvailable = false;
             }
 
-            log.info("MyFaces Unified EL support " + (unifiedELAvailable ? "enabled" : "disabled"));
+            //log.info("MyFaces Unified EL support " + (unifiedELAvailable ? "enabled" : "disabled"));
         }
         return unifiedELAvailable;
     }
