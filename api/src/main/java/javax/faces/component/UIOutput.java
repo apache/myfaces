@@ -165,27 +165,51 @@ public class UIOutput extends UIComponentBase implements ValueHolder
                     if (attachedState != null)
                     {
                         nullDelta = false;
+                        converterSaved = new _AttachedDeltaWrapper(_converter.getClass(),
+                            attachedState);
                     }
-                    converterSaved = new _AttachedDeltaWrapper(_converter.getClass(),
-                        attachedState);
                 }
                 else
                 {
+                    nullDelta = false;
                     converterSaved = null;
                 }
             }
             else if (_isSetConverter() || _converter != null)
             {
-                //Full
-                converterSaved = saveAttachedState(facesContext,_converter);
-                nullDelta = false;
+                // A converter that does not implement StateHolder does not need
+                // to save/restore the state, so we can consider it inmutable.
+                // If Call saveAttachedState(), keep the value, but do not set
+                // nullDelta only if the converter was not set after markInitialState(),
+                // so if the parent returns null, this part will return
+                // null and when is restored, it will return null, but it prevents
+                // add the attached object into the state.
+                if (!_isSetConverter() && _converter != null &&
+                    !(_converter instanceof StateHolder))
+                {
+                    //No op. Note converterSaved is not taken into account if
+                    //nullDelta is true.
+                }
+                else
+                {
+                    //Full
+                    converterSaved = saveAttachedState(facesContext,_converter);
+                    // If _converter == null, setConverter() was called after
+                    // markInitialState(), set nullDelta to false and save the
+                    // null spot.
+                    nullDelta = false;
+                }
             }
-            
+
             if (parentSaved == null && nullDelta)
             {
                 //No values
                 return null;
-            }   
+            }
+            else if (parentSaved != null && nullDelta)
+            {
+                return new Object[]{parentSaved};
+            }
             return new Object[]{parentSaved, converterSaved};
         }
         else
@@ -207,17 +231,23 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         
         Object[] values = (Object[])state;
         super.restoreState(facesContext,values[0]);
-        if (values[1] instanceof _AttachedDeltaWrapper)
+        // Have values.length == 1 considers _converter is nullDelta, in that
+        // case, there is no need to do any changes, but note this will only work
+        // if UIOutput does not have any more StateHolder properties!.
+        if (values.length == 2)
         {
-            //Delta
-            ((StateHolder)_converter).restoreState(facesContext,
-                    ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+            if (values[1] instanceof _AttachedDeltaWrapper)
+            {
+                //Delta
+                ((StateHolder)_converter).restoreState(facesContext,
+                        ((_AttachedDeltaWrapper) values[1]).getWrappedStateObject());
+            }
+            else
+            {
+                //Full
+                _converter = (javax.faces.convert.Converter) restoreAttachedState(facesContext,values[1]);
+            }
         }
-        else
-        {
-            //Full
-            _converter = (javax.faces.convert.Converter) restoreAttachedState(facesContext,values[1]);
-        }         
     }
     
     /*
