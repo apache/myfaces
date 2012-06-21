@@ -968,8 +968,25 @@ public class UIInput extends UIOutput implements EditableValueHolder
         , submittedValue
     }
     
+    private static final Object[] INITIAL_STATE_PROPERTIES = new
+            Object[]{
+                UIOutput.PropertyKeys.value,
+                null,
+                UIInput.PropertyKeys.localValueSet,
+                false,
+                UIInput.PropertyKeys.submittedValue,
+                null,
+                UIInput.PropertyKeys.valid,
+                true
+            };
+    
     public void markInitialState()
     {
+        StateHelper helper = getStateHelper(false);
+        if (helper != null && helper instanceof _DeltaStateHelper)
+        {
+            ((_DeltaStateHelper)helper).markPropertyInInitialState(INITIAL_STATE_PROPERTIES);
+        }
         super.markInitialState();
         if (_validatorList != null)
         {
