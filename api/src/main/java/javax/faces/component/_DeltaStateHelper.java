@@ -162,6 +162,9 @@ class _DeltaStateHelper implements StateHelper
      */
     private Map<Serializable, Object> _deltas;
     
+    //private Map<Serializable, Object> _initialState;
+    private Object[] _initialState;
+    
     /**
      * This map keep track of StateHolder keys, to be saved when
      * saveState is called. 
@@ -501,6 +504,48 @@ class _DeltaStateHelper implements StateHelper
     {
         Map serializableMap = (isInitialStateMarked()) ? _deltas : _fullState;
 
+        if (_initialState != null && _deltas != null && !_deltas.isEmpty()
+            && isInitialStateMarked())
+        {
+            // Before save the state, check if the property was changed from the
+            // initial state value. If the property was changed but it has the
+            // same value from the one in the initial state, we can remove it
+            // from delta, because when the view is built again, it will be
+            // restored to the same state. This check suppose some additional
+            // map.get() calls when saving the state, but using it only in properties
+            // that are expected to change over lifecycle (value, localValueSet,
+            // submittedValue, valid), is worth to do it, because those ones
+            // always generated delta changes.
+            for (int i = 0; i < _initialState.length; i+=2)
+            {
+                Serializable key = (Serializable) _initialState[i];
+                Object defaultValue = _initialState[i+1];
+                
+                // Check only if there is delta state for that property, in other
+                // case it is not necessary. Remember it is possible to have
+                // null values inside the Map.
+                if (_deltas.containsKey(key))
+                {
+                    Object deltaValue = _deltas.get(key);
+                    if (deltaValue == null && defaultValue == null)
+                    {
+                        _deltas.remove(key);
+                        if (_deltas.isEmpty())
+                        {
+                            break;
+                        }
+                    }
+                    if (deltaValue != null && deltaValue.equals(defaultValue))
+                    {
+                        _deltas.remove(key);
+                        if (_deltas.isEmpty())
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         if (serializableMap == null || serializableMap.size() == 0)
         {
             return null;
@@ -818,6 +863,45 @@ class _DeltaStateHelper implements StateHelper
                 }                
             }
             return values;
+        }
+    }
+
+    public void markPropertyInInitialState(Object[] defaultInitialState)
+    {
+        // Check if in the fullState, one of the default properties were changed
+        boolean canApplyDefaultInitialState = true;
+        for (int i = 0; i < defaultInitialState.length; i+=2)
+        {
+            Serializable key = (Serializable) defaultInitialState[i];
+            if (_fullState.containsKey(key))
+            {
+                canApplyDefaultInitialState = false;
+                break;
+            }
+        }
+        if (canApplyDefaultInitialState)
+        {
+            // Most of the times the defaultInitialState is used.
+            _initialState = defaultInitialState;
+        }
+        else
+        {
+            // recalculate it
+            Object[] initialState = new Object[defaultInitialState.length];
+            for (int i = 0; i < defaultInitialState.length; i+=2)
+            {
+                Serializable key = (Serializable) defaultInitialState[i];
+                initialState[i] = key;
+                if (_fullState.containsKey(key))
+                {
+                    initialState[i+1] = _fullState.get(key);
+                }
+                else
+                {
+                    initialState[i+1] = defaultInitialState[i+1];
+                }
+            }
+            _initialState = initialState;
         }
     }
 }
