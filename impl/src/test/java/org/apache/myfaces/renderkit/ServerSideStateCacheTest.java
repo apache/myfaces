@@ -18,10 +18,17 @@
  */
 package org.apache.myfaces.renderkit;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Map;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.StateManager;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 import org.junit.Test;
 import org.testng.Assert;
 
@@ -35,8 +42,11 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
-        
+
+        // Initialization
+        setupRequest();
         StateCache stateCache = new ServerSideStateCacheImpl();
+        tearDownRequest();
         
         Object savedToken;
         Object firstSavedToken;
@@ -44,7 +54,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
         try
         {
             setupRequest();
-            
+           
             facesContext.getViewRoot().setViewId("view1.xhtml");
             savedToken = stateCache.saveSerializedView(facesContext, 1);
             firstSavedToken = savedToken;
@@ -99,7 +109,134 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
         {
             tearDownRequest();
         }
+    }
+    
+    @Test
+    public void testSaveRestoreStateWrongViewId() throws Exception
+    {
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+
+        // Initialization
+        setupRequest();
+        StateCache stateCache = new ClientSideStateCacheImpl();
+        tearDownRequest();
         
+        Object savedToken;
+        Object firstSavedToken;
+        
+        try
+        {
+            setupRequest();
+           
+            facesContext.getViewRoot().setViewId("/view1.xhtml");
+            savedToken = stateCache.saveSerializedView(facesContext, 1);
+            firstSavedToken = savedToken;
+        }
+        finally
+        {
+            tearDownRequest();
+        }
+        
+        try
+        {
+            setupRequest();
+            
+            // Note we are trying to restore restoring another different view with a token from the previous view.
+            // It should return null and later throw ViewExpiredException
+            // In server side state saving, the hashCode of the viewId should be part of the key used to restore
+            // the state, along with a counter.
+            Object value = stateCache.restoreSerializedView(facesContext, "/view2.xhtml", firstSavedToken);
+            
+            Assert.assertNull(value);
+        }
+        finally
+        {
+            tearDownRequest();
+        }
+        
+        try
+        {
+            setupRequest();
+            
+            // It should restore this:
+            Object value = stateCache.restoreSerializedView(facesContext, "/view1.xhtml", firstSavedToken);
+            
+            Assert.assertEquals(1, value);
+        }
+        finally
+        {
+            tearDownRequest();
+        }
         
     }
+    
+    public void tryStateKeySerialization() throws Exception
+    {
+        // Initialization
+        setupRequest();
+        StateCache stateCache = new ServerSideStateCacheImpl();
+        tearDownRequest();
+        
+        Object savedToken;
+        Object firstSavedToken;
+        
+        try
+        {
+            setupRequest();
+            facesContext.getViewRoot().setViewId("view1.xhtml");
+            savedToken = stateCache.saveSerializedView(facesContext, 1);
+            firstSavedToken = savedToken;
+            
+            for (Map.Entry<String, Object> entry : facesContext.getExternalContext().getSessionMap().entrySet())
+            {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+                ObjectOutputStream oos = new ObjectOutputStream(baos);
+                oos.writeObject(entry.getValue());
+                oos.flush();
+                baos.flush();
+                ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+                ObjectInputStream ois = new ObjectInputStream(bais);
+                Object blorg = ois.readObject();
+            }
+        }
+        finally
+        {
+            tearDownRequest();
+        }
+    }
+
+    @Test
+    public void testStateKeySerialization1() throws Exception
+    {
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
+        servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
+        servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Production.toString());
+        
+        tryStateKeySerialization();
+    }
+    
+    @Test
+    public void testStateKeySerialization2() throws Exception
+    {
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
+        servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
+        servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Production.toString());
+        servletContext.addInitParameter("org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN", "random");
+        
+        tryStateKeySerialization();
+    }
+    
+    @Test
+    public void testStateKeySerialization3() throws Exception
+    {
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
+        servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
+        servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Development.toString());
+        
+        tryStateKeySerialization();
+    }
+    
 }
