@@ -93,46 +93,49 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     {
         ResponseWriter responseWriter = facesContext.getResponseWriter();
 
-        Object token = null;
-        Object[] savedState = new Object[2];
+        Object savedStateObject = null;
         
         if (isHandlingStateCachingMechanics(facesContext))
         {
             //token = getStateCache(facesContext).saveSerializedView(facesContext, state);
-            token = getStateCache(facesContext).encodeSerializedState(facesContext, state);
+            savedStateObject = getStateCache(facesContext).encodeSerializedState(facesContext, state);
         }
         else
         {
+            Object token = null;
+            Object[] savedState = new Object[2];
             token = state;
-        }
-
-        if (log.isLoggable(Level.FINEST))
-        {
-            log.finest("Writing state in client");
-        }
-
-
-        if (token != null)
-        {
-            savedState[STATE_PARAM] = token;
-        }
-        else
-        {
+            
             if (log.isLoggable(Level.FINEST))
             {
-                log.finest("No component states to be saved in client response!");
+                log.finest("Writing state in client");
             }
-        }
 
-        savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
-        
-        if (log.isLoggable(Level.FINEST))
-        {
-            log.finest("Writing view state and renderKit fields");
+
+            if (token != null)
+            {
+                savedState[STATE_PARAM] = token;
+            }
+            else
+            {
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("No component states to be saved in client response!");
+                }
+            }
+
+            savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
+
+            if (log.isLoggable(Level.FINEST))
+            {
+                log.finest("Writing view state and renderKit fields");
+            }
+            
+            savedStateObject = savedState;
         }
 
         // write the view state field
-        writeViewStateField(facesContext, responseWriter, savedState);
+        writeViewStateField(facesContext, responseWriter, savedStateObject);
 
         // renderKitId field
         writeRenderKitIdField(facesContext, responseWriter);
@@ -194,7 +197,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     @Override
     public Object getState(FacesContext facesContext, String viewId)
     {
-        Object[] savedState = getSavedState(facesContext);
+        Object savedState = getSavedState(facesContext);
         if (savedState == null)
         {
             return null;
@@ -202,11 +205,11 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         if (isHandlingStateCachingMechanics(facesContext))
         {
-            return getStateCache(facesContext).restoreSerializedView(facesContext, viewId, savedState[STATE_PARAM]);
+            return getStateCache(facesContext).restoreSerializedView(facesContext, viewId, savedState);
         }
         else
         {
-            return savedState[STATE_PARAM];
+            return ((Object[])savedState)[STATE_PARAM];
         }
     }
 
@@ -247,7 +250,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * 
      * @return the reconstructed state, or <code>null</code> if there was no saved state
      */
-    private Object[] getSavedState(FacesContext facesContext)
+    private Object getSavedState(FacesContext facesContext)
     {
         Object encodedState = 
             facesContext.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
@@ -256,32 +259,40 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             return null;
         }
 
-        Object[] savedState = (Object[])StateUtils.reconstruct((String)encodedState, facesContext.getExternalContext());
-
-
-        if (savedState == null)
-        {
-            if (log.isLoggable(Level.FINEST))
-            {
-                log.finest("No saved state");
-            }
-            return null;
-        }
+        Object savedStateObject = StateUtils.reconstruct((String)encodedState, facesContext.getExternalContext());
         
-        String restoredViewId = (String)savedState[VIEWID_PARAM];
-
-        if (restoredViewId == null)
+        if (isHandlingStateCachingMechanics(facesContext))
         {
-            // no saved state or state of different viewId
-            if (log.isLoggable(Level.FINEST))
+            return savedStateObject;
+        }
+        else
+        {
+            Object[] savedState = (Object[]) savedStateObject;
+
+            if (savedState == null)
             {
-                log.finest("No saved state or state of a different viewId: " + restoredViewId);
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("No saved state");
+                }
+                return null;
             }
 
-            return null;
-        }
+            String restoredViewId = (String)savedState[VIEWID_PARAM];
 
-        return savedState;
+            if (restoredViewId == null)
+            {
+                // no saved state or state of different viewId
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("No saved state or state of a different viewId: " + restoredViewId);
+                }
+
+                return null;
+            }
+
+            return savedState;
+        }
     }
 
     /**
@@ -310,19 +321,19 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         }
         else
         {
-            state = baseState;
+            //state = baseState;
+            Object[] savedState = new Object[2];
+
+            if (state != null)
+            {
+                savedState[STATE_PARAM] = baseState;
+            }
+
+            savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
+            
+            state = savedState;
         }
-        
-        Object[] savedState = new Object[2];
-        
-        if (state != null)
-        {
-            savedState[STATE_PARAM] = state;
-        }
-        
-        savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
-        
-        return StateUtils.construct(savedState, facesContext.getExternalContext());
+        return StateUtils.construct(state, facesContext.getExternalContext());
     }
     
     @Override

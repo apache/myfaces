@@ -102,10 +102,14 @@ public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequest
     {
         StateManager stateManager = null;
         String viewStateParam = null;
+
+        setupRequest();
         
         ((MockRenderKit)renderKit).setResponseStateManager(new HtmlResponseStateManager());
         StateUtils.initSecret(servletContext);
         servletContext.setAttribute(StateUtils.SERIAL_FACTORY, new DefaultSerialFactory());
+        
+        tearDownRequest();
         
         try
         {
