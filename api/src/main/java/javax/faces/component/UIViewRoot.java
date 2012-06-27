@@ -711,7 +711,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @JSFProperty(tagExcluded = true)
     public String getViewId()
     {
-        return (String) getStateHelper().eval(PropertyKeys.viewId);
+        return (String) getStateHelper().get(PropertyKeys.viewId);
     }
 
     /**
