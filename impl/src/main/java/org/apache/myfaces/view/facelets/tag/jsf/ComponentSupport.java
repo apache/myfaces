@@ -146,10 +146,9 @@ public final class ComponentSupport
         Iterator<UIComponent> itr = null;
         if (parent.getChildCount() > 0)
         {
-            itr = parent.getChildren().iterator();
-            while (itr.hasNext())
+            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
             {
-                UIComponent child = itr.next();
+                UIComponent child = parent.getChildren().get(i);
                 if (id.equals(child.getAttributes().get(MARK_CREATED)))
                 {
                     return child;
@@ -167,13 +166,27 @@ public final class ComponentSupport
                              .get(FACET_CREATED_UIPANEL_MARKER)))
                 {
                     // only check the children and facets of the panel
-                    Iterator<UIComponent> itr2 = facet.getFacetsAndChildren();
-                    while (itr2.hasNext())
+                    if (facet.getChildCount() > 0)
                     {
-                        UIComponent child = itr2.next();
-                        if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                        for (int i = 0, childCount = facet.getChildCount(); i < childCount; i ++)
                         {
-                            return child;
+                            UIComponent child = facet.getChildren().get(i);
+                            if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                            {
+                                return child;
+                            }
+                        }
+                    }
+                    if (facet.getFacetCount() > 0)
+                    {
+                        Iterator<UIComponent> itr2 = facet.getFacets().values().iterator();
+                        while (itr2.hasNext())
+                        {
+                            UIComponent child = itr2.next();
+                            if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                            {
+                                return child;
+                            }
                         }
                     }
                 }
