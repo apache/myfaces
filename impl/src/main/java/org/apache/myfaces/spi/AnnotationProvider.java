@@ -91,9 +91,25 @@ public abstract class AnnotationProvider implements FacesWrapper<AnnotationProvi
      * the "META-INF" directory (considered <code>applicationConfigurationResources)<code></li>
      * </ol>
      * 
+     * @deprecated 
      * @return
      */
+    @Deprecated
     public abstract Set<URL> getBaseUrls() throws IOException;
+    
+    /**
+     * Same as getBaseUrls(), but with the ExternalContext reference.
+     * By default it calls to getBaseUrls()
+     * 
+     * @since 2.1.9, 2.0.15
+     * @param ctx
+     * @return
+     * @throws IOException 
+     */
+    public Set<URL> getBaseUrls(ExternalContext ctx) throws IOException
+    {
+        return getBaseUrls();
+    }
     
     public AnnotationProvider getWrapped()
     {

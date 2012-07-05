@@ -53,4 +53,8 @@ public abstract class AnnotationProviderWrapper extends AnnotationProvider imple
         return getWrapped().getBaseUrls();
     }
     
+    public Set<URL> getBaseUrls(ExternalContext ctx) throws IOException
+    {
+        return getWrapped().getBaseUrls(ctx);
+    }
 }
