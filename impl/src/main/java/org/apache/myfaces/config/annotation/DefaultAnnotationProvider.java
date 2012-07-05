@@ -50,9 +50,14 @@ import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
+import org.apache.myfaces.util.ContainerUtils;
+import org.apache.myfaces.config.util.GAEUtils;
+import org.apache.myfaces.config.util.JarUtils;
+import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**
@@ -164,15 +169,29 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         }
         
         //2. Scan for annotations on classpath
-        try
+        String jarAnnotationFilesToScanParam = MyfacesConfig.getCurrentInstance(ctx).getGaeJsfAnnotationsJarFiles();
+        jarAnnotationFilesToScanParam = jarAnnotationFilesToScanParam != null ? 
+                jarAnnotationFilesToScanParam.trim() : null;
+        if (ContainerUtils.isRunningOnGoogleAppEngine(ctx) && 
+            jarAnnotationFilesToScanParam != null &&
+            jarAnnotationFilesToScanParam.length() > 0)
         {
-            AnnotationProvider provider
-                    = AnnotationProviderFactory.getAnnotationProviderFactory(ctx).getAnnotationProvider(ctx);
-            classes = getAnnotatedMetaInfClasses(ctx, provider.getBaseUrls());
+            // Skip call AnnotationProvider.getBaseUrls(ctx), and instead use the value of the config parameter
+            // to find which classes needs to be scanned for annotations
+            classes = getGAEAnnotatedMetaInfClasses(ctx, jarAnnotationFilesToScanParam);
         }
-        catch (IOException e)
+        else
         {
-            throw new FacesException(e);
+            try
+            {
+                AnnotationProvider provider
+                        = AnnotationProviderFactory.getAnnotationProviderFactory(ctx).getAnnotationProvider(ctx);
+                classes = getAnnotatedMetaInfClasses(ctx, provider.getBaseUrls(ctx));
+            }
+            catch (IOException e)
+            {
+                throw new FacesException(e);
+            }
         }
         
         for (Class<?> clazz : classes)
@@ -183,16 +202,18 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         //3. Scan on myfaces-impl for annotations available on myfaces-impl.
         //Also scan jar including META-INF/standard-faces-config.xml
         //(myfaces-impl jar file)
-        URL url = getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
-        if (url == null)
-        {
-            url = getClass().getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
-        }
-        classes = getAnnotatedMyfacesImplClasses(ctx, url);
-        for (Class<?> clazz : classes)
-        {
-            processClass(map, clazz);
-        }
+        // -= Leonardo Uribe =- No annotations in MyFaces jars, code not
+        // necessary, because all config is already in standard-faces-config.xml
+        //URL url = getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
+        //if (url == null)
+        //{
+        //    url = getClass().getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
+        //}
+        //classes = getAnnotatedMyfacesImplClasses(ctx, url);
+        //for (Class<?> clazz : classes)
+        //{
+        //    processClass(map, clazz);
+        //}
         
         return map;
     }
@@ -219,6 +240,39 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         
         return urlSet;
     }
+    
+    @Override
+    public Set<URL> getBaseUrls(ExternalContext context) throws IOException
+    {
+        String jarFilesToScanParam = MyfacesConfig.getCurrentInstance(context).getGaeJsfJarFiles();
+        jarFilesToScanParam = jarFilesToScanParam != null ? jarFilesToScanParam.trim() : null;
+        if (ContainerUtils.isRunningOnGoogleAppEngine(context) && 
+            jarFilesToScanParam != null &&
+            jarFilesToScanParam.length() > 0)
+        {
+            Set<URL> urlSet = new HashSet<URL>();
+            
+            //This usually happens when maven-jetty-plugin is used
+            //Scan jars looking for paths including META-INF/faces-config.xml
+            Enumeration<URL> resources = getClassLoader().getResources(FACES_CONFIG_IMPLICIT);
+            while (resources.hasMoreElements())
+            {
+                urlSet.add(resources.nextElement());
+            }
+            
+            Collection<URL> urlsGAE = GAEUtils.searchInWebLib(
+                    context, getClassLoader(), jarFilesToScanParam, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+            if (urlsGAE != null)
+            {
+                urlSet.addAll(urlsGAE);
+            }
+            return urlSet;
+        }
+        else
+        {
+            return getBaseUrls();
+        }
+    }
 
     protected Collection<Class<?>> getAnnotatedMetaInfClasses(ExternalContext ctx, Set<URL> urls)
     {
@@ -241,6 +295,45 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                 }
             }
             return list;
+        }
+        return Collections.emptyList();
+    }
+    
+    protected Collection<Class<?>> getGAEAnnotatedMetaInfClasses(ExternalContext context, String filter)
+    {
+        if (!filter.equals("none"))
+        {
+            String[] jarFilesToScan = StringUtils.trim(StringUtils.splitLongString(filter, ','));
+            Set<String> paths = context.getResourcePaths(WEB_LIB_PREFIX);
+            if (paths != null)
+            {
+                List<Class<?>> list = new ArrayList<Class<?>>();
+                for (Object pathObject : paths)
+                {
+                    String path = (String) pathObject;
+                    if (path.endsWith(".jar") && GAEUtils.wildcardMatch(path, jarFilesToScan, GAEUtils.WEB_LIB_PREFIX))
+                    {
+                        // GAE does not use WAR format, so the app is just uncompressed in a directory
+                        // What we need here is just take the path of the file, and open the file as a
+                        // jar file. Then, if the jar should be scanned, try to find the required file.
+                        try
+                        {
+                            URL jarUrl = new URL("jar:" + context.getResource(path).toExternalForm() + "!/"); 
+                            JarFile jarFile = JarUtils.getJarFile(jarUrl);
+                            if (jarFile != null)
+                            {
+                                archiveClasses(context, jarFile, list);
+                            }
+                        }
+                        catch(IOException e)
+                        {
+                            log.log(Level.SEVERE, 
+                                    "IOException when reading jar file for annotations using filter: "+filter, e);
+                        }
+                    }
+                }
+                return list;
+            }
         }
         return Collections.emptyList();
     }

@@ -390,6 +390,34 @@ public class MyfacesConfig
     public final static String INIT_PARAM_SUPPORT_JSP_AND_FACES_EL = "org.apache.myfaces.SUPPORT_JSP_AND_FACES_EL";
     public final static boolean INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT = true;
     
+    /**
+     * When the application runs inside Google Application Engine container (GAE),
+     * indicate which jar files should be scanned for files (faces-config, facelets taglib
+     * or annotations). It accept simple wildcard patterns like myfavoritejsflib-*.jar or 
+     * myfavoritejsflib-1.1.?.jar. By default, all the classpath is scanned for files 
+     * annotations (so it adds an small delay on startup).
+     */
+    @JSFWebConfigParam(since = "2.1.8, 2.0.14", expectedValues="none, myfavoritejsflib-*.jar",
+            tags="performance, GAE")
+    public static final String INIT_PARAM_GAE_JSF_JAR_FILES = "org.apache.myfaces.GAE_JSF_JAR_FILES";
+    public final static String INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT = null;
+
+    /**
+     * When the application runs inside Google Application Engine container (GAE),
+     * indicate which jar files should be scanned for annotations. This param overrides
+     * org.apache.myfaces.GAE_JSF_JAR_FILES behavior that tries to find faces-config.xml or
+     * files ending with .faces-config.xml in /META-INF folder and if that so, try to
+     * find JSF annotations in the whole jar file. It accept simple wildcard patterns 
+     * like myfavoritejsflib-*.jar or myfavoritejsflib-1.1.?.jar.
+     * By default, all the classpath is scanned for annotations (so it adds an small
+     * delay on startup).
+     */
+    @JSFWebConfigParam(since = "2.1.8, 2.0.14", expectedValues="none, myfavoritejsflib-*.jar",
+            tags="performance, GAE")
+    public static final String INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES = 
+            "org.apache.myfaces.GAE_JSF_ANNOTATIONS_JAR_FILES";
+    public final static String INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT = null;
+
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -419,6 +447,8 @@ public class MyfacesConfig
     private boolean _viewUniqueIdsCacheEnabled;
     private int _componentUniqueIdsCacheSize;
     private boolean _supportJSPAndFacesEL;
+    private String _gaeJsfJarFiles;
+    private String _gaeJsfAnnotationsJarFiles;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -517,6 +547,8 @@ public class MyfacesConfig
         setViewUniqueIdsCacheEnabled(INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT);
         setComponentUniqueIdsCacheSize(INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT);
         setSupportJSPAndFacesEL(INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT);
+        setGaeJsfJarFiles(INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT);
+        setGaeJsfAnnotationsJarFiles(INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -618,6 +650,11 @@ public class MyfacesConfig
                 INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT));
         myfacesConfig.setSupportJSPAndFacesEL(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                 INIT_PARAM_SUPPORT_JSP_AND_FACES_EL, INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT));
+        
+        myfacesConfig.setGaeJsfJarFiles(WebConfigParamUtils.getStringInitParameter(extCtx, 
+                INIT_PARAM_GAE_JSF_JAR_FILES, INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT));
+        myfacesConfig.setGaeJsfAnnotationsJarFiles(WebConfigParamUtils.getStringInitParameter(extCtx, 
+                INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES, INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT));
         
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1116,4 +1153,25 @@ public class MyfacesConfig
     {
         this._componentUniqueIdsCacheSize = componentUniqueIdsCacheSize;
     }
+
+    public String getGaeJsfJarFiles()
+    {
+        return _gaeJsfJarFiles;
+    }
+
+    public void setGaeJsfJarFiles(String gaeJsfJarFiles)
+    {
+        this._gaeJsfJarFiles = gaeJsfJarFiles;
+    }
+
+    public String getGaeJsfAnnotationsJarFiles()
+    {
+        return _gaeJsfAnnotationsJarFiles;
+    }
+
+    public void setGaeJsfAnnotationsJarFiles(String gaeJsfAnnotationsJarFiles)
+    {
+        this._gaeJsfAnnotationsJarFiles = gaeJsfAnnotationsJarFiles;
+    }
+
 }
