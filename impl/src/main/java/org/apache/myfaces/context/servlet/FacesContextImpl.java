@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -174,7 +175,7 @@ public class FacesContextImpl extends FacesContextImplBase
 
         if (_messages == null)
         {
-            _messages = new HashMap<String, List<FacesMessage>>();
+            _messages = new LinkedHashMap<String, List<FacesMessage>>();
             _orderedMessages = new ArrayList<FacesMessage>();
         }
         
