@@ -140,7 +140,6 @@ public class FacesContextImpl extends FacesContextImplBase
         _responseWriter = null;
         _maximumSeverity = null;
         _partialViewContext = null;
-        _facesContextFactory = null;
         _renderKitFactory = null;
         _partialViewContextFactory = null;
 
