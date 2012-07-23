@@ -36,6 +36,7 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.CommonPropertyConstants;
 import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
@@ -101,7 +102,7 @@ public class HtmlFormatRenderer extends HtmlRenderer
             {
                 long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
                 
-                if (commonPropertiesMarked > 0)
+                if ( (commonPropertiesMarked & ~(CommonPropertyConstants.ESCAPE_PROP)) > 0)
                 {
                     span = true;
                     writer.startElement(HTML.SPAN_ELEM, component);
