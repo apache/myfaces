@@ -25,7 +25,9 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
@@ -45,6 +47,9 @@ import java.nio.charset.Charset;
 public final class Classpath
 {
     private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Set<String> EXCLUDED_PREFIX_SET = new HashSet<String>(Arrays.asList("rar:", "sar:"));
+    private static final Set<String> EXCLUDED_SUFFIX_SET = new HashSet<String>(Arrays.asList(".rar", ".sar"));
+
     private Classpath()
     {
     }
@@ -207,8 +212,13 @@ public final class Classpath
             prefix = _join(split, true);
 
             String end = _join(split, false);
-
-            url = new URL(urlString.substring(0, urlString.lastIndexOf(end)));
+            urlString = urlString.substring(0, urlString.lastIndexOf(end));
+            if (isExcludedPrefix(urlString))
+            {
+                // excluded URL found, ignore it
+                return;
+            }
+            url = new URL(urlString);
 
             _searchFromURL(result, prefix, suffix, url);
         }
@@ -263,14 +273,12 @@ public final class Classpath
     {
         String urlFile = url.getFile();
 
-        // Trim off any suffix - which is prefixed by "!/" on Weblogic
-        int separatorIndex = urlFile.indexOf("!/");
-
-        // OK, didn't find that. Try the less safe "!", used on OC4J
-        if (separatorIndex == -1)
-        {
-            separatorIndex = urlFile.indexOf('!');
-        }
+        // Find suffix prefixed by "!/" on Weblogic
+        int wlIndex = urlFile.indexOf("!/");
+        // Find suffix prefixed by '!' on OC4J
+        int oc4jIndex = urlFile.indexOf('!');
+        // Take the first found suffix
+        int separatorIndex = wlIndex == -1 && oc4jIndex == -1 ? -1 : wlIndex < oc4jIndex ? wlIndex : oc4jIndex;
 
         if (separatorIndex != -1)
         {
@@ -282,10 +290,26 @@ public final class Classpath
             }
             // make sure this is a valid file system path by removing escaping of white-space characters, etc. 
             jarFileUrl = decodeFilesystemUrl(jarFileUrl);
+            if (isExcludedPrefix(jarFileUrl) || isExcludedSuffix(jarFileUrl))
+            {
+                // excluded URL found, ignore it
+                return null;
+            }
             return new JarFile(jarFileUrl);
         }
 
         return null;
+    }
+
+    private static boolean isExcludedPrefix(String url)
+    {
+        return EXCLUDED_PREFIX_SET.contains(url.substring(0, 4));
+    }
+
+    private static boolean isExcludedSuffix(String url)
+    {
+        int length = url.length();
+        return EXCLUDED_SUFFIX_SET.contains(url.substring(length - 4, length));
     }
 
     private static void _searchJar(ClassLoader loader, Set<URL> result, JarFile file, String prefix, String suffix)
