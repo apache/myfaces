@@ -314,9 +314,30 @@ public abstract class HtmlLinkRendererBase
                     {
                         HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
                     }
-                    else
+                    else 
                     {
-                        HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+                        // If onclick is not null, both onclick and server side script are rendered 
+                        // using jsf.util.chain(...) js function. We need to check that case and force
+                        // id/name rendering. It is possible to do something else in that case and 
+                        // do not render the script using jsf.util.chain, but for now it is ok.
+                        String commandOnclick;
+                        if (component instanceof HtmlCommandLink)
+                        {
+                            commandOnclick = ((HtmlCommandLink)component).getOnclick();
+                        }
+                        else
+                        {
+                            commandOnclick = (String)component.getAttributes().get(HTML.ONCLICK_ATTR);
+                        }
+                        
+                        if (commandOnclick != null)
+                        {
+                            HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
+                        }
+                        else
+                        {
+                            HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+                        }
                     }
                     long commonPropertiesMarked = 0L;
                     if (isCommonPropertiesOptimizationEnabled(facesContext))
