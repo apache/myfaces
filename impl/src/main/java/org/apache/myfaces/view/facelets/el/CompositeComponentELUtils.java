@@ -77,7 +77,8 @@ public final class CompositeComponentELUtils
      * - [^\\.]* - There must be no dot after cc.attrs to indicate a method invocation on cc.attrs
      * - (\\(.*)? - If there is a left paranthesis after cc.attrs, a dot is allowed again
      */
-    public static final Pattern CC_ATTRS_METHOD_EXPRESSION_REGEX = Pattern.compile("[^\\(]*[^\\w\\.\\(]cc\\.attrs\\.[^\\.]*(\\(.*)?");
+    public static final Pattern CC_ATTRS_METHOD_EXPRESSION_REGEX
+            = Pattern.compile("[^\\(]*[^\\w\\.\\(]cc\\.attrs\\.[^\\.]*(\\(.*)?");
     
     private static final String CC = "cc";
     
@@ -127,7 +128,8 @@ public final class CompositeComponentELUtils
         }
         
         //2. Look on the stack using a recursive algorithm.
-        UIComponent matchingCompositeComponent = lookForCompositeComponentOnStack(facesContext, location, currentComponent);
+        UIComponent matchingCompositeComponent
+                = lookForCompositeComponentOnStack(facesContext, location, currentComponent);
         
         if (matchingCompositeComponent != null)
         {
@@ -165,7 +167,8 @@ public final class CompositeComponentELUtils
                         {
                             while (foundComponent != null)
                             {
-                                Location componentLocation = (Location) foundComponent.getAttributes().get(LOCATION_KEY);
+                                Location componentLocation
+                                        = (Location) foundComponent.getAttributes().get(LOCATION_KEY);
                                 if (componentLocation != null 
                                         && componentLocation.getPath().equals(location.getPath()))
                                 {
@@ -207,7 +210,9 @@ public final class CompositeComponentELUtils
         return null;
     }
     
-    private static UIComponent lookForCompositeComponentOnStack(final FacesContext facesContext, final Location location, UIComponent currentComponent)
+    private static UIComponent lookForCompositeComponentOnStack(final FacesContext facesContext,
+                                                                final Location location,
+                                                                UIComponent currentComponent)
     {
         if (UIComponent.isCompositeComponent(currentComponent))
         {
@@ -412,7 +417,6 @@ public final class CompositeComponentELUtils
     {
         UIComponent cc = ccLevel > 0 ? getCompositeComponentBasedOnLocation(facesContext, location, ccLevel)
                 : getCompositeComponentBasedOnLocation(facesContext, location);
-        //facesContext.getAttributes().put(CURRENT_COMPOSITE_COMPONENT_KEY, cc);
         List<UIComponent> list = (List<UIComponent>) facesContext.getAttributes().get(CURRENT_COMPOSITE_COMPONENT_KEY);
         if (list == null)
         {
@@ -428,7 +432,6 @@ public final class CompositeComponentELUtils
      */
     public static void removeCompositeComponentForResolver(FacesContext facesContext)
     {
-        facesContext.getAttributes().remove(CURRENT_COMPOSITE_COMPONENT_KEY);
         List<UIComponent> list = (List<UIComponent>) facesContext.getAttributes().get(CURRENT_COMPOSITE_COMPONENT_KEY);
         if (list != null)
         {
