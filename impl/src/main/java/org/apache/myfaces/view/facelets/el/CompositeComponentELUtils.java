@@ -417,7 +417,6 @@ public final class CompositeComponentELUtils
     {
         UIComponent cc = ccLevel > 0 ? getCompositeComponentBasedOnLocation(facesContext, location, ccLevel)
                 : getCompositeComponentBasedOnLocation(facesContext, location);
-        //facesContext.getAttributes().put(CURRENT_COMPOSITE_COMPONENT_KEY, cc);
         List<UIComponent> list = (List<UIComponent>) facesContext.getAttributes().get(CURRENT_COMPOSITE_COMPONENT_KEY);
         if (list == null)
         {
@@ -433,7 +432,6 @@ public final class CompositeComponentELUtils
      */
     public static void removeCompositeComponentForResolver(FacesContext facesContext)
     {
-        facesContext.getAttributes().remove(CURRENT_COMPOSITE_COMPONENT_KEY);
         List<UIComponent> list = (List<UIComponent>) facesContext.getAttributes().get(CURRENT_COMPOSITE_COMPONENT_KEY);
         if (list != null)
         {
