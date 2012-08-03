@@ -38,6 +38,8 @@ import java.util.zip.ZipInputStream;
 import org.apache.myfaces.shared.util.ClassUtils;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 /**
  * @author Jacob Hookom
  * @author Roland Huss
@@ -120,7 +122,23 @@ public final class Classpath
 
     private static boolean _searchDir(Set<URL> result, File dir, String suffix) throws IOException
     {
-        if (dir.exists() && dir.isDirectory())
+        boolean dirExists = false;
+        if (System.getSecurityManager() != null)
+        {
+            final File finalDir = dir;
+            dirExists = (Boolean) AccessController.doPrivileged(new PrivilegedAction()
+            {
+                public Object run() 
+                {
+                    return finalDir.exists();
+                }
+            });
+        }  
+        else
+        {
+            dirExists = dir.exists();
+        }
+        if (dirExists && dir.isDirectory())
         {
             for (File file : dir.listFiles())
             {
