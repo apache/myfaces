@@ -56,7 +56,7 @@ public class WebConfigParamsLogger
             {
                 if(log.isLoggable(Level.INFO))
                 {
-                    log.info("Starting up Tomahawk on the RI-JSF-Implementation.");
+                    log.info("Starting up Tomahawk on the MyFaces-JSF-Implementation");
                 }
             }
 
@@ -64,7 +64,7 @@ public class WebConfigParamsLogger
             {
                 if(log.isLoggable(Level.INFO))
                 {
-                    log.info("Starting up Tomahawk on the MyFaces-JSF-Implementation");
+                    log.info("Starting up Tomahawk on the RI-JSF-Implementation.");
                 }
             }
         }
