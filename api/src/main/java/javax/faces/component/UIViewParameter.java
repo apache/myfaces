@@ -62,7 +62,8 @@ public class UIViewParameter extends UIInput
     private static final String DELEGATE_FAMILY = UIInput.COMPONENT_FAMILY;
     private static final String DELEGATE_RENDERER_TYPE = "javax.faces.Text";
     
-    private static ConcurrentHashMap<ClassLoader,Renderer> _delegateRendererMap = new ConcurrentHashMap<ClassLoader,Renderer>();
+    private static ConcurrentHashMap<ClassLoader,Renderer> delegateRendererMap = 
+        new ConcurrentHashMap<ClassLoader,Renderer>();
 
     public UIViewParameter()
     {
@@ -256,14 +257,14 @@ public class UIViewParameter extends UIInput
     private static Renderer getDelegateRenderer(FacesContext context)
     {
         ClassLoader classLoader = _ClassUtils.getContextClassLoader();
-        Renderer delegateRenderer = _delegateRendererMap.get(classLoader);
+        Renderer delegateRenderer = delegateRendererMap.get(classLoader);
         if(delegateRenderer == null)
         {
             RenderKitFactory factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
             RenderKit kit = factory.getRenderKit(context, RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
             delegateRenderer = kit.getRenderer(DELEGATE_FAMILY, DELEGATE_RENDERER_TYPE);
-            _delegateRendererMap.put(classLoader, delegateRenderer);
+            delegateRendererMap.put(classLoader, delegateRenderer);
         }
 
         return delegateRenderer;
@@ -273,7 +274,7 @@ public class UIViewParameter extends UIInput
     {
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("releaseRenderer rendererMap -> " + _delegateRendererMap.toString());
+            log.finest("releaseRenderer rendererMap -> " + delegateRendererMap.toString());
         }
         
         
@@ -282,15 +283,15 @@ public class UIViewParameter extends UIInput
         if (log.isLoggable(Level.FINEST))
         {
             log.finest("releaseRenderer classLoader -> " + classLoader.toString() );
-            log.finest("releaseRenderer renderer -> " + _delegateRendererMap.get(classLoader));
+            log.finest("releaseRenderer renderer -> " + delegateRendererMap.get(classLoader));
         }
         
         
-        _delegateRendererMap.remove(classLoader);
+        delegateRendererMap.remove(classLoader);
         
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("releaseRenderer renderMap -> " + _delegateRendererMap.toString());
+            log.finest("releaseRenderer renderMap -> " + delegateRendererMap.toString());
         }
         
     }
