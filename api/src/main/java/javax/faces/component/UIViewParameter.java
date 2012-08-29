@@ -19,6 +19,9 @@
 package javax.faces.component;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
@@ -52,13 +55,14 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
                 longDesc = "The max number or characters allowed for this param")
 public class UIViewParameter extends UIInput
 {
+    private static final Logger log = Logger.getLogger(UIViewParameter.class.getName());
     public static final String COMPONENT_FAMILY = "javax.faces.ViewParameter";
     public static final String COMPONENT_TYPE = "javax.faces.ViewParameter";
 
     private static final String DELEGATE_FAMILY = UIInput.COMPONENT_FAMILY;
     private static final String DELEGATE_RENDERER_TYPE = "javax.faces.Text";
     
-    private static Renderer delegateRenderer;
+    private static ConcurrentHashMap<ClassLoader,Renderer> _delegateRendererMap = new ConcurrentHashMap<ClassLoader,Renderer>();
 
     public UIViewParameter()
     {
@@ -251,15 +255,44 @@ public class UIViewParameter extends UIInput
 
     private static Renderer getDelegateRenderer(FacesContext context)
     {
-        if (delegateRenderer == null)
+        ClassLoader classLoader = _ClassUtils.getContextClassLoader();
+        Renderer delegateRenderer = _delegateRendererMap.get(classLoader);
+        if(delegateRenderer == null)
         {
             RenderKitFactory factory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
             RenderKit kit = factory.getRenderKit(context, RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
             delegateRenderer = kit.getRenderer(DELEGATE_FAMILY, DELEGATE_RENDERER_TYPE);
+            _delegateRendererMap.put(classLoader, delegateRenderer);
         }
 
         return delegateRenderer;
+    }
+
+    private static void releaseRenderer() 
+    {
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("releaseRenderer rendererMap -> " + _delegateRendererMap.toString());
+        }
+        
+        
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("releaseRenderer classLoader -> " + classLoader.toString() );
+            log.finest("releaseRenderer renderer -> " + _delegateRendererMap.get(classLoader));
+        }
+        
+        
+        _delegateRendererMap.remove(classLoader);
+        
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("releaseRenderer renderMap -> " + _delegateRendererMap.toString());
+        }
+        
     }
 
     @Override
