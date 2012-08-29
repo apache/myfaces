@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
@@ -319,6 +321,31 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
         // clear the cache of MetaRulesetImpl in order to prevent a memory leak
         MetaRulesetImpl.clearMetadataTargetCache();
+        
+        // clear UIViewParameter default renderer map
+        try
+        {
+            Class<?> c = Class.forName("javax.faces.component.UIViewParameter");
+            Method m = c.getDeclaredMethod("releaseRenderer");
+            m.setAccessible(true);
+            m.invoke(null);
+        }
+        catch(ClassNotFoundException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        catch(NoSuchMethodException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        catch(IllegalAccessException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
+        catch(InvocationTargetException e)
+        {
+            log.log(Level.SEVERE, e.getMessage(), e);
+        }
 
         // TODO is it possible to make a real cleanup?
     }
