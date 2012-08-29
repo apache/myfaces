@@ -22,7 +22,6 @@ import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -111,7 +110,8 @@ class _MessageUtils
                     else
                     {
                         //Neither detail nor summary found
-                        facesContext.getExternalContext().log("No message with id " + messageId + " found in any bundle");
+                        facesContext.getExternalContext().log("No message with id " + messageId
+                                                              + " found in any bundle");
                         return new FacesMessage(severity, messageId, null);
                     }
                 }
@@ -191,14 +191,40 @@ class _MessageUtils
         }
     }
     
-    static Object getLabel(FacesContext facesContext, UIComponent component) {
+    static Object getLabel(FacesContext facesContext, UIComponent component)
+    {
         Object label = component.getAttributes().get("label");
+        ValueExpression expression = null;
+        if (label != null && 
+            label instanceof String && ((String)label).length() == 0 )
+        {
+            // Note component.getAttributes().get("label") internally try to 
+            // evaluate the EL expression for the label, but in some cases, 
+            // when PSS is disabled and f:loadBundle is used, when the view is 
+            // restored the bundle is not set to the EL expression returns an 
+            // empty String. It is not possible to check if there is a 
+            // hardcoded label, but we can check if there is
+            // an EL expression set, so the best in this case is use that, and if
+            // there is an EL expression set, use it, otherwise use the hardcoded
+            // value. See MYFACES-3591 for details.
+            expression = component.getValueExpression("label");
+            if (expression != null)
+            {
+                // Set the label to null and use the EL expression instead.
+                label = null;
+            }
+        }
+            
         if(label != null)
+        {
             return label;
+        }
         
-        ValueExpression expression = component.getValueExpression("label");
+        expression = (expression == null) ? component.getValueExpression("label") : expression;
         if(expression != null)
+        {
             return expression;
+        }
         
         //If no label is not specified, use clientId
         return component.getClientId( facesContext );
