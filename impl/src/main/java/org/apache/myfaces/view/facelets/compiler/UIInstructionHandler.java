@@ -87,7 +87,6 @@ final class UIInstructionHandler extends AbstractUIHandler
             // grab our component
             UIComponent c = null;
             FaceletCompositionContext mctx= FaceletCompositionContext.getCurrentInstance(ctx);
-            boolean componentFoundInserted = false;
             
             if (mctx.isRefreshingSection())
             {
@@ -151,30 +150,24 @@ final class UIInstructionHandler extends AbstractUIHandler
             if (componentFound)
             {
                 mctx.finalizeForDeletion(c);
-                if (!componentFoundInserted)
-                {
-                    if (mctx.isRefreshingSection())
-                    {
-                        ctx.getFacesContext().setProcessingEvents(false); 
-                    }
-                    parent.getChildren().remove(c);
-                    if (mctx.isRefreshingSection())
-                    {
-                        ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
-                    }
-                }
-            }
-            if (!componentFoundInserted)
-            {
-                if (componentFound && mctx.isRefreshingSection())
+                if (mctx.isRefreshingSection())
                 {
                     ctx.getFacesContext().setProcessingEvents(false); 
                 }
-                this.addComponent(ctx, parent, c);
-                if (componentFound && mctx.isRefreshingSection())
+                parent.getChildren().remove(c);
+                if (mctx.isRefreshingSection())
                 {
                     ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
                 }
+            }
+            if (componentFound && mctx.isRefreshingSection())
+            {
+                ctx.getFacesContext().setProcessingEvents(false); 
+            }
+            this.addComponent(ctx, parent, c);
+            if (componentFound && mctx.isRefreshingSection())
+            {
+                ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
             }
         }
     }
