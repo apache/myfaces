@@ -620,16 +620,28 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 // into the map.
                 state = null;
             }
-            _serializedViews.put(key, state);
-
+            
             Integer maxCount = getNumberOfSequentialViewsInSession(context);
             if (maxCount != null)
             {
                 if (previousRestoredKey != null)
                 {
-                    _precedence.put((SerializedViewKey) key, previousRestoredKey);
+                    if (!_serializedViews.isEmpty())
+                    {
+                        _precedence.put((SerializedViewKey) key, previousRestoredKey);
+                    }
+                    else
+                    {
+                        // Note when the session is invalidated, _serializedViews map is empty,
+                        // but we could have a not null previousRestoredKey (the last one before
+                        // invalidate the session), so we need to check that condition before
+                        // set the precence. In that way, we ensure the precedence map will always
+                        // have valid keys.
+                        previousRestoredKey = null;
+                    }
                 }
             }
+            _serializedViews.put(key, state);
 
             while (_keys.remove(key))
             {
