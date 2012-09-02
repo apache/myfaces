@@ -81,6 +81,8 @@ final class UIInstructionHandler extends AbstractUIHandler
     {
         if (parent != null)
         {
+            String facetName = this.getFacetName(ctx, parent);
+            
             // our id
             String id = ctx.generateUniqueId(this.id);
 
@@ -154,7 +156,14 @@ final class UIInstructionHandler extends AbstractUIHandler
                 {
                     ctx.getFacesContext().setProcessingEvents(false); 
                 }
-                parent.getChildren().remove(c);
+                if (facetName == null)
+                {
+                    parent.getChildren().remove(c);
+                }
+                else
+                {
+                    ComponentSupport.removeFacet(ctx, parent, c, facetName);
+                }
                 if (mctx.isRefreshingSection())
                 {
                     ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);
@@ -164,7 +173,14 @@ final class UIInstructionHandler extends AbstractUIHandler
             {
                 ctx.getFacesContext().setProcessingEvents(false); 
             }
-            this.addComponent(ctx, parent, c);
+            if (facetName == null)
+            {
+                parent.getChildren().add(c);
+            }
+            else
+            {
+                ComponentSupport.addFacet(ctx, parent, c, facetName);
+            }
             if (componentFound && mctx.isRefreshingSection())
             {
                 ctx.getFacesContext().setProcessingEvents(oldProcessingEvents);

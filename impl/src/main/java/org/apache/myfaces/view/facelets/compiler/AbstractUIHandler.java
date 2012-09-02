@@ -29,6 +29,13 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 public abstract class AbstractUIHandler implements FaceletHandler, TextHandler
 {
 
+    /**
+     * @param ctx
+     * @param parent
+     * @param c
+     * @deprecated
+     */
+    @Deprecated
     public void addComponent(FaceletContext ctx, UIComponent parent, UIComponent c)
     {
         // possible facet scoped
