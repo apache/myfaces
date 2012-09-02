@@ -385,9 +385,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
 
         // setup our viewId
-        String renderedViewId = getRenderedViewId(context, view.getViewId());
+        String previousViewId = view.getViewId();
+        String renderedViewId = getRenderedViewId(context, previousViewId);
 
-        view.setViewId(renderedViewId);
+        if (renderedViewId == null)
+        {
+            view.setViewId(renderedViewId);
+        }
+        else if (!renderedViewId.equals(previousViewId))
+        {
+            view.setViewId(renderedViewId);
+        }
 
         if (log.isLoggable(Level.FINEST))
         {
