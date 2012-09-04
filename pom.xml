@@ -58,7 +58,7 @@
     </modules>
 
     <build>
-    
+
         <!-- Since Maven 3.0, this is required to add scpexe as protocol for deploy. -->
         <extensions>
           <extension>
