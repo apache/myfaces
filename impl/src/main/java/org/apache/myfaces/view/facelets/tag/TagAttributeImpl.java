@@ -217,7 +217,8 @@ public final class TagAttributeImpl extends TagAttribute
                      (type != null && type.equals(localCachedExpression[(i*3)])) ) &&
                      (Arrays.equals(paramTypes, (Class[]) localCachedExpression[(i*3)+1])) )
                 {
-                    if ((this.capabilities & EL_CC) != 0)
+                    if ((this.capabilities & EL_CC) != 0 &&
+                        localCachedExpression[(i*3)+2] instanceof LocationMethodExpression)
                     {
                         return ((LocationMethodExpression)localCachedExpression[(i*3)+2]).apply(
                                 actx.getFaceletCompositionContext().getCompositeComponentLevel());
@@ -255,12 +256,30 @@ public final class TagAttributeImpl extends TagAttribute
                 
                 ValueExpression valueExpr = this.getValueExpression(ctx, Object.class);
                 methodExpression = new ValueExpressionMethodExpression(valueExpr);
+                
+                if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
+                {
+                    methodExpression = new ContextAwareTagMethodExpression(this, methodExpression);
+                }
+                else
+                {
+                    methodExpression = new TagMethodExpression(this, methodExpression);
+                }
             }
             else
             {
                 ExpressionFactory f = ctx.getExpressionFactory();
                 methodExpression = f.createMethodExpression(ctx, this.value, type, paramTypes);
-                    
+
+                if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
+                {
+                    methodExpression = new ContextAwareTagMethodExpression(this, methodExpression);
+                }
+                else
+                {
+                    methodExpression = new TagMethodExpression(this, methodExpression);
+                }
+
                 // if the MethodExpression contains a reference to the current composite
                 // component, the Location also has to be stored in the MethodExpression 
                 // to be able to resolve the right composite component (the one that was
@@ -273,14 +292,6 @@ public final class TagAttributeImpl extends TagAttribute
                 }
             }
             
-            if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
-            {
-                methodExpression = new ContextAwareTagMethodExpression(this, methodExpression);
-            }
-            else
-            {
-                methodExpression = new TagMethodExpression(this, methodExpression);
-            }
                 
             if (actx.isAllowCacheELExpressions() && !actx.isAnyFaceletsVariableResolved())
             {
