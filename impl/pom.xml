@@ -53,6 +53,44 @@
         
         <plugins>
 
+            <!-- license checker needs to exclude some kinds of files -->
+			<plugin>
+				<groupId>org.apache.rat</groupId>
+				<artifactId>apache-rat-plugin</artifactId>
+				<configuration>
+					<excludes>
+						
+						<!-- The xsd files are CDDL+GLP:
+						  Category B: Reciprocal Licenses
+						 "For small amounts of source that is directly consumed by the ASF product
+						  at runtime in source form, and for which that source is unlikely to be
+						  changed anyway (say, by virtue of being specified by a standard), this
+						  action is sufficient. An example of this is the web-facesconfig_1_0.dtd,
+						  whose inclusion is mandated by the JSR 127: JavaServer Faces specification."
+						  http://www.apache.org/legal/3party.html
+						-->
+						<exclude>src/main/resources/META-INF/licenses/glassfish-LICENSE.txt</exclude>
+						<exclude>src/main/resources/org/apache/myfaces/resource/javaee_5.xsd</exclude>
+						<exclude>src/main/resources/org/apache/myfaces/resource/javaee_web_services_client_1_2.xsd</exclude>
+
+						<!-- facelets has non-standard APL license -->
+						<exclude>src/main/resources/META-INF/licenses/facelets-LICENSE.txt</exclude>
+						
+						<!-- services files are trivial config files with no comments -->
+						<exclude>src/test/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
+						<exclude>src/main/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
+
+						<!-- these jsf.js files are trivial empty placeholders -->
+						<exclude>src/test/resources/org/apache/myfaces/view/facelets/tag/composite/javax.faces/jsf.js</exclude>
+						<exclude>src/test/resources/org/apache/myfaces/view/facelets/tag/jsf/html/javax.faces/jsf.js</exclude>
+						<exclude>src/test/resources/org/apache/myfaces/view/facelets/updateheadres/resources/javax.faces/jsf.js</exclude>
+
+						<!-- This file probably needs a license, but I don't know if it's safe to put it in there -->
+						<exclude>src/test/resources/org/apache/myfaces/context/nestedScriptCDATA.xml</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			
             <!-- myfaces-build-plugin - we generate a lot of stuff with this plugin (see executions) -->
             <plugin>
                 <groupId>org.apache.myfaces.buildtools</groupId>
