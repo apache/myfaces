@@ -16,7 +16,7 @@
  * limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+        
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
@@ -41,6 +41,25 @@
         <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/implee6</url>
     </scm>
 
+    <build>
+
+        <plugins>
+
+            <!-- license checker needs to exclude some kinds of files -->
+			<plugin>
+				<groupId>org.apache.rat</groupId>
+				<artifactId>apache-rat-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<!-- services files are trivial config files with no comments -->
+						<exclude>src/main/resources/META-INF/services/javax.servlet.ServletContainerInitializer</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+        </plugins>
+
+    </build>
 
     <dependencies>
 
