@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
+import java.lang.reflect.Proxy;
 
 /**
  * Tried to deploy v0.4.2 on JBoss 3.2.1 and had a classloading problem again.
@@ -51,6 +52,38 @@ public class MyFacesObjectInputStream
         catch (ClassNotFoundException e)
         {
             return super.resolveClass(desc);
+        }
+    }
+
+    protected Class resolveProxyClass(String[] interfaces) 
+            throws IOException, ClassNotFoundException
+    {
+        // Only option that would match the current code would be to
+        // expand ClassLoaderExtension to handle 'getProxyClass', which
+        // would break all existing ClassLoaderExtension implementations
+        Class[] cinterfaces = new Class[interfaces.length];
+        for (int i = 0; i < interfaces.length; i++)
+        {
+            cinterfaces[i] = ClassUtils.classForName(interfaces[i]);
+        }
+
+        try
+        {
+            // Try WebApp ClassLoader first
+            return Proxy.getProxyClass(ClassUtils.getContextClassLoader(), cinterfaces);
+        }
+        catch (Exception ex)
+        {
+            // fallback: Try ClassLoader for MyFacesObjectInputStream (i.e. the myfaces.jar lib)
+            try
+            {
+                return Proxy.getProxyClass(
+                        MyFacesObjectInputStream.class.getClassLoader(), cinterfaces);
+            }
+            catch (IllegalArgumentException e)
+            {
+                throw new ClassNotFoundException(e.toString(), e);
+            }
         }
     }
 }
