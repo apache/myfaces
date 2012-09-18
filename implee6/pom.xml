@@ -46,16 +46,16 @@
         <plugins>
 
             <!-- license checker needs to exclude some kinds of files -->
-			<plugin>
-				<groupId>org.apache.rat</groupId>
-				<artifactId>apache-rat-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<!-- services files are trivial config files with no comments -->
-						<exclude>src/main/resources/META-INF/services/javax.servlet.ServletContainerInitializer</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!-- services files are trivial config files with no comments -->
+                        <exclude>src/main/resources/META-INF/services/javax.servlet.ServletContainerInitializer</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
 
         </plugins>
 
