@@ -40,6 +40,18 @@ public final class FaceletsProcessingInstructions
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_JSPX =
         new FaceletsProcessingInstructions(
                 true, true, true, true, false, true, false);
+    
+    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XHTML_COMPRESS_SPACES =
+        new FaceletsProcessingInstructions(
+                false, false, false, false, true, false, true, true);
+
+    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XML_COMPRESS_SPACES =
+        new FaceletsProcessingInstructions(
+                true, true, true, true, true, true, true, true);
+
+    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_JSPX_COMPRESS_SPACES =
+        new FaceletsProcessingInstructions(
+                true, true, true, true, false, true, false, true);
 
     private final boolean consumeXmlDocType;
     
@@ -54,6 +66,8 @@ public final class FaceletsProcessingInstructions
     private final boolean consumeXMLComments;
     
     private final boolean swallowCDataContent;
+    
+    private final boolean compressSpaces;
     
     public final static FaceletsProcessingInstructions getProcessingInstructions(String processAs)
     {
@@ -79,6 +93,35 @@ public final class FaceletsProcessingInstructions
         }
     }
     
+    public final static FaceletsProcessingInstructions getProcessingInstructions(
+            String processAs, boolean compressSpaces)
+    {
+        if (!compressSpaces)
+        {
+            return getProcessingInstructions(processAs);
+        }
+        if (processAs == null)
+        {
+            return FACELETS_PROCESSING_XHTML_COMPRESS_SPACES;
+        }
+        else if (PROCESS_AS_XHTML.equals(processAs))
+        {
+            return FACELETS_PROCESSING_XHTML_COMPRESS_SPACES;
+        }
+        else if (PROCESS_AS_XML.equals(processAs))
+        {
+            return FACELETS_PROCESSING_XML_COMPRESS_SPACES;
+        }
+        else if (PROCESS_AS_JSPX.equals(processAs))
+        {
+            return FACELETS_PROCESSING_JSPX_COMPRESS_SPACES;
+        }
+        else
+        {
+            return FACELETS_PROCESSING_XHTML_COMPRESS_SPACES;
+        }
+    }    
+    
     public FaceletsProcessingInstructions(
             boolean consumeXmlDocType,
             boolean consumeXmlDeclaration,
@@ -96,6 +139,29 @@ public final class FaceletsProcessingInstructions
         this.escapeInlineText = escapeInlineText;
         this.consumeXMLComments = consumeXMLComments;
         this.swallowCDataContent = swallowCDataContent;
+        this.compressSpaces = false;
+    }
+    
+    
+    public FaceletsProcessingInstructions(
+            boolean consumeXmlDocType,
+            boolean consumeXmlDeclaration,
+            boolean consumeProcessingInstructions,
+            boolean consumeCDataSections, 
+            boolean escapeInlineText,
+            boolean consumeXMLComments,
+            boolean swallowCDataContent,
+            boolean compressSpaces)
+    {
+        super();
+        this.consumeXmlDocType = consumeXmlDocType;
+        this.consumeXmlDeclaration = consumeXmlDeclaration;
+        this.consumeProcessingInstructions = consumeProcessingInstructions;
+        this.consumeCDataSections = consumeCDataSections;
+        this.escapeInlineText = escapeInlineText;
+        this.consumeXMLComments = consumeXMLComments;
+        this.swallowCDataContent = swallowCDataContent;
+        this.compressSpaces = compressSpaces;
     }
 
     public boolean isConsumeXmlDocType()
@@ -131,6 +197,14 @@ public final class FaceletsProcessingInstructions
     public boolean isSwallowCDataContent()
     {
         return swallowCDataContent;
+    }
+
+    /**
+     * @return the compressSpaces
+     */
+    public boolean isCompressSpaces()
+    {
+        return compressSpaces;
     }
 
 }

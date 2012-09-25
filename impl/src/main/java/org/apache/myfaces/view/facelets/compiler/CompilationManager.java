@@ -123,7 +123,9 @@ final class CompilationManager
         }
         else
         {
-            unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
+            unit = new TextUnit(this.alias, this.nextTagId(), 
+                    faceletsProcessingInstructions.isEscapeInlineText(),
+                    faceletsProcessingInstructions.isCompressSpaces());
             this.startUnit(unit);
         }
         unit.writeInstruction(value);
@@ -150,7 +152,9 @@ final class CompilationManager
         }
         else
         {
-            unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
+            unit = new TextUnit(this.alias, this.nextTagId(), 
+                    faceletsProcessingInstructions.isEscapeInlineText(),
+                    faceletsProcessingInstructions.isCompressSpaces());
             this.startUnit(unit);
         }
         unit.write(value);
@@ -181,7 +185,9 @@ final class CompilationManager
         }
         else
         {
-            unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
+            unit = new TextUnit(this.alias, this.nextTagId(), 
+                    faceletsProcessingInstructions.isEscapeInlineText(),
+                    faceletsProcessingInstructions.isCompressSpaces());
             this.startUnit(unit);
         }
 
@@ -291,7 +297,9 @@ final class CompilationManager
             }
             else
             {
-                unit = new TextUnit(this.alias, this.nextTagId(), faceletsProcessingInstructions.isEscapeInlineText());
+                unit = new TextUnit(this.alias, this.nextTagId(),
+                        faceletsProcessingInstructions.isEscapeInlineText(),
+                        faceletsProcessingInstructions.isCompressSpaces());
                 this.startUnit(unit);
             }
             

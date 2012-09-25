@@ -34,4 +34,9 @@ public abstract class FaceletsProcessing implements Serializable
     public abstract String getFileExtension();
     
     public abstract String getProcessAs();
+    
+    public String getOamCompressSpaces()
+    {
+        return "false";
+    }
 }

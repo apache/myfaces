@@ -443,8 +443,9 @@ public class ELText
      */
     public static boolean isLiteral(String in)
     {
-        ELText txt = parse(in);
-        return txt == null || txt.isLiteral();
+        //ELText txt = parse(in);
+        //return txt == null || txt.isLiteral();
+        return isLiteral(null, null, in);
     }
 
     /**
@@ -553,6 +554,46 @@ public class ELText
             ELText[] ta = (ELText[]) text.toArray(new ELText[text.size()]);
             return new ELTextComposite(ta);
         }
+    }
+    
+    public static boolean isLiteral(ExpressionFactory fact, ELContext ctx, String in) throws ELException
+    {
+        char[] ca = in.toCharArray();
+        int i = 0;
+        char c = 0;
+        int len = ca.length;
+        int end = len - 1;
+        boolean esc = false;
+        int vlen = 0;
+
+        while (i < len)
+        {
+            c = ca[i];
+            if ('\\' == c)
+            {
+                esc = !esc;
+                if (esc && i < end && (ca[i + 1] == '$' || ca[i + 1] == '#'))
+                {
+                    i++;
+                    continue;
+                }
+            }
+            else if (!esc && ('$' == c || '#' == c))
+            {
+                if (i < end)
+                {
+                    if ('{' == ca[i + 1])
+                    {
+                        vlen = findVarLength(ca, i);
+                        //In this point we have at least 1 EL expression, so it is not literal
+                        return false;
+                    }
+                }
+            }
+            esc = false;
+            i++;
+        }
+        return true;
     }
 
     private static int findVarLength(char[] ca, int s) throws ELException

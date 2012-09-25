@@ -52,4 +52,9 @@ final class LiteralNonExcapedTextInstruction implements Instruction
     {
         return true;
     }
+    
+    String getText()
+    {
+        return this.text;
+    }
 }

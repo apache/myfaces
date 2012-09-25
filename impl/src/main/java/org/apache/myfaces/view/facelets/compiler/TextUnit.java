@@ -62,12 +62,19 @@ final class TextUnit extends CompilationUnit
 
     private final boolean escapeInlineText;
 
+    private final boolean compressSpaces;
+
     public TextUnit(String alias, String id)
     {
         this(alias,id,true);
     }
     
     public TextUnit(String alias, String id, boolean escapeInlineText)
+    {
+        this(alias,id,escapeInlineText,false);
+    }
+    
+    public TextUnit(String alias, String id, boolean escapeInlineText, boolean compressSpaces)
     {
         this.alias = alias;
         this.id = id;
@@ -79,6 +86,7 @@ final class TextUnit extends CompilationUnit
         this.startTagOpen = false;
         this.messages = new ArrayList<Object>(4);
         this.escapeInlineText = escapeInlineText;
+        this.compressSpaces = compressSpaces;
     }
 
     public FaceletHandler createFaceletHandler()
@@ -129,23 +137,51 @@ final class TextUnit extends CompilationUnit
             }
             if (s.length() > 0)
             {
-                ELText txt = ELText.parse(s);
-                if (txt != null)
+                if (!compressSpaces)
                 {
-                    if (txt.isLiteral())
+                    //Do it as usual.
+                    ELText txt = ELText.parse(s);
+                    if (txt != null)
                     {
-                        if (escapeInlineText)
+                        if (txt.isLiteral())
                         {
-                            this.instructionBuffer.add(new LiteralTextInstruction(txt.toString()));
+                            if (escapeInlineText)
+                            {
+                                this.instructionBuffer.add(new LiteralTextInstruction(txt.toString()));
+                            }
+                            else
+                            {
+                                this.instructionBuffer.add(new LiteralNonExcapedTextInstruction(txt.toString()));
+                            }
                         }
                         else
                         {
-                            this.instructionBuffer.add(new LiteralNonExcapedTextInstruction(txt.toString()));
+                            this.instructionBuffer.add(new TextInstruction(this.alias, txt ));
                         }
                     }
-                    else
+                }
+                else
+                {
+                    // First check if the text contains EL before build something, and if contains 
+                    // an EL expression, compress it before build the ELText.
+                    if (s != null && s.length() > 0)
                     {
-                        this.instructionBuffer.add(new TextInstruction(this.alias, txt));
+                        if (ELText.isLiteral(s))
+                        {
+                            if (escapeInlineText)
+                            {
+                                this.instructionBuffer.add(new LiteralTextInstruction(s));
+                            }
+                            else
+                            {
+                                this.instructionBuffer.add(new LiteralNonExcapedTextInstruction(s));
+                            }
+                        }
+                        else
+                        {
+                            s = compressELText(s);
+                            this.instructionBuffer.add(new TextInstruction(this.alias, ELText.parse(s) ));
+                        }
                     }
                 }
             }
@@ -311,6 +347,13 @@ final class TextUnit extends CompilationUnit
                     ELText txt = ELText.parse(s);
                     if (txt != null)
                     {
+                        if (compressSpaces)
+                        {
+                            // Use the logic behind the instructions to remove unnecessary instructions
+                            // containing only spaces, or recreating new ones containing only the necessary
+                            // spaces.
+                            size = compressSpaces(instructionBuffer, size);
+                        }
                         Instruction[] instructions = (Instruction[]) this.instructionBuffer
                                 .toArray(new Instruction[size]);
                         this.children.add(new UIInstructionHandler(this.alias, this.id, instructions, txt));
@@ -407,6 +450,192 @@ final class TextUnit extends CompilationUnit
         {
             return s.substring(0, i + 1);
         }*/
+    }
+    
+    final static String compressELText(String text)
+    {
+        int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+        int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+        if (firstCharLocation == 0 && lastCharLocation == text.length()-1)
+        {
+            return text;
+        }
+        else
+        {
+            if (lastCharLocation+1 < text.length())
+            {
+                lastCharLocation = lastCharLocation+1;
+            }
+            if (firstCharLocation == 0)
+            {
+                return text.substring(firstCharLocation, lastCharLocation+1);
+            }
+            else
+            {
+                return text.substring(0,1)+text.substring(firstCharLocation, lastCharLocation+1);
+            }
+        }
+    }
+    
+    /*
+    final static ELText compressELText(ELText parsedText, String text)
+    {
+        int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+        int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+        if (firstCharLocation == 0 && lastCharLocation == text.length()-1)
+        {
+            return parsedText;
+        }
+        else
+        {
+            if (lastCharLocation+1 < text.length())
+            {
+                lastCharLocation = lastCharLocation+1;
+            }
+            if (firstCharLocation == 0)
+            {
+                return ELText.parse(text.substring(firstCharLocation, lastCharLocation+1));
+            }
+            else
+            {
+                return ELText.parse(text.substring(0,1)+text.substring(firstCharLocation, lastCharLocation+1));
+            }
+        }
+    }
+    */
+    
+    final static int compressSpaces(List<Instruction> instructionBuffer, int size)
+    {
+        boolean addleftspace = true;
+        boolean addrightspace = false;
+        for (int i = 0; i < size; i++)
+        {
+            Instruction ins = instructionBuffer.get(i);
+            if (i+1 == size)
+            {
+                addrightspace = true;
+            }
+            //boolean isNextStartExpression = i+1<size ? 
+            //        (this.instructions[i+1] instanceof StartElementInstruction) : false;
+            if (ins instanceof LiteralTextInstruction)
+            {
+                String text = ((LiteralTextInstruction)ins).getText();
+                int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+                if (firstCharLocation == text.length() && text.length() > 1)
+                {
+                    // All the instruction is space, replace with an instruction 
+                    // with only one space
+                    if (addleftspace || addrightspace)
+                    {
+                        instructionBuffer.set(i, new LiteralTextInstruction(text.substring(0,1)));
+                    }
+                    else
+                    {
+                        instructionBuffer.remove(i);
+                        i--;
+                        size--;
+                    }
+                }
+                else if (firstCharLocation > 0)
+                {
+                    int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+                    // If right space, increment in 1
+                    if (lastCharLocation+1 < text.length())
+                    {
+                        lastCharLocation = lastCharLocation+1;
+                    }
+                    instructionBuffer.set(i, new LiteralTextInstruction(
+                            text.substring(0,1)+text.substring(firstCharLocation, lastCharLocation+1)));
+                }
+                else
+                {
+                    int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+                    // If right space, increment in 1
+                    if (lastCharLocation+1 < text.length())
+                    {
+                        lastCharLocation = lastCharLocation+1;
+                    }
+                    instructionBuffer.set(i, new LiteralTextInstruction(
+                            text.substring(firstCharLocation, lastCharLocation+1)));
+                }
+            }
+            else if (ins instanceof LiteralNonExcapedTextInstruction)
+            {
+                String text = ((LiteralTextInstruction)ins).getText();
+                int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+                if (firstCharLocation == text.length())
+                {
+                    // All the instruction is space, replace with an instruction 
+                    // with only one space
+                    if (addleftspace || addrightspace)
+                    {
+                        instructionBuffer.set(i, new LiteralNonExcapedTextInstruction(text.substring(0,1)));
+                    }
+                    else
+                    {
+                        instructionBuffer.remove(i);
+                        i--;
+                        size--;
+                    }                    
+                }
+                else if (firstCharLocation > 1)
+                {
+                    int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+                    // If right space, increment in 1
+                    if (lastCharLocation+1 < text.length())
+                    {
+                        lastCharLocation = lastCharLocation+1;
+                    }
+                    instructionBuffer.set(i, new LiteralNonExcapedTextInstruction(
+                            text.substring(0,1)+text.substring(firstCharLocation, lastCharLocation+1)));
+                }
+                else
+                {
+                    int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+                    // If right space, increment in 1
+                    if (lastCharLocation+1 < text.length())
+                    {
+                        lastCharLocation = lastCharLocation+1;
+                    }
+                    instructionBuffer.set(i, new LiteralNonExcapedTextInstruction(
+                            text.substring(firstCharLocation, lastCharLocation+1)));
+                }
+            }
+            addleftspace = false;
+        }
+        return size;
+    }
+    
+    private static int getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(String text)
+    {
+        for (int i = 0; i < text.length(); i++)
+        {
+            if (Character.isWhitespace(text.charAt(i)))
+            {
+                continue;
+            }
+            else
+            {
+                return i;
+            }
+        }
+        return text.length();
+    }
+    
+    private static int getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(String text)
+    {
+        for (int i = text.length()-1; i >= 0; i--)
+        {
+            if (Character.isWhitespace(text.charAt(i)))
+            {
+                continue;
+            }
+            else
+            {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public String toString()

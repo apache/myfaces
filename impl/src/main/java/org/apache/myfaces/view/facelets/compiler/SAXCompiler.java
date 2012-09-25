@@ -864,15 +864,17 @@ public final class SAXCompiler extends Compiler
     protected FaceletsProcessingInstructions getFaceletsProcessingInstructions(URL src, String alias)
     {
         String processAs = null;
+        boolean compressSpaces = false;
         for (FaceletsProcessing entry : getFaceletsProcessingConfigurations())
         {
             if (src.getPath().endsWith(entry.getFileExtension()))
             {
                 processAs = entry.getProcessAs();
+                compressSpaces = Boolean.valueOf(entry.getOamCompressSpaces());
                 break;
             }
         }
-        return FaceletsProcessingInstructions.getProcessingInstructions(processAs);
+        return FaceletsProcessingInstructions.getProcessingInstructions(processAs, compressSpaces);
     }
 
     protected static final String writeXmlDecl(InputStream is, CompilationManager mngr) throws IOException

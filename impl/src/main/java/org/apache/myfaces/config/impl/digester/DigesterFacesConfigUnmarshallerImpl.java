@@ -298,6 +298,10 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/faces-config-extension/facelets-processing/process-as", "setProcessAs", 0);
 
         // 2.1 facelets-processing end
+        
+        //MyFaces specific facelets-processing instruction.
+        digester.addCallMethod("faces-config/faces-config-extension/facelets-processing/oam-compress-spaces", 
+                "setOamCompressSpaces", 0);
     }
 
     public FacesConfig getFacesConfig(InputStream in, String systemId) throws IOException, SAXException

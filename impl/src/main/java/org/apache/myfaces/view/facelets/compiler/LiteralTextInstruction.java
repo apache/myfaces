@@ -47,4 +47,9 @@ final class LiteralTextInstruction implements Instruction
     {
         return true;
     }
+
+    String getText()
+    {
+        return this.text;
+    }
 }

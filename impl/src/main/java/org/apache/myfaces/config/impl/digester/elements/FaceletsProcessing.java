@@ -33,6 +33,8 @@ public class FaceletsProcessing extends org.apache.myfaces.config.element.Facele
     private String fileExtension;
     
     private String processAs;
+    
+    private String oamCompressSpaces;
 
     public String getFileExtension()
     {
@@ -52,5 +54,22 @@ public class FaceletsProcessing extends org.apache.myfaces.config.element.Facele
     public void setProcessAs(String processAs)
     {
         this.processAs = processAs;
+    }
+
+    /**
+     * @return the oamCompressSpaces
+     */
+    @Override
+    public String getOamCompressSpaces()
+    {
+        return oamCompressSpaces;
+    }
+
+    /**
+     * @param oamCompressSpaces the oamCompressSpaces to set
+     */
+    public void setOamCompressSpaces(String oamCompressSpaces)
+    {
+        this.oamCompressSpaces = oamCompressSpaces;
     }
 }
