@@ -159,7 +159,7 @@ _MF_SINGLTN(_PFX_XHR + "_Transports", _MF_OBJECT,
     _getAjaxReqClass: function(context) {
         // var _RT = myfaces._impl.core._Runtime;
         //if(_RT.getXHRLvl() < 2) {
-        return myfaces._impl.xhrCore._AjaxRequest;
+            return myfaces._impl.xhrCore._AjaxRequest;
         //} else {
         //    return myfaces._impl.xhrCore._AjaxRequestLevel2;
         //}
