@@ -220,7 +220,14 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             }
 
             writer.startElement(HTML.TD_ELEM, selectMany);
-            writer.write(selectItem.getLabel());
+            if (selectItem.isEscape())
+            {
+                writer.writeText(selectItem.getLabel(),HTML.LABEL_ATTR);
+            }
+            else
+            {
+                writer.write(selectItem.getLabel());
+            }
             writer.endElement(HTML.TD_ELEM);
 
             if (pageDirectionLayout)
