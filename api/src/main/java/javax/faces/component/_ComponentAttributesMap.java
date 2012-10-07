@@ -65,6 +65,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     
     private final static String FACET_NAME_KEY = "facelets.FACET_NAME";
     
+    public final static String FACET_CREATED_UIPANEL_MARKER = "oam.vf.createdUIPanel";
+    
     private final static String COMPONENT_ADDED_BY_HANDLER_MARKER = "oam.vf.addedByHandler";
     
     /**
@@ -196,6 +198,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             {
                 return _component.isOamVfAddedByHandler();
             }
+            else if (FACET_CREATED_UIPANEL_MARKER.length() == keyLength &&
+                FACET_CREATED_UIPANEL_MARKER.equals(key))
+            {
+                return _component.isOamVfFacetCreatedUIPanel();
+            }
             // The most common call to this method comes from UIComponent.isCompositeComponent()
             // to reduce the impact. This is better than two lookups, once over property descriptor map
             // and the other one from the underlying map.
@@ -297,6 +304,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 COMPONENT_ADDED_BY_HANDLER_MARKER.equals(key))
             {
                 return _component.isOamVfAddedByHandler();
+            }
+            else if (FACET_CREATED_UIPANEL_MARKER.length() == keyLength &&
+                FACET_CREATED_UIPANEL_MARKER.equals(key))
+            {
+                return _component.isOamVfFacetCreatedUIPanel();
             }
         }
         // is there a javabean property to read?
@@ -416,6 +428,13 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 _component.setOamVfAddedByHandler(false);
                 return oldValue;
             }
+            else if (FACET_CREATED_UIPANEL_MARKER.length() == keyLength &&
+                FACET_CREATED_UIPANEL_MARKER.equals(key))
+            {
+                Object oldValue = _component.isOamVfFacetCreatedUIPanel();
+                _component.setOamVfFacetCreatedUIPanel(false);
+                return oldValue;
+            }
         }
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
         if (propertyDescriptor != null)
@@ -481,6 +500,13 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             {
                 Object oldValue = _component.isOamVfAddedByHandler();
                 _component.setOamVfAddedByHandler((Boolean)value);
+                return oldValue;
+            }
+            else if (FACET_CREATED_UIPANEL_MARKER.length() == keyLength &&
+                FACET_CREATED_UIPANEL_MARKER.equals(key))
+            {
+                Object oldValue = _component.isOamVfFacetCreatedUIPanel();
+                _component.setOamVfFacetCreatedUIPanel((Boolean)value);
                 return oldValue;
             }
         }

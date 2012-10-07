@@ -104,6 +104,7 @@ public abstract class UIComponentBase extends UIComponent
     private String _markCreated;
     private String _facetName;
     private boolean _addedByHandler = false;
+    private boolean _facetCreatedUIPanel = false;
 
     /**
      * This map holds ClientBehavior instances.
@@ -1941,7 +1942,7 @@ public abstract class UIComponentBase extends UIComponent
         else
         {
             //Full
-            Object values[] = new Object[10];
+            Object values[] = new Object[11];
             values[0] = saveFacesListenersList(context);
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
@@ -1956,6 +1957,7 @@ public abstract class UIComponentBase extends UIComponent
             values[7] = _rendererType;
             values[8] = _isRendererTypeSet;
             values[9] = _addedByHandler;
+            values[10] = _facetCreatedUIPanel;
 
             return values;
         }
@@ -1991,7 +1993,7 @@ public abstract class UIComponentBase extends UIComponent
         
         Object values[] = (Object[]) state;
         
-        if ( values.length == 10 && initialStateMarked())
+        if ( values.length == 11 && initialStateMarked())
         {
             //Delta mode is active, but we are restoring a full state.
             //we need to clear the initial state, to restore state without
@@ -2009,7 +2011,7 @@ public abstract class UIComponentBase extends UIComponent
                         ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
             //}
         }
-        else if (values[0] != null || (values.length == 10))
+        else if (values[0] != null || (values.length == 11))
         {
             //Full
             _facesListeners = (_DeltaList<FacesListener>)
@@ -2022,7 +2024,7 @@ public abstract class UIComponentBase extends UIComponent
         
         getStateHelper().restoreState(context, values[1]);
         
-        if (values.length == 10)
+        if (values.length == 11)
         {
             _id = (String) values[4];
             _clientId = (String) values[5];
@@ -2030,6 +2032,7 @@ public abstract class UIComponentBase extends UIComponent
             _rendererType = (String) values[7];
             _isRendererTypeSet = (Boolean) values[8];
             _addedByHandler = (Boolean) values[9];
+            _facetCreatedUIPanel = (Boolean) values[10];
         }
         else if (values.length == 5)
         {
@@ -2443,6 +2446,16 @@ public abstract class UIComponentBase extends UIComponent
     void setOamVfAddedByHandler(boolean addedByHandler)
     {
         _addedByHandler = addedByHandler;
+    }
+    
+    boolean isOamVfFacetCreatedUIPanel()
+    {
+        return _facetCreatedUIPanel;
+    }
+    
+    void setOamVfFacetCreatedUIPanel(boolean facetCreatedUIPanel)
+    {
+        _facetCreatedUIPanel = facetCreatedUIPanel;
     }
 
 /**
