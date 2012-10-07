@@ -59,7 +59,14 @@ public final class ComponentSupport
      * This constant is duplicate in javax.faces.webapp.UIComponentClassicTagBase
      */
     public final static String FACET_CREATED_UIPANEL_MARKER = "oam.vf.createdUIPanel";
-    
+
+    /**
+     * Special myfaces core marker to indicate the component is handled by a facelet tag handler,
+     * so its creation is not handled by user programatically and PSS remove listener should
+     * not register it when a remove happens.
+     */
+    public final static String COMPONENT_ADDED_BY_HANDLER_MARKER = "oam.vf.addedByHandler";
+
     /**
      * The key under the facelet state map is stored
      */
@@ -418,6 +425,7 @@ public final class ComponentSupport
                       .append(cleanFacetName).toString()));
         }
         panel.getAttributes().put(FACET_CREATED_UIPANEL_MARKER, Boolean.TRUE);
+        panel.getAttributes().put(ComponentSupport.COMPONENT_ADDED_BY_HANDLER_MARKER, Boolean.TRUE);
         return panel;
     }
     

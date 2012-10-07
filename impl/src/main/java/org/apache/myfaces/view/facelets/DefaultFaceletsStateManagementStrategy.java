@@ -1173,10 +1173,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 if (!isRefreshOnTransientBuildPreserveState() &&
                     FaceletCompositionContext.getCurrentInstance(_facesContext) != null &&
                     (component.getAttributes().containsKey(ComponentSupport.MARK_CREATED) ||
-                     component.getAttributes().containsKey(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)) ||
-                     (component.getId() != null && component.getId().length() > 16 && 
-                      component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX) && 
-                      component.getId().endsWith("__f_cc_facet") )
+                     component.getAttributes().containsKey(ComponentSupport.COMPONENT_ADDED_BY_HANDLER_MARKER))
                     )
                 {
                     // Components removed by facelets algorithm does not need to be registered

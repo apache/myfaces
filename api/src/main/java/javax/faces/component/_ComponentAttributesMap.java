@@ -64,6 +64,15 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     private final static String MARK_CREATED = "oam.vf.MARK_ID";
     
     private final static String FACET_NAME_KEY = "facelets.FACET_NAME";
+    
+    private final static String COMPONENT_ADDED_BY_HANDLER_MARKER = "oam.vf.addedByHandler";
+    
+    /**
+     * This variable works as a check to indicate the minimun lenght we need to check
+     * for the special attributes, and save some time in get(), containsKey() and 
+     * put() operations.
+     */
+    private final static int MIN_LENGHT_CHECK = MARK_CREATED.length();
 
     // The component that is read/written via this map.
     private UIComponentBase _component;
@@ -170,32 +179,40 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         checkKey(key);
 
         int keyLength = ((String)key).length();
-        if (MARK_CREATED.length() == keyLength &&
-            MARK_CREATED.equals(key))
+        if (keyLength >= MIN_LENGHT_CHECK)
         {
-            return ((UIComponentBase)_component).getOamVfMarkCreated() != null;
-        }
-        else if (FACET_NAME_KEY.length() == keyLength &&
-            FACET_NAME_KEY.equals(key))
-        {
-            return _component.getOamVfFacetName() != null;
-        }
-        // The most common call to this method comes from UIComponent.isCompositeComponent()
-        // to reduce the impact. This is better than two lookups, once over property descriptor map
-        // and the other one from the underlying map.
-        if (Resource.COMPONENT_RESOURCE_KEY.length() == keyLength &&
-            Resource.COMPONENT_RESOURCE_KEY.equals(key))
-        {
-            if (!_isCompositeComponentSet)
+            if (MARK_CREATED.length() == keyLength &&
+                MARK_CREATED.equals(key))
             {
-                // Note we are not setting _isCompositeComponentSet, because when the component tree is built
-                // using JSF 1.2 state saving, PostAddToViewEvent is propagated and the component is check 
-                // if is a composite component, but the state is not restored, so the check return always
-                // false. A check for processing events was added to prevent that scenario, but anyway that 
-                // makes invalid set _isCompositeComponentSet to true on this location.
-                _isCompositeComponent = getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY);
+                return ((UIComponentBase)_component).getOamVfMarkCreated() != null;
             }
-            return _isCompositeComponent;
+            else if (FACET_NAME_KEY.length() == keyLength &&
+                FACET_NAME_KEY.equals(key))
+            {
+                return _component.getOamVfFacetName() != null;
+            }
+            else if (COMPONENT_ADDED_BY_HANDLER_MARKER.length() == keyLength &&
+                COMPONENT_ADDED_BY_HANDLER_MARKER.equals(key))
+            {
+                return _component.isOamVfAddedByHandler();
+            }
+            // The most common call to this method comes from UIComponent.isCompositeComponent()
+            // to reduce the impact. This is better than two lookups, once over property descriptor map
+            // and the other one from the underlying map.
+            if (Resource.COMPONENT_RESOURCE_KEY.length() == keyLength &&
+                Resource.COMPONENT_RESOURCE_KEY.equals(key))
+            {
+                if (!_isCompositeComponentSet)
+                {
+                    // Note we are not setting _isCompositeComponentSet, because when the component tree is built
+                    // using JSF 1.2 state saving, PostAddToViewEvent is propagated and the component is check 
+                    // if is a composite component, but the state is not restored, so the check return always
+                    // false. A check for processing events was added to prevent that scenario, but anyway that 
+                    // makes invalid set _isCompositeComponentSet to true on this location.
+                    _isCompositeComponent = getUnderlyingMap().containsKey(Resource.COMPONENT_RESOURCE_KEY);
+                }
+                return _isCompositeComponent;
+            }
         }
         return getPropertyDescriptor((String) key) == null ? getUnderlyingMap().containsKey(key) : false;
     }
@@ -264,15 +281,23 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         Object value;
 
         int keyLength = ((String)key).length();
-        if (MARK_CREATED.length() == keyLength &&
-            MARK_CREATED.equals(key))
+        if (keyLength >= MIN_LENGHT_CHECK)
         {
-            return _component.getOamVfMarkCreated();
-        }
-        else if (FACET_NAME_KEY.length() == keyLength &&
-            FACET_NAME_KEY.equals(key))
-        {
-            return _component.getOamVfFacetName();
+            if (MARK_CREATED.length() == keyLength &&
+                MARK_CREATED.equals(key))
+            {
+                return _component.getOamVfMarkCreated();
+            }
+            else if (FACET_NAME_KEY.length() == keyLength &&
+                FACET_NAME_KEY.equals(key))
+            {
+                return _component.getOamVfFacetName();
+            }
+            else if (COMPONENT_ADDED_BY_HANDLER_MARKER.length() == keyLength &&
+                COMPONENT_ADDED_BY_HANDLER_MARKER.equals(key))
+            {
+                return _component.isOamVfAddedByHandler();
+            }
         }
         // is there a javabean property to read?
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
@@ -372,19 +397,29 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     {
         checkKey(key);
         int keyLength = ((String)key).length();
-        if (MARK_CREATED.length() == keyLength &&
-            MARK_CREATED.equals(key))
+        if (keyLength >= MIN_LENGHT_CHECK)
         {
-            Object oldValue = _component.getOamVfMarkCreated();
-            _component.setOamVfMarkCreated(null);
-            return oldValue;
-        }
-        else if (FACET_NAME_KEY.length() == keyLength &&
-            FACET_NAME_KEY.equals(key))
-        {
-            Object oldValue = _component.getOamVfFacetName();
-            _component.setOamVfFacetName(null);
-            return oldValue;
+            if (MARK_CREATED.length() == keyLength &&
+                MARK_CREATED.equals(key))
+            {
+                Object oldValue = _component.getOamVfMarkCreated();
+                _component.setOamVfMarkCreated(null);
+                return oldValue;
+            }
+            else if (FACET_NAME_KEY.length() == keyLength &&
+                FACET_NAME_KEY.equals(key))
+            {
+                Object oldValue = _component.getOamVfFacetName();
+                _component.setOamVfFacetName(null);
+                return oldValue;
+            }
+            else if (COMPONENT_ADDED_BY_HANDLER_MARKER.length() == keyLength &&
+                COMPONENT_ADDED_BY_HANDLER_MARKER.equals(key))
+            {
+                Object oldValue = _component.isOamVfAddedByHandler();
+                _component.setOamVfAddedByHandler(false);
+                return oldValue;
+            }
         }
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
         if (propertyDescriptor != null)
@@ -428,19 +463,30 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             throw new NullPointerException("key");
         }
-        if (MARK_CREATED.length() == key.length() &&
-            MARK_CREATED.equals(key))
+        int keyLength = ((String)key).length();
+        if (keyLength >= MIN_LENGHT_CHECK)
         {
-            String oldValue = _component.getOamVfMarkCreated();
-            _component.setOamVfMarkCreated((String)value);
-            return oldValue;
-        }
-        else if (FACET_NAME_KEY.length() == key.length() &&
-            FACET_NAME_KEY.equals(key))
-        {
-            Object oldValue = _component.getOamVfFacetName();
-            _component.setOamVfFacetName((String)value);
-            return oldValue;
+            if (MARK_CREATED.length() == keyLength &&
+                MARK_CREATED.equals(key))
+            {
+                String oldValue = _component.getOamVfMarkCreated();
+                _component.setOamVfMarkCreated((String)value);
+                return oldValue;
+            }
+            else if (FACET_NAME_KEY.length() == keyLength &&
+                FACET_NAME_KEY.equals(key))
+            {
+                Object oldValue = _component.getOamVfFacetName();
+                _component.setOamVfFacetName((String)value);
+                return oldValue;
+            }
+            else if (COMPONENT_ADDED_BY_HANDLER_MARKER.length() == keyLength &&
+                COMPONENT_ADDED_BY_HANDLER_MARKER.equals(key))
+            {
+                Object oldValue = _component.isOamVfAddedByHandler();
+                _component.setOamVfAddedByHandler((Boolean)value);
+                return oldValue;
+            }
         }
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor(key);
         if (propertyDescriptor == null)
@@ -463,7 +509,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         }
         // To keep this code in good shape, The fastest way to compare is look if the length first here
         // because we avoid an unnecessary cast later on equals().
-        if ( Resource.COMPONENT_RESOURCE_KEY.length() == key.length() 
+        if ( Resource.COMPONENT_RESOURCE_KEY.length() == keyLength 
              && Resource.COMPONENT_RESOURCE_KEY.equals(key))
         {
             _isCompositeComponent = true;
