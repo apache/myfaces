@@ -69,6 +69,7 @@ public final class ViewMetadataHandler extends TagHandler
                         ctx.getFacesContext(), UIPanel.COMPONENT_TYPE, null);
                 metadataFacet.setId(UIViewRoot.METADATA_FACET_NAME);
                 metadataFacet.getAttributes().put(ComponentSupport.FACET_CREATED_UIPANEL_MARKER, true);
+                metadataFacet.getAttributes().put(ComponentSupport.COMPONENT_ADDED_BY_HANDLER_MARKER, Boolean.TRUE);
                 parent.getFacets().put(UIViewRoot.METADATA_FACET_NAME, metadataFacet);
             }
         }

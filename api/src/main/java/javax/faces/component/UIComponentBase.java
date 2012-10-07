@@ -103,6 +103,7 @@ public abstract class UIComponentBase extends UIComponent
     private String _rendererType;
     private String _markCreated;
     private String _facetName;
+    private boolean _addedByHandler = false;
 
     /**
      * This map holds ClientBehavior instances.
@@ -1940,7 +1941,7 @@ public abstract class UIComponentBase extends UIComponent
         else
         {
             //Full
-            Object values[] = new Object[9];
+            Object values[] = new Object[10];
             values[0] = saveFacesListenersList(context);
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
@@ -1954,6 +1955,7 @@ public abstract class UIComponentBase extends UIComponent
             values[6] = _markCreated;
             values[7] = _rendererType;
             values[8] = _isRendererTypeSet;
+            values[9] = _addedByHandler;
 
             return values;
         }
@@ -1989,7 +1991,7 @@ public abstract class UIComponentBase extends UIComponent
         
         Object values[] = (Object[]) state;
         
-        if ( values.length == 9 && initialStateMarked())
+        if ( values.length == 10 && initialStateMarked())
         {
             //Delta mode is active, but we are restoring a full state.
             //we need to clear the initial state, to restore state without
@@ -2007,7 +2009,7 @@ public abstract class UIComponentBase extends UIComponent
                         ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
             //}
         }
-        else if (values[0] != null || (values.length == 9))
+        else if (values[0] != null || (values.length == 10))
         {
             //Full
             _facesListeners = (_DeltaList<FacesListener>)
@@ -2020,13 +2022,14 @@ public abstract class UIComponentBase extends UIComponent
         
         getStateHelper().restoreState(context, values[1]);
         
-        if (values.length == 9)
+        if (values.length == 10)
         {
             _id = (String) values[4];
             _clientId = (String) values[5];
             _markCreated = (String) values[6];
             _rendererType = (String) values[7];
             _isRendererTypeSet = (Boolean) values[8];
+            _addedByHandler = (Boolean) values[9];
         }
         else if (values.length == 5)
         {
@@ -2037,7 +2040,7 @@ public abstract class UIComponentBase extends UIComponent
         // rendererType needs to be restored before SystemEventListener,
         // otherwise UIComponent.getCurrentComponent(context).getRenderer(context)
         // will not work correctly
-        if (values.length == 9)
+        if (values.length == 10)
         {
             //Full restore
             restoreFullBehaviorsMap(context, values[2]);
@@ -2432,6 +2435,16 @@ public abstract class UIComponentBase extends UIComponent
         _facetName = facetName;
     }
     
+    boolean isOamVfAddedByHandler()
+    {
+        return _addedByHandler;
+    }
+    
+    void setOamVfAddedByHandler(boolean addedByHandler)
+    {
+        _addedByHandler = addedByHandler;
+    }
+
 /**
      * <p>
      * This gets a single FacesContext-local shared stringbuilder instance, each time you call

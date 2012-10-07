@@ -319,6 +319,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             compositeFacetPanel = (UIPanel)
                 faceletContext.getFacesContext().getApplication().createComponent(
                     faceletContext.getFacesContext(), UIPanel.COMPONENT_TYPE, null);
+            compositeFacetPanel.getAttributes().put(ComponentSupport.COMPONENT_ADDED_BY_HANDLER_MARKER,
+                    Boolean.TRUE);
             compositeComponentBase.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, compositeFacetPanel);
             
             // Set an id to the created facet component, to prevent id generation and make
