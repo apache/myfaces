@@ -59,19 +59,44 @@ public class ValueExpressionMethodExpression extends MethodExpression
     @Override
     public MethodInfo getMethodInfo(ELContext context)
     {
-        return getMethodExpression(context).getMethodInfo(context);
+        MethodExpression me = getMethodExpression(context);
+        if (me != null)
+        {
+            return me.getMethodInfo(context);
+        }
+        return null;
     }
 
     @Override
     public Object invoke(ELContext context, Object[] params)
     {
-        return getMethodExpression(context).invoke(context, params);
+        MethodExpression me = getMethodExpression(context);
+        if (me != null)
+        {        
+            return me.invoke(context, params);
+        }
+        return null;
     }
 
     @Override
     public boolean equals(Object obj)
     {
-        return getMethodExpression().equals(obj);
+        MethodExpression me = getMethodExpression();
+        if (me != null)
+        {        
+            return me.equals(obj);
+        }
+        if (!(obj instanceof ValueExpressionMethodExpression))
+        {
+            return false;
+        }
+        ValueExpressionMethodExpression other = (ValueExpressionMethodExpression) obj;
+        if ((this.valueExpression == null && other.valueExpression != null) || 
+             (this.valueExpression != null && !this.valueExpression.equals(other.valueExpression)))
+        {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -84,13 +109,23 @@ public class ValueExpressionMethodExpression extends MethodExpression
     @Override
     public int hashCode()
     {
-        return getMethodExpression().hashCode();
+        MethodExpression me = getMethodExpression();
+        if (me != null)
+        {        
+            return me.hashCode();
+        }
+        return valueExpression.hashCode();
     }
 
     @Override
     public boolean isLiteralText()
     {
-        return getMethodExpression().isLiteralText();
+        MethodExpression me = getMethodExpression();
+        if (me != null)
+        {
+            return me.isLiteralText();
+        }
+        return valueExpression.isLiteralText();
     }
     
     private MethodExpression getMethodExpression()
