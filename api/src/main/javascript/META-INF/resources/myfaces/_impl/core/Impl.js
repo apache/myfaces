@@ -232,7 +232,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             /*compliance with Mojarra which automatically adds @this to an execute
              * the spec rev 2.0a however states, if none is issued nothing at all should be sent down
              */
-            this._transformList(passThrgh, this.P_EXECUTE, options.execute + " @this", form, elementId);
+            if(options.execute.indexOf("@this") == -1) {
+                options.execute = options.execute + " @this";
+            }
+            this._transformList(passThrgh, this.P_EXECUTE, options.execute, form, elementId);
         } else {
             passThrgh[this.P_EXECUTE] = elementId;
         }
@@ -375,6 +378,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //it uses an array and an index to position all elements correctly
         //the offset variable is there to prevent 0 which results in a javascript
         //false
+        srcStr = _Lang.trim(srcStr);
         var offset = 1,
                 vals = (srcStr) ? srcStr.split(/\s+/) : [],
                 idIdx = (vals.length) ? _Lang.arrToMap(vals, offset) : {},
