@@ -21,8 +21,6 @@ package org.apache.myfaces.shared.renderkit.html;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -100,8 +98,6 @@ public class HtmlResponseWriterImpl
 
     private boolean _cdataOpen;
 
-    private static final Set<String> S_EMPTY_HTML_ELEMENTS = new HashSet<String>();
-
     private static final String CDATA_START = "<![CDATA[ \n";
     private static final String CDATA_START_NO_LINE_RETURN = "<![CDATA[";
     private static final String COMMENT_START = "<!--\n";
@@ -112,23 +108,86 @@ public class HtmlResponseWriterImpl
     private static final String COMMENT_COMMENT_END = "\n//-->";
     private static final String COMMENT_END = "\n-->";
 
+    static private final String[][] EMPTY_ELEMENT_ARR = new String[256][];
+
+    static private final String[] A_NAMES = new String[]
+    {
+      "area",
+    };
+
+    static private final String[] B_NAMES = new String[]
+    {
+      "br",
+      "base",
+      "basefont",
+    };
+
+    static private final String[] C_NAMES = new String[]
+    {
+      "col",
+    };
+
+    static private final String[] E_NAMES = new String[]
+    {
+      "embed",
+    };
+
+    static private final String[] F_NAMES = new String[]
+    {
+      "frame",
+    };
+
+    static private final String[] H_NAMES = new String[]
+    {
+      "hr",
+    };
+
+    static private final String[] I_NAMES = new String[]
+    {
+      "img",
+      "input",
+      "isindex",
+    };
+
+    static private final String[] L_NAMES = new String[]
+    {
+      "link",
+    };
+
+    static private final String[] M_NAMES = new String[]
+    {
+      "meta",
+    };
+
+    static private final String[] P_NAMES = new String[]
+    {
+      "param",
+    };
+
     static
     {
-        S_EMPTY_HTML_ELEMENTS.add("area");
-        S_EMPTY_HTML_ELEMENTS.add("br");
-        S_EMPTY_HTML_ELEMENTS.add("base");
-        S_EMPTY_HTML_ELEMENTS.add("basefont");
-        S_EMPTY_HTML_ELEMENTS.add("col");
-        S_EMPTY_HTML_ELEMENTS.add("frame");
-        S_EMPTY_HTML_ELEMENTS.add("hr");
-        S_EMPTY_HTML_ELEMENTS.add("img");
-        S_EMPTY_HTML_ELEMENTS.add("input");
-        S_EMPTY_HTML_ELEMENTS.add("isindex");
-        S_EMPTY_HTML_ELEMENTS.add("link");
-        S_EMPTY_HTML_ELEMENTS.add("meta");
-        S_EMPTY_HTML_ELEMENTS.add("param");
-    }
-
+      EMPTY_ELEMENT_ARR['a'] = A_NAMES;
+      EMPTY_ELEMENT_ARR['A'] = A_NAMES;
+      EMPTY_ELEMENT_ARR['b'] = B_NAMES;
+      EMPTY_ELEMENT_ARR['B'] = B_NAMES;
+      EMPTY_ELEMENT_ARR['c'] = C_NAMES;
+      EMPTY_ELEMENT_ARR['C'] = C_NAMES;
+      EMPTY_ELEMENT_ARR['e'] = E_NAMES;
+      EMPTY_ELEMENT_ARR['E'] = E_NAMES;
+      EMPTY_ELEMENT_ARR['f'] = F_NAMES;
+      EMPTY_ELEMENT_ARR['F'] = F_NAMES;
+      EMPTY_ELEMENT_ARR['h'] = H_NAMES;
+      EMPTY_ELEMENT_ARR['H'] = H_NAMES;
+      EMPTY_ELEMENT_ARR['i'] = I_NAMES;
+      EMPTY_ELEMENT_ARR['I'] = I_NAMES;
+      EMPTY_ELEMENT_ARR['l'] = L_NAMES;
+      EMPTY_ELEMENT_ARR['L'] = L_NAMES;
+      EMPTY_ELEMENT_ARR['m'] = M_NAMES;
+      EMPTY_ELEMENT_ARR['M'] = M_NAMES;
+      EMPTY_ELEMENT_ARR['p'] = P_NAMES;
+      EMPTY_ELEMENT_ARR['P'] = P_NAMES;
+    }    
+    
     public HtmlResponseWriterImpl(Writer writer, String contentType, String characterEncoding)
     {
         this(writer,contentType,characterEncoding,true);
@@ -298,7 +357,7 @@ public class HtmlResponseWriterImpl
     {
         if (_startTagOpen)
         {
-            if (!_useStraightXml && S_EMPTY_HTML_ELEMENTS.contains(_startElementName.toLowerCase()))
+            if (!_useStraightXml && isEmptyElement(_startElementName))
             {
                 _currentWriter.write(" />");
                 // make null, this will cause NullPointer in some invalid element nestings
@@ -341,6 +400,29 @@ public class HtmlResponseWriterImpl
             }
             _startTagOpen = false;
         }
+    }
+    
+    private boolean isEmptyElement(String elem)
+    {
+        // Code taken from trinidad
+        // =-=AEW Performance?  Certainly slower to use a hashtable,
+        // at least if we can't assume the input name is lowercased.
+        // -= Leonardo Uribe =- elem.toLowerCase() internally creates an array,
+        // and the contains() force a call to hashCode(). The array uses simple
+        // char comparison, which at the end is faster and use less memory.
+        // Note this call is very frequent, so at the end it is worth to do it.
+        String[] array = EMPTY_ELEMENT_ARR[elem.charAt(0)];
+        if (array != null)
+        {
+            for (int i = array.length - 1; i >= 0; i--)
+            {
+                if (elem.equalsIgnoreCase(array[i]))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void resetStartedElement()
@@ -396,7 +478,7 @@ public class HtmlResponseWriterImpl
         }
         else
         {
-            if (!_useStraightXml && S_EMPTY_HTML_ELEMENTS.contains(name.toLowerCase()))
+            if (!_useStraightXml && isEmptyElement(name))
             {
            /*
            Should this be here?  It warns even when you have an x:htmlTag value="br", it should just close.
