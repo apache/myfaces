@@ -87,6 +87,27 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     
     private RenderKitFactory _renderKitFactory = null;
     private VisitContextFactory _visitContextFactory = null;
+    
+    private final String[] _faceletsViewMappings;
+    private final String[] _contextSuffixes;
+    private final String _faceletsContextSufix;
+    private final boolean _initialized;
+    
+    public DefaultRestoreViewSupport()
+    {
+        _faceletsViewMappings = null;
+        _contextSuffixes = null;
+        _faceletsContextSufix = null;
+        _initialized = false;
+    }
+    
+    public DefaultRestoreViewSupport(FacesContext facesContext)
+    {
+        _faceletsViewMappings = getFaceletsViewMappings(facesContext);
+        _contextSuffixes = getContextSuffix(facesContext);
+        _faceletsContextSufix = getFaceletsContextSuffix(facesContext);
+        _initialized = true;
+    }
 
     public void processComponentBinding(FacesContext facesContext, UIComponent component)
     {
@@ -370,8 +391,8 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
      */
     protected String handleSuffixMapping(FacesContext context, String requestViewId)
     {
-        String[] faceletsViewMappings = getFaceletsViewMappings(context);
-        String[] jspDefaultSuffixes = getContextSuffix(context);
+        String[] faceletsViewMappings = _initialized ? _faceletsViewMappings : getFaceletsViewMappings(context);
+        String[] jspDefaultSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context);
         
         int slashPos = requestViewId.lastIndexOf('/');
         int extensionPos = requestViewId.lastIndexOf('.');
@@ -426,7 +447,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         }
         
         //jsp suffixes didn't match, try facelets suffix
-        String faceletsDefaultSuffix = this.getFaceletsContextSuffix(context);
+        String faceletsDefaultSuffix = _initialized ? _faceletsContextSufix : this.getFaceletsContextSuffix(context);
         if (faceletsDefaultSuffix != null)
         {
             for (String defaultSuffix : jspDefaultSuffixes)

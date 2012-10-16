@@ -45,7 +45,6 @@ import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.renderkit.StateCacheUtils;
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.InvalidViewIdException;
@@ -82,19 +81,23 @@ public class ViewHandlerImpl extends ViewHandler
 
     public ViewHandlerImpl()
     {
-        _vdlFactory = (ViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
+        _vdlFactory = (ViewDeclarationLanguageFactory)
+                FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
         if (log.isLoggable(Level.FINEST))
+        {
             log.finest("New ViewHandler instance created");
+        }
     }
 
     @Override
     public String deriveViewId(FacesContext context, String input)
     {
-        if(input != null){
+        if(input != null)
+        {
             try
             {
                 //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
-                return getViewHandlerSupport().calculateAndCheckViewId(context, input);
+                return getViewHandlerSupport(context).calculateAndCheckViewId(context, input);
             }
             catch (InvalidViewIdException e)
             {
@@ -103,7 +106,7 @@ public class ViewHandlerImpl extends ViewHandler
         }
         return input;   // If the argument input is null, return null.
     }
-
+    
     @Override
     public String getBookmarkableURL(FacesContext context, String viewId,
             Map<String, List<String>> parameters, boolean includeViewParams)
@@ -220,7 +223,7 @@ public class ViewHandlerImpl extends ViewHandler
     public UIViewRoot createView(FacesContext context, String viewId)
     {
        checkNull(context, "facesContext");
-       String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
+       String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
        
        // we cannot use this.getVDL() directly (see getViewHandler())
        //return getViewHandler(context)
@@ -233,7 +236,7 @@ public class ViewHandlerImpl extends ViewHandler
     @Override
     public String getActionURL(FacesContext context, String viewId)
     {
-        return getViewHandlerSupport().calculateActionURL(context, viewId);
+        return getViewHandlerSupport(context).calculateActionURL(context, viewId);
     }
 
     @Override
@@ -269,7 +272,7 @@ public class ViewHandlerImpl extends ViewHandler
     {
         checkNull(context, "context");
     
-        String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
+        String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
         
         // we cannot use this.getVDL() directly (see getViewHandler())
         //return getViewHandler(context)
@@ -285,7 +288,9 @@ public class ViewHandlerImpl extends ViewHandler
         checkNull(context, "context");
 
         if(context.getPartialViewContext().isAjaxRequest())
+        {
             return;
+        }
 
         ResponseStateManager responseStateManager = context.getRenderKit().getResponseStateManager();
         
@@ -302,11 +307,14 @@ public class ViewHandlerImpl extends ViewHandler
         // that so, check if the current one support the trick.
         if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
         {
-            if (StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).isWriteStateAfterRenderViewRequired(context))
+            if (StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).
+                    isWriteStateAfterRenderViewRequired(context))
             {
                 // Only write state marker if javascript view state is disabled
                 ExternalContext extContext = context.getExternalContext();
-                if (!(JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())) {
+                if (!(JavascriptUtils.isJavascriptAllowed(extContext) &&
+                        MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()))
+                {
                     context.getResponseWriter().write(FORM_STATE_MARKER);
                 }
             }
@@ -319,13 +327,16 @@ public class ViewHandlerImpl extends ViewHandler
         {
             // Only write state marker if javascript view state is disabled
             ExternalContext extContext = context.getExternalContext();
-            if (!(JavascriptUtils.isJavascriptAllowed(extContext) && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())) {
+            if (!(JavascriptUtils.isJavascriptAllowed(extContext) &&
+                    MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()))
+            {
                 context.getResponseWriter().write(FORM_STATE_MARKER);
             }
         }
     }
     
-    private void setWritingState(FacesContext context, ResponseStateManager rsm){
+    private void setWritingState(FacesContext context, ResponseStateManager rsm)
+    {
         // Facelets specific hack:
         // Tell the StateWriter that we're about to write state
         StateWriter stateWriter = StateWriter.getCurrentInstance(context);
@@ -354,7 +365,8 @@ public class ViewHandlerImpl extends ViewHandler
             }
             
             
-        }else
+        }
+        else
         {
             //we're in a JSP, let the JSPStatemanager know that we need to actually write the state
         }        
@@ -374,7 +386,7 @@ public class ViewHandlerImpl extends ViewHandler
         }
         else
         {
-            String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);  
+            String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);  
             // we cannot use this.getVDL() directly (see getViewHandler())
             //ViewDeclarationLanguage vdl = getViewHandler(context).
             //        getViewDeclarationLanguage(context, calculatedViewId);
@@ -429,6 +441,7 @@ public class ViewHandlerImpl extends ViewHandler
                         }
                     }
                 }
+
                 if (parameterValue != null)
                 {
                     // since we have checked !parameters.containsKey(viewParameter.getName())
@@ -472,9 +485,14 @@ public class ViewHandlerImpl extends ViewHandler
     
     protected ViewHandlerSupport getViewHandlerSupport()
     {
+        return getViewHandlerSupport(FacesContext.getCurrentInstance());
+    }
+
+    protected ViewHandlerSupport getViewHandlerSupport(FacesContext context)
+    {
         if (_viewHandlerSupport == null)
         {
-            _viewHandlerSupport = new DefaultViewHandlerSupport();
+            _viewHandlerSupport = new DefaultViewHandlerSupport(context);
         }
         return _viewHandlerSupport;
     }
