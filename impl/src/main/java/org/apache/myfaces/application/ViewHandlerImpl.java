@@ -97,7 +97,7 @@ public class ViewHandlerImpl extends ViewHandler
             try
             {
                 //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
-                return getViewHandlerSupport().calculateAndCheckViewId(context, input);
+                return getViewHandlerSupport(context).calculateAndCheckViewId(context, input);
             }
             catch (InvalidViewIdException e)
             {
@@ -115,7 +115,7 @@ public class ViewHandlerImpl extends ViewHandler
             try
             {
                 //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
-                return getViewHandlerSupport().calculateViewId(context, rawViewId);
+                return getViewHandlerSupport(context).calculateViewId(context, rawViewId);
             }
             catch (InvalidViewIdException e)
             {
@@ -241,7 +241,7 @@ public class ViewHandlerImpl extends ViewHandler
     public UIViewRoot createView(FacesContext context, String viewId)
     {
        checkNull(context, "facesContext");
-       String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
+       String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
        
        // we cannot use this.getVDL() directly (see getViewHandler())
        //return getViewHandler(context)
@@ -254,7 +254,7 @@ public class ViewHandlerImpl extends ViewHandler
     @Override
     public String getActionURL(FacesContext context, String viewId)
     {
-        return getViewHandlerSupport().calculateActionURL(context, viewId);
+        return getViewHandlerSupport(context).calculateActionURL(context, viewId);
     }
 
     @Override
@@ -290,7 +290,7 @@ public class ViewHandlerImpl extends ViewHandler
     {
         checkNull(context, "context");
     
-        String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);
+        String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
         
         // we cannot use this.getVDL() directly (see getViewHandler())
         //return getViewHandler(context)
@@ -404,7 +404,7 @@ public class ViewHandlerImpl extends ViewHandler
         }
         else
         {
-            String calculatedViewId = getViewHandlerSupport().calculateViewId(context, viewId);  
+            String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);  
             // we cannot use this.getVDL() directly (see getViewHandler())
             //ViewDeclarationLanguage vdl = getViewHandler(context).
             //        getViewDeclarationLanguage(context, calculatedViewId);
@@ -503,9 +503,14 @@ public class ViewHandlerImpl extends ViewHandler
     
     protected ViewHandlerSupport getViewHandlerSupport()
     {
+        return getViewHandlerSupport(FacesContext.getCurrentInstance());
+    }
+
+    protected ViewHandlerSupport getViewHandlerSupport(FacesContext context)
+    {
         if (_viewHandlerSupport == null)
         {
-            _viewHandlerSupport = new DefaultViewHandlerSupport();
+            _viewHandlerSupport = new DefaultViewHandlerSupport(context);
         }
         return _viewHandlerSupport;
     }

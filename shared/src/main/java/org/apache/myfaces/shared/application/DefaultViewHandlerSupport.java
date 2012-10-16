@@ -79,6 +79,27 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 
     private volatile ConcurrentLRUCache<String, Boolean> _checkedViewIdMap = null;
     private Boolean _checkedViewIdCacheEnabled = null;
+    
+    private final String[] _faceletsViewMappings;
+    private final String[] _contextSuffixes;
+    private final String _faceletsContextSufix;
+    private final boolean _initialized;
+    
+    public DefaultViewHandlerSupport()
+    {
+        _faceletsViewMappings = null;
+        _contextSuffixes = null;
+        _faceletsContextSufix = null;
+        _initialized = false;
+    }
+    
+    public DefaultViewHandlerSupport(FacesContext facesContext)
+    {
+        _faceletsViewMappings = getFaceletsViewMappings(facesContext);
+        _contextSuffixes = getContextSuffix(facesContext);
+        _faceletsContextSufix = getFaceletsContextSuffix(facesContext);
+        _initialized = true;
+    }
 
     public String calculateViewId(FacesContext context, String viewId)
     {
@@ -183,7 +204,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             if (mapping.isExtensionMapping())
             {
                 //See JSF 2.0 section 7.5.2 
-                String[] contextSuffixes = getContextSuffix(context); 
+                String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
                 boolean founded = false;
                 for (String contextSuffix : contextSuffixes)
                 {
@@ -408,8 +429,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
      */
     protected String handleSuffixMapping(FacesContext context, String requestViewId)
     {
-        String[] faceletsViewMappings = getFaceletsViewMappings(context);
-        String[] jspDefaultSuffixes = getContextSuffix(context);
+        String[] faceletsViewMappings = _initialized ? _faceletsViewMappings : getFaceletsViewMappings(context);
+        String[] jspDefaultSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context);
         
         int slashPos = requestViewId.lastIndexOf('/');
         int extensionPos = requestViewId.lastIndexOf('.');
@@ -468,7 +489,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         }
         
         //jsp suffixes didn't match, try facelets suffix
-        String faceletsDefaultSuffix = this.getFaceletsContextSuffix(context);
+        String faceletsDefaultSuffix = _initialized ? _faceletsContextSufix : this.getFaceletsContextSuffix(context);
         if (faceletsDefaultSuffix != null)
         {
             for (String defaultSuffix : jspDefaultSuffixes)

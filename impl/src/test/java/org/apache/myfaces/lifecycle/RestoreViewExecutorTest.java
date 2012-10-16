@@ -181,7 +181,14 @@ public class RestoreViewExecutorTest extends FacesTestCase
      */
     public void testGetRestoreViewSupport() throws Exception
     {
-        assertTrue(DefaultRestoreViewSupport.class.equals(new RestoreViewExecutor().getRestoreViewSupport().getClass()));
+        expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
+        expect(_externalContext.getInitParameter("javax.faces.FACELETS_VIEW_MAPPINGS")).andReturn(null).anyTimes();
+        expect(_externalContext.getInitParameter("facelets.VIEW_MAPPINGS")).andReturn(null).anyTimes();
+        expect(_externalContext.getInitParameter("javax.faces.FACELETS_SUFFIX")).andReturn(null).anyTimes();
+        expect(_externalContext.getInitParameter("javax.faces.DEFAULT_SUFFIX")).andReturn(null).anyTimes();
+        _mocksControl.replay();
+        assertTrue(DefaultRestoreViewSupport.class.equals(new RestoreViewExecutor().getRestoreViewSupport(_facesContext).getClass()));
+        _mocksControl.verify();
     }
 
     /**

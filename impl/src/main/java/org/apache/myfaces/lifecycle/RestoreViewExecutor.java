@@ -79,7 +79,7 @@ class RestoreViewExecutor extends PhaseExecutor
         Application application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
         UIViewRoot viewRoot = facesContext.getViewRoot();
-        RestoreViewSupport restoreViewSupport = getRestoreViewSupport();
+        RestoreViewSupport restoreViewSupport = getRestoreViewSupport(facesContext);
 
         // Examine the FacesContext instance for the current request. If it already contains a UIViewRoot
         if (viewRoot != null)
@@ -284,9 +284,14 @@ class RestoreViewExecutor extends PhaseExecutor
     
     protected RestoreViewSupport getRestoreViewSupport()
     {
+        return getRestoreViewSupport(FacesContext.getCurrentInstance());
+    }
+    
+    protected RestoreViewSupport getRestoreViewSupport(FacesContext context)
+    {
         if (_restoreViewSupport == null)
         {
-            _restoreViewSupport = new DefaultRestoreViewSupport();
+            _restoreViewSupport = new DefaultRestoreViewSupport(context);
         }
         return _restoreViewSupport;
     }
