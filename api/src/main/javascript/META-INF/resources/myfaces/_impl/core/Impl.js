@@ -390,8 +390,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
                 theForm = idIdx[this.IDENT_FORM];
 
         if (none) {
-            //in case of none only one value is returned
-            passThrgh[target] = this.IDENT_NONE;
+            //in case of none nothing is returned
+            if('undefined' != typeof passThrgh.target) {
+                delete passThrgh.target;
+            }
             return passThrgh;
         }
         if (all) {
