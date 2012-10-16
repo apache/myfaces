@@ -118,13 +118,11 @@ if (_MF_SINGLTN) {
                 executes = this._Lang.strToArray(executes, /\s+/);
             }
 
-            for (var executable in executes) {
-                if (!executes.hasOwnProperty(executable)) continue;
-                var element = this.byId(executes[executable]);
+            for (var cnt = 0, len = executes.length; cnt < len ; cnt ++) {
+                var element = this.byId(executes[cnt]);
                 var inputs = this.findByTagName(element, "input", true);
-                for (var key in inputs) {
-                    if (!inputs.hasOwnProperty(key)) continue;
-                    if (this.getAttribute(inputs[key], "type") == "file") return true;
+                for (var cnt2 = 0, len2 = inputs.length; cnt2 < len2 ; cnt2++) {
+                    if (this.getAttribute(inputs[cnt2], "type") == "file") return true;
                 }
             }
             return false;
