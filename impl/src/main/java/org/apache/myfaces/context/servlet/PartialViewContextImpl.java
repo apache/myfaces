@@ -668,9 +668,9 @@ public class PartialViewContextImpl extends PartialViewContext
             {
                 for (UIComponent grandchild : child.getChildren())
                 {
-                    if (child instanceof HtmlHead)
+                    if (grandchild instanceof HtmlHead)
                     {
-                        return child;
+                        return grandchild;
                     }
                 }
             }
@@ -690,9 +690,9 @@ public class PartialViewContextImpl extends PartialViewContext
             {
                 for (UIComponent grandchild : child.getChildren())
                 {
-                    if (child instanceof HtmlBody)
+                    if (grandchild instanceof HtmlBody)
                     {
-                        return child;
+                        return grandchild;
                     }
                 }
             }
