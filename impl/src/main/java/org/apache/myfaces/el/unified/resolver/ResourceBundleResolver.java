@@ -55,6 +55,17 @@ public final class ResourceBundleResolver extends ELResolver
     public void setValue(final ELContext context, final Object base, final Object property, final Object value)
         throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException
     {
+        // JSF 2.0 spec section 5.6.1.4
+        // "... If base is null and property is a String equal to the value of the
+        // <var> element of one of the <resource-bundle>'s in the application 
+        // configuration resources throw javax.el.PropertyNotWriteable, since
+        // ResourceBundles are read-only. ..."
+        // Since something is done only when base is null, it is better to check 
+        // for not null and return.
+        if (base != null)
+        {
+            return;
+        }
 
         if ((base == null) && (property == null))
         {
@@ -66,6 +77,7 @@ public final class ResourceBundleResolver extends ELResolver
             return;
         }
 
+        // base is null and property is a String value, check for resource bundle.
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
         if (bundle != null)
