@@ -55,13 +55,29 @@ public final class ResourceBundleResolver extends ELResolver
     public void setValue(final ELContext context, final Object base, final Object property, final Object value)
         throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException
     {
+        // JSF 1.2 spec section 5.6.1.3
+        // "... If base is null and property is a String equal to the value of the
+        // <var> element of one of the <resource-bundle>'s in the application 
+        // configuration resources throw javax.el.PropertyNotWriteable, since
+        // ResourceBundles are read-only. ..."
+        // Since something is done only when base is null, it is better to check 
+        // for not null and return.
+        if (base != null)
+        {
+            return;
+        }
 
         if ((base == null) && (property == null))
+        {
             throw new PropertyNotFoundException();
+        }
 
         if (!(property instanceof String))
+        {
             return;
+        }
 
+        // base is null and property is a String value, check for resource bundle.
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
         if (bundle != null)
@@ -76,11 +92,17 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return false;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return false;
+        }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
@@ -99,11 +121,17 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
@@ -122,11 +150,17 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
         if (property == null)
+        {
             throw new PropertyNotFoundException();
+        }
         if (!(property instanceof String))
+        {
             return null;
+        }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
 
@@ -144,7 +178,9 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
 
         final ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
 
@@ -164,7 +200,9 @@ public final class ResourceBundleResolver extends ELResolver
     {
 
         if (base != null)
+        {
             return null;
+        }
 
         return String.class;
     }
