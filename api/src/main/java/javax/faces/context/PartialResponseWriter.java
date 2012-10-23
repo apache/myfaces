@@ -61,7 +61,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     @Override
     public void endDocument() throws IOException
     {
-        if (hasChanges) {
+        if (hasChanges)
+        {
             // Close the <insert> element, if any.
             //error close the last op if any
             endInsert();
@@ -98,7 +99,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
 
     public void endInsert() throws IOException
     {
-        if (insertType == null) {
+        if (insertType == null)
+        {
             // No insert started; ignore.
             
             return;
@@ -144,6 +146,13 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         _wrapped.write ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         
         _wrapped.startElement ("partial-response", null);
+        
+        // If by some reason the response has been reset, and the same
+        // PartialResponseWriter is used, it is necessary to ensure any 
+        // variable is initialized in a consistent state. To do that,
+        // the best point is when the document is started.
+        hasChanges = false;
+        insertType = null;
     }
 
     public void startError(String errorName) throws IOException
@@ -161,12 +170,14 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     }
 
     @Override
-    public void startCDATA() throws IOException {
+    public void startCDATA() throws IOException
+    {
         _wrapped.startCDATA();
     }
 
     @Override
-    public void endCDATA() throws IOException {
+    public void endCDATA() throws IOException
+    {
         _wrapped.endCDATA();    
     }
 
@@ -193,7 +204,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         attrNames = attributes.keySet().iterator();
         
-        while (attrNames.hasNext()) {
+        while (attrNames.hasNext())
+        {
             String attrName = attrNames.next();
             
             _wrapped.writeAttribute (attrName, attributes.get (attrName), null);
@@ -234,7 +246,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         attrNames = attributes.keySet().iterator();
         
-        while (attrNames.hasNext()) {
+        while (attrNames.hasNext())
+        {
             String attrName = attrNames.next();
             
             _wrapped.startElement ("attribute", null);
@@ -246,16 +259,20 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         _wrapped.endElement ("attributes");
     }
     
-    private void startChanges () throws IOException {
-        if (!hasChanges) {
+    private void startChanges () throws IOException
+    {
+        if (!hasChanges)
+        {
             _wrapped.startElement ("changes", null);
             
             hasChanges = true;
         }
     }
     
-    private void startInsertCommon (String type, String targetId) throws IOException {
-        if (insertType != null) {
+    private void startInsertCommon (String type, String targetId) throws IOException
+    {
+        if (insertType != null)
+        {
             // An insert has already been started; ignore.
             
             return;
