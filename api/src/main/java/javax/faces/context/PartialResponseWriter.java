@@ -146,6 +146,13 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         _wrapped.write ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         
         _wrapped.startElement ("partial-response", null);
+        
+        // If by some reason the response has been reset, and the same
+        // PartialResponseWriter is used, it is necessary to ensure any 
+        // variable is initialized in a consistent state. To do that,
+        // the best point is when the document is started.
+        hasChanges = false;
+        insertType = null;
     }
 
     public void startError(String errorName) throws IOException
