@@ -26,10 +26,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.view.AttachedObjectTarget;
 
@@ -72,6 +75,8 @@ import javax.faces.view.AttachedObjectTarget;
 public class CompositeComponentBeanInfo extends SimpleBeanInfo 
     implements Externalizable
 {
+    
+    public static final String PROPERTY_DESCRIPTOR_MAP_KEY = "oam.cc.beanInfo.PDM";
 
     /**
      * Most of the information here are filled on composite:interface tag.
@@ -95,6 +100,8 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
     
     private PropertyDescriptor[] _propertyDescriptorsArray;
     
+    private Map<String, PropertyDescriptor> _propertyDescriptorsMap;
+    
     /**
      * Used for Serialization
      */
@@ -107,6 +114,7 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
     {
         super();
         _descriptor = descriptor;
+        getBeanDescriptor().setValue(PROPERTY_DESCRIPTOR_MAP_KEY, new PropertyDescriptorMap());
     }
     
     @Override
@@ -170,6 +178,7 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
         _descriptor.setName((String) in.readObject());
         _descriptor.setPreferred(in.readBoolean());
         _descriptor.setShortDescription((String) in.readObject());
+        _descriptor.setValue(PROPERTY_DESCRIPTOR_MAP_KEY, new PropertyDescriptorMap());
         
         Map<String,Object> map = (Map) in.readObject();
         
@@ -200,7 +209,8 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
             // we only use it when VDL.retargetAttachedObjects() is called and this only
             // happen when the view is built. Also, try to serialize this instances could
             // cause unwanted exceptions.
-            if (!AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY.equals(name))
+            if (!AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY.equals(name) &&
+                !PROPERTY_DESCRIPTOR_MAP_KEY.equals(name))
             {
                 map.put(name, _descriptor.getValue(name));
             }
@@ -208,5 +218,123 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
         out.writeObject(map);
         out.writeObject(_propertyDescriptors);
         
+    }
+    
+    public Map<String, PropertyDescriptor> getPropertyDescriptorsMap()
+    {
+        if (_propertyDescriptors == null)
+        {
+            return Collections.emptyMap();
+        }
+        else
+        {
+            if (_propertyDescriptors.isEmpty())
+            {
+                return Collections.emptyMap();
+            }
+            else if (_propertyDescriptorsMap == null)
+            {
+                int initCapacity = (_propertyDescriptors.size() * 4 + 3) / 3;
+                _propertyDescriptorsMap = new HashMap<String, PropertyDescriptor>(initCapacity);
+                for (PropertyDescriptor p : _propertyDescriptors)
+                {
+                    if (!_propertyDescriptorsMap.containsKey(p.getName()))
+                    {
+                        _propertyDescriptorsMap.put(p.getName(), p);
+                    }
+                }
+            }
+            else if (_propertyDescriptorsMap.size() != _propertyDescriptors.size())
+            {
+                for (PropertyDescriptor p : _propertyDescriptors)
+                {
+                    if (!_propertyDescriptorsMap.containsKey(p.getName()))
+                    {
+                        _propertyDescriptorsMap.put(p.getName(), p);
+                    }
+                }
+                if (_propertyDescriptorsMap.size() != _propertyDescriptors.size())
+                {
+                    // PropertyDescriptor was removed
+                    _propertyDescriptorsMap.clear();
+                    for (PropertyDescriptor p : _propertyDescriptors)
+                    {
+                        if (!_propertyDescriptorsMap.containsKey(p.getName()))
+                        {
+                            _propertyDescriptorsMap.put(p.getName(), p);
+                        }
+                    }
+                }
+            }
+            return _propertyDescriptorsMap;
+        }
+    }
+    
+    /**
+     * Read only map for fast access. It works as an indirection over the real list.
+     */
+    public class PropertyDescriptorMap implements Map<String, PropertyDescriptor>
+    {
+        
+        public int size()
+        {
+            return getPropertyDescriptorsMap().size();
+        }
+
+        public boolean isEmpty()
+        {
+            return getPropertyDescriptorsMap().isEmpty();
+        }
+
+       
+        public boolean containsKey(Object key)
+        {
+            return getPropertyDescriptorsMap().containsKey(key);
+        }
+
+        public boolean containsValue(Object value)
+        {
+            return getPropertyDescriptorsMap().containsValue(value);
+        }
+
+        public PropertyDescriptor get(Object key)
+        {
+            return getPropertyDescriptorsMap().get(key);
+        }
+
+        public PropertyDescriptor put(String key, PropertyDescriptor value)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public PropertyDescriptor remove(Object key)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public void putAll(Map<? extends String, ? extends PropertyDescriptor> m)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public void clear()
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public Set<String> keySet()
+        {
+            return getPropertyDescriptorsMap().keySet();
+        }
+
+        public Collection<PropertyDescriptor> values()
+        {
+            return getPropertyDescriptorsMap().values();
+        }
+
+        public Set<Entry<String, PropertyDescriptor>> entrySet()
+        {
+            return getPropertyDescriptorsMap().entrySet();
+        }
     }
 }
