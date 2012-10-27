@@ -445,8 +445,20 @@ public abstract class UIComponent
      */
     public static UIComponent getCurrentComponent(FacesContext context)
     {
+        Boolean honorCurrentComponentAttributes = null;
 
-        Boolean honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+        if (context.getViewRoot() != null)
+        {
+            honorCurrentComponentAttributes = ((UIComponent)context.getViewRoot())._honorCurrentComponentAttributes;
+            if (honorCurrentComponentAttributes == null)
+            {
+                honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+            }
+        }
+        else
+        {
+            honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+        }
 
         if (honorCurrentComponentAttributes == Boolean.TRUE)
         {
@@ -483,8 +495,20 @@ public abstract class UIComponent
      */
     public static UIComponent getCurrentCompositeComponent(FacesContext context)
     {
+        Boolean honorCurrentComponentAttributes = null;
 
-        Boolean honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+        if (context.getViewRoot() != null)
+        {
+            honorCurrentComponentAttributes = ((UIComponent)context.getViewRoot())._honorCurrentComponentAttributes;
+            if (honorCurrentComponentAttributes == null)
+            {
+                honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+            }
+        }
+        else
+        {
+            honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
+        }
 
         if (honorCurrentComponentAttributes == Boolean.TRUE)
         {
