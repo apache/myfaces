@@ -69,6 +69,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     
     private final static String COMPONENT_ADDED_BY_HANDLER_MARKER = "oam.vf.addedByHandler";
     
+    public static final String PROPERTY_DESCRIPTOR_MAP_KEY = "oam.cc.beanInfo.PDM";
+    
     /**
      * This variable works as a check to indicate the minimun lenght we need to check
      * for the special attributes, and save some time in get(), containsKey() and 
@@ -96,6 +98,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     
     private boolean _isCompositeComponent;
     private boolean _isCompositeComponentSet;
+    
+    private BeanInfo _ccBeanInfo;
 
     /**
      * Create a map backed by the specified component.
@@ -338,17 +342,25 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                     }
                     if (_isCompositeComponent)
                     {
-                        BeanInfo ccBeanInfo = (BeanInfo) getUnderlyingMap().get(UIComponent.BEANINFO_KEY);
+                        BeanInfo ccBeanInfo = _ccBeanInfo != null ? _ccBeanInfo :
+                            (BeanInfo) getUnderlyingMap().get(UIComponent.BEANINFO_KEY);
                         if (ccBeanInfo != null)
                         {
-                            for (PropertyDescriptor attribute : ccBeanInfo.getPropertyDescriptors())
+                            //Fast shortcut to allow fast lookup.
+                            Map<String, PropertyDescriptor> attributeMap = (Map<String, PropertyDescriptor>) 
+                                ccBeanInfo.getBeanDescriptor().getValue(
+                                    PROPERTY_DESCRIPTOR_MAP_KEY);
+                            if (attributeMap != null)
                             {
-                                if (attribute.getName().equals(key))
+                                PropertyDescriptor attribute = attributeMap.get(key);
+                                if (attribute != null)
                                 {
                                     String attributeName = attribute.getName();
-                                    boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
-                                            || "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
-                                    
+                                    boolean isKnownMethod = "action".equals(attributeName)
+                                            || "actionListener".equals(attributeName)
+                                            || "validator".equals(attributeName)
+                                            || "valueChangeListener".equals(attributeName);
+
                                     // <composite:attribute> method-signature attribute is 
                                     // ValueExpression that must evaluate to String
                                     ValueExpression methodSignatureExpression
@@ -357,11 +369,14 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                     if (methodSignatureExpression != null)
                                     {
                                         // Check if the value expression holds a method signature
-                                        // Note that it could be null, so in that case we don't have to do anything
-                                        methodSignature = (String) methodSignatureExpression.getValue(_component.getFacesContext().getELContext());
+                                        // Note that it could be null, so in that case we don't have to 
+                                        // do anything
+                                        methodSignature = (String) methodSignatureExpression.getValue(
+                                                                    _component.getFacesContext().getELContext());
                                     }
-                                    
-                                    // either the attributeName has to be a knownMethod or there has to be a method-signature
+
+                                    // either the attributeName has to be a knownMethod
+                                    // or there has to be a method-signature
                                     if (isKnownMethod || methodSignature != null)
                                     {
                                         //In this case it is expecting a ValueExpression
@@ -370,7 +385,48 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                     else
                                     {
                                         value = attribute.getValue("default");
-                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Failsafe if another implementation for composite components is set
+                                for (PropertyDescriptor attribute : ccBeanInfo.getPropertyDescriptors())
+                                {
+                                    if (attribute.getName().equals(key))
+                                    {
+                                        String attributeName = attribute.getName();
+                                        boolean isKnownMethod = "action".equals(attributeName)
+                                                || "actionListener".equals(attributeName)
+                                                || "validator".equals(attributeName)
+                                                || "valueChangeListener".equals(attributeName);
+
+                                        // <composite:attribute> method-signature attribute is 
+                                        // ValueExpression that must evaluate to String
+                                        ValueExpression methodSignatureExpression
+                                                = (ValueExpression) attribute.getValue("method-signature");
+                                        String methodSignature = null;
+                                        if (methodSignatureExpression != null)
+                                        {
+                                            // Check if the value expression holds a method signature
+                                            // Note that it could be null, so in that case we don't have to 
+                                            // do anything
+                                            methodSignature = (String) methodSignatureExpression.getValue(
+                                                                        _component.getFacesContext().getELContext());
+                                        }
+
+                                        // either the attributeName has to be a knownMethod
+                                        // or there has to be a method-signature
+                                        if (isKnownMethod || methodSignature != null)
+                                        {
+                                            //In this case it is expecting a ValueExpression
+                                            return attribute.getValue("default");
+                                        }
+                                        else
+                                        {
+                                            value = attribute.getValue("default");
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -434,6 +490,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 Object oldValue = _component.isOamVfFacetCreatedUIPanel();
                 _component.setOamVfFacetCreatedUIPanel(false);
                 return oldValue;
+            }
+            else if (UIComponent.BEANINFO_KEY.length() == keyLength 
+                && UIComponent.BEANINFO_KEY.equals(key))
+            {
+                _ccBeanInfo = null;
             }
         }
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
@@ -536,6 +597,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             _isCompositeComponent = true;
             _isCompositeComponentSet = true;
+        }
+        if (UIComponent.BEANINFO_KEY.length() == keyLength 
+            && UIComponent.BEANINFO_KEY.equals(key))
+        {
+            _ccBeanInfo = (BeanInfo) value;
         }
         return _component.getStateHelper().put(UIComponentBase.PropertyKeys.attributesMap, key, value);
     }

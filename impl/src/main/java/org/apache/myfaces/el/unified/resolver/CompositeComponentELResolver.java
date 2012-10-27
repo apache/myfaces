@@ -37,6 +37,7 @@ import javax.faces.el.CompositeComponentExpressionHolder;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo;
 
 /**
  * Composite component attribute EL resolver.  See JSF spec, section 5.6.2.2.
@@ -275,6 +276,7 @@ public final class CompositeComponentELResolver extends ELResolver
         private final BeanInfo _beanInfo;
         private final Map<String, Object> _originalMap;
         private final PropertyDescriptor [] _propertyDescriptors;
+        private final CompositeComponentBeanInfo _ccBeanInfo;
 
         private CompositeComponentAttributesMapWrapper(UIComponent component)
         {
@@ -282,6 +284,8 @@ public final class CompositeComponentELResolver extends ELResolver
             this._originalMap = component.getAttributes();
             this._beanInfo = (BeanInfo) _originalMap.get(UIComponent.BEANINFO_KEY);
             this._propertyDescriptors = _beanInfo.getPropertyDescriptors();
+            this._ccBeanInfo = (this._beanInfo instanceof CompositeComponentBeanInfo) ?
+                (CompositeComponentBeanInfo) this._beanInfo : null;
         }
 
         public ValueExpression getExpression(String name)
@@ -327,12 +331,23 @@ public final class CompositeComponentELResolver extends ELResolver
             }
             else
             {
-                for (PropertyDescriptor attribute : _propertyDescriptors)
+                if (_ccBeanInfo == null)
                 {
-                    if (attribute.getName().equals(key))
+                    for (PropertyDescriptor attribute : _propertyDescriptors)
+                    {
+                        if (attribute.getName().equals(key))
+                        {
+                            obj = attribute.getValue("default");
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    PropertyDescriptor attribute = _ccBeanInfo.getPropertyDescriptorsMap().get(key);
+                    if (attribute != null)
                     {
                         obj = attribute.getValue("default");
-                        break;
                     }
                 }
                 // We have to check for a ValueExpression and also evaluate it

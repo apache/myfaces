@@ -106,14 +106,6 @@ public final class CompositeComponentELUtils
             final Location location)
     {
         //1 Use getCurrentComponent and getCurrentCompositeComponent to look on the component stack
-        UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
-        
-        if (currentComponent == null)
-        {
-            // Cannot found any component, because we don't have any reference!
-            return null;
-        }
-        
         UIComponent currentCompositeComponent = UIComponent.getCurrentCompositeComponent(facesContext);
         
         //1.1 Use getCurrentCompositeComponent first!
@@ -126,7 +118,15 @@ public final class CompositeComponentELUtils
                 return currentCompositeComponent;
             }
         }
+
+        UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
         
+        if (currentComponent == null)
+        {
+            // Cannot found any component, because we don't have any reference!
+            return null;
+        }
+
         //2. Look on the stack using a recursive algorithm.
         UIComponent matchingCompositeComponent
                 = lookForCompositeComponentOnStack(facesContext, location, currentComponent);
@@ -265,14 +265,6 @@ public final class CompositeComponentELUtils
             final Location location, int ccLevel)
     {
         //1 Use getCurrentComponent and getCurrentCompositeComponent to look on the component stack
-        UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
-        
-        if (currentComponent == null)
-        {
-            // Cannot found any component, because we don't have any reference!
-            return null;
-        }
-        
         UIComponent currentCompositeComponent = UIComponent.getCurrentCompositeComponent(facesContext);
         
         //1.1 Use getCurrentCompositeComponent first!
@@ -285,6 +277,14 @@ public final class CompositeComponentELUtils
             {
                 return currentCompositeComponent;
             }
+        }
+
+        UIComponent currentComponent = UIComponent.getCurrentComponent(facesContext);
+        
+        if (currentComponent == null)
+        {
+            // Cannot found any component, because we don't have any reference!
+            return null;
         }
         
         //2. Look on the stack using a recursive algorithm.
