@@ -503,7 +503,6 @@
             <!-- run test-cases -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.5</version>
                 <configuration>
                     <!-- Only run JUnit tests -->
                     <testNGArtifactName>none:none</testNGArtifactName>
