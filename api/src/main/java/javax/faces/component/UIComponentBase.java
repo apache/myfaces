@@ -2043,7 +2043,7 @@ public abstract class UIComponentBase extends UIComponent
         // rendererType needs to be restored before SystemEventListener,
         // otherwise UIComponent.getCurrentComponent(context).getRenderer(context)
         // will not work correctly
-        if (values.length == 10)
+        if (values.length == 11)
         {
             //Full restore
             restoreFullBehaviorsMap(context, values[2]);
