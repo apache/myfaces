@@ -122,7 +122,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             finalScripts = [],
             execScrpt = function(item) {
                 var tagName = item.tagName;
-                var itemType = item.type || "";
+                var itemType = item.type || "";
                 if(tagName && _Lang.equalsIgnoreCase(tagName, "script") &&
                         (itemType === "" || _Lang.equalsIgnoreCase(itemType,"text/javascript") ||
                          _Lang.equalsIgnoreCase(itemType,"javascript") ||
