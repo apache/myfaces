@@ -28,7 +28,6 @@ import javax.faces.application.StateManager;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 import org.junit.Test;
 import org.testng.Assert;
 
@@ -38,7 +37,6 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
     @Test
     public void testNumberOfSequentialViewsInSession() throws Exception
     {
-        
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
@@ -169,7 +167,36 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
         }
         
     }
-    
+
+    @Test
+    public void testNonExistingViewId() throws Exception
+    {
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
+        servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
+        servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
+
+        // this issue only happens in projectstage Production
+        servletContext.addInitParameter("faces.PROJECT_STAGE", "Production");
+
+        try
+        {
+            // Initialization
+            setupRequest();
+
+            // we need to take a viewId which is null -> not existing.
+            facesContext.getViewRoot().setViewId(null);
+
+            StateCache stateCache = new ServerSideStateCacheImpl();
+            Object savedToken = stateCache.saveSerializedView(facesContext, 1);
+
+        }
+        finally
+        {
+            tearDownRequest();
+        }
+
+    }
+
     public void tryStateKeySerialization() throws Exception
     {
         // Initialization
