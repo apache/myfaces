@@ -1410,7 +1410,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         {
             if (context.isProjectStage(ProjectStage.Production))
             {
-                return new IntIntSerializedViewKey(viewId.hashCode(), key);
+                return new IntIntSerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
             }
             else
             {
@@ -1440,7 +1440,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         {
             if (context.isProjectStage(ProjectStage.Production))
             {
-                return new IntByteArraySerializedViewKey(viewId.hashCode(), key);
+                return new IntByteArraySerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
             }
             else
             {
