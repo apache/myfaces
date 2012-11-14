@@ -90,7 +90,13 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
             }
         }
         
-        throw new FacesException("Cannot find a valid PDL for view id " + viewId);
+        // throw new FacesException("Cannot find a valid PDL for view id " + viewId);
+        // It does not have sense to throw an exception in this point. Instead
+        // just return null, to indicate that no VDL can handle the viewId.
+        // For example, in org.apache.myfaces.shared.application.DefaultViewHandlerSupport
+        // first getViewDeclarationLanguage(String viewId) is called and if returns null
+        // try the default strategy (look for a file in web folder).
+        return null;
     }
     
     /**
