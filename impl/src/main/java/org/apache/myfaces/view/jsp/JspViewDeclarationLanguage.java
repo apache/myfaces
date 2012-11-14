@@ -176,6 +176,7 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         if (errorResponse)
         {
             wrappedResponse.flushToWrappedResponse();
+            context.responseComplete();
             return;
         }
 
@@ -202,7 +203,8 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         ResponseStateManager responseStateManager = context.getRenderKit().getResponseStateManager();
         if (StateCacheUtils.isMyFacesResponseStateManager(responseStateManager))
         {
-            if (StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).isWriteStateAfterRenderViewRequired(context))
+            if (StateCacheUtils.getMyFacesResponseStateManager(responseStateManager).
+                    isWriteStateAfterRenderViewRequired(context))
             {
                 return false;
             }
