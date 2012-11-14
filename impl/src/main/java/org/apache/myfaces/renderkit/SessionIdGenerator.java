@@ -30,6 +30,7 @@ import java.util.logging.Logger;
  * NOTE: Class taken from tomcat 7 org.apache.catalina.util.SessionIdGenerator
  * and used here as an alternative for server side state token encryption.
  * 
+ * @author Leonardo Uribe
  */
 class SessionIdGenerator
 {
