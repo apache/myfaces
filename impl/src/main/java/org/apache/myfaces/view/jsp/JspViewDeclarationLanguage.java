@@ -176,6 +176,7 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         if (errorResponse)
         {
             wrappedResponse.flushToWrappedResponse();
+            context.responseComplete();
             return;
         }
 
