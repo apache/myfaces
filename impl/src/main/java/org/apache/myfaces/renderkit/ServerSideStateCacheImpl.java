@@ -30,21 +30,16 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.faces.application.ProjectStage;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 
 import org.apache.commons.collections.map.AbstractReferenceMap;
 import org.apache.commons.collections.map.ReferenceMap;
@@ -57,22 +52,22 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 class ServerSideStateCacheImpl extends StateCache<Object, Object>
 {
     private static final Logger log = Logger.getLogger(ServerSideStateCacheImpl.class.getName());
-    
-    private static final String SERIALIZED_VIEW_SESSION_ATTR= 
+
+    private static final String SERIALIZED_VIEW_SESSION_ATTR=
         ServerSideStateCacheImpl.class.getName() + ".SERIALIZED_VIEW";
-    
-    private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR = 
+
+    private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR =
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
 
-    private static final String RESTORED_VIEW_KEY_REQUEST_ATTR = 
+    private static final String RESTORED_VIEW_KEY_REQUEST_ATTR =
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
-    
+
     /**
      * Defines the amount (default = 20) of the latest views are stored in session.
-     * 
+     *
      * <p>Only applicable if state saving method is "server" (= default).
      * </p>
-     * 
+     *
      */
     @JSFWebConfigParam(defaultValue="20",since="1.1", classType="java.lang.Integer", group="state", tags="performance")
     private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
@@ -80,8 +75,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     /**
      * Indicates the amount of views (default is not active) that should be stored in session between sequential
      * POST or POST-REDIRECT-GET if org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION is true.
-     * 
-     * <p>Only applicable if state saving method is "server" (= default). For example, if this param has value = 2 and 
+     *
+     * <p>Only applicable if state saving method is "server" (= default). For example, if this param has value = 2 and
      * in your custom webapp there is a form that is clicked 3 times, only 2 views
      * will be stored and the third one (the one stored the first time) will be
      * removed from session, even if the view can
@@ -93,14 +88,14 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     @JSFWebConfigParam(since="2.0.6", classType="java.lang.Integer", group="state", tags="performance")
     private static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM
             = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
-    
+
     /**
      * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
      */
     private static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 20;
 
     /**
-     * Indicate if the state should be serialized before save it on the session. 
+     * Indicate if the state should be serialized before save it on the session.
      * <p>
      * Only applicable if state saving method is "server" (= default).
      * If <code>true</code> (default) the state will be serialized to a byte stream before it is written to the session.
@@ -112,7 +107,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     /**
      * Indicates that the serialized state will be compressed before it is written to the session. By default true.
-     * 
+     *
      * Only applicable if state saving method is "server" (= default) and if
      * <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
      * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
@@ -145,38 +140,38 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * <p>
      * By default no cache is used, so views removed from session became phantom references.
      * </p>
-     * <ul> 
-     * <li> off, no: default, no cache is used</li> 
+     * <ul>
+     * <li> off, no: default, no cache is used</li>
      * <li> hard-soft: use an ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.SOFT)</li>
      * <li> soft: use an ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.SOFT, true) </li>
      * <li> soft-weak: use an ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.WEAK, true) </li>
      * <li> weak: use an ReferenceMap(AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true) </li>
      * </ul>
-     * 
+     *
      */
     @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak",
                        since="1.2.5", group="state", tags="performance")
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
-    
+
     /**
-     * This option uses an hard-soft ReferenceMap, but it could cause a 
+     * This option uses an hard-soft ReferenceMap, but it could cause a
      * memory leak, because the keys are not removed by any method
      * (MYFACES-1660). So use with caution.
      */
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT = "hard-soft";
-    
+
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT = "soft";
-    
+
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK = "soft-weak";
-    
+
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK = "weak";
-    
+
     private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF = "off";
 
     /**
      * Allow use flash scope to keep track of the views used in session and the previous ones,
      * so server side state saving can delete old views even if POST-REDIRECT-GET pattern is used.
-     * 
+     *
      * <p>
      * Only applicable if state saving method is "server" (= default).
      * The default value is false.</p>
@@ -188,90 +183,84 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE = "none";
     private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
-    
+
     /**
      * Adds a random key to the generated view state session token.
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random, none", 
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random, none",
             defaultValue="none", group="state")
     private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT = 
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT =
             RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE;
 
     /**
      * Set the default length of the random key added to the view state session token.
-     * By default is 8. 
+     * By default is 8.
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="8", group="state")
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM 
+    static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH";
-    private static final int RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT = 8;
+    static final int RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT = 8;
 
     /**
-     * Sets the random class to initialize the secure random id generator. 
+     * Sets the random class to initialize the secure random id generator.
      * By default it uses java.security.SecureRandom
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", group="state")
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM
+    static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS";
-    
+
     /**
      * Sets the random provider to initialize the secure random id generator.
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", group="state")
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM
+    static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER";
-    
+
     /**
-     * Sets the random algorithm to initialize the secure random id generator. 
+     * Sets the random algorithm to initialize the secure random id generator.
      * By default is SHA1PRNG
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
+    static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
-    
-    
+
+
     private static final int UNCOMPRESSED_FLAG = 0;
     private static final int COMPRESSED_FLAG = 1;
-    
+
     private static final Object[] EMPTY_STATES = new Object[]{null, null};
 
-    //private static final int JSF_SEQUENCE_INDEX = 0;
-    
     private Boolean _useFlashScopePurgeViewsInSession = null;
-    
+
     private Integer _numberOfSequentialViewsInSession = null;
     private boolean _numberOfSequentialViewsInSessionSet = false;
 
-    //private final KeyFactory keyFactory;
     private SessionViewStorageFactory sessionViewStorageFactory;
 
     public ServerSideStateCacheImpl()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         String randomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
-                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM, 
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM,
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT);
         if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM.equals(randomMode))
         {
-            //keyFactory = new SecureRandomKeyFactory(facesContext);
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
+            sessionViewStorageFactory = new SessionViewStorageFactory(
                     new SecureRandomKeyFactory(facesContext));
         }
         else if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM.equals(randomMode))
         {
-            //keyFactory = new RandomKeyFactory(facesContext);
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
+            sessionViewStorageFactory = new SessionViewStorageFactory(
                     new RandomKeyFactory(facesContext));
         }
         else
         {
-            //keyFactory = new CounterKeyFactory();
-            sessionViewStorageFactory = new CounterSessionViewStorageFactory(new CounterKeyFactory());
+            sessionViewStorageFactory = new SessionViewStorageFactory(new CounterKeyFactory());
         }
     }
-    
+
     //------------------------------------- METHODS COPIED FROM JspStateManagerImpl--------------------------------
 
     protected Object getServerStateId(FacesContext facesContext, Object state)
@@ -296,16 +285,16 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
 
         Map<Object,Object> attributeMap = context.getAttributes();
-        
+
         SerializedViewKey key = null;
         if (getNumberOfSequentialViewsInSession(context.getExternalContext()) != null &&
             getNumberOfSequentialViewsInSession(context.getExternalContext()) > 0)
         {
             key = (SerializedViewKey) attributeMap.get(RESTORED_VIEW_KEY_REQUEST_ATTR);
-            
+
             if (key == null )
             {
-                if (isUseFlashScopePurgeViewsInSession(context.getExternalContext()) && 
+                if (isUseFlashScopePurgeViewsInSession(context.getExternalContext()) &&
                     Boolean.TRUE.equals(context.getExternalContext().getRequestMap()
                             .get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
                 {
@@ -314,7 +303,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 }
             }
         }
-        
+
         SerializedViewKey nextKey = getSessionViewStorageFactory().createSerializedViewKey(
                 context, context.getViewRoot().getViewId(), getNextViewSequence(context));
         viewCollection.add(context, serializeView(context, serializedView), nextKey, key);
@@ -350,14 +339,14 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 }
             }
             attributeMap.put(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
-            
+
             if (getNumberOfSequentialViewsInSession(externalContext) != null &&
                 getNumberOfSequentialViewsInSession(externalContext) > 0)
             {
                 SerializedViewKey key = getSessionViewStorageFactory().
                         createSerializedViewKey(context, viewId, sequence);
                 attributeMap.put(RESTORED_VIEW_KEY_REQUEST_ATTR, key);
-                
+
                 if (isUseFlashScopePurgeViewsInSession(externalContext))
                 {
                     externalContext.getFlash().put(RESTORED_VIEW_KEY_REQUEST_ATTR, key);
@@ -429,7 +418,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 //Object[] stateArray = (Object[]) serializedView;
 
                 ObjectOutputStream out = new ObjectOutputStream(os);
-                
+
                 out.writeObject(serializedView);
                 //out.writeObject(stateArray[0]);
                 //out.writeObject(stateArray[1]);
@@ -524,9 +513,9 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     final ObjectInputStream in = new MyFacesObjectInputStream(is);
                     ois = in;
                     Object object = null;
-                    if (System.getSecurityManager() != null) 
+                    if (System.getSecurityManager() != null)
                     {
-                        object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() 
+                        object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
                         {
                             public Object run() throws PrivilegedActionException, IOException, ClassNotFoundException
                             {
@@ -551,7 +540,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     }
                 }
             }
-            catch (PrivilegedActionException e) 
+            catch (PrivilegedActionException e)
             {
                 log.log(Level.SEVERE, "Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
                 return null;
@@ -588,7 +577,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             return null;
         }
     }
-    
+
     protected static class SerializedViewCollection implements Serializable
     {
         private static final long serialVersionUID = -3734849062185115847L;
@@ -596,8 +585,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         private final List<SerializedViewKey> _keys
                 = new ArrayList<SerializedViewKey>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
         private final Map<SerializedViewKey, Object> _serializedViews = new HashMap<SerializedViewKey, Object>();
-        
-        private final Map<SerializedViewKey, SerializedViewKey> _precedence = 
+
+        private final Map<SerializedViewKey, SerializedViewKey> _precedence =
             new HashMap<SerializedViewKey, SerializedViewKey>();
 
         // old views will be hold as soft references which will be removed by
@@ -620,7 +609,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 // into the map.
                 state = null;
             }
-            
+
             Integer maxCount = getNumberOfSequentialViewsInSession(context);
             if (maxCount != null)
             {
@@ -658,7 +647,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                   previousKey = _precedence.get(previousKey);
                   count++;
                 } while (previousKey != null && count < maxCount);
-                
+
                 if (previousKey != null)
                 {
                     SerializedViewKey keyToRemove = (SerializedViewKey) previousKey;
@@ -681,7 +670,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                         {
                             _serializedViews.remove(keyToRemove);
                         }
-                    
+
                         keyToRemove = _precedence.remove(keyToRemove);
                     }  while(keyToRemove != null);
                 }
@@ -691,11 +680,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             while (_keys.size() > views)
             {
                 key = _keys.remove(0);
-                
+
                 if (maxCount != null && maxCount > 0)
                 {
                     SerializedViewKey keyToRemove = (SerializedViewKey) key;
-                    // Note in this case the key to delete is the oldest one, 
+                    // Note in this case the key to delete is the oldest one,
                     // so it could be at least one precedence, but to be safe
                     // do it with a loop.
                     do
@@ -707,7 +696,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 if (_serializedViews.containsKey(key) &&
                     !CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.equals(getCacheOldViewsInSessionMode(context)))
                 {
-                    
+
                     getOldSerializedViewsMap().put(key, _serializedViews.remove(key));
                 }
                 else
@@ -719,10 +708,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
         protected Integer getNumberOfSequentialViewsInSession(FacesContext context)
         {
-            return WebConfigParamUtils.getIntegerInitParameter(context.getExternalContext(), 
+            return WebConfigParamUtils.getIntegerInitParameter(context.getExternalContext(),
                     NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM);
         }
-        
+
         /**
          * Reads the amount (default = 20) of views to be stored in session.
          * @see #NUMBER_OF_VIEWS_IN_SESSION_PARAM
@@ -766,7 +755,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             FacesContext context = FacesContext.getCurrentInstance();
             if (_oldSerializedViews == null && context != null)
             {
-                String cacheMode = getCacheOldViewsInSessionMode(context); 
+                String cacheMode = getCacheOldViewsInSessionMode(context);
                 if (CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK.equals(cacheMode))
                 {
                     _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true);
@@ -784,13 +773,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.SOFT);
                 }
             }
-            
+
             return _oldSerializedViews;
         }
-        
+
         /**
          * Reads the value of the <code>org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE</code> context parameter.
-         * 
+         *
          * @since 1.2.5
          * @param context
          * @return constant indicating caching mode
@@ -811,7 +800,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK))
             {
                 return CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK;
-            }            
+            }
             else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK))
             {
                 return CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK;
@@ -825,7 +814,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 return CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF;
             }
         }
-        
+
         public Object get(SerializedViewKey key)
         {
             Object value = _serializedViews.get(key);
@@ -857,172 +846,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
     }
 
-    /**
-     * Base implementation where all keys used to identify the state of a view should
-     * extend.
-     */
-    protected abstract static class SerializedViewKey implements Serializable
-    {
-    }
 
-    /**
-     * Implementation of SerializedViewKey, where the hashCode of the viewId is used
-     * and the sequenceId is a numeric value.
-     */
-    private static class IntIntSerializedViewKey extends SerializedViewKey 
-        implements Serializable
-    {
-        private static final long serialVersionUID = -1170697124386063642L;
-        
-        private final int _viewId;
-        private final int _sequenceId;
-        
-        public IntIntSerializedViewKey(int viewId, int sequence)
-        {
-            _sequenceId = sequence;
-            _viewId = viewId;
-        }
-
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-            if (getClass() != obj.getClass())
-            {
-                return false;
-            }
-            final IntIntSerializedViewKey other = (IntIntSerializedViewKey) obj;
-            if (this._viewId != other._viewId)
-            {
-                return false;
-            }
-            if (this._sequenceId != other._sequenceId)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int hash = 7;
-            hash = 83 * hash + this._viewId;
-            hash = 83 * hash + this._sequenceId;
-            return hash;
-        }
-    }
-
-    /**
-     * Implementation of SerializedViewKey, where the hashCode of the viewId is used
-     * and the sequenceId is a string value.
-     */
-    private static class IntByteArraySerializedViewKey extends SerializedViewKey
-        implements Serializable
-    {
-        private final int _viewId;
-        private final byte[] _sequenceId;
-        
-        public IntByteArraySerializedViewKey(int viewId, byte[] sequence)
-        {
-            _sequenceId = sequence;
-            _viewId = viewId;
-        }
-
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-            if (getClass() != obj.getClass())
-            {
-                return false;
-            }
-            final IntByteArraySerializedViewKey other = (IntByteArraySerializedViewKey) obj;
-            if (this._viewId != other._viewId)
-            {
-                return false;
-            }
-            if (!Arrays.equals(this._sequenceId, other._sequenceId))
-            {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int hash = 5;
-            hash = 37 * hash + this._viewId;
-            hash = 37 * hash + Arrays.hashCode(this._sequenceId);
-            return hash;
-        }
-    }
-    
-    
-    /**
-     * Implementation of SerializedViewKey, where the viewId and the sequenceId can be
-     * anything.
-     */
-    private static class ReferenceSerializedViewKey<I,K> extends SerializedViewKey
-        implements Serializable
-    {
-        private static final long serialVersionUID = -1170697124386063642L;
-
-        private final I _viewId;
-        private final K _sequenceId;
-
-        public ReferenceSerializedViewKey()
-        {
-            _sequenceId = null;
-            _viewId = null;
-        }
-        public ReferenceSerializedViewKey(I viewId, K sequence)
-        {
-            _sequenceId = sequence;
-            _viewId = viewId;
-        }
-
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-            if (getClass() != obj.getClass())
-            {
-                return false;
-            }
-            final ReferenceSerializedViewKey<I, K> other = (ReferenceSerializedViewKey<I, K>) obj;
-            if (this._viewId != other._viewId && (this._viewId == null || !this._viewId.equals(other._viewId)))
-            {
-                return false;
-            }
-            if (this._sequenceId != other._sequenceId && 
-                (this._sequenceId == null || !this._sequenceId.equals(other._sequenceId)))
-            {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int hash = 7;
-            hash = 83 * hash + (this._viewId != null ? this._viewId.hashCode() : 0);
-            hash = 83 * hash + (this._sequenceId != null ? this._sequenceId.hashCode() : 0);
-            return hash;
-        }
-    }
-    
     //------------------------------------- METHOD FROM StateCache ------------------------------------------------
 
     @Override
@@ -1034,12 +858,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         //save state in server session
         saveSerializedViewInServletSession(facesContext, serializedView);
-        
+
         if (log.isLoggable(Level.FINEST))
         {
             log.finest("Exiting saveSerializedView - server-side state saving - saved state");
         }
-        
+
         return encodeSerializedState(facesContext, serializedView);
     }
 
@@ -1062,7 +886,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     {
         return getKeyFactory(facesContext).encode(getNextViewSequence(facesContext));
     }
-    
+
     @Override
     public boolean isWriteStateAfterRenderViewRequired(FacesContext facesContext)
     {
@@ -1070,7 +894,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     }
 
     //------------------------------------- Custom methods -----------------------------------------------------
-    
+
     private boolean isUseFlashScopePurgeViewsInSession(ExternalContext externalContext)
     {
         if (_useFlashScopePurgeViewsInSession == null)
@@ -1080,372 +904,29 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         return _useFlashScopePurgeViewsInSession;
     }
-    
+
     private Integer getNumberOfSequentialViewsInSession(ExternalContext externalContext)
     {
         if (!_numberOfSequentialViewsInSessionSet)
         {
             _numberOfSequentialViewsInSession = WebConfigParamUtils.getIntegerInitParameter(
-                    externalContext, 
+                    externalContext,
                     NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM);
             _numberOfSequentialViewsInSessionSet = true;
         }
         return _numberOfSequentialViewsInSession;
     }
-    
+
     protected KeyFactory getKeyFactory(FacesContext facesContext)
     {
         //return keyFactory;
         return sessionViewStorageFactory.getKeyFactory();
     }
-    
+
     protected SessionViewStorageFactory getSessionViewStorageFactory()
     {
         return sessionViewStorageFactory;
     }
-            
 
-    protected abstract static class KeyFactory<K, V>
-    {
-        
-        /**
-         * Generates a unique key per session 
-         * 
-         * @param facesContext
-         * @return 
-         */
-        public abstract K generateKey(FacesContext facesContext);
-        
-        /**
-         * Encode a Key into a value that will be used as view state session token
-         * 
-         * @param key
-         * @return 
-         */
-        public abstract V encode(K key);
 
-        /**
-         * Decode a view state session token into a key
-         * 
-         * @param value
-         * @return 
-         */
-        public abstract K decode(V value);
-
-    }
-
-    private static class CounterKeyFactory extends KeyFactory<Integer, String>
-    {
-        /**
-         * Take the counter from session scope and increment
-         * 
-         * @param facesContext
-         * @return 
-         */
-        @Override
-        public Integer generateKey(FacesContext facesContext)
-        {
-            ExternalContext externalContext = facesContext.getExternalContext();
-            Object sessionObj = externalContext.getSession(true);
-            Integer sequence = null;
-            synchronized(sessionObj) // synchronized to increase sequence if multiple requests
-                                    // are handled at the same time for the session
-            {
-                Map<String, Object> map = externalContext.getSessionMap();
-                sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-                if(sequence == null || sequence.intValue() == Integer.MAX_VALUE)
-                {
-                    sequence = Integer.valueOf(1);
-                }
-                else
-                {
-                    sequence = Integer.valueOf(sequence.intValue() + 1);
-                }
-                map.put(RendererUtils.SEQUENCE_PARAM, sequence);
-            }
-            return sequence;
-        }
-        
-        public String encode(Integer sequence)
-        {
-            return Integer.toString(sequence, Character.MAX_RADIX);
-        }
-                
-        public Integer decode(String serverStateId)
-        {
-             return Integer.valueOf((String) serverStateId, Character.MAX_RADIX);
-        }
-    }
-    
-    /**
-     * This factory generate a key composed by a counter and a random number. The
-     * counter ensures uniqueness, and the random number prevents guess the next
-     * session token.
-     */
-    private static class SecureRandomKeyFactory extends KeyFactory<byte[], String>
-    {
-        private final SessionIdGenerator sessionIdGenerator;
-        private final int length;
-
-        public SecureRandomKeyFactory(FacesContext facesContext)
-        {
-            length = WebConfigParamUtils.getIntegerInitParameter(facesContext.getExternalContext(),
-                    RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM, 
-                    RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT);
-            sessionIdGenerator = new SessionIdGenerator();
-            sessionIdGenerator.setSessionIdLength(length);
-            String secureRandomClass = WebConfigParamUtils.getStringInitParameter(
-                    facesContext.getExternalContext(),
-                    RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM);
-            if (secureRandomClass != null)
-            {
-                sessionIdGenerator.setSecureRandomClass(secureRandomClass);
-            }
-            String secureRandomProvider = WebConfigParamUtils.getStringInitParameter(
-                    facesContext.getExternalContext(),
-                    RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM);
-            if (secureRandomProvider != null)
-            {
-                sessionIdGenerator.setSecureRandomProvider(secureRandomProvider);
-            }
-            String secureRandomAlgorithm = WebConfigParamUtils.getStringInitParameter(
-                    facesContext.getExternalContext(), 
-                    RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM);
-            if (secureRandomAlgorithm != null)
-            {
-                sessionIdGenerator.setSecureRandomAlgorithm(secureRandomAlgorithm);
-            }
-        }
-        
-        public Integer generateCounterKey(FacesContext facesContext)
-        {
-            ExternalContext externalContext = facesContext.getExternalContext();
-            Object sessionObj = externalContext.getSession(true);
-            Integer sequence = null;
-            synchronized(sessionObj) // synchronized to increase sequence if multiple requests
-                                    // are handled at the same time for the session
-            {
-                Map<String, Object> map = externalContext.getSessionMap();
-                sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-                if(sequence == null || sequence.intValue() == Integer.MAX_VALUE)
-                {
-                    sequence = Integer.valueOf(1);
-                }
-                else
-                {
-                    sequence = Integer.valueOf(sequence.intValue() + 1);
-                }
-                map.put(RendererUtils.SEQUENCE_PARAM, sequence);
-            }
-            return sequence;
-        }
-
-        @Override
-        public byte[] generateKey(FacesContext facesContext)
-        {
-            byte[] array = new byte[length];
-            byte[] key = new byte[length+4];
-            
-            sessionIdGenerator.getRandomBytes(array);
-            for (int i = 0; i < array.length; i++)
-            {
-                key[i] = array[i];
-            }
-            int value = generateCounterKey(facesContext);
-            key[array.length] =  (byte) (value >>> 24);
-            key[array.length+1] =  (byte) (value >>> 16);
-            key[array.length+2] =  (byte) (value >>> 8);
-            key[array.length+3] =  (byte) (value);
-            
-            return key;
-        }
-
-        @Override
-        public String encode(byte[] key)
-        {
-            return new String(Hex.encodeHex(key));
-        }
-        
-        @Override
-        public byte[] decode(String value)
-        {
-            try
-            {
-                return Hex.decodeHex(value.toCharArray());
-            }
-            catch (DecoderException ex)
-            {
-                // Cannot decode, ignore silently, later it will be handled as
-                // ViewExpiredException
-            }
-            return null;
-        }
-    }
-    
-    private static class RandomKeyFactory extends KeyFactory<byte[], String>
-    {
-        private final Random random;
-        private final int length;
-        
-        public RandomKeyFactory(FacesContext facesContext)
-        {
-            length = WebConfigParamUtils.getIntegerInitParameter(facesContext.getExternalContext(),
-                    RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM, 
-                    RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT);
-            random = new Random(((int)System.nanoTime())+this.hashCode());
-        }
-        
-        public Integer generateCounterKey(FacesContext facesContext)
-        {
-            ExternalContext externalContext = facesContext.getExternalContext();
-            Object sessionObj = externalContext.getSession(true);
-            Integer sequence = null;
-            synchronized(sessionObj) // synchronized to increase sequence if multiple requests
-                                    // are handled at the same time for the session
-            {
-                Map<String, Object> map = externalContext.getSessionMap();
-                sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-                if(sequence == null || sequence.intValue() == Integer.MAX_VALUE)
-                {
-                    sequence = Integer.valueOf(1);
-                }
-                else
-                {
-                    sequence = Integer.valueOf(sequence.intValue() + 1);
-                }
-                map.put(RendererUtils.SEQUENCE_PARAM, sequence);
-            }
-            return sequence;
-        }
-
-        @Override
-        public byte[] generateKey(FacesContext facesContext)
-        {
-            byte[] array = new byte[length];
-            byte[] key = new byte[length+4];
-            
-            //sessionIdGenerator.getRandomBytes(array);
-            random.nextBytes(array);
-            for (int i = 0; i < array.length; i++)
-            {
-                key[i] = array[i];
-            }
-            int value = generateCounterKey(facesContext);
-            key[array.length] =  (byte) (value >>> 24);
-            key[array.length+1] =  (byte) (value >>> 16);
-            key[array.length+2] =  (byte) (value >>> 8);
-            key[array.length+3] =  (byte) (value);
-
-            return key;
-        }
-
-        @Override
-        public String encode(byte[] key)
-        {
-            return new String(Hex.encodeHex(key));
-        }
-        
-        @Override
-        public byte[] decode(String value)
-        {
-            try
-            {
-                return Hex.decodeHex(value.toCharArray());
-            }
-            catch (DecoderException ex)
-            {
-                // Cannot decode, ignore silently, later it will be handled as
-                // ViewExpiredException
-            }
-            return null;
-        }
-    }
-    
-    /**
-     * 
-     * @param <T>
-     * @param <K>
-     * @param <V> 
-     */
-    protected abstract static class SessionViewStorageFactory <T extends KeyFactory<K,V>, K, V >
-    {
-        private KeyFactory<K, V> keyFactory;
-        
-        public SessionViewStorageFactory(KeyFactory<K, V> keyFactory)
-        {
-            this.keyFactory = keyFactory;
-        }
-        
-        public KeyFactory<K, V> getKeyFactory()
-        {
-            return keyFactory;
-        }
-        
-        public abstract SerializedViewCollection createSerializedViewCollection(
-                FacesContext context);
-        
-        public abstract SerializedViewKey createSerializedViewKey(
-                FacesContext facesContext, String viewId, K key);
-        
-    }
-    
-    private static class CounterSessionViewStorageFactory 
-        extends SessionViewStorageFactory <KeyFactory <Integer,String>, Integer, String>
-    {
-        public CounterSessionViewStorageFactory(KeyFactory<Integer, String> keyFactory)
-        {
-            super(keyFactory);
-        }
-
-        @Override
-        public SerializedViewCollection createSerializedViewCollection(
-                FacesContext context)
-        {
-            return new SerializedViewCollection();
-        }
-
-        @Override
-        public SerializedViewKey createSerializedViewKey(
-                FacesContext context, String viewId, Integer key)
-        {
-            if (context.isProjectStage(ProjectStage.Production))
-            {
-                return new IntIntSerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
-            }
-            else
-            {
-                return new ReferenceSerializedViewKey(viewId, key);
-            }
-        }
-    }
-    
-    private static class RandomSessionViewStorageFactory
-        extends SessionViewStorageFactory <KeyFactory <byte[],String>, byte[], String>
-    {
-        public RandomSessionViewStorageFactory(KeyFactory<byte[], String> keyFactory)
-        {
-            super(keyFactory);
-        }
-
-        @Override
-        public SerializedViewCollection createSerializedViewCollection(
-                FacesContext context)
-        {
-            return new SerializedViewCollection();
-        }
-
-        @Override
-        public SerializedViewKey createSerializedViewKey(
-                FacesContext context, String viewId, byte[] key)
-        {
-            if (context.isProjectStage(ProjectStage.Production))
-            {
-                return new IntByteArraySerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
-            }
-            else
-            {
-                return new ReferenceSerializedViewKey(viewId, key);
-            }
-        }
-    }
 }
