@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit;
+package org.apache.myfaces.renderkit.viewstate;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -110,10 +110,9 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
     }
 
     @Override
-    public Object encodeSerializedState(FacesContext facesContext,
-            Object serializedView)
+    public Object encodeSerializedState(FacesContext facesContext, Object serializedView)
     {
-        Object[] state = null;
+        Object[] state;
         
         if (getClientViewStateTimeout(facesContext.getExternalContext()).longValue() > 0L)
         {

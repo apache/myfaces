@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.myfaces.renderkit;
+package org.apache.myfaces.renderkit.viewstate;
 
 import javax.faces.application.StateManager;
 import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.renderkit.viewstate.ClientSideStateCacheImpl;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.junit.Test;
 import org.testng.Assert;

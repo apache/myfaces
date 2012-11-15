@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit;
+package org.apache.myfaces.renderkit.viewstate;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,13 +25,9 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,8 +37,6 @@ import java.util.zip.GZIPOutputStream;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.commons.collections.map.AbstractReferenceMap;
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
@@ -53,13 +47,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 {
     private static final Logger log = Logger.getLogger(ServerSideStateCacheImpl.class.getName());
 
-    private static final String SERIALIZED_VIEW_SESSION_ATTR=
+    public static final String SERIALIZED_VIEW_SESSION_ATTR=
         ServerSideStateCacheImpl.class.getName() + ".SERIALIZED_VIEW";
 
-    private static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR =
+    public static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR =
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
 
-    private static final String RESTORED_VIEW_KEY_REQUEST_ATTR =
+    public static final String RESTORED_VIEW_KEY_REQUEST_ATTR =
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
 
     /**
@@ -70,7 +64,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      *
      */
     @JSFWebConfigParam(defaultValue="20",since="1.1", classType="java.lang.Integer", group="state", tags="performance")
-    private static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
+    public static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
 
     /**
      * Indicates the amount of views (default is not active) that should be stored in session between sequential
@@ -86,13 +80,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * the other ones will throw ViewExpiredException.</p>
      */
     @JSFWebConfigParam(since="2.0.6", classType="java.lang.Integer", group="state", tags="performance")
-    private static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM
+    public static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM
             = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
 
     /**
      * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
      */
-    private static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 20;
+    public static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 20;
 
     /**
      * Indicate if the state should be serialized before save it on the session.
@@ -103,7 +97,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * </p>
      */
     @JSFWebConfigParam(defaultValue="true",since="1.1", expectedValues="true,false", group="state", tags="performance")
-    private static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
+    public static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
     /**
      * Indicates that the serialized state will be compressed before it is written to the session. By default true.
@@ -114,17 +108,17 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * If <code>false</code> the state will not be compressed.
      */
     @JSFWebConfigParam(defaultValue="true",since="1.1", expectedValues="true,false", group="state", tags="performance")
-    private static final String COMPRESS_SERVER_STATE_PARAM = "org.apache.myfaces.COMPRESS_STATE_IN_SESSION";
+    public static final String COMPRESS_SERVER_STATE_PARAM = "org.apache.myfaces.COMPRESS_STATE_IN_SESSION";
 
     /**
      * Default value for <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
      */
-    private static final boolean DEFAULT_COMPRESS_SERVER_STATE_PARAM = true;
+    public static final boolean DEFAULT_COMPRESS_SERVER_STATE_PARAM = true;
 
     /**
      * Default value for <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
      */
-    private static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = true;
+    public static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = true;
 
     /**
      * Define the way of handle old view references(views removed from session), making possible to
@@ -151,22 +145,22 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      */
     @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak",
                        since="1.2.5", group="state", tags="performance")
-    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
+    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
 
     /**
      * This option uses an hard-soft ReferenceMap, but it could cause a
      * memory leak, because the keys are not removed by any method
      * (MYFACES-1660). So use with caution.
      */
-    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT = "hard-soft";
+    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT = "hard-soft";
 
-    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT = "soft";
+    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT = "soft";
 
-    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK = "soft-weak";
+    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK = "soft-weak";
 
-    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK = "weak";
+    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK = "weak";
 
-    private static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF = "off";
+    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF = "off";
 
     /**
      * Allow use flash scope to keep track of the views used in session and the previous ones,
@@ -177,21 +171,21 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * The default value is false.</p>
      */
     @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false", group="state")
-    private static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
+    public static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
             = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
 
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE = "none";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE = "none";
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
 
     /**
      * Adds a random key to the generated view state session token.
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random, none",
             defaultValue="none", group="state")
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT =
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT =
             RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE;
 
     /**
@@ -199,23 +193,23 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * By default is 8.
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="8", group="state")
-    static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH";
-    static final int RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT = 8;
+    public static final int RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT = 8;
 
     /**
      * Sets the random class to initialize the secure random id generator.
      * By default it uses java.security.SecureRandom
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", group="state")
-    static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS";
 
     /**
      * Sets the random provider to initialize the secure random id generator.
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", group="state")
-    static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER";
 
     /**
@@ -223,14 +217,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * By default is SHA1PRNG
      */
     @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
-    static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
 
 
-    private static final int UNCOMPRESSED_FLAG = 0;
-    private static final int COMPRESSED_FLAG = 1;
-
-    private static final Object[] EMPTY_STATES = new Object[]{null, null};
+    public static final int UNCOMPRESSED_FLAG = 0;
+    public static final int COMPRESSED_FLAG = 1;
 
     private Boolean _useFlashScopePurgeViewsInSession = null;
 
@@ -575,274 +567,6 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             log.severe("Exiting deserializeView - this method should not be called with a state of type : "
                        + state.getClass());
             return null;
-        }
-    }
-
-    protected static class SerializedViewCollection implements Serializable
-    {
-        private static final long serialVersionUID = -3734849062185115847L;
-
-        private final List<SerializedViewKey> _keys
-                = new ArrayList<SerializedViewKey>(DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
-        private final Map<SerializedViewKey, Object> _serializedViews = new HashMap<SerializedViewKey, Object>();
-
-        private final Map<SerializedViewKey, SerializedViewKey> _precedence =
-            new HashMap<SerializedViewKey, SerializedViewKey>();
-
-        // old views will be hold as soft references which will be removed by
-        // the garbage collector if free memory is low
-        private transient Map<Object, Object> _oldSerializedViews = null;
-
-        public synchronized void add(FacesContext context, Object state, SerializedViewKey key,
-                                     SerializedViewKey previousRestoredKey)
-        {
-            if (state == null)
-            {
-                state = EMPTY_STATES;
-            }
-            else if (state instanceof Object[] &&
-                ((Object[])state).length == 2 &&
-                ((Object[])state)[0] == null &&
-                ((Object[])state)[1] == null)
-            {
-                // The generated state can be considered zero, set it as null
-                // into the map.
-                state = null;
-            }
-
-            Integer maxCount = getNumberOfSequentialViewsInSession(context);
-            if (maxCount != null)
-            {
-                if (previousRestoredKey != null)
-                {
-                    if (!_serializedViews.isEmpty())
-                    {
-                        _precedence.put((SerializedViewKey) key, previousRestoredKey);
-                    }
-                    else
-                    {
-                        // Note when the session is invalidated, _serializedViews map is empty,
-                        // but we could have a not null previousRestoredKey (the last one before
-                        // invalidate the session), so we need to check that condition before
-                        // set the precence. In that way, we ensure the precedence map will always
-                        // have valid keys.
-                        previousRestoredKey = null;
-                    }
-                }
-            }
-            _serializedViews.put(key, state);
-
-            while (_keys.remove(key))
-            {
-                // do nothing
-            }
-            _keys.add(key);
-
-            if (previousRestoredKey != null && maxCount != null && maxCount > 0)
-            {
-                int count = 0;
-                SerializedViewKey previousKey = (SerializedViewKey) key;
-                do
-                {
-                  previousKey = _precedence.get(previousKey);
-                  count++;
-                } while (previousKey != null && count < maxCount);
-
-                if (previousKey != null)
-                {
-                    SerializedViewKey keyToRemove = (SerializedViewKey) previousKey;
-                    // In theory it should be only one key but just to be sure
-                    // do it in a loop, but in this case if cache old views is on,
-                    // put on that map.
-                    do
-                    {
-                        while (_keys.remove(keyToRemove))
-                        {
-                            // do nothing
-                        }
-
-                        if (_serializedViews.containsKey(keyToRemove) &&
-                                !CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.equals(getCacheOldViewsInSessionMode(context)))
-                        {
-                            getOldSerializedViewsMap().put(keyToRemove, _serializedViews.remove(keyToRemove));
-                        }
-                        else
-                        {
-                            _serializedViews.remove(keyToRemove);
-                        }
-
-                        keyToRemove = _precedence.remove(keyToRemove);
-                    }  while(keyToRemove != null);
-                }
-            }
-
-            int views = getNumberOfViewsInSession(context);
-            while (_keys.size() > views)
-            {
-                key = _keys.remove(0);
-
-                if (maxCount != null && maxCount > 0)
-                {
-                    SerializedViewKey keyToRemove = (SerializedViewKey) key;
-                    // Note in this case the key to delete is the oldest one,
-                    // so it could be at least one precedence, but to be safe
-                    // do it with a loop.
-                    do
-                    {
-                        keyToRemove = _precedence.remove(keyToRemove);
-                    } while (keyToRemove != null);
-                }
-
-                if (_serializedViews.containsKey(key) &&
-                    !CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.equals(getCacheOldViewsInSessionMode(context)))
-                {
-
-                    getOldSerializedViewsMap().put(key, _serializedViews.remove(key));
-                }
-                else
-                {
-                    _serializedViews.remove(key);
-                }
-            }
-        }
-
-        protected Integer getNumberOfSequentialViewsInSession(FacesContext context)
-        {
-            return WebConfigParamUtils.getIntegerInitParameter(context.getExternalContext(),
-                    NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM);
-        }
-
-        /**
-         * Reads the amount (default = 20) of views to be stored in session.
-         * @see #NUMBER_OF_VIEWS_IN_SESSION_PARAM
-         * @param context FacesContext for the current request, we are processing
-         * @return Number vf views stored in the session
-         */
-        protected int getNumberOfViewsInSession(FacesContext context)
-        {
-            String value = context.getExternalContext().getInitParameter(
-                    NUMBER_OF_VIEWS_IN_SESSION_PARAM);
-            int views = DEFAULT_NUMBER_OF_VIEWS_IN_SESSION;
-            if (value != null)
-            {
-                try
-                {
-                    views = Integer.parseInt(value);
-                    if (views <= 0)
-                    {
-                        log.severe("Configured value for " + NUMBER_OF_VIEWS_IN_SESSION_PARAM
-                                  + " is not valid, must be an value > 0, using default value ("
-                                  + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
-                        views = DEFAULT_NUMBER_OF_VIEWS_IN_SESSION;
-                    }
-                }
-                catch (Throwable e)
-                {
-                    log.log(Level.SEVERE, "Error determining the value for " + NUMBER_OF_VIEWS_IN_SESSION_PARAM
-                              + ", expected an integer value > 0, using default value ("
-                              + DEFAULT_NUMBER_OF_VIEWS_IN_SESSION + "): " + e.getMessage(), e);
-                }
-            }
-            return views;
-        }
-
-        /**
-         * @return old serialized views map
-         */
-        @SuppressWarnings("unchecked")
-        protected Map<Object, Object> getOldSerializedViewsMap()
-        {
-            FacesContext context = FacesContext.getCurrentInstance();
-            if (_oldSerializedViews == null && context != null)
-            {
-                String cacheMode = getCacheOldViewsInSessionMode(context);
-                if (CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK.equals(cacheMode))
-                {
-                    _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true);
-                }
-                else if (CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK.equals(cacheMode))
-                {
-                    _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.WEAK, true);
-                }
-                else if (CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT.equals(cacheMode))
-                {
-                    _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.SOFT, true);
-                }
-                else if (CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT.equals(cacheMode))
-                {
-                    _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.SOFT);
-                }
-            }
-
-            return _oldSerializedViews;
-        }
-
-        /**
-         * Reads the value of the <code>org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE</code> context parameter.
-         *
-         * @since 1.2.5
-         * @param context
-         * @return constant indicating caching mode
-         * @see #CACHE_OLD_VIEWS_IN_SESSION_MODE
-         */
-        protected String getCacheOldViewsInSessionMode(FacesContext context)
-        {
-            String value = context.getExternalContext().getInitParameter(
-                    CACHE_OLD_VIEWS_IN_SESSION_MODE);
-            if (value == null)
-            {
-                return CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF;
-            }
-            else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT))
-            {
-                return CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT;
-            }
-            else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK))
-            {
-                return CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK;
-            }
-            else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK))
-            {
-                return CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK;
-            }
-            else if (value.equalsIgnoreCase(CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT))
-            {
-                return CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT;
-            }
-            else
-            {
-                return CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF;
-            }
-        }
-
-        public Object get(SerializedViewKey key)
-        {
-            Object value = _serializedViews.get(key);
-            if (value == null)
-            {
-                if (_serializedViews.containsKey(key))
-                {
-                    return EMPTY_STATES;
-                }
-                Map<Object,Object> oldSerializedViewMap = getOldSerializedViewsMap();
-                if (oldSerializedViewMap != null)
-                {
-                    value = oldSerializedViewMap.get(key);
-                    if (value == null && oldSerializedViewMap.containsKey(key) )
-                    {
-                        return EMPTY_STATES;
-                    }
-                }
-            }
-            else if (value instanceof Object[] &&
-                ((Object[])value).length == 2 &&
-                ((Object[])value)[0] == null &&
-                ((Object[])value)[1] == null)
-            {
-                // Remember inside the state map null is stored as an empty array.
-                return null;
-            }
-            return value;
         }
     }
 

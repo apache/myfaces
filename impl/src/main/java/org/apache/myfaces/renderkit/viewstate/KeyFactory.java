@@ -16,12 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit;
+package org.apache.myfaces.renderkit.viewstate;
 
 import javax.faces.context.FacesContext;
 
 /**
  * Factory for handling View Keys
+ * @parem K the type of the generated key
+ * @parem V the type which gets stored.
+ * TODO: V is ALWAYS String, right?
  */
 public abstract class KeyFactory<K, V>
 {

@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit;
+package org.apache.myfaces.renderkit.viewstate;
+
+import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 
 import javax.faces.FacesWrapper;
 import javax.faces.render.ResponseStateManager;
@@ -25,7 +27,7 @@ public class StateCacheUtils
 {
     public static boolean isMyFacesResponseStateManager(ResponseStateManager rsm)
     {
-        if (rsm instanceof MyfacesResponseStateManager)
+        if (rsm instanceof MyfacesResponseStateManager )
         {
             return true;
         }
