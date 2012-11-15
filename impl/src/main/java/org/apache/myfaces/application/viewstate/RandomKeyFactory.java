@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.viewstate;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -31,7 +31,7 @@ import java.util.Random;
 /**
  * View key factory which uses a random generator.
  */
-class RandomKeyFactory extends KeyFactory<byte[], String>
+class RandomKeyFactory extends KeyFactory<byte[]>
 {
     private final Random random;
     private final int length;

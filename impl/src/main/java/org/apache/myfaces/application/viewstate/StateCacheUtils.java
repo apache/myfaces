@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.viewstate;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 

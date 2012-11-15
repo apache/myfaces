@@ -16,23 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.viewstate;
+package org.apache.myfaces.application.viewstate;
 
 import javax.faces.context.FacesContext;
 
 /**
  *
  */
-class SessionViewStorageFactory<T extends KeyFactory<K,V>, K, V >
+class SessionViewStorageFactory<T extends KeyFactory<K>, K >
 {
-    private KeyFactory<K, V> keyFactory;
+    private KeyFactory<K> keyFactory;
 
-    public SessionViewStorageFactory( KeyFactory<K, V> keyFactory )
+    public SessionViewStorageFactory( KeyFactory<K> keyFactory )
     {
         this.keyFactory = keyFactory;
     }
 
-    public KeyFactory<K, V> getKeyFactory()
+    public KeyFactory<K> getKeyFactory()
     {
         return keyFactory;
     }

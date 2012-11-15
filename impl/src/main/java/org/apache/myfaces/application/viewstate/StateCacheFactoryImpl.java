@@ -16,41 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.viewstate;
+package org.apache.myfaces.application.viewstate;
 
 import javax.faces.context.FacesContext;
 
-/**
- * Factory for handling View Keys
- * @parem K the type of the generated key
- * @parem V the type which gets stored.
- * TODO: V is ALWAYS String, right?
- */
-public abstract class KeyFactory<K, V>
+import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.StateCacheFactory;
+
+public class StateCacheFactoryImpl extends StateCacheFactory
 {
 
-    /**
-     * Generates a unique key per session
-     *
-     * @param facesContext
-     * @return
-     */
-    public abstract K generateKey(FacesContext facesContext);
+    private StateCache _clientSideStateCache;
+    private StateCache _serverSideStateCache;
+    
+    public StateCacheFactoryImpl()
+    {
+        _clientSideStateCache = new ClientSideStateCacheImpl();
+        _serverSideStateCache = new ServerSideStateCacheImpl();
+    }
 
-    /**
-     * Encode a Key into a value that will be used as view state session token
-     *
-     * @param key
-     * @return
-     */
-    public abstract V encode(K key);
-
-    /**
-     * Decode a view state session token into a key
-     *
-     * @param value
-     * @return
-     */
-    public abstract K decode(V value);
-
+    @Override
+    public StateCache getStateCache(FacesContext facesContext)
+    {
+        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+        {
+            return _clientSideStateCache;
+        }
+        else
+        {
+            return _serverSideStateCache;
+        }
+    }
 }

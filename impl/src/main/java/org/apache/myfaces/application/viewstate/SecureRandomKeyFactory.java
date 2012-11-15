@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.viewstate;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -32,7 +32,7 @@ import java.util.Map;
  * counter ensures uniqueness, and the random number prevents guess the next
  * session token.
  */
-public class SecureRandomKeyFactory extends KeyFactory<byte[], String>
+public class SecureRandomKeyFactory extends KeyFactory<byte[]>
 {
     private final SessionIdGenerator sessionIdGenerator;
     private final int length;

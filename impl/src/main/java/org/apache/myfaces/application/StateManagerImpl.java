@@ -37,7 +37,7 @@ import javax.faces.render.ResponseStateManager;
 import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.myfaces.renderkit.viewstate.StateCacheUtils;
+import org.apache.myfaces.application.viewstate.StateCacheUtils;
 
 public class StateManagerImpl extends StateManager
 {

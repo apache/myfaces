@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.viewstate;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 
@@ -28,7 +28,7 @@ import java.util.Map;
  * View Key factory which incrementally counts upwards
  * in each session.
  */
-public class CounterKeyFactory extends KeyFactory<Integer, String>
+public class CounterKeyFactory extends KeyFactory<Integer>
 {
     /**
      * Take the counter from session scope and increment

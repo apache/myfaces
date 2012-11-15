@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.viewstate;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.commons.collections.map.AbstractReferenceMap;
 import org.apache.commons.collections.map.ReferenceMap;
@@ -123,7 +123,7 @@ class SerializedViewCollection implements Serializable
 
                     if (_serializedViews.containsKey(keyToRemove) &&
                         !ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.
-                                equals(getCacheOldViewsInSessionMode(context)))
+                                equals( getCacheOldViewsInSessionMode( context ) ))
                     {
                         getOldSerializedViewsMap().put(keyToRemove, _serializedViews.remove(keyToRemove));
                     }
@@ -156,7 +156,7 @@ class SerializedViewCollection implements Serializable
 
             if (_serializedViews.containsKey(key) &&
                 !ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.
-                        equals(getCacheOldViewsInSessionMode(context)))
+                        equals( getCacheOldViewsInSessionMode( context ) ))
             {
 
                 getOldSerializedViewsMap().put(key, _serializedViews.remove(key));

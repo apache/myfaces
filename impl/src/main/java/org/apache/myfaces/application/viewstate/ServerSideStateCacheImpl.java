@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.viewstate;
+package org.apache.myfaces.application.viewstate;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -255,7 +255,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     //------------------------------------- METHODS COPIED FROM JspStateManagerImpl--------------------------------
 
-    protected Object getServerStateId(FacesContext facesContext, Object state)
+    protected Object getServerStateId(FacesContext facesContext, String state)
     {
       if (state != null)
       {
@@ -599,7 +599,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             log.finest("Restoring view from session");
         }
 
-        Object serverStateId = getServerStateId(facesContext, viewState);
+        //X TODO the viewState is always a String!
+        Object serverStateId = getServerStateId(facesContext, (String) viewState);
 
         return (serverStateId == null)
                 ? null
