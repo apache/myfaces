@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit;
+package org.apache.myfaces.application.viewstate;
 
 import javax.faces.FacesWrapper;
 import javax.faces.render.ResponseStateManager;
+import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 
 public class StateCacheUtils
 {
