@@ -536,6 +536,28 @@
                 </executions>
             </plugin>
 
+            <!-- include implee6 via maven-shade-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <createSourcesJar>true</createSourcesJar>
+                    <artifactSet>
+                        <includes>
+                            <include>org.apache.myfaces.core.internal:myfaces-impl-shared</include>
+                        </includes>
+                    </artifactSet>
+                </configuration>
+            </plugin>
 
             <!-- create OSGI-ready manifest.mf -->
             <plugin>

@@ -298,19 +298,10 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- myfaces-impl-ee6 (will be packed together with myfaces-impl by shade-plugin) -->
-            <dependency>
-                <groupId>org.apache.myfaces.core.internal</groupId>
-                <artifactId>myfaces-impl-ee6</artifactId>
-                <version>${project.version}</version>
-                <scope>compile</scope>
-                <optional>true</optional>
-            </dependency>
 
-            
             <!-- SPEC DEPENDENCIES -->
 
-            <!-- Servlet 2.5 -->
+            <!-- Servlet 2.5 (for ee5 compat compile) -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-servlet_2.5_spec</artifactId>
@@ -318,7 +309,7 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- Servlet 3.0 (for myfaces-impl-ee6) -->
+            <!-- Servlet 3.0 (for ee6) -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-servlet_3.0_spec</artifactId>
