@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 
 /**
@@ -43,14 +42,7 @@ class RandomSessionViewStorageFactory extends SessionViewStorageFactory
     @Override
     public SerializedViewKey createSerializedViewKey(FacesContext context, String viewId, byte[] key)
     {
-        if (context.isProjectStage(ProjectStage.Production))
-        {
-            return new IntByteArraySerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
-        }
-        else
-        {
-            return new ReferenceSerializedViewKey(viewId, key);
-        }
+        return new IntByteArraySerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
     }
     
 }

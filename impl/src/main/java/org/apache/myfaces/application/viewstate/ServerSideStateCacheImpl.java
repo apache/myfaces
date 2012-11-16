@@ -44,7 +44,7 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 class ServerSideStateCacheImpl extends StateCache<Object, Object>
 {
-    public static final Logger log = Logger.getLogger(ServerSideStateCacheImpl.class.getName());
+    private static final Logger log = Logger.getLogger(ServerSideStateCacheImpl.class.getName());
     
     public static final String SERIALIZED_VIEW_SESSION_ATTR= 
         ServerSideStateCacheImpl.class.getName() + ".SERIALIZED_VIEW";
@@ -222,17 +222,12 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     
     public static final int UNCOMPRESSED_FLAG = 0;
     public static final int COMPRESSED_FLAG = 1;
-    
-    public static final Object[] EMPTY_STATES = new Object[]{null, null};
 
-    //private static final int JSF_SEQUENCE_INDEX = 0;
-    
     private Boolean _useFlashScopePurgeViewsInSession = null;
     
     private Integer _numberOfSequentialViewsInSession = null;
     private boolean _numberOfSequentialViewsInSessionSet = false;
 
-    //private final KeyFactory keyFactory;
     private SessionViewStorageFactory sessionViewStorageFactory;
 
     public ServerSideStateCacheImpl()
@@ -243,19 +238,16 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT);
         if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM.equals(randomMode))
         {
-            //keyFactory = new SecureRandomKeyFactory(facesContext);
             sessionViewStorageFactory = new RandomSessionViewStorageFactory(
                     new SecureRandomKeyFactory(facesContext));
         }
         else if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM.equals(randomMode))
         {
-            //keyFactory = new RandomKeyFactory(facesContext);
             sessionViewStorageFactory = new RandomSessionViewStorageFactory(
                     new RandomKeyFactory(facesContext));
         }
         else
         {
-            //keyFactory = new CounterKeyFactory();
             sessionViewStorageFactory = new CounterSessionViewStorageFactory(new CounterKeyFactory());
         }
     }
