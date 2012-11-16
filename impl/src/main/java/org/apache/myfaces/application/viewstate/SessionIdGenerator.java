@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit;
+package org.apache.myfaces.application.viewstate;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
