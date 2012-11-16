@@ -67,8 +67,6 @@ public class ResourceHandlerImpl extends ResourceHandler
     //private static final Log log = LogFactory.getLog(ResourceHandlerImpl.class);
     private static final Logger log = Logger.getLogger(ResourceHandlerImpl.class.getName());
 
-    private static final int _BUFFER_SIZE = 2048;
-    
     /**
      * Allow slash in the library name of a Resource. 
      */
@@ -78,7 +76,17 @@ public class ResourceHandlerImpl extends ResourceHandler
             "org.apache.myfaces.STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME";
     public static final boolean INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT = false;
     
+    /**
+     * Define the default buffer size that is used between Resource.getInputStream() and 
+     * httpServletResponse.getOutputStream() when rendering resources using the default
+     * ResourceHandler.
+     */
+    @JSFWebConfigParam(since="2.1.10, 2.0.16", defaultValue="2048", group="resources")
+    public static final String INIT_PARAM_RESOURCE_BUFFER_SIZE = "org.apache.myfaces.RESOURCE_BUFFER_SIZE";
+    private static final int INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
+    
     private Boolean _allowSlashLibraryName;
+    private int _resourceBufferSize = -1;
 
     @Override
     public Resource createResource(String resourceName)
@@ -305,7 +313,8 @@ public class ResourceHandlerImpl extends ResourceHandler
             // ServletResponseWrapper (like ResponseSwitch).
             // Since we are handling a resource, we can expect to get an 
             // HttpServletResponse.
-            Object response = facesContext.getExternalContext().getResponse();
+            ExternalContext extContext = facesContext.getExternalContext();
+            Object response = extContext.getResponse();
             HttpServletResponse httpServletResponse = ExternalContextUtils.getHttpServletResponse(response);
             if (httpServletResponse == null)
             {
@@ -379,12 +388,16 @@ public class ResourceHandlerImpl extends ResourceHandler
                 httpServletResponse.setHeader(entry.getKey(), entry.getValue());
             }
     
+            // Sets the preferred buffer size for the body of the response
+            extContext.setResponseBufferSize(this.getResourceBufferSize());
+            
             //serve up the bytes (taken from trinidad ResourceServlet)
             try
             {
                 InputStream in = resource.getInputStream();
                 OutputStream out = httpServletResponse.getOutputStream();
-                byte[] buffer = new byte[_BUFFER_SIZE];
+                //byte[] buffer = new byte[_BUFFER_SIZE];
+                byte[] buffer = new byte[this.getResourceBufferSize()];
     
                 try
                 {
@@ -679,6 +692,18 @@ public class ResourceHandlerImpl extends ResourceHandler
                     INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT);
         }
         return _allowSlashLibraryName;
+    }
+
+    protected int getResourceBufferSize()
+    {
+        if (_resourceBufferSize == -1)
+        {
+            _resourceBufferSize = WebConfigParamUtils.getIntegerInitParameter(
+                FacesContext.getCurrentInstance().getExternalContext(),
+                INIT_PARAM_RESOURCE_BUFFER_SIZE,
+                INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT);
+        }
+        return _resourceBufferSize;
     }
 
 }
