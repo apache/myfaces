@@ -21,7 +21,7 @@ package org.apache.myfaces.application;
 import javax.faces.context.FacesContext;
 
 /**
- * This class provides and interface to separate the state caching operations (saving/restoring)
+ * This class provides an interface to separate the state caching operations (saving/restoring)
  * from the renderkit specific stuff that HtmlResponseStateManager should do.
  * 
  * @author Leonardo Uribe
