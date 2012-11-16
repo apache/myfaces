@@ -16,37 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.viewstate;
+package org.apache.myfaces.renderkit;
 
 import javax.faces.context.FacesContext;
 
-/**
- *
- */
-class SessionViewStorageFactory<T extends KeyFactory<K>, K >
+import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.StateCacheFactory;
+
+public class StateCacheFactoryImpl extends StateCacheFactory
 {
-    private KeyFactory<K> keyFactory;
 
-    public SessionViewStorageFactory( KeyFactory<K> keyFactory )
+    private StateCache _clientSideStateCache;
+    private StateCache _serverSideStateCache;
+    
+    public StateCacheFactoryImpl()
     {
-        this.keyFactory = keyFactory;
+        _clientSideStateCache = new ClientSideStateCacheImpl();
+        _serverSideStateCache = new ServerSideStateCacheImpl();
     }
 
-    public KeyFactory<K> getKeyFactory()
+    @Override
+    public StateCache getStateCache(FacesContext facesContext)
     {
-        return keyFactory;
+        if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+        {
+            return _clientSideStateCache;
+        }
+        else
+        {
+            return _serverSideStateCache;
+        }
     }
-
-    public SerializedViewCollection createSerializedViewCollection(
-            FacesContext context)
-    {
-        return new SerializedViewCollection();
-    }
-
-    public SerializedViewKey createSerializedViewKey(
-            FacesContext context, String viewId, Object key)
-    {
-        return new SerializedViewKey(viewId, key);
-    }
-
 }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.viewstate;
+package org.apache.myfaces.renderkit;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -30,6 +30,7 @@ import java.util.logging.Logger;
  * NOTE: Class taken from tomcat 7 org.apache.catalina.util.SessionIdGenerator
  * and used here as an alternative for server side state token encryption.
  * 
+ * @author Leonardo Uribe
  */
 class SessionIdGenerator
 {

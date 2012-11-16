@@ -16,39 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.viewstate;
+package org.apache.myfaces.application;
 
+import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
+import java.io.IOException;
 
 /**
- * Factory for handling ViewState Keys
- * @parem K the type of the generated key
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
-public abstract class KeyFactory<K>
+public abstract class MyfacesStateManager
+        extends StateManager
 {
-
     /**
-     * Generates a unique key per session
-     *
-     * @param facesContext
-     * @return
+     * Writes url parameters with the state info to be saved.
+     * For every url state marker this method is called once from
+     * {@link org.apache.myfaces.taglib.core.ViewTag#doAfterBody()}.
      */
-    public abstract K generateKey(FacesContext facesContext);
-
-    /**
-     * Encode a Key into a value that will be used as view state session token
-     *
-     * @param key
-     * @return
-     */
-    public abstract String encode(K key);
-
-    /**
-     * Decode a view state session token into a key
-     *
-     * @param encodedValue
-     * @return
-     */
-    public abstract K decode(String encodedValue);
-
+    public abstract void writeStateAsUrlParams(FacesContext facesContext,
+                                               SerializedView serializedView) throws IOException;
 }
