@@ -29,7 +29,6 @@ import javax.faces.application.StateManager;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
@@ -221,11 +220,8 @@ public class StateManagerImpl extends StateManager
                 log.finest("Processing saveSerializedView - Checked for duplicate Ids");
             }
     
-            ExternalContext externalContext = facesContext.getExternalContext();
-    
             // SerializedView already created before within this request?
-            serializedView = facesContext.getAttributes()
-                                                                .get(SERIALIZED_VIEW_REQUEST_ATTR);
+            serializedView = facesContext.getAttributes().get(SERIALIZED_VIEW_REQUEST_ATTR);
             if (serializedView == null)
             {
                 if (log.isLoggable(Level.FINEST))
