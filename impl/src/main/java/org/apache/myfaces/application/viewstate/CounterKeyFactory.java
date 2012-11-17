@@ -26,7 +26,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 /**
  *
  */
-class CounterKeyFactory extends KeyFactory<Integer, String>
+class CounterKeyFactory extends KeyFactory<Integer>
 {
 
     /**

@@ -22,13 +22,11 @@ import javax.faces.context.FacesContext;
 
 /**
  *
- * @author lu4242
  */
-class RandomSessionViewStorageFactory extends SessionViewStorageFactory
-    <KeyFactory<byte[], String>, byte[], String>
+class RandomSessionViewStorageFactory extends SessionViewStorageFactory<KeyFactory<byte[]>, byte[]>
 {
 
-    public RandomSessionViewStorageFactory(KeyFactory<byte[], String> keyFactory)
+    public RandomSessionViewStorageFactory(KeyFactory<byte[]> keyFactory)
     {
         super(keyFactory);
     }

@@ -23,31 +23,22 @@ import javax.faces.context.FacesContext;
 /**
  *
  */
-abstract class KeyFactory<K, V>
+abstract class KeyFactory<K>
 {
 
     /**
      * Generates a unique key per session
-     *
-     * @param facesContext
-     * @return
      */
     public abstract K generateKey(FacesContext facesContext);
 
     /**
      * Encode a Key into a value that will be used as view state session token
-     *
-     * @param key
-     * @return
      */
-    public abstract V encode(K key);
+    public abstract String encode(K key);
 
     /**
      * Decode a view state session token into a key
-     *
-     * @param value
-     * @return
      */
-    public abstract K decode(V value);
+    public abstract K decode(String value);
     
 }

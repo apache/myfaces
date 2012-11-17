@@ -22,13 +22,11 @@ import javax.faces.context.FacesContext;
 
 /**
  *
- * @author lu4242
  */
-class CounterSessionViewStorageFactory extends SessionViewStorageFactory
-    <KeyFactory<Integer, String>, Integer, String>
+class CounterSessionViewStorageFactory extends SessionViewStorageFactory<KeyFactory<Integer>, Integer>
 {
 
-    public CounterSessionViewStorageFactory(KeyFactory<Integer, String> keyFactory)
+    public CounterSessionViewStorageFactory(KeyFactory<Integer> keyFactory)
     {
         super(keyFactory);
     }

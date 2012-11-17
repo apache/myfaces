@@ -30,7 +30,7 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 /**
  *
  */
-class RandomKeyFactory extends KeyFactory<byte[], String>
+class RandomKeyFactory extends KeyFactory<byte[]>
 {
     private final Random random;
     private final int length;
@@ -48,7 +48,7 @@ class RandomKeyFactory extends KeyFactory<byte[], String>
     {
         ExternalContext externalContext = facesContext.getExternalContext();
         Object sessionObj = externalContext.getSession(true);
-        Integer sequence = null;
+        Integer sequence;
         synchronized (sessionObj) // are handled at the same time for the session
         {
             Map<String, Object> map = externalContext.getSessionMap();
@@ -100,8 +100,6 @@ class RandomKeyFactory extends KeyFactory<byte[], String>
         }
         catch (DecoderException ex)
         {
-            // Cannot decode, ignore silently, later it will be handled as
-            // ViewExpiredException
             // Cannot decode, ignore silently, later it will be handled as
             // ViewExpiredException
         }

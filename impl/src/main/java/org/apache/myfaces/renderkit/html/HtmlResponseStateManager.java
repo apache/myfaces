@@ -46,10 +46,8 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
  */
 public class HtmlResponseStateManager extends MyfacesResponseStateManager
 {
-    //private static final Log log = LogFactory.getLog(HtmlResponseStateManager.class);
     private static final Logger log = Logger.getLogger(HtmlResponseStateManager.class.getName());
 
-    //private static final int TREE_PARAM = 2;
     private static final int STATE_PARAM = 0;
     private static final int VIEWID_PARAM = 1;
 
@@ -97,7 +95,6 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         
         if (isHandlingStateCachingMechanics(facesContext))
         {
-            //token = getStateCache(facesContext).saveSerializedView(facesContext, state);
             savedStateObject = getStateCache(facesContext).encodeSerializedState(facesContext, state);
         }
         else

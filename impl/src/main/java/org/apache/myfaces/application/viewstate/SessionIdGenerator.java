@@ -30,15 +30,12 @@ import java.util.logging.Logger;
  * NOTE: Class taken from tomcat 7 org.apache.catalina.util.SessionIdGenerator
  * and used here as an alternative for server side state token encryption.
  * 
- * @author Leonardo Uribe
  */
 class SessionIdGenerator
 {
 
     private static Logger log = Logger.getLogger(SessionIdGenerator.class.getName());
-    //private static StringManager sm =
-    //        StringManager.getManager("org.apache.catalina.util");
-    
+
     /**
      * Queue of random number generator objects to be used when creating session
      * identifiers. If the queue is empty when a random number generator is

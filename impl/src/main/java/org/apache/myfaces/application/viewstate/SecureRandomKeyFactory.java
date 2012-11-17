@@ -31,7 +31,7 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
  * counter ensures uniqueness, and the random number prevents guess the next
  * session token.
  */
-class SecureRandomKeyFactory extends KeyFactory<byte[], String>
+class SecureRandomKeyFactory extends KeyFactory<byte[]>
 {
     private final SessionIdGenerator sessionIdGenerator;
     private final int length;
@@ -71,7 +71,7 @@ class SecureRandomKeyFactory extends KeyFactory<byte[], String>
     {
         ExternalContext externalContext = facesContext.getExternalContext();
         Object sessionObj = externalContext.getSession(true);
-        Integer sequence = null;
+        Integer sequence;
         synchronized (sessionObj) // are handled at the same time for the session
         {
             Map<String, Object> map = externalContext.getSessionMap();
@@ -122,8 +122,6 @@ class SecureRandomKeyFactory extends KeyFactory<byte[], String>
         }
         catch (DecoderException ex)
         {
-            // Cannot decode, ignore silently, later it will be handled as
-            // ViewExpiredException
             // Cannot decode, ignore silently, later it will be handled as
             // ViewExpiredException
         }
