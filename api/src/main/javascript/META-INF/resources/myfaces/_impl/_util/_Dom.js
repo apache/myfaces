@@ -572,6 +572,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     },
 
     setCaretPosition:function (ctrl, pos) {
+
         if (ctrl.createTextRange) {
             var range = ctrl.createTextRange();
             range.collapse(true);
@@ -593,8 +594,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      *
      * @param item the item to be replaced
      * @param markup the markup for the replacement
+     * @param preserveFocus, tries to preserve the focus within the outerhtml operation
+     * if set to true a focus preservation algorithm based on document.activeElement is
+     * used to preserve the focus at the exactly same location as it was
+     *
      */
-    outerHTML : function(item, markup) {
+    outerHTML : function(item, markup, preserveFocus) {
         this._assertStdParams(item, markup, "outerHTML");
         // we can work on a single element in a cross browser fashion
         // regarding the focus thanks to the
@@ -610,7 +615,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
                 var focusElementId = null;
                 var caretPosition = 0;
-                if ('undefined' != typeof document.activeElement) {
+                if (preserveFocus && 'undefined' != typeof document.activeElement) {
                     focusElementId = (document.activeElement) ? document.activeElement.id : null;
                     caretPosition = this.getCaretPosition(document.activeElement);
                 }
