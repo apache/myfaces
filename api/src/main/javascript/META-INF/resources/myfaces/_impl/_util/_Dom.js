@@ -542,7 +542,50 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             //most probably dataset properties are not supported
         }
     },
+    //from
+    // http://blog.vishalon.net/index.php/javascript-getting-and-setting-caret-position-in-textarea/
+    getCaretPosition:function (ctrl) {
+        var caretPos = 0;
 
+        try {
+
+            // other browsers make it simpler by simply having a selection start element
+            if (ctrl.selectionStart || ctrl.selectionStart == '0')
+                caretPos = ctrl.selectionStart;
+            // ie 5 quirks mode as second option because
+            // this option is flakey in conjunction with text areas
+            // TODO move this into the quirks class
+            else if (document.selection) {
+                ctrl.focus();
+                var selection = document.selection.createRange();
+                //the selection now is start zero
+                selection.moveStart('character', -ctrl.value.length);
+                //the caretposition is the selection start
+                caretPos = selection.text.length;
+            }
+        } catch (e) {
+            //now this is ugly, but not supported input types throw errors for selectionStart
+            //this way we are future proof by having not to define every selection enabled
+            //input in an if (which will be a lot in the near future with html5)
+        }
+        return caretPos;
+    },
+
+    setCaretPosition:function (ctrl, pos) {
+        if (ctrl.createTextRange) {
+            var range = ctrl.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+        //IE quirks mode again, TODO move this into the quirks class
+        else if (ctrl.setSelectionRange) {
+            ctrl.focus();
+            //the selection range is our caret position
+            ctrl.setSelectionRange(pos, pos);
+        }
+    },
 
     /**
      * outerHTML replacement which works cross browserlike
@@ -553,6 +596,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      */
     outerHTML : function(item, markup) {
         this._assertStdParams(item, markup, "outerHTML");
+        // we can work on a single element in a cross browser fashion
+        // regarding the focus thanks to the
+        // icefaces team for providing the code
         if (item.nodeName.toLowerCase() === 'input') {
             var replacingInput = this._buildEvalNodes(item, markup)[0];
             this.cloneAttributes(item, replacingInput);
@@ -562,6 +608,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             if (markup !== "") {
                 var ret = null;
 
+                var focusElementId = null;
+                var caretPosition = 0;
+                if ('undefined' != typeof document.activeElement) {
+                    focusElementId = (document.activeElement) ? document.activeElement.id : null;
+                    caretPosition = this.getCaretPosition(document.activeElement);
+                }
                 // we try to determine the browsers compatibility
                 // level to standards dom level 2 via various methods
                 if (this.isDomCompliant()) {
@@ -569,6 +621,19 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 } else {
                     //call into abstract method
                     ret = this._outerHTMLNonCompliant(item, markup);
+                }
+                if (focusElementId) {
+                    var newFocusElement = this.byId(focusElementId);
+                    if (newFocusElement && newFocusElement.nodeName.toLowerCase() === 'input') {
+                        //just in case the replacement element is not focusable anymore
+                        if ("undefined" != typeof newFocusElement.focus) {
+                            newFocusElement.focus();
+                        }
+                    }
+                    if (caretPosition) {
+                        //zero caret position is set automatically on focus
+                        this.setCaretPosition(newFocusElement, caretPosition);
+                    }
                 }
 
                 // and remove the old item
