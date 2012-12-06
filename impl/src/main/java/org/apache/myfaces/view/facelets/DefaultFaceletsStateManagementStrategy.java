@@ -166,6 +166,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     private static final Object[] EMPTY_STATES = new Object[]{null, null};
     
+    private static final String UNIQUE_ID_COUNTER_KEY =
+              "oam.view.uniqueIdCounter";
+    
     private ViewDeclarationLanguageFactory _vdlFactory;
     
     private RenderKitFactory _renderKitFactory = null;
@@ -254,8 +257,16 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     {
                         view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
                     }
+                    if (state.length == 3)
+                    {
+                        if (view.getId() == null)
+                        {
+                            view.setId(view.createUniqueId(context, null));
+                        }
+                        //Jump to where the count is
+                        view.getAttributes().put(UNIQUE_ID_COUNTER_KEY, state[2]);
+                    }
                 }
-
                 // TODO: Why is necessary enable event processing?
                 // ANS: On RestoreViewExecutor, setProcessingEvents is called first to false
                 // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
@@ -286,7 +297,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (state != null && state[1] != null)
             {
                 states = (Map<String, Object>) state[1];
-                
                 // Visit the children and restore their state.
                 boolean emptyState = false;
                 boolean containsFaceletState = states.containsKey(
@@ -386,7 +396,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         context.getAttributes().remove(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD);
                     }
                 }
-                
                 List<String> clientIdsAdded = getClientIdsAdded(view);
                 if (clientIdsAdded != null)
                 {
@@ -459,7 +468,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
             }
         }
-        
         // Restore binding, because UIViewRoot.processRestoreState() is never called
         //the event processing has to be enabled because of the restore view event triggers
         //TODO ask the EG the this is a spec violation if we do it that way
@@ -573,8 +581,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             // As required by ResponseStateManager, the return value is an Object array.  First
             // element is the structure object, second is the state map.
-
-            if (states == null)
+            Long uniqueIdCount = (Long) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
+            if (uniqueIdCount != null && !uniqueIdCount.equals(1L))
+            {
+                serializedView = new Object[] { null, states, uniqueIdCount };
+            }
+            else if (states == null)
             {
                 serializedView = EMPTY_STATES;
             }

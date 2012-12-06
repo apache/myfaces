@@ -50,6 +50,8 @@ import javax.faces.view.facelets.ValidatorHandler;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.ComponentState;
+import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
@@ -434,6 +436,18 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 {
                     ComponentSupport.getViewRoot(ctx, c).getAttributes().put("oam.CALL_PRE_DISPOSE_VIEW", Boolean.TRUE);
                     c.subscribeToEvent(PreDisposeViewEvent.class, new ClearBindingValueExpressionListener());
+                }
+                
+                if (c.getChildCount() > 0 || c.getFacetCount() > 0)
+                {
+                    // In this case, this component is used to hold a subtree that is generated
+                    // dynamically. In this case, the best is mark this component to be restored
+                    // fully, because this ensures the state is correctly preserved. Note this
+                    // is only necessary when the component has additional children or facets,
+                    // because those components requires an unique id provided by createUniqueId(),
+                    // and this ensures stability of the generated ids.
+                    c.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
+                                          ComponentState.REMOVE_ADD);
                 }
             }
         }

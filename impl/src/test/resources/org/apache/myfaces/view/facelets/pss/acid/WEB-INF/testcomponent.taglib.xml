@@ -64,5 +64,12 @@
 			<component-type>com.myapp.UISelfRenderComponent</component-type>
 		</component>
 	</tag>
+    
+    <tag>
+		<tag-name>rdcomponent</tag-name>
+		<component>
+			<component-type>com.myapp.UIRDComponent</component-type>
+		</component>
+	</tag>
 
 </facelet-taglib>

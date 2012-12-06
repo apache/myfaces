@@ -104,6 +104,7 @@ import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 
 /**
@@ -157,6 +158,14 @@ public class ApplicationImpl extends Application
     private static final boolean LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE = true;
     private Boolean _lazyLoadConfigObjects = null;
     
+    
+    /**
+     * Key under UIViewRoot to generated unique ids for components added 
+     * by @ResourceDependency effect.
+     */
+    private static final String RESOURCE_DEPENDENCY_UNIQUE_ID_KEY =
+              "oam.view.resourceDependencyUniqueId";
+
     // ~ Instance fields
     // --------------------------------------------------------------------------
     // --
@@ -1798,6 +1807,50 @@ public class ApplicationImpl extends Application
             rvc.setClassProcessed(inspectedClass);
         }
     }
+
+    /**
+     * If the ResourceDependency component is created under facelets processing, it should receive
+     * an special unique component id. This method check if there is a FaceletCompositionContext
+     * and if that so, set the id. Components added by the effect of ResourceDependency are special,
+     * because they do not have state, but they depends on the view structure, so with PSS, 
+     * each time the view is built they are "recalculated", so they work as if they were transient
+     * components that needs to be created at each request, but there are some cases were the 
+     * components needs to be saved and restored fully. If a component is created outside facelets 
+     * control (render response phase) it is expected to use the default implementation of 
+     * createUniqueId(), but in that case, note that this happens after markInitialState() is 
+     * called, and the component in this case is saved and restored fully, as expected.
+     * 
+     * This code cannot be called from facelets component tag handler, because in cases where a
+     * component subtree is created using binding property, facelets lost control over component
+     * creation and delegates it to the user, but since the binding code is executed each time the
+     * view is created, the effect over ResourceDependency persists and the binding code takes into
+     * account in the recalculation step, even if later the node related to the binding property
+     * is dropped and recreated from the state fully. 
+     * 
+     * @param facesContext
+     * @param component 
+     */
+    private void setResourceIdOnFaceletsMode(FacesContext facesContext, UIComponent component)
+    {
+        if (component.getId() == null)
+        {
+            FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(facesContext);
+            if (mctx != null)
+            {
+                UIViewRoot root = facesContext.getViewRoot();
+                root.getAttributes().put(RESOURCE_DEPENDENCY_UNIQUE_ID_KEY, Boolean.TRUE);
+                try
+                {
+                    String uid = root.createUniqueId(facesContext, null);
+                    component.setId(uid);
+                }
+                finally
+                {
+                    root.getAttributes().put(RESOURCE_DEPENDENCY_UNIQUE_ID_KEY, Boolean.FALSE);
+                }
+            }
+        }
+    }
     
     private void _handleAttachedResourceDependency(FacesContext context, ResourceDependency annotation)
     {
@@ -1825,6 +1878,10 @@ public class ApplicationImpl extends Application
             
             // Call setRendererType on the UIOutput instance, passing the renderer-type.
             output.setRendererType(rendererType);
+            
+            // If the @ResourceDependency was done inside facelets processing,
+            // call setId() and set a proper id from facelets
+            setResourceIdOnFaceletsMode(context, output);
             
             // Obtain the Map of attributes from the UIOutput component by calling UIComponent.getAttributes().
             Map<String, Object> attributes = output.getAttributes();
@@ -2301,6 +2358,10 @@ public class ApplicationImpl extends Application
 
             // Call setRendererType on the UIOutput instance, passing the renderer-type.
             output.setRendererType(rendererType);
+            
+            // If the @ResourceDependency was done inside facelets processing,
+            // call setId() and set a proper id from facelets
+            setResourceIdOnFaceletsMode(context, output);
 
             // Obtain the Map of attributes from the UIOutput component by calling UIComponent.getAttributes().
             Map<String, Object> attributes = output.getAttributes();

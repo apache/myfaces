@@ -22,12 +22,14 @@ import javax.faces.application.StateManager;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
+import javax.faces.component.UIPanel;
 import javax.faces.component.html.HtmlDataTable;
 
 import junit.framework.Assert;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
 import org.junit.Test;
 
 public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
@@ -418,4 +420,92 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         //Check it is restored
         Assert.assertNotNull(component);
     }
+    
+    /**
+     * Check if a dynamic subtree can be created from a binding property, and if it
+     * will be preserved across request. 
+     * 
+     * The idea is just inject a subtree using some code like this:
+     * <code>&lt;h:panelGroup id="panel" binding="#{componentBindingBean.panel}"&gt;</code>
+     * 
+     * The solution is if a binding returns a component that has children or facets
+     * attached, it is not elegible for PSS algorithm because the additional components
+     * are created outside facelets control, and there is no warrant that the same structure
+     * will be generated across requests, violating PSS base principle (it is possible to
+     * restore to the initial state calling vdl.buildView).
+     * 
+     * This test is here because all state saving modes should support this method.
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testComponentBinding() throws Exception
+    {
+        setupRequest("/componentBinding1.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("panel");
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(1, comp.getChildCount());
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        processLifecycleExecuteAndRender();
+        
+        comp = facesContext.getViewRoot().findComponent("panel");
+        
+        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        processLifecycleExecuteAndRender();
+
+        comp = facesContext.getViewRoot().findComponent("panel");
+        
+        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        
+        tearDownRequest();
+    }
+    
+    @Test
+    public void testResourceDependency() throws Exception
+    {
+        setupRequest("/resourceDependency1.xhtml");
+        processLifecycleExecute();
+
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+
+        UIPanel headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
+        Assert.assertNotNull(headPanel);
+        Assert.assertEquals(1, headPanel.getChildCount());
+        
+        String nextUniqueId = facesContext.getViewRoot().createUniqueId(facesContext, null);
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        
+        processLifecycleExecute();
+        
+        ResourceDependencyBean bean = facesContext.getApplication().evaluateExpressionGet(
+            facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
+        bean.setIncludeContent(true);
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
+        Assert.assertNotNull(headPanel);
+        Assert.assertEquals(1, headPanel.getChildCount());
+        Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+    }
+
 }

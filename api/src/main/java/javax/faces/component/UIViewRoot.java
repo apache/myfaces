@@ -116,6 +116,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private static final String JAVAX_FACES_LOCATION_BODY = "javax_faces_location_body";
     private static final String JAVAX_FACES_LOCATION_FORM = "javax_faces_location_form";
     
+    private transient boolean _resourceDependencyUniqueId;
+    private transient Map<String,Object> _attributesMap;
+    
     /**
      * Construct an instance of the UIViewRoot.
      */
@@ -343,10 +346,20 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot.
         if(seed==null)
         {
-            Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
-            uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
-            getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
-            return bld.append(UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();    
+            if (isResourceDependencyUniqueId())
+            {
+                Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.resourceDependencyUniqueIdCounter);
+                uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
+                getStateHelper().put(PropertyKeys.resourceDependencyUniqueIdCounter, (uniqueIdCounter+1L));
+                return bld.append(UNIQUE_ID_PREFIX).append("__rd_").append(uniqueIdCounter).toString();
+            }
+            else
+            {
+                Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
+                uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
+                getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
+                return bld.append(UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();
+            }
         }
         // Optionally, a unique seed value can be supplied by component creators which
         // should be included in the generated unique id.
@@ -1234,6 +1247,32 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         getStateHelper().put(PropertyKeys.afterPhaseListener, afterPhaseListener);
     }
     
+    @Override
+    public Map<String, Object> getAttributes()
+    {
+        if (_attributesMap == null)
+        {
+            _attributesMap = new _ViewAttributeMap(this, super.getAttributes());
+        }
+        return _attributesMap;
+    }
+
+    /**
+     * Indicates if the component is created when facelets builds the view and
+     * is caused by the presence of a ResourceDependency annotation.
+     * 
+     * @return the _resourceDependencyUniqueId
+     */
+    boolean isResourceDependencyUniqueId()
+    {
+        return _resourceDependencyUniqueId;
+    }
+
+    void setResourceDependencyUniqueId(boolean resourceDependencyUniqueId)
+    {
+        this._resourceDependencyUniqueId = resourceDependencyUniqueId;
+    }
+    
     enum PropertyKeys
     {
          afterPhaseListener
@@ -1243,6 +1282,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         , renderKitId
         , viewId
         , uniqueIdCounter
+        , resourceDependencyUniqueIdCounter
     }
     
     @Override
