@@ -34,13 +34,23 @@ import java.util.logging.Logger;
 import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.FacesMessage;
+import javax.faces.application.ProjectStage;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
+import javax.faces.context.Flash;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.faces.event.PreRenderViewEvent;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -52,6 +62,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
+import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
 import org.apache.myfaces.mc.test.core.annotation.ManagedBeans;
 import org.apache.myfaces.mc.test.core.annotation.PageBean;
@@ -62,6 +73,7 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
+import org.apache.myfaces.util.DebugUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
@@ -98,6 +110,13 @@ public abstract class AbstractMyFacesTestCase
     public static final String PHASE_MANAGER_INSTANCE = "org.apache.myfaces.test.PHASE_MANAGER_INSTANCE";
     
     public static final String LAST_PHASE_PROCESSED = "oam.LAST_PHASE_PROCESSED";
+    
+    public static final String LAST_RENDER_PHASE_STEP = "oam.LAST_RENDER_PHASE_STEP";
+    
+    public static final int BEFORE_RENDER_STEP = 1;
+    public static final int BUILD_VIEW_CYCLE_STEP = 2;
+    public static final int VIEWHANDLER_RENDER_STEP = 3;
+    public static final int AFTER_RENDER_STEP = 4;
     
     // ------------------------------------------------------------ Constructors
 
@@ -446,6 +465,7 @@ public abstract class AbstractMyFacesTestCase
         processRemainingExecutePhases(facesContext);
         lifecycle.render(facesContext);
         facesContext.getAttributes().put(LAST_PHASE_PROCESSED, PhaseId.RENDER_RESPONSE);
+        facesContext.getAttributes().put(LAST_RENDER_PHASE_STEP, AFTER_RENDER_STEP);
     }
     
     protected void processRemainingExecutePhases(FacesContext facesContext) throws Exception
@@ -516,7 +536,29 @@ public abstract class AbstractMyFacesTestCase
             }
             if (continueProcess || PhaseId.INVOKE_APPLICATION.equals(lastPhaseId))
             {
-                processRender(facesContext);
+                Integer step = (Integer) facesContext.getAttributes().get(LAST_RENDER_PHASE_STEP);
+                if (step == null)
+                {
+                    processRender(facesContext);
+                }
+                else
+                {
+                    if (BEFORE_RENDER_STEP == step.intValue())
+                    {
+                        executeBuildViewCycle(facesContext);
+                        executeViewHandlerRender(facesContext);
+                        executeAfterRender(facesContext);
+                    }
+                    else if (BUILD_VIEW_CYCLE_STEP == step.intValue())
+                    {
+                        executeViewHandlerRender(facesContext);
+                        executeAfterRender(facesContext);
+                    }
+                    else if (VIEWHANDLER_RENDER_STEP == step.intValue())
+                    {
+                        executeAfterRender(facesContext);
+                    }
+                }
             }
         }
     }
@@ -530,6 +572,291 @@ public abstract class AbstractMyFacesTestCase
     protected boolean isScanAnnotations()
     {
         return false;
+    }
+    
+    protected void executeBeforeRender(FacesContext facesContext) throws Exception
+    {
+        if (lifecycle instanceof LifecycleImpl)
+        {
+            LifecycleImpl lifecycleImpl = (LifecycleImpl) lifecycle;
+            
+            Object phaseExecutor = null;
+            Field renderExecutorField = lifecycleImpl.getClass().getDeclaredField("renderExecutor");
+            if (!renderExecutorField.isAccessible())
+            {
+                renderExecutorField.setAccessible(true);
+            }
+            phaseExecutor = renderExecutorField.get(lifecycleImpl);
+            
+            if (facesContext.getResponseComplete())
+            {
+                return;
+            }
+            
+            Object phaseManager = facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
+            if (phaseManager == null)
+            {
+                Method getPhaseListenersMethod = lifecycleImpl.getClass().getDeclaredMethod("getPhaseListeners");
+                if (!getPhaseListenersMethod.isAccessible())
+                {
+                    getPhaseListenersMethod.setAccessible(true);
+                }
+                
+                Constructor<?> plmc = PHASE_MANAGER_CLASS.getDeclaredConstructor(new Class[]{Lifecycle.class, FacesContext.class, PhaseListener[].class});
+                if (!plmc.isAccessible())
+                {
+                    plmc.setAccessible(true);
+                }
+                phaseManager = plmc.newInstance(lifecycle, facesContext, getPhaseListenersMethod.invoke(lifecycleImpl, null));
+                facesContext.getAttributes().put(PHASE_MANAGER_INSTANCE, phaseManager);
+            }
+            
+            Flash flash = facesContext.getExternalContext().getFlash();
+            
+            try
+            {
+                facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+                
+                flash.doPrePhaseActions(facesContext);
+                
+                // let the PhaseExecutor do some pre-phase actions
+                
+                //renderExecutor.doPrePhaseActions(facesContext);
+                Method doPrePhaseActionsMethod = phaseExecutor.getClass().getMethod("doPrePhaseActions", FacesContext.class);
+                if(!(doPrePhaseActionsMethod.isAccessible()))
+                {
+                    doPrePhaseActionsMethod.setAccessible(true);
+                }
+                doPrePhaseActionsMethod.invoke(phaseExecutor, facesContext);
+                
+                //phaseListenerMgr.informPhaseListenersBefore(PhaseId.RENDER_RESPONSE);
+                Method informPhaseListenersBeforeMethod = phaseManager.getClass().getDeclaredMethod("informPhaseListenersBefore", PhaseId.class);
+                if(!(informPhaseListenersBeforeMethod.isAccessible()))
+                {
+                    informPhaseListenersBeforeMethod.setAccessible(true);
+                }
+                informPhaseListenersBeforeMethod.invoke(phaseManager, PhaseId.RENDER_RESPONSE);
+                
+                // also possible that one of the listeners completed the response
+                if (facesContext.getResponseComplete())
+                {
+                    return;
+                }
+                
+                //renderExecutor.execute(facesContext);
+            }
+            
+            catch (Throwable e)
+            {
+                // JSF 2.0: publish the executor's exception (if any).
+                ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, PhaseId.RENDER_RESPONSE);
+                facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);
+            }
+            
+            finally
+            {
+                /*
+                phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
+                flash.doPostPhaseActions(facesContext);
+                
+                // publish a field in the application map to indicate
+                // that the first request has been processed
+                requestProcessed(facesContext);
+                */
+            }
+            
+            facesContext.getExceptionHandler().handle();
+            
+
+            facesContext.getAttributes().remove(PHASE_MANAGER_INSTANCE);
+            
+            facesContext.getAttributes().put(LAST_RENDER_PHASE_STEP, BEFORE_RENDER_STEP);
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Cannot execute phase on custom lifecycle instances");
+        }
+    }
+    
+    public void executeBuildViewCycle(FacesContext facesContext) throws Exception
+    {
+        Application application = facesContext.getApplication();
+        ViewHandler viewHandler = application.getViewHandler();
+        UIViewRoot root;
+        UIViewRoot previousRoot;
+        String viewId;
+        String newViewId;
+        boolean isNotSameRoot;
+        int loops = 0;
+        int maxLoops = 15;
+        
+        if (facesContext.getViewRoot() == null)
+        {
+            throw new ViewNotFoundException("A view is required to execute "+facesContext.getCurrentPhaseId());
+        }
+        
+        try
+        {
+            // do-while, because the view might change in PreRenderViewEvent-listeners
+            do
+            {
+                root = facesContext.getViewRoot();
+                previousRoot = root;
+                viewId = root.getViewId();
+                
+                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(
+                        facesContext, viewId);
+                if (vdl != null)
+                {
+                    vdl.buildView(facesContext, root);
+                }
+                
+                // publish a PreRenderViewEvent: note that the event listeners
+                // of this event can change the view, so we have to perform the algorithm 
+                // until the viewId does not change when publishing this event.
+                application.publishEvent(facesContext, PreRenderViewEvent.class, root);
+                
+                // was the response marked as complete by an event listener?
+                if (facesContext.getResponseComplete())
+                {
+                    return;
+                }
+
+                root = facesContext.getViewRoot();
+                
+                newViewId = root.getViewId();
+                
+                isNotSameRoot = !( (newViewId == null ? newViewId == viewId : newViewId.equals(viewId) ) && 
+                        previousRoot.equals(root) ); 
+                
+                loops++;
+            }
+            while ((newViewId == null && viewId != null) 
+                    || (newViewId != null && (!newViewId.equals(viewId) || isNotSameRoot ) ) && loops < maxLoops);
+            
+            if (loops == maxLoops)
+            {
+                // PreRenderView reach maxLoops - probably a infinitive recursion:
+                boolean production = facesContext.isProjectStage(ProjectStage.Production);
+                /*
+                Level level = production ? Level.FINE : Level.WARNING;
+                if (log.isLoggable(level))
+                {
+                    log.log(level, "Cicle over buildView-PreRenderViewEvent on RENDER_RESPONSE phase "
+                                   + "reaches maximal limit, please check listeners for infinite recursion.");
+                }*/
+            }
+            
+            facesContext.getAttributes().put(LAST_RENDER_PHASE_STEP, BUILD_VIEW_CYCLE_STEP);
+        }
+        catch (IOException e)
+        {
+            throw new FacesException(e.getMessage(), e);
+        }
+    }
+    
+    public void executeViewHandlerRender(FacesContext facesContext)
+    {
+        Application application = facesContext.getApplication();
+        ViewHandler viewHandler = application.getViewHandler();
+
+        try
+        {
+            viewHandler.renderView(facesContext, facesContext.getViewRoot());
+            
+            // log all unhandled FacesMessages, don't swallow them
+            // perf: org.apache.myfaces.context.servlet.FacesContextImpl.getMessageList() creates
+            // new Collections.unmodifiableList with every invocation->  call it only once
+            // and messageList is RandomAccess -> use index based loop
+            List<FacesMessage> messageList = facesContext.getMessageList();
+            if (!messageList.isEmpty())
+            {
+                StringBuilder builder = new StringBuilder();
+                //boolean shouldLog = false;
+                for (int i = 0, size = messageList.size(); i < size; i++)
+                {
+                    FacesMessage message = messageList.get(i);
+                    if (!message.isRendered())
+                    {
+                        builder.append("\n- ");
+                        builder.append(message.getDetail());
+                        
+                        //shouldLog = true;
+                    }
+                }
+                /*
+                if (shouldLog)
+                {
+                    log.log(Level.WARNING, "There are some unhandled FacesMessages, " +
+                            "this means not every FacesMessage had a chance to be rendered.\n" +
+                            "These unhandled FacesMessages are: " + builder.toString());
+                }*/
+            }
+            facesContext.getAttributes().put(LAST_RENDER_PHASE_STEP, VIEWHANDLER_RENDER_STEP);
+        }
+        catch (IOException e)
+        {
+            throw new FacesException(e.getMessage(), e);
+        }
+    }
+    
+    public void executeAfterRender(FacesContext facesContext) throws Exception
+    {
+        if (lifecycle instanceof LifecycleImpl)
+        {
+            LifecycleImpl lifecycleImpl = (LifecycleImpl) lifecycle;
+            
+            Object phaseExecutor = null;
+            Field renderExecutorField = lifecycleImpl.getClass().getDeclaredField("renderExecutor");
+            if (!renderExecutorField.isAccessible())
+            {
+                renderExecutorField.setAccessible(true);
+            }
+            phaseExecutor = renderExecutorField.get(lifecycleImpl);
+            
+            Object phaseManager = facesContext.getAttributes().get(PHASE_MANAGER_INSTANCE);
+            if (phaseManager == null)
+            {
+                Method getPhaseListenersMethod = lifecycleImpl.getClass().getDeclaredMethod("getPhaseListeners");
+                if (!getPhaseListenersMethod.isAccessible())
+                {
+                    getPhaseListenersMethod.setAccessible(true);
+                }
+                
+                Constructor<?> plmc = PHASE_MANAGER_CLASS.getDeclaredConstructor(new Class[]{Lifecycle.class, FacesContext.class, PhaseListener[].class});
+                if (!plmc.isAccessible())
+                {
+                    plmc.setAccessible(true);
+                }
+                phaseManager = plmc.newInstance(lifecycle, facesContext, getPhaseListenersMethod.invoke(lifecycleImpl, null));
+                facesContext.getAttributes().put(PHASE_MANAGER_INSTANCE, phaseManager);
+            }
+            
+            
+            Flash flash = facesContext.getExternalContext().getFlash();
+            
+            //phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
+            Method informPhaseListenersAfterMethod = phaseManager.getClass().getDeclaredMethod("informPhaseListenersAfter", PhaseId.class);
+            if(!(informPhaseListenersAfterMethod.isAccessible()))
+            {
+                informPhaseListenersAfterMethod.setAccessible(true);
+            }
+            informPhaseListenersAfterMethod.invoke(phaseManager, PhaseId.RENDER_RESPONSE);
+            
+            flash.doPostPhaseActions(facesContext);
+            
+            facesContext.getExceptionHandler().handle();
+
+            facesContext.getAttributes().remove(PHASE_MANAGER_INSTANCE);
+            
+            facesContext.getAttributes().put(LAST_RENDER_PHASE_STEP, AFTER_RENDER_STEP);
+            //End render response phase
+            facesContext.getAttributes().put(LAST_PHASE_PROCESSED, PhaseId.RENDER_RESPONSE);
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Cannot execute phase on custom lifecycle instances");
+        }
     }
     
     /**
