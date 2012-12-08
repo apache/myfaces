@@ -339,72 +339,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 {
                     view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
                 }
-                
-                // TODO: handle dynamic add/removes as mandated by the spec.  Not sure how to do handle this yet.
-                List<String> clientIdsRemoved = getClientIdsRemoved(view);
-                
-                if (clientIdsRemoved != null)
-                {
-                    Set<String> idsRemovedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsRemoved.size()));
-                    context.getAttributes().put(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD, Boolean.TRUE);
-                    try
-                    {
-                        // perf: clientIds are ArrayList: see method registerOnAddRemoveList(String)
-                        for (int i = 0, size = clientIdsRemoved.size(); i < size; i++)
-                        {
-                            String clientId = clientIdsRemoved.get(i);
-                            if (!idsRemovedSet.contains(clientId))
-                            {
-                                view.invokeOnComponent(context, clientId, new RemoveComponentCallback());
-                                idsRemovedSet.add(clientId);
-                            }
-                        }
-                        clientIdsRemoved.clear();
-                        clientIdsRemoved.addAll(idsRemovedSet);
-                    }
-                    finally
-                    {
-                        context.getAttributes().remove(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD);
-                    }
-                }
-                List<String> clientIdsAdded = getClientIdsAdded(view);
-                if (clientIdsAdded != null)
-                {
-                    Set<String> idsAddedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsAdded.size()));
-                    // perf: clientIds are ArrayList: see method setClientsIdsAdded(String)
-                    for (int i = 0, size = clientIdsAdded.size(); i < size; i++)
-                    {
-                        String clientId = clientIdsAdded.get(i);
-                        if (!idsAddedSet.contains(clientId))
-                        {
-                            final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
-                            if (wrapper != null)
-                            {
-                                final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
-                                if (addedState != null)
-                                {
-                                    if (addedState.length == 2)
-                                    {
-                                        view = (UIViewRoot)
-                                                internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
-                                        view.processRestoreState(context, addedState[1]);
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        final String parentClientId = (String) addedState[0];
-                                        view.invokeOnComponent(context, parentClientId, 
-                                            new AddComponentCallback(addedState));
-                                    }
-                                }
-                            }
-                            idsAddedSet.add(clientId);
-                        }
-                    }
-                    // Reset this list, because it will be calculated later when the view is being saved
-                    // in the right order, preventing duplicates (see COMPONENT_ADDED_AFTER_BUILD_VIEW for details).
-                    clientIdsAdded.clear();
-                }
+                handleDynamicAddedRemovedComponents(context, view, states);
             }
         }
         // Restore binding, because UIViewRoot.processRestoreState() is never called
@@ -427,6 +362,74 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         //    context.setProcessingEvents(oldContextEventState);
         //}
         return view;
+    }
+    
+    public void handleDynamicAddedRemovedComponents(FacesContext context, UIViewRoot view, Map<String, Object> states)
+    {
+        List<String> clientIdsRemoved = getClientIdsRemoved(view);
+
+        if (clientIdsRemoved != null)
+        {
+            Set<String> idsRemovedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsRemoved.size()));
+            context.getAttributes().put(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD, Boolean.TRUE);
+            try
+            {
+                // perf: clientIds are ArrayList: see method registerOnAddRemoveList(String)
+                for (int i = 0, size = clientIdsRemoved.size(); i < size; i++)
+                {
+                    String clientId = clientIdsRemoved.get(i);
+                    if (!idsRemovedSet.contains(clientId))
+                    {
+                        view.invokeOnComponent(context, clientId, new RemoveComponentCallback());
+                        idsRemovedSet.add(clientId);
+                    }
+                }
+                clientIdsRemoved.clear();
+                clientIdsRemoved.addAll(idsRemovedSet);
+            }
+            finally
+            {
+                context.getAttributes().remove(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD);
+            }
+        }
+        List<String> clientIdsAdded = getClientIdsAdded(view);
+        if (clientIdsAdded != null)
+        {
+            Set<String> idsAddedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsAdded.size()));
+            // perf: clientIds are ArrayList: see method setClientsIdsAdded(String)
+            for (int i = 0, size = clientIdsAdded.size(); i < size; i++)
+            {
+                String clientId = clientIdsAdded.get(i);
+                if (!idsAddedSet.contains(clientId))
+                {
+                    final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
+                    if (wrapper != null)
+                    {
+                        final Object[] addedState = (Object[]) wrapper.getWrappedStateObject(); 
+                        if (addedState != null)
+                        {
+                            if (addedState.length == 2)
+                            {
+                                view = (UIViewRoot)
+                                        internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
+                                view.processRestoreState(context, addedState[1]);
+                                break;
+                            }
+                            else
+                            {
+                                final String parentClientId = (String) addedState[0];
+                                view.invokeOnComponent(context, parentClientId, 
+                                    new AddComponentCallback(addedState));
+                            }
+                        }
+                    }
+                    idsAddedSet.add(clientId);
+                }
+            }
+            // Reset this list, because it will be calculated later when the view is being saved
+            // in the right order, preventing duplicates (see COMPONENT_ADDED_AFTER_BUILD_VIEW for details).
+            clientIdsAdded.clear();
+        }
     }
 
     public static class RemoveComponentCallback implements ContextCallback
