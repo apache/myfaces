@@ -358,7 +358,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
                 uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
                 getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
-                return bld.append(UNIQUE_ID_PREFIX).append(uniqueIdCounter).toString();
+                return bld.append(UNIQUE_ID_PREFIX).append("__v_").append(uniqueIdCounter).toString();
             }
         }
         // Optionally, a unique seed value can be supplied by component creators which
