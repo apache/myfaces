@@ -81,7 +81,7 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<input type=\"password\" name=\"j_id0\"/>", output);
+        assertEquals("<input type=\"password\" name=\"j_id__v_0\"/>", output);
     }
 
     public void testHtmlPropertyPassTru() throws Exception

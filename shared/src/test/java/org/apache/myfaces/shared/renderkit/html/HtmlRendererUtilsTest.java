@@ -48,7 +48,7 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
-        Assert.assertEquals("return jsf.util.chain(document.getElementById('j_id0'), event,'huhn', 'suppe');",
+        Assert.assertEquals("return jsf.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
                 HtmlRendererUtils.buildBehaviorChain(facesContext,
                         component, ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
@@ -70,7 +70,7 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
 
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
-        Assert.assertEquals("jsf.util.chain(document.getElementById('j_id0'), event,'huhn', 'script()', 'suppe'); return false;",
+        Assert.assertEquals("jsf.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
                 HtmlRendererUtils.buildBehaviorChain(facesContext,
                         component,
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
