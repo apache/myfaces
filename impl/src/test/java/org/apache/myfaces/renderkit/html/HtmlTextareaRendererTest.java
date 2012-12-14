@@ -80,7 +80,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<textarea name=\"j_id0\"></textarea>", output);
+        assertEquals("<textarea name=\"j_id__v_0\"></textarea>", output);
     }
 
     public void testRenderColsRows() throws Exception
@@ -91,7 +91,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<textarea name=\"j_id0\" cols=\"5\" rows=\"10\"></textarea>", output);
+        assertEquals("<textarea name=\"j_id__v_0\" cols=\"5\" rows=\"10\"></textarea>", output);
     }
     
     public void testHtmlPropertyPassTru() throws Exception
