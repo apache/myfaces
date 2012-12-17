@@ -820,6 +820,32 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         }
     }
     
+    @Override
+    public void removeComponentForDeletion(UIComponent component)
+    {
+        String id = (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);
+        if (id != null)
+        {
+            removeComponentForDeletion(id);
+        }
+        else if (id == null
+                 && Boolean.TRUE.equals(component.getAttributes().get(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
+        {
+            if (component.getChildCount() > 0)
+            {
+                for (int i = 0, size = component.getChildCount(); i < size; i++)
+                {
+                    UIComponent child = component.getChildren().get(i);
+                    id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
+                    if (id != null)
+                    {
+                        removeComponentForDeletion(id);
+                    }
+                }
+            }
+        }
+    }
+    
     public void finalizeForDeletion(UIComponent component)
     {
         String id = (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);

@@ -336,6 +336,10 @@ abstract public class FaceletCompositionContext
      *            UIComponent to finalize
      */
     public abstract void finalizeForDeletion(UIComponent component);
+    
+    public void removeComponentForDeletion(UIComponent component)
+    {
+    }
 
     /**
      * Add a method expression as targeted for the provided composite component

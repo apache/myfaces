@@ -40,6 +40,7 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
@@ -177,6 +178,19 @@ final class DefaultFacelet extends AbstractFacelet
             this.refresh(parent);
             myFaceletContext.markForDeletion(parent);
             _root.apply(ctx, parent);
+            if (faceletCompositionContextInitialized &&
+                parent instanceof UIViewRoot)
+            {
+                UIComponent metadataFacet = parent.getFacet(UIViewRoot.METADATA_FACET_NAME);
+                if (metadataFacet != null)
+                {
+                    // Ensure metadata facet is removed from deletion, so if by some reason
+                    // is not refreshed, its content will not be removed from the component tree.
+                    // This behavior is preferred, even if the spec suggest to include it using
+                    // a trick with the template client.
+                    myFaceletContext.removeComponentForDeletion(metadataFacet);
+                }
+            }
             myFaceletContext.finalizeForDeletion(parent);
             this.markApplied(parent);
             
