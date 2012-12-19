@@ -635,7 +635,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                             newFocusElement.focus();
                         }
                     }
-                    if (caretPosition) {
+                    if (newFocusElement && caretPosition) {
                         //zero caret position is set automatically on focus
                         this.setCaretPosition(newFocusElement, caretPosition);
                     }
@@ -689,8 +689,6 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             return this.replaceElements(item, evalNodes);
         }
     },
-
-
 
     /**
      * checks if the provided element is a subelement of a table element
@@ -793,8 +791,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
      * this method builds an assertion for those methods to reduce code
      *
      * @param item  the item to be tested
-     * @param markup the mark
-     * @param caller
+     * @param markup the markup
+     * @param caller caller function
+     * @param {optional} params array of assertion param names
      */
     _assertStdParams: function(item, markup, caller, params) {
         //internal error

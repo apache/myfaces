@@ -758,17 +758,77 @@ if (!myfaces._impl.core._Runtime) {
         //implemented in extruntime
         this.singletonDelegateObj = function()  {};
 
-        //for modern browsers we do not need it anymore
-        //there we can rely on browser capabilities checks
-        //we only have one xml special case so webkit and opera is the
-        //only detection we still need for the minimal case
-        //TODO determine how to eliminate this check
-        //minimal modern should be able to cope without any browser checks
-        //at all
-        //with a direct capabilities check
-        _T.browser = {};
-        var d  = _T.browser;
-        d.isWebKit = parseFloat(navigator.userAgent.split("WebKit/")[1]) || undefined;
+        /**
+        * browser detection code
+        * cross ported from dojo 1.2
+        *
+        * dojos browser detection code is very sophisticated
+        * hence we port it over it allows a very fine grained detection of
+        * browsers including the version number
+        * this however only can work out if the user
+        * does not alter the user agent, which they normally dont!
+        *
+        * the exception is the ie detection which relies on specific quirks in ie
+        */
+       var n = navigator;
+       var dua = n.userAgent,
+               dav = n.appVersion,
+               tv = parseFloat(dav);
+       var _T = this;
+       _T.browser = {};
+       myfaces._impl.core._EvalHandlers.browser = _T.browser;
+       var d = _T.browser;
+
+       if (dua.indexOf("Opera") >= 0) {
+           _T.isOpera = tv;
+       }
+       if (dua.indexOf("AdobeAIR") >= 0) {
+           d.isAIR = 1;
+       }
+       if (dua.indexOf("BlackBerry") >= 0) {
+           d.isBlackBerry = tv;
+       }
+       d.isKhtml = (dav.indexOf("Konqueror") >= 0) ? tv : 0;
+       d.isWebKit = parseFloat(dua.split("WebKit/")[1]) || undefined;
+       d.isChrome = parseFloat(dua.split("Chrome/")[1]) || undefined;
+
+       // safari detection derived from:
+       //		http://developer.apple.com/internet/safari/faq.html#anchor2
+       //		http://developer.apple.com/internet/safari/uamatrix.html
+       var index = Math.max(dav.indexOf("WebKit"), dav.indexOf("Safari"), 0);
+       if (index && !d.isChrome) {
+           // try to grab the explicit Safari version first. If we don't get
+           // one, look for less than 419.3 as the indication that we're on something
+           // "Safari 2-ish".
+           d.isSafari = parseFloat(dav.split("Version/")[1]);
+           if (!d.isSafari || parseFloat(dav.substr(index + 7)) <= 419.3) {
+               d.isSafari = 2;
+           }
+       }
+
+       //>>excludeStart("webkitMobile", kwArgs.webkitMobile);
+
+       if (dua.indexOf("Gecko") >= 0 && !d.isKhtml && !d.isWebKit) {
+           d.isMozilla = d.isMoz = tv;
+       }
+       if (d.isMoz) {
+           //We really need to get away from _T. Consider a sane isGecko approach for the future.
+           d.isFF = parseFloat(dua.split("Firefox/")[1] || dua.split("Minefield/")[1] || dua.split("Shiretoko/")[1]) || undefined;
+       }
+
+       if (document.all && !d.isOpera && !d.isBlackBerry) {
+           d.isIE = parseFloat(dav.split("MSIE ")[1]) || undefined;
+           d.isIEMobile = parseFloat(dua.split("IEMobile")[1]);
+           //In cases where the page has an HTTP header or META tag with
+           //X-UA-Compatible, then it is in emulation mode, for a previous
+           //version. Make sure isIE reflects the desired version.
+           //document.documentMode of 5 means quirks mode.
+
+           /** @namespace document.documentMode */
+           if (d.isIE >= 8 && document.documentMode != 5) {
+               d.isIE = document.documentMode;
+           }
+       }
     };
 }
 
