@@ -226,7 +226,16 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 log.fine(_delegate.getTag() + " Component[" + id + "] Found, marking children for cleanup");
             }
+
+            // The call for mctx.markForDeletion(c) is always necessary, because
+            // component resource relocation occur as an effect of PostAddToViewEvent,
+            // so at this point it is unknown if the component was relocated or not.
             mctx.markForDeletion(c);
+
+            if (_relocatableResourceHandler != null)
+            {
+                mctx.markRelocatableResourceForDeletion(c);
+            }
         }
         else
         {
@@ -285,6 +294,11 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
             // hook method
             _delegate.onComponentCreated(ctx, c, parent);
+            
+            if (mctx.isRefreshingTransientBuild() && _relocatableResourceHandler != null)
+            {
+                mctx.markRelocatableResourceForDeletion(c);
+            }
         }
         c.pushComponentToEL(facesContext, c);
 
