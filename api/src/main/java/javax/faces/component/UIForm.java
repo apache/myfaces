@@ -55,7 +55,11 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     {
         StringBuilder bld = null;
         
-        if (!isPrependId())
+        // When prependId is set to false, it is necessary to append an unique
+        // prefix to ensure the generated ids are unique, but that's only necessary
+        // when no seed is provided. If a seed is provided, that one is already unique
+        // for all the view, so the following logic is not necessary.
+        if (!isPrependId() && seed==null )
         {
             bld = new StringBuilder();
             UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.findParentUniqueIdVendor(this);
