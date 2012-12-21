@@ -190,6 +190,10 @@ final class DefaultFacelet extends AbstractFacelet
                     // a trick with the template client.
                     myFaceletContext.removeComponentForDeletion(metadataFacet);
                 }
+                if (myFaceletContext.isRefreshingTransientBuild())
+                {
+                    myFaceletContext.finalizeRelocatableResourcesForDeletion((UIViewRoot) parent);
+                }
             }
             myFaceletContext.finalizeForDeletion(parent);
             this.markApplied(parent);

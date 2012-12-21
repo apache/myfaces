@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectHandler;
@@ -338,6 +339,29 @@ abstract public class FaceletCompositionContext
     public abstract void finalizeForDeletion(UIComponent component);
     
     public void removeComponentForDeletion(UIComponent component)
+    {
+    }
+
+    /**
+     * Marks the given resource for deletion. Is to be used for relocatable 
+     * components instead of {@link #markForDeletion(UIComponent)}.
+     *
+     * @since 2.0.17 2.1.11
+     * @param component
+     *            UIComponent to finalize
+     */
+    public void markRelocatableResourceForDeletion(UIComponent component)
+    {
+    }
+
+    /**
+     * Used to clean up all unused relocatable components on the root component.
+     *
+     * @since 2.0.17 2.1.11
+     * @param component
+     *            UIComponent to finalize (root component)
+     */
+    public void finalizeRelocatableResourcesForDeletion(UIViewRoot root)
     {
     }
 

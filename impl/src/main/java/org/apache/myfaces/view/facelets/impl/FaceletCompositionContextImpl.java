@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectHandler;
@@ -81,6 +82,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public static final String INIT_PARAM_WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE
             = "org.apache.myfaces.WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE";
     
+    private static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
+    
     private FacesContext _facesContext;
     
     private FaceletFactory _factory;
@@ -112,6 +115,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private Boolean _isWrapTagExceptionsAsContextAware;
 
     private List<Map<String, UIComponent>> _componentsMarkedForDeletion;
+    
+    private Map<String, UIComponent> _relocatableResourceForDeletion;
     
     private int _deletionLevel;
     
@@ -147,6 +152,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _factory = factory;
         _facesContext = facesContext;
         _componentsMarkedForDeletion = new ArrayList<Map<String,UIComponent>>();
+        _relocatableResourceForDeletion = new HashMap<String, UIComponent>();
         _deletionLevel = -1;
         _sectionUniqueIdCounter = new SectionUniqueIdCounter();
         //Cached at facelet view
@@ -237,6 +243,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _uniqueIdVendorStack = null;
         _validationGroupsStack = null;
         _componentsMarkedForDeletion = null;
+        _relocatableResourceForDeletion = null;
         _sectionUniqueIdCounter = null;
         _sectionUniqueNormalIdCounter = null;
         _sectionUniqueMetadataIdCounter = null;
@@ -909,6 +916,61 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         }
         
         decreaseComponentLevelMarkedForDeletion();
+    }
+    
+    @Override
+    public void markRelocatableResourceForDeletion(UIComponent component)
+    {
+        // The idea is keep track of the component resources that can be relocated
+        // to later check which resources were not refreshed and delete them.
+        String id = (String) component.getAttributes().get(ComponentSupport.MARK_CREATED);
+        if (id != null)
+        {
+            _relocatableResourceForDeletion.put(id, component);
+        }
+    }
+
+    @Override
+    public void finalizeRelocatableResourcesForDeletion(UIViewRoot root)
+    {
+        String id = null;
+        //Check facets 
+        if (root.getFacetCount() > 0)
+        {
+            Map<String, UIComponent> facets = root.getFacets();
+            for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
+            {
+                UIComponent fc = itr.next();
+                // It is necessary to check only the facets that are used as holder for
+                // component resources. To do that, the best way is check the ones that
+                // has id starting with "javax_faces_location_"
+                if (fc.getId() != null && fc.getId().startsWith(JAVAX_FACES_LOCATION_PREFIX))
+                {
+                    // Check all children with MARK_CREATED and if one is found, check if it was
+                    // refreshed by the algorithm.
+                    int childCount = fc.getChildCount();
+                    if (childCount > 0)
+                    {
+                        for (int i = 0; i < childCount; i ++)
+                        {
+                            UIComponent child = fc.getChildren().get(i);
+                            id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED); 
+                            if (id != null && finalizeRelocatableResourcesForDeletion(id) == null)
+                            {
+                                fc.getChildren().remove(i);
+                                i--;
+                                childCount--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private UIComponent finalizeRelocatableResourcesForDeletion(String id)
+    {
+        return _relocatableResourceForDeletion.remove(id); 
     }
     
     public String startComponentUniqueIdSection()
