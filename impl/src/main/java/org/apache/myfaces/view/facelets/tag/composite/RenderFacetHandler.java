@@ -114,8 +114,15 @@ public class RenderFacetHandler extends ComponentHandler
             }
             
             facetList.add(facetName);
+            
+            // Do not call super.apply(ctx, parent), because it forces component creation,
+            // and in this step it is not necessary. Also, it changes the order of 
+            // the generated ids.
         }
-        super.apply(ctx, parent);
+        else
+        {
+            super.apply(ctx, parent);
+        }
     }
 
     @Override
