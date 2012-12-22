@@ -48,7 +48,7 @@ public class RenderFacetHandler extends ComponentHandler
 {
     private static final Logger log = Logger.getLogger(RenderFacetHandler.class.getName());
     
-    public static String RENDER_FACET_USED = "org.apache.myfaces.RENDER_FACET_USED";
+    public static final String RENDER_FACET_USED = "org.apache.myfaces.RENDER_FACET_USED";
     
     /**
      * The name that identify the current facet.
@@ -84,7 +84,8 @@ public class RenderFacetHandler extends ComponentHandler
         {
             String facetName = _name.getValue(ctx);
             
-            UIComponent compositeBaseParent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            UIComponent compositeBaseParent
+                    = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             
             CompositeComponentBeanInfo beanInfo = 
                 (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
@@ -113,8 +114,15 @@ public class RenderFacetHandler extends ComponentHandler
             }
             
             facetList.add(facetName);
+            
+            // Do not call super.apply(ctx, parent), because it forces component creation,
+            // and in this step it is not necessary. Also, it changes the order of 
+            // the generated ids.
         }
-        super.apply(ctx, parent);
+        else
+        {
+            super.apply(ctx, parent);
+        }
     }
 
     @Override
@@ -123,7 +131,8 @@ public class RenderFacetHandler extends ComponentHandler
     {
         if (!((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {
-            UIComponent parentCompositeComponent = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+            UIComponent parentCompositeComponent
+                    = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             
             String facetName = _name.getValue(ctx);
     
