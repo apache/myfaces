@@ -41,7 +41,7 @@ if (!window.jsf) {
     _ls("#{resource['org.apache.myfaces.core.impl.util:_HtmlStripper.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.util:_OamSubmit.js']}", null, null, "UTF-8", false);
 
-    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_FinalizeableObj.js']}", null, null, "UTF-8", false);
+    //_ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_FinalizeableObj.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxUtils.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequestQueue.js']}", null, null, "UTF-8", false);
 
