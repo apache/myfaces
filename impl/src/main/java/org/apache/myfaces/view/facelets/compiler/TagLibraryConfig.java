@@ -32,7 +32,12 @@ import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResource
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.faces.FacesException;
@@ -41,7 +46,11 @@ import javax.faces.application.ResourceHandler;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.*;
+import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.FaceletHandler;
+import javax.faces.view.facelets.Tag;
+import javax.faces.view.facelets.TagConfig;
+import javax.faces.view.facelets.TagHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
