@@ -600,10 +600,8 @@ public final class TagLibraryConfig
 
         public void error(SAXParseException e) throws SAXException
         {
-            SAXException saxe = new SAXException("Error Handling [" + this.source + "@" + e.getLineNumber() + ","
-                    + e.getColumnNumber() + "]");
-            saxe.initCause(e);
-            throw saxe;
+            throw new SAXException(
+                    "Error Handling [" + this.source + "@" + e.getLineNumber() + "," + e.getColumnNumber() + "]", e);
         }
 
         public void setDocumentLocator(Locator locator)
