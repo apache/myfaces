@@ -105,7 +105,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                        HTML.BODY_ATTRIBUTES);
+                        HTML.BODY_ATTRIBUTES_WITHOUT_EVENTS);
                 CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
                         CommonPropertyUtils.getCommonPropertiesMarked(component), component);
             }
