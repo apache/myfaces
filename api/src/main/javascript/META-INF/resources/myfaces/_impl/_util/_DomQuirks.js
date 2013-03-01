@@ -468,12 +468,13 @@ if (_MF_SINGLTN) {
                 //ie supported events
                 if (this.IE_QUIRKS_EVENTS[attr]) {
                     if (this._Lang.isString(attr)) {
-                        //event resolves to window.event in ie
-                        var _t = this;
-                        node.setAttribute(attr, function () {
-                            //event implicitly used
-                            return _t._Lang.globalEval(val);
-                        });
+                        var c = document.body.appendChild(document.createElement('span'));
+                        try {
+                            c.innerHTML = '<span ' + attr + '="' + val + '"/>';
+                            node[attr] = c.firstChild[attr];
+                        } finally {
+                            document.body.removeChild(c);
+                        }
                     }
                 } else {
                     //unknown cases we try to catch them via standard setAttributes
