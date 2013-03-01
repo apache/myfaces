@@ -1026,7 +1026,16 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         if (!node.setAttribute) {
             return;
         }
-        node.setAttribute(attr, val);
+
+        if (attr === 'disabled') {
+            node.disabled = val === 'disabled' || val === 'true';
+        } else if (attr === 'checked') {
+            node.checked = val === 'checked' || val === 'on' || val === 'true';
+        } else if (attr == 'readonly') {
+            node.readOnly = val === 'readonly' || val === 'true';
+        } else {
+            node.setAttribute(attr, val);
+        }
     },
 
     /**
