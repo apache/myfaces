@@ -22,6 +22,7 @@ import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
+import org.apache.myfaces.resource.TempDirFileCacheResourceLoader;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.resource.BaseResourceHandlerSupport;
 import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
@@ -55,27 +56,57 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
         if (_resourceLoaders == null)
         {
             FacesContext facesContext = FacesContext.getCurrentInstance(); 
-            //The ExternalContextResourceLoader has precedence over
-            //ClassLoaderResourceLoader, so it goes first.
-            String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
-                    InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
-                    ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
-
-            if (facesContext.isProjectStage(ProjectStage.Development) ||
-                 !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
+            
+            if (TempDirFileCacheResourceLoader.isValidCreateTemporalFiles(facesContext))
             {
-                _resourceLoaders = new ResourceLoader[] {
-                        new ExternalContextResourceLoader(RESOURCES),
-                        new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES),
-                        new ClassLoaderResourceLoader(META_INF_RESOURCES)
-                };
+                //The ExternalContextResourceLoader has precedence over
+                //ClassLoaderResourceLoader, so it goes first.
+                String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
+                        InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
+                        ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
+
+                if (facesContext.isProjectStage(ProjectStage.Development) ||
+                     !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
+                {
+                    _resourceLoaders = new ResourceLoader[] {
+                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader(RESOURCES)),
+                            new TempDirFileCacheResourceLoader(
+                                             new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES)),
+                            new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
+                    };
+                }
+                else
+                {
+                    _resourceLoaders = new ResourceLoader[] {
+                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader(RESOURCES)),
+                            new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
+                    };
+                }
             }
             else
-            {
-                _resourceLoaders = new ResourceLoader[] {
-                        new ExternalContextResourceLoader(RESOURCES),
-                        new ClassLoaderResourceLoader(META_INF_RESOURCES)
-                };
+            {            
+                //The ExternalContextResourceLoader has precedence over
+                //ClassLoaderResourceLoader, so it goes first.
+                String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
+                        InternalClassLoaderResourceLoader.MYFACES_JSF_MODE,
+                        ResourceUtils.JSF_MYFACES_JSFJS_NORMAL);
+
+                if (facesContext.isProjectStage(ProjectStage.Development) ||
+                     !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
+                {
+                    _resourceLoaders = new ResourceLoader[] {
+                            new ExternalContextResourceLoader(RESOURCES),
+                            new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES),
+                            new ClassLoaderResourceLoader(META_INF_RESOURCES)
+                    };
+                }
+                else
+                {
+                    _resourceLoaders = new ResourceLoader[] {
+                            new ExternalContextResourceLoader(RESOURCES),
+                            new ClassLoaderResourceLoader(META_INF_RESOURCES)
+                    };
+                }
             }
         }
         return _resourceLoaders;

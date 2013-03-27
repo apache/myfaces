@@ -83,7 +83,7 @@ public class ResourceHandlerImpl extends ResourceHandler
      */
     @JSFWebConfigParam(since="2.1.10, 2.0.16", defaultValue="2048", group="resources")
     public static final String INIT_PARAM_RESOURCE_BUFFER_SIZE = "org.apache.myfaces.RESOURCE_BUFFER_SIZE";
-    private static final int INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
+    public static final int INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
     
     private Boolean _allowSlashLibraryName;
     private int _resourceBufferSize = -1;
