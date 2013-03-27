@@ -405,7 +405,10 @@ public class ResourceHandlerImpl extends ResourceHandler
                 {
                     int count = pipeBytes(in, out, buffer);
                     //set the content lenght
-                    httpServletResponse.setContentLength(count);
+                    if (!httpServletResponse.isCommitted())
+                    {
+                        httpServletResponse.setContentLength(count);
+                    }
                 }
                 finally
                 {
