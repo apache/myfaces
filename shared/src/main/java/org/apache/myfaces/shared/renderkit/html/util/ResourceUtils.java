@@ -189,7 +189,10 @@ public class ResourceUtils
 
         // Check if this is an ajax request. If so, we don't need to include it, because that was
         // already done and in the worst case, jsf script was already loaded on the page.
-        if (facesContext.getPartialViewContext() != null && facesContext.getPartialViewContext().isAjaxRequest())
+        if (facesContext.getPartialViewContext() != null && 
+                (facesContext.getPartialViewContext().isPartialRequest() ||
+                 facesContext.getPartialViewContext().isAjaxRequest() )
+            )
         {
             return;
         }
@@ -246,7 +249,10 @@ public class ResourceUtils
         //we only are allowed to do this on partial requests
         //because on normal requests a static viewroot still could mean that a full page refresh is performed
         //only in a ppr case this means we have the script already loaded and parsed
-        if (facesContext.getPartialViewContext() != null && facesContext.getPartialViewContext().isPartialRequest())
+        if (facesContext.getPartialViewContext() != null && 
+                (facesContext.getPartialViewContext().isPartialRequest() ||
+                 facesContext.getPartialViewContext().isAjaxRequest() )
+            )
         {
             return;
         }
