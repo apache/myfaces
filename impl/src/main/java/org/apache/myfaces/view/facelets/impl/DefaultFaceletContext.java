@@ -319,16 +319,19 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         if (uniqueIdFromIterator == null)
         {
             getFaceletCompositionContext().generateUniqueId(_uniqueIdBuilder);
-            _uniqueIdBuilder.append("_");
-            _uniqueIdBuilder.append(_prefix);
             // Since two different facelets are used to build the metadata, it is necessary
             // to trim the "base" part from the returned unique id, to ensure the components will be
             // refreshed properly. Note the "base" part is the one that allows to ensure
             // uniqueness between two different facelets with the same <f:metadata>, but since by 
             // spec view metadata sections cannot live on template client facelets, this case is
             // just not possible. 
+            // MYFACES-3709 It was also noticed that in some cases, the prefix should also
+            // be excluded from the id. The prefix is included if the metadata section is
+            // applied inside an included section (by ui:define and ui:insert for example).
             if (!getFaceletCompositionContext().isInMetadataSection())
             {
+                _uniqueIdBuilder.append("_");
+                _uniqueIdBuilder.append(_prefix);
                 _uniqueIdBuilder.append("_");
                 _uniqueIdBuilder.append(base);
             }
