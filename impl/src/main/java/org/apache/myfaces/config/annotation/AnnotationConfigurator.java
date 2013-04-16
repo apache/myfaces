@@ -225,6 +225,7 @@ public class AnnotationConfigurator
                     if (renderKit == null)
                     {
                         renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
+                        renderKit.setId(renderKitId);
                         facesConfig.addRenderKit(renderKit);
                     }
 
@@ -492,6 +493,7 @@ public class AnnotationConfigurator
                 if (renderKit == null)
                 {
                     renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
+                    renderKit.setId(renderKitId);
                     facesConfig.addRenderKit(renderKit);
                 }
 

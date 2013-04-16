@@ -83,10 +83,12 @@ public class ResourceHandlerImpl extends ResourceHandler
      */
     @JSFWebConfigParam(since="2.1.10, 2.0.16", defaultValue="2048", group="resources")
     public static final String INIT_PARAM_RESOURCE_BUFFER_SIZE = "org.apache.myfaces.RESOURCE_BUFFER_SIZE";
-    private static final int INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
+    public static final int INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
     
     private Boolean _allowSlashLibraryName;
     private int _resourceBufferSize = -1;
+    
+    private String[] _excludedResourceExtensions;
 
     @Override
     public Resource createResource(String resourceName)
@@ -403,7 +405,10 @@ public class ResourceHandlerImpl extends ResourceHandler
                 {
                     int count = pipeBytes(in, out, buffer);
                     //set the content lenght
-                    httpServletResponse.setContentLength(count);
+                    if (!httpServletResponse.isCommitted())
+                    {
+                        httpServletResponse.setContentLength(count);
+                    }
                 }
                 finally
                 {
@@ -542,20 +547,20 @@ public class ResourceHandlerImpl extends ResourceHandler
         return localePrefix;
     }
 
-    protected boolean isResourceIdentifierExcluded(FacesContext context,
-            String resourceIdentifier)
+    protected boolean isResourceIdentifierExcluded(FacesContext context, String resourceIdentifier)
     {
-        String value = context.getExternalContext().getInitParameter(
-                RESOURCE_EXCLUDES_PARAM_NAME);
-        if (value == null)
+        if (_excludedResourceExtensions == null)
         {
-            value = RESOURCE_EXCLUDES_DEFAULT_VALUE;
+            String value = WebConfigParamUtils.getStringInitParameter(context.getExternalContext(),
+                            RESOURCE_EXCLUDES_PARAM_NAME,
+                            RESOURCE_EXCLUDES_DEFAULT_VALUE);
+            
+            _excludedResourceExtensions = StringUtils.splitShortString(value, ' ');
         }
-        //TODO: optimize this code
-        String[] extensions = StringUtils.splitShortString(value, ' ');
-        for (int i = 0; i < extensions.length; i++)
+        
+        for (int i = 0; i < _excludedResourceExtensions.length; i++)
         {
-            if (resourceIdentifier.endsWith(extensions[i]))
+            if (resourceIdentifier.endsWith(_excludedResourceExtensions[i]))
             {
                 return true;
             }
