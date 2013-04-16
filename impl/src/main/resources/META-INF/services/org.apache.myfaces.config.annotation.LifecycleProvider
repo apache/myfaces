@@ -1,0 +1,2 @@
+org.apache.myfaces.config.annotation.TomcatAnnotationLifecycleProvider
+org.apache.myfaces.config.annotation.Tomcat7AnnotationLifecycleProvider

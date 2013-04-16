@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:test="http://testcomponent"
+				template="common.xhtml">
+	
+	<h2>Table Test Instructions</h2>
+	
+	<ol>
+		<li>The component should have dynamically created a HtmlDataTable</li>
+		<li>
+			The 'dynamic creation' code has subtle similarities to the 're-use same component on each row' code within HtmlDataTable. Specifically
+			if the 'dynamic creation' code is hooking in to 'setParent' then it might get triggered by HtmlDataTable
+		</li>
+		<li>Click 'POSTback'. There should be no error</li>
+	</ol>
+		
+	<h:messages/>
+		
+	<h:form id="mainForm">
+	
+		<test:tablecomponent id="component"/>
+
+		<br/>
+		
+		<h:commandButton id="postback" value="POSTback" action="#{testManagedBean.save}"/>
+		
+	</h:form>			
+
+</ui:composition>

@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!--
+    ** WARNING: This file was automatically generated. Do not edit it directly,
+    **          or you will lose your changes.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           version="1.0"
+           xml:lang="en"
+           elementFormDefault="qualified"
+           targetNamespace="$uri">
+
+$baseContent
+
+    <xs:annotation>
+        <xs:documentation>$description</xs:documentation>
+        <xs:documentation>display-name: $displayname</xs:documentation>
+#if($tlibversion)        
+        <xs:documentation>tlib-version: $tlibversion</xs:documentation>
+#end
+        <xs:documentation>short-name: $shortname</xs:documentation>
+    </xs:annotation>
+
+##    <!-- Component Tags -->
+#set ($componentList = ${model.getComponents()})
+#foreach( $component in $componentList )
+#if ($modelIds.contains($component.modelId) 
+    && ($component.name))
+#if ($utils.getTagPrefix($component.name) == $shortname)
+## Check if we don't have a facelet tag taking precedence over this description
+#if (! ${model.findFaceletTagByName($component.name)})
+    <xs:element name="$utils.getTagName($component.name)">
+        <xs:annotation>
+          <xs:documentation><![CDATA[$component.longDescription]]></xs:documentation>
+#if ($component.tagClass)          
+          <xs:documentation>tag-class: $component.tagClass</xs:documentation>
+#end
+#if ($component.bodyContent)
+          <xs:documentation>body-content: $component.bodyContent</xs:documentation>
+#else
+          <xs:documentation>body-content: JSP</xs:documentation>
+#end
+        </xs:annotation>
+
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>     
+#set ($propertyList = ${component.propertyList})
+#foreach( $property in $propertyList )
+#if (!$property.isTagExcluded() && $property.jspName != "xmlns")
+          <xs:attribute name="$property.jspName" #if ($property.isRequired())use="required"#end>
+            <xs:annotation>
+#if ($property.longDescription)
+              <xs:documentation><![CDATA[$property.longDescription]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[]]></xs:documentation>
+#end
+#if ($property.isMethodExpression() || $property.isMethodBinding())
+#if ($property.getMethodBindingSignature())
+#set ($sig = $property.getMethodBindingSignature())
+              <xs:documentation><![CDATA[Deferred Method Signature: $sig.returnType myMethod( $sig.parameterTypesAsString )]]></xs:documentation>
+#else
+## This is a very special case. If a property is MethodBinding or MethodExpression
+## this should have a signature. If not, for allow multiple MethodBinding
+## simulate a ValueExpression and write a custom code like in 
+## org.apache.myfaces.custom.suggestajax.AbstractSuggestAjaxTag
+              <xs:documentation><![CDATA[]]></xs:documentation>
+#end
+#elseif ($property.isLiteralOnly())
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+#else
+#if ( "$!property.isRtexprvalue()" == "")
+#set ($type = $utils.getClassFromFullClass($property.className))
+#if($property.deferredValueType)
+              <xs:documentation><![CDATA[Deferred Value Type: $property.deferredValueType]]></xs:documentation>
+#elseif ($type == "String")
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[Deferred Value Type: $property.className]]></xs:documentation>
+#end
+#else
+              <xs:documentation><![CDATA[rtexprvalue: $property.isRtexprvalue().booleanValue()]]></xs:documentation>
+#end
+#end
+            </xs:annotation>
+          </xs:attribute>
+#end
+#end
+        </xs:complexType>
+    </xs:element>
+#end
+#end
+#end
+#end
+##   <!-- Converter tags -->
+#set ($componentList = ${model.getConverters()})
+#foreach( $component in $componentList )
+#if ($modelIds.contains($component.modelId) 
+    && ($component.name))
+#if ($utils.getTagPrefix($component.name) == $shortname)
+## Check if we don't have a facelet tag taking precedence over this description
+#if (! ${model.findFaceletTagByName($component.name)}) 
+    <xs:element name="$utils.getTagName($component.name)">
+        <xs:annotation>   
+          <xs:documentation><![CDATA[$component.longDescription]]></xs:documentation>
+          <xs:documentation>tag-class: $component.tagClass</xs:documentation>
+#if ($component.bodyContent)
+          <xs:documentation>body-content: $component.bodyContent</xs:documentation>
+#else
+          <xs:documentation>body-content: JSP</xs:documentation>
+#end
+        </xs:annotation>
+     
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+#set ($propertyList = ${component.propertyList})
+#foreach( $property in $propertyList )
+#if (!$property.isTagExcluded())
+          <xs:attribute name="$property.name" #if ($property.isRequired())use="required"#end>
+            <xs:annotation>
+#if ($property.longDescription)
+              <xs:documentation><![CDATA[$property.longDescription]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[]]></xs:documentation>
+#end
+#if ($property.isLiteralOnly())
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+#else
+#set ($type = $utils.getClassFromFullClass($property.className))
+#if($property.deferredValueType)
+              <xs:documentation><![CDATA[Deferred Value Type: $property.deferredValueType]]></xs:documentation>             
+#elseif ($type == "String")
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[Deferred Value Type: $property.className]]></xs:documentation>
+#end
+#end
+            </xs:annotation>
+          </xs:attribute>
+#end
+#end
+        </xs:complexType>
+    </xs:element>
+#end
+#end
+#end
+#end
+##   <!-- Validator tags -->
+#set ($componentList = ${model.getValidators()})
+#foreach( $component in $componentList )
+#if ($modelIds.contains($component.modelId) 
+    && ($component.name))
+#if ($utils.getTagPrefix($component.name) == $shortname)
+## Check if we don't have a facelet tag taking precedence over this description
+#if (! ${model.findFaceletTagByName($component.name)})
+    <xs:element name="$utils.getTagName($component.name)">
+        <xs:annotation>
+          <xs:documentation><![CDATA[$component.longDescription]]></xs:documentation>
+          <xs:documentation>tag-class: $component.tagClass</xs:documentation>
+#if ($component.bodyContent)
+          <xs:documentation>body-content: $component.bodyContent</xs:documentation>
+#else
+          <xs:documentation>body-content: JSP</xs:documentation>
+#end
+        </xs:annotation>
+     
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+#set ($propertyList = ${component.propertyList})
+#foreach( $property in $propertyList )
+#if (!$property.isTagExcluded())
+          <xs:attribute name="$property.name" #if ($property.isRequired())use="required"#end>
+            <xs:annotation>
+#if ($property.longDescription)
+              <xs:documentation><![CDATA[$property.longDescription]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[]]></xs:documentation>
+#end
+#if ($property.isLiteralOnly())
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+#else
+#set ($type = $utils.getClassFromFullClass($property.className))
+#if($property.deferredValueType)
+              <xs:documentation><![CDATA[Deferred Value Type: $property.deferredValueType]]></xs:documentation>             
+#elseif ($type == "String")
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[Deferred Value Type: $property.className]]></xs:documentation>
+#end
+#end
+            </xs:annotation>
+          </xs:attribute>
+#end
+#end
+        </xs:complexType>
+    </xs:element>
+#end
+#end
+#end
+#end
+##   <!-- Single Tags -->
+#set ($tagList = $model.getTags())
+#foreach( $tag in $tagList )
+#if ($modelIds.contains($tag.modelId) && ($tag.name))
+#if ($utils.getTagPrefix($tag.name) == $shortname)
+## Check if we don't have a facelet tag taking precedence over this description
+#if (! ${model.findFaceletTagByName($tag.name)})
+    <xs:element name="$utils.getTagName($tag.name)">
+        <xs:annotation>
+#if ($tag.longDescription)
+              <xs:documentation><![CDATA[$tag.longDescription]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[]]></xs:documentation>
+#end
+              <xs:documentation>tag-class: $tag.className</xs:documentation>
+#if ($component.bodyContent)
+          <xs:documentation>body-content: $tag.bodyContent</xs:documentation>
+#else
+          <xs:documentation>body-content: JSP</xs:documentation>
+#end
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+#set ($attributeList = ${tag.attributeList})
+#foreach( $attribute in $attributeList )
+          <xs:attribute name="$attribute.name" #if ($attribute.isRequired())use="required"#end>
+            <xs:annotation>
+#if ($attribute.longDescription)
+              <xs:documentation><![CDATA[$attribute.longDescription]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[]]></xs:documentation>
+#end
+#set ($type = $utils.getClassFromFullClass($attribute.className))
+#if ($type == "MethodExpression")
+              <xs:documentation><![CDATA[Deferred Method Signature: ${attribute.deferredMethodSignature}]]></xs:documentation>
+#elseif ($type == "ValueExpression")
+#if($attribute.deferredValueType)
+              <xs:documentation><![CDATA[Deferred Value Type: $attribute.deferredValueType]]></xs:documentation>
+#end
+#else
+              <xs:documentation><![CDATA[rtexprvalue: $attribute.isRtexprvalue()]]></xs:documentation>
+#if ($attribute.className)
+              <xs:documentation><![CDATA[Deferred Value Type: $attribute.className]]></xs:documentation>         
+#else
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+#end
+#end
+            </xs:annotation>
+          </xs:attribute>
+#end
+        </xs:complexType>
+    </xs:element>
+#end
+#end
+#end
+#end
+
+##   <!-- Facelets Tags -->
+#set ($tagList = $model.getFaceletTags())
+#foreach( $tag in $tagList )
+#if ($modelIds.contains($tag.modelId) && ($tag.name))
+#if ($utils.getTagPrefix($tag.name) == $shortname)
+    <xs:element name="$utils.getTagName($tag.name)">
+        <xs:annotation>
+#if ($tag.longDescription)
+              <xs:documentation><![CDATA[$tag.longDescription]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[]]></xs:documentation>
+#end
+              <xs:documentation>tag-class: $tag.className</xs:documentation>
+#if ($component.bodyContent)
+          <xs:documentation>body-content: $tag.bodyContent</xs:documentation>
+#else
+          <xs:documentation>body-content: JSP</xs:documentation>
+#end
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+#set ($attributeList = ${tag.attributeList})
+#foreach( $attribute in $attributeList )
+          <xs:attribute name="$attribute.name" #if ($attribute.isRequired())use="required"#end>
+            <xs:annotation>
+#if ($attribute.longDescription)
+              <xs:documentation><![CDATA[$attribute.longDescription]]></xs:documentation>
+#else
+              <xs:documentation><![CDATA[]]></xs:documentation>
+#end
+#set ($type = $utils.getClassFromFullClass($attribute.className))
+#if ($type == "MethodExpression")
+              <xs:documentation><![CDATA[Deferred Method Signature: ${attribute.deferredMethodSignature}]]></xs:documentation>
+#elseif ($type == "ValueExpression")
+#if($attribute.deferredValueType)
+              <xs:documentation><![CDATA[Deferred Value Type: $attribute.deferredValueType]]></xs:documentation>
+#end
+#else
+              <xs:documentation><![CDATA[rtexprvalue: $attribute.isRtexprvalue()]]></xs:documentation>
+#if ($attribute.className)         
+              <xs:documentation><![CDATA[Deferred Value Type: $attribute.className]]></xs:documentation>         
+#else
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+#end
+#end
+            </xs:annotation>
+          </xs:attribute>
+#end
+        </xs:complexType>
+    </xs:element>
+#end
+#end
+#end
+
+</xs:schema>

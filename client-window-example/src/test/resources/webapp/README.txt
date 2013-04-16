@@ -1,0 +1,1 @@
+This folder is just a hard copy of the files on src/main/webapp, to make them available on testing time using junit. Please do not edit anything here or you will lose the changes.

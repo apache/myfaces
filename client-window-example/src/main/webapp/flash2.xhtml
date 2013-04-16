@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:h="http://java.sun.com/jsf/html"
+ xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+ >
+<body>
+<ui:composition template="/META-INF/templates/example.xhtml">
+  <ui:define name="container">
+    <h1>Myfaces Examples</h1>
+    <h:form id="mainForm">
+      <h:outputText value="Flash 2"/>
+      <c:set target="${flash}" property="testProperty2" value="fooValue2" />
+      <h:panelGrid columns="2">
+        <h:outputLabel value="testProperty1" for="tp1" />
+        <h:outputText id="tp1" value="#{flash.testProperty1}"/>
+        <h:outputLabel value="testProperty2" for="tp2" />
+        <h:outputText id="tp2" value="#{flash.testProperty2}"/>
+        <h:commandButton value="Go to flash3.jsp" action="#{flashBean.gotoFlash3}"/>
+        <h:messages showDetail="true" showSummary="false"/>
+      </h:panelGrid>
+    </h:form>
+  </ui:define>
+</ui:composition>
+</body>
+</html>

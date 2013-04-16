@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <artifactId>myfaces-core-module</artifactId>
+    <groupId>org.apache.myfaces.core</groupId>
+    <version>2.2.0-SNAPSHOT</version>
+  </parent>
+    <groupId>org.apache.myfaces.example.clientWindow</groupId>
+    <artifactId>client-window-example</artifactId>
+    <packaging>war</packaging>
+    <name>client-window-example</name>
+    <description>A custom project used to debug MyFaces Core 2.2</description>
+    <url>http://www.myorganization.org</url>
+
+    <!-- Instructions 
+      This project uses myfaces-test and myfaces-impl test jar
+      to make easier create specific tests for myfaces core that
+      later could be included into myfaces codebase.
+      - Run using jetty 
+          mvn clean jetty:run
+          mvn clean -Dcontainer=jetty-mojarra jetty:run
+          Set your browser to http://localhost:8080/client-window-example
+      - Run using tomcat
+          mvn clean -Dcontainer=tomcat7 tomcat:run
+          Set your browser to http://localhost:8080/client-window-example
+      - Run war using tomcat
+          mvn clean -Dcontainer=tomcat7 tomcat:run-war
+          Set your browser to http://localhost:8080/client-window-example
+      - Run war using jetty (remove <webApp> config inside plugin config first)
+          mvn clean jetty:run-war
+          mvn clean -Dcontainer=jetty-mojarra jetty:run-war
+          Set your browser to http://localhost:8080
+      - Build war and bundle JSF jars 
+          mvn clean -Pbundle-myfaces install
+          mvn clean -Pbundle-mojarra install
+      - Run using tomcat 6.0
+          mvn clean -Dcontainer=tomcat tomcat:run-war
+      - Run using tomcat 7.0 through cargo
+          mvn clean -Dcontainer=tomcat7 install cargo:run
+     -->
+
+    <properties>
+        <jsf-myfaces.version>${project.version}</jsf-myfaces.version>
+        <jsf-mojarra.version>2.1.7</jsf-mojarra.version>        
+        <jetty.maven.plugin.version>8.1.3.v20120416</jetty.maven.plugin.version>
+        <cargo.version>1.1.1</cargo.version>
+    </properties>
+
+    <build>
+        <finalName>client-window-example</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <!-- The following plugin is used to pack everything inside
+                 webapp folder and make it available on test jar under
+                 the path "webapp". This allows create junit tests over
+                 those files like for example, check if all facelets
+                 compile, if a view is correctly built or if render 
+                 what is expected. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-webapp-folder-as-test</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>add-test-resource</goal>
+                        </goals>
+                        <configuration>
+                          <resources>
+                            <resource>
+                                <directory>src/main/webapp</directory>
+                                <targetPath>webapp</targetPath>
+                            </resource>
+                          </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+        </plugins>
+    </build>
+
+    <!-- Project dependencies -->
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-servlet_3.0_spec</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-el_2.2_spec</artifactId>
+            <version>1.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-annotation_1.0_spec</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- JSF API: Add here as provided dependency and then add it
+             on jetty-maven-plugin as compile/runtime dependency.
+             The same goes for other JSF libraries. -->
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+            <version>${jsf-myfaces.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-impl</artifactId>
+            <version>${jsf-myfaces.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.myfaces.test</groupId>
+            <artifactId>myfaces-test20</artifactId>
+            <version>1.0.4</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-impl</artifactId>
+            <version>${jsf-myfaces.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-impl</artifactId>
+            <version>${jsf-myfaces.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>bundle-myfaces</id>
+            <activation>
+                <property>
+                    <name>jsf</name>
+                    <value>myfaces</value>
+                </property>
+            </activation>
+            <!-- Include MyFaces jars into the war -->
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${jsf-myfaces.version}</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${jsf-myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <!-- Plugin embedded jetty 8 container. 
+                 Just running use:
+                 mvn clean jetty:run
+            -->
+            <!-- For debugging use (attach debugger port 8000):
+                 mvnDebug clean jetty:run
+            -->
+            <id>jettyConfig</id>
+            <activation>
+                <property>
+                    <name>!container</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!--This plugin allows to run the war using mvn jetty:run -->
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>${jetty.maven.plugin.version}</version>
+                        <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <!-- optional to use the ecj compiler -->
+                                    <name>org.apache.jasper.compiler.disablejsr199</name>
+                                    <value>true</value>
+                                </systemProperty>
+                            </systemProperties>
+                            <webApp>
+                                <contextPath>/${artifactId}</contextPath>
+                            </webApp>
+                            <scanIntervalSeconds>5</scanIntervalSeconds>
+                        </configuration>
+                        <dependencies>
+                           <!-- Tld scanning only works when JSF is included
+                                as container dependency. Add other jsf libraries
+                                here, so jetty:run goal can find and process them -->
+                            <dependency>
+                                <groupId>org.apache.myfaces.core</groupId>
+                                <artifactId>myfaces-api</artifactId>
+                                <version>${jsf-myfaces.version}</version>
+                                <scope>compile</scope>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.myfaces.core</groupId>
+                                <artifactId>myfaces-impl</artifactId>
+                                <version>${jsf-myfaces.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>bundle-mojarra</id>
+            <activation>
+                <property>
+                    <name>jsf</name>
+                    <value>mojarra</value>
+                </property>
+            </activation>
+            <!-- Include Mojarra jars into the war -->
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                    <version>${jsf-mojarra.version}</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.faces</groupId>
+                    <artifactId>jsf-impl</artifactId>
+                    <version>${jsf-mojarra.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <repositories>
+                <repository>
+                    <id>java.net</id>
+                    <url>http://download.java.net/maven/2</url>
+                </repository>
+            </repositories>
+        </profile>
+
+        <profile>
+            <!-- Plugin embedded jetty 8 container. 
+                 Just running use:
+                 mvn clean -Dcontainer=jetty-mojarra jetty:run 
+            -->
+            <!-- For debugging use (attach debugger port 8000):
+                 mvn clean -Dcontainer=jetty-mojarra jetty:run 
+            -->
+            <id>jettyConfig-mojarra</id>
+            <activation>
+                <property>
+                    <name>container</name>
+                    <value>jetty-mojarra</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!--This plugin allows to run the war using mvn jetty:run -->
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>${jetty.maven.plugin.version}</version>
+                        <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <!-- optional to use the ecj compiler -->
+                                    <name>org.apache.jasper.compiler.disablejsr199</name>
+                                    <value>true</value>
+                                </systemProperty>
+                            </systemProperties>
+                            <webApp>
+                                <contextPath>/${artifactId}</contextPath>
+                            </webApp>
+                            <scanIntervalSeconds>5</scanIntervalSeconds>
+                        </configuration>
+                        <dependencies>
+                           <!-- Tld scanning only works when JSF is included
+                                as container dependency. Add other jsf libraries
+                                here, so jetty:run goal can find and process them -->
+                           <dependency>
+                               <groupId>com.sun.faces</groupId>
+                               <artifactId>jsf-api</artifactId>
+                               <version>${jsf-mojarra.version}</version>
+                               <scope>compile</scope>
+                           </dependency>
+                           <dependency>
+                               <groupId>com.sun.faces</groupId>
+                               <artifactId>jsf-impl</artifactId>
+                               <version>${jsf-mojarra.version}</version>
+                               <scope>runtime</scope>
+                           </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+            <repositories>
+                <repository>
+                    <id>java.net</id>
+                    <url>http://download.java.net/maven/2</url>
+                </repository>
+            </repositories>
+        </profile>
+        
+        <profile>
+            <id>maven-tomcat7</id>
+            <activation>
+                <property>
+                    <name>container</name>
+                    <value>tomcat7</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                      <groupId>org.apache.tomcat.maven</groupId>
+                      <artifactId>tomcat7-maven-plugin</artifactId>
+                      <version>2.0-beta-1</version>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${jsf-myfaces.version}</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${jsf-myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <!-- Plugin embedded tomcat 6 container. 
+                 Just running use:
+                 mvn clean -Dcontainer=tomcat tomcat:run-war 
+            -->
+            <!-- For debugging use (attach debugger port 8000):
+                 mvnDebug clean -Dcontainer=tomcat tomcat:run-war 
+            -->
+            <id>tomcat</id>
+            <activation>
+                <property>
+                    <name>container</name>
+                    <value>tomcat</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                      <groupId>org.codehaus.mojo</groupId>
+                      <artifactId>tomcat-maven-plugin</artifactId>
+                      <version>1.1</version>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${jsf-myfaces.version}</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${jsf-myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        
+        <profile>
+            <!-- Installed tomcat 7 running war file through cargo 
+                 Attach debugger on port 8000:
+                 mvn clean -Dcontainer=tomcat7 install cargo:run -->
+            <id>cargo-tomcat7</id>
+            <activation>
+                <property>
+                    <name>container</name>
+                    <value>tomcat7</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                      <groupId>org.codehaus.cargo</groupId>
+                      <artifactId>cargo-maven2-plugin</artifactId>
+                      <version>${cargo.version}</version>
+                      <configuration>
+                        <wait>true</wait>
+                        <properties>
+                            <cargo.servlet.port>8080</cargo.servlet.port>
+                            <cargo.jvmargs>-Xdebug
+                              -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000
+                              -Xnoagent
+                              -Djava.compiler=NONE</cargo.jvmargs>
+                        </properties>
+                        <container>
+                          <containerId>tomcat7x</containerId>
+                          <zipUrlInstaller>
+                            <url>http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.25/bin/apache-tomcat-7.0.25.zip</url>
+                            <!-- 
+                            <installDir>${basedir}/tomcat7x</installDir>
+                             -->
+                            <downloadDir>${basedir}/downloads</downloadDir>
+                            <extractDir>${basedir}/tomcat7x</extractDir>
+                          </zipUrlInstaller>
+                        </container>
+                        <configuration>
+                          <home>${basedir}/target/tomcat7x</home>
+                          <properties>
+                            <cargo.jvmargs>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 -Xnoagent -Djava.compiler=NONE</cargo.jvmargs>
+                          </properties>
+                        </configuration>
+                      </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-api</artifactId>
+                    <version>${jsf-myfaces.version}</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.myfaces.core</groupId>
+                    <artifactId>myfaces-impl</artifactId>
+                    <version>${jsf-myfaces.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        
+    </profiles>
+
+</project>

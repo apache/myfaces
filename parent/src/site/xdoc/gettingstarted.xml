@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation Maven//EN" "http://maven.apache.org/dtd/maven-xdoc.dtd">
+
+<document>
+  <body>
+    <section name="Viewing Examples Application">
+       <p><b>NOTE: See the updated documentation in our 
+       <a href="https://cwiki.apache.org/confluence/display/MYFACES">Confluence Wiki</a></b>
+       </p>
+       <p>
+       Your first step with Apache MyFaces Core should be to have a look at our
+       examples application. You can do that by going to our working distribution
+       on <a href="http://www.irian.at/myfaces.jsf">http://www.irian.at/myfaces.jsf</a>
+       or by deploying the examples application yourself. All you need to do to
+       get up and running is to follow the steps below!
+      </p>
+    </section>
+    <section name="What you need to run the Examples Application locally">
+      <ul>
+        <li>
+        A suitable servlet engine, eg Tomcat 6.x. Download Tomcat
+        <a href="http://jakarta.apache.org/tomcat/index.html">here</a>.
+        </li>
+        <li>
+        A precompiled copy of the MyFaces examples. Latest milestone webapp
+        archive (myfaces-X.X.X-examples.zip or myfaces-X.X.X-examples.tgz) is 
+        <a href="http://myfaces.apache.org/download.html">here</a>.</li>
+      </ul>
+    </section>
+    <section name="Installing and Running the Examples">
+      <ul>
+        <li>
+        Unpack the MyFaces examples archive myfaces-X.X.X-examples.zip (or
+        myfaces-X.X.X-examples.tgz) to a directory of your choice.
+        </li>
+        <li>
+        Remove any previous MyFaces webapps from your Tomcat installation 
+        and clean up your Tomcat work dir. Also make sure that there is no
+        jsf-api.jar or jsf-impl.jar (i.e. Suns API and implementation) in
+        the classpath or in one of Tomcat's lib directories (common/lib or shared/lib).
+        </li>
+        <li>
+        Copy the file simple.war (or any of the other example war-files)
+        to the webapps dir of your Tomcat installation directory - and
+        check once more that there is no old myfaces-examples directory there ;-)
+        </li>
+        <li>Start Tomcat, if its not already running.</li>
+        <li>
+        Start your browser and enjoy it at
+        <a href="http://localhost:8080/myfaces-examples">http://localhost:8080/simple</a>
+        </li>
+      </ul>
+    </section>
+    <section name="Installing and Running Sun JSF-RI Samples with MyFaces Core">
+      <p>
+      Because MyFaces Core is an implementation of the JSF standard, and Sun's examples
+      use only standard JSF features, the examples provided with the Sun RI can also
+      run on MyFaces Core.
+      </p>
+      <p>
+      See <a href="risamples.html">the detailed instructions</a>.
+      </p>
+    </section>
+    <section name="Using MyFaces Core JSF 2.0 for your own web application">
+      <p>
+      First, check the <a href="../compatibility.html">compatibility list</a> 
+      to find out if your servlet container is supported.
+      </p>
+      <p>
+      To create a new webapp, one easy way is to take the myfaces-X.X.X-examples.zip
+      (see instructions above), and extract the blank.war file. This contains all the
+      necessary libraries already, plus the necessary directory structure for a 
+      basic JSF webapp.
+      </p>
+      <p>
+      Alternatively, download the latest Myfaces Core tarfile. This will contain all
+      the necessary dependencies. 
+      </p>
+      <p>
+      After you have downloaded the necessary packages and setup your project hierarchy, do this:
+      <ul>
+        <li>
+          Make sure that there is no jsf-api.jar (i.e. Suns API implementation)
+          in the classpath or in one of your container's shared lib directories 
+          (e.g. common/lib or shared/lib for Tomcat).
+        </li>
+        <li>Configure your webapp's web.xml file (see conf/web.xml for example and documentation)</li>
+        <li>Add the following lines to your JSPs:</li>
+        <ul>
+          <li><source xml:space="preserve">&lt;%@ taglib uri="http://java.sun.com/jsf/html" prefix="h"%&gt;</source></li>
+          <li><source xml:space="preserve">&lt;%@ taglib uri="http://java.sun.com/jsf/core" prefix="f"%&gt;</source></li>
+        </ul>
+      </ul>
+      </p>
+    </section>
+    <section name="Tutorials for getting started with JSF">
+      <ul>
+        <li><a href="http://www.coreservlets.com/JSF-Tutorial/"> Core-Servlets JSF Tutorial by Marty Hall</a></li>
+      </ul>
+    </section>
+  </body>
+  <!--
+  <footer>
+    <legal>Java, J2EE, and JCP are trademarks or registered trademarks of Sun Microsystems, Inc. in the United States and other countries.<br />
+    &copy; 2004, Apache Software Foundation
+    </legal>
+  </footer>
+  -->
+</document>

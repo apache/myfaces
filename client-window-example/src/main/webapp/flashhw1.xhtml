@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:h="http://java.sun.com/jsf/html"
+ xmlns:f="http://java.sun.com/jsf/core"
+ xmlns:ui="http://java.sun.com/jsf/facelets"
+ >
+<body>
+<ui:composition template="/META-INF/templates/example.xhtml">
+  <ui:define name="container">
+    <h1>Myfaces Examples</h1>
+    <h:form id="mainForm">
+      <h:panelGrid columns="2">
+        <h:outputLabel for="name" value="Please enter your name" />
+        <h:inputText id="name" value="#{helloWorldFlashBean.name}" required="true"/>
+        <h:outputLabel for="pname" value="Previous name" />
+        <h:outputText id="pname" value="#{flash.name}"/>
+        <h:commandButton value="Press me" action="#{helloWorldFlashBean.sendPutNow}"/>
+        <h:messages showDetail="true" showSummary="false"/>
+      </h:panelGrid>
+    </h:form>
+  </ui:define>
+</ui:composition>
+</body>
+</html>

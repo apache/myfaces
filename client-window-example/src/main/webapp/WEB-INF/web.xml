@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+        version="2.5">
+
+    <description>MyProject web.xml</description>
+
+    <!-- JSF standard parameters -->
+    <context-param>
+        <description>Project stage for the application (new in 2.0). Expects one of
+            the following values: Development, Production, SystemTest, UnitTest
+        </description>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            If this parameter is set to true and the submitted value of a component is
+            the empty string, the submitted value will be set to null
+        </description>
+        <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>Define the state method to be used. There are two different options 
+            defined by the specification: 'client' and 'server' state.</description>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.CLIENT_WINDOW_MODE</param-name>
+        <param-value>default</param-value>
+    </context-param>
+
+    <!-- MyFaces specific parameters -->
+    <!-- See http://myfaces.apache.org/docindex.html for documentation 
+         about MyFaces Projects -->
+    <!-- See http://myfaces.apache.org/core21/myfaces-impl/webconfig.html 
+         for an updated list of web config parameters for MyFaces Core 
+         See http://wiki.apache.org/myfaces/Secure_Your_Application
+         for instructions about how to secure your web application -->
+    <context-param>
+        <description>Only applicable if state saving method is "server" (= default).
+            Defines the amount (default = 20) of the latest views are stored in session.</description>
+        <param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
+        <param-value>2</param-value>
+    </context-param>
+    
+    <context-param>
+        <param-name>org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION</param-name>
+        <param-value>1</param-value>
+    </context-param>
+    <context-param>
+        <description>Only applicable if state saving method is "server" (= default).
+            If true (default) the state will be serialized to a byte stream before it
+            is written to the session.
+            If false the state will not be serialized to a byte stream.</description>
+        <param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <description>Only applicable if state saving method is "server" (= default) and if
+            org.apache.myfaces.SERIALIZE_STATE_IN_SESSION is true (= default)
+            If true (default) the serialized state will be compressed before it
+            is written to the session. If false the state will not be compressed.</description>
+        <param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <description>Defines which packages to scan for beans, separated by commas.
+        Useful for when using maven and jetty:run (version 6) or tomcat:run
+        </description>
+        <param-name>org.apache.myfaces.annotation.SCAN_PACKAGES</param-name>
+        <param-value>org.apache.myfaces.example</param-value>
+    </context-param>
+
+    <!-- Faces Servlet -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- Faces Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+
+    <!-- Welcome files -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>

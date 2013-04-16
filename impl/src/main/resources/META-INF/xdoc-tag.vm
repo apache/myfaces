@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+#*
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*###
+<document>
+ <properties>
+  <title>&lt;${tag.name}&gt;</title>
+ </properties>
+ <body>
+  <section name="Summary">
+  <p>
+   <b>Tag name:</b> &lt;${tag.name}&gt;
+   <br/>
+#set ($javadocPath = "../apidocs/" + $tag.getClassName().replace('.', '/') )
+   <b>Tag class:</b> <a href="${tagdocUtils.platformAgnosticPath( $javadocPath )}.html">${tag.className}</a>
+   <br/>
+#if ($faceletTag)
+   <b>Facelet Tag Handler:</b> <a href="${tagdocUtils.platformAgnosticPath( $javadocPath )}.html">${faceletTag.className}</a>
+   <br/>  
+#end
+${tag.longDescription}   
+  </p>
+  </section>
+#if ($baseContent)
+$baseContent
+#end
+#set ($attributeList = ${tagdocUtils.getSortedAttributeList($tag)})
+#if ($attributeList.size() != 0)  
+  <section name="Attributes">
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Required</th>
+  <th>Description</th>
+ </tr>
+#foreach( $attribute in $attributeList )
+#if (!$attribute.isTagExcluded())
+ <tr>
+  <td>$attribute.name</td>
+#set ($type = ${tagdocUtils.getDisplayType($tag.className,$attribute.name,$attribute.className)})
+  <td>$type</td>
+  <td>$attribute.isRequired()</td>
+#if ($attribute.longDescription)
+  <td>$attribute.longDescription</td>
+#else
+  <td></td>
+#end
+ </tr>
+#end
+#end
+</table>
+  </section>
+#end
+#if ($faceletTag)
+#set ($attributeList = ${tagdocUtils.getSortedAttributeList($faceletTag)})
+#if ($attributeList.size() != 0)  
+  <section name="Facelets Attributes">
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Required</th>
+  <th>Description</th>
+ </tr>
+#foreach( $attribute in $attributeList )
+#if (!$attribute.isTagExcluded() && $attribute.isFaceletsOnly())
+ <tr>
+  <td>$attribute.name</td>
+#if ($property.className)
+#set ($type = ${tagdocUtils.getDisplayType($faceletTag.className,$attribute.name,$attribute.className)})
+#else
+#set ($type = ${tagdocUtils.getDisplayType($faceletTag.className,$attribute.name,"")})
+#end
+  <td>$type</td>
+  <td>$attribute.isRequired()</td>
+#if ($attribute.longDescription)
+  <td>$attribute.longDescription</td>
+#else
+  <td></td>
+#end
+ </tr>
+#end
+#end
+</table>
+  </section>
+#end
+#end
+ </body> 
+</document>
