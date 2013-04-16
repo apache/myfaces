@@ -34,7 +34,7 @@
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
     <version>2.2.0-SNAPSHOT</version>
-    <url>http://myfaces.apache.org/core21</url>
+    <url>http://myfaces.apache.org/core22</url>
 
     <issueManagement>
         <system>jira</system>
