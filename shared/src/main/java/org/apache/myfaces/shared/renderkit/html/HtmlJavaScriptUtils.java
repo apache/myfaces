@@ -53,6 +53,13 @@ public final class HtmlJavaScriptUtils
     public static void renderFormSubmitScript(FacesContext facesContext)
             throws IOException
     {
+        if (facesContext.getPartialViewContext() != null && 
+                (facesContext.getPartialViewContext().isPartialRequest() ||
+                 facesContext.getPartialViewContext().isAjaxRequest() )
+            )
+        {
+            return;
+        }
 
         Map map = facesContext.getExternalContext().getRequestMap();
         Boolean firstScript = (Boolean) map.get(FIRST_SUBMIT_SCRIPT_ON_PAGE);
