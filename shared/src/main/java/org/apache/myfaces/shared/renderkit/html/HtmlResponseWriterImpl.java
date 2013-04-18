@@ -1015,7 +1015,7 @@ public class HtmlResponseWriterImpl
         closeStartTagIfNecessary();
         // empty string commonly used to force the start tag to be closed.
         // in such case, do not call down the writer chain
-        if (str.length() > 0)
+        if (str != null && str.length() > 0)
         {
             // Don't bother encoding anything if chosen character encoding is UTF-8
             if (_isUTF8)
