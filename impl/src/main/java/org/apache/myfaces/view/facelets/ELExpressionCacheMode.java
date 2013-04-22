@@ -52,5 +52,16 @@ public enum ELExpressionCacheMode
      * Note if ui:param is used, each template call should define the same
      * param count, even if only just a few are used. 
      */
-    always
+    always,
+    
+    /**
+     * Does not cache expressions on these cases:
+     * - An expression uses a variable resolved through VariableMapper
+     * 
+     * It uses an alternate FaceletCache that implements AbstractFaceletCache
+     * contract and force recompile the facelet in case additional ui:param
+     * instances are detected.
+     * 
+     */
+    alwaysRecompile,
 }

@@ -19,12 +19,12 @@
 package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -63,18 +63,22 @@ public class TemplateContextImpl extends TemplateContext
      */
     private static final PageContext INITIAL_PAGE_CONTEXT = new InitialPageContext();
     
-    private final LinkedList<TemplateManagerImpl> _clients;
+    private final List<TemplateManagerImpl> _clients;
     
     private TemplateManager _compositeComponentClient;
     
     private TemplateManagerImpl _lastClient;
     
     private boolean _isCacheELExpressions;
+    
+    private final TemplateClientAttributeMap _templateClientAttributeMap;
+    
+    private final TemplateClientKnownParameterMap _templateClientKnownParameterMap;
 
     public TemplateContextImpl()
     {
         super();
-        _clients = new LinkedList<TemplateManagerImpl>();
+        _clients = new ArrayList<TemplateManagerImpl>(4);
         // Parameters registered using ui:param now are bound to template manager instances, because
         // it should follow the same rules as template clients registered here. For example, to resolve
         // params on nested ui:decorate and ui:composition the same rules applies than for ui:define and
@@ -82,36 +86,38 @@ public class TemplateContextImpl extends TemplateContext
         // page context, so when a new context is added (like in a ui:include), all params registered go 
         // to this manager. 
         _clients.add(new TemplateManagerImpl(null, INITIAL_TEMPLATE_CLIENT, true, INITIAL_PAGE_CONTEXT));
-        _lastClient = _clients.getFirst();
+        _lastClient = _clients.get(0); //_clients.getFirst();
         _isCacheELExpressions = true;
+        _templateClientAttributeMap = new TemplateClientAttributeMap();
+        _templateClientKnownParameterMap = new TemplateClientKnownParameterMap();
     }
 
     @Override
     public TemplateManager popClient(final AbstractFaceletContext actx)
     {
         _lastClient = null;
-        return _clients.removeFirst();
+        return _clients.remove(0);
     }
 
     @Override
     public void pushClient(final AbstractFaceletContext actx, final AbstractFacelet owner, final TemplateClient client)
     {
-        _clients.addFirst(new TemplateManagerImpl(owner, client, true, actx.getPageContext()));
-        _lastClient = _clients.getFirst();
+        _clients.add(0, new TemplateManagerImpl(owner, client, true, actx.getPageContext()));
+        _lastClient = _clients.get(0);
     }
 
     public TemplateManager popExtendedClient(final AbstractFaceletContext actx)
     {
         _lastClient = null;
-        return _clients.removeLast();
+        return _clients.remove(_clients.size()-1);
     }
     
     @Override
     public void extendClient(final AbstractFaceletContext actx, final AbstractFacelet owner,
                              final TemplateClient client)
     {
-        _clients.addLast(new TemplateManagerImpl(owner, client, false, actx.getPageContext()));
-        _lastClient = _clients.getLast();
+        _clients.add(new TemplateManagerImpl(owner, client, false, actx.getPageContext()));
+        _lastClient = _clients.get(_clients.size()-1);
     }
 
     @Override
@@ -120,10 +126,9 @@ public class TemplateContextImpl extends TemplateContext
     {
         boolean found = false;
         TemplateManager client;
-        Iterator<TemplateManagerImpl> itr = _clients.iterator();
-        while (itr.hasNext() && !found)
+        for (int i = 0; i < _clients.size() && !found; i++)
         {
-            client = itr.next();
+            client = _clients.get(i);
             if (client.equals(owner))
             {
                 continue;
@@ -146,6 +151,8 @@ public class TemplateContextImpl extends TemplateContext
         private final PageContext _pageContext;
         
         private Map<String, ValueExpression> _parameters = null;
+        
+        private Set<String> _knownParameters;
 
         public TemplateManagerImpl(AbstractFacelet owner, TemplateClient target,
                 boolean root, PageContext pageContext)
@@ -206,11 +213,25 @@ public class TemplateContextImpl extends TemplateContext
             return _parameters;
         }
         
-        public boolean isParamentersMapEmpty()
+        public boolean isParametersMapEmpty()
         {
             return _parameters == null ? true : _parameters.isEmpty();
         }
 
+        public Set<String> getKnownParameters()
+        {
+            if (_knownParameters == null)
+            {
+                _knownParameters = new HashSet<String>(4);
+            }
+            return _knownParameters;
+        }
+        
+        public boolean isKnownParametersEmpty()
+        {
+            return _knownParameters == null ? true : _knownParameters.isEmpty();
+        }
+        
         public boolean equals(Object o)
         {
             if (this._owner != null)
@@ -254,11 +275,10 @@ public class TemplateContextImpl extends TemplateContext
     public ValueExpression getParameter(String key)
     {
         TemplateManagerImpl client;
-        Iterator<TemplateManagerImpl> itr = _clients.iterator();
-        while (itr.hasNext())
+        for (int i = 0; i < _clients.size(); i++)
         {
-            client = itr.next();
-            if (!client.isParamentersMapEmpty() &&
+            client = _clients.get(i);
+            if (!client.isParametersMapEmpty() &&
                  client.getParametersMap().containsKey(key))
             {
                 return client.getParametersMap().get(key);
@@ -268,11 +288,28 @@ public class TemplateContextImpl extends TemplateContext
     }
 
     @Override
+    public boolean containsParameter(String key)
+    {
+        TemplateManagerImpl client;
+        for (int i = 0; i < _clients.size(); i++)
+        {
+            client = _clients.get(i);
+            if (!client.isParametersMapEmpty() &&
+                client.getParametersMap().containsKey(key))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void setParameter(String key, ValueExpression value)
     {
         if (_lastClient != null)
         {
             _lastClient.getParametersMap().put(key, value);
+            _lastClient.getKnownParameters().add(key);
         }
     }
 
@@ -280,11 +317,10 @@ public class TemplateContextImpl extends TemplateContext
     public boolean isParameterEmpty()
     {
         TemplateManagerImpl client;
-        Iterator<TemplateManagerImpl> itr = _clients.iterator();
-        while (itr.hasNext())
+        for (int i = 0; i < _clients.size(); i++)
         {
-            client = itr.next();
-            if (!client.isParamentersMapEmpty())
+            client = _clients.get(i);
+            if (!client.isParametersMapEmpty())
             {
                 return false;
             }
@@ -294,7 +330,50 @@ public class TemplateContextImpl extends TemplateContext
     
     public Map<String, ValueExpression> getParameterMap()
     {
-        return new TemplateClientAttributeMap();
+        return _templateClientAttributeMap;
+    }
+    
+    public boolean isKnownParametersEmpty()
+    {
+        TemplateManagerImpl client;
+        for (int i = 0; i < _clients.size(); i++)
+        {
+            client = _clients.get(i);
+            if (!client.isKnownParametersEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public Set<String> getKnownParameters()
+    {
+        return _templateClientKnownParameterMap.keySet();
+    }
+    
+    @Override
+    public boolean containsKnownParameter(String key)
+    {
+        TemplateManagerImpl client;
+        for (int i = 0; i < _clients.size(); i++)
+        {
+            client = _clients.get(i);
+            if (client.getKnownParameters().contains(key))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public void addKnownParameters(String key)
+    {
+        if (_lastClient != null)
+        {        
+            _lastClient.getKnownParameters().add(key);
+        }
     }
 
     private final class TemplateClientAttributeMap extends AbstractAttributeMap<ValueExpression>
@@ -308,11 +387,10 @@ public class TemplateContextImpl extends TemplateContext
         protected ValueExpression getAttribute(String key)
         {
             TemplateManagerImpl client;
-            Iterator<TemplateManagerImpl> itr = _clients.iterator();
-            while (itr.hasNext())
+            for (int i = 0; i < _clients.size(); i++)
             {
-                client = itr.next();
-                if (!client.isParamentersMapEmpty() &&
+                client = _clients.get(i);
+                if (!client.isParametersMapEmpty() &&
                      client.getParametersMap().containsKey(key))
                 {
                     return client.getParametersMap().get(key);
@@ -324,19 +402,14 @@ public class TemplateContextImpl extends TemplateContext
         @Override
         protected void setAttribute(String key, ValueExpression value)
         {
-            if (_lastClient != null)
-            {
-                _lastClient.getParametersMap().put(key, value);
-            }
+            //Use the parent methods.
+            throw new UnsupportedOperationException();
         }
 
         @Override
         protected void removeAttribute(String key)
         {
-            if (_lastClient != null)
-            {
-                _lastClient.getParametersMap().remove(key);
-            }
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -344,11 +417,10 @@ public class TemplateContextImpl extends TemplateContext
         {
             Set<String> attributeNames = new HashSet<String>();
             TemplateManagerImpl client;
-            Iterator<TemplateManagerImpl> itr = _clients.iterator();
-            while (itr.hasNext())
+            for (int i = 0; i < _clients.size(); i++)
             {
-                client = itr.next();
-                if (!client.isParamentersMapEmpty())
+                client = _clients.get(i);
+                if (!client.isParametersMapEmpty())
                 {
                     attributeNames.addAll(client.getParametersMap().keySet());
                 }
@@ -384,6 +456,59 @@ public class TemplateContextImpl extends TemplateContext
             return _parameterNames[_index++];
         }
     }
+    
+    private final class TemplateClientKnownParameterMap extends AbstractAttributeMap<Boolean>
+    {
+
+        public TemplateClientKnownParameterMap()
+        {
+        }
+        
+        @Override
+        protected Boolean getAttribute(String key)
+        {
+            TemplateManagerImpl client;
+            for (int i = 0; i < _clients.size(); i++)
+            {
+                client = _clients.get(i);
+                if (!client.isKnownParametersEmpty() &&
+                     client.getKnownParameters().contains(key))
+                {
+                    return Boolean.TRUE;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void setAttribute(String key, Boolean value)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected void removeAttribute(String key)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected Enumeration<String> getAttributeNames()
+        {
+            Set<String> attributeNames = new HashSet<String>();
+            TemplateManagerImpl client;
+            for (int i = 0; i < _clients.size(); i++)
+            {
+                client = _clients.get(i);
+                if (!client.isParametersMapEmpty())
+                {
+                    attributeNames.addAll(client.getParametersMap().keySet());
+                }
+            }
+            
+            return new ParameterNameEnumeration(attributeNames.toArray(new String[attributeNames.size()]));
+        }
+    }    
     
     /**
      * This is just a dummy template client that does nothing that is added by default
@@ -445,6 +570,5 @@ public class TemplateContextImpl extends TemplateContext
     {
         _isCacheELExpressions = cacheELExpressions;
     }
-    
     
 }

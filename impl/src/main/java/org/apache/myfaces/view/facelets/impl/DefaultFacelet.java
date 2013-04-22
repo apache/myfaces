@@ -462,7 +462,7 @@ final class DefaultFacelet extends AbstractFacelet
     public void include(AbstractFaceletContext ctx, UIComponent parent, URL url) throws IOException, FacesException,
             FaceletException, ELException
     {
-        DefaultFacelet f = (DefaultFacelet) _factory.getFacelet(url);
+        DefaultFacelet f = (DefaultFacelet) _factory.getFacelet(ctx, url);
         f.include(ctx, parent);
     }
     

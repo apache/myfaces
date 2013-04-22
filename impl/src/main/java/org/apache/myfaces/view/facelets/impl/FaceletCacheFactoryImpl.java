@@ -25,6 +25,7 @@ import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletCacheFactory;
 
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
@@ -59,7 +60,19 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory
                     FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD);
         }
         
-        return new FaceletCacheImpl(refreshPeriod);
+        String elMode = WebConfigParamUtils.getStringInitParameter(
+                    context.getExternalContext(),
+                    FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+                        ELExpressionCacheMode.noCache.name());
+        
+        if (ELExpressionCacheMode.alwaysRecompile.toString().equals(elMode))
+        {
+            return new CacheELFaceletCacheImpl(refreshPeriod);
+        }
+        else
+        {
+            return new FaceletCacheImpl(refreshPeriod);
+        }
     }
 
 }
