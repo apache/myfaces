@@ -23,6 +23,7 @@ import javax.faces.FacesException;
 import javax.faces.view.facelets.FaceletException;
 import java.io.IOException;
 import java.net.URL;
+import javax.faces.view.facelets.FaceletContext;
 
 /**
  * FaceletFactory for producing Facelets relative to the context of the underlying implementation.
@@ -60,6 +61,23 @@ public abstract class FaceletFactory
      * @throws ELException
      */
     public abstract Facelet getFacelet(URL url) throws IOException, FaceletException, FacesException, ELException;
+
+    /**
+     * Create a Facelet from the passed URL, but take into account the context. This method is
+     * useful in cases where the facelet instance must replace the one in the cache based on 
+     * the context, instead take the one from the cache, like for example when the EL expression
+     * cache is used.
+     * 
+     * @param url
+     *            source url
+     * @return Facelet instance
+     * @throws IOException
+     * @throws FaceletException
+     * @throws FacesException
+     * @throws ELException
+     */
+    public abstract Facelet getFacelet(FaceletContext ctx, URL url) 
+        throws IOException, FaceletException, FacesException, ELException;    
     
     /**
      * Return a Facelet instance as specified by the file at the passed URI. The returned facelet is used

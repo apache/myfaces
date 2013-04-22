@@ -34,11 +34,13 @@ import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletCacheFactory;
+import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.ResourceResolver;
 
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
+import org.apache.myfaces.view.facelets.AbstractFaceletCache;
 import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
@@ -75,6 +77,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private javax.faces.view.facelets.ResourceResolver _resolver;
     
     private FaceletCache<Facelet> _faceletCache;
+    private AbstractFaceletCache<Facelet> _abstractFaceletCache;
     
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver) throws IOException
     {
@@ -122,22 +125,55 @@ public final class DefaultFaceletFactory extends FaceletFactory
             }
         };
         
-        // Note that FaceletCache.setMemberFactories method is protected, and this is the place where call
-        // this method has sense, because DefaultFaceletFactory is the responsible to create Facelet instances.
-        // The only way to do it is using reflection, and it has sense, because in this way it is possible to
-        // setup a java SecurityManager that prevents call this method (because it is protected, and to do that
-        // the code first check for "suppressAccessChecks" permission).
-        try
+        if (_faceletCache instanceof AbstractFaceletCache)
         {
-            Method setMemberFactoriesMethod = FaceletCache.class.getDeclaredMethod("setMemberFactories",
-                    new Class[]{FaceletCache.MemberFactory.class, FaceletCache.MemberFactory.class});
-            setMemberFactoriesMethod.setAccessible(true);
-            setMemberFactoriesMethod.invoke(_faceletCache, faceletFactory, viewMetadataFaceletFactory);
-        } 
-        catch (Exception e)
+            _abstractFaceletCache = (AbstractFaceletCache<Facelet>) _faceletCache;
+            
+            FaceletCache.MemberFactory<Facelet> compositeComponentMetadataFaceletFactory = 
+                new FaceletCache.MemberFactory<Facelet>()
+            {
+                public Facelet newInstance(URL url) throws IOException
+                {
+                    return _createCompositeComponentMetadataFacelet(url);
+                }
+            };
+
+            try
+            {
+                Method setMemberFactoriesMethod = AbstractFaceletCache.class.getDeclaredMethod("setMemberFactories",
+                        new Class[]{FaceletCache.MemberFactory.class, FaceletCache.MemberFactory.class, 
+                                    FaceletCache.MemberFactory.class});
+                setMemberFactoriesMethod.setAccessible(true);
+                setMemberFactoriesMethod.invoke(_faceletCache, faceletFactory, viewMetadataFaceletFactory, 
+                    compositeComponentMetadataFaceletFactory);
+            } 
+            catch (Exception e)
+            {
+                throw new FacesException(
+                    "Cannot call setMemberFactories method, Initialization of FaceletCache failed.",
+                                         e);
+            }   
+        }
+        else
         {
-            throw new FacesException("Cannot call setMemberFactories method, Initialization of FaceletCache failed.",
-                                     e);
+            // Note that FaceletCache.setMemberFactories method is protected, and this is the place where call
+            // this method has sense, because DefaultFaceletFactory is the responsible to create Facelet instances.
+            // The only way to do it is using reflection, and it has sense, because in this way it is possible to
+            // setup a java SecurityManager that prevents call this method (because it is protected, and to do that
+            // the code first check for "suppressAccessChecks" permission).
+            try
+            {
+                Method setMemberFactoriesMethod = FaceletCache.class.getDeclaredMethod("setMemberFactories",
+                        new Class[]{FaceletCache.MemberFactory.class, FaceletCache.MemberFactory.class});
+                setMemberFactoriesMethod.setAccessible(true);
+                setMemberFactoriesMethod.invoke(_faceletCache, faceletFactory, viewMetadataFaceletFactory);
+            } 
+            catch (Exception e)
+            {
+                throw new FacesException(
+                    "Cannot call setMemberFactories method, Initialization of FaceletCache failed.",
+                                         e);
+            }            
         }
 
         if (log.isLoggable(Level.FINE))
@@ -162,6 +198,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * 
      * @see org.apache.myfaces.view.facelets.FaceletFactory#getFacelet(java.lang.String)
      */
+    @Override
     public Facelet getFacelet(String uri) throws IOException, FaceletException, FacesException, ELException
     {
         URL url = (URL) _relativeLocations.get(uri);
@@ -194,9 +231,25 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
+    @Override
     public Facelet getFacelet(URL url) throws IOException, FaceletException, FacesException, ELException
     {
         return _faceletCache.getFacelet(url);
+    }
+    
+    
+    @Override
+    public Facelet getFacelet(FaceletContext ctx, URL url) 
+            throws IOException, FaceletException, FacesException, ELException
+    {
+        if (_abstractFaceletCache != null)
+        {
+            return _abstractFaceletCache.getFacelet(ctx, url);
+        }
+        else
+        {
+            return _faceletCache.getFacelet(url);
+        }
     }
 
     public long getRefreshPeriod()
@@ -408,7 +461,14 @@ public final class DefaultFaceletFactory extends FaceletFactory
     public Facelet getViewMetadataFacelet(URL url) throws IOException,
             FaceletException, FacesException, ELException
     {
-        return _faceletCache.getViewMetadataFacelet(url);
+        if (_abstractFaceletCache != null)
+        {
+            return _abstractFaceletCache.getViewMetadataFacelet(url);
+        }
+        else
+        {
+            return _faceletCache.getViewMetadataFacelet(url);
+        }
     }
     
     /**
@@ -444,25 +504,31 @@ public final class DefaultFaceletFactory extends FaceletFactory
     public Facelet getCompositeComponentMetadataFacelet(URL url) throws IOException,
             FaceletException, FacesException, ELException
     {
-        ParameterCheck.notNull("url", url);
-        
-        String key = url.toString();
-        
-        DefaultFacelet f = _compositeComponentMetadataFacelets.get(key);
-        
-        if (f == null || this.needsToBeRefreshed(f))
+        if (_abstractFaceletCache != null)
         {
-            f = this._createCompositeComponentMetadataFacelet(url);
-            if (_refreshPeriod != NO_CACHE_DELAY)
-            {
-                Map<String, DefaultFacelet> newLoc
-                        = new HashMap<String, DefaultFacelet>(_compositeComponentMetadataFacelets);
-                newLoc.put(key, f);
-                _compositeComponentMetadataFacelets = newLoc;
-            }
+            return _abstractFaceletCache.getCompositeComponentMetadataFacelet(url);
         }
-        
-        return f;
+        else
+        {
+            ParameterCheck.notNull("url", url);
+
+            String key = url.toString();
+
+            DefaultFacelet f = _compositeComponentMetadataFacelets.get(key);
+
+            if (f == null || this.needsToBeRefreshed(f))
+            {
+                f = this._createCompositeComponentMetadataFacelet(url);
+                if (_refreshPeriod != NO_CACHE_DELAY)
+                {
+                    Map<String, DefaultFacelet> newLoc
+                            = new HashMap<String, DefaultFacelet>(_compositeComponentMetadataFacelets);
+                    newLoc.put(key, f);
+                    _compositeComponentMetadataFacelets = newLoc;
+                }
+            }
+            return f;
+        }
     }
 
     /**

@@ -32,7 +32,9 @@ import org.apache.myfaces.renderkit.html.HtmlCompositeComponentRenderer;
 import org.apache.myfaces.renderkit.html.HtmlCompositeFacetRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.test.mock.MockExternalContext;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
+import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.junit.Assert;
@@ -77,7 +79,7 @@ public class IncludeParamTestCase extends FaceletTestCase
         // handle VariableMapper stuff properly and ui:param logic will not work
         return new org.apache.el.ExpressionFactoryImpl();
     }
-    
+
     @Test
     public void testCaching() throws Exception
     {

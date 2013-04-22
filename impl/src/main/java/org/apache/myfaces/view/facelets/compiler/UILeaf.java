@@ -159,11 +159,14 @@ class UILeaf extends UIComponent implements Map<String, Object>
     @Override
     public void setId(String id)
     {
-        isIdValid(id);
+        // UILeaf instance are just a wrapper for html markup. It never has 
+        // an user defined id. The validation check here is just useless, 
+        // because facelets algorithm ensures that.
+        //isIdValid(id);
         _id = id;
         _clientId = null;
     }
-    
+    /*
     private void isIdValid(String string)
     {
 
@@ -205,7 +208,7 @@ class UILeaf extends UIComponent implements Map<String, Object>
                                                    + c + "\"");
             }
         }
-    }
+    }*/
     
     private String getComponentLocation(UIComponent component)
     {

@@ -93,9 +93,10 @@ public final class DefaultVariableMapper extends VariableMapperBase
                 }
             }
             
-            if (_templateContext != null && !_templateContext.isParameterEmpty())
+            if (_templateContext != null)
             {
-                if (_templateContext.getParameterMap().containsKey(name))
+                if (!_templateContext.isParameterEmpty() &&
+                    _templateContext.containsParameter(name))
                 {
                     returnValue = _templateContext.getParameter(name);
                     if (_trackResolveVariables)
@@ -103,6 +104,21 @@ public final class DefaultVariableMapper extends VariableMapperBase
                         _variableResolved = true;
                     }
                     return returnValue;
+                }
+                else if (!_templateContext.isKnownParametersEmpty() &&
+                    _templateContext.containsKnownParameter(name))
+                {
+                    // This part is the most important in alwaysRecompile EL cache hack.
+                    // The idea is maintain a list of the parameters used in a template,
+                    // and if the name to be resolved match one of the list, even if the
+                    // param was not set it is necessary to track it as variable resolved.
+                    // This will force create a new EL expression each time the view is
+                    // built, preserving ui:param and VariableMapper behavior, but allow
+                    // cache all expressions that are not related.
+                    if (_trackResolveVariables)
+                    {
+                        _variableResolved = true;
+                    }
                 }
             }
             

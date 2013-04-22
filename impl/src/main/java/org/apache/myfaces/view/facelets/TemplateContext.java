@@ -20,6 +20,7 @@ package org.apache.myfaces.view.facelets;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
@@ -140,4 +141,43 @@ public abstract class TemplateContext
      * @return
      */
     public abstract void setAllowCacheELExpressions(boolean cacheELExpressions);
+    
+    /**
+     * 
+     * @since 2.1.12
+     * @param key
+     * @return 
+     */
+    public abstract boolean containsParameter(String key);
+    
+    /**
+     * Return a set of the parameters known associated to this template context and/or
+     * template. This logic is used to detect which EL Expressions can be cached or not.
+     * 
+     * @since 2.1.12
+     * @return 
+     */
+    public abstract Set<String> getKnownParameters();
+    
+    /**
+     * 
+     * @since 2.1.12
+     * @param key
+     * @return 
+     */
+    public abstract boolean containsKnownParameter(String key);
+    
+    /**
+     * 
+     * @since 2.1.12
+     * @return 
+     */
+    public abstract boolean isKnownParametersEmpty();
+    
+    /**
+     * 
+     * @since 2.1.12
+     * @param knownParameters 
+     */
+    public abstract void addKnownParameters(String knownParameters);
 }

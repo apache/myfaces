@@ -37,6 +37,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
 import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
@@ -111,6 +112,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
                 }
             }
             actx.pushTemplateContext(new TemplateContextImpl());
+            actx.pushClient(this);
             if (this._vars.length > 0)
             {
                 for (int i = 0; i < this._vars.length; i++)
@@ -118,9 +120,12 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
                     ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
                 }
             }
-            //Disable caching always, even in 'always' mode
-            actx.getTemplateContext().setAllowCacheELExpressions(false);
-            actx.pushClient(this);
+            // Disable caching always, even in 'always' mode
+            // The only mode that can support EL caching in this condition is alwaysRedirect.
+            if (!ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+            {
+                actx.getTemplateContext().setAllowCacheELExpressions(false);
+            }
             ctx.includeFacelet(parent, this._location);
         }
         catch (FileNotFoundException e)
