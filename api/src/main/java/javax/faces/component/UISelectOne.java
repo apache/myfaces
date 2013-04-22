@@ -18,8 +18,12 @@
  */
 package javax.faces.component;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.model.SelectItem;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
@@ -75,14 +79,21 @@ public class UISelectOne extends UIInput
         // and if required is true it must not match an option with noSelectionOption set to true (since 2.0)
         Converter converter = getConverter();
 
-        if (_SelectItemsUtil.matchValue(context, this, value, new _SelectItemsIterator(this, context), converter))
+        // Since the iterator is used twice, it has sense to traverse it only once.
+        Collection<SelectItem> items = new ArrayList<SelectItem>();
+        for (Iterator<SelectItem> iter = new _SelectItemsIterator(this, context); iter.hasNext();)
+        {
+            items.add(iter.next());
+        }
+        
+        if (_SelectItemsUtil.matchValue(context, this, value, items.iterator(), converter))
         {
             if (! this.isRequired())
             {
                 return; // Matched & Required false, so return ok.
             }
             if (! _SelectItemsUtil.isNoSelectionOption(context, this, value, 
-                    new _SelectItemsIterator(this, context), converter))
+                    items.iterator(), converter))
             {
                 return; // Matched & Required true & No-selection did NOT match, so return ok.
             }
