@@ -153,6 +153,12 @@ public class AjaxHandler extends TagHandler implements
     @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
     private final TagAttribute _render;
+    /**
+     * 
+     */
+    @JSFFaceletAttribute(name = "delay", className = "javax.el.ValueExpression",
+                         deferredValueType = "java.lang.String")
+    private final TagAttribute _delay;
     
     private final boolean _wrapMode;
 
@@ -167,7 +173,7 @@ public class AjaxHandler extends TagHandler implements
         _onerror = getAttribute("onerror");
         _onevent = getAttribute("onevent");
         _render = getAttribute("render");
-        
+        _delay = getAttribute("delay");
         // According to the spec, this tag works in two different ways:
         // 1. Apply an ajax behavior for a selected component in this way
         //    <x:component><f:ajax ..../></x:component>
@@ -451,7 +457,18 @@ public class AjaxHandler extends TagHandler implements
             ajaxBehavior.setValueExpression("render", _render
                     .getValueExpression(faceletContext, Object.class));
         }
-        
+        if (_delay != null)
+        {
+            if (_delay.isLiteral())
+            {
+                ajaxBehavior.setDelay(_delay.getValue(faceletContext));
+            }
+            else
+            {
+                ajaxBehavior.setValueExpression("delay", _delay
+                    .getValueExpression(faceletContext, String.class));
+            }
+        }
         cvh.addClientBehavior(eventName, ajaxBehavior);
     }
 

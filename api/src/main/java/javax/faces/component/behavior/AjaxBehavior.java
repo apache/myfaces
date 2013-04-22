@@ -247,7 +247,7 @@ public class AjaxBehavior extends ClientBehaviorBase
      */
     public String getDelay()
     {
-        return (String) getStateHelper().get(ATTR_DELAY);
+        return (String) getStateHelper().eval(ATTR_DELAY);
     }
 
     /**
