@@ -252,9 +252,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
                 
                 context.setViewRoot (view); 
-                
+
                 if (state != null && state[1] != null)
                 {
+                    // Since JSF 2.2, UIViewRoot.restoreViewScopeState() must be called, but
+                    // to get the state of the root, it is necessary to force calculate the
+                    // id from this location. Remember in this point, PSS is enabled, so the
+                    // code match with the assigment done in 
+                    // FaceletViewDeclarationLanguage.buildView()
+                    if (view.getId() == null)
+                    {
+                        view.setId(view.createUniqueId(context, null));
+                    }
                     states = (Map<String, Object>) state[1];
                     faceletViewState = UIComponentBase.restoreAttachedState(
                             context,states.get(ComponentSupport.FACELET_STATE_INSTANCE));
@@ -264,12 +273,25 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     }
                     if (state.length == 3)
                     {
-                        if (view.getId() == null)
-                        {
-                            view.setId(view.createUniqueId(context, null));
-                        }
+                        //if (view.getId() == null)
+                        //{
+                        //    view.setId(view.createUniqueId(context, null));
+                        //}
                         //Jump to where the count is
                         view.getAttributes().put(UNIQUE_ID_COUNTER_KEY, state[2]);
+                    }
+                    Object viewRootState = states.get(view.getViewId());
+                    if (viewRootState != null)
+                    {
+                        try
+                        {
+                            view.pushComponentToEL(context, view);
+                            view.restoreViewScopeState(context, viewRootState);
+                        }
+                        finally
+                        {
+                            view.popComponentFromEL(context);
+                        }
                     }
                 }
                 // TODO: Why is necessary enable event processing?

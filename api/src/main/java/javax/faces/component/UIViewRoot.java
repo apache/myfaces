@@ -101,6 +101,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * so we can use saveAttachedState and restoreAttachedState methods.
      */
     private Map<String, Object> _viewScope;
+    private transient boolean _restoreViewScopeStateCalled = false;
 
     private transient Lifecycle _lifecycle = null;
     
@@ -1327,7 +1328,42 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         Object[] values = (Object[])state;
         super.restoreState(facesContext,values[0]);
+        // JSF 2.2 spec says that restoreViewScopeState can be called but only if
+        // StateManagementStrategy is used. If that's not the case (JSF 1.2 state saving),
+        // restoreViewScopeState could not be called, so this code should avoid restore
+        // the state twice.
+        if (!_restoreViewScopeStateCalled)
+        {
+            _viewScope = (Map<String, Object>) restoreAttachedState(facesContext, values[1]);
+        }
+        else
+        {
+            _restoreViewScopeStateCalled = false;
+        }
+    }
+    
+    /**
+     * @since 2.2
+     * @param facesContext
+     * @param state 
+     */
+    public void restoreViewScopeState(FacesContext facesContext, Object state)
+    {
+        if (state == null)
+        {
+            return;
+        }
+        //StateManagementStrategy says "... obtain the state of the UIViewRoot from the 
+        // state Object returned from ResponseStateManager.getState(javax.faces.context.FacesContext,
+        // java.lang.String) and pass that to UIViewRoot.restoreViewScopeState(
+        // javax.faces.context.FacesContext, java.lang.Object).
+        // Note restoreState() will be called later, and it will restore the view. If
+        // we restore the component state here, later it could be a problem in the later
+        // restoreState() call, because the initial state will not be the same.
+        
+        Object[] values = (Object[])state;
         _viewScope = (Map<String, Object>) restoreAttachedState(facesContext, values[1]);
+        _restoreViewScopeStateCalled = true;
     }
     
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent)
