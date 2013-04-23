@@ -99,9 +99,9 @@ public final class ComponentSupport
         }
 
         // remove any facets marked as deleted
-        Map<String, UIComponent> facets = component.getFacets();
-        if (!facets.isEmpty())
+        if (component.getFacetCount() > 0)
         {
+            Map<String, UIComponent> facets = component.getFacets();
             Collection<UIComponent> col = facets.values();
             for (Iterator<UIComponent> itr = col.iterator(); itr.hasNext();)
             {
@@ -346,9 +346,9 @@ public final class ComponentSupport
             }
         }
         
-        Map<String, UIComponent> facets = component.getFacets();
-        if (!facets.isEmpty())
+        if (component.getFacetCount() > 0)
         {
+            Map<String, UIComponent> facets = component.getFacets();
             for (Iterator<UIComponent> itr = facets.values().iterator(); itr.hasNext();)
             {
                 UIComponent facet = itr.next();

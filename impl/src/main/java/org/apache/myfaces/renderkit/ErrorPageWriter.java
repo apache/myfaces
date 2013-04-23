@@ -839,7 +839,7 @@ public final class ErrorPageWriter
         }
         writer.write(">");
 
-        boolean hasChildren = (c.getChildCount() > 0 || c.getFacets().size() > 0) && writeChildren;
+        boolean hasChildren = (c.getChildCount() > 0 || c.getFacetCount() > 0) && writeChildren;
 
         int stateSize = 0;
 
@@ -865,7 +865,7 @@ public final class ErrorPageWriter
         writer.write("</dt>");
         if (hasChildren)
         {
-            if (c.getFacets().size() > 0)
+            if (c.getFacetCount() > 0)
             {
                 for (Map.Entry<String, UIComponent> entry : c.getFacets().entrySet())
                 {
@@ -939,7 +939,7 @@ public final class ErrorPageWriter
                 }
 
                 UIComponent parent = target.getParent();
-                boolean hasChildren = (target.getChildCount() > 0 || target.getFacets().size() > 0);
+                boolean hasChildren = (target.getChildCount() > 0 || target.getFacetCount() > 0);
                 String facetName = _getFacetName(target);
 
                 if (!(target instanceof UIColumn))
