@@ -1182,8 +1182,6 @@ public abstract class UIComponentBase extends UIComponent
             }
         }
     }
-    
-    
 
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
