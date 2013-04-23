@@ -233,9 +233,23 @@ public abstract class UIComponent
                 return found;
             }
             // Searching for this component's children/facets
-            for (Iterator<UIComponent> it = this.getFacetsAndChildren(); !found && it.hasNext(); )
+            // [perf] Use getFacetsAndChildren() is nicer but this one prevents
+            // create 1 iterator per component class that does not have
+            // facets attached, which is a common case. 
+            if (this.getFacetCount() > 0)
             {
-                found = it.next().invokeOnComponent(context, clientId, callback);
+                for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !found && it.hasNext(); )
+                {
+                    found = it.next().invokeOnComponent(context, clientId, callback);
+                }                
+            }
+            if (this.getChildCount() > 0)
+            {
+                for (int i = 0, childCount = getChildCount(); !found && (i < childCount); i++)
+                {
+                    UIComponent child = getChildren().get(i);
+                    found = child.invokeOnComponent(context, clientId, callback);
+                }
             }
             return found;
         }

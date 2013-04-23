@@ -423,11 +423,16 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                             returnValue = true;
                         }
                         // process the child's facets
-                        for (Iterator<UIComponent> itChildFacets = child.getFacets().values().iterator(); 
-                                !returnValue && itChildFacets.hasNext();)
+                        if (child.getFacetCount() > 0)
                         {
-                            //recursive call to find the component
-                            returnValue = itChildFacets.next().invokeOnComponent(context, clientId, callback);
+                            for (Iterator<UIComponent> itChildFacets = 
+                                child.getFacets().values().iterator(); 
+                                !returnValue && itChildFacets.hasNext();)
+                            {
+                                //recursive call to find the component
+                                returnValue = itChildFacets.next().invokeOnComponent(
+                                    context, clientId, callback);
+                            }
                         }
                     }
                 }
@@ -2190,11 +2195,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                 {
                                     return true;
                                 }
-                                for (UIComponent facet : child.getFacets().values())
+                                if (child.getFacetCount() > 0)
                                 {
-                                    if (facet.visitTree(context, callback))
+                                    for (UIComponent facet : child.getFacets().values())
                                     {
-                                        return true;
+                                        if (facet.visitTree(context, callback))
+                                        {
+                                            return true;
+                                        }
                                     }
                                 }
                             }

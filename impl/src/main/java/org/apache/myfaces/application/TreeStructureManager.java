@@ -73,9 +73,10 @@ public class TreeStructureManager
         }
 
         //facets
-        Map<String, UIComponent> facetMap = component.getFacets();
-        if (!facetMap.isEmpty())
+        
+        if (component.getFacetCount() > 0)
         {
+            Map<String, UIComponent> facetMap = component.getFacets();
             List<Object[]> structFacetList = new ArrayList<Object[]>();
             for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
             {
