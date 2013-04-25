@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces;
+package javax.faces.application;
 
 import org.w3c.dom.Document;
 
@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  *
  * @author Leonardo Uribe
  */
-public abstract class ApplicationConfigurationResourceDocumentPopulator
+public abstract class ApplicationConfigurationPopulator
 {
     
     public abstract void populateApplicationConfigurationResource(Document toPopulate);

@@ -48,7 +48,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.ApplicationConfigurationResourceDocumentPopulator;
+import javax.faces.application.ApplicationConfigurationPopulator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -439,8 +439,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     public List<FacesConfig> getApplicationConfigurationResourceDocumentPopulatorFacesConfig(ExternalContext ectx)
     {
         ServiceProviderFinder spff = ServiceProviderFinderFactory.getServiceProviderFinder(ectx);
-        ServiceLoader<ApplicationConfigurationResourceDocumentPopulator> instances = 
-            spff.load(ApplicationConfigurationResourceDocumentPopulator.class);
+        ServiceLoader<ApplicationConfigurationPopulator> instances = 
+            spff.load(ApplicationConfigurationPopulator.class);
         if (instances != null)
         {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -465,7 +465,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             {
                 List<FacesConfig> facesConfigList = new ArrayList<FacesConfig>();
                 List<Document> documentList = new ArrayList<Document>();
-                for (ApplicationConfigurationResourceDocumentPopulator populator : instances)
+                for (ApplicationConfigurationPopulator populator : instances)
                 {
                     // Spec says "... For each implementation, create a fresh org.w3c.dom.Document 
                     // instance, configured to be in the XML namespace of the
