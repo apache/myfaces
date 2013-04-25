@@ -141,4 +141,15 @@ public abstract class ResponseStateManager
     {
         return null;
     }
+    
+    /**
+     * @since 2.2
+     * @param context
+     * @param viewId
+     * @return 
+     */
+    public boolean isStateless(FacesContext context, String viewId)
+    {
+        return false;
+    }
 }

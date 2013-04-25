@@ -69,6 +69,9 @@ public final class ViewHandler extends TagHandler
 
     @JSFFaceletAttribute
     private final TagAttribute afterPhase;
+    
+    @JSFFaceletAttribute(name="transient")
+    private final TagAttribute transientAttribute;
 
     /**
      * @param config
@@ -82,6 +85,7 @@ public final class ViewHandler extends TagHandler
         this.encoding = this.getAttribute("encoding");
         this.beforePhase = this.getAttribute("beforePhase");
         this.afterPhase = this.getAttribute("afterPhase");
+        this.transientAttribute = this.getAttribute("transient");
     }
 
     /**
@@ -151,6 +155,10 @@ public final class ViewHandler extends TagHandler
             {
                 MethodExpression m = this.afterPhase.getMethodExpression(ctx, null, LISTENER_SIG);
                 root.setAfterPhaseListener(m);
+            }
+            if (this.transientAttribute != null)
+            {
+                root.setTransient(this.transientAttribute.getBoolean(ctx));
             }
         }
         this.nextHandler.apply(ctx, parent);

@@ -321,6 +321,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 throw new FacesException ("unable to create view \"" + viewId + "\"", e);
             }
 
+            // Stateless mode only for transient views and non stateless mode for
+            // stateful views.
+            boolean statelessMode = manager.isStateless(context, viewId);
+            if (statelessMode && !view.isTransient())
+            {
+                throw new IllegalStateException("View is not transient");
+            }
+            if (!statelessMode && view.isTransient())
+            {
+                throw new IllegalStateException("Cannot apply state over stateless view");
+            }
+            
             if (state != null && state[1] != null)
             {
                 states = (Map<String, Object>) state[1];
@@ -545,12 +557,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             return null;
         }
         
-        if (view.isTransient())
-        {
+        //if (view.isTransient())
+        //{
             // Must return null immediately per spec.
             
-            return null;
-        }
+            //return null;
+        //}
         
         ExternalContext externalContext = context.getExternalContext();
         
@@ -930,13 +942,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
         }
-        
-        Object state = uiViewRoot.saveState (facesContext);
-        if (state != null)
+        if (!uiViewRoot.isTransient())
         {
-            // Save by client ID into our map.
-            
-            states.put (uiViewRoot.getClientId (facesContext), state);
+            Object state = uiViewRoot.saveState (facesContext);
+            if (state != null)
+            {
+                // Save by client ID into our map.
+
+                states.put (uiViewRoot.getClientId (facesContext), state);
+            }
         }
     }
 
