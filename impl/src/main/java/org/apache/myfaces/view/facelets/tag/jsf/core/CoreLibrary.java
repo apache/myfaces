@@ -44,13 +44,14 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 public final class CoreLibrary extends AbstractTagLibrary
 {
 
-    public final static String NAMESPACE = "http://java.sun.com/jsf/core";
+    public final static String NAMESPACE = "http://xmlns.jcp.org/jsf/core";
+    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsf/core";
 
     public final static CoreLibrary INSTANCE = new CoreLibrary();
 
     public CoreLibrary()
     {
-        super(NAMESPACE);
+        super(NAMESPACE, ALIAS_NAMESPACE);
 
         this.addTagHandler("actionListener", ActionListenerHandler.class);
 

@@ -16,26 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets.tag.jsf;
+package org.apache.myfaces.view.facelets.tag;
 
-import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
+import javax.faces.view.facelets.Tag;
+import javax.faces.view.facelets.TagDecorator;
 
 /**
- * Dummy library, so passthrough namespace can be recognized by facelet compiler.
- * 
- * No real components or tags here, this is only used for attributes.
- * 
+ *
  * @author Leonardo Uribe
  */
-public class PassThroughLibrary extends AbstractTagLibrary
+public class BaseTagDecorator implements TagDecorator
 {
-    public final static String NAMESPACE = "http://xmlns.jcp.org/jsf/passthrough";
-    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsf/passthrough";
+    private final TagDecorator defaultTagDecorator;
 
-    public final static PassThroughLibrary INSTANCE = new PassThroughLibrary();
-    
-    public PassThroughLibrary()
+    public BaseTagDecorator(TagDecorator defaultTagDecorator)
     {
-        super(NAMESPACE, ALIAS_NAMESPACE);
+        this.defaultTagDecorator = defaultTagDecorator;
+    }
+
+    public Tag decorate(Tag tag)
+    {
+        Tag processedTag = defaultTagDecorator.decorate(tag);
+        return processedTag != null ? processedTag : tag;
     }
 }

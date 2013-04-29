@@ -34,6 +34,11 @@ public abstract class AbstractHtmlLibrary extends AbstractTagLibrary
     {
         super(namespace);
     }
+    
+    public AbstractHtmlLibrary(String namespace, String aliasNamespace)
+    {
+        super(namespace, aliasNamespace);
+    }    
 
     public void addHtmlComponent(String name, String componentType, String rendererType)
     {

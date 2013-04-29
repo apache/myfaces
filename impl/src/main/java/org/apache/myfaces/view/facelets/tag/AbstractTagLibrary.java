@@ -54,13 +54,21 @@ public abstract class AbstractTagLibrary implements TagLibrary
     private final Map<String, Method> _functions;
 
     private final String _namespace;
+    private final String _aliasNamespace;
 
-    public AbstractTagLibrary(String namespace)
+    public AbstractTagLibrary(String namespace, String aliasNamespace)
     {
         _namespace = namespace;
+        _aliasNamespace = aliasNamespace;
         _factories = new HashMap<String, TagHandlerFactory>();
         _functions = new HashMap<String, Method>();
     }
+    
+    public AbstractTagLibrary(String namespace)
+    {
+        this(namespace,null);
+    }
+    
 
     /*
      * (non-Javadoc)
@@ -69,7 +77,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
      */
     public boolean containsNamespace(String ns)
     {
-        return _namespace.equals(ns);
+        return _namespace.equals(ns) || (_aliasNamespace != null && _aliasNamespace.equals(ns));
     }
 
     /*

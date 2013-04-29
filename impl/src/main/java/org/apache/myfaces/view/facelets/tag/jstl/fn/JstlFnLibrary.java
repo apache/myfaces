@@ -37,7 +37,8 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
  */
 public class JstlFnLibrary implements TagLibrary
 {
-    public final static String NAMESPACE = "http://java.sun.com/jsp/jstl/functions";
+    public final static String NAMESPACE = "http://xmlns.jcp.org/jsp/jstl/functions";
+    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsp/jstl/functions";
 
     private final Map<String, Method> fns = new HashMap<String, Method>();
 
@@ -63,7 +64,7 @@ public class JstlFnLibrary implements TagLibrary
 
     public boolean containsNamespace(String ns)
     {
-        return NAMESPACE.equals(ns);
+        return NAMESPACE.equals(ns) || ALIAS_NAMESPACE.equals(ns);
     }
 
     public boolean containsTagHandler(String ns, String localName)
@@ -78,7 +79,7 @@ public class JstlFnLibrary implements TagLibrary
 
     public boolean containsFunction(String ns, String name)
     {
-        if (NAMESPACE.equals(ns))
+        if (NAMESPACE.equals(ns) || ALIAS_NAMESPACE.equals(ns))
         {
             return this.fns.containsKey(name);
         }
@@ -88,7 +89,7 @@ public class JstlFnLibrary implements TagLibrary
 
     public Method createFunction(String ns, String name)
     {
-        if (NAMESPACE.equals(ns))
+        if (NAMESPACE.equals(ns) || ALIAS_NAMESPACE.equals(ns))
         {
             return (Method) this.fns.get(name);
         }

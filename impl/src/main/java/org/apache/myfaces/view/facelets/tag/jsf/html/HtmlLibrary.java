@@ -25,13 +25,14 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 public final class HtmlLibrary extends AbstractHtmlLibrary
 {
 
-    public final static String NAMESPACE = "http://java.sun.com/jsf/html";
+    public final static String NAMESPACE = "http://xmlns.jcp.org/jsf/html";
+    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsf/html";
 
     public final static HtmlLibrary INSTANCE = new HtmlLibrary();
 
     public HtmlLibrary()
     {
-        super(NAMESPACE);
+        super(NAMESPACE, ALIAS_NAMESPACE);
         
         this.addHtmlComponent ("body", "javax.faces.OutputBody", "javax.faces.Body");
         

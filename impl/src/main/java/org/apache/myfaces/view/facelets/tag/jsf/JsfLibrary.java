@@ -26,12 +26,13 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
  */
 public final class JsfLibrary extends AbstractTagLibrary
 {
-    public final static String NAMESPACE = "http://java.sun.com/jsf";
+    public final static String NAMESPACE = "http://xmlns.jcp.org/jsf";
+    public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsf";
 
     public final static JsfLibrary INSTANCE = new JsfLibrary();
 
     public JsfLibrary()
     {
-        super(NAMESPACE);
+        super(NAMESPACE, ALIAS_NAMESPACE);
     }
 }

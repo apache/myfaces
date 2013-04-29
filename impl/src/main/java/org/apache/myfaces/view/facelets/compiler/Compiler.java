@@ -37,9 +37,12 @@ import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
+import org.apache.myfaces.view.facelets.tag.BaseMultipleTagDecorator;
+import org.apache.myfaces.view.facelets.tag.BaseTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.html.DefaultTagDecorator;
 import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
@@ -99,8 +102,9 @@ public abstract class Compiler
         {
             TagLibraryConfig cfg = new TagLibraryConfig();
             cfg.loadImplicit(FacesContext.getCurrentInstance(), this);
-
-            if (!this.createTagLibrary().containsNamespace(UILibrary.NAMESPACE))
+            TagLibrary tagLibrary = this.createTagLibrary();
+            if (!tagLibrary.containsNamespace(UILibrary.NAMESPACE) &&
+                !tagLibrary.containsNamespace(UILibrary.ALIAS_NAMESPACE))
             {
                 log.severe("Missing Built-in Tag Libraries! Make sure they are included within "
                            + "the META-INF directory of Facelets' Jar");
@@ -161,9 +165,13 @@ public abstract class Compiler
     {
         if (this.decorators.size() > 0)
         {
-            return new CompositeTagDecorator(this.decorators.toArray(new TagDecorator[this.decorators.size()]));
+            return new BaseMultipleTagDecorator(new DefaultTagDecorator(), 
+                new CompositeTagDecorator(this.decorators.toArray(
+                    new TagDecorator[this.decorators.size()])));
         }
-        return EMPTY_DECORATOR;
+        // JSF 2.2 has always enabled the default tag decorator.
+        return new BaseTagDecorator(new DefaultTagDecorator());
+        //return EMPTY_DECORATOR;
     }
 
     public final void addTagDecorator(TagDecorator decorator)

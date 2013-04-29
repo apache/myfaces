@@ -27,6 +27,8 @@ import javax.faces.view.facelets.TagAttributes;
 import javax.faces.view.facelets.TagDecorator;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
+import org.apache.myfaces.view.facelets.tag.jsf.JsfLibrary;
+import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
 
 /**
@@ -39,8 +41,10 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
 public class DefaultTagDecorator implements TagDecorator
 {
     public final static String XHTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
-    public final static String JSF_NAMESPACE = "http://java.sun.com/jsf";
-    public final static String PASS_THROUGH_NAMESPACE = "http://java.sun.com/jsf/passthrough";
+    public final static String JSF_NAMESPACE = JsfLibrary.NAMESPACE;
+    public final static String JSF_ALIAS_NAMESPACE = JsfLibrary.ALIAS_NAMESPACE;
+    public final static String PASS_THROUGH_NAMESPACE = PassThroughLibrary.NAMESPACE;
+    public final static String PASS_THROUGH_ALIAS_NAMESPACE = PassThroughLibrary.ALIAS_NAMESPACE;
     private final static String EMPTY_NAMESPACE = "";
     
     private final static String P_ELEMENTNAME = "p:"+Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY;
@@ -56,7 +60,7 @@ public class DefaultTagDecorator implements TagDecorator
       {
         new TagSelectorImpl("jsf:action", "h:commandLink"),
         new TagSelectorImpl("jsf:actionListener", "h:commandLink"),
-        new TagSelectorImpl("jsf:value", "h:commandLink"),
+        new TagSelectorImpl("jsf:value", "h:outputLink"),
         new TagSelectorImpl("jsf:outcome", "h:link")
       }
     };
@@ -65,7 +69,8 @@ public class DefaultTagDecorator implements TagDecorator
     {
       "body",   new Object[]{new TagSelectorImpl(null, "h:body")},
       "button", new Object[]{
-          new TagSelectorImpl(null, "h:commandButton"),
+          new TagSelectorImpl("jsf:outcome", "h:button"),
+          new TagSelectorImpl(null, "h:commandButton")
       }
     };
     
@@ -113,8 +118,8 @@ public class DefaultTagDecorator implements TagDecorator
     
     static private final Object[] L_NAMES = new Object[]
     {
-      "label", new TagSelectorImpl(null, "h:outputLabel"),
-      "link",  new TagSelectorImpl(null, "h:outputStylesheet")
+      "label", new Object[]{new TagSelectorImpl(null, "h:outputLabel")},
+      "link",  new Object[]{new TagSelectorImpl(null, "h:outputStylesheet")}
     };
 
     static private final Object[] S_NAMES = new Object[]
@@ -122,8 +127,8 @@ public class DefaultTagDecorator implements TagDecorator
       "script", new Object[]{new TagSelectorImpl(null, "h:outputScript")},
       "select", new Object[]
       {
-        new TagSelectorImpl("multiple=\"*\"", "h:outputScript"),
-        new TagSelectorImpl(null, "h:outputScript")
+        new TagSelectorImpl("multiple=\"*\"", "h:selectManyListbox"),
+        new TagSelectorImpl(null, "h:selectOneListbox")
       }
     };
     
@@ -159,7 +164,7 @@ public class DefaultTagDecorator implements TagDecorator
         boolean jsfNamespaceFound = false;
         for (String namespace : tag.getAttributes().getNamespaces())
         {
-            if (JSF_NAMESPACE.equals(namespace))
+            if (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace))
             {
                 jsfNamespaceFound = true;
                 break;
@@ -239,9 +244,9 @@ public class DefaultTagDecorator implements TagDecorator
             String convertedNamespace;
             String qname;
             String namespace = tagAttribute.getNamespace();
-            if (JSF_NAMESPACE.equals(namespace))
+            if (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace))
             {
-                // "... If the current attribute's namespace is http://java.sun.com/jsf, convertedTagAttribute's 
+                // "... If the current attribute's namespace is http://xmlns.jcp.org/jsf, convertedTagAttribute's 
                 //  qualified name must be the current attribute's local name and convertedTagAttribute's 
                 // namespace must be the empty string. This will have the effect of setting the current 
                 // attribute as a proper property on the UIComponent instance represented by this markup.
@@ -275,9 +280,9 @@ public class DefaultTagDecorator implements TagDecorator
             }
             else
             {
-                // "... Otherwise, assume the current attribute's namespace is http://java.sun.com/jsf/passthrough. 
+                // "... Otherwise, assume the current attribute's namespace is http://xmlns.jcp.org/jsf/passthrough. 
                 // ConvertedTagAttribute's qualified name is the current attribute's local name prefixed by 
-                // p:". convertedTagAttribute's namespace must be http://java.sun.com/jsf/passthrough. 
+                // p:". convertedTagAttribute's namespace must be http://xmlns.jcp.org/jsf/passthrough. 
                 convertedNamespace = PASS_THROUGH_NAMESPACE;
                 qname = "p:"+tagAttribute.getLocalName();
                 
@@ -332,6 +337,7 @@ public class DefaultTagDecorator implements TagDecorator
         private String attributeLocalName;
         private String attributePrefix;
         private final String attributeNamespace;
+        private final String attributeAliasNamespace;
         private String matchValue;
         
         private String targetQName;
@@ -371,6 +377,7 @@ public class DefaultTagDecorator implements TagDecorator
                 this.attributeLocalName = (j >= 0) ? attributeQName.substring(j+1) : attributeQName;
                 this.attributePrefix = (j >= 0) ? attributeQName.substring(0, j) : null;
                 this.attributeNamespace = resolveSelectorNamespace(this.attributePrefix);
+                this.attributeAliasNamespace = resolveAliasSelectorNamespace(this.attributePrefix);
             }
             else
             {
@@ -379,6 +386,7 @@ public class DefaultTagDecorator implements TagDecorator
                 this.attributeLocalName = null;
                 this.attributePrefix = null;
                 this.attributeNamespace = "";
+                this.attributeAliasNamespace = null;
             }
             
             this.targetQName = targetQName;
@@ -411,10 +419,16 @@ public class DefaultTagDecorator implements TagDecorator
             {
                  if (matchValue != null)
                  {
-                     TagAttribute attr = tag.getAttributes().get(attributeNamespace, attributeLocalName);
+                     String attributeNS = attributeNamespace;
+                     TagAttribute attr = tag.getAttributes().get(attributeNS, attributeLocalName);
+                     if (attr == null && attributeAliasNamespace.length() > 0)
+                     {
+                         attributeNS = attributeAliasNamespace;
+                         attr = tag.getAttributes().get(attributeAliasNamespace, attributeLocalName);
+                     }
                      if (attr != null)
                      {
-                         if (attributeNamespace.equals(attr.getNamespace()))
+                         if (attributeNS.equals(attr.getNamespace()) )
                          {
                             // if namespace is the same match
                              if (matchValue.equals(attr.getValue()))
@@ -426,7 +440,7 @@ public class DefaultTagDecorator implements TagDecorator
                                  return this;
                              }
                          }
-                         else if (attributeNamespace == "" && attr.getNamespace() == null)
+                         else if (attributeNS == "" && attr.getNamespace() == null)
                          {
                              // if namespace is empty match
                              if (matchValue.equals(attr.getValue()))
@@ -438,20 +452,25 @@ public class DefaultTagDecorator implements TagDecorator
                                  return this;
                              }
                          }
-
                      }
                  }
                  else
                  {
-                     TagAttribute attr = tag.getAttributes().get(attributeNamespace, attributeLocalName);
+                     String attributeNS = attributeNamespace;
+                     TagAttribute attr = tag.getAttributes().get(attributeNS, attributeLocalName);
+                     if (attr == null)
+                     {
+                         attributeNS = attributeAliasNamespace;
+                         attr = tag.getAttributes().get(attributeNS, attributeLocalName);
+                     }
                      if (attr != null)
                      {
-                         if (attributeNamespace.equals(attr.getNamespace()))
+                         if (attributeNS.equals(attr.getNamespace()))
                          {
                              // if namespace is the same match
                              return this;
                          }
-                         else if (attributeNamespace == "" && attr.getNamespace() == null)
+                         else if (attributeNS == "" && attr.getNamespace() == null)
                          {
                              // if namespace is empty match
                              return this;
@@ -477,7 +496,7 @@ public class DefaultTagDecorator implements TagDecorator
     {
         if ("jsf".equals(prefix))
         {
-            return JSF_NAMESPACE;
+            return JsfLibrary.NAMESPACE;
         }
         else if ("h".equals(prefix))
         {
@@ -490,4 +509,20 @@ public class DefaultTagDecorator implements TagDecorator
         return "";
     }
 
+    private static String resolveAliasSelectorNamespace(String prefix)
+    {
+        if ("jsf".equals(prefix))
+        {
+            return JsfLibrary.ALIAS_NAMESPACE;
+        }
+        else if ("h".equals(prefix))
+        {
+            return HtmlLibrary.ALIAS_NAMESPACE;
+        }
+        else if ("f".equals(prefix))
+        {
+            return CoreLibrary.ALIAS_NAMESPACE;
+        }
+        return "";
+    }
 }

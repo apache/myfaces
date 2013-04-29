@@ -49,16 +49,19 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
  */
 public class CompositeResourceLibrary implements TagLibrary
 {
-    public final static String NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
+    public final static String NAMESPACE_PREFIX = "http://xmlns.jcp.org/jsf/composite/";
+    public final static String ALIAS_NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
     
     private final ResourceHandler _resourceHandler;
     private Pattern _acceptPatterns;
     private String _extension;
     private String[] _defaultSuffixesArray;
+    private String _namespacePrefix;
     
-    public CompositeResourceLibrary(FacesContext facesContext)
+    public CompositeResourceLibrary(FacesContext facesContext, String namespacePrefix)
     {
         super();
+        _namespacePrefix = namespacePrefix;
         _resourceHandler = facesContext.getApplication().getResourceHandler();
 
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -188,11 +191,11 @@ public class CompositeResourceLibrary implements TagLibrary
 
     public boolean containsNamespace(String ns)
     {
-        if (ns != null && ns.startsWith(NAMESPACE_PREFIX))
+        if (ns != null && ns.startsWith(_namespacePrefix))
         {
-            if (ns.length() > NAMESPACE_PREFIX.length())
+            if (ns.length() > _namespacePrefix.length())
             {
-                String libraryName = ns.substring(NAMESPACE_PREFIX.length());
+                String libraryName = ns.substring(_namespacePrefix.length());
                 return _resourceHandler.libraryExists(libraryName);
             }
         }        
@@ -201,11 +204,11 @@ public class CompositeResourceLibrary implements TagLibrary
 
     public boolean containsTagHandler(String ns, String localName)
     {
-        if (ns != null && ns.startsWith(NAMESPACE_PREFIX))
+        if (ns != null && ns.startsWith(_namespacePrefix))
         {
-            if (ns.length() > NAMESPACE_PREFIX.length())
+            if (ns.length() > _namespacePrefix.length())
             {
-                String libraryName = ns.substring(NAMESPACE_PREFIX.length());
+                String libraryName = ns.substring(_namespacePrefix.length());
                 
                 for (String defaultSuffix : _defaultSuffixesArray)
                 {
@@ -235,11 +238,11 @@ public class CompositeResourceLibrary implements TagLibrary
     public TagHandler createTagHandler(String ns, String localName,
             TagConfig tag) throws FacesException
     {
-        if (ns != null && ns.startsWith(NAMESPACE_PREFIX))
+        if (ns != null && ns.startsWith(_namespacePrefix))
         {
-            if (ns.length() > NAMESPACE_PREFIX.length())
+            if (ns.length() > _namespacePrefix.length())
             {
-                String libraryName = ns.substring(NAMESPACE_PREFIX.length());
+                String libraryName = ns.substring(_namespacePrefix.length());
                 for (String defaultSuffix : _defaultSuffixesArray)
                 {
                     String resourceName = localName + defaultSuffix;

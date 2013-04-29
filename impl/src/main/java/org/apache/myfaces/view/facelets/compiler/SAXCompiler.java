@@ -362,7 +362,8 @@ public final class SAXCompiler extends Compiler
             {
                 this.unit.popTag();
             }
-            if (CoreLibrary.NAMESPACE.equals(uri) && "metadata".equals(localName))
+            if ( (CoreLibrary.NAMESPACE.equals(uri) ||
+                CoreLibrary.ALIAS_NAMESPACE.equals(uri)) && "metadata".equals(localName))
             {
                 this.inMetadata=false;
             }            
@@ -442,7 +443,8 @@ public final class SAXCompiler extends Compiler
 
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-            if (CoreLibrary.NAMESPACE.equals(uri) && "metadata".equals(localName))
+            if ( (CoreLibrary.NAMESPACE.equals(uri) ||
+                CoreLibrary.ALIAS_NAMESPACE.equals(uri)) && "metadata".equals(localName))
             {
                 this.inMetadata=true;
             }
@@ -571,7 +573,8 @@ public final class SAXCompiler extends Compiler
             {
                 this.unit.popTag();
             }
-            else if (inCompositeImplementation && CompositeLibrary.NAMESPACE.equals(uri))
+            else if (inCompositeImplementation && 
+                (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri)) )
             {
                 if ( "insertFacet".equals(localName) ||
                      "renderFacet".equals(localName) ||
@@ -582,7 +585,7 @@ public final class SAXCompiler extends Compiler
                 }
             }
             
-            if (CompositeLibrary.NAMESPACE.equals(uri))
+            if (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri))
             {
                 if (InterfaceHandler.NAME.equals(localName))
                 {
@@ -669,7 +672,7 @@ public final class SAXCompiler extends Compiler
 
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-            if (CompositeLibrary.NAMESPACE.equals(uri))
+            if (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri))
             {
                 if (InterfaceHandler.NAME.equals(localName))
                 {
@@ -685,7 +688,8 @@ public final class SAXCompiler extends Compiler
             {
                 this.unit.pushTag(new Tag(createLocation(), uri, localName, qName, createAttributes(attributes)));
             }
-            else if (inCompositeImplementation && CompositeLibrary.NAMESPACE.equals(uri))
+            else if (inCompositeImplementation && 
+                (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri)))
             {
                 if ("insertFacet".equals(localName)    ||
                     "renderFacet".equals(localName)    ||

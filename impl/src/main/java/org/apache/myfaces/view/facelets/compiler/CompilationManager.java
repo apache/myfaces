@@ -458,23 +458,25 @@ final class CompilationManager
 
     protected static boolean isRemove(String ns, String name)
     {
-        return UILibrary.NAMESPACE.equals(ns) && "remove".equals(name);
+        return (UILibrary.NAMESPACE.equals(ns) || UILibrary.ALIAS_NAMESPACE.equals(ns)) && "remove".equals(name);
     }
 
     protected static boolean isTrimmed(String ns, String name)
     {
-        return UILibrary.NAMESPACE.equals(ns)
+        return (UILibrary.NAMESPACE.equals(ns) || UILibrary.ALIAS_NAMESPACE.equals(ns))
                 && (CompositionHandler.NAME.equals(name) || ComponentRefHandler.NAME.equals(name));
     }
     
     protected static boolean isCompositeComponentInterface(String ns, String name)
     {
-        return CompositeLibrary.NAMESPACE.equals(ns) && InterfaceHandler.NAME.equals(name);
+        return (CompositeLibrary.NAMESPACE.equals(ns) || CompositeLibrary.ALIAS_NAMESPACE.equals(ns))
+            && InterfaceHandler.NAME.equals(name);
     }
 
     protected static boolean isCompositeComponentImplementation(String ns, String name)
     {
-        return CompositeLibrary.NAMESPACE.equals(ns) && ImplementationHandler.NAME.equals(name);
+        return (CompositeLibrary.NAMESPACE.equals(ns) || CompositeLibrary.ALIAS_NAMESPACE.equals(ns))
+            && ImplementationHandler.NAME.equals(name);
     }
 
     private String[] determineQName(Tag tag)
