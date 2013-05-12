@@ -302,6 +302,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (state != null && state[1] != null)
             {
                 states = (Map<String, Object>) state[1];
+                //Save the last unique id counter key in UIViewRoot
+                Long lastUniqueIdCounter = (Long) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
+                
                 // Visit the children and restore their state.
                 boolean emptyState = false;
                 boolean containsFaceletState = states.containsKey(
@@ -343,6 +346,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 if (faceletViewState != null)
                 {
                     view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                }
+                if (lastUniqueIdCounter != null)
+                {
+                    Long newUniqueIdCounter = (Long) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
+                    if (newUniqueIdCounter != null && 
+                        lastUniqueIdCounter.longValue() > newUniqueIdCounter.longValue())
+                    {
+                        // The unique counter was restored by a side effect of 
+                        // restoreState() over UIViewRoot with a lower count,
+                        // to avoid a component duplicate id exception we need to fix the count.
+                        view.getAttributes().put(UNIQUE_ID_COUNTER_KEY, lastUniqueIdCounter);
+                    }
                 }
                 handleDynamicAddedRemovedComponents(context, view, states);
             }
