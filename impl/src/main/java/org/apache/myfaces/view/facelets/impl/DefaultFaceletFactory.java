@@ -101,7 +101,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         _resolver = resolver;
 
-        _baseUrl = resolver.resolveUrl("/");
+        //_baseUrl = resolver.resolveUrl("/");
 
         _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
         
@@ -192,6 +192,15 @@ public final class DefaultFaceletFactory extends FaceletFactory
     {
         return _compiler;
     }
+    
+    private URL getBaseUrl()
+    {
+        if (_baseUrl == null)
+        {
+            _baseUrl = _resolver.resolveUrl("/");
+        }
+        return _baseUrl;
+    }
 
     /*
      * (non-Javadoc)
@@ -204,7 +213,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
-            url = resolveURL(_baseUrl, uri);
+            url = resolveURL(getBaseUrl(), uri);
             if (url != null)
             {
                 Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
@@ -347,7 +356,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             log.fine("Creating Facelet for: " + url);
         }
 
-        String alias = "/" + _removeFirst(url.getFile(), _baseUrl.getFile());
+        String alias = "/" + _removeFirst(url.getFile(), getBaseUrl().getFile());
         try
         {
             FaceletHandler h = _compiler.compile(url, alias);
@@ -379,7 +388,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String faceletId = "/"+ _removeFirst(url.getFile(), _baseUrl.getFile());
+        String faceletId = "/"+ _removeFirst(url.getFile(), getBaseUrl().getFile());
         String alias = "/viewMetadata" + faceletId;
         try
         {
@@ -414,7 +423,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String alias = "/compositeComponentMetadata/" + _removeFirst(url.getFile(), _baseUrl.getFile());
+        String alias = "/compositeComponentMetadata/" + _removeFirst(url.getFile(), getBaseUrl().getFile());
         try
         {
             FaceletHandler h = _compiler.compileCompositeComponentMetadata(url, alias);
@@ -439,7 +448,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
-            url = resolveURL(_baseUrl, uri);
+            url = resolveURL(getBaseUrl(), uri);
             if (url != null)
             {
                 Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
@@ -482,7 +491,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
-            url = resolveURL(_baseUrl, uri);
+            url = resolveURL(getBaseUrl(), uri);
             if (url != null)
             {
                 Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);

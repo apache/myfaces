@@ -42,6 +42,21 @@ public abstract class ResourceHandler
     public static final String RESOURCE_EXCLUDES_PARAM_NAME = "javax.faces.RESOURCE_EXCLUDES";
     public static final String RESOURCE_IDENTIFIER = "/javax.faces.resource";
     
+    /**
+     * @since 2.2
+     */
+    public static final String RESOURCE_CONTRACT_XML = "javax.faces.contract.xml";
+    
+    /**
+     * @since 2.2
+     */
+    public static final String WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME = "javax.faces.WEBAPP_CONTRACTS_DIRECTORY";
+
+    /**
+     * @since 2.2
+     */
+    public static final String WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME = "javax.faces.WEBAPP_RESOURCES_DIRECTORY";
+     
     public abstract Resource createResource(String resourceName);
     
     public abstract Resource createResource(String resourceName, String libraryName);
@@ -55,4 +70,27 @@ public abstract class ResourceHandler
     public abstract boolean isResourceRequest(FacesContext context);
     
     public abstract  boolean libraryExists(String libraryName);
+    
+    /**
+     * @since 2.2
+     * @param resourceId
+     * @return 
+     */
+    public Resource createResourceFromId(String resourceId)
+    {
+        return null;
+    }
+    
+    /**
+     * 
+     * @since 2.2
+     * @param context
+     * @param resourceName
+     * @return 
+     */
+    public Resource createViewResource(FacesContext context,
+                                       String resourceName)
+    {
+        return context.getApplication().getResourceHandler().createResource(resourceName);
+    }
 }

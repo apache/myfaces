@@ -22,6 +22,7 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -107,5 +108,33 @@ public abstract class ViewDeclarationLanguage
             }
         }
         return false;
+    }
+    
+    /**
+     * @since 2.2
+     * @param context
+     * @param taglibURI
+     * @param tagName
+     * @param attributes
+     * @return 
+     */
+    public UIComponent createComponent(FacesContext context,
+                                   String taglibURI,
+                                   String tagName,
+                                   Map<String,Object> attributes)
+    {
+        return null;
+    }
+    
+    /**
+     * @since 2.2
+     * @param context
+     * @param viewId
+     * @return 
+     */
+    public List<String> calculateResourceLibraryContracts(FacesContext context,
+                                                      String viewId)
+    {
+        return null;
     }
 }

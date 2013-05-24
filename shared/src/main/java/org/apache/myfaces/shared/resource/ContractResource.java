@@ -19,34 +19,19 @@
 package org.apache.myfaces.shared.resource;
 
 /**
- * Contains the metadata information to reference a resource 
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * Indicates if a resource has been served from a contract.
+ *
+ * @author Leonardo Uribe
  */
-public abstract class ResourceMeta
+public interface ContractResource
 {
-    
-    public abstract String getLibraryName();
-    
-    public abstract String getResourceName();
-
-    public abstract String getLocalePrefix();
-
-    public abstract String getLibraryVersion();
-
-    public abstract String getResourceVersion();
-    
-    public abstract String getResourceIdentifier();
-    
-    public abstract boolean couldResourceContainValueExpressions();
-    
     /**
-     * @since 2.2
-     * @return 
+     * FacesContext attribute map that helps ResourceHandlerImpl to locate 
+     * a resource from an specified contract.
      */
-    public String getContractName()
-    {
-        return null;
-    }
+    public static final String CONTRACT_SELECTED = "oam.contract.SELECTED";
+    
+    public boolean isContractResource();
+    
+    public String getContractName();
 }

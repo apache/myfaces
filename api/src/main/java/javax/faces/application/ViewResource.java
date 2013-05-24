@@ -16,37 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.resource;
+package javax.faces.application;
+
+import java.net.URL;
 
 /**
- * Contains the metadata information to reference a resource 
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
+ *
+ * @since 2.2
  */
-public abstract class ResourceMeta
+public abstract class ViewResource
 {
-    
-    public abstract String getLibraryName();
-    
-    public abstract String getResourceName();
-
-    public abstract String getLocalePrefix();
-
-    public abstract String getLibraryVersion();
-
-    public abstract String getResourceVersion();
-    
-    public abstract String getResourceIdentifier();
-    
-    public abstract boolean couldResourceContainValueExpressions();
-    
-    /**
-     * @since 2.2
-     * @return 
-     */
-    public String getContractName()
+    public ViewResource()
     {
-        return null;
     }
+    
+    public abstract URL getURL();
 }

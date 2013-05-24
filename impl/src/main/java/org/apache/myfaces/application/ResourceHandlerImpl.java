@@ -40,13 +40,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import org.apache.myfaces.shared.resource.ContractResource;
+import org.apache.myfaces.shared.resource.ContractResourceLoader;
 
 /**
  * DOCUMENT ME!
@@ -85,6 +88,9 @@ public class ResourceHandlerImpl extends ResourceHandler
     public static final String INIT_PARAM_RESOURCE_BUFFER_SIZE = "org.apache.myfaces.RESOURCE_BUFFER_SIZE";
     public static final int INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
     
+    public static final Pattern LIBRARY_VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*");
+    public static final Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*\\..*");    
+    
     private Boolean _allowSlashLibraryName;
     private int _resourceBufferSize = -1;
     
@@ -108,6 +114,13 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         Resource resource = null;
         
+        if (resourceName.charAt(0) == '/')
+        {
+            // If resourceName starts with '/', remove that character because it
+            // does not have any meaning (with and without should point to the 
+            // same resource).
+            resourceName = resourceName.substring(1);
+        }        
         if (!ResourceValidationUtils.isValidResourceName(resourceName))
         {
             return null;
@@ -117,45 +130,248 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             return null;
         }
-        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
         if (contentType == null)
         {
             //Resolve contentType using ExternalContext.getMimeType
-            contentType = FacesContext.getCurrentInstance().getExternalContext().getMimeType(resourceName);
+            contentType = facesContext.getExternalContext().getMimeType(resourceName);
         }
 
-        final String localePrefix = getLocalePrefixForLocateResource();
-
-        // check cache
-        if(getResourceLoaderCache().containsResource(resourceName, libraryName, contentType, localePrefix))
+        final String localePrefix = getLocalePrefixForLocateResource(facesContext);
+        final List<String> contracts = facesContext.getResourceLibraryContracts(); 
+        boolean found = false;
+        String contractSelected = null;
+        String contractPreferred = getContractNameForLocateResource(facesContext);
+        
+        // Check cache:
+        //
+        // Contracts are on top of everything, because it is a concept that defines
+        // resources in a application scope concept. It means all resources in
+        // /resources or /META-INF/resources can be overriden using a contract. Note
+        // it also means resources under /META-INF/flows can also be overriden using
+        // a contract.
+        
+        // Check first the preferred contract if any. If not found, try the remaining
+        // contracts and finally if not found try to found a resource without a 
+        // contract name.
+        if (contractPreferred != null)
+        {
+            if (getResourceLoaderCache().containsResource(
+                    resourceName, libraryName, contentType, localePrefix, contractPreferred))
+            {
+                contractSelected = contractPreferred;
+                found = true;
+            }
+        }
+        if (!found && !contracts.isEmpty())
+        {
+            // Try to get resource but try with a contract name
+            for (String contract : contracts)
+            {
+                if (getResourceLoaderCache().containsResource(
+                    resourceName, libraryName, contentType, localePrefix, contract))
+                {
+                    contractSelected = contract;
+                    found = true;
+                    break;
+                }
+            }
+        }
+        // Only if no contract preferred try without it.
+        if (!found)
+        {
+            // Try to get resource without contract name
+            found = getResourceLoaderCache().containsResource(resourceName, libraryName, contentType, localePrefix);
+        }
+        
+        if(found)
         {
             ResourceValue resourceValue = getResourceLoaderCache().getResource(
-                    resourceName, libraryName, contentType, localePrefix);
+                    resourceName, libraryName, contentType, localePrefix, contractSelected);
             
             resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
                     getResourceHandlerSupport(), contentType);
         }
         else
         {
-            for (ResourceLoader loader : getResourceHandlerSupport().getResourceLoaders())
+            boolean resolved = false;
+            // Try preferred contract first
+            if (contractPreferred != null)
             {
-                ResourceMeta resourceMeta = deriveResourceMeta(loader, resourceName, libraryName, localePrefix);
-    
-                if (resourceMeta != null)
+                for (ContractResourceLoader loader : getResourceHandlerSupport().getContractResourceLoaders())
                 {
-                    resource = new ResourceImpl(resourceMeta, loader, getResourceHandlerSupport(), contentType);
+                    ResourceMeta resourceMeta = deriveResourceMeta(loader, resourceName, libraryName, 
+                        localePrefix, contractPreferred);
+                    if (resourceMeta != null)
+                    {
+                        resource = new ResourceImpl(resourceMeta, loader, 
+                            getResourceHandlerSupport(), contentType);
 
-                    // cache it
-                    getResourceLoaderCache().putResource(resourceName, libraryName, contentType,
-                            localePrefix, resourceMeta, loader);
-                    break;
+                        // cache it
+                        getResourceLoaderCache().putResource(resourceName, libraryName, contentType,
+                                localePrefix, contractPreferred, resourceMeta, loader);
+                        resolved = true;
+                        break;
+                    }
+                }
+            }
+            if (!resolved && !contracts.isEmpty())
+            {
+                for (ContractResourceLoader loader : 
+                    getResourceHandlerSupport().getContractResourceLoaders())
+                {
+                    for (String contract : contracts)
+                    {
+                        ResourceMeta resourceMeta = deriveResourceMeta(
+                            loader, resourceName, libraryName, 
+                            localePrefix, contract);
+                        if (resourceMeta != null)
+                        {
+                            resource = new ResourceImpl(resourceMeta, loader, 
+                                getResourceHandlerSupport(), contentType);
+
+                            // cache it
+                            getResourceLoaderCache().putResource(
+                                    resourceName, libraryName, contentType,
+                                    localePrefix, contract, resourceMeta, loader);
+                            resolved = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!resolved)
+            {
+                for (ResourceLoader loader : getResourceHandlerSupport().getResourceLoaders())
+                {
+                    ResourceMeta resourceMeta = deriveResourceMeta(
+                        loader, resourceName, libraryName, localePrefix);
+
+                    if (resourceMeta != null)
+                    {
+                        resource = new ResourceImpl(
+                            resourceMeta, loader, getResourceHandlerSupport(), contentType);
+
+                        // cache it
+                        getResourceLoaderCache().putResource(resourceName, libraryName, contentType,
+                                localePrefix, resourceMeta, loader);
+                        break;
+                    }
                 }
             }
         }
-        
         return resource;
     }
 
+    protected ResourceMeta deriveResourceMeta(ContractResourceLoader resourceLoader,
+            String resourceName, String libraryName, String localePrefix, String contractName)
+    {
+        String resourceVersion = null;
+        String libraryVersion = null;
+        ResourceMeta resourceId = null;
+        
+        //1. Try to locate resource in a localized path
+        if (localePrefix != null)
+        {
+            if (null != libraryName)
+            {
+                String pathToLib = localePrefix + '/' + libraryName;
+                libraryVersion = resourceLoader.getLibraryVersion(pathToLib, contractName);
+
+                if (null != libraryVersion)
+                {
+                    String pathToResource = localePrefix + '/'
+                            + libraryName + '/' + libraryVersion + '/'
+                            + resourceName;
+                    resourceVersion = resourceLoader
+                            .getResourceVersion(pathToResource, contractName);
+                }
+                else
+                {
+                    String pathToResource = localePrefix + '/'
+                            + libraryName + '/' + resourceName;
+                    resourceVersion = resourceLoader
+                            .getResourceVersion(pathToResource, contractName);
+                }
+
+                if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+                {
+                    resourceId = resourceLoader.createResourceMeta(localePrefix, libraryName,
+                            libraryVersion, resourceName, resourceVersion, contractName);
+                }
+            }
+            else
+            {
+                resourceVersion = resourceLoader
+                        .getResourceVersion(localePrefix + '/'+ resourceName, contractName);
+                if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+                {               
+                    resourceId = resourceLoader.createResourceMeta(localePrefix, null, null,
+                            resourceName, resourceVersion, contractName);
+                }
+            }
+
+            if (resourceId != null)
+            {
+                if (!resourceLoader.resourceExists(resourceId))
+                {
+                    resourceId = null;
+                }
+            }            
+        }
+        
+        //2. Try to localize resource in a non localized path
+        if (resourceId == null)
+        {
+            if (null != libraryName)
+            {
+                libraryVersion = resourceLoader.getLibraryVersion(libraryName, contractName);
+
+                if (null != libraryVersion)
+                {
+                    String pathToResource = (libraryName + '/' + libraryVersion
+                            + '/' + resourceName);
+                    resourceVersion = resourceLoader
+                            .getResourceVersion(pathToResource, contractName);
+                }
+                else
+                {
+                    String pathToResource = (libraryName + '/'
+                            + resourceName);
+                    resourceVersion = resourceLoader
+                            .getResourceVersion(pathToResource, contractName);
+                }
+
+                if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+                {               
+                    resourceId = resourceLoader.createResourceMeta(null, libraryName,
+                            libraryVersion, resourceName, resourceVersion, contractName);
+                }
+            }
+            else
+            {
+                resourceVersion = resourceLoader
+                        .getResourceVersion(resourceName, contractName);
+                
+                if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+                {               
+                    resourceId = resourceLoader.createResourceMeta(null, null, null,
+                            resourceName, resourceVersion, contractName);
+                }
+            }
+
+            if (resourceId != null)
+            {
+                if (!resourceLoader.resourceExists(resourceId))
+                {
+                    resourceId = null;
+                }
+            }            
+        }
+        
+        return resourceId;
+    }
+    
     /**
      * This method try to create a ResourceMeta for a specific resource
      * loader. If no library, or resource is found, just return null,
@@ -212,8 +428,7 @@ public class ResourceHandlerImpl extends ResourceHandler
 
             if (resourceId != null)
             {
-                URL url = resourceLoader.getResourceURL(resourceId);
-                if (url == null)
+                if (!resourceLoader.resourceExists(resourceId))
                 {
                     resourceId = null;
                 }
@@ -262,8 +477,7 @@ public class ResourceHandlerImpl extends ResourceHandler
 
             if (resourceId != null)
             {
-                URL url = resourceLoader.getResourceURL(resourceId);
-                if (url == null)
+                if (!resourceLoader.resourceExists(resourceId))
                 {
                     resourceId = null;
                 }
@@ -495,8 +709,12 @@ public class ResourceHandlerImpl extends ResourceHandler
 
     protected String getLocalePrefixForLocateResource()
     {
+        return getLocalePrefixForLocateResource(FacesContext.getCurrentInstance());
+    }
+
+    protected String getLocalePrefixForLocateResource(FacesContext context)
+    {
         String localePrefix = null;
-        FacesContext context = FacesContext.getCurrentInstance();
         boolean isResourceRequest = context.getApplication().getResourceHandler().isResourceRequest(context);
 
         if (isResourceRequest)
@@ -546,6 +764,31 @@ public class ResourceHandlerImpl extends ResourceHandler
         }
         return localePrefix;
     }
+    
+    protected String getContractNameForLocateResource(FacesContext context)
+    {
+        String contractName = null;
+        boolean isResourceRequest = context.getApplication().getResourceHandler().isResourceRequest(context);
+
+        if (isResourceRequest)
+        {
+            contractName = context.getExternalContext().getRequestParameterMap().get("con");
+        }
+        
+        // Check if the contract has been injected.
+        if (contractName == null)
+        {
+            contractName = (String) context.getAttributes().get(ContractResource.CONTRACT_SELECTED);
+        }
+        
+        //Validate
+        if (contractName != null &&
+            !ResourceValidationUtils.isValidContractName(contractName))
+        {
+            return null;
+        }
+        return contractName;
+    }
 
     protected boolean isResourceIdentifierExcluded(FacesContext context, String resourceIdentifier)
     {
@@ -577,7 +820,9 @@ public class ResourceHandlerImpl extends ResourceHandler
     @Override
     public boolean libraryExists(String libraryName)
     {
-        String localePrefix = getLocalePrefixForLocateResource();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        String localePrefix = getLocalePrefixForLocateResource(facesContext);
+        final List<String> contracts = facesContext.getResourceLibraryContracts(); 
 
         String pathToLib = null;
         
@@ -592,6 +837,21 @@ public class ResourceHandlerImpl extends ResourceHandler
             //Check with locale
             pathToLib = localePrefix + '/' + libraryName;
             
+            if (!contracts.isEmpty())
+            {
+                for (String contract : contracts)
+                {
+                    for (ContractResourceLoader loader : getResourceHandlerSupport()
+                            .getContractResourceLoaders())
+                    {
+                        if (loader.libraryExists(pathToLib, contract))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
             for (ResourceLoader loader : getResourceHandlerSupport()
                     .getResourceLoaders())
             {
@@ -603,6 +863,21 @@ public class ResourceHandlerImpl extends ResourceHandler
         }
 
         //Check without locale
+        if (!contracts.isEmpty())
+        {
+            for (String contract : contracts)
+            {
+                for (ContractResourceLoader loader : getResourceHandlerSupport()
+                        .getContractResourceLoaders())
+                {
+                    if (loader.libraryExists(contract, libraryName))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
         for (ResourceLoader loader : getResourceHandlerSupport()
                 .getResourceLoaders())
         {
@@ -709,6 +984,779 @@ public class ResourceHandlerImpl extends ResourceHandler
                 INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT);
         }
         return _resourceBufferSize;
+    }
+
+    @Override
+    public Resource createResourceFromId(String resourceId)
+    {
+        Resource resource = null;
+
+        if (resourceId == null)
+        {
+            throw new NullPointerException();
+        }
+        
+        // Later in deriveResourceMeta the resourceId is decomposed and
+        // its elements validated properly.
+        if (!ResourceValidationUtils.isValidResourceId(resourceId))
+        {
+            return null;
+        }
+        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        final List<String> contracts = facesContext.getResourceLibraryContracts(); 
+        boolean found = false;
+        String contractSelected = null;
+        String contractPreferred = getContractNameForLocateResource(facesContext);
+        
+        // Check cache:
+        //
+        // Contracts are on top of everything, because it is a concept that defines
+        // resources in a application scope concept. It means all resources in
+        // /resources or /META-INF/resources can be overriden using a contract. Note
+        // it also means resources under /META-INF/flows can also be overriden using
+        // a contract.
+        if (contractPreferred != null)
+        {
+            if (getResourceLoaderCache().containsResource(
+                    resourceId, contractPreferred))
+            {
+                contractSelected = contractPreferred;
+                found = true;
+            }
+        }
+        if (!found && !contracts.isEmpty())
+        {
+            // Try to get resource but try with a contract name
+            for (String contract : contracts)
+            {
+                if (getResourceLoaderCache().containsResource(resourceId, contract))
+                {
+                    contractSelected = contract;
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found)
+        {
+            // Try to get resource without contract name
+            found = getResourceLoaderCache().containsResource(resourceId);
+        }
+        
+        if(found)
+        {        
+            ResourceValue resourceValue = contractSelected != null ?
+                getResourceLoaderCache().getResource(resourceId, contractSelected) :
+                getResourceLoaderCache().getResource(resourceId);
+            
+            //Resolve contentType using ExternalContext.getMimeType
+            String contentType = facesContext.getExternalContext().getMimeType(
+                resourceValue.getResourceMeta().getResourceName());
+
+            resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
+                    getResourceHandlerSupport(), contentType);
+        }
+        else 
+        {
+            boolean resolved = false;
+            if (contractPreferred != null)
+            {
+                for (ContractResourceLoader loader : getResourceHandlerSupport().getContractResourceLoaders())
+                {
+                    ResourceMeta resourceMeta = deriveResourceMeta(
+                        facesContext, loader, resourceId, contractPreferred);
+                    if (resourceMeta != null)
+                    {
+                        String contentType = facesContext.getExternalContext().getMimeType(
+                            resourceMeta.getResourceName());
+                        
+                        resource = new ResourceImpl(resourceMeta, loader, 
+                            getResourceHandlerSupport(), contentType);
+
+                        // cache it
+                        getResourceLoaderCache().putResource(resourceId, resourceMeta, loader);
+                        
+                        resolved = true;
+                        break;
+                    }
+                }
+            }
+            if (!resolved && !contracts.isEmpty())
+            {
+                for (ContractResourceLoader loader : 
+                        getResourceHandlerSupport().getContractResourceLoaders())
+                {
+                    for (String contract : contracts)
+                    {
+                        ResourceMeta resourceMeta = deriveResourceMeta(
+                            facesContext, loader, resourceId, contract);
+                        if (resourceMeta != null)
+                        {
+                            String contentType = facesContext.getExternalContext().getMimeType(
+                                resourceMeta.getResourceName());
+
+                            resource = new ResourceImpl(resourceMeta, loader, 
+                                getResourceHandlerSupport(), contentType);
+
+                            // cache it
+                            getResourceLoaderCache().putResource(resourceId, resourceMeta, loader);
+
+                            resolved = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!resolved)
+            {
+                for (ResourceLoader loader : getResourceHandlerSupport().getResourceLoaders())
+                {
+                    ResourceMeta resourceMeta = deriveResourceMeta(facesContext, loader, resourceId);
+
+                    if (resourceMeta != null)
+                    {
+                        String contentType = facesContext.getExternalContext().getMimeType(
+                            resourceMeta.getResourceName());
+
+                        resource = new ResourceImpl(resourceMeta, loader, getResourceHandlerSupport(), contentType);
+
+                        // cache it
+                        getResourceLoaderCache().putResource(resourceId, resourceMeta, loader);
+                        break;
+                    }
+                }
+            }
+        }
+        return resource;
+    }
+
+    protected ResourceMeta deriveResourceMeta(FacesContext context, ResourceLoader resourceLoader,
+            String resourceId)
+    {
+        ResourceMeta resourceMeta = null;
+        String token = null;
+        String localePrefix = null;
+        String libraryName = null;
+        String libraryVersion = null;
+        String resourceName = null;
+        String resourceVersion = null;
+        
+        // Check if resource exists. It avoids additional 
+        // checks and it can be done very quickly because the 
+        // loader always uses the resourceId structure to
+        // organize resources. But decompose the resourceId is
+        // even faster.
+        //if (resourceLoader.resourceIdExists(resourceId))
+        //{
+        int lastSlash = resourceId.lastIndexOf('/');
+        if (lastSlash < 0)
+        {
+            //no slashes, so it is just a plain resource.
+            resourceName = resourceId;
+        }
+        else
+        {
+            token = resourceId.substring(lastSlash+1);
+            if (RESOURCE_VERSION_CHECKER.matcher(token).matches())
+            {
+                int secondLastSlash = resourceId.lastIndexOf('/', lastSlash-1);
+                if (secondLastSlash < 0)
+                {
+                    secondLastSlash = 0;
+                }
+
+                String rnToken = resourceId.substring(secondLastSlash+1, lastSlash);
+                int lastPoint = rnToken.lastIndexOf('.');
+                if (lastPoint < 0)
+                {
+                    //does not match, the token is not a resource version
+                }
+                else
+                {
+                    String ext = rnToken.substring(lastPoint);
+                    if (token.endsWith(ext))
+                    {
+                        //It match a versioned resource
+                        resourceVersion = token.substring(0,token.length()-ext.length());
+                    }
+                }
+            }
+
+            // 1. Extract the library path and locale prefix if necessary
+            int start = 0;
+            int firstSlash = resourceId.indexOf('/');
+
+            // At least one slash, check if the start is locale prefix.
+            String bundleName = context.getApplication().getMessageBundle();
+            //If no bundle set, it can't be localePrefix
+            if (null != bundleName)
+            {
+                token = resourceId.substring(start, firstSlash);
+                //Try to derive a locale object
+                Locale locale = _LocaleUtils.deriveLocale(token);
+
+                // If the locale was derived and it is available, 
+                // assume that portion of the resourceId it as a locale prefix.
+                if (locale != null && _LocaleUtils.isAvailableLocale(locale))
+                {
+                    localePrefix = token;
+                    start = firstSlash+1;
+                }
+            }
+
+            //Check slash again from start
+            firstSlash = resourceId.indexOf('/', start);
+            if (firstSlash < 0)
+            {
+                //no slashes.
+                resourceName = resourceId.substring(start);
+            }
+            else
+            {
+                //check libraryName
+                token = resourceId.substring(start, firstSlash);
+                int minResourceNameSlash = (resourceVersion != null) ?
+                    resourceId.lastIndexOf('/', lastSlash-1) : lastSlash;
+                //if (resourceLoader.libraryExists(token))
+                if (start < minResourceNameSlash)
+                {
+                    libraryName = token;
+                    start = firstSlash+1;
+
+                    //Now that libraryName exists, check libraryVersion
+                    firstSlash = resourceId.indexOf('/', start);
+                    if (firstSlash >= 0)
+                    {
+                        token = resourceId.substring(start, firstSlash);
+                        if (LIBRARY_VERSION_CHECKER.matcher(token).matches())
+                        {
+                            libraryVersion = token;
+                            start = firstSlash+1;
+                        }
+                    }
+                }
+
+                firstSlash = resourceId.indexOf('/', start);
+                if (firstSlash < 0)
+                {
+                    //no slashes.
+                    resourceName = resourceId.substring(start);
+                }
+                else
+                {
+                    // Check resource version. 
+                    if (resourceVersion != null)
+                    {
+                        resourceName = resourceId.substring(start,lastSlash);
+                    }
+                    else
+                    {
+                        //no resource version, assume the remaining to be resource name
+                        resourceName = resourceId.substring(start);
+                    }
+                }
+            }
+        }
+
+        //Check libraryName and resourceName
+        if (resourceName == null)
+        {
+            return null;
+        }
+        if (!ResourceValidationUtils.isValidResourceName(resourceName))
+        {
+            return null;
+        }
+
+        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
+                libraryName, isAllowSlashesLibraryName()))
+        {
+            return null;
+        }
+
+        // If some variable is "" set it as null.
+        if (localePrefix != null && localePrefix.length() == 0)
+        {
+            localePrefix = null;
+        }
+        if (libraryName != null && libraryName.length() == 0)
+        {
+            libraryName = null;
+        }
+        if (libraryVersion != null && libraryVersion.length() == 0)
+        {
+            libraryVersion = null;
+        }
+        if (resourceName != null && resourceName.length() == 0)
+        {
+            resourceName = null;
+        }
+        if (resourceVersion != null && resourceVersion.length() == 0)
+        {
+            resourceVersion = null;
+        }
+
+        resourceMeta = resourceLoader.createResourceMeta(
+            localePrefix, libraryName, libraryVersion, resourceName, resourceVersion);
+
+        if (resourceMeta != null &&
+            !resourceLoader.resourceExists(resourceMeta))
+        {
+            resourceMeta = null;
+        }
+        //}
+        return resourceMeta;
+    }
+    
+    protected ResourceMeta deriveResourceMeta(FacesContext context, ContractResourceLoader resourceLoader,
+            String resourceId, String contractName)
+    {
+        ResourceMeta resourceMeta = null;
+        String token = null;
+        String localePrefix = null;
+        String libraryName = null;
+        String libraryVersion = null;
+        String resourceName = null;
+        String resourceVersion = null;
+        
+        // Check if resource exists. It avoids additional 
+        // checks and it can be done very quickly because the 
+        // loader always uses the resourceId structure to
+        // organize resources. But decompose the resourceId is
+        // even faster.
+        //if (resourceLoader.resourceIdExists(resourceId))
+        //{
+        int lastSlash = resourceId.lastIndexOf('/');
+        if (lastSlash < 0)
+        {
+            //no slashes, so it is just a plain resource.
+            resourceName = resourceId;
+        }
+        else
+        {
+            token = resourceId.substring(lastSlash+1);
+            if (RESOURCE_VERSION_CHECKER.matcher(token).matches())
+            {
+                int secondLastSlash = resourceId.lastIndexOf('/', lastSlash-1);
+                if (secondLastSlash < 0)
+                {
+                    secondLastSlash = 0;
+                }
+
+                String rnToken = resourceId.substring(secondLastSlash+1, lastSlash);
+                int lastPoint = rnToken.lastIndexOf('.');
+                if (lastPoint < 0)
+                {
+                    //does not match, the token is not a resource version
+                }
+                else
+                {
+                    String ext = rnToken.substring(lastPoint);
+                    if (token.endsWith(ext))
+                    {
+                        //It match a versioned resource
+                        resourceVersion = token.substring(0,token.length()-ext.length());
+                    }
+                }
+            }
+
+            // 1. Extract the library path and locale prefix if necessary
+            int start = 0;
+            int firstSlash = resourceId.indexOf('/');
+
+            // At least one slash, check if the start is locale prefix.
+            String bundleName = context.getApplication().getMessageBundle();
+            //If no bundle set, it can't be localePrefix
+            if (null != bundleName)
+            {
+                token = resourceId.substring(start, firstSlash);
+                //Try to derive a locale object
+                Locale locale = _LocaleUtils.deriveLocale(token);
+
+                // If the locale was derived and it is available, 
+                // assume that portion of the resourceId it as a locale prefix.
+                if (locale != null && _LocaleUtils.isAvailableLocale(locale))
+                {
+                    localePrefix = token;
+                    start = firstSlash+1;
+                }
+            }
+
+            //Check slash again from start
+            firstSlash = resourceId.indexOf('/', start);
+            if (firstSlash < 0)
+            {
+                //no slashes.
+                resourceName = resourceId.substring(start);
+            }
+            else
+            {
+                //check libraryName
+                token = resourceId.substring(start, firstSlash);
+                int minResourceNameSlash = (resourceVersion != null) ?
+                    resourceId.lastIndexOf('/', lastSlash-1) : lastSlash;
+                //if (resourceLoader.libraryExists(token))
+                if (start < minResourceNameSlash)
+                {
+                    libraryName = token;
+                    start = firstSlash+1;
+
+                    //Now that libraryName exists, check libraryVersion
+                    firstSlash = resourceId.indexOf('/', start);
+                    if (firstSlash >= 0)
+                    {
+                        token = resourceId.substring(start, firstSlash);
+                        if (LIBRARY_VERSION_CHECKER.matcher(token).matches())
+                        {
+                            libraryVersion = token;
+                            start = firstSlash+1;
+                        }
+                    }
+                }
+
+                firstSlash = resourceId.indexOf('/', start);
+                if (firstSlash < 0)
+                {
+                    //no slashes.
+                    resourceName = resourceId.substring(start);
+                }
+                else
+                {
+                    // Check resource version. 
+                    if (resourceVersion != null)
+                    {
+                        resourceName = resourceId.substring(start,lastSlash);
+                    }
+                    else
+                    {
+                        //no resource version, assume the remaining to be resource name
+                        resourceName = resourceId.substring(start);
+                    }
+                }
+            }
+        }
+
+        //Check libraryName and resourceName
+        if (resourceName == null)
+        {
+            return null;
+        }
+        if (!ResourceValidationUtils.isValidResourceName(resourceName))
+        {
+            return null;
+        }
+
+        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
+                libraryName, isAllowSlashesLibraryName()))
+        {
+            return null;
+        }
+
+        // If some variable is "" set it as null.
+        if (localePrefix != null && localePrefix.length() == 0)
+        {
+            localePrefix = null;
+        }
+        if (libraryName != null && libraryName.length() == 0)
+        {
+            libraryName = null;
+        }
+        if (libraryVersion != null && libraryVersion.length() == 0)
+        {
+            libraryVersion = null;
+        }
+        if (resourceName != null && resourceName.length() == 0)
+        {
+            resourceName = null;
+        }
+        if (resourceVersion != null && resourceVersion.length() == 0)
+        {
+            resourceVersion = null;
+        }
+
+        resourceMeta = resourceLoader.createResourceMeta(
+            localePrefix, libraryName, libraryVersion, resourceName, resourceVersion, contractName);
+
+        if (resourceMeta != null &&
+            !resourceLoader.resourceExists(resourceMeta))
+        {
+            resourceMeta = null;
+        }
+        //}
+        return resourceMeta;
+    }
+    
+    protected ResourceMeta deriveViewResourceMeta(FacesContext context, ResourceLoader resourceLoader,
+            String resourceName, String localePrefix)
+    {
+        ResourceMeta resourceMeta = null;
+        String resourceVersion = null;
+
+        //1. Try to locate resource in a localized path
+        if (localePrefix != null)
+        {
+            resourceVersion = resourceLoader
+                    .getResourceVersion(localePrefix + '/'+ resourceName);
+            if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+            {
+                resourceMeta = resourceLoader.createResourceMeta(localePrefix, null, null,
+                         resourceName, resourceVersion);
+            }
+
+            if (resourceMeta != null)
+            {
+                if (!resourceLoader.resourceExists(resourceMeta))
+                {
+                    resourceMeta = null;
+                }
+            }            
+        }
+        
+        //2. Try to localize resource in a non localized path
+        if (resourceMeta == null)
+        {
+            resourceVersion = resourceLoader
+                    .getResourceVersion(resourceName);
+            if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+            {
+                resourceMeta = resourceLoader.createResourceMeta(null, null, null,
+                         resourceName, resourceVersion);
+            }
+
+            if (resourceMeta != null)
+            {
+                if (!resourceLoader.resourceExists(resourceMeta))
+                {
+                    resourceMeta = null;
+                }
+            }            
+        }
+
+        return resourceMeta;        
+    }
+    
+    protected ResourceMeta deriveViewResourceMeta(FacesContext context, ContractResourceLoader resourceLoader,
+            String resourceName, String localePrefix, String contractName)
+    {
+        ResourceMeta resourceMeta = null;
+        String resourceVersion = null;
+
+        //1. Try to locate resource in a localized path
+        if (localePrefix != null)
+        {
+            resourceVersion = resourceLoader
+                    .getResourceVersion(localePrefix + '/'+ resourceName, contractName);
+            if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+            {
+                resourceMeta = resourceLoader.createResourceMeta(localePrefix, null, null,
+                     resourceName, resourceVersion, contractName);
+            }
+
+            if (resourceMeta != null)
+            {
+                if (!resourceLoader.resourceExists(resourceMeta))
+                {
+                    resourceMeta = null;
+                }
+            }            
+        }
+        
+        //2. Try to localize resource in a non localized path
+        if (resourceMeta == null)
+        {
+            resourceVersion = resourceLoader
+                    .getResourceVersion(resourceName, contractName);
+            if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
+            {
+                resourceMeta = resourceLoader.createResourceMeta(null, null, null,
+                         resourceName, resourceVersion, contractName);
+            }
+
+            if (resourceMeta != null)
+            {
+                if (!resourceLoader.resourceExists(resourceMeta))
+                {
+                    resourceMeta = null;
+                }
+            }            
+        }
+
+        return resourceMeta;
+    }
+
+    @Override
+    public Resource createViewResource(FacesContext context, String resourceName)
+    {
+        // There are some special points to remember for a view resource in comparison
+        // with a normal resource:
+        //
+        // - A view resource never has an associated library name 
+        //   (this was done to keep simplicity).
+        // - A view resource can be inside a resource library contract.
+        // - A view resource could be internationalized in the same way a normal resource.
+        // - A view resource can be created from the webapp root folder, 
+        //   a normal resource cannot.
+        // - A view resource cannot be created from /resources or META-INF/resources.
+        // 
+        // For example, a valid resourceId for a view resource is like this:
+        //
+        // [localePrefix/]resourceName[/resourceVersion]
+        //
+        // but the resource loader can ignore localePrefix or resourceVersion, like
+        // for example the webapp root folder.
+        // 
+        // When createViewResource() is called, the view must be used to derive
+        // the localePrefix and facesContext must be used to get the available contracts.
+        
+        Resource resource = null;
+
+        if (resourceName == null)
+        {
+            throw new NullPointerException();
+        }
+        if (resourceName.charAt(0) == '/')
+        {
+            // If resourceName starts with '/', remove that character because it
+            // does not have any meaning (with and without should point to the 
+            // same resource).
+            resourceName = resourceName.substring(1);
+        }
+        
+        // Later in deriveResourceMeta the resourceId is decomposed and
+        // its elements validated properly.
+        if (!ResourceValidationUtils.isValidViewResource(resourceName))
+        {
+            return null;
+        }
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        final String localePrefix = getLocalePrefixForLocateResource(facesContext);
+        String contentType = facesContext.getExternalContext().getMimeType(resourceName);
+        final List<String> contracts = facesContext.getResourceLibraryContracts(); 
+        boolean found = false;
+        String contractSelected = null;
+        String contractPreferred = getContractNameForLocateResource(facesContext);
+        
+        // Check cache:
+        //
+        // Contracts are on top of everything, because it is a concept that defines
+        // resources in a application scope concept. It means all resources in
+        // /resources or /META-INF/resources can be overriden using a contract. Note
+        // it also means resources under /META-INF/flows can also be overriden using
+        // a contract.
+        if (contractPreferred != null)
+        {
+            if (getResourceLoaderCache().containsViewResource(
+                    resourceName, contentType, localePrefix, contractPreferred))
+            {
+                contractSelected = contractPreferred;
+                found = true;
+            }
+        }
+        if (!found && !contracts.isEmpty())
+        {
+            // Try to get resource but try with a contract name
+            for (String contract : contracts)
+            {
+                if (getResourceLoaderCache().containsViewResource(
+                    resourceName, contentType, localePrefix, contract))
+                {
+                    contractSelected = contract;
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found)
+        {
+            // Try to get resource without contract name
+            found = getResourceLoaderCache().containsViewResource(
+                resourceName, contentType, localePrefix);
+        }
+                
+        
+        if(found)
+        {        
+            ResourceValue resourceValue = contractSelected != null ?
+                getResourceLoaderCache().getViewResource(resourceName, 
+                    contentType, localePrefix, contractSelected) :
+                getResourceLoaderCache().getViewResource(resourceName,
+                    contentType, localePrefix);
+            
+            resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
+                    getResourceHandlerSupport(), contentType);
+        }
+        else 
+        {
+            boolean resolved = false;
+            if (contractPreferred != null)
+            {
+                for (ContractResourceLoader loader : getResourceHandlerSupport().getContractResourceLoaders())
+                {
+                    ResourceMeta resourceMeta = deriveViewResourceMeta(
+                        facesContext, loader, resourceName, localePrefix, contractPreferred);
+                    if (resourceMeta != null)
+                    {
+                        resource = new ResourceImpl(resourceMeta, loader, 
+                            getResourceHandlerSupport(), contentType);
+
+                        // cache it
+                        getResourceLoaderCache().putViewResource(
+                            resourceName, contentType, localePrefix, contractPreferred, resourceMeta, loader);
+                        
+                        resolved = true;
+                        break;
+                    }
+                }
+            }
+            if (!resolved && !contracts.isEmpty())
+            {
+                for (ContractResourceLoader loader : 
+                        getResourceHandlerSupport().getContractResourceLoaders())
+                {
+                    for (String contract : contracts)
+                    {
+                        ResourceMeta resourceMeta = deriveViewResourceMeta(
+                            facesContext, loader, resourceName, localePrefix, contract);
+                        if (resourceMeta != null)
+                        {
+                            resource = new ResourceImpl(resourceMeta, loader, 
+                                getResourceHandlerSupport(), contentType);
+
+                            // cache it
+                            getResourceLoaderCache().putViewResource(
+                                resourceName, contentType, localePrefix, contract, resourceMeta, loader);
+
+                            resolved = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!resolved)
+            {
+                // "... Considering the web app root ..."
+                
+                // "... Considering faces flows (at the locations specified in the spec prose document section 
+                // Faces Flows in the Using JSF in Web Applications chapter) ..."
+                for (ResourceLoader loader : getResourceHandlerSupport().getViewResourceLoaders())
+                {
+                    ResourceMeta resourceMeta = deriveViewResourceMeta(
+                        facesContext, loader, resourceName, localePrefix);
+
+                    if (resourceMeta != null)
+                    {
+                        resource = new ResourceImpl(resourceMeta, loader, getResourceHandlerSupport(), contentType);
+
+                        // cache it
+                        getResourceLoaderCache().putViewResource(
+                            resourceName, contentType, localePrefix, resourceMeta, loader);
+                        break;
+                    }
+                }
+            }
+        }
+        return resource;
     }
 
 }

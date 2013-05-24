@@ -64,6 +64,16 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
     {
         return null;
     }
+    
+    public ContractResourceLoader[] getContractResourceLoaders()
+    {
+        return null;
+    }
+    
+    public ResourceLoader[] getViewResourceLoaders()
+    {
+        return null;
+    }
 
     public String calculateResourceBasePath(FacesContext facesContext)
     {        

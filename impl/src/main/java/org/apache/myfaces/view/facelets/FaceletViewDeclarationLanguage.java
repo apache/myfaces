@@ -28,6 +28,8 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -315,6 +317,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * Key used to cache component ids for the counter
      */
     public final static String CACHED_COMPONENT_IDS = "oam.CACHED_COMPONENT_IDS"; 
+    
+    private static final String ASTERISK = "*";
 
     private int _bufferSize;
 
@@ -342,6 +346,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private final ViewDeclarationLanguageStrategy _strategy;
 
     private ResourceResolver _resourceResolver;
+    
+    private Map<String, List<String>> _contractMappings;
+    private List<String> _prefixWildcardKeys;
 
     /**
      *
@@ -2093,7 +2100,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
         else
         {
-            return super.createView(context, viewId);
+            UIViewRoot root = super.createView(context, viewId);
+            if (root != null)
+            {
+                //Ensure calculateResourceLibraryContracts() can be decorated
+                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().
+                    getViewDeclarationLanguage(context, viewId);
+                List<String> contracts = vdl.calculateResourceLibraryContracts(
+                    context, root.getViewId() != null ? root.getViewId() : viewId);
+                context.setResourceLibraryContracts(contracts);
+            }
+            return root;
         }
     }
 
@@ -2117,6 +2134,16 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         //else if (!_buildBeforeRestore)
         //{
+        
+        // When partial state saving is not used, createView() is not called. To ensure
+        // everything is in place it is necessary to calculate the resource library 
+        // contracts and set them into facesContext.
+        ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().
+            getViewDeclarationLanguage(context, viewId);
+        List<String> contracts = vdl.calculateResourceLibraryContracts(
+            context, viewId);
+        context.setResourceLibraryContracts(contracts);
+        
         return super.restoreView(context, viewId);
         //}
         //else
@@ -2473,6 +2500,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         ExternalContext eContext = context.getExternalContext();
         _initializeBuffer(eContext);
         _initializeMode(eContext);
+        _initializeContractMappings(eContext);
         
         // Create a component ids cache and store it on application map to
         // reduce the overhead associated with create such ids over and over.
@@ -2693,12 +2721,124 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     PARAM_MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW, false);
         }
     }
+    
+    private void _initializeContractMappings(ExternalContext context)
+    {
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context);
+        List<String> prefixWildcardKeys = new ArrayList<String>();
+        Map<String, List<String>> contractMappings = new HashMap<String, List<String>>();
+        
+        for (Map.Entry<String, List<String>> entry : runtimeConfig.getContractMappings().entrySet())
+        {
+            String urlPattern = entry.getKey().trim();
+            if (urlPattern.endsWith(ASTERISK))
+            {
+                prefixWildcardKeys.add(urlPattern);
+            }
+            contractMappings.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
+        }
+        
+        Collections.sort(prefixWildcardKeys, new KeyComparator());
+        
+        this._prefixWildcardKeys = prefixWildcardKeys;
+        this._contractMappings = contractMappings;
+    }
 
     private boolean _usePartialStateSavingOnThisView(String viewId)
     {
         return _partialStateSaving && !(_viewIds != null && _viewIds.contains(viewId));
     }
 
+    @Override
+    public List<String> calculateResourceLibraryContracts(FacesContext context, String viewId)
+    {
+        List<String> contracts = this._contractMappings.get(viewId);
+        if (contracts == null)
+        {
+            //Check prefix mapping
+            for (String prefix : this._prefixWildcardKeys)
+            {
+                if (matchPattern(viewId, prefix))
+                {
+                    contracts =  this._contractMappings.get(prefix);
+                    break;
+                }
+            }
+        }
+        return contracts;
+    }
+    
+    /**
+     * As specified in JSF 2.2 section 11.4.2.1, note it is different from the
+     * allowed format in xml url-pattern type.
+     * 
+     * @param path
+     * @param pattern
+     * @return A
+     */
+    private boolean matchPattern(String path, String pattern)
+    {
+        // Normalize the argument strings
+        if ((path == null) || (path.length() == 0))
+        {
+            path = "*";
+        }
+        if ((pattern == null) || (pattern.length() == 0))
+        {
+            pattern = "*";
+        }
+
+        // Check for exact match
+        if (path.equals(pattern))
+        {
+            return (true);
+        }
+
+        // Check for path prefix matching
+        if (pattern.startsWith("/") && pattern.endsWith("/*"))
+        {
+            pattern = pattern.substring(0, pattern.length() - 2);
+            if (pattern.length() == 0)
+            {
+                return (true);  // "/*" is the same as "/"
+            }
+            if (path.endsWith("/"))
+            {
+                path = path.substring(0, path.length() - 1);
+            }
+            while (true)
+            {
+                if (pattern.equals(path))
+                {
+                    return (true);
+                }
+                int slash = path.lastIndexOf('/');
+                if (slash <= 0)
+                {
+                    break;
+                }
+                path = path.substring(0, slash);
+            }
+            return (false);
+        }
+
+        // Check for universal mapping
+        if (pattern.equals("*"))
+        {
+            return (true);
+        }
+
+        return (false);
+    }    
+
+    private static final class KeyComparator implements Comparator<String>
+    {
+        public int compare(String s1, String s2)
+        {
+            return -s1.compareTo(s2);
+        }
+    }    
+    
     private class FaceletViewMetadata extends ViewMetadataBase
     {
         /**

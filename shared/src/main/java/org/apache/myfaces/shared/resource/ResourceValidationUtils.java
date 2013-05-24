@@ -35,6 +35,26 @@ public class ResourceValidationUtils
         return validate(libraryName, allowSlash);
     }
     
+    public static boolean isValidResourceId(String resourceId)
+    {
+        // Follow the same rules as for resourceName, but check resourceId does not
+        // start with '/'
+        return validateResourceName(resourceId, true) && 
+            resourceId.length() > 0 && !(resourceId.charAt(0) != '/');
+    }
+    
+    public static boolean isValidViewResource(String resourceId)
+    {
+        // Follow the same rules as for resourceName, but check resourceId does not
+        // start with '/'
+        return validateResourceName(resourceId, true);
+    }
+    
+    public static boolean isValidContractName(String contractName)
+    {
+        return validate(contractName, false);
+    }    
+    
     public static boolean isValidLocalePrefix(String localePrefix)
     {
         for (int i = 0; i < localePrefix.length(); i++)

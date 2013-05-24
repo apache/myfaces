@@ -18,14 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
-import java.io.IOException;
 import java.net.URL;
 
-import javax.faces.FacesException;
+import javax.faces.application.ViewResource;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.ResourceResolver;
 
-import org.apache.myfaces.view.facelets.util.Resource;
 
 public class DefaultResourceResolver extends ResourceResolver
 {
@@ -37,6 +35,7 @@ public class DefaultResourceResolver extends ResourceResolver
 
     public URL resolveUrl(String path)
     {
+        /*
         try
         {
             return Resource.getResourceUrl(FacesContext.getCurrentInstance(), path);
@@ -44,7 +43,11 @@ public class DefaultResourceResolver extends ResourceResolver
         catch (IOException e)
         {
             throw new FacesException(e);
-        }
+        }*/
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ViewResource resource = facesContext.getApplication().
+            getResourceHandler().createViewResource(facesContext, path);
+        return resource == null ? null : resource.getURL();
     }
 
     public String toString()

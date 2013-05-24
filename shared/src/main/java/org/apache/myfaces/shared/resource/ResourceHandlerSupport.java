@@ -48,13 +48,32 @@ public abstract class ResourceHandlerSupport
     public abstract String calculateResourceBasePath(FacesContext facesContext);
 
     /**
-     * Return an array of resource loaders used to find resources
-     * using the standard. The order of ResourceLoaders define
-     * its precedence. 
+     * Return an array of resource loaders used to find resources.
+     * The order of ResourceLoaders define its precedence. 
      * 
      * @return
      */
     public abstract ResourceLoader[] getResourceLoaders();
+
+    /**
+     * Return an array of resource loaders used to find resources 
+     * associated with a contract. The order of ContractResourceLoaders 
+     * define its precedence. 
+     * 
+     * @since 2.2
+     * @return 
+     */
+    public abstract ContractResourceLoader[] getContractResourceLoaders();
+
+    /**
+     * Return an array of resource loaders used to find resources
+     * that can be located using ResourceHandler.createViewResource().
+     * The order of ResourceLoaders define its precedence. 
+     * 
+     * @since 2.2
+     * @return 
+     */
+    public abstract ResourceLoader[] getViewResourceLoaders();
     
     /**
      * Check if the mapping used is done using extensions (.xhtml, .jsf)

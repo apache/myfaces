@@ -75,6 +75,7 @@ import org.apache.myfaces.config.annotation.LifecycleProvider;
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
+import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesConfigData;
@@ -102,10 +103,13 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.LocaleUtils;
 import org.apache.myfaces.shared.util.StateUtils;
+import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
+import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
+import org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
@@ -697,6 +701,13 @@ public class FacesConfigurator
                     dispenser.getVariableResolverIterator(),
                     new VariableResolverImpl()));
         }
+        
+        for (ContractMapping mapping : dispenser.getResourceLibraryContractMappings())
+        {
+            String urlPattern = mapping.getUrlPattern();
+            String[] contracts = StringUtils.trim(StringUtils.splitShortString(mapping.getContracts(), ' '));
+            runtimeConfig.addContractMapping(urlPattern, contracts);
+        }
     }
 
     /**
@@ -860,6 +871,57 @@ public class FacesConfigurator
         for (FaceletsProcessing faceletsProcessing : dispenser.getFaceletsProcessing())
         {
             runtimeConfig.addFaceletProcessingConfiguration(faceletsProcessing.getFileExtension(), faceletsProcessing);
+        }
+        
+        ResourceLibraryContractsProvider rlcp = ResourceLibraryContractsProviderFactory.
+            getFacesConfigResourceProviderFactory(_externalContext).
+            createResourceLibraryContractsProvider(_externalContext);
+        
+        try
+        {
+            // JSF 2.2 section 11.4.2.1 scan for available resource library contracts
+            // and store the result in a internal data structure, so it can be used 
+            // later in ViewDeclarationLanguage.calculateResourceLibraryContracts(
+            //   FacesContext context, String viewId)
+            runtimeConfig.setExternalContextResourceLibraryContracts(
+                rlcp.getExternalContextResourceLibraryContracts(_externalContext));
+            runtimeConfig.setClassLoaderResourceLibraryContracts(
+                rlcp.getClassloaderResourceLibraryContracts(_externalContext));
+        }
+        catch(Exception e)
+        {
+            if (log.isLoggable(Level.SEVERE))
+            {
+                log.log(Level.SEVERE, 
+                    "An error was found when scanning for resource library contracts", e);
+            }
+        }
+        
+        
+        // JSF 2.2 section 11.4.2.1 check all contracts are loaded
+        if (log.isLoggable(Level.INFO))
+        {
+            for (List<String> list : runtimeConfig.getContractMappings().values())
+            {
+                for (String contract : list)
+                {
+                    if (!runtimeConfig.getResourceLibraryContracts().contains(contract))
+                    {
+                        log.log(Level.INFO, 
+                            "Resource Library Contract "+ contract + " was not found while scanning for "
+                            + "available contracts.");
+                    }
+                }
+            }
+        }
+        
+        // JSF 2.2 section 11.4.2.1 if no contractMappings set, all available contracts applies
+        // to all views.
+        if (runtimeConfig.getContractMappings().isEmpty())
+        {
+            String[] contracts = runtimeConfig.getResourceLibraryContracts().toArray(
+                new String[runtimeConfig.getResourceLibraryContracts().size()]);
+            runtimeConfig.addContractMapping("*", contracts);
         }
     }
 

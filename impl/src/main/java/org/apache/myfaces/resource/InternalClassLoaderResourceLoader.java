@@ -111,13 +111,12 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         }
     }
 
-    @Override
-    public URL getResourceURL(ResourceMeta resourceMeta)
+    public URL getResourceURL(String resourceId)
     {
         URL url;
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
+            String name = getPrefix() + '/' + resourceId;
             url = getClassLoader().getResource(name);
             if (url == null)
             {
@@ -127,13 +126,19 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         }
         else
         {
-            url = getClassLoader().getResource(resourceMeta.getResourceIdentifier());
+            url = getClassLoader().getResource(resourceId);
             if (url == null)
             {
-                url = this.getClass().getClassLoader().getResource(resourceMeta.getResourceIdentifier());
+                url = this.getClass().getClassLoader().getResource(resourceId);
             }
             return url;
         }
+    }
+    
+    @Override
+    public URL getResourceURL(ResourceMeta resourceMeta)
+    {
+        return getResourceURL(resourceMeta.getResourceIdentifier());
     }
 
     @Override

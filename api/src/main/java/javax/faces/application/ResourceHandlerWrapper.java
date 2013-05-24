@@ -73,6 +73,18 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
     {
         return getWrapped().libraryExists(libraryName);
     }
+
+    @Override
+    public Resource createResourceFromId(String resourceId)
+    {
+        return getWrapped().createResourceFromId(resourceId);
+    }
+
+    @Override
+    public Resource createViewResource(FacesContext context, String resourceName)
+    {
+        return getWrapped().createViewResource(context, resourceName);
+    }
     
     public abstract ResourceHandler getWrapped();
 }

@@ -32,15 +32,23 @@ public class ResourceMetaImpl extends ResourceMeta
     private final String _libraryVersion;
     private final String _resourceName;
     private final String _resourceVersion;
-    
+    private final String _contractName;
+
     public ResourceMetaImpl(String prefix, String libraryName, String libraryVersion,
             String resourceName, String resourceVersion)
+    {
+        this(prefix, libraryName, libraryVersion, resourceName, resourceVersion, null);
+    }
+    
+    public ResourceMetaImpl(String prefix, String libraryName, String libraryVersion,
+            String resourceName, String resourceVersion, String contractName)
     {
         _prefix = prefix;
         _libraryName = libraryName;
         _libraryVersion = libraryVersion;
         _resourceName = resourceName;
         _resourceVersion = resourceVersion;
+        _contractName = contractName;
     }
 
     public String getLibraryName()
@@ -66,6 +74,11 @@ public class ResourceMetaImpl extends ResourceMeta
     public String getResourceVersion()
     {
         return _resourceVersion;
+    }
+
+    public String getContractName()
+    {
+        return _contractName;
     }
     
     @Override
@@ -125,4 +138,5 @@ public class ResourceMetaImpl extends ResourceMeta
     {
         return false;
     }
+
 }

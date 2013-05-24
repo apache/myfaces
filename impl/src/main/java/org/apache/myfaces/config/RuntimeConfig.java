@@ -23,8 +23,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,6 +90,20 @@ public class RuntimeConfig
     
     private final Map<String, FaceletsProcessing> _faceletsProcessingByFileExtension =
         new HashMap<String, FaceletsProcessing>();
+    
+    /**
+     * JSF 2.2 section 11.4.2.1. 
+     * 
+     * Scanning for all available contracts is necessary because the spec says 
+     * "... if the information from the application configuration resources refers 
+     * to a contract that is not available to the application, an informative error 
+     * message must be logged. ..."
+     */
+    private Set<String> _externalContextResourceLibraryContracts = new HashSet<String>();
+    private Set<String> _classLoaderResourceLibraryContracts = new HashSet<String>();
+    private Set<String> _resourceLibraryContracts = new HashSet<String>();
+    
+    private Map<String, List<String>> _contractMappings = new HashMap<String, List<String>>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -109,6 +125,9 @@ public class RuntimeConfig
         _managedBeans.clear();
         _navigationRulesChanged = false;
         _converterClassNameToConfigurationMap.clear();
+        _externalContextResourceLibraryContracts.clear();
+        _classLoaderResourceLibraryContracts.clear();
+        _resourceLibraryContracts.clear();
     }
 
     /**
@@ -378,4 +397,84 @@ public class RuntimeConfig
     {
         return _faceletsProcessingByFileExtension.values();
     }
+
+    /**
+     * @return the _externalContextResourceLibraryContracts
+     */
+    public Set<String> getExternalContextResourceLibraryContracts()
+    {
+        return _externalContextResourceLibraryContracts;
+    }
+
+    /**
+     * @param externalContextResourceLibraryContracts the _externalContextResourceLibraryContracts to set
+     */
+    public void setExternalContextResourceLibraryContracts(Set<String> externalContextResourceLibraryContracts)
+    {
+        this._externalContextResourceLibraryContracts = externalContextResourceLibraryContracts;
+        this._resourceLibraryContracts.clear();
+        this._resourceLibraryContracts.addAll(this._externalContextResourceLibraryContracts);
+        this._resourceLibraryContracts.addAll(this._classLoaderResourceLibraryContracts);
+    }
+
+    /**
+     * @return the _classLoaderResourceLibraryContracts
+     */
+    public Set<String> getClassLoaderResourceLibraryContracts()
+    {
+        return _classLoaderResourceLibraryContracts;
+    }
+
+    /**
+     * @param classLoaderResourceLibraryContracts the _classLoaderResourceLibraryContracts to set
+     */
+    public void setClassLoaderResourceLibraryContracts(Set<String> classLoaderResourceLibraryContracts)
+    {
+        this._classLoaderResourceLibraryContracts = classLoaderResourceLibraryContracts;
+        this._resourceLibraryContracts.clear();
+        this._resourceLibraryContracts.addAll(this._externalContextResourceLibraryContracts);
+        this._resourceLibraryContracts.addAll(this._classLoaderResourceLibraryContracts);
+    }
+
+    /**
+     * @return the _resourceLibraryContracts
+     */
+    public Set<String> getResourceLibraryContracts()
+    {
+        return _resourceLibraryContracts;
+    }
+
+    /**
+     * @return the _contractMappings
+     */
+    public Map<String, List<String>> getContractMappings()
+    {
+        return _contractMappings;
+    }
+
+    public void addContractMapping(String urlPattern, String[] contracts)
+    {
+        List<String> contractsList = _contractMappings.get(urlPattern);
+        if (contractsList == null)
+        {
+            contractsList = new ArrayList<String>();
+            _contractMappings.put(urlPattern, contractsList);
+        }
+        for (String contract : contracts)
+        {
+            contractsList.add(contract);
+        }
+    }
+    
+    public void addContractMapping(String urlPattern, String contract)
+    {
+        List<String> contractsList = _contractMappings.get(urlPattern);
+        if (contractsList == null)
+        {
+            contractsList = new ArrayList<String>();
+            _contractMappings.put(urlPattern, contractsList);
+        }
+        contractsList.add(contract);
+    }    
+
 }

@@ -18,6 +18,7 @@
  */
 package javax.faces.context;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -430,5 +431,36 @@ public abstract class FacesContext
         }
 
         return ctx.isReleased();
+    }
+    
+    /**
+     * @since 2.2
+     * @return 
+     */
+    public List<String> getResourceLibraryContracts()
+    {
+        FacesContext ctx = firstInstance.get();
+        
+        if (ctx == null)
+        {
+            return Collections.emptyList();
+        }        
+        
+        return ctx.getResourceLibraryContracts();
+    }
+    
+    /**
+     * @since 2.2
+     * @param contracts 
+     */
+    public void setResourceLibraryContracts(List<String> contracts)
+    {
+        FacesContext ctx = firstInstance.get();
+        
+        if (ctx == null)
+        {
+            return;
+        }
+        ctx.setResourceLibraryContracts(contracts);
     }
 }

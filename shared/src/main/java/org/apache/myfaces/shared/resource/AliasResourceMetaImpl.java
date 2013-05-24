@@ -33,8 +33,16 @@ public class AliasResourceMetaImpl extends ResourceMetaImpl
     public AliasResourceMetaImpl(String prefix, String libraryName, String libraryVersion,
             String resourceName, String resourceVersion, String realResourceName, boolean couldContainValueExpressions)
     {
+        this(prefix, libraryName, libraryVersion, resourceName, resourceVersion, realResourceName, 
+            couldContainValueExpressions, null);
+    }
+    
+    public AliasResourceMetaImpl(String prefix, String libraryName, String libraryVersion,
+            String resourceName, String resourceVersion, String realResourceName, 
+            boolean couldContainValueExpressions, String contractName)
+    {
         super(prefix, libraryName, libraryVersion,
-            resourceName, resourceVersion);
+            resourceName, resourceVersion, contractName);
         _realResourceName = realResourceName;
         _couldContainValueExpressions = couldContainValueExpressions;
     }

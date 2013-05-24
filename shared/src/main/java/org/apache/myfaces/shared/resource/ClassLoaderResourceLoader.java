@@ -258,13 +258,13 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         }
     }
 
-    @Override
-    public URL getResourceURL(ResourceMeta resourceMeta)
+    //@Override
+    public URL getResourceURL(String resourceId)
     {
         URL url = null;
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
+            String name = getPrefix() + '/' + resourceId;
             url = getClassLoader().getResource(name);
             if (url == null)
             {
@@ -274,13 +274,19 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         }
         else
         {
-            url = getClassLoader().getResource(resourceMeta.getResourceIdentifier());
+            url = getClassLoader().getResource(resourceId);
             if (url == null)
             {
-                url = this.getClass().getClassLoader().getResource(resourceMeta.getResourceIdentifier());
+                url = this.getClass().getClassLoader().getResource(resourceId);
             }
             return url;
         }
+    }
+    
+    @Override
+    public URL getResourceURL(ResourceMeta resourceMeta)
+    {
+        return getResourceURL(resourceMeta.getResourceIdentifier());
     }
 
     @Override
@@ -484,7 +490,7 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         }
         return false;
     }
-
+    
     /**
      * <p>Determines whether the given URL resource protocol refers to a JAR file. Note that
      * BEA WebLogic and IBM WebSphere don't use the "jar://" protocol for some reason even

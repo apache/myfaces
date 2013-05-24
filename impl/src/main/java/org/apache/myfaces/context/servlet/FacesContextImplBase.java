@@ -18,7 +18,10 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.el.ELContext;
@@ -64,6 +67,8 @@ public abstract class FacesContextImplBase extends FacesContext
     protected boolean _released = false;
     
     private ApplicationFactory _applicationFactory = null;
+    
+    private List<String> _resourceLibraryContracts;
 
     /**
      * Base constructor.
@@ -307,6 +312,40 @@ public abstract class FacesContextImplBase extends FacesContext
         }
         
         return _cachedRenderKit;
+    }
+
+    @Override
+    public List<String> getResourceLibraryContracts()
+    {
+        assertNotReleased();
+        
+        if (_resourceLibraryContracts == null)
+        {
+            return Collections.emptyList();
+        }
+        else
+        {
+            return _resourceLibraryContracts;
+        }
+    }
+    
+    @Override
+    public void setResourceLibraryContracts(List<String> contracts)
+    {
+        assertNotReleased();
+     
+        if (contracts == null)
+        {
+            _resourceLibraryContracts = null;
+        }
+        else if (contracts.isEmpty())
+        {
+            _resourceLibraryContracts = null;
+        }
+        else
+        {
+            _resourceLibraryContracts = new ArrayList<String>(contracts);
+        }
     }
     
     /**

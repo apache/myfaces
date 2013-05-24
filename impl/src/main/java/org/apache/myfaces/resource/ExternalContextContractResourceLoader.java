@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.resource;
+package org.apache.myfaces.resource;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -24,16 +24,18 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.shared.resource.ContractResourceLoader;
+import org.apache.myfaces.shared.resource.ResourceMeta;
+import org.apache.myfaces.shared.resource.ResourceMetaImpl;
 
 /**
- * A resource loader implementation which loads resources from the webapp root. It uses the methods on ExternalContext
- * for handle resources.
- * 
+ *
+ * @author lu4242
  */
-public class ExternalContextResourceLoader extends ResourceLoader
+public class ExternalContextContractResourceLoader extends ContractResourceLoader
 {
+
     /**
      * It checks version like this: /1/, /1_0/, /1_0_0/, /100_100/
      * 
@@ -48,21 +50,22 @@ public class ExternalContextResourceLoader extends ResourceLoader
      **/
     protected static final Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("/\\p{Digit}+(_\\p{Digit}*)*\\..*");
 
-    public ExternalContextResourceLoader(String prefix)
+    public ExternalContextContractResourceLoader(String prefix)
     {
         super(prefix);
     }
 
-    protected Set<String> getResourcePaths(String path)
+    protected Set<String> getResourcePaths(String contractName, String path)
     {
-        return FacesContext.getCurrentInstance().getExternalContext().getResourcePaths(getPrefix() + '/' + path);
+        return FacesContext.getCurrentInstance().getExternalContext().getResourcePaths(
+            getPrefix() + '/' + contractName + '/' + path);
     }
 
     @Override
-    public String getResourceVersion(String path)
+    public String getResourceVersion(String path, String contractName)
     {
         String resourceVersion = null;
-        Set<String> resourcePaths = this.getResourcePaths(path);
+        Set<String> resourcePaths = this.getResourcePaths(contractName, path);
         if (getPrefix() != null)
         {
             path = getPrefix() + '/' + path;
@@ -103,10 +106,10 @@ public class ExternalContextResourceLoader extends ResourceLoader
     }
 
     @Override
-    public String getLibraryVersion(String path)
+    public String getLibraryVersion(String path, String contractName)
     {
         String libraryVersion = null;
-        Set<String> libraryPaths = this.getResourcePaths(path);
+        Set<String> libraryPaths = this.getResourcePaths(contractName, path);
         path = getPrefix() + '/' + path;
         if (null != libraryPaths && !libraryPaths.isEmpty())
         {
@@ -142,42 +145,37 @@ public class ExternalContextResourceLoader extends ResourceLoader
         return libraryVersion;
     }
 
-    //@Override
-    public URL getResourceURL(String resourceId)
+    @Override
+    public URL getResourceURL(ResourceMeta resourceMeta)
     {
         try
         {
             return FacesContext.getCurrentInstance().getExternalContext().getResource(
-                getPrefix() + '/' + resourceId);
+                getPrefix() + '/' + resourceMeta.getContractName() + '/' + resourceMeta.getResourceIdentifier());
         }
         catch (MalformedURLException e)
         {
             return null;
         }
     }
-    
-    @Override
-    public URL getResourceURL(ResourceMeta resourceMeta)
-    {
-        return getResourceURL(resourceMeta.getResourceIdentifier());
-    }
 
     @Override
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
         return FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(
-            getPrefix() + '/' + resourceMeta.getResourceIdentifier());
+            getPrefix() + '/' + resourceMeta.getContractName() + '/' + resourceMeta.getResourceIdentifier());
     }
 
     @Override
     public ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
-                                           String resourceName, String resourceVersion)
+                                           String resourceName, String resourceVersion, String contractName)
     {
-        return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
+        return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, 
+            resourceVersion, contractName);
     }
 
     @Override
-    public boolean libraryExists(String libraryName)
+    public boolean libraryExists(String libraryName, String contractName)
     {
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
@@ -185,7 +183,7 @@ public class ExternalContextResourceLoader extends ResourceLoader
             {
                 URL url =
                     FacesContext.getCurrentInstance().getExternalContext().getResource(
-                        getPrefix() + '/' + libraryName);
+                        getPrefix() + '/' + contractName + '/' + libraryName);
                 if (url != null)
                 {
                     return true;
@@ -201,7 +199,8 @@ public class ExternalContextResourceLoader extends ResourceLoader
             try
             {
 
-                URL url = FacesContext.getCurrentInstance().getExternalContext().getResource(libraryName);
+                URL url = FacesContext.getCurrentInstance().
+                    getExternalContext().getResource(contractName + '/' +libraryName);
 
                 if (url != null)
                 {
@@ -215,4 +214,5 @@ public class ExternalContextResourceLoader extends ResourceLoader
         }
         return false;
     }
+    
 }

@@ -31,7 +31,7 @@ import javax.faces.context.FacesContext;
  * 
  * @since 2.0
  */
-public abstract class Resource
+public abstract class Resource extends ViewResource
 {
     /**
      * This constant is used as the key in the component attribute map of a composite component to 

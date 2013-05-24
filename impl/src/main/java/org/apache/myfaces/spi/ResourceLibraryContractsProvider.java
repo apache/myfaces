@@ -16,37 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.resource;
+package org.apache.myfaces.spi;
+
+import java.io.IOException;
+import java.util.Set;
+
+import javax.faces.context.ExternalContext;
 
 /**
- * Contains the metadata information to reference a resource 
+ * Locate resource library contracts, implementing the behavior described in 
+ * JSF 2.2 section 11.4.2.1 related to discover the available resource library
+ * contracts.
  * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * @since 2.0.2
+ * @author Leonardo Uribe 
  */
-public abstract class ResourceMeta
+public abstract class ResourceLibraryContractsProvider
 {
     
-    public abstract String getLibraryName();
+    public abstract Set<String> getExternalContextResourceLibraryContracts(
+        ExternalContext context) throws IOException;
     
-    public abstract String getResourceName();
-
-    public abstract String getLocalePrefix();
-
-    public abstract String getLibraryVersion();
-
-    public abstract String getResourceVersion();
-    
-    public abstract String getResourceIdentifier();
-    
-    public abstract boolean couldResourceContainValueExpressions();
-    
-    /**
-     * @since 2.2
-     * @return 
-     */
-    public String getContractName()
-    {
-        return null;
-    }
+    public abstract Set<String> getClassloaderResourceLibraryContracts(
+        ExternalContext context) throws IOException;
 }

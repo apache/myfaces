@@ -35,7 +35,7 @@ import javax.faces.context.FacesContext;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResourceImpl extends Resource
+public class ResourceImpl extends Resource implements ContractResource
 {
     protected final static String JAVAX_FACES_LIBRARY_NAME = "javax.faces";
     protected final static String JSF_JS_RESOURCE_NAME = "jsf.js";
@@ -127,6 +127,11 @@ public class ResourceImpl extends Resource
         if (_resourceMeta.getLocalePrefix() != null)
         {
             path = path + (useAmp ? '&' : '?') + "loc=" + _resourceMeta.getLocalePrefix();
+            useAmp = true;
+        }
+        if (_resourceMeta.getContractName() != null)
+        {
+            path = path + (useAmp ? '&' : '?') + "con=" + _resourceMeta.getContractName();
             useAmp = true;
         }
         return facesContext.getApplication().getViewHandler().getResourceURL(facesContext, path);
@@ -274,5 +279,15 @@ public class ResourceImpl extends Resource
     protected ResourceMeta getResourceMeta()
     {
         return _resourceMeta;
+    }
+
+    public boolean isContractResource()
+    {
+        return _resourceMeta.getContractName() != null;
+    }
+    
+    public String getContractName()
+    {
+        return _resourceMeta.getContractName();
     }
 }

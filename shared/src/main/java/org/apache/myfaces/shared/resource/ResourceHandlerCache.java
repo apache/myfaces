@@ -35,8 +35,10 @@ public class ResourceHandlerCache
             .getLogger(ResourceHandlerCache.class.getName());
 
     private Boolean _resourceCacheEnabled = null;
-    private volatile ConcurrentLRUCache<ResourceKey, ResourceValue> _resourceCacheMap = null;
+    private volatile ConcurrentLRUCache<Object, ResourceValue> _resourceCacheMap = null;
 
+    private volatile ConcurrentLRUCache<Object, ResourceValue> _viewResourceCacheMap = null;
+    
     /**
      * Controls the size of the cache used to check if a resource exists or not. 
      * 
@@ -62,6 +64,12 @@ public class ResourceHandlerCache
     public ResourceValue getResource(String resourceName, String libraryName,
             String contentType, String localePrefix)
     {
+        return getResource(resourceName, libraryName, contentType, localePrefix, null);
+    }
+    
+    public ResourceValue getResource(String resourceName, String libraryName,
+            String contentType, String localePrefix, String contractName)
+    {
         if (!isResourceCachingEnabled() || _resourceCacheMap == null)
         {
             return null;
@@ -73,12 +81,18 @@ public class ResourceHandlerCache
                     + resourceName);
         }
 
-        ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix);
+        ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix, contractName);
 
         return _resourceCacheMap.get(key);
+    }    
+
+    public boolean containsResource(String resourceName, String libraryName, String contentType, String localePrefix)
+    {
+        return containsResource(resourceName, libraryName, contentType, localePrefix, null);
     }
     
-    public boolean containsResource(String resourceName, String libraryName, String contentType, String localePrefix)
+    public boolean containsResource(String resourceName, String libraryName, String contentType, 
+        String localePrefix, String contractName)
     {
         if (!isResourceCachingEnabled() || _resourceCacheMap == null)
         {
@@ -91,6 +105,12 @@ public class ResourceHandlerCache
 
     public void putResource(String resourceName, String libraryName,
             String contentType, String localePrefix, ResourceMeta resource, ResourceLoader loader)
+    {
+        putResource(resourceName, libraryName, contentType, localePrefix, null, resource, loader);
+    }
+    
+    public void putResource(String resourceName, String libraryName,
+            String contentType, String localePrefix, String contractName, ResourceMeta resource, ResourceLoader loader)
     {
         if (!isResourceCachingEnabled())
         {
@@ -110,12 +130,177 @@ public class ResourceHandlerCache
                 log.log(Level.FINE, "Initializing resource cache map");
             }
             int maxSize = getMaxSize();
-            _resourceCacheMap = new ConcurrentLRUCache<ResourceKey, ResourceValue>(
+            _resourceCacheMap = new ConcurrentLRUCache<Object, ResourceValue>(
                     (maxSize * 4 + 3) / 3, maxSize);
         }
 
         _resourceCacheMap.put(new ResourceKey(resourceName, libraryName,
-                contentType, localePrefix), new ResourceValue(resource, loader));
+                contentType, localePrefix, contractName), new ResourceValue(resource, loader));
+    }
+    
+    public ResourceValue getResource(String resourceId)
+    {
+        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        {
+            return null;
+        }
+
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Attemping to get resource from cache for "
+                    + resourceId);
+        }
+
+        return _resourceCacheMap.get(resourceId);
+    }
+
+    public ResourceValue getResource(String resourceId, String contractName)
+    {
+        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        {
+            return null;
+        }
+
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Attemping to get resource from cache for "
+                    + resourceId);
+        }
+
+        return _resourceCacheMap.get(contractName+':'+resourceId);
+    }
+    
+    public boolean containsResource(String resourceId, String contractName)
+    {
+        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        {
+            return false;
+        }
+
+        return _resourceCacheMap.get(contractName+':'+resourceId) != null;
+    }
+    
+    public boolean containsResource(String resourceId)
+    {
+        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        {
+            return false;
+        }
+
+        return _resourceCacheMap.get(resourceId) != null;
+    }
+
+    public void putResource(String resourceId, ResourceMeta resource, ResourceLoader loader)
+    {
+        if (!isResourceCachingEnabled())
+        {
+            return;
+        }
+
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Attemping to put resource to cache for "
+                    + resourceId);
+        }
+
+        if (_resourceCacheMap == null)
+        {
+            if (log.isLoggable(Level.FINE))
+            {
+                log.log(Level.FINE, "Initializing resource cache map");
+            }
+            int maxSize = getMaxSize();
+            _resourceCacheMap = new ConcurrentLRUCache<Object, ResourceValue>(
+                    (maxSize * 4 + 3) / 3, maxSize);
+        }
+
+        if (resource.getContractName() != null)
+        {
+            _resourceCacheMap.put(resource.getContractName()+':'+resourceId, 
+                new ResourceValue(resource, loader));
+        }
+        else
+        {
+            _resourceCacheMap.put(resourceId, new ResourceValue(resource, loader));
+        }
+    }
+
+    public boolean containsViewResource(
+        String resourceName, String contentType, String localePrefix)
+    {
+        return containsViewResource(resourceName, contentType, localePrefix, null);
+    }
+    
+    public boolean containsViewResource(String resourceName, String contentType, 
+        String localePrefix, String contractName)
+    {
+        if (!isResourceCachingEnabled() || _viewResourceCacheMap == null)
+        {
+            return false;
+        }
+
+        ResourceKey key = new ResourceKey(resourceName, null, contentType, localePrefix);
+        return _viewResourceCacheMap.get(key) != null;
+    }
+    
+    public ResourceValue getViewResource(String resourceName,
+            String contentType, String localePrefix)
+    {
+        return getViewResource(resourceName, contentType, localePrefix, null);
+    }
+    
+    public ResourceValue getViewResource(String resourceName,
+            String contentType, String localePrefix, String contractName)
+    {
+        if (!isResourceCachingEnabled() || _viewResourceCacheMap == null)
+        {
+            return null;
+        }
+
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Attemping to get resource from cache for "
+                    + resourceName);
+        }
+
+        ResourceKey key = new ResourceKey(resourceName, null, contentType, localePrefix, contractName);
+
+        return _viewResourceCacheMap.get(key);
+    }
+    
+    public void putViewResource(String resourceName, String contentType, 
+        String localePrefix, ResourceMeta resource, ResourceLoader loader)
+    {
+        putViewResource(resourceName, contentType, localePrefix, null, resource, loader);
+    }
+    
+    public void putViewResource(String resourceName, String contentType, 
+        String localePrefix, String contractName, ResourceMeta resource, ResourceLoader loader)
+    {
+        if (!isResourceCachingEnabled())
+        {
+            return;
+        }
+
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Attemping to put resource to cache for "
+                    + resourceName);
+        }
+
+        if (_viewResourceCacheMap == null)
+        {
+            if (log.isLoggable(Level.FINE))
+            {
+                log.log(Level.FINE, "Initializing resource cache map");
+            }
+            int maxSize = getMaxSize();
+            _viewResourceCacheMap = new ConcurrentLRUCache<Object, ResourceValue>(
+                    (maxSize * 4 + 3) / 3, maxSize);
+        }
+
+        _viewResourceCacheMap.put(new ResourceKey(resourceName,
+                contentType, localePrefix, contractName), new ResourceValue(resource, loader));
     }
 
     private boolean isResourceCachingEnabled()
@@ -166,14 +351,22 @@ public class ResourceHandlerCache
         private String libraryName;
         private String contentType;
         private String localePrefix;
+        private String contractName;
 
         public ResourceKey(String resourceName, String libraryName,
                 String contentType, String localePrefix)
+        {
+            this(resourceName, libraryName, contentType, localePrefix, null);
+        }
+        
+        public ResourceKey(String resourceName, String libraryName,
+                String contentType, String localePrefix, String contractName)
         {
             this.resourceName = resourceName;
             this.libraryName = libraryName;
             this.contentType = contentType;
             this.localePrefix = localePrefix;
+            this.contractName = contractName;
         }
 
         @Override
@@ -206,6 +399,10 @@ public class ResourceHandlerCache
             {
                 return false;
             }
+            if (contractName != null ? !contractName.equals(that.contractName) : that.contractName != null)
+            {
+                return false;
+            }
 
             return true;
         }
@@ -217,6 +414,7 @@ public class ResourceHandlerCache
             result = 31 * result + (libraryName != null ? libraryName.hashCode() : 0);
             result = 31 * result + (contentType != null ? contentType.hashCode() : 0);
             result = 31 * result + (localePrefix != null ? localePrefix.hashCode() : 0);
+            result = 31 * result + (contractName != null ? contractName.hashCode() : 0);
             return result;
         }
     }

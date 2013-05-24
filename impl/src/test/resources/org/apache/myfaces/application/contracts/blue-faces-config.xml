@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,38 +16,21 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-package org.apache.myfaces.shared.resource;
-
-/**
- * Contains the metadata information to reference a resource 
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-public abstract class ResourceMeta
-{
+-->
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
     
-    public abstract String getLibraryName();
+    <application>
+        <resource-library-contracts>
+            <contract-mapping>
+                <url-pattern>*</url-pattern>
+                <contracts>blue</contracts>
+            </contract-mapping>
+        </resource-library-contracts>
+    </application>
     
-    public abstract String getResourceName();
-
-    public abstract String getLocalePrefix();
-
-    public abstract String getLibraryVersion();
-
-    public abstract String getResourceVersion();
-    
-    public abstract String getResourceIdentifier();
-    
-    public abstract boolean couldResourceContainValueExpressions();
-    
-    /**
-     * @since 2.2
-     * @return 
-     */
-    public String getContractName()
-    {
-        return null;
-    }
-}
+</faces-config>
+        

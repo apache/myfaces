@@ -59,6 +59,12 @@ public abstract class ResourceLoader
     
     public abstract ResourceMeta createResourceMeta(String prefix, String libraryName, String libraryVersion,
             String resourceName, String resourceVersion);
+
+    public ResourceMeta createResourceMeta(String prefix, String libraryName, 
+            String libraryVersion, String resourceName, String resourceVersion, String contractName)
+    {
+        return createResourceMeta(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
+    }
     
     public abstract boolean libraryExists(String libraryName);
     
@@ -66,6 +72,18 @@ public abstract class ResourceLoader
     {
         return (getResourceURL(resourceMeta) != null);
     }
+
+    /*
+    public URL getResourceURL(String resourceId)
+    {
+        throw new UnsupportedOperationException(
+            "An implementation for getResourceURL(String resourceId) method is required for JSF 2.2");
+    }
+    
+    public boolean resourceIdExists(String resourceId)
+    {
+        return (getResourceURL(resourceId) != null);
+    }*/
     
     private Comparator<String> _versionComparator = null;
 

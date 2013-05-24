@@ -16,37 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.resource;
+package org.apache.myfaces.resource;
+
+import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
 
 /**
- * Contains the metadata information to reference a resource 
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
+ *
+ * @author lu4242
  */
-public abstract class ResourceMeta
+public class FacesFlowClassLoaderResourceLoader extends ClassLoaderResourceLoader
 {
+    private static final String META_INF_FLOWS = "META-INF/flows";
     
-    public abstract String getLibraryName();
-    
-    public abstract String getResourceName();
-
-    public abstract String getLocalePrefix();
-
-    public abstract String getLibraryVersion();
-
-    public abstract String getResourceVersion();
-    
-    public abstract String getResourceIdentifier();
-    
-    public abstract boolean couldResourceContainValueExpressions();
-    
-    /**
-     * @since 2.2
-     * @return 
-     */
-    public String getContractName()
+    public FacesFlowClassLoaderResourceLoader()
     {
-        return null;
+        super(META_INF_FLOWS);
     }
+    
 }
