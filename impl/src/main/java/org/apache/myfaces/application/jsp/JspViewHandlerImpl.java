@@ -298,7 +298,21 @@ public class JspViewHandlerImpl extends ViewHandler
     {
         if (path.length() > 0 && path.charAt(0) == '/')
         {
-            return facesContext.getExternalContext().getRequestContextPath() + path;
+            String contextPath = facesContext.getExternalContext().getRequestContextPath();
+            if (contextPath == null)
+            {
+                return path;
+            }
+            else if (contextPath.length() == 1 && contextPath.charAt(0) == '/')
+            {
+                // If the context path is root, it is not necessary to append it, otherwise
+                // and extra '/' will be set.
+                return path;
+            }
+            else
+            {
+                return  contextPath + path;
+            }
         }
 
         return path;
