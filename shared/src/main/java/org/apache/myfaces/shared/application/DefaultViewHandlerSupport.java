@@ -197,7 +197,12 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         String contextPath = externalContext.getRequestContextPath();
         //StringBuilder builder = new StringBuilder(contextPath);
         StringBuilder builder = SharedStringBuilder.get(context, VIEW_HANDLER_SUPPORT_SB);
-        builder.append(contextPath);
+        // If the context path is root, it is not necessary to append it, otherwise
+        // and extra '/' will be set.
+        if (contextPath != null && !(contextPath.length() == 1 && contextPath.charAt(0) == '/') )
+        {
+            builder.append(contextPath);
+        }
         if (mapping != null)
         {
             if (mapping.isExtensionMapping())
