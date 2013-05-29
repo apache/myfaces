@@ -612,8 +612,8 @@ public abstract class HTMLEncoder
                 {
                     char c1 = string.charAt(i+1);
                     char c2 = string.charAt(i+2);
-                    if ((( c1 >= '0' && c1 <='9') || (c1 >='A' && c1 <='Z')) &&
-                        (( c2 >= '0' && c2 <='9') || (c2 >='A' && c2 <='Z')))
+                    if ((( c1 >= '0' && c1 <='9') || (c1 >='A' && c1 <='Z') || (c1 >='a' && c1 <='z')) &&
+                        (( c2 >= '0' && c2 <='9') || (c2 >='A' && c2 <='Z') || (c2 >='a' && c2 <='z')))
                     {
                         // do not percent encode, because it could be already encoded
                         // and we don't want encode it twice
@@ -771,8 +771,8 @@ public abstract class HTMLEncoder
                 {
                     char c1 = string.charAt(i+1);
                     char c2 = string.charAt(i+2);
-                    if ((( c1 >= '0' && c1 <='9') || (c1 >='A' && c1 <='Z')) &&
-                        (( c2 >= '0' && c2 <='9') || (c2 >='A' && c2 <='Z')))
+                    if ((( c1 >= '0' && c1 <='9') || (c1 >='A' && c1 <='Z') || (c1 >='a' && c1 <='z')) &&
+                        (( c2 >= '0' && c2 <='9') || (c2 >='A' && c2 <='Z') || (c2 >='a' && c2 <='z')))
                     {
                         // do not percent encode, because it could be already encoded
                     }
@@ -1010,8 +1010,8 @@ public abstract class HTMLEncoder
                 {
                     char c1 = string.charAt(i+1);
                     char c2 = string.charAt(i+2);
-                    if ((( c1 >= '0' && c1 <='9') || (c1 >='A' && c1 <='Z')) &&
-                        (( c2 >= '0' && c2 <='9') || (c2 >='A' && c2 <='Z')))
+                    if ((( c1 >= '0' && c1 <='9') || (c1 >='A' && c1 <='Z') || (c1 >='a' && c1 <='z')) &&
+                        (( c2 >= '0' && c2 <='9') || (c2 >='A' && c2 <='Z') || (c2 >='a' && c2 <='z')))
                     {
                         // do not percent encode, because it could be already encoded
                         // and we don't want encode it twice
@@ -1221,8 +1221,8 @@ public abstract class HTMLEncoder
                 {
                     char c1 = string.charAt(i+1);
                     char c2 = string.charAt(i+2);
-                    if ((( c1 >= '0' && c1 <='9') || (c1 >='A' && c1 <='Z')) &&
-                        (( c2 >= '0' && c2 <='9') || (c2 >='A' && c2 <='Z')))
+                    if ((( c1 >= '0' && c1 <='9') || (c1 >='A' && c1 <='Z') || (c1 >='a' && c1 <='z')) &&
+                        (( c2 >= '0' && c2 <='9') || (c2 >='A' && c2 <='Z') || (c2 >='a' && c2 <='z')))
                     {
                         // do not percent encode, because it could be already encoded
                     }
