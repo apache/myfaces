@@ -79,6 +79,7 @@
                         <!-- services files are trivial config files with no comments -->
                         <exclude>src/test/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
                         <exclude>src/main/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
+                        <exclude>src/main/resources/META-INF/services/javax.servlet.ServletContainerInitializer</exclude>
 
                         <!-- these jsf.js files are trivial empty placeholders -->
                         <exclude>src/test/resources/org/apache/myfaces/view/facelets/tag/composite/javax.faces/jsf.js</exclude>
