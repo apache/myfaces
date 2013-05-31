@@ -39,7 +39,7 @@ defaultRendererType = "javax.faces.Grid",
 implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlPanelGrid extends UIPanel implements _EventProperties,
-_StyleProperties, _UniversalProperties
+_StyleProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

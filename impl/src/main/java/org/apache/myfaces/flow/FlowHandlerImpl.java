@@ -57,13 +57,39 @@ public class FlowHandlerImpl extends FlowHandler
     }
 
     @Override
-    public void transition(FacesContext context, Flow sourceFlow, Flow targetFlow, FlowCallNode outboundCallNode)
+    public void transition(FacesContext context,
+        Flow sourceFlow, Flow targetFlow,
+        FlowCallNode outboundCallNode, String toViewId)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean isActive(FacesContext context, String definingDocument, String id)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void clientWindowTransition(FacesContext context)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getLastDisplayedViewId(FacesContext context)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void pushReturnMode(FacesContext context)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void popReturnMode(FacesContext context)
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }

@@ -36,7 +36,7 @@ implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlOutputLabel extends UIOutput implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
-_TabindexProperty, _EscapeProperty
+_TabindexProperty, _EscapeProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

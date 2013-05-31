@@ -34,7 +34,7 @@ defaultRendererType = "javax.faces.Form",
 implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlForm extends UIForm
-    implements _EventProperties, _UniversalProperties, _StyleProperties
+    implements _EventProperties, _UniversalProperties, _StyleProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

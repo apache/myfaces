@@ -25,6 +25,7 @@ import javax.faces.flow.Flow;
 import javax.faces.flow.builder.FlowBuilder;
 import javax.faces.flow.builder.FlowCallBuilder;
 import javax.faces.flow.builder.MethodCallBuilder;
+import javax.faces.flow.builder.NavigationCaseBuilder;
 import javax.faces.flow.builder.ReturnBuilder;
 import javax.faces.flow.builder.SwitchBuilder;
 import javax.faces.flow.builder.ViewBuilder;
@@ -177,5 +178,11 @@ public class FlowBuilderImpl extends FlowBuilder
         FacesContext facesContext = getFacesContext();
         return facesContext.getApplication().getExpressionFactory()
             .createValueExpression(facesContext.getELContext(), value, Object.class); 
+    }
+
+    @Override
+    public NavigationCaseBuilder navigationCase()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

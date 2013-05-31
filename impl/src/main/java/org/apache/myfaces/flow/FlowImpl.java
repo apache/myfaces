@@ -23,7 +23,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.el.MethodExpression;
+import javax.faces.application.NavigationCase;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowCallNode;
 import javax.faces.flow.FlowNode;
@@ -308,6 +310,12 @@ public class FlowImpl extends Flow implements Freezable
         {
             throw new IllegalStateException("Flow is inmutable once initialized");
         }
+    }
+
+    @Override
+    public Map<String, Set<NavigationCase>> getNavigationCases()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

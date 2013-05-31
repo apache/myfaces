@@ -118,4 +118,15 @@ public class ComponentHandler extends DelegatingMetaTagHandler
         }
         return helper;
     }
+    
+    /**
+     * 
+     * @since 2.2
+     * @param ctx
+     * @return 
+     */
+    public UIComponent createComponent(FaceletContext ctx)
+    {
+        return null;
+    }
 }

@@ -20,6 +20,7 @@ package javax.faces.flow;
 
 import java.util.List;
 import java.util.Map;
+import javax.faces.application.NavigationCase;
 import javax.faces.lifecycle.ClientWindow;
 
 /**
@@ -56,5 +57,7 @@ public abstract class Flow
     public abstract List<ViewNode> getViews();
     
     public abstract String getStartNodeId();
+    
+    public abstract java.util.Map<java.lang.String,java.util.Set<NavigationCase>> getNavigationCases();
     
 }

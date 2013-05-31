@@ -82,6 +82,7 @@ import javax.faces.view.ValueHolderAttachedObjectHandler;
 import javax.faces.view.ValueHolderAttachedObjectTarget;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
+import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.ResourceResolver;
 import javax.faces.view.facelets.TagDecorator;

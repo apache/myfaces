@@ -40,7 +40,7 @@ implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlGraphicImage extends UIGraphic 
     implements _EventProperties,
-    _StyleProperties, _UniversalProperties, _AltProperty
+    _StyleProperties, _UniversalProperties, _AltProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

@@ -79,4 +79,21 @@ public abstract class TagAttributes
      * @return a list of Namespaces found in this set
      */
     public abstract String[] getNamespaces();
+    
+    /**
+     * @since 2.2
+     * @return 
+     */
+    public Tag getTag()
+    {
+        return null;
+    }
+
+    /**
+     * @since 2.2
+     * @param tag 
+     */
+    public void setTag(Tag tag)
+    {
+    }
 }

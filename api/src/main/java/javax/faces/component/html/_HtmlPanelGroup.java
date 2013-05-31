@@ -32,9 +32,10 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 (name = "h:panelGroup",
 clazz = "javax.faces.component.html.HtmlPanelGroup",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlPanelGroupTag",
-defaultRendererType = "javax.faces.Group"
+defaultRendererType = "javax.faces.Group",
+implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
-abstract class _HtmlPanelGroup extends UIPanel implements _StyleProperties
+abstract class _HtmlPanelGroup extends UIPanel implements _StyleProperties, _EventProperties
 {
 
   static public final String COMPONENT_FAMILY =

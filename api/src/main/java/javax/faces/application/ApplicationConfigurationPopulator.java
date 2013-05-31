@@ -27,5 +27,5 @@ import org.w3c.dom.Document;
 public abstract class ApplicationConfigurationPopulator
 {
     
-    public abstract void populateApplicationConfigurationResource(Document toPopulate);
+    public abstract void populateApplicationConfiguration(Document toPopulate);
 }

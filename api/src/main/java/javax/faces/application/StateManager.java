@@ -108,6 +108,9 @@ public abstract class StateManager
     
     public static final String IS_SAVING_STATE = "javax.faces.IS_SAVING_STATE";
     
+    @JSFWebConfigParam(since="2.2")
+    public static final java.lang.String SERIALIZE_SERVER_STATE_PARAM_NAME = "javax.faces.SERIALIZE_SERVER_STATE";
+    
     /**
      * Invokes getTreeStructureToSave and getComponentStateToSave, then return an object that wraps the two resulting
      * objects. This object can then be passed to method writeState.

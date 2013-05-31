@@ -37,5 +37,7 @@ import javax.enterprise.context.NormalScope;
 @Retention(value= RetentionPolicy.RUNTIME)
 public @interface FlowScoped
 {
+    String value();
     
+    String definingDocumentId() default "";
 }

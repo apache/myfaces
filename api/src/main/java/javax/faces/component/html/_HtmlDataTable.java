@@ -42,7 +42,7 @@ defaultRendererType = "javax.faces.Table",
 implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlDataTable extends UIData
-    implements _EventProperties, _StyleProperties, _UniversalProperties 
+    implements _EventProperties, _StyleProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

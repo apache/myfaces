@@ -27,6 +27,7 @@ import javax.el.ELContext;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
 import javax.faces.render.RenderKit;
@@ -462,5 +463,20 @@ public abstract class FacesContext
             return;
         }
         ctx.setResourceLibraryContracts(contracts);
+    }
+    
+    /**
+     * @since 2.2
+     * @return 
+     */
+    public char getNamingContainerSeparatorChar()
+    {
+        FacesContext ctx = firstInstance.get();
+        
+        if (ctx == null)
+        {
+            return UINamingContainer.getSeparatorChar(this);
+        }
+        return ctx.getNamingContainerSeparatorChar();
     }
 }

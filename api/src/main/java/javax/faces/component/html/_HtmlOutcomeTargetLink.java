@@ -35,7 +35,7 @@ defaultRendererType = "javax.faces.Link"
 )
 abstract class _HtmlOutcomeTargetLink extends UIOutcomeTarget implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
-_TabindexProperty, _LinkProperties
+_TabindexProperty, _LinkProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

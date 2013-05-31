@@ -317,7 +317,8 @@ $innersource
      $property.name == "align" ||
      $property.name == "checked" ||
      $property.name == "maxlength" ||
-     $property.name == "size"
+     $property.name == "size" ||
+     $property.name == "role"
       )
 #set($overrideSetValueExpression = true)
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.${property.name.toUpperCase()}_PROP);

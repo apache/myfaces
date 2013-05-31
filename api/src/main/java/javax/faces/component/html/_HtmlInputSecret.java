@@ -38,7 +38,7 @@ defaultEventName = "valueChange"
 abstract class _HtmlInputSecret extends UIInput implements _AccesskeyProperty,
     _AltProperty, _UniversalProperties, _FocusBlurProperties, _EventProperties,
     _StyleProperties, _TabindexProperty, _ChangeSelectProperties, 
-    _DisabledReadonlyProperties, _LabelProperty
+    _DisabledReadonlyProperties, _LabelProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

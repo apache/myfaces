@@ -24,6 +24,7 @@ import javax.faces.view.facelets.FaceletException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
+import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletContext;
 
 /**

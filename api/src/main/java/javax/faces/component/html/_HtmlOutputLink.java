@@ -38,7 +38,7 @@ implementz = "javax.faces.component.behavior.ClientBehaviorHolder"
 )
 abstract class _HtmlOutputLink extends UIOutput implements _AccesskeyProperty,
 _UniversalProperties, _FocusBlurProperties, _EventProperties, _StyleProperties,
-_TabindexProperty, _LinkProperties
+_TabindexProperty, _LinkProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

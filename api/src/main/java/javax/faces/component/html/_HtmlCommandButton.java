@@ -40,7 +40,7 @@ abstract class _HtmlCommandButton extends UICommand
     _EventProperties, _StyleProperties, _UniversalProperties,
     _AccesskeyProperty, _TabindexProperty, _AltProperty, 
     _ChangeSelectProperties, _DisabledReadonlyProperties,
-    _LabelProperty
+    _LabelProperty, _RoleProperty
 {
 
     static public final String COMPONENT_FAMILY = "javax.faces.Command";

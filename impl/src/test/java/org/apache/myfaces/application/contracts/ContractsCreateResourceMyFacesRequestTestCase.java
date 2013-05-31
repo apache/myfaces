@@ -23,13 +23,13 @@ import java.util.Set;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
+import javax.faces.application.ViewResource;
 
 import junit.framework.Assert;
 import org.apache.myfaces.config.RuntimeConfig;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.resource.ContractResource;
 import org.junit.Test;
 
 public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
@@ -86,9 +86,9 @@ public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFac
         
         ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
         
-        Resource resource1 = resourceHandler.createViewResource(facesContext, "/panel.xhtml");
+        ViewResource resource1 = resourceHandler.createViewResource(facesContext, "/panel.xhtml");
         Assert.assertNotNull(resource1);
-        Assert.assertEquals("panel.xhtml", resource1.getResourceName());
+        Assert.assertTrue(resource1.getURL().toString().contains("panel.xhtml"));
         
         Resource resource2 = resourceHandler.createResource("myjs.js", "mylib");
         Assert.assertNotNull(resource2);

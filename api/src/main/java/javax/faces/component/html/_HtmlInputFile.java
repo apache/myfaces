@@ -39,7 +39,7 @@ abstract class _HtmlInputFile extends UIInput
     implements _AccesskeyProperty,
     _AltProperty, _UniversalProperties, _DisabledReadonlyProperties,
     _FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
-    _StyleProperties, _TabindexProperty, _LabelProperty
+    _StyleProperties, _TabindexProperty, _LabelProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

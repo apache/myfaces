@@ -37,7 +37,7 @@ defaultEventName = "valueChange"
 abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
     _UniversalProperties, _FocusBlurProperties, _ChangeSelectProperties,
     _EventProperties, _StyleProperties, _TabindexProperty, 
-    _DisabledReadonlyProperties, _LabelProperty
+    _DisabledReadonlyProperties, _LabelProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

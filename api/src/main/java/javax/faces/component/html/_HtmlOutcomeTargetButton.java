@@ -36,7 +36,7 @@ defaultRendererType = "javax.faces.Button"
 )
 abstract class _HtmlOutcomeTargetButton extends UIOutcomeTarget implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
-_TabindexProperty, _AltProperty
+_TabindexProperty, _AltProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

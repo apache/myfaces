@@ -56,4 +56,6 @@ public abstract class FlowBuilder
         String value);
 
     public abstract Flow getFlow();
+    
+    public abstract NavigationCaseBuilder navigationCase();
 }

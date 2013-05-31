@@ -57,4 +57,20 @@ public abstract class ConfigurableNavigationHandler extends NavigationHandler
     public void inspectFlow(FacesContext context, Flow flow)
     {
     }
+    
+    /**
+     * @since 2.2
+     * @param context
+     * @param fromAction
+     * @param outcome
+     * @param toFlowDocumentId
+     * @return 
+     */
+    public NavigationCase getNavigationCase(FacesContext context,
+                                        java.lang.String fromAction,
+                                        java.lang.String outcome,
+                                        java.lang.String toFlowDocumentId)
+    {
+        return getNavigationCase(context, fromAction, outcome);
+    }
 }

@@ -33,7 +33,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  defaultRendererType="javax.faces.Body",template=true,
  implementz = "javax.faces.component.behavior.ClientBehaviorHolder")
 abstract class _HtmlBody extends UIOutput 
-    implements _EventProperties, _UniversalProperties, _StyleProperties
+    implements _EventProperties, _UniversalProperties, _StyleProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY = "javax.faces.Output";

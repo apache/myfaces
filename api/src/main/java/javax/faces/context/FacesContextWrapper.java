@@ -252,4 +252,10 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
         return getWrapped().isReleased();
     }
 
+    @Override
+    public char getNamingContainerSeparatorChar()
+    {
+        return getWrapped().getNamingContainerSeparatorChar();
+    }
+
 }

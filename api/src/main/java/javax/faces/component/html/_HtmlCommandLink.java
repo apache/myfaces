@@ -38,7 +38,7 @@ defaultEventName = "action"
 abstract class _HtmlCommandLink extends UICommand
     implements _EventProperties, _UniversalProperties, _StyleProperties,
     _FocusBlurProperties, _AccesskeyProperty, _TabindexProperty,
-    _LinkProperties
+    _LinkProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

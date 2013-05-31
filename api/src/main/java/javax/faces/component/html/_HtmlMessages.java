@@ -42,7 +42,7 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlMessagesTag",
 defaultRendererType = "javax.faces.Messages"
 )
 abstract class _HtmlMessages extends UIMessages implements _StyleProperties, 
-_MessageProperties, _UniversalProperties
+_MessageProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

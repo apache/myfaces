@@ -34,7 +34,7 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlOutputFormatTag",
 defaultRendererType = "javax.faces.Format"
 )
 abstract class _HtmlOutputFormat extends UIOutput implements _StyleProperties, 
-    _EscapeProperty, _TitleProperty, _UniversalProperties
+    _EscapeProperty, _TitleProperty, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

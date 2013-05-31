@@ -18,13 +18,15 @@
  */
 package javax.faces.view.facelets;
 
+import javax.faces.FacesWrapper;
+
 /**
  * @author Simon Lessard (latest modification by $Author$)
  * @version $Revision$ $Date$
  *
  * @since 2.0
  */
-public abstract class TagHandlerDelegateFactory
+public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandlerDelegateFactory>
 {
     public abstract TagHandlerDelegate createBehaviorHandlerDelegate(BehaviorHandler owner);
     
@@ -33,4 +35,13 @@ public abstract class TagHandlerDelegateFactory
     public abstract TagHandlerDelegate createConverterHandlerDelegate(ConverterHandler owner);
     
     public abstract TagHandlerDelegate createValidatorHandlerDelegate(ValidatorHandler owner);
+    
+    /**
+     * @since 2.2
+     * @return 
+     */
+    public TagHandlerDelegateFactory getWrapped()
+    {
+        return null;
+    }
 }

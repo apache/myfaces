@@ -62,7 +62,7 @@ abstract class _HtmlSelectManyListbox extends UISelectMany implements
 _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
 _FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
 _StyleProperties, _TabindexProperty, _DisabledClassEnabledClassProperties,
-_LabelProperty
+_LabelProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

@@ -16,20 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.event;
+package javax.faces.view;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.enterprise.context.NormalScope;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
+ *
+ * @since 2.2
  */
-public interface ActionListener extends FacesListener
+@NormalScope
+@Inherited
+@Documented
+@Target(value={ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
+@Retention(value= RetentionPolicy.RUNTIME)
+public @interface ViewScoped
 {
-    /**
-     * @since 2.2
-     */
-    static final String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
     
-    void processAction(ActionEvent actionEvent) throws AbortProcessingException;
 }

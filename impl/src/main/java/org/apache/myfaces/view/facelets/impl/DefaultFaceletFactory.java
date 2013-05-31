@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletCacheFactory;
 import javax.faces.view.facelets.FaceletContext;
@@ -41,7 +42,6 @@ import javax.faces.view.facelets.ResourceResolver;
 
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
-import org.apache.myfaces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;

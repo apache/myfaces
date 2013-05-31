@@ -88,9 +88,18 @@ public abstract class ResourceHandler
      * @param resourceName
      * @return 
      */
-    public Resource createViewResource(FacesContext context,
+    public ViewResource createViewResource(FacesContext context,
                                        String resourceName)
     {
         return context.getApplication().getResourceHandler().createResource(resourceName);
+    }
+    
+    public boolean isResourceURL(java.lang.String url)
+    {
+        if (url == null)
+        {
+            throw new NullPointerException();
+        }
+        return url.contains(RESOURCE_IDENTIFIER);
     }
 }

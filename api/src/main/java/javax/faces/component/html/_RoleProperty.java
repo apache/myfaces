@@ -16,20 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.event;
+package javax.faces.component.html;
 
-/**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-public interface ActionListener extends FacesListener
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+
+interface _RoleProperty
 {
     /**
-     * @since 2.2
+     * HTML: An advisory title for this element.  Often used by the user agent as a tooltip.
+     * 
      */
-    static final String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
-    
-    void processAction(ActionEvent actionEvent) throws AbortProcessingException;
+    @JSFProperty
+    public abstract String getRole();
 }

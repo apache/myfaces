@@ -60,7 +60,7 @@ abstract class _HtmlSelectManyCheckbox extends UISelectMany implements
     _AccesskeyProperty, _UniversalProperties, _FocusBlurProperties,
     _ChangeSelectProperties, _EventProperties, _StyleProperties,
     _TabindexProperty, _DisabledReadonlyProperties, 
-    _DisabledClassEnabledClassProperties, _LabelProperty
+    _DisabledClassEnabledClassProperties, _LabelProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

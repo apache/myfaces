@@ -473,7 +473,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     Document document = domImpl.createDocument(
                         "http://java.sun.com/xml/ns/javaee", "faces-config", null);
                     //Document document = builder.newDocument();
-                    populator.populateApplicationConfigurationResource(document);
+                    populator.populateApplicationConfiguration(document);
                     documentList.add(document);
                 }
                 

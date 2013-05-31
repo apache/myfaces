@@ -106,4 +106,10 @@ public abstract class PartialViewContextWrapper extends PartialViewContext imple
     {
         getWrapped().setRenderAll(renderAll);
     }
+    
+    @Override
+    public boolean isResetValues()
+    {
+        return getWrapped().isResetValues();
+    }
 }

@@ -26,12 +26,14 @@ import javax.faces.context.FacesContext;
  */
 public abstract class FlowHandler
 {
+    public static final String FLOW_ID_REQUEST_PARAM_NAME = "jffi";
+    public static final String NULL_FLOW = "javax.faces.flow.NullFlow";
+    public static final String TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME = "jftfdi";
 
     public abstract java.util.Map<java.lang.Object, java.lang.Object> getCurrentFlowScope();
 
     public abstract Flow getFlow(FacesContext context,
-        java.lang.String definingDocumentId,
-        java.lang.String id);
+        String definingDocumentId, String id);
 
     public abstract void addFlow(FacesContext context,
         Flow toAdd);
@@ -44,11 +46,17 @@ public abstract class FlowHandler
     }
 
     public abstract void transition(FacesContext context,
-        Flow sourceFlow,
-        Flow targetFlow,
-        FlowCallNode outboundCallNode);
+        Flow sourceFlow, Flow targetFlow,
+        FlowCallNode outboundCallNode, String toViewId);
 
     public abstract boolean isActive(FacesContext context,
-        java.lang.String definingDocument,
-        java.lang.String id);
+        String definingDocument, String id);
+    
+    public abstract void clientWindowTransition(FacesContext context);
+    
+    public abstract String getLastDisplayedViewId(FacesContext context);
+    
+    public abstract void pushReturnMode(FacesContext context);
+    
+    public abstract void popReturnMode(FacesContext context);
 }

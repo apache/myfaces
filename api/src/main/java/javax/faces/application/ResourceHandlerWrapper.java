@@ -81,9 +81,15 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
     }
 
     @Override
-    public Resource createViewResource(FacesContext context, String resourceName)
+    public ViewResource createViewResource(FacesContext context, String resourceName)
     {
         return getWrapped().createViewResource(context, resourceName);
+    }
+
+    @Override
+    public boolean isResourceURL(String url)
+    {
+        return getWrapped().isResourceURL(url);
     }
     
     public abstract ResourceHandler getWrapped();

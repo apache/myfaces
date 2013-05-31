@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets;
+package javax.faces.view.facelets;
 
 import java.io.IOException;
 
@@ -24,7 +24,6 @@ import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletException;
 
 /**
  * The parent or root object in a FaceletHandler composition. The Facelet will take care of populating the passed

@@ -29,6 +29,9 @@ import javax.faces.context.FacesContext;
  */
 public interface Converter
 {
+    public static final java.lang.String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME =
+            "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
+    
     Object getAsObject(FacesContext context,
                        UIComponent component,
                        String value) throws ConverterException;

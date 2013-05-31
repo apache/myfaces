@@ -34,7 +34,7 @@ tagClass = "org.apache.myfaces.taglib.html.HtmlOutputTextTag",
 defaultRendererType = "javax.faces.Text"
 )
 abstract class _HtmlOutputText extends UIOutput implements _EscapeProperty, 
-_StyleProperties, _UniversalProperties
+_StyleProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

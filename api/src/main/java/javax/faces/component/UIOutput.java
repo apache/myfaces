@@ -74,6 +74,14 @@ public class UIOutput extends UIComponentBase implements ValueHolder
     {
         getStateHelper().put(PropertyKeys.value, value );
     }
+    
+    /**
+     * @since 2.2
+     */
+    public void resetValue()
+    {
+        //TODO: Implement me!
+    }
 
     /**
      * An expression that specifies the Converter for this component.

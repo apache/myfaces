@@ -16,20 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.event;
+package javax.faces.view.facelets;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
+ *
+ * @author lu4242
  */
-public interface ActionListener extends FacesListener
+@Target(value=ElementType.TYPE)
+@Retention(value=RetentionPolicy.RUNTIME)
+@Inherited
+public @interface FaceletsResourceResolver
 {
-    /**
-     * @since 2.2
-     */
-    static final String TO_FLOW_DOCUMENT_ID_ATTR_NAME = "to-flow-document-id";
     
-    void processAction(ActionEvent actionEvent) throws AbortProcessingException;
 }

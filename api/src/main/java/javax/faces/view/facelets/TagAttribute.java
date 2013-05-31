@@ -164,4 +164,21 @@ public abstract class TagAttribute
      * @return true if this attribute is literal
      */
     public abstract boolean isLiteral();
+    
+    /**
+     * @since 2.2
+     * @return 
+     */
+    public Tag getTag()
+    {
+        return null;
+    }
+
+    /**
+     * @since 2.2
+     * @param tag 
+     */
+    public void setTag(Tag tag)
+    {
+    }
 }

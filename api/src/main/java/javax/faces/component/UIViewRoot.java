@@ -1257,6 +1257,17 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
         return _attributesMap;
     }
+    
+    /**
+     * @since 2.2
+     * @param context
+     * @param clientIds 
+     */
+    public void resetValues(FacesContext context,
+                        java.util.Collection<java.lang.String> clientIds)    
+    {
+        //TODO: Implement me!
+    }
 
     /**
      * Indicates if the component is created when facelets builds the view and

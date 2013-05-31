@@ -98,6 +98,25 @@ public abstract class ViewHandler
     //       remove that JAR, they ought to be aware that some changes could be needed, like fixing their 
     //       context-param. -= Simon Lessard =-
 
+    @JSFWebConfigParam(since="2.2")
+    public static final java.lang.String DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME = 
+        "DISABLE_FACELET_JSF_VIEWHANDLER";
+    
+    @JSFWebConfigParam(since="2.2")
+    public static final java.lang.String FACELETS_BUFFER_SIZE_PARAM_NAME = "javax.faces.FACELETS_BUFFER_SIZE";
+    
+    @JSFWebConfigParam(since="2.2")
+    public static final java.lang.String FACELETS_DECORATORS_PARAM_NAME = "javax.faces.FACELETS_DECORATORS";
+    
+    @JSFWebConfigParam(since="2.2")
+    public static final java.lang.String FACELETS_LIBRARIES_PARAM_NAME = "javax.faces.FACELETS_LIBRARIES";
+    
+    @JSFWebConfigParam(since="2.2")
+    public static final java.lang.String FACELETS_REFRESH_PERIOD_PARAM_NAME = "javax.faces.FACELETS_REFRESH_PERIOD";
+
+    @JSFWebConfigParam(since="2.2")
+    public static final java.lang.String FACELETS_SKIP_COMMENTS_PARAM_NAME = "javax.faces.FACELETS_SKIP_COMMENTS";
+    
     /**
      * @since JSF 1.2
      */

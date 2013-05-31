@@ -27,6 +27,7 @@ import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletException;
 
 

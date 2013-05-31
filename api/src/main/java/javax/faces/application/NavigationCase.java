@@ -41,6 +41,7 @@ public class NavigationCase
     private String _fromOutcome;
     private String _fromViewId;
     private String _toViewId;
+    private String _toFlowDocumentId;
     private boolean _includeViewParams;
     private boolean _redirect;
     private Map<String,List<String>> _parameters;
@@ -56,9 +57,26 @@ public class NavigationCase
         _fromAction = fromAction;
         _fromOutcome = fromOutcome;
         _toViewId = toViewId;
+        _toFlowDocumentId = null;
         _redirect = redirect;
         _includeViewParams = includeViewParams;
         _parameters = parameters;
+    }
+    
+    public NavigationCase(String fromViewId, String fromAction, String fromOutcome, String condition, String toViewId,
+                          String toFlowDocumentId, Map<String,List<String>> parameters, boolean redirect,
+                          boolean includeViewParams)
+    {
+        _condition = condition;
+        _fromViewId = fromViewId;
+        _fromAction = fromAction;
+        _fromOutcome = fromOutcome;
+        _toViewId = toViewId;
+        _toFlowDocumentId = toFlowDocumentId;
+        _redirect = redirect;
+        _includeViewParams = includeViewParams;
+        _parameters = parameters;
+
     }
 
     /**
@@ -196,6 +214,15 @@ public class NavigationCase
     }
     
     /**
+     * @since 2.2
+     * @return 
+     */
+    public String getToFlowDocumentId()
+    {
+        return _toFlowDocumentId;
+    }
+    
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -240,6 +267,14 @@ public class NavigationCase
         builder.append("<to-view-id>");
         builder.append(_toViewId);
         builder.append("</to-view-id>\n");
+        
+        if (_toFlowDocumentId != null)
+        {
+            builder.append("  ");
+            builder.append("<to-flow-document-id>");
+            builder.append(_toFlowDocumentId);
+            builder.append("</to-flow-document-id>\n");
+        }
         
         if (_redirect)
         {

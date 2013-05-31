@@ -35,5 +35,13 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface FacesComponent
 {
-    public String value();
+    public static final String NAMESPACE = "http://xmlns.jcp.org/jsf/component";
+        
+    public String value() default "";
+    
+    public boolean createTag() default false;
+    
+    public String tagName() default "";
+    
+    public String namespace() default NAMESPACE;
 }
