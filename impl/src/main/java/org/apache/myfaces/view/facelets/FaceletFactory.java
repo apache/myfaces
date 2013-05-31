@@ -23,6 +23,7 @@ import javax.faces.FacesException;
 import javax.faces.view.facelets.FaceletException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import javax.faces.view.facelets.FaceletContext;
 
 /**
@@ -139,6 +140,16 @@ public abstract class FaceletFactory
      */
     public abstract Facelet getCompositeComponentMetadataFacelet(URL url)
             throws IOException, FaceletException, FacesException, ELException;
+    
+    /**
+     * Compile a component tag on the fly.
+     * 
+     * @param taglibURI
+     * @param tagName
+     * @param attributes
+     * @return 
+     */
+    public abstract Facelet compileComponentFacelet(String taglibURI, String tagName, Map<String,Object> attributes);
     
     /**
      * Set the static instance

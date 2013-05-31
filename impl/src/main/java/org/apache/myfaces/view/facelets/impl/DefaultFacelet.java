@@ -221,6 +221,77 @@ final class DefaultFacelet extends AbstractFacelet
             }
         }
     }
+    
+    public void applyDynamicComponentHandler(FacesContext facesContext, 
+            UIComponent parent, String baseKey)
+         throws IOException, FacesException, FaceletException, ELException
+    {
+        FaceletCompositionContext fcctx = null;
+        boolean faceletCompositionContextInitialized = false;
+        fcctx = FaceletCompositionContext.getCurrentInstance(facesContext);
+        boolean pushDynCompSection = false;
+        if (fcctx == null)
+        {
+            fcctx = new FaceletCompositionContextImpl(_factory, facesContext, 
+                baseKey);
+            fcctx.init(facesContext);
+            faceletCompositionContextInitialized = true;
+        }
+        else
+        {
+            pushDynCompSection = true;
+            fcctx.pushDynamicComponentSection(baseKey);
+        }
+        
+        FaceletContext oldCtx = (FaceletContext) facesContext.getAttributes().get(
+            FaceletContext.FACELET_CONTEXT_KEY);
+        DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, fcctx);
+        
+        //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
+        //reflect the current facelet context instance
+        facesContext.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
+        
+        ctx.pushPageContext(new PageContextImpl());
+        
+        try
+        {
+            // push the parent as a UniqueIdVendor to the stack here,
+            // if there is no UniqueIdVendor on the stack yet
+            boolean pushedUniqueIdVendor = false;
+            if (parent instanceof UniqueIdVendor
+                && ctx.getFaceletCompositionContext().getUniqueIdVendorFromStack() == null)
+            {
+                ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
+                pushedUniqueIdVendor = true;
+            }
+            
+            //this.refresh(parent);
+            //myFaceletContext.markForDeletion(parent);
+            _root.apply(ctx, parent);
+            //myFaceletContext.finalizeForDeletion(parent);
+            //this.markApplied(parent);
+            
+            // remove the UniqueIdVendor from the stack again
+            if (pushedUniqueIdVendor)
+            {
+                ctx.getFaceletCompositionContext().popUniqueIdVendorToStack();
+            }
+        }
+        finally
+        {
+            ctx.popPageContext();
+            facesContext.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, oldCtx);
+            
+            if (pushDynCompSection)
+            {
+                fcctx.popDynamicComponentSection();
+            }
+            if (faceletCompositionContextInitialized)
+            {
+                fcctx.release(facesContext);
+            }
+        }
+    }    
 
     private final void refresh(UIComponent c)
     {

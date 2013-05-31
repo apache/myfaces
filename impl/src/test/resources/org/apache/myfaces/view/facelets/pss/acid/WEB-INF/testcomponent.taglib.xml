@@ -71,5 +71,33 @@
 			<component-type>com.myapp.UIRDComponent</component-type>
 		</component>
 	</tag>
+    
+	<tag>
+		<tag-name>addSimpleComponentVDL</tag-name>
+		<component>
+			<component-type>com.myapp.UIAddSimpleComponentVDL</component-type>
+		</component>
+	</tag>
+
+	<tag>
+		<tag-name>addSimpleIncludeVDL</tag-name>
+		<component>
+			<component-type>com.myapp.UIAddSimpleIncludeVDL</component-type>
+		</component>
+	</tag>
+
+	<tag>
+		<tag-name>addSimpleIncludeVDL_2</tag-name>
+		<component>
+			<component-type>com.myapp.UIAddSimpleIncludeVDL2</component-type>
+		</component>
+	</tag>
+
+	<tag>
+		<tag-name>addSimpleCCVDL</tag-name>
+		<component>
+			<component-type>com.myapp.UIAddSimpleCCVDL</component-type>
+		</component>
+	</tag>
 
 </facelet-taglib>

@@ -27,8 +27,11 @@ import java.util.regex.Pattern;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.security.PrivilegedActionException;
+import java.util.Map;
 
 import javax.el.ELException;
+import javax.el.MethodExpression;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletException;
@@ -863,6 +866,50 @@ public final class SAXCompiler extends Compiler
             }
         }
         return new EncodingHandler(mngr.createFaceletHandler(), encoding);
+    }
+    
+    @Override
+    protected FaceletHandler doCompileComponent(
+        String taglibURI, String tagName, Map<String, Object> attributes)
+    {
+        String alias = tagName;
+        CompilationManager mngr = new CompilationManager(alias, this, getDefaultFaceletsProcessingInstructions());
+        String prefix = "oamf"; // The prefix is only a logical name.
+        mngr.pushNamespace(prefix, taglibURI);
+        
+        Location location = new Location(alias, 0, 0);
+        int len = attributes.size();
+        TagAttribute[] ta = new TagAttribute[len];
+        int i = 0;
+        for (Map.Entry<String, Object> entry : attributes.entrySet())
+        {
+            String stringValue = null;
+            if (entry.getValue() instanceof ValueExpression)
+            {
+                stringValue = ((ValueExpression)entry.getValue()).getExpressionString();
+            }
+            else if (entry.getValue() instanceof MethodExpression)
+            {
+                stringValue = ((MethodExpression)entry.getValue()).getExpressionString();
+            }
+            else if (entry.getValue() != null)
+            {
+                stringValue = entry.getValue().toString();
+            }
+            ta[i] = new TagAttributeImpl(location, "", entry.getKey(), entry.getKey(), stringValue);
+            i++;
+        }        
+        mngr.pushTag(new Tag(location, taglibURI, tagName, "oamf:"+tagName, new TagAttributesImpl(ta)));
+        mngr.popTag();
+        mngr.popNamespace(prefix);
+        
+        FaceletHandler handler = new DynamicComponentFacelet((NamespaceHandler) mngr.createFaceletHandler());
+        return handler;
+    }
+    
+    protected FaceletsProcessingInstructions getDefaultFaceletsProcessingInstructions()
+    {
+        return FaceletsProcessingInstructions.getProcessingInstructions(FaceletsProcessing.PROCESS_AS_XHTML, false);
     }
     
     protected FaceletsProcessingInstructions getFaceletsProcessingInstructions(URL src, String alias)

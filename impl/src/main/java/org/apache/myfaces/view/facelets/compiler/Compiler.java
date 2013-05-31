@@ -151,6 +151,16 @@ public abstract class Compiler
         }
         return this.doCompileCompositeComponentMetadata(src, alias);
     }
+    
+    public final FaceletHandler compileComponent(
+        String taglibURI, String tagName, Map<String,Object> attributes)
+    {
+        if (!this.initialized)
+        {
+            this.initialize();
+        }
+        return this.doCompileComponent(taglibURI, tagName, attributes);
+    }
 
     protected abstract FaceletHandler doCompile(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException;
@@ -161,6 +171,9 @@ public abstract class Compiler
     protected abstract FaceletHandler doCompileCompositeComponentMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException;
     
+    protected abstract FaceletHandler doCompileComponent(
+        String taglibURI, String tagName, Map<String,Object> attributes);
+
     public final TagDecorator createTagDecorator()
     {
         if (this.decorators.size() > 0)

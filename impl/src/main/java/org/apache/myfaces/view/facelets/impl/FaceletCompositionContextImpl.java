@@ -142,9 +142,15 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private SectionUniqueIdCounter _sectionUniqueComponentMetadataIdCounter;
     private SectionUniqueIdCounter _sectionUniqueComponentNormalIdCounter;
     
+    private List<SectionUniqueIdCounter> _sectionUniqueIdCounterStack;
+    private List<SectionUniqueIdCounter> _sectionUniqueComponentIdCounterStack;
+    
     private StringBuilder _sharedStringBuilder;
     
     private int _ccLevel;
+    
+    private boolean _dynamicComponentHandler;
+    private boolean _oldRefreshingTransientBuild;
     
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
@@ -185,6 +191,24 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sharedStringBuilder = null;
         _ccLevel = 0;
     }
+    
+    /**
+     * This constructor is intended for places where the id generation strategy needs to be changed
+     * adding a unique base id, like for example on a dynamic component creation.
+     * 
+     * @param factory
+     * @param facesContext
+     * @param base 
+     */
+    public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext, String base)
+    {
+        this(factory, facesContext);
+        _sectionUniqueIdCounter = new SectionUniqueIdCounter(base+"_");
+        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_"+ base +"_");
+        _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
+        _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
+    }
+    
     
     @Override
     public void setUniqueIdsIterator(Iterator<String> uniqueIdsIterator)
@@ -1074,6 +1098,61 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         }
         return _sharedStringBuilder;
     }
+    
+    public boolean isDynamicCompositeComponentHandler()
+    {
+        return this._dynamicComponentHandler;
+    }
+    
+    public void setDynamicCompositeComponentHandler(boolean value)
+    {
+        this._dynamicComponentHandler = value;
+    }
+
+    @Override
+    public void pushDynamicComponentSection(String base)
+    {
+        if (_sectionUniqueIdCounterStack == null)
+        {
+            _sectionUniqueIdCounterStack = new ArrayList<SectionUniqueIdCounter>();
+        }
+        if (_sectionUniqueComponentIdCounterStack == null)
+        {
+            _sectionUniqueComponentIdCounterStack = new ArrayList<SectionUniqueIdCounter>();
+        }
+        // Activate refresh transient build over dynamic component section.
+        if (_sectionUniqueComponentIdCounterStack.isEmpty())
+        {
+            _oldRefreshingTransientBuild = _isRefreshingTransientBuild;
+        }
+        _isRefreshingTransientBuild = true;
+        
+        _sectionUniqueIdCounterStack.add(_sectionUniqueIdCounter);
+        _sectionUniqueComponentIdCounterStack.add(_sectionUniqueComponentIdCounter);
+        _sectionUniqueIdCounter = new SectionUniqueIdCounter(base+"_");
+        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_"+ base +"_");
+        _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
+        _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
+    }
+
+    @Override
+    public void popDynamicComponentSection()
+    {
+        _sectionUniqueIdCounter = _sectionUniqueIdCounterStack.remove(
+            _sectionUniqueIdCounterStack.size()-1);
+        _sectionUniqueComponentIdCounter = _sectionUniqueComponentIdCounterStack.remove(
+            _sectionUniqueComponentIdCounterStack.size()-1);
+        
+        //Restore refresh section
+        if (_sectionUniqueComponentIdCounterStack.isEmpty())
+        {
+            _isRefreshingTransientBuild = _oldRefreshingTransientBuild;
+        }
+        
+        _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
+        _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
+    }
+    
     
     private static class KeyEntryIterator<K, V> implements Iterator<K>
     {

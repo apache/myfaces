@@ -79,6 +79,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 public class CompositeComponentResourceTagHandler extends ComponentHandler
     implements ComponentBuilderHandler, TemplateClient
 {
+    public static final String CREATE_CC_ON_POST_ADD_TO_VIEW = "oamf.cc.CREATE_CC_POST_ADD_TO_VIEW";
+    
     private final Resource _resource;
     
     private Metadata _mapper;
@@ -91,6 +93,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     
     protected final Collection<FaceletHandler> _facetHandlers;
     
+    private boolean _dynamicCompositeComponent;
+    
     public CompositeComponentResourceTagHandler(ComponentConfig config, Resource resource)
     {
         super(config);
@@ -100,6 +104,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         _componentHandlers = TagHandlerUtils.findNextByType(nextHandler,
                 javax.faces.view.facelets.ComponentHandler.class,
                 ComponentContainerHandler.class, TextHandler.class);
+        _dynamicCompositeComponent = false;
     }
 
     public UIComponent createComponent(FaceletContext ctx)
@@ -152,38 +157,96 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             throws IOException
     {
         //super.applyNextHandler(ctx, c);
+        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
         
-        applyNextHandlerIfNotApplied(ctx, c);
-        
-        applyCompositeComponentFacelet(ctx,c);
-        
-        if (ComponentHandler.isNew(c))
+        // Since JSF 2.2, there are two cases here:
+        // 
+        // 1. The composite component content is defined as facelet content like usual.
+        // 2. The composite component content will be defined programatically. That means,
+        // once the component instance is created, the user will be responsible to add
+        // children / facets and the code that process the composite component take effect
+        // when the composite component is added to the view. 
+        if (mctx.isDynamicCompositeComponentHandler())
         {
-            FacesContext facesContext = ctx.getFacesContext();
-            
-            ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().
-                getViewDeclarationLanguage(facesContext, facesContext.getViewRoot().getViewId());
+            _dynamicCompositeComponent = true;
+            try
+            {
+                mctx.setDynamicCompositeComponentHandler(false);
+                // If the composite component needs to be created dynamically
+                // 
+                Integer step = (Integer) c.getAttributes().get(CREATE_CC_ON_POST_ADD_TO_VIEW); 
+                if (step == null)
+                {
+                    // The flag is not found, so we are creating the component right now.
+                    // Add the flag and return.
+                    c.getAttributes().put(CREATE_CC_ON_POST_ADD_TO_VIEW, 0);
+                }
+                else if (step.intValue() == 0)
+                {
+                    // Should not happen, stop processing
+                }
+                else if (step.intValue() == 1)
+                {
+                    // The component was created, and the listener attached to PostAddToViewEvent
+                    // is executing right now. Do the necessary steps to process the 
+                    // composite component dynamically.
+                    applyNextHandlerIfNotAppliedDynamically(ctx, c);
 
-            FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
-            List<AttachedObjectHandler> handlers = mctx.getAttachedObjectHandlers(c);
-            
-            if (handlers != null)
-            {
-                vdl.retargetAttachedObjects(facesContext, c, handlers);
-                
-                // remove the list of handlers, as it is no longer necessary
-                mctx.removeAttachedObjectHandlers(c);
+                    applyCompositeComponentFacelet(ctx,c);
+
+                    applyFinalInitializationSteps(ctx, mctx, c);
+
+                    c.getAttributes().put(CREATE_CC_ON_POST_ADD_TO_VIEW, 2);
+                }
+                else
+                {
+                    // Refresh over dynamic composite component        
+                    applyCompositeComponentFacelet(ctx,c);
+                }
             }
-            
-            vdl.retargetMethodExpressions(facesContext, c);
-            
-            if ( FaceletCompositionContext.getCurrentInstance(ctx).isMarkInitialState())
+            finally
             {
-                // Call it only if we are using partial state saving
-                c.markInitialState();
-                // Call it to other components created not bound by a tag handler
-                c.getFacet(UIComponent.COMPOSITE_FACET_NAME).markInitialState();
-            }            
+                mctx.setDynamicCompositeComponentHandler(true);
+            }
+        }
+        else
+        {
+            applyNextHandlerIfNotApplied(ctx, c);
+
+            applyCompositeComponentFacelet(ctx,c);
+
+            if (ComponentHandler.isNew(c))
+            {
+                applyFinalInitializationSteps(ctx, mctx, c);
+            }
+        }
+    }
+    
+    protected void applyFinalInitializationSteps(FaceletContext ctx, FaceletCompositionContext mctx, UIComponent c)
+    {
+        FacesContext facesContext = ctx.getFacesContext();
+
+        ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler().
+            getViewDeclarationLanguage(facesContext, facesContext.getViewRoot().getViewId());
+
+        List<AttachedObjectHandler> handlers = mctx.getAttachedObjectHandlers(c);
+
+        if (handlers != null)
+        {
+            vdl.retargetAttachedObjects(facesContext, c, handlers);
+
+            // remove the list of handlers, as it is no longer necessary
+            mctx.removeAttachedObjectHandlers(c);
+        }
+
+        vdl.retargetMethodExpressions(facesContext, c);
+
+        if ( FaceletCompositionContext.getCurrentInstance(ctx).isMarkInitialState())
+        {
+            // Call it only if we are using partial state saving
+            c.markInitialState();
+            // Call it to other components created not bound by a tag handler
+            c.getFacet(UIComponent.COMPOSITE_FACET_NAME).markInitialState();
         }
     }
     
@@ -460,7 +523,61 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     
     public boolean apply(FaceletContext ctx, UIComponent parent, String name)
             throws IOException, FacesException, FaceletException, ELException
-    {        
+    {
+        if (_dynamicCompositeComponent)
+        {
+            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            FaceletCompositionContext fcc = actx.getFaceletCompositionContext(); 
+            UIComponent innerCompositeComponent = fcc.getCompositeComponentFromStack();
+            
+            // In a programatical addition, the code that process the composite component only takes effect
+            // when the composite component is added to the view.
+            Integer step = (Integer) innerCompositeComponent.getAttributes().get(CREATE_CC_ON_POST_ADD_TO_VIEW);
+            if (step != null && step.intValue() == 1)
+            {
+                if (name != null)
+                {
+                    //1. Initialize map used to retrieve facets
+                    if (innerCompositeComponent.getFacetCount() == 0)
+                    {
+                        checkFacetRequired(ctx, parent, name);
+                        return true;
+                    }
+                    UIComponent facet = innerCompositeComponent.getFacet(name);
+                    if (facet != null)
+                    {
+                        // Insert facet
+                        innerCompositeComponent.getFacets().remove(name);
+                        parent.getFacets().put(name, facet);
+                        return true;
+                    }
+                    else
+                    {
+                        checkFacetRequired(ctx, parent, name);
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (innerCompositeComponent.getChildCount() > 0)
+                    {
+                        // Insert children
+                        List<UIComponent> children = new ArrayList<UIComponent>(
+                            innerCompositeComponent.getChildCount());
+                        while (innerCompositeComponent.getChildCount() > 0)
+                        {
+                            children.add(innerCompositeComponent.getChildren().remove(0));
+                        }
+                        while (children.size() > 0)
+                        {
+                            parent.getChildren().add(children.remove(0));
+                        }
+                    }
+                    return true;
+                }
+            }
+            return true;
+        }
         if (name != null)
         {
             //1. Initialize map used to retrieve facets
@@ -560,4 +677,50 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             }
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    protected void applyNextHandlerIfNotAppliedDynamically(FaceletContext ctx, UIComponent c)
+        throws IOException
+    {
+        CompositeComponentBeanInfo beanInfo = 
+            (CompositeComponentBeanInfo) c.getAttributes().get(UIComponent.BEANINFO_KEY);
+        
+        BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
+
+        // Since the children / facet were added programatically, there is no handler or facelets to apply.
+        
+        //Check for required facets
+        Map<String, PropertyDescriptor> facetPropertyDescriptorMap = (Map<String, PropertyDescriptor>)
+            beanDescriptor.getValue(UIComponent.FACETS_KEY);
+        
+        if (facetPropertyDescriptorMap != null)
+        {
+            List<String> facetsRequiredNotFound = null;
+            for (Map.Entry<String, PropertyDescriptor> entry : facetPropertyDescriptorMap.entrySet())
+            {
+                ValueExpression requiredExpr = (ValueExpression) entry.getValue().getValue("required");
+                if (requiredExpr != null)
+                {
+                    Boolean required = (Boolean) requiredExpr.getValue(ctx.getFacesContext().getELContext());
+                    if (Boolean.TRUE.equals(required))
+                    {
+                        if (c.getFacet(entry.getKey()) == null)
+                        {
+                            if (facetsRequiredNotFound == null)
+                            {
+                                facetsRequiredNotFound = new ArrayList(facetPropertyDescriptorMap.size());
+                            }
+                            facetsRequiredNotFound.add(entry.getKey());
+                        }
+                    }
+                }
+            }
+            if (facetsRequiredNotFound != null && !facetsRequiredNotFound.isEmpty())
+            {
+                throw new TagException(getTag(), "The following facets are required by the component: "
+                                                 + facetsRequiredNotFound);
+            }
+        }
+    }
+    
 }

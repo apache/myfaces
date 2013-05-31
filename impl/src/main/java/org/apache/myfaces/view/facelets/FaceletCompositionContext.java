@@ -624,4 +624,21 @@ abstract public class FaceletCompositionContext
     {
         return 0;
     }
+    
+    public boolean isDynamicCompositeComponentHandler()
+    {
+        return false;
+    }
+    
+    public void setDynamicCompositeComponentHandler(boolean value)
+    {
+    }
+    
+    public void pushDynamicComponentSection(String baseKey)
+    {
+    }
+    
+    public void popDynamicComponentSection()
+    {
+    }
 }

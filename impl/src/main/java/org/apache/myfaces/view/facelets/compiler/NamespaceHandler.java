@@ -26,12 +26,14 @@ import javax.el.ELException;
 import javax.el.FunctionMapper;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 
 import org.apache.myfaces.view.facelets.el.CompositeFunctionMapper;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 
 final class NamespaceHandler extends FunctionMapper implements FaceletHandler
 {
@@ -72,4 +74,13 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler
         return null;
     }
 
+    public boolean isNextHandlerComponent()
+    {
+        return (next instanceof ComponentHandler);
+    }
+    
+    public boolean isNextHandlerCompositeComponent()
+    {
+        return (next instanceof CompositeComponentResourceTagHandler);
+    }
 }

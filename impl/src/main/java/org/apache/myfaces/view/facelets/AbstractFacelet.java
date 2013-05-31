@@ -26,6 +26,7 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletException;
 
 
@@ -89,6 +90,10 @@ public abstract class AbstractFacelet extends Facelet
     
     public abstract void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource)
             throws IOException, FacesException, FaceletException, ELException;
+    
+    public abstract void applyDynamicComponentHandler(FacesContext facesContext, UIComponent parent,
+        String baseKey)
+         throws IOException, FacesException, FaceletException, ELException;
     
     public abstract boolean isBuildingCompositeComponentMetadata();
     

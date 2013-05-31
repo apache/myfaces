@@ -28,7 +28,6 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +51,7 @@ import javax.faces.component.ActionSource2;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
+import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -62,6 +62,7 @@ import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
@@ -129,7 +130,9 @@ import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 import static org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy.*;
+import org.apache.myfaces.view.facelets.compiler.RefreshDynamicComponentListener;
 import org.apache.myfaces.view.facelets.impl.SectionUniqueIdCounter;
+import org.apache.myfaces.view.facelets.tag.composite.CreateDynamicCompositeComponentListener;
 import org.apache.myfaces.view.facelets.tag.jsf.JsfLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionListener;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValidator;
@@ -2690,7 +2693,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         // Per spec section 11.1.3, the default value for the partial state saving feature needs
         // to be true if 2.0, false otherwise.
 
-        partialStateSavingDefault = "2.0".equals(facesVersion) || "2.1".equals(facesVersion);
+        partialStateSavingDefault = "2.0".equals(facesVersion) || "2.1".equals(facesVersion) || 
+            "2.2".equals(facesVersion);
 
         // In jsf 2.0 this code evolve as PartialStateSaving feature
         //_buildBeforeRestore = _getBooleanParameter(context, PARAM_BUILD_BEFORE_RESTORE, false);
@@ -2738,7 +2742,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             contractMappings.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
         }
         
-        Collections.sort(prefixWildcardKeys, new KeyComparator());
+        Collections.sort(prefixWildcardKeys, new FaceletsVDLUtils.KeyComparator());
         
         this._prefixWildcardKeys = prefixWildcardKeys;
         this._contractMappings = contractMappings;
@@ -2758,7 +2762,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             //Check prefix mapping
             for (String prefix : this._prefixWildcardKeys)
             {
-                if (matchPattern(viewId, prefix))
+                if (FaceletsVDLUtils.matchPattern(viewId, prefix))
                 {
                     contracts =  this._contractMappings.get(prefix);
                     break;
@@ -2767,78 +2771,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
         return contracts;
     }
-    
-    /**
-     * As specified in JSF 2.2 section 11.4.2.1, note it is different from the
-     * allowed format in xml url-pattern type.
-     * 
-     * @param path
-     * @param pattern
-     * @return A
-     */
-    private boolean matchPattern(String path, String pattern)
-    {
-        // Normalize the argument strings
-        if ((path == null) || (path.length() == 0))
-        {
-            path = "*";
-        }
-        if ((pattern == null) || (pattern.length() == 0))
-        {
-            pattern = "*";
-        }
 
-        // Check for exact match
-        if (path.equals(pattern))
-        {
-            return (true);
-        }
-
-        // Check for path prefix matching
-        if (pattern.startsWith("/") && pattern.endsWith("/*"))
-        {
-            pattern = pattern.substring(0, pattern.length() - 2);
-            if (pattern.length() == 0)
-            {
-                return (true);  // "/*" is the same as "/"
-            }
-            if (path.endsWith("/"))
-            {
-                path = path.substring(0, path.length() - 1);
-            }
-            while (true)
-            {
-                if (pattern.equals(path))
-                {
-                    return (true);
-                }
-                int slash = path.lastIndexOf('/');
-                if (slash <= 0)
-                {
-                    break;
-                }
-                path = path.substring(0, slash);
-            }
-            return (false);
-        }
-
-        // Check for universal mapping
-        if (pattern.equals("*"))
-        {
-            return (true);
-        }
-
-        return (false);
-    }    
-
-    private static final class KeyComparator implements Comparator<String>
-    {
-        public int compare(String s1, String s2)
-        {
-            return -s1.compareTo(s2);
-        }
-    }    
-    
     private class FaceletViewMetadata extends ViewMetadataBase
     {
         /**
@@ -2911,5 +2844,121 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             }
         }
     }
+    
+    public FaceletFactory getFaceletFactory()
+    {
+        return _faceletFactory;
+    }
 
+    @Override
+    public UIComponent createComponent(FacesContext context, 
+        String taglibURI, String tagName, Map<String, Object> attributes)
+    {
+        checkNull(context, "context");
+        UIComponent createdComponent = null;
+        try
+        {
+            Facelet componentFacelet;
+            FaceletFactory.setInstance(_faceletFactory);
+            try
+            {
+                componentFacelet
+                        = _faceletFactory.compileComponentFacelet(taglibURI, tagName, attributes);
+            }
+            finally
+            {
+                FaceletFactory.setInstance(null);
+            }
+            if (componentFacelet == null)
+            {
+                return null;
+            }
+            
+            // Create a temporal component base class where all components will be put, but we are only
+            // interested in the inner UIComponent and if multiple are created, return this one.
+            UIPanel tempParent
+                    = (UIPanel) context.getApplication().createComponent(
+                    context, UIPanel.COMPONENT_TYPE, null);
+            tempParent.setId(context.getViewRoot().createUniqueId(context, null));
+            String baseKey = tempParent.getId();
+            baseKey = baseKey.startsWith(UIViewRoot.UNIQUE_ID_PREFIX) ? baseKey.substring(4) : baseKey;
+
+            try
+            {
+                tempParent.pushComponentToEL(context, tempParent);
+                ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                    context, tempParent, baseKey);
+            }
+            finally
+            {
+                tempParent.popComponentFromEL(context);
+            }
+            if (tempParent.getChildCount() > 1)
+            {
+                // Multiple child. The tempParent will be returned. No need to
+                // save MARK_CREATED.
+                createdComponent = tempParent;
+                tempParent.subscribeToEvent(PostRestoreStateEvent.class, new 
+                    RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+            }
+            else if (tempParent.getChildCount() == 1)
+            {
+                createdComponent = tempParent.getChildren().get(0);
+                
+                // One child. In that case there are three choices:
+                if (UIComponent.isCompositeComponent(createdComponent))
+                {
+                    // 1. Composite component. Needs special handling because
+                    // facets will be added programatically. The algorithm that
+                    // process the composite component content should occur
+                    // after the component is added to the view (PostAddToViewEvent).
+                    // Requires refresh. To do that, we need to save the MARK_CREATED
+                    // value and set it only when the full component is refreshed after 
+                    // restore it.
+                    createdComponent.getAttributes().put("oam.vf.GEN_MARK_ID",
+                        createdComponent.getAttributes().get(ComponentSupport.MARK_CREATED));
+                    createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                    createdComponent.subscribeToEvent(PostAddToViewEvent.class, new 
+                        CreateDynamicCompositeComponentListener(taglibURI, tagName, attributes, baseKey));
+                    createdComponent.subscribeToEvent(PostRestoreStateEvent.class, new 
+                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                }
+                else if (createdComponent.getChildCount() > 0)
+                {
+                    // 2. Single component with children inside.
+                    // Requires refresh. To do that, we need to save the MARK_CREATED
+                    // value and set it only when the full component is refreshed after 
+                    // restore it.
+                    createdComponent.getAttributes().put("oam.vf.GEN_MARK_ID",
+                        createdComponent.getAttributes().get(ComponentSupport.MARK_CREATED));
+                    createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                    createdComponent.subscribeToEvent(PostRestoreStateEvent.class, new 
+                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                }
+                else if (createdComponent.isTransient())
+                {
+                    // Just transient markup inside. It is necessary to wrap
+                    // that content into a component. Requires refresh. No need to
+                    // save MARK_CREATED.
+                    createdComponent = tempParent;
+                    createdComponent.subscribeToEvent(PostRestoreStateEvent.class, new 
+                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                }
+                else
+                {
+                    // 4. Single component without children: 
+                    // Remove MARK_CREATED because it does not requires
+                    // refresh on restore. When it is added to the component
+                    // tree, it will be saved and restored as if was a programatically
+                    // added component.
+                    createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            throw new FacesException(e);
+        }
+        return createdComponent;
+    }
 }

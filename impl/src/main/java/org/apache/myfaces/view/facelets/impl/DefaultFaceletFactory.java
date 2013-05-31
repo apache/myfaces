@@ -540,6 +540,13 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
     }
 
+    public Facelet compileComponentFacelet(String taglibURI, String tagName, Map<String,Object> attributes)
+    {
+        FaceletHandler handler = _compiler.compileComponent(taglibURI, tagName, attributes);
+        String alias = "/component/oamf:"+tagName;
+        return new DefaultFacelet(this, _compiler.createExpressionFactory(), getBaseUrl(), alias, alias, handler);
+    }
+    
     /**
      * Removes the first appearance of toRemove in string.
      *

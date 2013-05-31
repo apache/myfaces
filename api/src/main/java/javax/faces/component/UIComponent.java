@@ -861,8 +861,28 @@ public abstract class UIComponent
 
             //getFacesContext().getApplication().publishEvent(getFacesContext(),
             // PostRestoreStateEvent.class, UIComponent.class, this);
+            
+            // JSF 2.2 vdl.createComponent() requires special handling to refresh
+            // dynamic parts when refreshing is done. The only way to do it is 
+            // attaching a listener to PostRestoreStateEvent, so we need to do this
+            // invocation here.
+            // Do it inside UIComponent.processEvent() is better because in facelets
+            // UILeaf we can skip this part just overriding the method.
+            
+            List<SystemEventListener> listeners = this.getListenersForEventClass(
+                PostRestoreStateEvent.class);
+            if (!listeners.isEmpty())
+            {
+                for (int i  = 0, size = listeners.size(); i < size; i++)
+                {
+                    SystemEventListener listener = listeners.get(i);
+                    if (listener.isListenerForSource(this))
+                    {
+                        listener.processEvent(event);
+                    }
+                }
+            }
         }
-
     }
 
     public abstract void processValidators(FacesContext context);
