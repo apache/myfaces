@@ -20,6 +20,7 @@ package javax.faces.convert;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -29,7 +30,11 @@ import javax.faces.context.FacesContext;
  */
 public interface Converter
 {
-    public static final java.lang.String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME =
+    /**
+     * Set the default timezone as system timezone when a converter extending from DateTimeConverter is created.
+     */
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
+    public static final String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME =
             "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
     
     Object getAsObject(FacesContext context,

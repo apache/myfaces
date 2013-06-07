@@ -134,13 +134,6 @@ public class ApplicationImpl extends Application
     public final static String MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "org.apache.myfaces.PROJECT_STAGE";
     
     /**
-     * Set the default timezone as system timezone when a converter extending from DateTimeConverter is created.
-     */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
-    public final static String DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME 
-        = "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE";
-    
-    /**
      * Indicate the stage of the initialized application.
      */
     @JSFWebConfigParam(defaultValue="Production",
@@ -278,7 +271,7 @@ public class ApplicationImpl extends Application
         }
         
         String configParam = getFaceContext().getExternalContext().
-                getInitParameter(DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
+                getInitParameter(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
         if (configParam != null && configParam.toLowerCase().equals("true"))
         {
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
