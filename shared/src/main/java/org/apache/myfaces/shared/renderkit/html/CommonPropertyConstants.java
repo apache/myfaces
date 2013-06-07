@@ -104,6 +104,8 @@ public class CommonPropertyConstants
     public static final long MAXLENGTH_PROP   = 0x2000000000L;
     public static final long SIZE_PROP        = 0x4000000000L;
     
+    public static final long ROLE_PROP        = 0x8000000000L;
+    
     public static final Map<String, Long> COMMON_PROPERTIES_KEY_BY_NAME = new HashMap<String, Long>(64,1);
     
     static
@@ -174,6 +176,9 @@ public class CommonPropertyConstants
         COMMON_PROPERTIES_KEY_BY_NAME.put("checked",    CHECKED_PROP);
         COMMON_PROPERTIES_KEY_BY_NAME.put("maxlength",  MAXLENGTH_PROP);
         COMMON_PROPERTIES_KEY_BY_NAME.put("size",       SIZE_PROP);
+        
+        // HTML5 role
+        COMMON_PROPERTIES_KEY_BY_NAME.put("role",   ROLE_PROP);
     }
     
     public static void markProperty(UIComponent component, String name)
