@@ -260,4 +260,9 @@ public abstract class FacesConfigData implements Serializable
     {
         return Collections.emptyList();
     }
+    
+    public Collection<ComponentTagDeclaration> getComponentTagDeclarations()
+    {
+        return Collections.emptyList();
+    }
 }

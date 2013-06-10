@@ -47,6 +47,7 @@ import javax.faces.validator.FacesValidator;
 
 import org.apache.myfaces.config.impl.digester.elements.Application;
 import org.apache.myfaces.config.impl.digester.elements.Behavior;
+import org.apache.myfaces.config.impl.digester.elements.ComponentTagDeclarationImpl;
 import org.apache.myfaces.config.impl.digester.elements.Converter;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
 import org.apache.myfaces.spi.AnnotationProvider;
@@ -120,6 +121,13 @@ public class AnnotationConfigurator
                     }
 
                     facesConfig.addComponent(comp.value(), clazz.getName());
+                    
+                    if (comp.createTag())
+                    {
+                        facesConfig.addComponentTagDeclaration(comp.value(), 
+                                new ComponentTagDeclarationImpl(comp.value(), 
+                                    comp.namespace(), comp.tagName()));
+                    }
                 }
             }
         }

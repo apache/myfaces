@@ -37,6 +37,7 @@ import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.element.Application;
+import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.Converter;
 import org.apache.myfaces.config.element.FacesConfig;
@@ -118,6 +119,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private List<String> protectedViewUrlPatterns = new ArrayList<String>();
     private List<ContractMapping> resourceLibraryContractMappings = new ArrayList<ContractMapping>();
+    
+    private List<ComponentTagDeclaration> componentTagDeclarations = new ArrayList<ComponentTagDeclaration>();
     
     /**
      * Add another unmarshalled faces config object.
@@ -257,6 +260,11 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
                     faceletsProcessingByFileExtension.put(faceletsProcessing.getFileExtension(), faceletsProcessing);
                 }
             }
+        }
+        
+        for (ComponentTagDeclaration declaration : config.getComponentTagDeclarations().values())
+        {
+            componentTagDeclarations.add(declaration);
         }
 
         lifecyclePhaseListeners.addAll(config.getLifecyclePhaseListener());
@@ -751,5 +759,11 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     {
         return resourceLibraryContractMappings;
     }
-    
+
+    @Override
+    public Collection<ComponentTagDeclaration> getComponentTagDeclarations()
+    {
+        return componentTagDeclarations;
+    }
+
 }

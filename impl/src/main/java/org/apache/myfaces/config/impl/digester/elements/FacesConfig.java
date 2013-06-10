@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 
 /**
@@ -36,6 +37,10 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
     private List<org.apache.myfaces.config.element.Factory> factories
             = new ArrayList<org.apache.myfaces.config.element.Factory>();
     private Map<String, String> components = new HashMap<String, String>();
+    
+    private Map<String, org.apache.myfaces.config.element.ComponentTagDeclaration> componentTagDeclarations = 
+            new HashMap<String, org.apache.myfaces.config.element.ComponentTagDeclaration>();
+    
     private List<org.apache.myfaces.config.element.Converter> converters
             = new ArrayList<org.apache.myfaces.config.element.Converter>();
     private List<org.apache.myfaces.config.element.ManagedBean> managedBeans
@@ -69,7 +74,7 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
 
     public void addApplication(org.apache.myfaces.config.element.Application application)
     {
-        applications.add(application);
+        applications.add(application); 
     }
 
     public void addFactory(org.apache.myfaces.config.element.Factory factory)
@@ -80,6 +85,12 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
     public void addComponent(String componentType, String componentClass)
     {
         components.put(componentType, componentClass);
+    }
+    
+    public void addComponentTagDeclaration(String componentType, 
+            org.apache.myfaces.config.element.ComponentTagDeclaration tagDeclaration)
+    {
+        componentTagDeclarations.put(componentType, tagDeclaration);
     }
 
     public void addConverter(org.apache.myfaces.config.element.Converter converter)
@@ -135,6 +146,11 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
     public Map<String, String> getComponents()
     {
         return components;
+    }
+    
+    public Map<String, ComponentTagDeclaration> getComponentTagDeclarations()
+    {
+        return componentTagDeclarations;
     }
 
     public List<org.apache.myfaces.config.element.Converter> getConverters()

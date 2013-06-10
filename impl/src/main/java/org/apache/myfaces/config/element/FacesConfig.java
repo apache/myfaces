@@ -89,4 +89,13 @@ public abstract class FacesConfig implements Serializable
     {
         return Collections.emptyList();
     }
+    
+    /**
+     * @since 2.2.0
+     * @return 
+     */
+    public Map<String, ComponentTagDeclaration> getComponentTagDeclarations()
+    {
+        return Collections.emptyMap();
+    }
 }

@@ -90,6 +90,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -133,6 +134,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 import static org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy.*;
 import org.apache.myfaces.view.facelets.compiler.RefreshDynamicComponentListener;
 import org.apache.myfaces.view.facelets.impl.SectionUniqueIdCounter;
+import org.apache.myfaces.view.facelets.tag.ComponentTagDeclarationLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CreateDynamicCompositeComponentListener;
 import org.apache.myfaces.view.facelets.tag.jsf.JsfLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionListener;
@@ -2575,7 +2577,27 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX));
         compiler.addTagLibrary(new JsfLibrary());
         compiler.addTagLibrary(new PassThroughLibrary());
-
+        
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(eContext);
+        if (!runtimeConfig.getComponentTagDeclarations().isEmpty())
+        {
+            ComponentTagDeclarationLibrary componentTagDeclarationLibrary = new ComponentTagDeclarationLibrary();
+            for (ComponentTagDeclaration declaration : runtimeConfig.getComponentTagDeclarations())
+            {
+                // We have here probably an inconsistency, because the annotation does not
+                // have a default renderer type. Let the renderer type be null will cause problems 
+                // later, because application.createComponent() may not scan the renderer class if
+                // a rendererType is not provided. The easy way to overcome this situation is create
+                // a dummy instance and check its rendererType. If is set the renderer if any will be
+                // scanned for annotations, if not it just do things as usual. It is unlikely to create
+                // a component and does not set a default renderer type if is required.
+                UIComponent component = context.getApplication().createComponent(declaration.getComponentType());
+                componentTagDeclarationLibrary.addComponent(declaration.getNamespace(), 
+                        declaration.getTagName(), declaration.getComponentType(), component.getRendererType());
+            }
+            compiler.addTagLibrary(componentTagDeclarationLibrary);
+        }
+        
         String param = WebConfigParamUtils.getStringInitParameter(eContext, PARAMS_LIBRARIES);
         if (param != null)
         {

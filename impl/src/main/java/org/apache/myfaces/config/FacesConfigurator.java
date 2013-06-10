@@ -75,6 +75,7 @@ import org.apache.myfaces.config.annotation.LifecycleProvider;
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
+import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.FacesConfig;
@@ -758,6 +759,12 @@ public class FacesConfigurator
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
 
         FacesConfigData dispenser = getDispenser();
+        
+        for (ComponentTagDeclaration declaration : dispenser.getComponentTagDeclarations())
+        {
+            runtimeConfig.addComponentTagDeclaration(declaration);
+        }
+        
         for (ManagedBean bean : dispenser.getManagedBeans())
         {
             if (log.isLoggable(Level.WARNING) && runtimeConfig.getManagedBean(bean.getManagedBeanName()) != null)

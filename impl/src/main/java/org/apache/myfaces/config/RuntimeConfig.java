@@ -38,6 +38,7 @@ import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
 import org.apache.commons.collections.Predicate;
+import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
@@ -104,6 +105,9 @@ public class RuntimeConfig
     private Set<String> _resourceLibraryContracts = new HashSet<String>();
     
     private Map<String, List<String>> _contractMappings = new HashMap<String, List<String>>();
+    
+    private List<ComponentTagDeclaration> _componentTagDeclarations = 
+            new ArrayList<ComponentTagDeclaration>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -180,7 +184,16 @@ public class RuntimeConfig
             _oldManagedBeans.remove(name);
         }
     }
-
+    
+    public void addComponentTagDeclaration(ComponentTagDeclaration declaration)
+    {
+        _componentTagDeclarations.add(declaration);
+    }
+    
+    public List<ComponentTagDeclaration> getComponentTagDeclarations()
+    {
+        return Collections.unmodifiableList(_componentTagDeclarations);
+    }
     
     public final void addConverterConfiguration(final String converterClassName,
             final org.apache.myfaces.config.element.Converter configuration)
