@@ -143,9 +143,9 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                 {
                     if (_cachedBeanInfo == null)
                     {
-                        _cachedBeanInfo = _createCompositeComponentMetadata(ctx, compositeBaseParent);
+                        tempBeanInfo  = _createCompositeComponentMetadata(ctx, compositeBaseParent);
                         compositeBaseParent.getAttributes().put(
-                                UIComponent.BEANINFO_KEY, _cachedBeanInfo);
+                                UIComponent.BEANINFO_KEY, tempBeanInfo);
                         
                         try
                         {
@@ -162,7 +162,7 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                             
                             Collection<String> declaredDefaultValues = null;
                             
-                            for (PropertyDescriptor pd : _cachedBeanInfo.getPropertyDescriptors())
+                            for (PropertyDescriptor pd : tempBeanInfo.getPropertyDescriptors())
                             {
                                 if (pd.getValue("default") != null)
                                 {
@@ -177,12 +177,14 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                             {
                                 declaredDefaultValues = Collections.emptyList();
                             }
-                            _cachedBeanInfo.getBeanDescriptor().
+                            tempBeanInfo.getBeanDescriptor().
                                     setValue(UIComponent.ATTRS_WITH_DECLARED_DEFAULT_VALUES, declaredDefaultValues);
                         }
                         finally
                         {
                             mctx.popCompositeComponentToStack();
+                            
+                            _cachedBeanInfo = tempBeanInfo;
                         }
                     }
                     else
