@@ -139,9 +139,9 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                 {
                     if (_cachedBeanInfo == null)
                     {
-                        _cachedBeanInfo = _createCompositeComponentMetadata(ctx, compositeBaseParent);
+                        tempBeanInfo  = _createCompositeComponentMetadata(ctx, compositeBaseParent);
                         compositeBaseParent.getAttributes().put(
-                                UIComponent.BEANINFO_KEY, _cachedBeanInfo);
+                                UIComponent.BEANINFO_KEY, tempBeanInfo);
                         
                         try
                         {
@@ -159,6 +159,8 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                         finally
                         {
                             mctx.popCompositeComponentToStack();
+                            
+                            _cachedBeanInfo = tempBeanInfo;
                         }
                     }
                     else
