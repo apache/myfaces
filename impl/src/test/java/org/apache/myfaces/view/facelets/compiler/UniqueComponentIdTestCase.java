@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
@@ -59,7 +60,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
         
         servletContext.addInitParameter(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, "true");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
-        servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_REFRESH_PERIOD, "-1");
+        servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "-1");
         servletContext.setAttribute(MyfacesConfig.class.getName(), new MyfacesConfig());
     }
     

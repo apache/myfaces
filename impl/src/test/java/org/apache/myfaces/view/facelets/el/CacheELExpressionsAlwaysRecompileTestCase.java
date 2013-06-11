@@ -17,6 +17,7 @@ package org.apache.myfaces.view.facelets.el;
 
 import java.io.StringWriter;
 import javax.el.ExpressionFactory;
+import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
@@ -38,8 +39,8 @@ public class CacheELExpressionsAlwaysRecompileTestCase extends FaceletTestCase
         super.setUpServletObjects();
         servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS,
             ELExpressionCacheMode.alwaysRecompile.toString());
-        servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_SKIP_COMMENTS, "true");
-        servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_LIBRARIES, "/user.taglib.xml");
+        servletContext.addInitParameter(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, "true");
+        servletContext.addInitParameter(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, "/user.taglib.xml");
     }
     
     @Override

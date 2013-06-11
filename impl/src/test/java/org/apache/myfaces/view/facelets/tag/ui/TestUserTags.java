@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import javax.el.ExpressionFactory;
+import javax.faces.application.ViewHandler;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputText;
@@ -40,8 +41,8 @@ public class TestUserTags extends FaceletTestCase {
     protected void setUpServletObjects() throws Exception
     {
         super.setUpServletObjects();
-        servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_SKIP_COMMENTS, "true");
-        servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_LIBRARIES, "/user.taglib.xml");
+        servletContext.addInitParameter(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, "true");
+        servletContext.addInitParameter(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, "/user.taglib.xml");
     }
 
     @Override

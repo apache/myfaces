@@ -191,7 +191,7 @@ public abstract class AbstractMyFacesTestCase
         servletContext.addInitParameter("org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE", "true");
         servletContext.addInitParameter("javax.faces.PROJECT_STAGE", "UnitTest");
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
-        servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_REFRESH_PERIOD,"-1");
+        servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,"-1");
     }
     
     /**

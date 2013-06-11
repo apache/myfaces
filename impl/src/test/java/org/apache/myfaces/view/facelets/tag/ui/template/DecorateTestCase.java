@@ -19,12 +19,12 @@
 package org.apache.myfaces.view.facelets.tag.ui.template;
 
 import java.io.StringWriter;
+import javax.faces.application.ViewHandler;
 
 import javax.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class DecorateTestCase extends FaceletTestCase {
     protected void setUpServletObjects() throws Exception
     {
         super.setUpServletObjects();
-        servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_SKIP_COMMENTS, "true");
+        servletContext.addInitParameter(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, "true");
     }
 
     @Test

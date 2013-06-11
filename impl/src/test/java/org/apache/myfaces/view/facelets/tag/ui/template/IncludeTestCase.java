@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.ui.template;
 
 import java.io.StringWriter;
+import javax.faces.application.ViewHandler;
 
 import javax.faces.component.UIViewRoot;
 
@@ -35,7 +36,7 @@ public class IncludeTestCase extends FaceletTestCase
     protected void setUpServletObjects() throws Exception
     {
         super.setUpServletObjects();
-        servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_SKIP_COMMENTS, "true");
+        servletContext.addInitParameter(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, "true");
     }
     
     @Test
