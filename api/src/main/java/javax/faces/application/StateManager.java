@@ -108,7 +108,8 @@ public abstract class StateManager
     
     public static final String IS_SAVING_STATE = "javax.faces.IS_SAVING_STATE";
     
-    @JSFWebConfigParam(since="2.2")
+    @JSFWebConfigParam(since="2.2", group="state", tags="performance", 
+            defaultValue="false", expectedValues="true,false")
     public static final java.lang.String SERIALIZE_SERVER_STATE_PARAM_NAME = "javax.faces.SERIALIZE_SERVER_STATE";
     
     /**

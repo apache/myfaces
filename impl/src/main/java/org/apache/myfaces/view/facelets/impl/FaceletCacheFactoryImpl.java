@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.impl;
 
 import javax.faces.application.ProjectStage;
+import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletCache;
@@ -39,7 +40,7 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory
     private final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
     
     private final static String[] PARAMS_REFRESH_PERIOD
-            = {FaceletViewDeclarationLanguage.PARAM_REFRESH_PERIOD, PARAM_REFRESH_PERIOD_DEPRECATED};
+            = {ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, PARAM_REFRESH_PERIOD_DEPRECATED};
 
 
     @Override

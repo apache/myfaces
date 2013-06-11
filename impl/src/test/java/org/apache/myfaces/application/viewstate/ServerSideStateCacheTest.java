@@ -40,6 +40,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "5");
         servletContext.addInitParameter("org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "2");
+        servletContext.addInitParameter(StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, "true");
 
         // Initialization
         setupRequest();

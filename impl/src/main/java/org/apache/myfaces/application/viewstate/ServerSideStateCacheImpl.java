@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import javax.faces.application.StateManager;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -97,7 +98,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * If <code>false</code> the state will not be serialized to a byte stream.
      * </p>
      */
-    @JSFWebConfigParam(defaultValue="true",since="1.1", expectedValues="true,false", group="state", tags="performance")
+    @JSFWebConfigParam(defaultValue="false",since="1.1", expectedValues="true,false", group="state", tags="performance")
     public static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
     /**
@@ -117,9 +118,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final boolean DEFAULT_COMPRESS_SERVER_STATE_PARAM = true;
 
     /**
-     * Default value for <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
+     * Default value for <code>javax.faces.SERIALIZE_SERVER_STATE and 
+     * org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
      */
-    public static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = true;
+    public static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = false;
 
     /**
      * Define the way of handle old view references(views removed from session), making possible to
@@ -462,8 +464,18 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     protected boolean isSerializeStateInSession(FacesContext context)
     {
         String value = context.getExternalContext().getInitParameter(
-                SERIALIZE_STATE_IN_SESSION_PARAM);
+                StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME);
+        
         boolean serialize = DEFAULT_SERIALIZE_STATE_IN_SESSION;
+        if (value != null)
+        {
+            serialize = value.toLowerCase().equals("true");
+            return serialize;
+        }
+        
+        // Fallback old parameter.
+        value = context.getExternalContext().getInitParameter(
+                SERIALIZE_STATE_IN_SESSION_PARAM);
         if (value != null)
         {
            serialize = Boolean.valueOf(value);
