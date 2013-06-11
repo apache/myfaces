@@ -31,7 +31,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlInputFileRendererBase;
 @JSFRenderer(
         renderKitId = "HTML_BASIC",
         family = "javax.faces.Input",
-        type = "javax.faces.InputFile")
+        type = "javax.faces.File")
 public class HtmlInputFileRenderer extends HtmlInputFileRendererBase
 {
     @Override
