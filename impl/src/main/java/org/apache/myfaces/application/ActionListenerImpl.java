@@ -86,7 +86,17 @@ public class ActionListenerImpl implements ActionListener
         }
         
         NavigationHandler navigationHandler = application.getNavigationHandler();
-        navigationHandler.handleNavigation(facesContext, fromAction, outcome);
+        String toFlowDocumentId = (component != null) ? 
+            (String) component.getAttributes().get(ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME) : null;
+        
+        if (toFlowDocumentId != null)
+        {
+            navigationHandler.handleNavigation(facesContext, fromAction, outcome, toFlowDocumentId);
+        }
+        else
+        {
+            navigationHandler.handleNavigation(facesContext, fromAction, outcome);
+        }
         //Render Response if needed
         facesContext.renderResponse();
 

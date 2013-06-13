@@ -21,11 +21,13 @@ package org.apache.myfaces.flow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.el.MethodExpression;
 import javax.faces.application.NavigationCase;
+import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowCallNode;
 import javax.faces.flow.FlowNode;
@@ -49,6 +51,8 @@ public class FlowImpl extends Flow implements Freezable
     private String _id;
     private String _definingDocumentId;
     
+    private Map<String, FlowNode> _flowNodeMap;
+    
     // The idea is use a normal HashMap, since there will not be modifications
     // after initialization ( all setters must call checkInitialized() )
     private Map<String, Parameter> _inboundParametersMap;
@@ -67,6 +71,9 @@ public class FlowImpl extends Flow implements Freezable
     private Map<String, SwitchNode> _unmodifiableSwitchesMap;
     private List<ViewNode> _unmodifiableViewsList;
     
+    private Map<String, Set<NavigationCase>> _navigationCases;
+    private Map<String, Set<NavigationCase>> _unmodifiableNavigationCases;
+    
     // No need to make it volatile, because FlowImpl instances are
     // created and initialized only at application startup, by a single
     // thread.
@@ -74,12 +81,14 @@ public class FlowImpl extends Flow implements Freezable
     
     public FlowImpl()
     {
+        _flowNodeMap = new HashMap<String, FlowNode>();
         _inboundParametersMap = new HashMap<String, Parameter>();
         _flowCallsMap = new HashMap<String, FlowCallNode>();
         _methodCallsList = new ArrayList<MethodCallNode>();
         _returnsMap = new HashMap<String, ReturnNode>();
         _switchesMap = new HashMap<String, SwitchNode>();
         _viewsList = new ArrayList<ViewNode>();
+        _navigationCases = new HashMap<String, Set<NavigationCase>>();
         
         // Collections.unmodifiableMap(...) uses delegation pattern, so as long
         // as we don't modify _inboundParametersMap in the wrong time, it
@@ -90,11 +99,14 @@ public class FlowImpl extends Flow implements Freezable
         _unmodifiableReturnsMap = Collections.unmodifiableMap(_returnsMap);
         _unmodifiableSwitchesMap = Collections.unmodifiableMap(_switchesMap);
         _unmodifiableViewsList = Collections.unmodifiableList(_viewsList);
-
+        
+        _unmodifiableNavigationCases = Collections.unmodifiableMap(_navigationCases);
     }
     
     public void freeze()
     {
+        
+        
         _initialized = true;
         
         for (Map.Entry<String, Parameter> entry : _inboundParametersMap.entrySet())
@@ -240,6 +252,7 @@ public class FlowImpl extends Flow implements Freezable
     {
         checkInitialized();
         _flowCallsMap.put(key, value);
+        _flowNodeMap.put(value.getId(), value);
     }
 
     @Override
@@ -252,6 +265,7 @@ public class FlowImpl extends Flow implements Freezable
     {
         checkInitialized();
         _methodCallsList.add(value);
+        _flowNodeMap.put(value.getId(), value);
     }
 
     @Override
@@ -264,6 +278,7 @@ public class FlowImpl extends Flow implements Freezable
     {
         checkInitialized();
         _returnsMap.put(key, value);
+        _flowNodeMap.put(value.getId(), value);
     }
 
     @Override
@@ -276,6 +291,7 @@ public class FlowImpl extends Flow implements Freezable
     {
         checkInitialized();
         _switchesMap.put(key, value);
+        _flowNodeMap.put(value.getId(), value);
     }
 
     @Override
@@ -288,20 +304,69 @@ public class FlowImpl extends Flow implements Freezable
     {
         checkInitialized();
         _viewsList.add(value);
+        _flowNodeMap.put(value.getId(), value);
     }
 
     @Override
     public FlowCallNode getFlowCall(Flow targetFlow)
     {
-        //TODO: Implement me!
-        throw new UnsupportedOperationException("Not supported yet.");
+        FacesContext facesContext = null;
+        for (Map.Entry<String, FlowCallNode> entry : _flowCallsMap.entrySet())
+        {
+            if (facesContext == null)
+            {
+                facesContext = FacesContext.getCurrentInstance();
+            }
+            String calledDocumentId = entry.getValue().getCalledFlowDocumentId(facesContext);
+            String calledFlowId = entry.getValue().getCalledFlowId(facesContext);
+            if (targetFlow.getDefiningDocumentId().equals(calledDocumentId) &&
+                targetFlow.getId().equals(calledFlowId) )
+            {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
     
     @Override
     public FlowNode getNode(String nodeId)
     {
-        //TODO: Implement me!
-        throw new UnsupportedOperationException("Not supported yet.");
+        return _flowNodeMap.get(nodeId);
+    }
+    
+    public void addNavigationCases(String fromViewId, Set<NavigationCase> navigationCases)
+    {
+        checkInitialized();
+        Set<NavigationCase> navigationCaseSet = _navigationCases.get(fromViewId);
+        if (navigationCaseSet == null)
+        {
+            navigationCaseSet = new HashSet<NavigationCase>();
+            _navigationCases.put(fromViewId, navigationCaseSet);
+        }
+        navigationCaseSet.addAll(navigationCases);
+    }
+    
+    public void addNavigationCase(NavigationCase navigationCase)
+    {
+        checkInitialized();
+        Set<NavigationCase> navigationCaseSet = _navigationCases.get(navigationCase.getFromViewId());
+        if (navigationCaseSet == null)
+        {
+            navigationCaseSet = new HashSet<NavigationCase>();
+            _navigationCases.put(navigationCase.getFromViewId(), navigationCaseSet);
+        }
+        navigationCaseSet.add(navigationCase);
+    }
+    
+    public void removeNavigationCase(NavigationCase navigationCase)
+    {
+        checkInitialized();
+        Set<NavigationCase> navigationCaseSet = _navigationCases.get(navigationCase.getFromViewId());
+        if (navigationCaseSet == null)
+        {
+            return;
+        }
+        navigationCaseSet.remove(navigationCase);
     }
 
     private void checkInitialized() throws IllegalStateException
@@ -315,7 +380,7 @@ public class FlowImpl extends Flow implements Freezable
     @Override
     public Map<String, Set<NavigationCase>> getNavigationCases()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return _unmodifiableNavigationCases;
     }
     
 }
