@@ -160,6 +160,10 @@ public class AjaxHandler extends TagHandler implements
                          deferredValueType = "java.lang.String")
     private final TagAttribute _delay;
     
+    @JSFFaceletAttribute(name = "resetValues", className = "javax.el.ValueExpression",
+            deferredValueType = "java.lang.Boolean")
+    private final TagAttribute _resetValues;
+    
     private final boolean _wrapMode;
 
     public AjaxHandler(TagConfig config)
@@ -174,6 +178,7 @@ public class AjaxHandler extends TagHandler implements
         _onevent = getAttribute("onevent");
         _render = getAttribute("render");
         _delay = getAttribute("delay");
+        _resetValues = getAttribute("resetValues");
         // According to the spec, this tag works in two different ways:
         // 1. Apply an ajax behavior for a selected component in this way
         //    <x:component><f:ajax ..../></x:component>
@@ -467,6 +472,19 @@ public class AjaxHandler extends TagHandler implements
             {
                 ajaxBehavior.setValueExpression("delay", _delay
                     .getValueExpression(faceletContext, String.class));
+            }
+        }
+       if (_resetValues != null)
+        {
+            if (_resetValues.isLiteral())
+            {
+                ajaxBehavior
+                        .setResetValues(_resetValues.getBoolean(faceletContext));
+            }
+            else
+            {
+                ajaxBehavior.setValueExpression("resetValues", _resetValues
+                        .getValueExpression(faceletContext, Boolean.class));
             }
         }
         cvh.addClientBehavior(eventName, ajaxBehavior);
