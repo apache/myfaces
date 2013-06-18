@@ -34,6 +34,7 @@ import org.apache.myfaces.config.element.NavigationRule;
  */
 public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.FacesFlowDefinition
 {
+    private String _definingDocumentId;
     private String _id;
     private String _startNode;
     private String _initializer;
@@ -186,5 +187,21 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     public void setId(String id)
     {
         this._id = id;
+    }
+
+    /**
+     * @return the _definingDocumentId
+     */
+    public String getDefiningDocumentId()
+    {
+        return _definingDocumentId;
+    }
+
+    /**
+     * @param definingDocumentId the _definingDocumentId to set
+     */
+    public void setDefiningDocumentId(String definingDocumentId)
+    {
+        this._definingDocumentId = definingDocumentId;
     }
 }

@@ -27,6 +27,8 @@ import java.util.List;
  */
 public abstract class FacesFlowDefinition implements Serializable
 {
+    public abstract String getDefiningDocumentId();
+    
     public abstract String getId();
     
     public abstract String getStartNode();
