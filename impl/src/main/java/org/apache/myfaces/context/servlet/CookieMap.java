@@ -106,7 +106,7 @@ public final class CookieMap extends AbstractAttributeMap<Object>
         }
         for (int i = 0, len = cookies.length; i < len; i++)
         {
-            if (cookies[i].getName().equals(key))
+            if (cookies[i] != null && cookies[i].getName().equals(key))
             {
                 return cookies[i];
             }

@@ -370,6 +370,7 @@ public abstract class AbstractMyFacesTestCase
      */
     protected void processLifecycleExecute(FacesContext facesContext)
     {
+        lifecycle.attachWindow(facesContext);
         lifecycle.execute(facesContext);
         facesContext.getAttributes().put(LAST_PHASE_PROCESSED, PhaseId.INVOKE_APPLICATION);
     }
@@ -382,6 +383,7 @@ public abstract class AbstractMyFacesTestCase
      */
     protected void processRestoreViewPhase(FacesContext facesContext) throws Exception
     {
+        lifecycle.attachWindow(facesContext);
         executePhase(facesContext, PhaseId.RESTORE_VIEW);
         facesContext.getAttributes().put(LAST_PHASE_PROCESSED, PhaseId.RESTORE_VIEW);
     }
