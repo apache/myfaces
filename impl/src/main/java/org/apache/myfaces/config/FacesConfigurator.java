@@ -59,6 +59,8 @@ import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyCustomScopeEvent;
 import javax.faces.event.PreDestroyViewMapEvent;
 import javax.faces.event.SystemEvent;
+import javax.faces.flow.FlowHandler;
+import javax.faces.flow.FlowHandlerFactory;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKit;
@@ -80,8 +82,16 @@ import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesConfigData;
+import org.apache.myfaces.config.element.FacesFlowCall;
+import org.apache.myfaces.config.element.FacesFlowDefinition;
+import org.apache.myfaces.config.element.FacesFlowMethodCall;
+import org.apache.myfaces.config.element.FacesFlowParameter;
+import org.apache.myfaces.config.element.FacesFlowReturn;
+import org.apache.myfaces.config.element.FacesFlowSwitch;
+import org.apache.myfaces.config.element.FacesFlowView;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NamedEvent;
+import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.element.ResourceBundle;
@@ -97,6 +107,15 @@ import org.apache.myfaces.el.DefaultPropertyResolver;
 import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.el.unified.ResolverBuilderBase;
 import org.apache.myfaces.lifecycle.ClientWindowFactoryImpl;
+import org.apache.myfaces.flow.FlowCallNodeImpl;
+import org.apache.myfaces.flow.FlowHandlerFactoryImpl;
+import org.apache.myfaces.flow.FlowImpl;
+import org.apache.myfaces.flow.MethodCallNodeImpl;
+import org.apache.myfaces.flow.ParameterImpl;
+import org.apache.myfaces.flow.ReturnNodeImpl;
+import org.apache.myfaces.flow.SwitchCaseImpl;
+import org.apache.myfaces.flow.SwitchNodeImpl;
+import org.apache.myfaces.flow.ViewNodeImpl;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
@@ -113,7 +132,9 @@ import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
 import org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.util.NavigationUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
+import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
@@ -150,6 +171,7 @@ public class FacesConfigurator
     private static final String DEFAULT_FACELET_CACHE_FACTORY = FaceletCacheFactoryImpl.class.getName();
     private static final String DEFAULT_FLASH_FACTORY = ServletFlashFactoryImpl.class.getName();
     private static final String DEFAULT_CLIENT_WINDOW_FACTORY = ClientWindowFactoryImpl.class.getName();
+    private static final String DEFAULT_FLOW_FACTORY = FlowHandlerFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private final ExternalContext _externalContext;
@@ -438,7 +460,10 @@ public class FacesConfigurator
         configureLifecycle();
         handleSerialFactory();
         configureManagedBeanDestroyer();
+        configureFlowHandler();
 
+        configureProtectedViews();
+        
         // record the time of update
         lastUpdate = System.currentTimeMillis();
     }
@@ -504,6 +529,8 @@ public class FacesConfigurator
                 DEFAULT_FLASH_FACTORY);
         setFactories(FactoryFinder.CLIENT_WINDOW_FACTORY, dispenser.getClientWindowFactoryIterator(),
                 DEFAULT_CLIENT_WINDOW_FACTORY);
+        setFactories(FactoryFinder.FLOW_HANDLER_FACTORY, dispenser.getFlowHandlerFactoryIterator(),
+                DEFAULT_FLOW_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)
@@ -687,6 +714,13 @@ public class FacesConfigurator
         {
             application.addBehavior(behavior.getBehaviorId(), behavior.getBehaviorClass());
         }
+        
+        //JSF 2.2 set FlowHandler from factory. 
+        FlowHandlerFactory flowHandlerFactory = (FlowHandlerFactory) 
+            FactoryFinder.getFactory(FactoryFinder.FLOW_HANDLER_FACTORY);
+        FlowHandler flowHandler = flowHandlerFactory.createFlowHandler(
+            FacesContext.getCurrentInstance());
+        application.setFlowHandler(flowHandler);
 
         RuntimeConfig runtimeConfig = getRuntimeConfig();
 
@@ -1148,5 +1182,186 @@ public class FacesConfigurator
                     + "This instance needs to be published before configuration is started.");
         }
     }
+    
+    private void configureFlowHandler()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Application application = facesContext.getApplication();
+        
+        FacesConfigData dispenser = getDispenser();
+        
+        for (FacesFlowDefinition flowDefinition : dispenser.getFacesFlowDefinitions())
+        {
+            FlowImpl flow = new FlowImpl();
+            
+            // TODO: configure flow object
+            flow.setId(flowDefinition.getId());
+            flow.setDefiningDocumentId(flowDefinition.getDefiningDocumentId());
+            
+            flow.setStartNodeId(flowDefinition.getStartNode());
+            
+            if (!isEmptyString(flowDefinition.getInitializer()))
+            {
+                flow.setInitializer(application.getExpressionFactory().createMethodExpression(
+                    facesContext.getELContext(), flowDefinition.getInitializer(), null, NO_PARAMETER_TYPES));
+            }
+            if (!isEmptyString(flowDefinition.getFinalizer()))
+            {
+                flow.setFinalizer(application.getExpressionFactory().createMethodExpression(
+                    facesContext.getELContext(), flowDefinition.getFinalizer(), null, NO_PARAMETER_TYPES));
+            }
+            
+            for (FacesFlowCall call : flowDefinition.getFlowCallList())
+            {
+                FlowCallNodeImpl node = new FlowCallNodeImpl(call.getId());
+                node.setCalledFlowId(call.getCalledFlowId());
 
+                for (FacesFlowParameter parameter : call.getOutboundParameterList())
+                {
+                    node.putOutboundParameter( parameter.getName(),
+                        new ParameterImpl(parameter.getName(),
+                        application.getExpressionFactory().createValueExpression(
+                            facesContext.getELContext(), parameter.getValue(), Object.class)) );
+                }
+                flow.putFlowCall(node.getId(), node);
+            }
+
+            for (FacesFlowMethodCall methodCall : flowDefinition.getMethodCallList())
+            {
+                MethodCallNodeImpl node = new MethodCallNodeImpl(methodCall.getId());
+                if (!isEmptyString(methodCall.getMethod()))
+                {
+                    node.setMethodExpression(
+                        application.getExpressionFactory().createMethodExpression(
+                            facesContext.getELContext(), methodCall.getMethod(), null, NO_PARAMETER_TYPES));
+                }
+                if (!isEmptyString(methodCall.getDefaultOutcome()))
+                {
+                    node.setOutcome(
+                        application.getExpressionFactory().createValueExpression(
+                                facesContext.getELContext(), methodCall.getDefaultOutcome(), Object.class));
+                }
+                for (FacesFlowParameter parameter : methodCall.getParameterList())
+                {
+                    node.addParameter(
+                        new ParameterImpl(parameter.getName(),
+                        application.getExpressionFactory().createValueExpression(
+                            facesContext.getELContext(), parameter.getValue(), Object.class)) );
+                }
+                flow.addMethodCall(node);
+            }
+            
+            for (FacesFlowParameter parameter : flowDefinition.getInboundParameterList())
+            {
+                flow.putInboundParameter(parameter.getName(),
+                    new ParameterImpl(parameter.getName(),
+                    application.getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(), parameter.getValue(), Object.class)) );
+            }
+            
+            for (NavigationRule rule : flowDefinition.getNavigationRuleList())
+            {
+                flow.addNavigationCases(rule.getFromViewId(), NavigationUtils.convertNavigationCasesToAPI(rule));
+            }
+            
+            for (FacesFlowSwitch flowSwitch : flowDefinition.getSwitchList())
+            {
+                SwitchNodeImpl node = new SwitchNodeImpl(flowSwitch.getId());
+                
+                if (flowSwitch.getDefaultOutcome() != null &&
+                    !isEmptyString(flowSwitch.getDefaultOutcome().getFromOutcome()))
+                {
+                    if (ELText.isLiteral(flowSwitch.getDefaultOutcome().getFromOutcome()))
+                    {
+                        node.setDefaultOutcome(flowSwitch.getDefaultOutcome().getFromOutcome());
+                    }
+                    else
+                    {
+                        node.setDefaultOutcome(
+                            application.getExpressionFactory().createValueExpression(
+                                facesContext.getELContext(), flowSwitch.getDefaultOutcome().getFromOutcome(),
+                                Object.class));
+                    }
+                }
+                
+                for (NavigationCase navCase : flowSwitch.getNavigationCaseList())
+                {
+                    SwitchCaseImpl nodeCase = new SwitchCaseImpl();
+                    nodeCase.setFromOutcome(navCase.getFromOutcome());
+                    if (!isEmptyString(navCase.getIf()))
+                    {
+                        nodeCase.setCondition(
+                            application.getExpressionFactory().createValueExpression(
+                                facesContext.getELContext(), navCase.getIf(),
+                                Object.class));
+                    }
+                    node.addCase(nodeCase);
+                }
+                
+                flow.putSwitch(node.getId(), node);
+            }
+            
+            for (FacesFlowView view : flowDefinition.getViewList())
+            {
+                ViewNodeImpl node = new ViewNodeImpl(view.getId(), view.getVdlDocument());
+                flow.addView(node);
+            }
+
+            for (FacesFlowReturn flowReturn : flowDefinition.getReturnList())
+            {
+                ReturnNodeImpl node = new ReturnNodeImpl(flowReturn.getId());
+                if (flowReturn.getNavigationCase() != null &&
+                    !isEmptyString(flowReturn.getNavigationCase().getFromOutcome()))
+                {
+                    if (ELText.isLiteral(flowReturn.getNavigationCase().getFromOutcome()))
+                    {
+                        node.setFromOutcome(flowReturn.getNavigationCase().getFromOutcome());
+                    }
+                    else
+                    {
+                        node.setFromOutcome(
+                            application.getExpressionFactory().createValueExpression(
+                                facesContext.getELContext(), flowReturn.getNavigationCase().getFromOutcome(),
+                                Object.class));
+                    }
+                }
+                flow.putReturn(node.getId(), node);
+            }
+            
+            flow.freeze();
+            
+            // Add the flow, so the config can be processed by the flow system and the
+            // navigation system.
+            application.getFlowHandler().addFlow(facesContext, flow);
+        }
+    }
+    
+
+    
+    private boolean isEmptyString(String value)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+        else if (value.length() <= 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void configureProtectedViews()
+    {
+        Application application = ((ApplicationFactory)
+                FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
+
+        FacesConfigData dispenser = getDispenser();
+        //Protected Views
+        ViewHandler viewHandler = application.getViewHandler();
+        for (String urlPattern : dispenser.getProtectedViewUrlPatterns())
+        {
+            viewHandler.addProtectedView(urlPattern);
+        }
+    }
 }

@@ -30,6 +30,7 @@ import javax.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import org.apache.myfaces.config.element.FacesFlowDefinition;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -141,6 +142,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         // 2.2 specific start
         digester.addCallMethod("faces-config/factory/flash-factory", "addFlashFactory", 0);
         // Note there is no client-window-factory, this factory can be set only using SPI.
+        digester.addCallMethod("faces-config/factory/flow-handler-factory", "addFlowHandlerFactory", 0);
         // 2.2 specific end
 
         digester.addObjectCreate("faces-config/factory", Factory.class);
@@ -353,85 +355,80 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
     
     private void addFacesFlowRules(ExternalContext externalContext)
     {
-        digester.addObjectCreate("faces-config/faces-flow-definition", FacesFlowDefinitionImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition", "addFacesFlowDefinition");
-        digester.addSetProperties("faces-config/faces-flow-definition", "id", "id");
+        digester.addObjectCreate("faces-config/flow-definition", FacesFlowDefinitionImpl.class);
         
-        digester.addCallMethod("faces-config/faces-flow-definition/start-node", "setStartNode", 0);
-        digester.addCallMethod("faces-config/faces-flow-definition/initializer", "setInitializer", 0);
-        digester.addCallMethod("faces-config/faces-flow-definition/finalizer", "setFinalizer", 0);
+        digester.addSetNext("faces-config/flow-definition", "addFacesFlowDefinition");
+        digester.addSetProperties("faces-config/flow-definition", "id", "id");
         
-        digester.addObjectCreate("faces-config/faces-flow-definition/view", FacesFlowViewImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition/view", "addView");
-        digester.addSetProperties("faces-config/faces-flow-definition/view", "id", "id");
-        digester.addCallMethod("faces-config/faces-flow-definition/view/vdl-document", "setVdlDocument", 0);
+        digester.addCallMethod("faces-config/flow-definition/start-node", "setStartNode", 0);
+        digester.addCallMethod("faces-config/flow-definition/initializer", "setInitializer", 0);
+        digester.addCallMethod("faces-config/flow-definition/finalizer", "setFinalizer", 0);
         
-        digester.addObjectCreate("faces-config/faces-flow-definition/switch", FacesFlowSwitchImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition/switch", "addSwitch");
-        digester.addSetProperties("faces-config/faces-flow-definition/switch", "id", "id");
+        digester.addObjectCreate("faces-config/flow-definition/view", FacesFlowViewImpl.class);
+        digester.addSetNext("faces-config/flow-definition/view", "addView");
+        digester.addSetProperties("faces-config/flow-definition/view", "id", "id");
+        digester.addCallMethod("faces-config/flow-definition/view/vdl-document", "setVdlDocument", 0);
         
-        digester.addObjectCreate("faces-config/faces-flow-definition/switch/default-outcome", 
+        digester.addObjectCreate("faces-config/flow-definition/switch", FacesFlowSwitchImpl.class);
+        digester.addSetNext("faces-config/flow-definition/switch", "addSwitch");
+        digester.addSetProperties("faces-config/flow-definition/switch", "id", "id");
+        
+        digester.addObjectCreate("faces-config/flow-definition/switch/default-outcome", 
             NavigationCase.class);
-        digester.addSetNext("faces-config/faces-flow-definition/switch/default-outcome", 
+        digester.addSetNext("faces-config/flow-definition/switch/default-outcome", 
             "setDefaultOutcome");
-        digester.addCallMethod("faces-config/faces-flow-definition/switch/default-outcome/from-outcome", 
+        digester.addCallMethod("faces-config/flow-definition/switch/default-outcome/from-outcome", 
             "setFromOutcome", 0);
         
-        addNavigationCases(externalContext, "faces-config/faces-flow-definition/switch/navigation-case",
+        addNavigationCases(externalContext, "faces-config/flow-definition/switch/navigation-case",
             "addNavigationCase");
         
-        digester.addObjectCreate("faces-config/faces-flow-definition/flow-return", FacesFlowReturnImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition/flow-return", "addReturn");
-        digester.addSetProperties("faces-config/faces-flow-definition/flow-return", "id", "id");
-        digester.addObjectCreate("faces-config/faces-flow-definition/flow-return/navigation-case", 
+        digester.addObjectCreate("faces-config/flow-definition/flow-return", FacesFlowReturnImpl.class);
+        digester.addSetNext("faces-config/flow-definition/flow-return", "addReturn");
+        digester.addSetProperties("faces-config/flow-definition/flow-return", "id", "id");
+        digester.addObjectCreate("faces-config/flow-definition/flow-return/navigation-case", 
             NavigationCase.class);
-        digester.addSetNext("faces-config/faces-flow-definition/flow-return/navigation-case", 
+        digester.addSetNext("faces-config/flow-definition/flow-return/navigation-case", 
             "setNavigationCase");
-        digester.addCallMethod("faces-config/faces-flow-definition/flow-return/navigation-case/from-outcome", 
+        digester.addCallMethod("faces-config/flow-definition/flow-return/navigation-case/from-outcome", 
             "setFromOutcome", 0);
         
-        addNavigationRules(externalContext, "faces-config/faces-flow-definition/navigation-rule", "addNavigationRule");
+        addNavigationRules(externalContext, "faces-config/flow-definition/navigation-rule", "addNavigationRule");
         
-        digester.addObjectCreate("faces-config/faces-flow-definition/flow-call", FacesFlowCallImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition/flow-call", "addFlowCall");
-        digester.addSetProperties("faces-config/faces-flow-definition/flow-call", "id", "id");
+        digester.addObjectCreate("faces-config/flow-definition/flow-call", FacesFlowCallImpl.class);
+        digester.addSetNext("faces-config/flow-definition/flow-call", "addFlowCall");
+        digester.addSetProperties("faces-config/flow-definition/flow-call", "id", "id");
         digester.addCallMethod(
-            "faces-config/faces-flow-definition/flow-call/faces-flow-reference/faces-flow-id", 
+            "faces-config/flow-definition/flow-call/faces-flow-reference/faces-flow-id", 
             "setCalledFlowId", 0);
-        digester.addObjectCreate("faces-config/faces-flow-definition/flow-call/outbound-parameter", 
+        digester.addObjectCreate("faces-config/flow-definition/flow-call/outbound-parameter", 
             FacesFlowParameterImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition/flow-call/outbound-parameter", 
+        digester.addSetNext("faces-config/flow-definition/flow-call/outbound-parameter", 
             "addOutboundParameter");
-        digester.addCallMethod("faces-config/faces-flow-definition/flow-call/outbound-parameter/name", "setName", 0);
-        digester.addCallMethod("faces-config/faces-flow-definition/flow-call/outbound-parameter/value", "setValue", 0);
+        digester.addCallMethod("faces-config/flow-definition/flow-call/outbound-parameter/name", "setName", 0);
+        digester.addCallMethod("faces-config/flow-definition/flow-call/outbound-parameter/value", "setValue", 0);
         
-        digester.addObjectCreate("faces-config/faces-flow-definition/method-call", FacesFlowMethodCallImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition/method-call", "addMethodCall");
-        digester.addCallMethod("faces-config/faces-flow-definition/method-call/method", "setMethod", 0);
-        digester.addSetProperties("faces-config/faces-flow-definition/method-call/method", "id", "id");
-        digester.addCallMethod("faces-config/faces-flow-definition/method-call/default-outcome", 
+        digester.addObjectCreate("faces-config/flow-definition/method-call", FacesFlowMethodCallImpl.class);
+        digester.addSetNext("faces-config/flow-definition/method-call", "addMethodCall");
+        digester.addCallMethod("faces-config/flow-definition/method-call/method", "setMethod", 0);
+        digester.addSetProperties("faces-config/flow-definition/method-call/method", "id", "id");
+        digester.addCallMethod("faces-config/flow-definition/method-call/default-outcome", 
             "setDefaultOutcome", 0);
-        digester.addObjectCreate("faces-config/faces-flow-definition/method-call/parameter", 
+        digester.addObjectCreate("faces-config/flow-definition/method-call/parameter", 
             FacesFlowMethodParameterImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition/method-call/parameter", "addParameter");
-        digester.addCallMethod("faces-config/faces-flow-definition/method-call/parameter/class", "setClassName", 0);
-        digester.addCallMethod("faces-config/faces-flow-definition/method-call/parameter/value", "setValue", 0);
+        digester.addSetNext("faces-config/flow-definition/method-call/parameter", "addParameter");
+        digester.addCallMethod("faces-config/flow-definition/method-call/parameter/class", "setClassName", 0);
+        digester.addCallMethod("faces-config/flow-definition/method-call/parameter/value", "setValue", 0);
         
-        digester.addObjectCreate("faces-config/faces-flow-definition/inbound-parameter", 
+        digester.addObjectCreate("faces-config/flow-definition/inbound-parameter", 
             FacesFlowParameterImpl.class);
-        digester.addSetNext("faces-config/faces-flow-definition/inbound-parameter", "addInboundParameter");
-        digester.addCallMethod("faces-config/faces-flow-definition/inbound-parameter/name", "setName", 0);
-        digester.addCallMethod("faces-config/faces-flow-definition/inbound-parameter/value", "setValue", 0);
+        digester.addSetNext("faces-config/flow-definition/inbound-parameter", "addInboundParameter");
+        digester.addCallMethod("faces-config/flow-definition/inbound-parameter/name", "setName", 0);
+        digester.addCallMethod("faces-config/flow-definition/inbound-parameter/value", "setValue", 0);
     }
 
-    public FacesConfig getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
+    private void postProcessFacesConfig(String systemId, FacesConfig config)
     {
-        InputSource is = new InputSource(in);
-        is.setSystemId(systemId);
-
-        // Fix for http://issues.apache.org/jira/browse/MYFACES-236
-        FacesConfig config = (FacesConfig) digester.parse(is);
-
         for (org.apache.myfaces.config.element.Application application : config.getApplications())
         {
             for (org.apache.myfaces.config.element.LocaleConfig localeConfig : application.getLocaleConfig())
@@ -442,6 +439,37 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
                 }
             }
         }
+        
+        for (FacesFlowDefinition facesFlowDefinition : config.getFacesFlowDefinitions())
+        {
+            // JSF 2.2 section 11.4.3.1 says this: "... Flows are defined using the 
+            // <flow-definition> element. This element must have an id attribute which uniquely 
+            // identifies the flow within the scope of the Application Configuration Resource 
+            // file in which the element appears. To enable multiple flows with the same id to 
+            // exist in an application, the <faces-config><name> element is taken to 
+            // be the definingDocumentId of the flow. If no <name> element is specified, 
+            // the empty string is taken as the value for definingDocumentId. ..."
+            if (config.getName() != null)
+            {
+                ((FacesFlowDefinitionImpl)facesFlowDefinition).setDefiningDocumentId(
+                    config.getName());
+            }
+            else
+            {
+                ((FacesFlowDefinitionImpl)facesFlowDefinition).setDefiningDocumentId("");
+            }
+        }
+    }
+    
+    public FacesConfig getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
+    {
+        InputSource is = new InputSource(in);
+        is.setSystemId(systemId);
+
+        // Fix for http://issues.apache.org/jira/browse/MYFACES-236
+        FacesConfig config = (FacesConfig) digester.parse(is);
+
+        postProcessFacesConfig(systemId, config);
 
         return config;
     }
@@ -454,16 +482,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         // Fix for http://issues.apache.org/jira/browse/MYFACES-236
         FacesConfig config = (FacesConfig) digester.parse(r);
 
-        for (org.apache.myfaces.config.element.Application application : config.getApplications())
-        {
-            for (org.apache.myfaces.config.element.LocaleConfig localeConfig : application.getLocaleConfig())
-            {
-                if (!localeConfig.getSupportedLocales().contains(localeConfig.getDefaultLocale()))
-                {
-                    localeConfig.getSupportedLocales().add(localeConfig.getDefaultLocale());
-                }
-            }
-        }
+        postProcessFacesConfig(null, config);
 
         return config;
     }

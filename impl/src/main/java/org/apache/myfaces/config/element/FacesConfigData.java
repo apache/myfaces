@@ -89,6 +89,15 @@ public abstract class FacesConfigData implements Serializable
     {
         return Collections.emptyList();
     }
+    
+    /**
+     * @since 2.2
+     * @return 
+     */
+    public Collection<String> getFlowHandlerFactoryIterator()
+    {
+        return Collections.emptyList();
+    }
 
     /** @return Iterator over ActionListener class names (in reverse order!) */
     public abstract Collection<String> getActionListenerIterator();

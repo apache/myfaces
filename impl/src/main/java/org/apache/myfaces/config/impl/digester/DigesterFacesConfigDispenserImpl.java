@@ -72,6 +72,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<String> faceletCacheFactories = new ArrayList<String>();
     private List<String> flashFactories = new ArrayList<String>();
     private List<String> clientWindowFactories = new ArrayList<String>();
+    private List<String> flowHandlerFactories = new ArrayList<String>();
     
     private String defaultRenderKitId;
     private String messageBundle;
@@ -145,6 +146,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
             faceletCacheFactories.addAll(factory.getFaceletCacheFactory());
             flashFactories.addAll(factory.getFlashFactory());
             clientWindowFactories.addAll(factory.getClientWindowFactory());
+            flowHandlerFactories.addAll(factory.getFlowHandlerFactory());
         }
 
         components.putAll(config.getComponents());
@@ -728,6 +730,12 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     public Collection<String> getFlashFactoryIterator()
     {
         return flashFactories;
+    }
+    
+    @Override
+    public Collection<String> getFlowHandlerFactoryIterator()
+    {
+        return flowHandlerFactories;
     }
 
     @Override
