@@ -21,11 +21,14 @@ package org.apache.myfaces.application;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,6 +69,9 @@ public class ViewHandlerImpl extends ViewHandler
     private ViewHandlerSupport _viewHandlerSupport;
     private ViewDeclarationLanguageFactory _vdlFactory;
     
+    private Set<String> _protectedViewsSet;
+    private Set<String> _unmodifiableProtectedViewsSet;
+    
     /**
      * Gets the current ViewHandler via FacesContext.getApplication().getViewHandler().
      * We have to use this method to invoke any other specified ViewHandler-method
@@ -81,6 +87,8 @@ public class ViewHandlerImpl extends ViewHandler
 
     public ViewHandlerImpl()
     {
+        _protectedViewsSet = Collections.newSetFromMap(new ConcurrentHashMap<String,Boolean>());
+        _unmodifiableProtectedViewsSet = Collections.unmodifiableSet(_protectedViewsSet);
         _vdlFactory = (ViewDeclarationLanguageFactory)
                 FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
         if (log.isLoggable(Level.FINEST))
@@ -351,6 +359,24 @@ public class ViewHandlerImpl extends ViewHandler
                 context.getResponseWriter().write(FORM_STATE_MARKER);
             }
         }
+    }
+
+    @Override
+    public void addProtectedView(String urlPattern)
+    {
+        _protectedViewsSet.add(urlPattern);
+    }
+
+    @Override
+    public boolean removeProtectedView(String urlPattern)
+    {
+        return _protectedViewsSet.remove(urlPattern);
+    }
+
+    @Override
+    public Set<String> getProtectedViewsUnmodifiable()
+    {
+        return _unmodifiableProtectedViewsSet;
     }
     
     private void setWritingState(FacesContext context, ResponseStateManager rsm)
