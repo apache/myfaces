@@ -78,6 +78,7 @@ import javax.faces.event.ListenersFor;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
+import javax.faces.flow.FlowHandler;
 import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
@@ -101,6 +102,7 @@ import org.apache.myfaces.el.unified.ELResolverBuilder;
 import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
@@ -173,6 +175,7 @@ public class ApplicationImpl extends Application
     private String _defaultRenderKitId;
     private ResourceHandler _resourceHandler;
     private StateManager _stateManager;
+    private FlowHandler _flowHandler;
 
     private ArrayList<ELContextListener> _elContextListeners;
 
@@ -263,6 +266,7 @@ public class ApplicationImpl extends Application
         _stateManager = new StateManagerImpl();
         _elContextListeners = new ArrayList<ELContextListener>();
         _resourceHandler = new ResourceHandlerImpl();
+        _flowHandler = new FlowHandlerImpl();
         _runtimeConfig = runtimeConfig;
 
         if (log.isLoggable(Level.FINEST))
@@ -2040,6 +2044,25 @@ public class ApplicationImpl extends Application
         }
         
         _stateManager = stateManager;
+    }
+    
+    @Override
+    public final void setFlowHandler(FlowHandler flowHandler)
+    {
+        checkNull(flowHandler, "flowHandler");
+
+        if(isFirstRequestProcessed())
+        {
+            throw new IllegalStateException(
+                    "setFlowHandler may not be executed after a lifecycle request has been completed");
+        }
+        _flowHandler = flowHandler;
+    }
+
+    @Override
+    public final FlowHandler getFlowHandler()
+    {
+        return _flowHandler;
     }
 
     private void checkNull(final Object param, final String paramName)
