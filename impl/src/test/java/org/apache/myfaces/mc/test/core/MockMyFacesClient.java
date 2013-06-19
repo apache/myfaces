@@ -105,6 +105,10 @@ public class MockMyFacesClient
             parameters.put(ResponseStateManager.VIEW_STATE_PARAM, facesContext.getApplication().getStateManager().getViewState(facesContext));
             Object value = command.getValue();
             parameters.put(command.getClientId(), value == null ? "" : value.toString());
+            if (facesContext.getExternalContext().getClientWindow() != null)
+            {
+                parameters.put(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, facesContext.getExternalContext().getClientWindow().getId());
+            }
             MockHttpServletResponse response = (MockHttpServletResponse) facesContext.getExternalContext().getResponse(); 
             Cookie cookie = response.getCookie("oam.Flash.RENDERMAP.TOKEN");
             getCookies().put("oam.Flash.RENDERMAP.TOKEN", cookie);
