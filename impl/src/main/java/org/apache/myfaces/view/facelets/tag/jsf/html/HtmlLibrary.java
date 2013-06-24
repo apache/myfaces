@@ -62,7 +62,7 @@ public final class HtmlLibrary extends AbstractHtmlLibrary
 
         this.addHtmlComponent("inputTextarea", "javax.faces.HtmlInputTextarea", "javax.faces.Textarea");
 
-        this.addHtmlComponent("inputFile", "javax.faces.HtmlInputFile", "javax.faces.InputFile");
+        this.addHtmlComponent("inputFile", "javax.faces.HtmlInputFile", "javax.faces.File");
         
         this.addHtmlComponent ("link", "javax.faces.HtmlOutcomeTargetLink", "javax.faces.Link");
         
