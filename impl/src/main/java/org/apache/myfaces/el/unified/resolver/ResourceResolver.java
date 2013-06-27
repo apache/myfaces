@@ -29,6 +29,7 @@ import javax.faces.application.ResourceHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
+import org.apache.myfaces.shared.resource.ContractResource;
 
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.el.ResourceELUtils;
@@ -42,7 +43,7 @@ import org.apache.myfaces.view.facelets.el.ResourceELUtils;
 public final class ResourceResolver extends ELResolver
 {
 
-    private static final String CC_LIBRARY_THIS = "this";
+    private static final String LIBRARY_THIS = "this";
     
     /** Creates a new instance of ResourceBundleResolver */
     public ResourceResolver()
@@ -89,6 +90,7 @@ public final class ResourceResolver extends ELResolver
             
             else
             {
+                String contractName = null;
                 if (reference.lastIndexOf (':') != colonIndex)
                 {
                     // Max of one ":" allowed, so throw an exception.
@@ -100,25 +102,50 @@ public final class ResourceResolver extends ELResolver
                 else
                 {
                     // Otherwise, portion before the ":" is the library name.
-                    
                     String libraryName = reference.substring (0, colonIndex);
+                    FacesContext facesContext = facesContext(context);
                     
-                    if (CC_LIBRARY_THIS.equals(libraryName))
+                    if (LIBRARY_THIS.equals(libraryName))
                     {
                         // note in this case we don't need to resolve to an specific 
                         // composite component, instead we need to find the libraryName of the
                         // composite component associated with the Location. For any composite component
                         // instance that is created under the same facelet it will be the same,
                         // so it is enought to get the first one matching the Location object.
-                        FacesContext facesContext = facesContext(context);
                         Location location = ResourceELUtils.getResourceLocationForResolver(facesContext);
-                        UIComponent cc = CompositeComponentELUtils.
-                                getCompositeComponentBasedOnLocation(facesContext, location);
-                        Resource ccResource = (Resource) cc.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY); 
-                        libraryName = ccResource.getLibraryName();
+                        if (location != null)
+                        {
+                            // There are two options:
+                            UIComponent cc = CompositeComponentELUtils.
+                                    getCompositeComponentBasedOnLocation(facesContext, location);
+                            Resource ccResource = (Resource) cc.getAttributes().get(
+                                    Resource.COMPONENT_RESOURCE_KEY); 
+                            libraryName = ccResource.getLibraryName();
+                        }
+                        else
+                        {
+                            // JSF 2.2 "this" identifier can refer to a library or contract.
+                            libraryName = ResourceELUtils.getResourceLibraryForResolver(facesContext);
+                            contractName = ResourceELUtils.getResourceContractForResolver(facesContext);
+                        }
                     }
                     
-                    resource = ((ResourceHandler) base).createResource(reference.substring(colonIndex+1), libraryName);
+                    try
+                    {
+                        if (contractName != null)
+                        {
+                            facesContext.getAttributes().put(ContractResource.CONTRACT_SELECTED, contractName);
+                        }
+                        resource = ((ResourceHandler) base).createResource(reference.substring(colonIndex+1),
+                                libraryName);
+                    }
+                    finally
+                    {
+                        if (contractName != null)
+                        {
+                            facesContext.getAttributes().remove(ContractResource.CONTRACT_SELECTED);
+                        }
+                    }
                 }
             }
             

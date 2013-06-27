@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
+import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
@@ -40,11 +41,27 @@ public class ValueExpressionFilterInputStream extends InputStream
     private PushbackInputStream delegate;
     private String libraryName;
     private String resourceName;
+    private String contractName;
+    private Resource resource;
     
     public ValueExpressionFilterInputStream(InputStream in, String libraryName, String resourceName)
     {
         super();
         delegate = new DynamicPushbackInputStream(in,300);
+        this.libraryName = libraryName;
+        this.resourceName = resourceName;
+        this.contractName = null;
+    }
+    
+    public ValueExpressionFilterInputStream(InputStream in, Resource resource)
+    {
+        super();
+        delegate = new DynamicPushbackInputStream(in,300);
+        this.resource = resource;
+        this.libraryName = resource.getLibraryName();
+        this.resourceName = resource.getResourceName();
+        this.contractName = (resource instanceof ContractResource) ? 
+                ((ContractResource)resource).getContractName() : null;
     }
 
     @Override
@@ -97,6 +114,14 @@ public class ValueExpressionFilterInputStream extends InputStream
                     ELContext elContext = context.getELContext();
                     try
                     {
+                        if (libraryName != null)
+                        {
+                            ResourceELUtils.saveResourceLibraryForResolver(context, libraryName);
+                        }
+                        if (contractName != null)
+                        {
+                            ResourceELUtils.saveResourceContractForResolver(context, contractName);
+                        }
                         ValueExpression ve = context.getApplication().
                             getExpressionFactory().createValueExpression(
                                     elContext,
@@ -130,6 +155,17 @@ public class ValueExpressionFilterInputStream extends InputStream
                         }
                         delegate.unread(c2);
                         return c1;
+                    }
+                    finally
+                    {
+                        if (libraryName != null)
+                        {
+                            ResourceELUtils.removeResourceLibraryForResolver(context);
+                        }
+                        if (contractName != null)
+                        {
+                            ResourceELUtils.removeResourceContractForResolver(context);
+                        }
                     }
                     
                     //read again

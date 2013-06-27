@@ -18,51 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import java.util.regex.Pattern;
-
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
-
 /**
  * Utility class when used in EL Expressions --> #{resource}
  * 
  * @author Leonardo Uribe
  */
-public class ResourceELUtils
+public class ResourceELUtils extends org.apache.myfaces.shared.resource.ResourceELUtils
 {
 
-    // TODO: check this expression, maybe we can make it simpler, because "resource" implicit object
-    // cannot be preceded by anything.
-    public static final Pattern RESOURCE_EXPRESSION_REGEX = Pattern.compile(".*[^\\w\\.]resource[^\\w].*");
-    
-    private static final String RESOURCE = "resource";
-    
-    public static final String RESOURCE_LOCATION_KEY = "org.apache.myfaces.view.facelets.resource.location";
-    
-    public static boolean isResourceExpression(String expression)
-    {
-        if (expression.contains(RESOURCE))
-        {
-            return RESOURCE_EXPRESSION_REGEX.matcher(expression).matches();
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public static Location getResourceLocationForResolver(FacesContext facesContext)
-    {
-        return (Location) facesContext.getAttributes().get(RESOURCE_LOCATION_KEY);
-    }
-    
-    public static void saveResourceLocationForResolver(FacesContext facesContext, Location location)
-    {
-        facesContext.getAttributes().put(RESOURCE_LOCATION_KEY, location);
-    }
-    
-    public static void removeResourceLocationForResolver(FacesContext facesContext)
-    {
-        facesContext.getAttributes().remove(RESOURCE_LOCATION_KEY);
-    }
 }
