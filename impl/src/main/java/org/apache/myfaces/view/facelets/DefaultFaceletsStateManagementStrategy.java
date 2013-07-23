@@ -59,6 +59,7 @@ import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
@@ -224,6 +225,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 context.setViewRoot (view);
                 view.processRestoreState(context, fullState[1]);
+                
+                // If the view is restored fully, it is necessary to refresh RequestViewContext, otherwise at
+                // each ajax request new components associated with @ResourceDependency annotation will be added
+                // to the tree, making the state bigger without real need.
+                RequestViewContext.getCurrentInstance(context).
+                        refreshRequestViewContext(context, view);
             }
         }
         else
@@ -449,6 +456,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             // Reset this list, because it will be calculated later when the view is being saved
             // in the right order, preventing duplicates (see COMPONENT_ADDED_AFTER_BUILD_VIEW for details).
             clientIdsAdded.clear();
+            
+            // This call only has sense when components has been added programatically, because if facelets has control
+            // over all components in the component tree, build the initial state and apply the state will have the
+            // same effect.
+            RequestViewContext.getCurrentInstance(context).
+                    refreshRequestViewContext(context, view);
         }
     }
 
