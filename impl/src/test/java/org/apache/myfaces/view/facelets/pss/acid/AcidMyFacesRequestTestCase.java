@@ -524,6 +524,104 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     }
 
     @Test
+    public void testResourceDependency2() throws Exception
+    {
+        setupRequest("/resourceDependency2.xhtml");
+        processLifecycleExecute();
+
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+
+        UIPanel headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
+        Assert.assertNull(headPanel);
+        
+        String nextUniqueId = facesContext.getViewRoot().createUniqueId(facesContext, null);
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        
+        processLifecycleExecute();
+        
+        ResourceDependencyBean bean = facesContext.getApplication().evaluateExpressionGet(
+            facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
+        bean.setIncludeContent(true);
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
+        Assert.assertNotNull(headPanel);
+        Assert.assertTrue(1 >= headPanel.getChildCount());
+        Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button2);
+        
+        processLifecycleExecute();
+        
+        bean = facesContext.getApplication().evaluateExpressionGet(
+            facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
+        bean.setIncludeContent(false);
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
+        Assert.assertNotNull(headPanel);
+        Assert.assertTrue(1 >= headPanel.getChildCount());
+        //Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);    
+        
+        UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button3);
+        
+        processLifecycleExecute();
+        
+        bean = facesContext.getApplication().evaluateExpressionGet(
+            facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
+        bean.setIncludeContent(true);
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
+        Assert.assertNotNull(headPanel);
+        Assert.assertTrue(1 >= headPanel.getChildCount());
+        //Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        UICommand button4 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button4);
+        
+        processLifecycleExecute();
+        
+        bean = facesContext.getApplication().evaluateExpressionGet(
+            facesContext, "#{resourceDependencyBean}", ResourceDependencyBean.class);
+        bean.setIncludeContent(false);
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        headPanel = (UIPanel) facesContext.getViewRoot().getFacet("head");
+        Assert.assertNotNull(headPanel);
+        Assert.assertTrue(1 >= headPanel.getChildCount());
+        //Assert.assertNotSame(nextUniqueId, headPanel.getChildren().get(0).getId());
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+    }
+
+    @Test
     public void testAddSimpleComponentVDL() throws Exception
     {
         setupRequest("/addSimpleComponentVDL.xhtml");
