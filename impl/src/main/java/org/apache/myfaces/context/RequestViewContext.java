@@ -18,12 +18,20 @@
  */
 package org.apache.myfaces.context;
 
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Set;
 
 import javax.faces.application.ResourceDependency;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 
 /**
@@ -36,6 +44,13 @@ public class RequestViewContext
 {
 
     public static final String VIEW_CONTEXT_KEY = "oam.VIEW_CONTEXT";
+    
+    public static final String RESOURCE_DEPENDENCY_INSPECTED_CLASS = "oam.RDClass";
+    
+    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    
+    //private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet( 
+    //        EnumSet.of(VisitHint.SKIP_ITERATION));
     
     private Map<ResourceDependency, Boolean> addedResources;
     
@@ -124,5 +139,51 @@ public class RequestViewContext
             renderTargetMap = new HashMap<String, Boolean>(8);
         }
         renderTargetMap.put(target, value);
+    }
+    
+    /**
+     * Scans UIViewRoot facets with added component resources by the effect of
+     * @ResourceDependency annotation, and register the associated inspected classes
+     * so new component resources will not be added to the component tree again and again.
+     * 
+     * @param facesContext
+     * @param root 
+     */
+    public void refreshRequestViewContext(FacesContext facesContext, UIViewRoot root)
+    {
+        for (Map.Entry<String, UIComponent> entry : root.getFacets().entrySet())
+        {
+            UIComponent facet = entry.getValue();
+            if (facet.getId() != null && facet.getId().startsWith("javax_faces_location_"))
+            {
+                try
+                {
+                    facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+
+                    VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, null);
+                    facet.visitTree(visitContext, new RefreshViewContext());
+                }
+                finally
+                {
+                    // We must remove hint in finally, because an exception can break this phase,
+                    // but lifecycle can continue, if custom exception handler swallows the exception
+                    facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                }
+            }
+        }
+    }
+    
+    private class RefreshViewContext implements VisitCallback
+    {
+
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            Class<?> inspectedClass = (Class<?>)target.getAttributes().get(RESOURCE_DEPENDENCY_INSPECTED_CLASS);
+            if (inspectedClass != null)
+            {
+                setClassProcessed(inspectedClass);
+            }            
+            return VisitResult.ACCEPT;
+        }
     }
 }

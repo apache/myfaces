@@ -1785,7 +1785,7 @@ public class ApplicationImpl extends Application
                 ResourceDependency dependency = dependencyList.get(i);
                 if (!rvc.isResourceDependencyAlreadyProcessed(dependency))
                 {
-                    _handleAttachedResourceDependency(context, dependency);
+                    _handleAttachedResourceDependency(context, dependency, inspectedClass);
                     rvc.setResourceDependencyAsProcessed(dependency);
                 }
             }
@@ -1830,7 +1830,8 @@ public class ApplicationImpl extends Application
      * @param facesContext
      * @param component 
      */
-    private void setResourceIdOnFaceletsMode(FacesContext facesContext, UIComponent component)
+    private void setResourceIdOnFaceletsMode(FacesContext facesContext, UIComponent component,
+            Class<?> inspectedClass)
     {
         if (component.getId() == null)
         {
@@ -1848,11 +1849,31 @@ public class ApplicationImpl extends Application
                 {
                     root.getAttributes().put(RESOURCE_DEPENDENCY_UNIQUE_ID_KEY, Boolean.FALSE);
                 }
+                if (!mctx.isUsingPSSOnThisView())
+                {
+                    // Now set the identifier that will help to know which classes has been already inspected.
+                    component.getAttributes().put(
+                            RequestViewContext.RESOURCE_DEPENDENCY_INSPECTED_CLASS, inspectedClass);
+                }
+                else if (mctx.isRefreshTransientBuildOnPSSPreserveState())
+                {
+                    component.getAttributes().put(
+                            RequestViewContext.RESOURCE_DEPENDENCY_INSPECTED_CLASS, inspectedClass);
+                }
+            }
+            else
+            {
+                // This happens when there is a programmatic addition, which means the user has added the
+                // components to the tree on render response phase or earlier but outside facelets control.
+                // In that case we need to save the dependency.
+                component.getAttributes().put(
+                        RequestViewContext.RESOURCE_DEPENDENCY_INSPECTED_CLASS, inspectedClass);
             }
         }
     }
     
-    private void _handleAttachedResourceDependency(FacesContext context, ResourceDependency annotation)
+    private void _handleAttachedResourceDependency(FacesContext context, ResourceDependency annotation, 
+            Class<?> inspectedClass)
     {
         // If this annotation is not present on the class in question, no action must be taken. 
         if (annotation != null)
@@ -1881,7 +1902,7 @@ public class ApplicationImpl extends Application
             
             // If the @ResourceDependency was done inside facelets processing,
             // call setId() and set a proper id from facelets
-            setResourceIdOnFaceletsMode(context, output);
+            setResourceIdOnFaceletsMode(context, output, inspectedClass);
             
             // Obtain the Map of attributes from the UIOutput component by calling UIComponent.getAttributes().
             Map<String, Object> attributes = output.getAttributes();
@@ -2311,7 +2332,7 @@ public class ApplicationImpl extends Application
                 ResourceDependency dependency = dependencyList.get(i);
                 if (!rvc.isResourceDependencyAlreadyProcessed(dependency))
                 {
-                    _handleResourceDependency(context, component, dependency);
+                    _handleResourceDependency(context, component, dependency, inspectedClass);
                     rvc.setResourceDependencyAsProcessed(dependency);
                 }
             }
@@ -2333,7 +2354,8 @@ public class ApplicationImpl extends Application
         }
     }
     
-    private void _handleResourceDependency(FacesContext context, UIComponent component, ResourceDependency annotation)
+    private void _handleResourceDependency(FacesContext context, UIComponent component, ResourceDependency annotation,
+            Class<?> inspectedClass)
     {
         // If this annotation is not present on the class in question, no action must be taken.
         if (annotation != null)
@@ -2361,7 +2383,7 @@ public class ApplicationImpl extends Application
             
             // If the @ResourceDependency was done inside facelets processing,
             // call setId() and set a proper id from facelets
-            setResourceIdOnFaceletsMode(context, output);
+            setResourceIdOnFaceletsMode(context, output, inspectedClass);
 
             // Obtain the Map of attributes from the UIOutput component by calling UIComponent.getAttributes().
             Map<String, Object> attributes = output.getAttributes();

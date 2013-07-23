@@ -46,4 +46,9 @@ public class ResourceDependencyBean
     {
         this.includeContent = includeContent;
     }
+    
+    public void toggleContent()
+    {
+        this.includeContent =  !this.includeContent;
+    }
 }

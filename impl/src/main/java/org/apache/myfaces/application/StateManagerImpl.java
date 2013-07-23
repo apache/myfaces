@@ -39,6 +39,7 @@ import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
+import org.apache.myfaces.context.RequestViewContext;
 
 public class StateManagerImpl extends StateManager
 {
@@ -149,6 +150,9 @@ public class StateManagerImpl extends StateManager
                 {
                     facesContext.setViewRoot (uiViewRoot);
                     uiViewRoot.processRestoreState(facesContext, stateArray[1]);
+                    
+                    RequestViewContext.getCurrentInstance(facesContext).refreshRequestViewContext(
+                            facesContext, uiViewRoot);
                 }
             }            
         }
