@@ -16,23 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.config.element;
+package org.apache.myfaces.flow.cdi;
 
-import java.io.Serializable;
-import java.util.List;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.faces.flow.builder.FlowDefinition;
 
 /**
+ * This class follows the hack proposed in section 4.10
+ * "Obtaining a contextual instance by programmatic lookup", to specify
+ * a qualifier dynamically. 
+ * 
+ * See:
+ * http://docs.jboss.org/weld/reference/latest/en-US/html/injection.html
  *
  * @author Leonardo Uribe
  */
-public abstract class FacesFlowMethodCall implements Serializable
+public class FlowDefinitionQualifier extends AnnotationLiteral<FlowDefinition> 
+    implements FlowDefinition
 {
-    public abstract String getId();
-    
-    public abstract String getMethod();
-    
-    public abstract String getDefaultOutcome();
-    
-    public abstract List<FacesFlowMethodParameter> getParameterList();
     
 }

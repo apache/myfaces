@@ -255,7 +255,15 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/navigation-rule/navigation-case/redirect/view-param", "addViewParam");
         digester.addCallMethod("faces-config/navigation-rule/navigation-case/redirect/view-param/name", "setName",0);
         digester.addCallMethod("faces-config/navigation-rule/navigation-case/redirect/view-param/value", "setValue",0);
-        
+
+        digester.addObjectCreate("faces-config/navigation-rule/navigation-case/redirect/redirect-param", 
+            ViewParam.class);
+        digester.addSetNext("faces-config/navigation-rule/navigation-case/redirect/redirect-param", 
+            "addViewParam");
+        digester.addCallMethod("faces-config/navigation-rule/navigation-case/redirect/redirect-param/name", 
+            "setName",0);
+        digester.addCallMethod("faces-config/navigation-rule/navigation-case/redirect/redirect-param/value", 
+            "setValue",0);
 
         digester.addObjectCreate("faces-config/render-kit", RenderKit.class);
         digester.addSetNext("faces-config/render-kit", "addRenderKit");
@@ -351,6 +359,11 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext(prefix+"/redirect/view-param", "addViewParam");
         digester.addCallMethod(prefix+"/redirect/view-param/name", "setName",0);
         digester.addCallMethod(prefix+"/redirect/view-param/value", "setValue",0);
+
+        digester.addObjectCreate(prefix+"/redirect/redirect-param", ViewParam.class);
+        digester.addSetNext(prefix+"/redirect/redirect-param", "addViewParam");
+        digester.addCallMethod(prefix+"/redirect/redirect-param/name", "setName",0);
+        digester.addCallMethod(prefix+"/redirect/redirect-param/value", "setValue",0);
     }
     
     private void addFacesFlowRules(ExternalContext externalContext)
@@ -377,20 +390,20 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
             NavigationCase.class);
         digester.addSetNext("faces-config/flow-definition/switch/default-outcome", 
             "setDefaultOutcome");
-        digester.addCallMethod("faces-config/flow-definition/switch/default-outcome/from-outcome", 
+        digester.addCallMethod("faces-config/flow-definition/switch/default-outcome", 
             "setFromOutcome", 0);
         
-        addNavigationCases(externalContext, "faces-config/flow-definition/switch/navigation-case",
+        addNavigationCases(externalContext, "faces-config/flow-definition/switch/case",
             "addNavigationCase");
         
         digester.addObjectCreate("faces-config/flow-definition/flow-return", FacesFlowReturnImpl.class);
         digester.addSetNext("faces-config/flow-definition/flow-return", "addReturn");
         digester.addSetProperties("faces-config/flow-definition/flow-return", "id", "id");
-        digester.addObjectCreate("faces-config/flow-definition/flow-return/navigation-case", 
+        digester.addObjectCreate("faces-config/flow-definition/flow-return/from-outcome", 
             NavigationCase.class);
-        digester.addSetNext("faces-config/flow-definition/flow-return/navigation-case", 
+        digester.addSetNext("faces-config/flow-definition/flow-return/from-outcome", 
             "setNavigationCase");
-        digester.addCallMethod("faces-config/flow-definition/flow-return/navigation-case/from-outcome", 
+        digester.addCallMethod("faces-config/flow-definition/flow-return/from-outcome", 
             "setFromOutcome", 0);
         
         addNavigationRules(externalContext, "faces-config/flow-definition/navigation-rule", "addNavigationRule");
@@ -398,9 +411,12 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addObjectCreate("faces-config/flow-definition/flow-call", FacesFlowCallImpl.class);
         digester.addSetNext("faces-config/flow-definition/flow-call", "addFlowCall");
         digester.addSetProperties("faces-config/flow-definition/flow-call", "id", "id");
-        digester.addCallMethod(
-            "faces-config/flow-definition/flow-call/faces-flow-reference/faces-flow-id", 
-            "setCalledFlowId", 0);
+        digester.addObjectCreate("faces-config/flow-definition/flow-call/flow-reference", FacesFlowReferenceImpl.class);
+        digester.addSetNext("faces-config/flow-definition/flow-call/flow-reference", "setFlowReference");        
+        digester.addCallMethod("faces-config/flow-definition/flow-call/flow-reference/flow-document-id", 
+                "setFlowDocumentId", 0);
+        digester.addCallMethod("faces-config/flow-definition/flow-call/flow-reference/flow-id", "setFlowId", 0);
+        
         digester.addObjectCreate("faces-config/flow-definition/flow-call/outbound-parameter", 
             FacesFlowParameterImpl.class);
         digester.addSetNext("faces-config/flow-definition/flow-call/outbound-parameter", 
@@ -410,8 +426,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         
         digester.addObjectCreate("faces-config/flow-definition/method-call", FacesFlowMethodCallImpl.class);
         digester.addSetNext("faces-config/flow-definition/method-call", "addMethodCall");
+        digester.addSetProperties("faces-config/flow-definition/method-call", "id", "id");
         digester.addCallMethod("faces-config/flow-definition/method-call/method", "setMethod", 0);
-        digester.addSetProperties("faces-config/flow-definition/method-call/method", "id", "id");
         digester.addCallMethod("faces-config/flow-definition/method-call/default-outcome", 
             "setDefaultOutcome", 0);
         digester.addObjectCreate("faces-config/flow-definition/method-call/parameter", 

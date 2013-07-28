@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.myfaces.config.element.FacesFlowCall;
 import org.apache.myfaces.config.element.FacesFlowParameter;
+import org.apache.myfaces.config.element.FacesFlowReference;
 
 /**
  *
@@ -29,19 +30,13 @@ import org.apache.myfaces.config.element.FacesFlowParameter;
  */
 public class FacesFlowCallImpl extends FacesFlowCall
 {
-    private String _calledFlowId;
+    private FacesFlowReference _flowReference;
     private List<FacesFlowParameter> _outboundParameterList;
     private String _id;
 
     public FacesFlowCallImpl()
     {
         _outboundParameterList = new ArrayList<FacesFlowParameter>();
-    }
-    
-    @Override
-    public String getCalledFlowId()
-    {
-        return _calledFlowId;
     }
 
     @Override
@@ -55,14 +50,6 @@ public class FacesFlowCallImpl extends FacesFlowCall
         _outboundParameterList.add(parameter);
     }
 
-    /**
-     * @param calledFlowId the calledFlowId to set
-     */
-    public void setCalledFlowId(String calledFlowId)
-    {
-        this._calledFlowId = calledFlowId;
-    }
-
     @Override
     public String getId()
     {
@@ -73,5 +60,16 @@ public class FacesFlowCallImpl extends FacesFlowCall
     {
         this._id = id;
     }
-    
+
+    @Override
+    public FacesFlowReference getFlowReference()
+    {
+        return _flowReference;
+    }
+
+    public void setFlowReference(FacesFlowReference flowReference)
+    {
+        this._flowReference = flowReference;
+    }
+
 }

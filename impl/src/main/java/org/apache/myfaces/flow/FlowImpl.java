@@ -162,11 +162,12 @@ public class FlowImpl extends Flow implements Freezable
     public String getClientWindowFlowId(ClientWindow curWindow)
     {
         String id = getId();
+        String documentId = getDefiningDocumentId();
         // Faces Flow relies on ClientWindow feature, so it should be enabled,
         // and the expected id cannot be null.
         String windowId = curWindow.getId();
         StringBuilder sb = new StringBuilder( id.length() + 1 + windowId.length() );
-        sb.append(windowId).append('_').append(id);
+        sb.append(windowId).append('_').append(documentId).append('_').append(id);
         return sb.toString();
     }
 

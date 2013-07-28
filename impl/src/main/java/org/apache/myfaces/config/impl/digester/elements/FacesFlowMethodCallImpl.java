@@ -20,7 +20,7 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.myfaces.config.element.FacesFlowParameter;
+import org.apache.myfaces.config.element.FacesFlowMethodParameter;
 
 /**
  *
@@ -32,11 +32,11 @@ public class FacesFlowMethodCallImpl extends org.apache.myfaces.config.element.F
     private String _method;
     private String _defaultOutcome;
     
-    private List<FacesFlowParameter> _parameterList;
+    private List<FacesFlowMethodParameter> _parameterList;
     
     public FacesFlowMethodCallImpl()
     {
-        _parameterList = new ArrayList<FacesFlowParameter>();
+        _parameterList = new ArrayList<FacesFlowMethodParameter>();
     }
 
     @Override
@@ -79,12 +79,12 @@ public class FacesFlowMethodCallImpl extends org.apache.myfaces.config.element.F
     }
 
     @Override
-    public List<FacesFlowParameter> getParameterList()
+    public List<FacesFlowMethodParameter> getParameterList()
     {
         return _parameterList;
     }
     
-    public void addParameter(FacesFlowParameter parameter)
+    public void addParameter(FacesFlowMethodParameter parameter)
     {
         _parameterList.add(parameter);
     }

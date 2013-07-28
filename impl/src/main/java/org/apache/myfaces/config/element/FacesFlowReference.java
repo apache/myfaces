@@ -19,20 +19,16 @@
 package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  *
  * @author Leonardo Uribe
  */
-public abstract class FacesFlowMethodCall implements Serializable
+public abstract class FacesFlowReference implements Serializable
 {
-    public abstract String getId();
     
-    public abstract String getMethod();
+    public abstract String getFlowId();
     
-    public abstract String getDefaultOutcome();
-    
-    public abstract List<FacesFlowMethodParameter> getParameterList();
+    public abstract String getFlowDocumentId();
     
 }

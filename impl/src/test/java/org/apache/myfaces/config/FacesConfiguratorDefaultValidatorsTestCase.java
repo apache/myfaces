@@ -27,10 +27,14 @@ import javax.faces.validator.BeanValidator;
 import javax.faces.validator.LengthValidator;
 import javax.faces.validator.RequiredValidator;
 import javax.faces.webapp.FacesServlet;
+import org.apache.myfaces.application.ApplicationFactoryImpl;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test cases for the installation of default validators (e.g. BeanValidator).
@@ -38,17 +42,16 @@ import org.apache.myfaces.util.ExternalSpecifications;
  * @version $Revision$ $Date$
  * @since 2.0
  */
-public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestCase
+public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfConfigurableMockTestCase
 {
     
     private FacesConfigurator facesConfigurator;
     
-    public FacesConfiguratorDefaultValidatorsTestCase(String name)
+    public FacesConfiguratorDefaultValidatorsTestCase()
     {
-        super(name);
     }
     
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         
@@ -56,11 +59,21 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
     }
     
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         facesConfigurator = null;
         
         super.tearDown();
+    }
+
+    @Override
+    public void setFactories() throws Exception
+    {
+        super.setFactories();
+        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
+                ApplicationFactoryImpl.class.getName());
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+                ViewDeclarationLanguageFactoryImpl.class.getName());
     }
     
     /**
@@ -110,6 +123,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
      * javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR, but it is defined in the faces-config.
      * In this case the bean validator should be installed as a default validator.
      */
+    @Test
     public void testDefaultBeanValidatorDisabledButPresentInFacesConfig()
     {
         // remove existing RenderKit installations
@@ -136,7 +150,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
         
         // the bean validator has to be installed, because 
         // of the entry in default-bean-validator.xml
-        assertTrue(application.getDefaultValidatorInfo()
+        Assert.assertTrue(application.getDefaultValidatorInfo()
                 .containsKey(BeanValidator.VALIDATOR_ID));
     }
     
@@ -146,6 +160,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
      * is no faces-config file that would install it manually.
      * In this case the BeanValidator mustn't be installed.
      */
+    @Test
     public void testDefaultBeanValidatorDisabled()
     {
         // remove existing RenderKit installations
@@ -169,7 +184,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
         // the bean validator must not be installed, because it
         // has been disabled and there is no entry in the faces-config
         // that would install it manually.
-        assertFalse(application.getDefaultValidatorInfo()
+        Assert.assertFalse(application.getDefaultValidatorInfo()
                 .containsKey(BeanValidator.VALIDATOR_ID));
     }
     
@@ -177,6 +192,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
      * Tests the case that bean validation is not available in the classpath.
      * In this case the BeanValidator must not be installed.
      */
+    @Test
     public void testBeanValidationNotAvailable()
     {
         // remove existing RenderKit installations
@@ -194,7 +210,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
         
         // the bean validator mustn't be installed, because
         // bean validation is not available in the classpath
-        assertFalse(application.getDefaultValidatorInfo()
+        Assert.assertFalse(application.getDefaultValidatorInfo()
                 .containsKey(BeanValidator.VALIDATOR_ID));
     }
     
@@ -206,6 +222,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
      * In this case the RequiredValidator must not be installed, however the BeanValidator
      * has to be installed (automatically) since bean validation is available.
      */
+    @Test
     public void testDefaultValidatorsClearedByLatterConfigFileWithEmptyElement()
     {
         // remove existing RenderKit installations
@@ -232,10 +249,10 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
         // the required validator must not be installed, because the latter config file
         // (empty-default-validators.xml) has an empty default validators element
         // and this cleares all existing default-validators.
-        assertFalse(application.getDefaultValidatorInfo().containsKey(RequiredValidator.VALIDATOR_ID));
+        Assert.assertFalse(application.getDefaultValidatorInfo().containsKey(RequiredValidator.VALIDATOR_ID));
         
         // and since bean validation is available, the BeanValidator has to be installed
-        assertTrue(application.getDefaultValidatorInfo().containsKey(BeanValidator.VALIDATOR_ID));
+        Assert.assertTrue(application.getDefaultValidatorInfo().containsKey(BeanValidator.VALIDATOR_ID));
     }
     
     /**
@@ -246,6 +263,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
      * config file does not specify and default-validator information. Furthermore the 
      * BeanValidator must also be installed since bean validation is available.
      */
+    @Test
     public void testDefaultValidatorsNotClearedByLatterConfigFileWithNoElement()
     {
         // remove existing RenderKit installations
@@ -271,10 +289,10 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
         
         // the required validator must be installed, because the latter config file
         // (no-default-validators.xml) has not got a default validators element.
-        assertTrue(application.getDefaultValidatorInfo().containsKey(RequiredValidator.VALIDATOR_ID));
+        Assert.assertTrue(application.getDefaultValidatorInfo().containsKey(RequiredValidator.VALIDATOR_ID));
         
         // and since bean validation is available, the BeanValidator has to be installed
-        assertTrue(application.getDefaultValidatorInfo().containsKey(BeanValidator.VALIDATOR_ID));
+        Assert.assertTrue(application.getDefaultValidatorInfo().containsKey(BeanValidator.VALIDATOR_ID));
     }
     
     /**
@@ -286,6 +304,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
      * LengthValidator has to be installed (and the BeanValidator must not be installed
      * since bean validation is not available).
      */
+    @Test
     public void testDefaultValidatorsOverwrittenByLatterConfigFile()
     {
         // remove existing RenderKit installations
@@ -312,14 +331,14 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfTestC
         // the required validator must not be installed, because the latter config file
         // (default-length-validator.xml) specifies a default validators element
         // and this cleares all existing default-validators.
-        assertFalse(application.getDefaultValidatorInfo().containsKey(RequiredValidator.VALIDATOR_ID));
+        Assert.assertFalse(application.getDefaultValidatorInfo().containsKey(RequiredValidator.VALIDATOR_ID));
         
         // the length validator has to be installed, because it was installed
         // by the latter config file
-        assertTrue(application.getDefaultValidatorInfo().containsKey(LengthValidator.VALIDATOR_ID));
+        Assert.assertTrue(application.getDefaultValidatorInfo().containsKey(LengthValidator.VALIDATOR_ID));
         
         // and since bean validation is not available, the BeanValidator must not be installed
-        assertFalse(application.getDefaultValidatorInfo().containsKey(BeanValidator.VALIDATOR_ID));
+        Assert.assertFalse(application.getDefaultValidatorInfo().containsKey(BeanValidator.VALIDATOR_ID));
     }
 
 }

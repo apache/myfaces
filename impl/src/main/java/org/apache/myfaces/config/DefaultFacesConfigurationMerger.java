@@ -107,6 +107,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         appConfigResources.addAll(facesConfigProvider.
             getApplicationConfigurationResourceDocumentPopulatorFacesConfig(externalContext));
 
+        // JSF 2.2 Faces Flow
+        appConfigResources.addAll(facesConfigProvider.getFacesFlowFacesConfig(externalContext));
+        
         // apply the ordering and sorting algorithm 
         orderAndFeedArtifacts(dispenser, appConfigResources, webAppFacesConfig);
 

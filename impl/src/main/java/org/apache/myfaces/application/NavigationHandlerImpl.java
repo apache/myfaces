@@ -28,10 +28,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.util.regex.Pattern;
+import javax.el.MethodExpression;
 import javax.faces.FacesException;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
@@ -47,6 +49,16 @@ import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
+import javax.faces.flow.Flow;
+import javax.faces.flow.FlowCallNode;
+import javax.faces.flow.FlowHandler;
+import javax.faces.flow.FlowNode;
+import javax.faces.flow.MethodCallNode;
+import javax.faces.flow.Parameter;
+import javax.faces.flow.ReturnNode;
+import javax.faces.flow.SwitchCase;
+import javax.faces.flow.SwitchNode;
+import javax.faces.flow.ViewNode;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 
@@ -54,6 +66,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.shared.application.NavigationUtils;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
@@ -78,8 +91,12 @@ public class NavigationHandlerImpl
     private static final String ASTERISK = "*";
 
     private Map<String, Set<NavigationCase>> _navigationCases = null;
-    private List<String> _wildcardKeys = new ArrayList<String>();
+    //private List<String> _wildcardKeys = new ArrayList<String>();
+    private List<_WildcardPattern> _wildcardPatterns = new ArrayList<_WildcardPattern>();
     private Boolean _developmentStage;
+    
+    private Map<String, _FlowNavigationStructure> _flowNavigationStructureMap = 
+        new ConcurrentHashMap<String, _FlowNavigationStructure>();
     
     private NavigationHandlerSupport navigationHandlerSupport;
 
@@ -94,7 +111,16 @@ public class NavigationHandlerImpl
     @Override
     public void handleNavigation(FacesContext facesContext, String fromAction, String outcome)
     {
-        NavigationCase navigationCase = getNavigationCase(facesContext, fromAction, outcome);
+        handleNavigation(facesContext, fromAction, outcome, null);
+    }
+
+    @Override
+    public void handleNavigation(FacesContext facesContext, String fromAction, 
+        String outcome, String toFlowDocumentId)
+    {
+        //NavigationCase navigationCase = getNavigationCase(facesContext, fromAction, outcome);
+        NavigationContext navigationContext = new NavigationContext();
+        NavigationCase navigationCase = getNavigationCommand(facesContext, navigationContext, fromAction, outcome);
 
         if (navigationCase != null)
         {
@@ -213,6 +239,27 @@ public class NavigationHandlerImpl
                         facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
                     }
                 }
+                
+                //Apply Flow transition if any
+                if (navigationContext != null)
+                {
+                    // Is any flow transition on the way?
+                    if (navigationContext.getSourceFlow() != null ||
+                        (navigationContext.getTargetFlows() != null &&
+                         !navigationContext.getTargetFlows().isEmpty()))
+                    {
+                        FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+                        Flow sourceFlow = navigationContext.getSourceFlow();
+                        for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
+                        {
+                            Flow targetFlow = navigationContext.getTargetFlows().get(i);
+                            flowHandler.transition(facesContext, sourceFlow, targetFlow, 
+                                navigationContext.getFlowCallNodes().get(i), 
+                                navigationContext.getNavigationCase().getToViewId(facesContext));
+                            sourceFlow = targetFlow;
+                        }
+                    }
+                }
 
                 // create UIViewRoot for new view
                 UIViewRoot viewRoot = null;
@@ -292,8 +339,14 @@ public class NavigationHandlerImpl
      */
     public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
-        String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
-        
+        NavigationContext navigationContext = new NavigationContext();
+        return getNavigationCommand(facesContext, navigationContext, fromAction, outcome);
+    }
+    
+    public NavigationCase getNavigationCommandFromGlobalNavigationCases(
+        FacesContext facesContext, String viewId, NavigationContext navigationContext, 
+        String fromAction, String outcome)
+    {
         Map<String, Set<NavigationCase>> casesMap = getNavigationCases();
         NavigationCase navigationCase = null;
         
@@ -311,29 +364,15 @@ public class NavigationHandlerImpl
         if (navigationCase == null)
         {
             // Wildcard match?
-            List<String> sortedWildcardKeys = getSortedWildcardKeys();
-            for (int i = 0; i < sortedWildcardKeys.size(); i++)
+            //List<String> sortedWildcardKeys = getSortedWildcardKeys();
+            List<_WildcardPattern> wildcardPatterns = getSortedWildcardPatterns();
+            
+            for (int i = 0; i < wildcardPatterns.size(); i++)
             {
-                String fromViewId = sortedWildcardKeys.get(i);
-                if (fromViewId.length() > 2)
+                _WildcardPattern wildcardPattern = wildcardPatterns.get(i);
+                if (wildcardPattern.match(viewId))
                 {
-                    String prefix = fromViewId.substring(0, fromViewId.length() - 1);
-                    if (viewId != null && viewId.startsWith(prefix))
-                    {
-                        casesSet = casesMap.get(fromViewId);
-                        if (casesSet != null)
-                        {
-                            navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
-                            if (navigationCase != null)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    casesSet = casesMap.get(fromViewId);
+                    casesSet = casesMap.get(wildcardPattern.getPattern());
                     if (casesSet != null)
                     {
                         navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
@@ -345,14 +384,292 @@ public class NavigationHandlerImpl
                 }
             }
         }
-        
+        return navigationCase;
+    }
+    
+    public NavigationCase getNavigationCommand(
+        FacesContext facesContext, NavigationContext navigationContext, String fromAction, String outcome)
+    {
+        String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
+        NavigationCase navigationCase = getNavigationCommandFromGlobalNavigationCases(
+                facesContext, viewId, navigationContext, fromAction, outcome);
+        // TODO: Add navigation commands for JSF 2.2 Faces Flow Here!
+        if (outcome != null && navigationCase == null)
+        {
+            FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+            Flow currentFlow = navigationContext.getCurrentFlow(facesContext);
+            // JSF 2.2 section 7.4.2: "... When outside of a flow, view identifier 
+            // has the additional possibility of being a flow id.
+            Flow targetFlow = null;
+            FlowCallNode targetFlowCallNode = null;
+            if (currentFlow != null)
+            {
+                targetFlow = flowHandler.getFlow(facesContext, currentFlow.getDefiningDocumentId(), outcome);
+            }
+            if (targetFlow == null)
+            {
+                targetFlow = flowHandler.getFlow(facesContext, "", outcome);
+            }
+            boolean startFlow = false;
+            boolean checkFlowNode = false;
+            if (currentFlow != null)
+            {
+                // JSF 2.2 section 7.4.2: When inside a flow, a view identifier has 
+                // the additional possibility of being the id of any node within the 
+                // current flow or the id of another flow
+                if (targetFlow != null)
+                {
+                    if (!currentFlow.getId().equals(targetFlow.getId()))
+                    {
+                        //Start sub flow!
+                        startFlow = true;
+                    }
+                }
+                else
+                {
+                    // Check if thie 
+                    checkFlowNode = true;
+                }
+            }
+            else
+            {
+                if (targetFlow != null)
+                {
+                    // start flow!
+                    startFlow = true;
+                }
+            }
+            // If is necessary to enter a flow or there is a current
+            // flow and it is necessary to check a flow node
+            if (startFlow || checkFlowNode)
+            {
+                String outcomeToGo = outcome;
+                String actionToGo = fromAction;
+                boolean complete = false;
+                boolean checkNavCase = true;
+
+                while (!complete && (startFlow || checkFlowNode))
+                {
+                    if (startFlow)
+                    {
+                        navigationContext.setSourceFlow(currentFlow);
+                        navigationContext.addTargetFlow(targetFlow, targetFlowCallNode);
+                        targetFlowCallNode = null;
+                        // Since we start a new flow, the current flow is now the
+                        // target flow.
+                        navigationContext.pushFlow(facesContext, targetFlow);
+                        currentFlow = targetFlow;
+                        //No outboundCallNode.
+                        //Resolve start node.
+                        if (targetFlow.getStartNodeId() == null)
+                        {
+                            // In faces-config javadoc says:
+                            // "If there is no <start-node> element declared, it 
+                            //  is assumed to be <flowName>.xhtml."
+                            outcomeToGo = "/" + targetFlow.getId()+ "/" + 
+                                targetFlow.getId() + ".xhtml";
+                        }
+                        else
+                        {
+                            outcomeToGo = targetFlow.getStartNodeId();
+                        }
+                        checkFlowNode = true;
+                        startFlow = false;
+                    }
+                    if (checkFlowNode)
+                    {
+                        FlowNode flowNode = currentFlow.getNode(outcomeToGo);
+                        if (flowNode != null)
+                        {
+                            checkNavCase = true;
+                            if (!complete && flowNode instanceof SwitchNode)
+                            {
+                                SwitchNode switchNode = (SwitchNode) flowNode;
+                                boolean resolved = false;
+                                // "... iterate over the NavigationCase instances returned from its getCases()
+                                // method. For each, one call getCondition(). If the result is true, let vdl 
+                                // view identifier be the value of its fromOutcome property.
+                                for (SwitchCase switchCase : switchNode.getCases())
+                                {
+                                    Boolean isConditionTrue = switchCase.getCondition(facesContext);
+                                    if (Boolean.TRUE.equals(isConditionTrue))
+                                    {
+                                        outcomeToGo = switchCase.getFromOutcome();
+                                        resolved = true;
+                                        break;
+                                    }
+                                }
+                                if (!resolved)
+                                {
+                                    outcomeToGo = switchNode.getDefaultOutcome(facesContext);
+                                }
+
+                                // Start over again checking if the node exists.
+                                //fromAction = currentFlow.getId();
+                                actionToGo = currentFlow.getId();
+                                flowNode = currentFlow.getNode(outcomeToGo);
+                                continue;
+                            }
+                            if (!complete && flowNode instanceof FlowCallNode)
+                            {
+                                // "... If the node is a FlowCallNode, save it aside as facesFlowCallNode. ..."
+                                FlowCallNode flowCallNode = (FlowCallNode) flowNode;
+
+                                // " ... Let flowId be the value of its calledFlowId property and flowDocumentId 
+                                // be the value of its calledFlowDocumentId property. .."
+
+                                // " ... If no flowDocumentId exists for the node, let it be the string 
+                                // resulting from flowId + "/" + flowId + ".xhtml". ..." 
+                                // -=Leonardo Uribe=- flowDocumentId is inconsistent, waiting for answer of the EG,
+                                // for not let it be null.
+
+                                String calledFlowDocumentId = flowCallNode.getCalledFlowDocumentId(facesContext);
+                                if (calledFlowDocumentId == null)
+                                {
+                                    calledFlowDocumentId = currentFlow.getDefiningDocumentId();
+                                }
+                                targetFlow = flowHandler.getFlow(facesContext, 
+                                    calledFlowDocumentId, 
+                                    flowCallNode.getCalledFlowId(facesContext));
+                                if (targetFlow == null && !"".equals(calledFlowDocumentId))
+                                {
+                                    targetFlow = flowHandler.getFlow(facesContext, 
+                                        "", 
+                                        flowCallNode.getCalledFlowId(facesContext));
+                                }
+                                if (targetFlow != null)
+                                {
+                                    targetFlowCallNode = flowCallNode;
+                                    startFlow = true;
+                                    continue;
+                                }
+                                else
+                                {
+                                    // Ask the FlowHandler for a Flow for this flowId, flowDocumentId pair. Obtain a 
+                                    // reference to the start node and execute this algorithm again, on that start node.
+                                    complete = true;
+                                }
+                                //complete = true;
+                            }
+                            if (!complete && flowNode instanceof MethodCallNode)
+                            {
+                                MethodCallNode methodCallNode = (MethodCallNode) flowNode;
+                                String vdlViewIdentifier = null;
+                                MethodExpression method = methodCallNode.getMethodExpression();
+                                if (method != null)
+                                {
+                                    Object value = invokeMethodCallNode(facesContext, methodCallNode);
+                                    if (value != null)
+                                    {
+                                        vdlViewIdentifier = value.toString();
+                                    }
+                                    else if (methodCallNode.getOutcome() != null)
+                                    {
+                                        vdlViewIdentifier = (String) methodCallNode.getOutcome().getValue(
+                                            facesContext.getELContext());
+                                    }
+                                }
+                                // note a vdlViewIdentifier could be a flow node too
+                                if (vdlViewIdentifier != null)
+                                {
+                                    //navigationCase = createNavigationCase(viewId, outcomeToGo, vdlViewIdentifier);
+                                    outcomeToGo = vdlViewIdentifier;
+                                    actionToGo = currentFlow.getId();
+                                    continue;
+                                }
+                                else
+                                {
+                                    complete = true;
+                                }
+                            }
+                            if (!complete && flowNode instanceof ReturnNode)
+                            {
+                                ReturnNode returnNode = (ReturnNode) flowNode;
+                                String fromOutcome = returnNode.getFromOutcome(facesContext);
+                                
+                                actionToGo = currentFlow.getId();
+                                if (navigationContext.getSourceFlow() == null)
+                                {
+                                    navigationContext.setSourceFlow(
+                                        navigationContext.getCurrentFlow(facesContext));
+                                }                                    
+                                // This is the part when the pseudo "recursive call" is done. 
+                                navigationContext.popFlow(facesContext);
+                                //getNavigationCommand(
+                                //    facesContext, navigationContext, currentFlow.getId(), fromOutcome);
+                                
+                                // TODO: add logic for exit the flow properly
+                                currentFlow = navigationContext.getCurrentFlow(facesContext);
+                                navigationContext.addTargetFlow(currentFlow, null);
+                                outcomeToGo = fromOutcome;
+                                
+                                navigationCase = getNavigationCommand(facesContext, 
+                                        navigationContext, actionToGo, outcomeToGo);
+                                if (navigationCase != null)
+                                {
+                                    complete = true;
+                                }
+                                if (currentFlow == null)
+                                {
+                                    complete = true;
+                                }
+                                continue;
+                                //complete = true;
+                            }
+                            if (!complete && flowNode instanceof ViewNode)
+                            {
+                                ViewNode viewNode = (ViewNode) flowNode;
+                                navigationCase = createNavigationCase(viewId, flowNode.getId(), 
+                                    viewNode.getVdlDocumentId());
+                                complete = true;
+                            }
+                            else
+                            {
+                                //Should not happen
+                                complete = true;
+                            }
+                        }
+                        else if (checkNavCase)
+                        {
+                            // Not found in current flow.
+                            _FlowNavigationStructure flowNavigationStructure = _flowNavigationStructureMap.get(
+                                    currentFlow.getId());
+                            navigationCase = getNavigationCaseFromFlowStructure(facesContext, 
+                                    flowNavigationStructure, actionToGo, outcomeToGo, viewId);
+                            
+                            // JSF 2.2 section 7.4.2 "... any text that references a view identifier, such as 
+                            // <from-view-id> or <to-view-id>,
+                            // can also refer to a flow node ..."
+                            if (navigationCase != null)
+                            {
+                                outcomeToGo = navigationCase.getToViewId(facesContext);
+                                checkNavCase = false;
+                            }
+                            else
+                            {
+                                // No matter if navigationCase is null or not, complete the look.
+                                complete = true;
+                            }
+                        }
+                        else
+                        {
+                            complete = true;
+                        }
+                    }
+                }
+                // Apply implicit navigation rules over outcomeToGo
+                if (outcomeToGo != null && navigationCase == null)
+                {
+                    navigationCase = getOutcomeNavigationCase (facesContext, actionToGo, outcomeToGo);
+                }
+            }
+        }
         if (outcome != null && navigationCase == null)
         {
             //if outcome is null, we don't check outcome based nav cases
             //otherwise, if navgiationCase is still null, check outcome-based nav cases
             navigationCase = getOutcomeNavigationCase (facesContext, fromAction, outcome);
         }
-        
         if (outcome != null && navigationCase == null && !facesContext.isProjectStage(ProjectStage.Production))
         {
             final FacesMessage facesMessage = new FacesMessage("No navigation case match for viewId " + viewId + 
@@ -360,9 +677,99 @@ public class NavigationHandlerImpl
             facesMessage.setSeverity(FacesMessage.SEVERITY_WARN);
             facesContext.addMessage(null, facesMessage);
         }
-
-        return navigationCase;  //if navigationCase == null, will stay on current view
-
+        if (navigationCase != null)
+        {
+            navigationContext.setNavigationCase(navigationCase);
+        }
+        return navigationContext.getNavigationCase();
+        // if navigationCase == null, will stay on current view
+    }
+    
+    private Object invokeMethodCallNode(FacesContext facesContext, MethodCallNode methodCallNode)
+    {
+        MethodExpression method = methodCallNode.getMethodExpression();
+        Object value = null;
+        
+        if (methodCallNode.getParameters() != null &&
+            !methodCallNode.getParameters().isEmpty())
+        {
+            Object[] parameters = new Object[methodCallNode.getParameters().size()];
+            Class[] clazzes = new Class[methodCallNode.getParameters().size()];
+            for (int i = 0; i < methodCallNode.getParameters().size(); i++)
+            {
+                Parameter param = methodCallNode.getParameters().get(i);
+                parameters[i] = param.getValue().getValue(facesContext.getELContext());
+                clazzes[i] = param.getName() != null ? 
+                    ClassUtils.simpleJavaTypeToClass(param.getName()) :
+                    (parameters[i] == null ? String.class : parameters[i].getClass());
+            }
+            
+            // Now we need to recreate the EL method expression with the correct clazzes as parameters.
+            // We should do it per invocation, because we don't know the parameter type.
+            method = facesContext.getApplication().getExpressionFactory().createMethodExpression(
+                facesContext.getELContext(), method.getExpressionString(), null, clazzes);
+            value = method.invoke(facesContext.getELContext(), parameters);
+        }
+        else
+        {
+            value = method.invoke(facesContext.getELContext(), null);
+        }
+        return value;
+    }
+    
+    private NavigationCase getNavigationCaseFromFlowStructure(FacesContext facesContext, 
+            _FlowNavigationStructure flowNavigationStructure, String fromAction, String outcome, String viewId)
+    {
+        Set<NavigationCase> casesSet = null;
+        NavigationCase navigationCase = null;
+        
+        if (viewId != null)
+        {
+            casesSet = flowNavigationStructure.getNavigationCases().get(viewId);
+            if (casesSet != null)
+            {
+                // Exact match?
+                navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
+            }
+        }
+        if (navigationCase == null)
+        {
+            List<_WildcardPattern> wildcardPatterns = flowNavigationStructure.getWildcardKeys();
+            for (int i = 0; i < wildcardPatterns.size(); i++)
+            {
+                _WildcardPattern wildcardPattern = wildcardPatterns.get(i);
+                if (wildcardPattern.match(viewId))
+                {
+                    casesSet = flowNavigationStructure.getNavigationCases().get(wildcardPattern.getPattern());
+                    if (casesSet != null)
+                    {
+                        navigationCase = calcMatchingNavigationCase(facesContext, casesSet, fromAction, outcome);
+                        if (navigationCase != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return navigationCase;
+    }
+    
+    private NavigationContext getFlowNavigationCommand (FacesContext facesContext, Flow targetFlow, String node)
+    {
+        return null;
+        
+    }
+    
+    /**
+     * Derive a NavigationCase from a flow node. 
+     * 
+     * @param flowNode
+     * @return 
+     */
+    private NavigationCase createNavigationCase(String fromViewId, String outcome, String toViewId)
+    {
+        return new NavigationCase(fromViewId, null, outcome, null, toViewId, null, false, false);
     }
     
     /**
@@ -745,9 +1152,9 @@ public class NavigationHandlerImpl
         return noConditionCase;
     }
 
-    private List<String> getSortedWildcardKeys()
+    private List<_WildcardPattern> getSortedWildcardPatterns()
     {
-        return _wildcardKeys;
+        return _wildcardPatterns;
     }
 
     @Override
@@ -782,6 +1189,54 @@ public class NavigationHandlerImpl
             return _navigationCases;
         }
     }
+
+    @Override
+    public void inspectFlow(FacesContext context, Flow flow)
+    {
+        Map<String, Set<NavigationCase>> rules = flow.getNavigationCases();
+        int rulesSize = rules.size();
+
+        Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
+                HashMapUtils.calcCapacity(rulesSize));
+
+        List<_WildcardPattern> wildcardPatterns = new ArrayList<_WildcardPattern>();
+
+        for (Map.Entry<String, Set<NavigationCase>> entry : rules.entrySet())
+        {
+            String fromViewId = entry.getKey();
+
+            //specification 7.4.2 footnote 4 - missing fromViewId is allowed:
+            if (fromViewId == null)
+            {
+                fromViewId = ASTERISK;
+            }
+            else
+            {
+                fromViewId = fromViewId.trim();
+            }
+
+            Set<NavigationCase> set = cases.get(fromViewId);
+            if (set == null)
+            {
+                set = new HashSet<NavigationCase>(entry.getValue());
+                cases.put(fromViewId, set);
+                if (fromViewId.endsWith(ASTERISK))
+                {
+                    wildcardPatterns.add(new _WildcardPattern(fromViewId));
+                }
+            }
+            else
+            {
+                set.addAll(entry.getValue());
+            }
+        }
+
+        Collections.sort(wildcardPatterns, new KeyComparator());
+
+        _flowNavigationStructureMap.put(
+            flow.getId(), 
+            new _FlowNavigationStructure(flow.getDefiningDocumentId(), flow.getId(), cases, wildcardPatterns) );
+    }
     
     private synchronized void calculateNavigationCases(FacesContext facesContext, RuntimeConfig runtimeConfig)
     {
@@ -793,7 +1248,7 @@ public class NavigationHandlerImpl
             Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
                     HashMapUtils.calcCapacity(rulesSize));
 
-            List<String> wildcardKeys = new ArrayList<String>();
+            List<_WildcardPattern> wildcardPatterns = new ArrayList<_WildcardPattern>();
 
             for (NavigationRule rule : rules)
             {
@@ -816,7 +1271,7 @@ public class NavigationHandlerImpl
                     cases.put(fromViewId, set);
                     if (fromViewId.endsWith(ASTERISK))
                     {
-                        wildcardKeys.add(fromViewId);
+                        wildcardPatterns.add(new _WildcardPattern(fromViewId));
                     }
                 }
                 else
@@ -825,7 +1280,7 @@ public class NavigationHandlerImpl
                 }
             }
 
-            Collections.sort(wildcardKeys, new KeyComparator());
+            Collections.sort(wildcardPatterns, new KeyComparator());
 
             synchronized (cases)
             {
@@ -834,18 +1289,18 @@ public class NavigationHandlerImpl
                 // will not rearrange the execution of the assignment to an
                 // earlier time, before all init code completes
                 _navigationCases = cases;
-                _wildcardKeys = wildcardKeys;
+                _wildcardPatterns = wildcardPatterns;
 
                 runtimeConfig.setNavigationRulesChanged(false);
             }
         }
     }
 
-    private static final class KeyComparator implements Comparator<String>
+    private static final class KeyComparator implements Comparator<_WildcardPattern>
     {
-        public int compare(String s1, String s2)
+        public int compare(_WildcardPattern s1, _WildcardPattern s2)
         {
-            return -s1.compareTo(s2);
+            return -s1.getPattern().compareTo(s2.getPattern());
         }
     }
     
@@ -878,5 +1333,125 @@ public class NavigationHandlerImpl
         
         return apiCases;
     }
+    
+    /**
+     * A navigation command is an operation to do by the navigation handler like
+     * do a redirect, execute a normal navigation or enter or exit a flow. 
+     * 
+     * To resolve a navigation command, it is necessary to get an snapshot of the
+     * current "navigation context" and try to resolve the command.
+     */
+    protected static class NavigationContext
+    {
+        private NavigationCase navigationCase;
+        private Flow sourceFlow;
+        private List<Flow> targetFlows;
+        private List<FlowCallNode> targetFlowCallNodes;
+        private List<Flow> currentFlows;
 
+        public NavigationContext()
+        {
+        }
+
+        public NavigationContext(NavigationCase navigationCase)
+        {
+            this.navigationCase = navigationCase;
+        }
+        
+        public NavigationCase getNavigationCase()
+        {
+            return navigationCase;
+        }
+
+        public void setNavigationCase(NavigationCase navigationCase)
+        {
+            this.navigationCase = navigationCase;
+        }
+
+        public Flow getSourceFlow()
+        {
+            return sourceFlow;
+        }
+
+        public void setSourceFlow(Flow sourceFlow)
+        {
+            this.sourceFlow = sourceFlow;
+        }
+
+        public List<Flow> getTargetFlows()
+        {
+            return targetFlows;
+        }
+        
+        public List<FlowCallNode> getFlowCallNodes()
+        {
+            return targetFlowCallNodes;
+        }
+
+        public void addTargetFlow(Flow targetFlow, FlowCallNode flowCallNode)
+        {
+            if (targetFlows == null)
+            {
+                targetFlows = new ArrayList<Flow>(4);
+                targetFlowCallNodes = new ArrayList<FlowCallNode>(4);
+            }
+            this.targetFlows.add(targetFlow);
+            this.targetFlowCallNodes.add(flowCallNode);
+        }
+        
+        public Flow getCurrentFlow(FacesContext facesContext)
+        {
+            Flow currentFlow = null;
+            if (currentFlows == null)
+            {
+                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+                
+                // Fill the stack with the current flows.
+                Flow curFlow = flowHandler.getCurrentFlow(facesContext);
+                // Save the top one
+                currentFlow = curFlow;
+                currentFlows = new ArrayList<Flow>();                
+                if (curFlow != null)
+                {
+                    // Fill the stack
+                    while (curFlow != null)
+                    {
+                        currentFlows.add(0,curFlow);
+                        flowHandler.pushReturnMode(facesContext);
+                        curFlow = flowHandler.getCurrentFlow(facesContext);
+                    }
+                
+                    for (int i = 0; i < currentFlows.size(); i++)
+                    {
+                        flowHandler.popReturnMode(facesContext);
+                    }
+                }
+            }
+            if (currentFlow != null)
+            {
+                return currentFlow;
+            }
+            else if (currentFlows != null && !currentFlows.isEmpty())
+            {
+                return currentFlows.get(currentFlows.size()-1);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        
+        public void popFlow(FacesContext facesContext)
+        {
+            if (currentFlows.size() > 0)
+            {
+                currentFlows.remove(currentFlows.size()-1);
+            }
+        }
+        
+        public void pushFlow(FacesContext facesContext, Flow flow)
+        {
+            currentFlows.add(flow);
+        }
+    }
 }

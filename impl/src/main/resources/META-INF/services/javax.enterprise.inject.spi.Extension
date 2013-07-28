@@ -1,0 +1,2 @@
+org.apache.myfaces.flow.cdi.FlowBuilderCDIExtension
+org.apache.myfaces.flow.cdi.FlowScopeCDIExtension

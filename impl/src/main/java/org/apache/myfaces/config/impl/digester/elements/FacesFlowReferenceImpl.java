@@ -16,23 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.config.element;
+package org.apache.myfaces.config.impl.digester.elements;
 
-import java.io.Serializable;
-import java.util.List;
+import org.apache.myfaces.config.element.FacesFlowReference;
 
 /**
  *
  * @author Leonardo Uribe
  */
-public abstract class FacesFlowMethodCall implements Serializable
+public class FacesFlowReferenceImpl extends FacesFlowReference
 {
-    public abstract String getId();
     
-    public abstract String getMethod();
+    private String _flowId;
     
-    public abstract String getDefaultOutcome();
-    
-    public abstract List<FacesFlowMethodParameter> getParameterList();
+    private String _flowDocumentId;
+
+    public FacesFlowReferenceImpl()
+    {
+        
+    }
+
+    @Override
+    public String getFlowId()
+    {
+        return _flowId;
+    }
+
+    public void setFlowId(String flowId)
+    {
+        this._flowId = flowId;
+    }
+
+    @Override
+    public String getFlowDocumentId()
+    {
+        return _flowDocumentId;
+    }
+
+    public void setFlowDocumentId(String flowDocumentId)
+    {
+        this._flowDocumentId = flowDocumentId;
+    }
     
 }

@@ -94,7 +94,16 @@ public abstract class FacesConfigurationProvider
     public abstract FacesConfig getWebAppFacesConfig(ExternalContext ectx); 
     
     /**
+     * Return the FacesConfig object model retrieved from a folder with a faces flow definition
+     * See JSF 2.2 section 11.4.3.3 and section 7.5.1
      * 
+     * @param ectx
+     * @return 
+     */
+    public abstract List<FacesConfig> getFacesFlowFacesConfig(ExternalContext ectx);
+    
+    /**
+     * Return the FacesConfig object model retrieved from SPI ApplicationConfigurationPopulator
      */
     public abstract List<FacesConfig> 
         getApplicationConfigurationResourceDocumentPopulatorFacesConfig(ExternalContext ectx);

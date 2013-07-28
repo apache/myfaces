@@ -16,23 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.config.element;
+package org.apache.myfaces.flow.cdi;
 
-import java.io.Serializable;
-import java.util.List;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
 
 /**
  *
  * @author Leonardo Uribe
  */
-public abstract class FacesFlowMethodCall implements Serializable
+public class FlowScopeCDIExtension implements Extension
 {
-    public abstract String getId();
     
-    public abstract String getMethod();
-    
-    public abstract String getDefaultOutcome();
-    
-    public abstract List<FacesFlowMethodParameter> getParameterList();
-    
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager)
+    {
+        event.addContext(new FlowScopedContextImpl());
+    }
 }

@@ -217,7 +217,7 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         assertEquals(1, facesFlowDefinition.getFlowCallList().size());
         FacesFlowCall facesFlowCall = facesFlowDefinition.getFlowCallList().get(0);
         assertEquals("flowCall", facesFlowCall.getId());
-        assertEquals("flow2", facesFlowCall.getCalledFlowId());
+        assertEquals("flow2", facesFlowCall.getFlowReference().getFlowId());
         assertEquals(1, facesFlowCall.getOutboundParameterList().size());
         FacesFlowParameter facesFlowOutboundParameter = facesFlowCall.getOutboundParameterList().get(0);
         assertEquals("name1", facesFlowOutboundParameter.getName());

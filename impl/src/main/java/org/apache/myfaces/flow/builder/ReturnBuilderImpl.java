@@ -22,6 +22,7 @@ import javax.el.ValueExpression;
 import javax.faces.flow.builder.ReturnBuilder;
 import org.apache.myfaces.flow.FlowImpl;
 import org.apache.myfaces.flow.ReturnNodeImpl;
+import org.apache.myfaces.view.facelets.el.ELText;
 
 /**
  *
@@ -30,11 +31,13 @@ import org.apache.myfaces.flow.ReturnNodeImpl;
  */
 public class ReturnBuilderImpl extends ReturnBuilder
 {
+    private FlowBuilderImpl _flowBuilder;
     private FlowImpl _facesFlow;
     private ReturnNodeImpl _returnNode;
 
-    public ReturnBuilderImpl(FlowImpl facesFlow, String returnNodeId)
+    public ReturnBuilderImpl(FlowBuilderImpl flowBuilder, FlowImpl facesFlow, String returnNodeId)
     {
+        this._flowBuilder = flowBuilder;
         this._facesFlow = facesFlow;
         this._returnNode = new ReturnNodeImpl(returnNodeId);
         this._facesFlow.putReturn(returnNodeId, _returnNode);
@@ -43,7 +46,14 @@ public class ReturnBuilderImpl extends ReturnBuilder
     @Override
     public ReturnBuilder fromOutcome(String outcome)
     {
-        this._returnNode.setFromOutcome(outcome);
+        if (ELText.isLiteral(outcome))
+        {
+            this._returnNode.setFromOutcome(outcome);
+        }
+        else
+        {
+            this._returnNode.setFromOutcome(_flowBuilder.createValueExpression(outcome));
+        }
         return this;
     }
 

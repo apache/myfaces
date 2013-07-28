@@ -74,6 +74,11 @@ public abstract class FacesConfigurationProviderWrapper
         return getWrapped().getWebAppFacesConfig(ectx);
     }
     
+    public List<FacesConfig> getFacesFlowFacesConfig(ExternalContext ectx)
+    {
+        return getWrapped().getFacesFlowFacesConfig(ectx);
+    }
+    
     public List<FacesConfig> getApplicationConfigurationResourceDocumentPopulatorFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getApplicationConfigurationResourceDocumentPopulatorFacesConfig(ectx);

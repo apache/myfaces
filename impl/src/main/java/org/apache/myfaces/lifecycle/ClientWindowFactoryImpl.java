@@ -21,6 +21,8 @@ package org.apache.myfaces.lifecycle;
 import javax.faces.context.FacesContext;
 import javax.faces.lifecycle.ClientWindow;
 import javax.faces.lifecycle.ClientWindowFactory;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
@@ -30,14 +32,18 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
  */
 public class ClientWindowFactoryImpl extends ClientWindowFactory
 {
+    @JSFWebConfigParam(since="2.2",defaultValue="url")
+    public static final String INIT_PARAM_DEFAULT_WINDOW_MODE = 
+        "org.apache.myfaces.DEFAULT_WINDOW_MODE";
+    
     private String windowMode;
     private TokenGenerator windowTokenGenerator;
     private ClientConfig clientConfig;
     private WindowContextConfig windowContextConfig;
     
-    private static final String WINDOW_MODE_NONE = "none";
-    private static final String WINDOW_MODE_URL = "url";
-    private static final String WINDOW_MODE_CLIENT = "client";
+    public static final String WINDOW_MODE_NONE = "none";
+    public static final String WINDOW_MODE_URL = "url";
+    public static final String WINDOW_MODE_CLIENT = "client";
 
     public ClientWindowFactoryImpl()
     {
@@ -77,9 +83,24 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory
     {
         if (windowMode == null)
         {
-            windowMode = WebConfigParamUtils.getStringInitParameter(
-                    context.getExternalContext(), 
-                    ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, WINDOW_MODE_NONE);
+            if (FacesConfigurator.isEnableDefaultWindowMode(context))
+            {
+                String defaultWindowMode = WebConfigParamUtils.getStringInitParameter(
+                        context.getExternalContext(), 
+                        INIT_PARAM_DEFAULT_WINDOW_MODE, 
+                        WINDOW_MODE_URL);
+                windowMode = WebConfigParamUtils.getStringInitParameter(
+                        context.getExternalContext(), 
+                        ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, 
+                        defaultWindowMode);
+            }
+            else
+            {
+                windowMode = WebConfigParamUtils.getStringInitParameter(
+                        context.getExternalContext(), 
+                        ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, 
+                        WINDOW_MODE_NONE);
+            }
         }
         return windowMode;
     }

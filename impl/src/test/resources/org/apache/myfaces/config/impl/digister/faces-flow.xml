@@ -19,7 +19,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd" 
               version="2.0">
-    <faces-flow-definition id="flow1">
+    <flow-definition id="flow1">
         <start-node>node1</start-node>
         <view id="outcome2">
             <vdl-document>outcome-to-2.xhtml</vdl-document>
@@ -47,9 +47,9 @@
           </navigation-case>
         </navigation-rule>
         <flow-call id="flowCall">
-            <faces-flow-reference>
-                <faces-flow-id>flow2</faces-flow-id>
-            </faces-flow-reference>
+            <flow-reference>
+                <flow-id>flow2</flow-id>
+            </flow-reference>
             <outbound-parameter>
                 <name>name1</name>
                 <value>value1</value>
@@ -65,5 +65,5 @@
             <name>name1</name>
             <value>value1</value>
         </inbound-parameter>
-    </faces-flow-definition>
+    </flow-definition>
 </faces-config>

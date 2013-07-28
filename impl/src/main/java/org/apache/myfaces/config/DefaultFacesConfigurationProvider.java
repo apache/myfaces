@@ -35,7 +35,9 @@ import javax.faces.context.ExternalContext;
 import javax.faces.webapp.FacesServlet;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PushbackInputStream;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -59,6 +61,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesFlowReturnImpl;
+import org.apache.myfaces.config.impl.digester.elements.NavigationCase;
 import org.apache.myfaces.shared.util.FastWriter;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.w3c.dom.DOMImplementation;
@@ -540,5 +545,179 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             }
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public List<FacesConfig> getFacesFlowFacesConfig(ExternalContext ectx)
+    {
+        List<FacesConfig> configFilesList;
+        Set<String> directoryPaths = ectx.getResourcePaths("/");
+        if (directoryPaths == null)
+        {
+            return Collections.emptyList();
+        }
+        configFilesList = new ArrayList<FacesConfig>();
+        
+        List<String> contextSpecifiedList = getConfigFilesList(ectx);
+        
+        for (String dirPath : directoryPaths)
+        {
+            if (dirPath.equals("/WEB-INF/"))
+            {
+                // Look on /WEB-INF/<flow-Name>/<flowName>-flow.xml
+                Set<String> webDirectoryPaths = ectx.getResourcePaths(dirPath);
+                for (String webDirPath : webDirectoryPaths)
+                {
+                    if (webDirPath.endsWith("/") && 
+                        !webDirPath.equals("/WEB-INF/classes/"))
+                    {
+                        String flowName = webDirPath.substring(9, webDirPath.length() - 1);
+                        String filePath = webDirPath+flowName+"-flow.xml";
+                        if (!contextSpecifiedList.contains(filePath))
+                        {
+                            try
+                            {
+                                URL url = ectx.getResource(filePath);
+                                if (url != null)
+                                {
+                                    FacesConfig fc = parseFacesConfig(ectx, filePath, url);
+                                    if (fc != null)
+                                    {
+                                        configFilesList.add(fc);
+                                    }
+                                }
+                            }
+                            catch (MalformedURLException ex)
+                            {
+                            }
+                        }
+                    }
+                }
+            }
+            else if (!dirPath.startsWith("/META-INF") && dirPath.endsWith("/"))
+            {
+                // Look on /<flowName>/<flowName>-flow.xml
+                String flowName = dirPath.substring(1, dirPath.length() - 1);
+                String filePath = dirPath+flowName+"-flow.xml";
+                if (!contextSpecifiedList.contains(filePath))
+                {
+                    try
+                    {
+                        URL url = ectx.getResource(filePath);
+                        if (url != null)
+                        {
+                            FacesConfig fc = parseFacesConfig(ectx, filePath, url);
+                            if (fc != null)
+                            {
+                                configFilesList.add(fc);
+                            }
+                        }
+                    }
+                    catch (MalformedURLException ex)
+                    {
+                    }
+                }
+            }
+        }
+        
+        return configFilesList;
+    }
+    
+    private FacesConfig parseFacesConfig(ExternalContext ectx, String systemId, URL url)
+    {
+        try
+        {
+            if (MyfacesConfig.getCurrentInstance(ectx).isValidateXML())
+            {
+                //URL url = ectx.getResource(systemId);
+                //if (url != null)
+                //{
+                    validateFacesConfig(ectx, url);
+                //}
+            }            
+        }
+        catch (IOException e)
+        {
+            throw new FacesException(e);
+        }
+        catch (SAXException e)
+        {
+            throw new FacesException(e);
+        }
+        InputStream stream = ectx.getResourceAsStream(systemId);
+        PushbackInputStream pbstream = new PushbackInputStream(stream, 10);
+        try
+        {
+            if (stream == null)
+            {
+                log.severe("Faces config resource " + systemId + " not found");
+                return null;
+            }
+            int c = pbstream.read();
+            if (c != -1)
+            {
+                pbstream.unread(c);
+            }
+            else
+            {
+                // Zero lenght, if that so the flow definition must be implicitly derived. 
+                // See JSF 2.2 section 11.4.3.3
+                // 
+                FacesConfig facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                FacesFlowDefinitionImpl flow = new FacesFlowDefinitionImpl();
+                String flowName = systemId.substring(systemId.lastIndexOf('/')+1, systemId.lastIndexOf("-flow.xml"));
+                flow.setId(flowName);
+                // In this case the defining document id is implicit associated
+                flow.setDefiningDocumentId(systemId);
+                
+                String startNodePath = systemId.substring(0, systemId.lastIndexOf('/')+1)+flowName+".xhtml";
+                URL startNodeUrl = ectx.getResource(startNodePath);
+                if (startNodeUrl != null)
+                {
+                    flow.setStartNode(startNodePath);
+                }
+                
+                // There is a default return node with name [flow-name]-return and 
+                // that by default points to an outer /[flow-name]-return outcome
+                FacesFlowReturnImpl returnNode = new FacesFlowReturnImpl();
+                returnNode.setId(flowName+"-return");
+                NavigationCase returnNavCase = new NavigationCase();
+                returnNavCase.setFromOutcome("/"+flowName+"-return");
+                returnNode.setNavigationCase(returnNavCase);
+                flow.addReturn(returnNode);
+                
+                facesConfig.getFacesFlowDefinitions().add(flow);
+                return facesConfig;
+            }
+
+            if (log.isLoggable(Level.INFO))
+            {
+                log.info("Reading config " + systemId);
+            }
+            return getUnmarshaller(ectx).getFacesConfig(pbstream, systemId);
+            //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
+        }
+        catch (IOException e)
+        {
+            throw new FacesException(e);
+        }
+        catch (SAXException e)
+        {
+            throw new FacesException(e);
+        }
+        finally
+        {
+            if (stream != null)
+            {
+                try
+                {
+                    stream.close();
+                }
+                catch (IOException ex)
+                {
+                    // No op
+                }
+            }
+        }
     }
 }

@@ -29,7 +29,7 @@ public abstract class FacesFlowCall implements Serializable
 {
     public abstract String getId();
     
-    public abstract String getCalledFlowId();
+    public abstract FacesFlowReference getFlowReference();
     
     public abstract List<FacesFlowParameter> getOutboundParameterList();
 }

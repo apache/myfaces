@@ -61,6 +61,7 @@ import javax.faces.event.PreDestroyViewMapEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.flow.FlowHandler;
 import javax.faces.flow.FlowHandlerFactory;
+import javax.faces.lifecycle.ClientWindow;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKit;
@@ -85,6 +86,7 @@ import org.apache.myfaces.config.element.FacesConfigData;
 import org.apache.myfaces.config.element.FacesFlowCall;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.element.FacesFlowMethodCall;
+import org.apache.myfaces.config.element.FacesFlowMethodParameter;
 import org.apache.myfaces.config.element.FacesFlowParameter;
 import org.apache.myfaces.config.element.FacesFlowReturn;
 import org.apache.myfaces.config.element.FacesFlowSwitch;
@@ -116,6 +118,7 @@ import org.apache.myfaces.flow.ReturnNodeImpl;
 import org.apache.myfaces.flow.SwitchCaseImpl;
 import org.apache.myfaces.flow.SwitchNodeImpl;
 import org.apache.myfaces.flow.ViewNodeImpl;
+import org.apache.myfaces.flow.cdi.AnnotatedFlowConfigurator;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
@@ -124,6 +127,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.LocaleUtils;
 import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
@@ -173,6 +177,12 @@ public class FacesConfigurator
     private static final String DEFAULT_CLIENT_WINDOW_FACTORY = ClientWindowFactoryImpl.class.getName();
     private static final String DEFAULT_FLOW_FACTORY = FlowHandlerFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
+    
+    /**
+     * Set this attribute if the current configuration requires enable window mode
+     */
+    public static final String ENABLE_DEFAULT_WINDOW_MODE = 
+        "org.apache.myfaces.ENABLE_DEFAULT_WINDOW_MODE";
 
     private final ExternalContext _externalContext;
     private FacesConfigUnmarshaller<? extends FacesConfig> _unmarshaller;
@@ -1190,6 +1200,12 @@ public class FacesConfigurator
         
         FacesConfigData dispenser = getDispenser();
         
+        if (!dispenser.getFacesFlowDefinitions().isEmpty())
+        {
+            // Faces Flow require client window enabled to work.
+            FacesConfigurator.enableDefaultWindowMode(facesContext);
+        }
+        
         for (FacesFlowDefinition flowDefinition : dispenser.getFacesFlowDefinitions())
         {
             FlowImpl flow = new FlowImpl();
@@ -1214,7 +1230,11 @@ public class FacesConfigurator
             for (FacesFlowCall call : flowDefinition.getFlowCallList())
             {
                 FlowCallNodeImpl node = new FlowCallNodeImpl(call.getId());
-                node.setCalledFlowId(call.getCalledFlowId());
+                if (call.getFlowReference() != null)
+                {
+                    node.setCalledFlowId(call.getFlowReference().getFlowId());
+                    node.setCalledFlowDocumentId(call.getFlowReference().getFlowDocumentId());
+                }
 
                 for (FacesFlowParameter parameter : call.getOutboundParameterList())
                 {
@@ -1241,10 +1261,10 @@ public class FacesConfigurator
                         application.getExpressionFactory().createValueExpression(
                                 facesContext.getELContext(), methodCall.getDefaultOutcome(), Object.class));
                 }
-                for (FacesFlowParameter parameter : methodCall.getParameterList())
+                for (FacesFlowMethodParameter parameter : methodCall.getParameterList())
                 {
                     node.addParameter(
-                        new ParameterImpl(parameter.getName(),
+                        new ParameterImpl(parameter.getClassName(),
                         application.getExpressionFactory().createValueExpression(
                             facesContext.getELContext(), parameter.getValue(), Object.class)) );
                 }
@@ -1334,9 +1354,40 @@ public class FacesConfigurator
             // navigation system.
             application.getFlowHandler().addFlow(facesContext, flow);
         }
+        
+        AnnotatedFlowConfigurator.configureAnnotatedFlows(facesContext);
     }
     
-
+    public static void enableDefaultWindowMode(FacesContext facesContext)
+    {
+        if (!isEnableDefaultWindowMode(facesContext))
+        {
+            String windowMode = WebConfigParamUtils.getStringInitParameter(
+                    facesContext.getExternalContext(), 
+                    ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, null);
+            
+            if (windowMode == null)
+            {
+                //No window mode set, force window mode to url
+                String defaultWindowMode = WebConfigParamUtils.getStringInitParameter(
+                    facesContext.getExternalContext(), 
+                    ClientWindowFactoryImpl.INIT_PARAM_DEFAULT_WINDOW_MODE, 
+                    ClientWindowFactoryImpl.WINDOW_MODE_URL);
+                
+                log.info("The current configuration requires client window enabled, setting it to '"+
+                    defaultWindowMode+"'");
+                
+                facesContext.getExternalContext().getApplicationMap().put(
+                    ENABLE_DEFAULT_WINDOW_MODE, Boolean.TRUE);
+            }
+        }
+    }
+    
+    public static boolean isEnableDefaultWindowMode(FacesContext facesContext)
+    {
+        return Boolean.TRUE.equals(facesContext.getExternalContext().
+            getApplicationMap().get(ENABLE_DEFAULT_WINDOW_MODE));
+    }
     
     private boolean isEmptyString(String value)
     {

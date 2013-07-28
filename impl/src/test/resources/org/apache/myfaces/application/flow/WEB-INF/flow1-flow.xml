@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<faces-config version="2.2"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <flow-definition id="flow1">
+        <start-node>begin</start-node>
+
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <navigation-rule>
+            <from-view-id>*</from-view-id>
+            <navigation-case>
+                <from-outcome>flow1_content</from-outcome>
+                <to-view-id>content</to-view-id>
+            </navigation-case>
+            
+            <!-- This navigation rule is a critical point, and very difficult to
+                 get it done right. The intention is redirect the exit here and 
+                 end both flow1 and flow2 in 1 step. Note the from-action is 
+                 different here and in the final outer navigation case. -->
+            <navigation-case>
+                <from-action>flow2</from-action>
+                <from-outcome>exit</from-outcome>
+                <to-view-id>end</to-view-id>
+            </navigation-case>
+        </navigation-rule>
+        
+        <flow-call id="call_flow2">
+            <flow-reference>
+                <flow-id>flow2</flow-id>
+            </flow-reference>
+        </flow-call>
+            
+        <view id="begin">
+            <vdl-document>/flow1/begin.xhtml</vdl-document>
+        </view>
+        <view id="content">
+            <vdl-document>/flow1/content.xhtml</vdl-document>
+        </view>
+    </flow-definition>
+    
+    <flow-definition id="flow2">
+        <start-node>begin</start-node>
+
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <navigation-rule>
+            <from-view-id>*</from-view-id>
+            <navigation-case>
+                <from-outcome>flow2_content</from-outcome>
+                <to-view-id>content</to-view-id>
+            </navigation-case>
+        </navigation-rule>
+            
+        <view id="begin">
+            <vdl-document>/flow2/begin.xhtml</vdl-document>
+        </view>
+        <view id="content">
+            <vdl-document>/flow2/content.xhtml</vdl-document>
+        </view>
+    </flow-definition>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <!-- End Flow 1 -->
+        <navigation-case>
+            <from-action>flow1</from-action>
+            <from-outcome>exit</from-outcome>
+            <to-view-id>/flow1_end.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+</faces-config>
+        

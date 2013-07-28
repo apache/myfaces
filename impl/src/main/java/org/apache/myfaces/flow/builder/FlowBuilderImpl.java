@@ -80,7 +80,7 @@ public class FlowBuilderImpl extends FlowBuilder
     @Override
     public ReturnBuilder returnNode(String returnNodeId)
     {
-        return new ReturnBuilderImpl(_facesFlow, returnNodeId);
+        return new ReturnBuilderImpl(this, _facesFlow, returnNodeId);
     }
 
     @Override
@@ -183,6 +183,6 @@ public class FlowBuilderImpl extends FlowBuilder
     @Override
     public NavigationCaseBuilder navigationCase()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new NavigationCaseBuilderImpl(this, _facesFlow);
     }
 }
