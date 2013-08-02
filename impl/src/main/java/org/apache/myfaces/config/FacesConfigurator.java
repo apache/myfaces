@@ -1025,19 +1025,35 @@ public class FacesConfigurator
                 javax.faces.render.Renderer renderer;
                 Collection<ClientBehaviorRenderer> clientBehaviorRenderers
                         = dispenser.getClientBehaviorRenderers(renderKitId);
-
-                try
-                {
-                    renderer = (javax.faces.render.Renderer) ClassUtils.newInstance(element.getRendererClass());
+                
+                if (element.getRendererClass() != null)
+                {    
+                    try
+                    {
+                        renderer = (javax.faces.render.Renderer) ClassUtils.newInstance(element.getRendererClass());
+                    }
+                    catch (Throwable e)
+                    {
+                        // ignore the failure so that the render kit is configured
+                        log.log(Level.SEVERE, "failed to configure class " + element.getRendererClass(), e);
+                        continue;
+                    }
+                    if (renderer != null)
+                    {
+                        renderKit.addRenderer(element.getComponentFamily(), element.getRendererType(), renderer);
+                    }
+                    else
+                    {
+                        log.log(Level.INFO, "Renderer instance cannot be created for "+
+                                element.getRendererClass()+ ", ignoring..." + 
+                                element.getRendererClass());
+                    }
                 }
-                catch (Throwable e)
+                else
                 {
-                    // ignore the failure so that the render kit is configured
-                    log.log(Level.SEVERE, "failed to configure class " + element.getRendererClass(), e);
-                    continue;
+                        log.log(Level.INFO, "Renderer element with no rendererClass found, ignoring..." +
+                                element.getRendererClass());
                 }
-
-                renderKit.addRenderer(element.getComponentFamily(), element.getRendererType(), renderer);
 
                 // Add in client behavior renderers.
 
