@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.flow.cdi;
+package org.apache.myfaces.cdi.view;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -28,33 +28,39 @@ import javax.enterprise.inject.spi.Extension;
 import org.apache.myfaces.cdi.util.BeanProvider;
 
 /**
- *
+ * Handle ViewScope related features.
+ * 
  * @author Leonardo Uribe
  */
-public class FlowScopeCDIExtension implements Extension
+public class ViewScopeContextExtension implements Extension
 {
-    private FlowScopedContextImpl flowScopedContext;
-    
+    private ViewScopeContextImpl viewScopeContext;
+
     void beforeBeanDiscovery(
         @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        // Register FlowBuilderFactoryBean as a bean with CDI annotations, so the system
+        // Register ViewScopeBeanHolder as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
-        AnnotatedType bean = beanManager.createAnnotatedType(FlowScopeBeanHolder.class);
+        AnnotatedType bean = beanManager.createAnnotatedType(ViewScopeBeanHolder.class);
         event.addAnnotatedType(bean);
     }
     
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager)
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        flowScopedContext = new FlowScopedContextImpl(manager);
-        event.addContext(flowScopedContext);
+        viewScopeContext = new ViewScopeContextImpl(beanManager);
+        afterBeanDiscovery.addContext(viewScopeContext);
     }
-    
-    void initializeFlowContexts(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
+
+    /**
+     * We can only initialize our contexts in AfterDeploymentValidation because
+     * getBeans must not be invoked earlier than this phase to reduce randomness
+     * caused by Beans no being fully registered yet.
+     */
+    void initializeViewScopeContexts(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = BeanProvider.getContextualReference(
-            beanManager, FlowScopeBeanHolder.class, false);
+        ViewScopeBeanHolder viewScopeBeanHolder
+            = BeanProvider.getContextualReference(beanManager, ViewScopeBeanHolder.class, false);
         
-        flowScopedContext.initFlowContext(flowScopeBeanHolder);
+        viewScopeContext.initViewScopeContext(viewScopeBeanHolder);
     }
 }

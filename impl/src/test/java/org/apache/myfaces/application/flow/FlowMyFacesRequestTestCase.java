@@ -119,6 +119,8 @@ public class FlowMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotNull(currentFlow);
         Assert.assertEquals("flow1", currentFlow.getId());
         
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flow1","value1");
+        
         processRender();
         
         UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow2");
@@ -129,6 +131,8 @@ public class FlowMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
         Assert.assertNotNull(currentFlow);
         Assert.assertEquals("flow2", currentFlow.getId());
+        Assert.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flow1"));
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flow2","value2");
         
         processRender();
         

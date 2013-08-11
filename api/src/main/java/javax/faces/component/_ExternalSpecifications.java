@@ -20,6 +20,7 @@ package javax.faces.component;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.context.ExternalContext;
 
 /**
  * <p>
@@ -38,6 +39,7 @@ final class _ExternalSpecifications
 
     private static volatile Boolean beanValidationAvailable;
     //private static volatile Boolean unifiedELAvailable;
+    private static volatile Boolean cdiAvailable;
 
     /**
      * This method determines if Bean Validation is present.
@@ -121,6 +123,41 @@ final class _ExternalSpecifications
         }
         return unifiedELAvailable;
     }*/
+    
+    public static boolean isCDIAvailable(ExternalContext externalContext)
+    {
+        if (cdiAvailable == null)
+        {
+            try
+            {
+                cdiAvailable = Class.forName("javax.enterprise.inject.spi.BeanManager") != null;
+            }
+            catch (Throwable t)
+            {
+                //log.log(Level.FINE, "Error loading class (could be normal)", t);
+                cdiAvailable = false;
+            }
+            
+            if (cdiAvailable)
+            {
+                cdiAvailable = externalContext.getApplicationMap().containsKey(
+                    "oam.cdi.BEAN_MANAGER_INSTANCE");
+            }
+
+            log.info("MyFaces CDI support " + (cdiAvailable ? "enabled" : "disabled"));
+            
+            return cdiAvailable;
+        }
+        else
+        {
+            if (Boolean.TRUE.equals(cdiAvailable))
+            {
+                return externalContext.getApplicationMap().containsKey(
+                        "oam.cdi.BEAN_MANAGER_INSTANCE");
+            }
+            return cdiAvailable;
+        }        
+    }
 
     /**
      * this class should not be instantiated.

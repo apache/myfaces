@@ -118,7 +118,7 @@ import org.apache.myfaces.flow.ReturnNodeImpl;
 import org.apache.myfaces.flow.SwitchCaseImpl;
 import org.apache.myfaces.flow.SwitchNodeImpl;
 import org.apache.myfaces.flow.ViewNodeImpl;
-import org.apache.myfaces.flow.cdi.AnnotatedFlowConfigurator;
+import org.apache.myfaces.flow.impl.AnnotatedFlowConfigurator;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;

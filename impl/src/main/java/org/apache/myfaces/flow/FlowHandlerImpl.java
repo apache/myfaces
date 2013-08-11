@@ -33,8 +33,8 @@ import javax.faces.flow.FlowCallNode;
 import javax.faces.flow.FlowHandler;
 import javax.faces.flow.Parameter;
 import javax.faces.lifecycle.ClientWindow;
-import org.apache.myfaces.flow.cdi.FlowScopeMap;
-import org.apache.myfaces.flow.cdi.FlowScopedContextImpl;
+import org.apache.myfaces.spi.FacesFlowProvider;
+import org.apache.myfaces.spi.FacesFlowProviderFactory;
 
 /**
  *
@@ -49,10 +49,10 @@ public class FlowHandlerImpl extends FlowHandler
     private final static String FLOW_RETURN_STACK = "oam.flow.RETURN_STACK.";
     private final static String CURRENT_FLOW_REQUEST_STACK = "oam.flow.REQUEST_STACK.";
     
-    private final static String CURRENT_FLOW_SCOPE_MAP = "oam.flow.SCOPE_MAP";
-    
     private Map<String, Map<String, Flow>> _flowMapByDocumentId;
     private Map<String, Flow> _flowMapById;
+    
+    private FacesFlowProvider _facesFlowProvider;
     
     public FlowHandlerImpl()
     {
@@ -304,7 +304,7 @@ public class FlowHandlerImpl extends FlowHandler
     
     private void doAfterEnterFlow(FacesContext context, Flow flow, Map<String, Object> outboundParameters)
     {
-        FlowScopedContextImpl.createCurrentFlowScope(context);
+        getFacesFlowProvider(context).doAfterEnterFlow(context, flow);
         
         if (flow.getInitializer() != null)
         {
@@ -324,9 +324,22 @@ public class FlowHandlerImpl extends FlowHandler
         }
     }
     
+    public FacesFlowProvider getFacesFlowProvider(FacesContext facesContext)
+    {
+        if (_facesFlowProvider == null)
+        {
+            FacesFlowProviderFactory factory = 
+                FacesFlowProviderFactory.getFacesFlowProviderFactory(
+                    facesContext.getExternalContext());
+            _facesFlowProvider = factory.getFacesFlowProvider(
+                    facesContext.getExternalContext());
+        }
+        return _facesFlowProvider;
+    }
+    
     private void doBeforeExitFlow(FacesContext context, Flow flow)
     {
-        FlowScopedContextImpl.destroyCurrentFlowScope(context);
+        getFacesFlowProvider(context).doBeforeExitFlow(context, flow);
         
         if (flow.getFinalizer() != null)
         {
@@ -371,14 +384,7 @@ public class FlowHandlerImpl extends FlowHandler
     public Map<Object, Object> getCurrentFlowScope()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        Map<Object, Object> map = (Map<Object, Object>) facesContext.getAttributes().get(
-            CURRENT_FLOW_SCOPE_MAP);
-        if (map == null)
-        {
-            map = new FlowScopeMap();
-            facesContext.getAttributes().put(CURRENT_FLOW_SCOPE_MAP, map);
-        }
-        return map;
+        return getFacesFlowProvider(facesContext).getCurrentFlowScope(facesContext);
     }
 
     @Override

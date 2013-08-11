@@ -22,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELContext;
+import javax.faces.context.ExternalContext;
+import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
  * <p>
@@ -42,6 +44,7 @@ public final class ExternalSpecifications
 
     private static volatile Boolean beanValidationAvailable;
     private static volatile Boolean unifiedELAvailable;
+    private static volatile Boolean cdiAvailable;
 
     /**
      * This method determines if Bean Validation is present.
@@ -123,6 +126,41 @@ public final class ExternalSpecifications
             log.info("MyFaces Unified EL support " + (unifiedELAvailable ? "enabled" : "disabled"));
         }
         return unifiedELAvailable;
+    }
+    
+    public static boolean isCDIAvailable(ExternalContext externalContext)
+    {
+        if (cdiAvailable == null)
+        {
+            try
+            {
+                cdiAvailable = Class.forName("javax.enterprise.inject.spi.BeanManager") != null;
+            }
+            catch (Throwable t)
+            {
+                //log.log(Level.FINE, "Error loading class (could be normal)", t);
+                cdiAvailable = false;
+            }
+            
+            if (cdiAvailable)
+            {
+                cdiAvailable = externalContext.getApplicationMap().containsKey(
+                    AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
+            }
+
+            log.info("MyFaces CDI support " + (cdiAvailable ? "enabled" : "disabled"));
+            
+            return cdiAvailable;
+        }
+        else
+        {
+            if (Boolean.TRUE.equals(cdiAvailable))
+            {
+                return externalContext.getApplicationMap().containsKey(
+                        AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
+            }
+            return cdiAvailable;
+        }
     }
 
     /**

@@ -16,17 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.flow.cdi;
+package org.apache.myfaces.flow.impl;
 
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.flow.FlowImpl;
+import org.apache.myfaces.spi.FacesFlowProvider;
+import org.apache.myfaces.spi.FacesFlowProviderFactory;
 
 /**
  *
@@ -37,15 +35,14 @@ public class AnnotatedFlowConfigurator
     
     public static void configureAnnotatedFlows(FacesContext facesContext)
     {
-        BeanManager beanManager = FacesFlowCDIUtils.getBeanManagerFromJNDI();
-        if (beanManager != null)
+        FacesFlowProviderFactory factory = 
+            FacesFlowProviderFactory.getFacesFlowProviderFactory(facesContext.getExternalContext());
+        FacesFlowProvider provider = factory.getFacesFlowProvider(facesContext.getExternalContext());
+        
+        Iterator<Flow> it = provider.getAnnotatedFlows(facesContext);
+        
+        if (it != null)
         {
-            FlowBuilderFactoryBean bean = FacesFlowCDIUtils.lookup(
-                beanManager, FlowBuilderFactoryBean.class);
-
-            Instance<Flow> instance = bean.getFlowDefinitions();
-            
-            Iterator<Flow> it = instance.iterator();
             if (it.hasNext())
             {
                 FacesConfigurator.enableDefaultWindowMode(facesContext);
@@ -58,14 +55,9 @@ public class AnnotatedFlowConfigurator
                 {
                     ((FlowImpl)flow).freeze();
                 }
-                
+
                 facesContext.getApplication().getFlowHandler().addFlow(facesContext, flow);
             }
-        }
-        else
-        {
-            Logger.getLogger(AnnotatedFlowConfigurator.class.getName()).log(Level.INFO,
-                "CDI BeanManager not found");
         }
     }
 }

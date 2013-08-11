@@ -36,6 +36,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.myfaces.config.ManagedBeanDestroyer;
+import org.apache.myfaces.spi.ViewScopeProvider;
 
 /**
  * Listens to
@@ -63,6 +64,8 @@ public class ManagedBeanDestroyerListener implements
     public static final String APPLICATION_MAP_KEY = "org.apache.myfaces.ManagedBeanDestroyerListener";
 
     private ManagedBeanDestroyer _destroyer = null;
+    
+    private ViewScopeProvider _viewScopeHandler = null;
 
     /**
      * Sets the ManagedBeanDestroyer instance to use.
@@ -72,6 +75,11 @@ public class ManagedBeanDestroyerListener implements
     public void setManagedBeanDestroyer(ManagedBeanDestroyer destroyer)
     {
         _destroyer = destroyer;
+    }
+    
+    public void setViewScopeHandler(ViewScopeProvider listener)
+    {
+        _viewScopeHandler = listener;
     }
 
     /* Session related methods ***********************************************/
@@ -128,6 +136,17 @@ public class ManagedBeanDestroyerListener implements
                 _destroyer.destroy(name, value);
             }
         }*/
+        
+        // If we don't propagate this event, CDI will do for us but outside JSF control
+        // so when @PreDestroy methods are called there will not be an active FacesContext.
+        // The trick here is ensure clean the affected scopes to avoid duplicates.
+        // Remember cdi session scope is different from jsf session scope, because in
+        // jsf case the beans are stored under a session attribute, so it has the problem
+        // with attributeRemoved, but on cdi a wrapper is used instead, avoiding the problem.
+        if (_viewScopeHandler != null)
+        {
+            _viewScopeHandler.onSessionDestroyed();
+        }
     }
     
     /* Context related methods ***********************************************/

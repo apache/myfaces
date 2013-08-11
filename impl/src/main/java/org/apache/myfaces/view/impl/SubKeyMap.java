@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.flow.cdi;
+package org.apache.myfaces.view.impl;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;

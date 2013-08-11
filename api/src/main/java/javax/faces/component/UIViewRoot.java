@@ -86,6 +86,27 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private static final PhaseProcessor UPDATE_MODEL_PROCESSOR = new UpdateModelPhaseProcessor();
 
     /**
+     * Class that is used to create the view scope map. This strategy
+     * allows change the implementation of view scope map to use cdi or
+     * whatever without change UIViewRoot implementation.
+     */
+    private static final Class<?> VIEW_SCOPE_PROXY_MAP_CLASS;
+
+    static
+    {
+        Class<?> viewMapClass = null;
+        try
+        {
+            viewMapClass = _ClassUtils.classForName(
+                "org.apache.myfaces.view.ViewScopeProxyMap");
+        }
+        catch (Exception e)
+        {
+            // no op
+        }
+        VIEW_SCOPE_PROXY_MAP_CLASS = viewMapClass;
+    }
+    /**
      * The counter which will ensure a unique component id for every component instance in the tree that doesn't have an
      * id attribute set.
      */
@@ -743,9 +764,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         if (_viewScope == null && create)
         {
-            _viewScope = new ViewScope();
             FacesContext facesContext = getFacesContext();
-            facesContext.getApplication().publishEvent(facesContext, PostConstructViewMapEvent.class, this);
+            if (VIEW_SCOPE_PROXY_MAP_CLASS != null)
+            {
+                _viewScope = (Map<String, Object>) 
+                    _ClassUtils.newInstance(VIEW_SCOPE_PROXY_MAP_CLASS);
+                facesContext.getApplication().publishEvent(facesContext, PostConstructViewMapEvent.class, this);
+            }
+            else
+            {
+                //Default to map for testing purposes
+                _viewScope = new ViewScope();
+                facesContext.getApplication().publishEvent(facesContext, PostConstructViewMapEvent.class, this);
+            }
         }
 
         return _viewScope;
@@ -1666,6 +1697,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     // we cannot make this class a inner class, because the 
     // enclosing class (UIViewRoot) would also have to be serialized.
+    /**
+     * @deprecated replaced by org.apache.myfaces.view.ViewScopeProxyMap
+     */
+    @Deprecated
     private static class ViewScope extends HashMap<String, Object>
     {
         

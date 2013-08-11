@@ -16,24 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.flow.cdi;
+package org.apache.myfaces.cdi.util;
 
 import java.lang.reflect.Type;
 import java.util.Iterator;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.context.ExternalContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
- * Adapted from org.activiti.cdi.impl.util.ProgrammaticBeanLookup, licensed
- * under ASL 2.0
- *
+ * 
  * @author Leonardo Uribe
  */
-public class FacesFlowCDIUtils
+public class CDIUtils
 {
+    public static BeanManager getBeanManager(ExternalContext externalContext)
+    {
+        return (BeanManager) externalContext.getApplicationMap().get(
+            AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
+    }
 
     public static BeanManager getBeanManagerFromJNDI()
     {
@@ -89,7 +94,6 @@ public class FacesFlowCDIUtils
         }
         Bean bean = iter.next();
         CreationalContext ctx = bm.createCreationalContext(bean);
-        // select one beantype randomly. A bean has a non-empty set of beantypes.
         Type type = (Type) bean.getTypes().iterator().next();
         return bm.getReference(bean, type, ctx);
     }

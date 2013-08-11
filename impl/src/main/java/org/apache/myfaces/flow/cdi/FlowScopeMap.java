@@ -18,13 +18,12 @@
  */
 package org.apache.myfaces.flow.cdi;
 
+import org.apache.myfaces.cdi.util.CDIUtils;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowHandler;
+import javax.enterprise.inject.spi.BeanManager;
+import org.apache.myfaces.cdi.util.BeanProvider;
 
 /**
  * 
@@ -33,137 +32,185 @@ import javax.faces.flow.FlowHandler;
  */
 public class FlowScopeMap implements Map
 {
+    private BeanManager _beanManager;
+    private String _currentClientWindowFlowId;
+    private FlowScopeBeanHolder _flowScopeBeanHolder;
+    private boolean _initOptional = false;
     
-    public FlowScopeMap()
+    public FlowScopeMap(BeanManager beanManager, String currentFlowMapKey)
     {
+        this._beanManager = beanManager;
+        this._currentClientWindowFlowId = currentFlowMapKey;
     }
-
-    public int size()
+    
+    private FlowScopeBeanHolder getFlowScopeBeanHolder(boolean create)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        int size = 0;
-        List<String> activeFlowMapKeys = FlowScopedContextImpl.getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        if (_flowScopeBeanHolder == null)
         {
-            Map flowScopeMap = FlowScopedContextImpl.getFlowScopedMap(facesContext, flowMapKey);
-            if (flowScopeMap.size() >= 0)
+            if (create)
             {
-                size += flowScopeMap.size();
+                _flowScopeBeanHolder = CDIUtils.lookup(_beanManager,
+                    FlowScopeBeanHolder.class);
+            }
+            else if (!_initOptional)
+            {
+                _flowScopeBeanHolder = BeanProvider.getContextualReference(
+                    _beanManager, FlowScopeBeanHolder.class, true);
+                _initOptional = true;
             }
         }
-        return size;
+        return _flowScopeBeanHolder;
     }
     
-    private Map getCurrentMap()
+    public int size()
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
-        Flow flow = flowHandler.getCurrentFlow(facesContext);
-        String flowMapKey = flow.getClientWindowFlowId(
-            facesContext.getExternalContext().getClientWindow());
-        return FlowScopedContextImpl.getFlowScopedMap(facesContext, flowMapKey);
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
+        if (flowScopeBeanHolder == null)
+        {
+            return 0;
+        }
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
+            _currentClientWindowFlowId, false);
+        if (map == null)
+        {
+            return 0;
+        }
+        return map.size();
     }
-
+    
     public boolean isEmpty()
     {
-        return size() == 0;
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
+        if (flowScopeBeanHolder == null)
+        {
+            return true;
+        }
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
+            _currentClientWindowFlowId, false);
+        if (map == null)
+        {
+            return true;
+        }
+        return map.isEmpty();
     }
 
     public boolean containsKey(Object key)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        List<String> activeFlowMapKeys = FlowScopedContextImpl.getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
+        if (flowScopeBeanHolder == null)
         {
-            Map flowScopeMap = FlowScopedContextImpl.getFlowScopedMap(facesContext, flowMapKey);
-            if (flowScopeMap.containsKey(key))
-            {
-                return true;
-            }
+            return false;
         }
-        return false;
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
+            _currentClientWindowFlowId, false);
+        if (map == null)
+        {
+            return false;
+        }
+        return map.containsKey(key);
     }
 
     public boolean containsValue(Object value)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        List<String> activeFlowMapKeys = FlowScopedContextImpl.getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
+        if (flowScopeBeanHolder == null)
         {
-            Map flowScopeMap = FlowScopedContextImpl.getFlowScopedMap(facesContext, flowMapKey);
-            if (flowScopeMap.containsValue(value))
-            {
-                return true;
-            }
+            return false;
         }
-        return false;
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
+            _currentClientWindowFlowId, false);
+        if (map == null)
+        {
+            return false;
+        }
+        return map.containsValue(value);
     }
 
     public Object get(Object key)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        List<String> activeFlowMapKeys = FlowScopedContextImpl.getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
+        if (flowScopeBeanHolder == null)
         {
-            Map flowScopeMap = FlowScopedContextImpl.getFlowScopedMap(facesContext, flowMapKey);
-            
-            if (flowScopeMap.containsKey(key))
-            {
-                return flowScopeMap.get(key);
-            }
+            return null;
         }
-        return null;
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
+            _currentClientWindowFlowId, false);
+        if (map == null)
+        {
+            return null;
+        }
+        return map.get(key);
     }
 
     public Object put(Object key, Object value)
     {
-        return getCurrentMap().put(key, value);
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
+            _beanManager, _currentClientWindowFlowId, true);
+        return map.put(key, value);
     }
 
     public Object remove(Object key)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        List<String> activeFlowMapKeys = FlowScopedContextImpl.getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
+        if (flowScopeBeanHolder == null)
         {
-            Map flowScopeMap = FlowScopedContextImpl.getFlowScopedMap(facesContext, flowMapKey);
-            Object removedValue = flowScopeMap.remove(key);
-            if (removedValue != null)
-            {
-                return removedValue;
-            }
+            return null;
         }
-        return null;
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
+            _currentClientWindowFlowId, false);
+        if (map == null)
+        {
+            return null;
+        }
+        return map.remove(key);
     }
 
     public void putAll(Map m)
     {
-        getCurrentMap().putAll(m);
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
+            _beanManager, _currentClientWindowFlowId, true);
+        map.putAll(m);
     }
 
     public void clear()
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        List<String> activeFlowMapKeys = FlowScopedContextImpl.getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(false);
+        if (flowScopeBeanHolder == null)
         {
-            Map flowScopeMap = FlowScopedContextImpl.getFlowScopedMap(facesContext, flowMapKey);
-            flowScopeMap.clear();
+            return;
         }
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(_beanManager,
+            _currentClientWindowFlowId, false);
+        if (map == null)
+        {
+            return;
+        }
+        map.clear();
     }
 
     public Set keySet()
     {
-        return getCurrentMap().keySet();
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
+            _beanManager, _currentClientWindowFlowId, true);
+        return map.keySet();
     }
 
     public Collection values()
     {
-        return getCurrentMap().values();
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
+            _beanManager, _currentClientWindowFlowId, true);
+        return map.values();
     }
 
     public Set entrySet()
     {
-        return getCurrentMap().entrySet();
+        FlowScopeBeanHolder flowScopeBeanHolder = getFlowScopeBeanHolder(true);
+        Map<Object, Object> map = flowScopeBeanHolder.getFlowScopeMap(
+            _beanManager, _currentClientWindowFlowId, true);
+        return map.entrySet();
     }
 }

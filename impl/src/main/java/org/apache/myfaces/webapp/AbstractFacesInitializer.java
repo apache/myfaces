@@ -53,7 +53,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.spi.ViewScopeProvider;
+import org.apache.myfaces.spi.ViewScopeProviderFactory;
 
 /**
  * Performs common initialization tasks.
@@ -94,6 +98,11 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
     public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
     public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS_DEFAULT ="auto";
+    
+    public static final String CDI_BEAN_MANAGER_INSTANCE = "oam.cdi.BEAN_MANAGER_INSTANCE";
+    
+    private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
+        "javax.enterprise.inject.spi.BeanManager";
 
     /**
      * Performs all necessary initialization tasks like configuring this JSF
@@ -141,6 +150,20 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
 
             initContainerIntegration(servletContext, externalContext);
+            
+            initCDIIntegration(servletContext, externalContext);
+            
+            ViewScopeProviderFactory factory = ViewScopeProviderFactory.getViewScopeHandlerFactory(
+                externalContext);
+            
+            ViewScopeProvider viewScopeHandler = factory.getViewScopeHandler(
+                externalContext);
+            
+            ManagedBeanDestroyerListener listener = (ManagedBeanDestroyerListener)
+                externalContext.getApplicationMap().get(
+                    ManagedBeanDestroyerListener.APPLICATION_MAP_KEY);
+            
+            listener.setViewScopeHandler(viewScopeHandler);
 
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
             if (!"false".equals(useEncryption)) // the default value is true
@@ -499,4 +522,56 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     protected abstract void initContainerIntegration(
             ServletContext servletContext, ExternalContext externalContext);
 
+    /**
+     * The intention of this method is provide a point where CDI integration is done.
+     * Faces Flow and javax.faces.view.ViewScope requires CDI in order to work, so
+     * this method should set a BeanManager instance on application map under
+     * the key "oam.cdi.BEAN_MANAGER_INSTANCE". The default implementation look on
+     * ServletContext first and then use JNDI.
+     * 
+     * @param servletContext
+     * @param externalContext 
+     */
+    protected void initCDIIntegration(
+            ServletContext servletContext, ExternalContext externalContext)
+    {
+        // Lookup bean manager and put it into an application scope attribute to 
+        // access it later. Remember the trick here is do not call any CDI api 
+        // directly, so if no CDI api is on the classpath no exception will be thrown.
+        
+        // Try with servlet context
+        Object beanManager = servletContext.getAttribute(
+            CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE);
+        if (beanManager == null)
+        {
+            // Try with JNDI
+            try
+            {
+                // in an application server
+                beanManager = InitialContext.doLookup("java:comp/BeanManager");
+            }
+            catch (NamingException e)
+            {
+                // silently ignore
+            }
+
+            if (beanManager == null)
+            {
+                try
+                {
+                    // in a servlet container
+                    beanManager = InitialContext.doLookup("java:comp/env/BeanManager");
+                }
+                catch (NamingException e)
+                {
+                    // silently ignore
+                }
+            }
+        }
+        if (beanManager != null)
+        {
+            externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE, 
+                beanManager);
+        }
+    }
 }
