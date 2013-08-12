@@ -213,6 +213,7 @@ public class ViewScopeContextImpl implements Context
      * This is a static method to allow various holder objects to cleanup
      * properly in &#064;PreDestroy.
      */
+    /*
     public static void destroyAllActive(ViewScopeContextualStorage storage)
     {
         Map<String, Object> nameBeanKeyMap = storage.getNameBeanKeyMap();
@@ -243,9 +244,9 @@ public class ViewScopeContextImpl implements Context
             }
         }
         contextMap.clear();
-    }
+    }*/
     
-    public static void destroyAllActiveSessionDestroyed(ViewScopeContextualStorage storage)
+    public static void destroyAllActive(ViewScopeContextualStorage storage)
     {
         Map<String, Object> nameBeanKeyMap = storage.getNameBeanKeyMap();
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();

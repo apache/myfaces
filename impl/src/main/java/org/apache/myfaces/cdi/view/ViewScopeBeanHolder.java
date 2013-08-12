@@ -22,9 +22,10 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.PreDestroy;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -43,8 +44,26 @@ public class ViewScopeBeanHolder implements Serializable
     
     private static final Random RANDOM_GENERATOR = new Random();
     
+    private static final String VIEW_SCOPE_PREFIX = "oam.view.SCOPE";
+    
+    public static final String VIEW_SCOPE_PREFIX_KEY = VIEW_SCOPE_PREFIX+".KEY";
+    
     public ViewScopeBeanHolder()
     {
+    }
+    
+    @PostConstruct
+    public void init()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        facesContext.getExternalContext().getSessionMap().put(VIEW_SCOPE_PREFIX_KEY,
+            1);
+    }
+    
+    public static final boolean isViewScopeBeanHolderCreated(FacesContext facesContext)
+    {
+        return facesContext.getExternalContext().
+            getSessionMap().containsKey(VIEW_SCOPE_PREFIX_KEY);
     }
     
     /**
@@ -101,7 +120,7 @@ public class ViewScopeBeanHolder implements Serializable
      * but can also get invoked manually, e.g. if a user likes to get rid
      * of all it's &#064;ViewScoped beans.
      */
-    @PreDestroy
+    //@PreDestroy
     public void destroyBeans()
     {
         // we replace the old windowBeanHolder beans with a new storage Map
@@ -110,7 +129,7 @@ public class ViewScopeBeanHolder implements Serializable
 
         for (ViewScopeContextualStorage contextualStorage : oldWindowContextStorages.values())
         {
-            ViewScopeContextImpl.destroyAllActiveSessionDestroyed(contextualStorage);
+            ViewScopeContextImpl.destroyAllActive(contextualStorage);
         }
     }
     

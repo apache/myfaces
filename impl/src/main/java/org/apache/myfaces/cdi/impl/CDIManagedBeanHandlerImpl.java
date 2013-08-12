@@ -26,6 +26,7 @@ import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
+import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
 
 /**
  *
@@ -37,6 +38,8 @@ public class CDIManagedBeanHandlerImpl extends DefaultCDIViewScopeHandler
     private BeanManager beanManager;
     
     private ViewScopeBeanHolder viewScopeBeanHolder;
+    
+    private FlowScopeBeanHolder flowScopeBeanHolder;
     
     public CDIManagedBeanHandlerImpl()
     {
@@ -52,6 +55,16 @@ public class CDIManagedBeanHandlerImpl extends DefaultCDIViewScopeHandler
                 beanManager, ViewScopeBeanHolder.class, false);
         }
         return viewScopeBeanHolder;
+    }
+    
+    private FlowScopeBeanHolder getFlowScopeBeanHolder()
+    {
+        if (flowScopeBeanHolder == null)
+        {
+            flowScopeBeanHolder = BeanProvider.getContextualReference(
+                beanManager, FlowScopeBeanHolder.class, false);
+        }
+        return flowScopeBeanHolder;
     }
     
     public Map<String, Object> createViewScopeMap(FacesContext facesContext, String viewScopeId)
@@ -80,5 +93,17 @@ public class CDIManagedBeanHandlerImpl extends DefaultCDIViewScopeHandler
         // to do anything else in this location, but it is advised
         // in CDI the beans are destroyed at the end of the request,
         // not when invalidateSession() is called.
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null)
+        {
+            if (ViewScopeBeanHolder.isViewScopeBeanHolderCreated(facesContext))
+            {
+                getViewScopeBeanHolder().destroyBeans();                
+            }
+            if (FlowScopeBeanHolder.isFlowScopeBeanHolderCreated(facesContext))
+            {
+                getFlowScopeBeanHolder().destroyBeans();
+            }
+        }
     }
 }

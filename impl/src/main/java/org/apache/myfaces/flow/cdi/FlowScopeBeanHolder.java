@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.PreDestroy;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
@@ -57,11 +57,29 @@ public class FlowScopeBeanHolder implements Serializable
     private Map<String, List<String>> activeFlowMapKeys = new ConcurrentHashMap<String, List<String>>();
     
     public static final String CURRENT_FLOW_SCOPE_MAP = "oam.CURRENT_FLOW_SCOPE_MAP";
+    
+    private static final String FLOW_SCOPE_PREFIX = "oam.flow.SCOPE";
+    
+    public static final String FLOW_SCOPE_PREFIX_KEY = FLOW_SCOPE_PREFIX+".KEY";
 
     public FlowScopeBeanHolder()
     {
     }
-        
+    
+    @PostConstruct
+    public void init()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        facesContext.getExternalContext().getSessionMap().put(FLOW_SCOPE_PREFIX_KEY,
+            1);
+    }
+    
+    public static final boolean isFlowScopeBeanHolderCreated(FacesContext facesContext)
+    {
+        return facesContext.getExternalContext().
+            getSessionMap().containsKey(FLOW_SCOPE_PREFIX_KEY);
+    }
+    
     /**
      * This method will return the ContextualStorage or create a new one
      * if no one is yet assigned to the current flowClientWindowId.
@@ -157,7 +175,7 @@ public class FlowScopeBeanHolder implements Serializable
      * but can also get invoked manually, e.g. if a user likes to get rid
      * of all it's &#064;WindowScoped beans.
      */
-    @PreDestroy
+    //@PreDestroy
     public void destroyBeans()
     {
         // we replace the old windowBeanHolder beans with a new storage Map
