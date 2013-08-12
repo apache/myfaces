@@ -149,9 +149,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 }
             }
 
-            initContainerIntegration(servletContext, externalContext);
-            
             initCDIIntegration(servletContext, externalContext);
+            
+            initContainerIntegration(servletContext, externalContext);
             
             ViewScopeProviderFactory factory = ViewScopeProviderFactory.getViewScopeHandlerFactory(
                 externalContext);
