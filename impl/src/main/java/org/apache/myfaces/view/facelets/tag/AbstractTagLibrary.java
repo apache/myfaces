@@ -27,6 +27,9 @@ import java.util.Map;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
+import javax.faces.application.Resource;
+import javax.faces.application.ResourceHandler;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.BehaviorConfig;
 import javax.faces.view.facelets.BehaviorHandler;
 import javax.faces.view.facelets.ComponentConfig;
@@ -40,6 +43,8 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorConfig;
 import javax.faces.view.facelets.ValidatorHandler;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
+import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 
 /**
  * Base class for defining TagLibraries in Java
@@ -170,6 +175,11 @@ public abstract class AbstractTagLibrary implements TagLibrary
                                       Class<? extends TagHandler> handlerType)
     {
         _factories.put(name, new UserComponentHandlerFactory(componentType, rendererType, handlerType));
+    }
+    
+    protected final void addComponentFromResourceId(String name, String resourceId)
+    {
+        _factories.put(name, new UserComponentFromResourceIdHandlerFactory(resourceId));
     }
 
     /**
@@ -741,6 +751,38 @@ public abstract class AbstractTagLibrary implements TagLibrary
             catch (Exception e)
             {
                 throw new FaceletException("Error Instantiating BehaviorHandler: " + this.type.getName(), e);
+            }
+        }
+    }
+    
+    private static class UserComponentFromResourceIdHandlerFactory implements TagHandlerFactory
+    {
+        protected final String resourceId;
+        
+        public UserComponentFromResourceIdHandlerFactory(String resourceId)
+        {
+            this.resourceId = resourceId;
+        }
+
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException
+        {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
+            Resource compositeComponentResourceWrapped = resourceHandler.createResourceFromId(resourceId);
+            if (compositeComponentResourceWrapped != null)
+            {
+                Resource compositeComponentResource
+                        = new CompositeResouceWrapper(compositeComponentResourceWrapped);
+                ComponentConfig componentConfig = new ComponentConfigWrapper(cfg,
+                        "javax.faces.NamingContainer", null);
+
+                return new CompositeComponentResourceTagHandler(componentConfig,
+                                                                compositeComponentResource);
+            }
+            else
+            {
+                throw new FaceletException(
+                    "Error Instantiating Component from <resource-id> declaration: " + this.resourceId);
             }
         }
     }

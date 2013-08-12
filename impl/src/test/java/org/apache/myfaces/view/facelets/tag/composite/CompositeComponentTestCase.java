@@ -860,5 +860,32 @@ public class CompositeComponentTestCase extends FaceletTestCase
         
         Assert.assertTrue(result.contains(resource.getRequestPath()));
     }
+    
+    @Test
+    public void testComponentFromResourceId() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testComponentFromResourceId.xhtml");
+
+        UIComponent panelGroup = root.findComponent("testGroup");
+        Assert.assertNotNull(panelGroup);
+        UINamingContainer compositeComponent = (UINamingContainer) panelGroup.getChildren().get(0);
+        Assert.assertNotNull(compositeComponent);
+        UIOutput text = (UIOutput) compositeComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME).findComponent("text");
+        Assert.assertNotNull(text);
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        compositeComponent.encodeAll(facesContext);
+        sw.flush();
+        
+        HtmlRenderedAttr[] attrs = new HtmlRenderedAttr[]{
+                new HtmlRenderedAttr("value")
+        };
+            
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+    }
 
 }

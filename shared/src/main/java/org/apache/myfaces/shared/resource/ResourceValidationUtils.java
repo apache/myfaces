@@ -40,7 +40,7 @@ public class ResourceValidationUtils
         // Follow the same rules as for resourceName, but check resourceId does not
         // start with '/'
         return validateResourceName(resourceId, true) && 
-            resourceId.length() > 0 && !(resourceId.charAt(0) != '/');
+            resourceId.length() > 0 && resourceId.charAt(0) != '/';
     }
     
     public static boolean isValidViewResource(String resourceId)

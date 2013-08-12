@@ -36,5 +36,12 @@
         <tag-name>testUserTag5</tag-name>
         <source>testCompositeInsertChildren5UserTagHandler.xhtml</source>
     </tag>
+    
+    <tag>
+        <tag-name>testComponentFromResourceId</tag-name>
+        <component>
+            <resource-id>testComposite/simpleComposite.xhtml</resource-id>
+        </component>
+    </tag>
 
 </facelet-taglib>

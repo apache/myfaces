@@ -317,6 +317,13 @@ public final class TagLibraryConfig
             ParameterCheck.notNull("type", type);
             this.addTagHandler(name, type);
         }
+        
+        public void putComponentFromResourceId(String name, String resourceId)
+        {
+            ParameterCheck.notNull("name", name);
+            ParameterCheck.notNull("resourceId", resourceId);
+            this.addComponentFromResourceId(name, resourceId);
+        }
 
         public void putComponent(String name, String componentType, String rendererType)
         {
@@ -441,6 +448,8 @@ public final class TagLibraryConfig
         
         private String compositeLibraryName;
         
+        private String resourceId;
+        
         public LibraryHandler(FacesContext facesContext, URL source)
         {
             this.source = source;
@@ -514,6 +523,10 @@ public final class TagLibraryConfig
                 {
                     //Not used
                 }                
+                else if ("resource-id".equals(qName))
+                {
+                    this.resourceId = this.captureBuffer();
+                }
                 else
                 {
                     // Make sure there we've seen a namespace element
@@ -544,6 +557,10 @@ public final class TagLibraryConfig
                         {
                             impl.putComponent(this.tagName, this.componentType, this.rendererType, this.handlerClass);
                             this.handlerClass = null;
+                        }
+                        else if (this.resourceId != null)
+                        {
+                            impl.putComponentFromResourceId(this.tagName, this.resourceId);
                         }
                         else
                         {
