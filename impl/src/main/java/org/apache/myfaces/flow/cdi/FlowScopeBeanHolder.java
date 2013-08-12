@@ -74,12 +74,6 @@ public class FlowScopeBeanHolder implements Serializable
             1);
     }
     
-    public static final boolean isFlowScopeBeanHolderCreated(FacesContext facesContext)
-    {
-        return facesContext.getExternalContext().
-            getSessionMap().containsKey(FLOW_SCOPE_PREFIX_KEY);
-    }
-    
     /**
      * This method will return the ContextualStorage or create a new one
      * if no one is yet assigned to the current flowClientWindowId.

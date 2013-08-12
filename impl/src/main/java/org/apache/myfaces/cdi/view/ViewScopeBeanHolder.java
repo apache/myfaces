@@ -60,12 +60,6 @@ public class ViewScopeBeanHolder implements Serializable
             1);
     }
     
-    public static final boolean isViewScopeBeanHolderCreated(FacesContext facesContext)
-    {
-        return facesContext.getExternalContext().
-            getSessionMap().containsKey(VIEW_SCOPE_PREFIX_KEY);
-    }
-    
     /**
      * This method will return the ViewScopeContextualStorage or create a new one
      * if no one is yet assigned to the current windowId.

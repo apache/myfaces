@@ -96,14 +96,27 @@ public class CDIManagedBeanHandlerImpl extends DefaultCDIViewScopeHandler
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            if (ViewScopeBeanHolder.isViewScopeBeanHolderCreated(facesContext))
+            if (isViewScopeBeanHolderCreated(facesContext))
             {
                 getViewScopeBeanHolder().destroyBeans();                
             }
-            if (FlowScopeBeanHolder.isFlowScopeBeanHolderCreated(facesContext))
+            if (isFlowScopeBeanHolderCreated(facesContext))
             {
                 getFlowScopeBeanHolder().destroyBeans();
             }
         }
+    }
+    
+    private boolean isViewScopeBeanHolderCreated(FacesContext facesContext)
+    {
+        return facesContext.getExternalContext().
+            getSessionMap().containsKey(ViewScopeBeanHolder.VIEW_SCOPE_PREFIX_KEY);
+    }
+    
+    
+    private boolean isFlowScopeBeanHolderCreated(FacesContext facesContext)
+    {
+        return facesContext.getExternalContext().
+            getSessionMap().containsKey(FlowScopeBeanHolder.FLOW_SCOPE_PREFIX_KEY);
     }
 }
