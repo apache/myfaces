@@ -19,10 +19,8 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.component.UINamingContainer;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -56,6 +54,9 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
     public static final String STANDARD_STATE_SAVING_PARAM = "javax.faces.ViewState";
     
+    private static final String VIEW_STATE_COUNTER = "oam.partial.VIEW_STATE_COUNTER";
+    private static final String CLIENT_WINDOW_COUNTER = "oam.partial.CLIENT_WINDOW_COUNTER";
+
     /**
      * Define if the state caching code should be handled by the ResponseStateManager or by the StateManager used.
      * <p>
@@ -73,8 +74,6 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     private Boolean _handleStateCachingMechanics;
     
     private StateCacheFactory _stateCacheFactory;
-    
-    private AtomicLong _counter = new AtomicLong();
     
     public HtmlResponseStateManager()
     {
@@ -153,16 +152,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         {
             responseWriter.startElement(HTML.INPUT_ELEM, null);
             responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-            StringBuilder sb = new StringBuilder();
-            char sepChar = UINamingContainer.getSeparatorChar(facesContext);
-            sb.append(facesContext.getViewRoot().getContainerClientId(facesContext));
-            sb.append(sepChar);
-            sb.append(ResponseStateManager.CLIENT_WINDOW_PARAM);
-            sb.append(sepChar);
-            // A counter is enough, because only uniqueness of UIViewRoot 
-            // per page is needed
-            sb.append(_counter.incrementAndGet());
-            responseWriter.writeAttribute(HTML.ID_ATTR, sb.toString(), null);
+            responseWriter.writeAttribute(HTML.ID_ATTR, generateUpdateClientWindowId(facesContext), null);
             responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.CLIENT_WINDOW_PARAM, null);
             responseWriter.writeAttribute(HTML.VALUE_ATTR, clientWindow.getId(), null);
             responseWriter.endElement(HTML.INPUT_ELEM);
@@ -373,6 +363,62 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     protected StateCache getStateCache(FacesContext facesContext)
     {
         return _stateCacheFactory.getStateCache(facesContext);
+    }
+
+    public static String generateUpdateClientWindowId(FacesContext facesContext)
+    {
+        // JSF 2.2 section 2.2.6.1 Partial State Rendering
+        // According to the javascript doc of jsf.ajax.response,
+        //
+        // The new syntax looks like this:
+        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>javax.faces.ClientWindow<SEP><UNIQUE_PER_VIEW_NUMBER>">
+        //    <![CDATA[...]]>
+        // </update>
+        //
+        // UNIQUE_PER_VIEW_NUMBER aim for portlet case. In that case it is possible to have
+        // multiple sections for update. In servlet case there is only one update section per
+        // ajax request.
+        
+        String id;
+        char separator = facesContext.getNamingContainerSeparatorChar();
+        Integer count = (Integer) facesContext.getAttributes().get(CLIENT_WINDOW_COUNTER);
+        if (count == null)
+        {
+            count = Integer.valueOf(0);
+        }
+        count += 1;
+        id = facesContext.getViewRoot().getContainerClientId(facesContext) + 
+            separator + ResponseStateManager.CLIENT_WINDOW_PARAM + separator + count;
+        facesContext.getAttributes().put(CLIENT_WINDOW_COUNTER, count);
+        return id;
+    }
+    
+    public static String generateUpdateViewStateId(FacesContext facesContext)
+    {
+        // JSF 2.2 section 2.2.6.1 Partial State Rendering
+        // According to the javascript doc of jsf.ajax.response,
+        //
+        // The new syntax looks like this:
+        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>javax.faces.ViewState<SEP><UNIQUE_PER_VIEW_NUMBER>">
+        //    <![CDATA[...]]>
+        // </update>
+        //
+        // UNIQUE_PER_VIEW_NUMBER aim for portlet case. In that case it is possible to have
+        // multiple sections for update. In servlet case there is only one update section per
+        // ajax request.
+        
+        String id;
+        char separator = facesContext.getNamingContainerSeparatorChar();
+        Integer count = (Integer) facesContext.getAttributes().get(VIEW_STATE_COUNTER);
+        if (count == null)
+        {
+            count = Integer.valueOf(0);
+        }
+        count += 1;
+        id = facesContext.getViewRoot().getContainerClientId(facesContext) + 
+            separator + ResponseStateManager.VIEW_STATE_PARAM + separator + count;
+        facesContext.getAttributes().put(VIEW_STATE_COUNTER, count);
+        return id;
     }
 
 }

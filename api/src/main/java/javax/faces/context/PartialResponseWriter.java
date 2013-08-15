@@ -143,7 +143,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     @Override
     public void startDocument() throws IOException
     {
-        _wrapped.write ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        // JSF 2.2 section 2.2.6.1 Render Response Partial Processing
+        // use writePreamble(...)
+        //_wrapped.write ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         
         _wrapped.startElement ("partial-response", null);
         

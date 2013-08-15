@@ -45,12 +45,14 @@ import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
+import javax.faces.lifecycle.ClientWindow;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
+import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
@@ -462,9 +464,17 @@ public class PartialViewContextImpl extends PartialViewContext
 
         try
         {
+            String currentEncoding = writer.getCharacterEncoding();
+            writer.writePreamble("<?xml version=\"1.0\" encoding=\""+
+                (currentEncoding == null ? "UTF-8" : currentEncoding) +"\"?>");
             writer.startDocument();
             inDocument = true;
             _facesContext.setResponseWriter(writer);
+            
+            if (isResetValues())
+            {
+                viewRoot.resetValues(_facesContext, getRenderIds());
+            }
 
             if (pvc.isRenderAll())
             {
@@ -570,8 +580,19 @@ public class PartialViewContextImpl extends PartialViewContext
             String viewState = _facesContext.getApplication().getStateManager().getViewState(_facesContext);
             if (viewState != null)
             {
-                writer.startUpdate(PartialResponseWriter.VIEW_STATE_MARKER);
+                writer.startUpdate(HtmlResponseStateManager.generateUpdateViewStateId(
+                    _facesContext));
                 writer.write(viewState);
+                writer.endUpdate();
+            }
+            
+            
+            ClientWindow cw = _facesContext.getExternalContext().getClientWindow();
+            if (cw != null)
+            {
+                writer.startUpdate(HtmlResponseStateManager.generateUpdateClientWindowId(
+                    _facesContext));
+                writer.write(cw.getId());
                 writer.endUpdate();
             }
         }

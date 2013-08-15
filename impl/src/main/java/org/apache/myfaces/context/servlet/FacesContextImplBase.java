@@ -30,6 +30,7 @@ import javax.el.ELContextListener;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExternalContext;
@@ -69,6 +70,7 @@ public abstract class FacesContextImplBase extends FacesContext
     private ApplicationFactory _applicationFactory = null;
     
     private List<String> _resourceLibraryContracts;
+    private Character _separatorChar;
 
     /**
      * Base constructor.
@@ -124,6 +126,7 @@ public abstract class FacesContextImplBase extends FacesContext
         _exceptionHandler = null;
         _cachedRenderKit = null;
         _cachedRenderKitId = null;
+        _separatorChar = null;
         
         // Spec JSF 2 section getAttributes when release is called the attributes map
         // must!!! be cleared! (probably to trigger some clearance methods on possible
@@ -346,6 +349,16 @@ public abstract class FacesContextImplBase extends FacesContext
         {
             _resourceLibraryContracts = new ArrayList<String>(contracts);
         }
+    }
+
+    @Override
+    public char getNamingContainerSeparatorChar()
+    {
+        if (_separatorChar == null)
+        {
+            _separatorChar = UINamingContainer.getSeparatorChar(this);
+        }
+        return _separatorChar;
     }
     
     /**
