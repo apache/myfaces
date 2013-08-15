@@ -19,10 +19,12 @@
 package javax.faces.component;
 
 import java.io.IOException;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.application.StateManager;
@@ -626,6 +628,79 @@ public class UIDataTest extends AbstractJsfTestCase
             assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
         
+    }
+    
+    public void testCollectionDataModel() throws Exception
+    {
+        SimpleCollection<RowData> model = new SimpleCollection<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text1","style2"));
+        model.add(new RowData("text1","style3"));
+        model.add(new RowData("text1","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        UIColumn column = new UIColumn();
+        UIOutput text = new UIOutput();
+        
+        //This is only required if markInitiaState fix is not used 
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        column.setId(root.createUniqueId());
+        text.setId(root.createUniqueId());
+        
+        table.setVar("row");
+        table.setRowStatePreserved(true);
+        table.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{list}", Collection.class));
+        
+        text.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{row.text}",String.class));
+        
+        root.getChildren().add(table);
+        table.getChildren().add(column);
+        column.getChildren().add(text);
+        
+        //Check the value expressions are working and change the component state
+        int i = 0;
+        for (Iterator<RowData> it = model.iterator(); it.hasNext();)
+        {
+            RowData rowData = it.next(); 
+            table.setRowIndex(i);
+            assertEquals(rowData.getText(), text.getValue());
+            i++;
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+    }
+
+    
+    private final class SimpleCollection<T> extends AbstractCollection<T>
+    {
+        private List<T> delegate = new ArrayList();
+
+        public boolean add(T e)
+        {
+            return delegate.add(e);
+        }
+            
+        @Override
+        public Iterator<T> iterator()
+        {
+            return delegate.iterator();
+        }
+
+        @Override
+        public int size()
+        {
+            return delegate.size();
+        }
     }
 
     private final class CountingVisitCallback implements VisitCallback {
