@@ -302,7 +302,33 @@ public final class CompositeComponentELResolver extends ELResolver
 
         public boolean containsKey(Object key)
         {
-            return _originalMap.containsKey(key);
+            boolean value = _originalMap.containsKey(key);
+            if (value)
+            {
+                return value;
+            }
+            else
+            {
+                if (_ccBeanInfo == null)
+                {
+                    for (PropertyDescriptor attribute : _propertyDescriptors)
+                    {
+                        if (attribute.getName().equals(key))
+                        {
+                            return attribute.getValue("default") != null;
+                        }
+                    }
+                }
+                else
+                {
+                    PropertyDescriptor attribute = _ccBeanInfo.getPropertyDescriptorsMap().get(key);
+                    if (attribute != null)
+                    {
+                        return attribute.getValue("default") != null;
+                    }
+                }
+            }
+            return false;
         }
 
         public boolean containsValue(Object value)
