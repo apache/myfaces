@@ -43,4 +43,16 @@ public abstract class ComponentSystemEvent extends SystemEvent
             super.isAppropriateListener(listener);
     }
 
+    @Override
+    public void processListener(FacesListener listener)
+    {
+        if (listener instanceof ComponentSystemEventListener)
+        {
+            ((ComponentSystemEventListener)listener).processEvent(this);
+        }
+        else
+        {
+            super.processListener(listener);
+        }
+    }
 }
