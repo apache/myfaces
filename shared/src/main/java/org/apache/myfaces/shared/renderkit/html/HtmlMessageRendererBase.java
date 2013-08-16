@@ -212,9 +212,23 @@ public abstract class HtmlMessageRendererBase
         String title = getTitle(message);
         boolean tooltip = isTooltip(message);
 
+        boolean showSummary = isShowSummary(message) && (summary != null);
+        boolean showDetail = isShowDetail(message) && (detail != null);
+        
         if (title == null && tooltip)
         {
-            title = summary;
+            if (showDetail)
+            {
+                title = detail;
+            }
+            else if (detail != null)
+            {
+                title = detail;
+            }
+            else
+            {
+                title = summary;
+            }
         }
 
         ResponseWriter writer = facesContext.getResponseWriter();
@@ -292,10 +306,6 @@ public abstract class HtmlMessageRendererBase
             span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(
                     writer, message, HTML.SPAN_ELEM, HTML.STYLE_CLASS_ATTR, styleClass, span);
         }
-
-
-        boolean showSummary = isShowSummary(message) && (summary != null);
-        boolean showDetail = isShowDetail(message) && (detail != null);
 
         if (showSummary && !(title == null && tooltip))
         {
