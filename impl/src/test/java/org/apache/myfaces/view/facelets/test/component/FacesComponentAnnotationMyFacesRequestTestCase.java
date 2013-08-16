@@ -76,4 +76,22 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
         
         tearDownRequest();
     }
+    
+    @Test
+    public void testUIPanel3() throws Exception
+    {
+        setupRequest("/testMyUIPanel3.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("panel3");
+        Assert.assertNotNull(comp);
+        Assert.assertTrue(comp instanceof MyUIPanel3);
+
+        // Check component type
+        MyUIPanel3 comp2 = (MyUIPanel3) 
+            facesContext.getApplication().createComponent("myUIPanel3");
+        Assert.assertNotNull(comp2);
+        
+        tearDownRequest();
+    }
 }

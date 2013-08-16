@@ -119,13 +119,19 @@ public class AnnotationConfigurator
                         log.finest("addComponent(" + comp.value() + ","
                                 + clazz.getName() + ")");
                     }
-
-                    facesConfig.addComponent(comp.value(), clazz.getName());
+                    String value = comp.value();
+                    if ( value == null ||
+                        (value != null && value.length() <= 0))
+                    {
+                        String simpleName = clazz.getSimpleName();
+                        value = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
+                    }
+                    facesConfig.addComponent(value, clazz.getName());
                     
                     if (comp.createTag())
                     {
-                        facesConfig.addComponentTagDeclaration(comp.value(), 
-                                new ComponentTagDeclarationImpl(comp.value(), 
+                        facesConfig.addComponentTagDeclaration(value, 
+                                new ComponentTagDeclarationImpl(value, 
                                     comp.namespace(), comp.tagName()));
                     }
                 }
@@ -188,7 +194,14 @@ public class AnnotationConfigurator
                         log.finest("addValidator(" + val.value() + "," + clazz.getName()
                                 + ")");
                     }
-                    facesConfig.addValidator(val.value(), clazz.getName());
+                    String value = val.value();
+                    if ( value == null ||
+                        (value != null && value.length() <= 0))
+                    {
+                        String simpleName = clazz.getSimpleName();
+                        value = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
+                    }
+                    facesConfig.addValidator(value, clazz.getName());
                     if (val.isDefault())
                     {
                         Application app = null;
@@ -200,7 +213,7 @@ public class AnnotationConfigurator
                         {
                             app = (Application) facesConfig.getApplications().get(0);
                         }
-                        app.addDefaultValidatorId(val.value());
+                        app.addDefaultValidatorId(value);
                     }
                 }
             }
