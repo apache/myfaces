@@ -178,6 +178,8 @@ public class FlowHandlerImpl extends FlowHandler
     public void transition(FacesContext context, Flow sourceFlow, Flow targetFlow, 
         FlowCallNode outboundCallNode, String toViewId)
     {
+        checkNull(context, "context");
+        checkNull(toViewId, "toViewId");
         ClientWindow clientWindow = context.getExternalContext().getClientWindow();
         boolean outboundCallNodeProcessed = false;
         if (clientWindow == null)
