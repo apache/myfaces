@@ -511,6 +511,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
         // add auto wiring for attributes
         m.addRule(ComponentRule.INSTANCE);
+        
+        // add special rule for passthrough attributes
+        m.addRule(PassthroughRuleImpl.INSTANCE);
 
         // if it's an ActionSource
         if (ActionSource.class.isAssignableFrom(type))

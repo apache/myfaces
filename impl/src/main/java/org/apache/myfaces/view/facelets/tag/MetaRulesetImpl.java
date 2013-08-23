@@ -37,6 +37,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.view.facelets.PassthroughRule;
+import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
 
 /**
  * 
@@ -101,7 +103,11 @@ public final class MetaRulesetImpl extends MetaRuleset
         return metadata;
     }
 
+    private final static TagAttribute[] EMPTY = new TagAttribute[0];
+    
     private final Map<String, TagAttribute> _attributes;
+    
+    private final TagAttribute[] _passthroughAttributes;
 
     private final List<Metadata> _mappers;
 
@@ -110,6 +116,8 @@ public final class MetaRulesetImpl extends MetaRuleset
     private final Tag _tag;
 
     private final Class<?> _type;
+    
+    private final List<MetaRule> _passthroughRules;
 
     public MetaRulesetImpl(Tag tag, Class<?> type)
     {
@@ -125,11 +133,48 @@ public final class MetaRulesetImpl extends MetaRuleset
         // Usually ComponentTagHandlerDelegate has 5 rules at max
         // and CompositeComponentResourceTagHandler 6, so 8 is a good number
         _rules = new ArrayList<MetaRule>(8); 
+        _passthroughRules = new ArrayList<MetaRule>(2);
 
-        // setup attributes
-        for (TagAttribute attribute : allAttributes)
+        // Passthrough attributes are different from normal attributes, because they
+        // are just rendered into the markup without additional processing from the
+        // renderer. Here it starts attribute processing, so this is the best place 
+        // to find the passthrough attributes.
+        TagAttribute[] passthroughAttribute = _tag.getAttributes().getAll(
+            PassThroughLibrary.NAMESPACE);
+        TagAttribute[] passthroughAttributeAlias = _tag.getAttributes().getAll(
+            PassThroughLibrary.ALIAS_NAMESPACE);
+        
+        if (passthroughAttribute.length > 0 ||
+            passthroughAttributeAlias.length > 0)
         {
-            _attributes.put(attribute.getLocalName(), attribute);
+            _passthroughAttributes = new TagAttribute[passthroughAttribute.length+
+                passthroughAttributeAlias.length];
+            int i = 0;
+            for (TagAttribute attribute : allAttributes)
+            {
+                // The fastest check is check if the length is > 0, because
+                // most attributes usually has no namespace attached.
+                if (attribute.getNamespace().length() > 0 &&
+                    (PassThroughLibrary.NAMESPACE.equals(attribute.getNamespace()) ||
+                        PassThroughLibrary.ALIAS_NAMESPACE.equals(attribute.getNamespace())))
+                {
+                    _passthroughAttributes[i] = attribute;
+                    i++;
+                }
+                else
+                {
+                    _attributes.put(attribute.getLocalName(), attribute);
+                }
+            }
+        }
+        else
+        {
+            _passthroughAttributes = EMPTY;
+            // setup attributes
+            for (TagAttribute attribute : allAttributes)
+            {
+                _attributes.put(attribute.getLocalName(), attribute);
+            }
         }
 
         // add default rules
@@ -152,7 +197,14 @@ public final class MetaRulesetImpl extends MetaRuleset
     {
         ParameterCheck.notNull("rule", rule);
 
-        _rules.add(rule);
+        if (rule instanceof PassthroughRule)
+        {
+            _passthroughRules.add(rule);
+        }
+        else
+        {
+            _rules.add(rule);
+        }
 
         return this;
     }
@@ -173,11 +225,13 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     public Metadata finish()
     {
+        MetadataTarget target = null;
+        
         assert !_rules.isEmpty();
         
         if (!_attributes.isEmpty())
         {
-            MetadataTarget target = this._getMetadataTarget();
+            target = this._getMetadataTarget();
             int ruleEnd = _rules.size() - 1;
 
             // now iterate over attributes
@@ -200,6 +254,46 @@ public final class MetaRulesetImpl extends MetaRuleset
                     if (log.isLoggable(Level.SEVERE))
                     {
                         log.severe(entry.getValue() + " Unhandled by MetaTagHandler for type " + _type.getName());
+                    }
+                }
+                else
+                {
+                    _mappers.add(data);
+                }
+            }
+        }
+        
+        if (_passthroughAttributes.length > 0 &&
+            _passthroughRules.size() > 0)
+        {
+            if (target == null)
+            {
+                target = this._getMetadataTarget();
+            }
+            int ruleEnd = _passthroughRules.size() - 1;
+
+            // now iterate over attributes
+            for (TagAttribute passthroughAttribute : _passthroughAttributes)
+            {
+                Metadata data = null;
+
+                int i = ruleEnd;
+
+                // First loop is always safe
+                do
+                {
+                    MetaRule rule = _passthroughRules.get(i);
+                    data = rule.applyRule(passthroughAttribute.getLocalName(),
+                        passthroughAttribute, target);
+                    i--;
+                } while (data == null && i >= 0);
+
+                if (data == null)
+                {
+                    if (log.isLoggable(Level.SEVERE))
+                    {
+                        log.severe(passthroughAttribute.getLocalName() + 
+                            " Unhandled by MetaTagHandler for type " + _type.getName());
                     }
                 }
                 else
