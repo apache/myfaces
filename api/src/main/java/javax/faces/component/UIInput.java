@@ -387,6 +387,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     public void updateModel(FacesContext context)
     {
+        if (context == null)
+        {
+            throw new NullPointerException();
+        }
         if (!isValid())
         {
             return;

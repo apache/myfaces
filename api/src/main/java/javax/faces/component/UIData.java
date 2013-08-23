@@ -1571,6 +1571,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void queueEvent(FacesEvent event)
     {
+        if (event == null)
+        {
+            throw new NullPointerException("event");
+        }
         super.queueEvent(new FacesEventWrapper(event, getRowIndex(), this));
     }
 

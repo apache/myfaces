@@ -262,12 +262,16 @@ public class ViewHandlerImpl extends ViewHandler
     @Override
     public String getActionURL(FacesContext context, String viewId)
     {
+        checkNull(context, "facesContext");
+        checkNull(viewId, "viewId");
         return getViewHandlerSupport(context).calculateActionURL(context, viewId);
     }
 
     @Override
     public String getResourceURL(FacesContext facesContext, String path)
     {
+        checkNull(facesContext, "facesContext");
+        checkNull(path, "path");
         if (path.length() > 0 && path.charAt(0) == '/')
         {
             return facesContext.getExternalContext().getRequestContextPath() + path;

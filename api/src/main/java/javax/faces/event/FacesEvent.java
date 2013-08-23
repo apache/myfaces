@@ -65,6 +65,10 @@ public abstract class FacesEvent extends EventObject
 
     public void setPhaseId(PhaseId phaseId)
     {
+        if (phaseId == null)
+        {
+            throw new IllegalArgumentException("phaseId");
+        }
         _phaseId = phaseId;
     }
 }
