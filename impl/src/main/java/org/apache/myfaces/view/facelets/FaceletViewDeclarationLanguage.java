@@ -1887,6 +1887,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     @Override
     public ViewMetadata getViewMetadata(FacesContext context, String viewId)
     {
+        checkNull(context, "facesContext");
         checkNull(viewId, "viewId");
         return new FaceletViewMetadata(viewId);
     }
