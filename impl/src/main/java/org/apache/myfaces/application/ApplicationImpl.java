@@ -839,7 +839,7 @@ public class ApplicationImpl extends Application
                 }
                 catch (IllegalArgumentException e)
                 {
-                    log.log(Level.SEVERE, "Couldn't discover the current project stage", e);
+                    log.log(Level.INFO, "Couldn't discover the current project stage: "+stageName);
                 }
             }
             else
