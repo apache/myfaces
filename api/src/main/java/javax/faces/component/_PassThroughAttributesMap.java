@@ -57,10 +57,6 @@ class _PassThroughAttributesMap implements Map<String, Object>, Serializable
         return attributes == null ? Collections.EMPTY_MAP : attributes;
     }
     
-    /**
-     * TODO: Document why this method is necessary, and why it doesn't try to
-     * compare the _component field.
-     */
     @Override
     public boolean equals(Object obj)
     {
@@ -100,12 +96,14 @@ class _PassThroughAttributesMap implements Map<String, Object>, Serializable
 
     public Object put(String key, Object value)
     {
-        return getUnderlyingMap().put(key, value);
+        return _component.getStateHelper().put(
+            UIComponentBase.PropertyKeys.passThroughAttributesMap, key, value);
     }
 
     public Object remove(Object key)
     {
-        return getUnderlyingMap().remove(key);
+        return _component.getStateHelper().remove(
+            UIComponentBase.PropertyKeys.passThroughAttributesMap, key);
     }
 
     /**
