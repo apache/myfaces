@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import org.apache.myfaces.cdi.util.BeanProvider;
+import javax.faces.flow.FlowScoped;
 
 /**
  *
@@ -38,6 +38,7 @@ public class FlowScopeCDIExtension implements Extension
     void beforeBeanDiscovery(
         @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
+        event.addScope(FlowScoped.class, true, true);
         // Register FlowBuilderFactoryBean as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
         AnnotatedType bean = beanManager.createAnnotatedType(FlowScopeBeanHolder.class);
@@ -52,9 +53,9 @@ public class FlowScopeCDIExtension implements Extension
     
     void initializeFlowContexts(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = BeanProvider.getContextualReference(
-            beanManager, FlowScopeBeanHolder.class, false);
+        //FlowScopeBeanHolder flowScopeBeanHolder = BeanProvider.getContextualReference(
+        //    beanManager, FlowScopeBeanHolder.class, false);
         
-        flowScopedContext.initFlowContext(flowScopeBeanHolder);
+        //flowScopedContext.initFlowContext(flowScopeBeanHolder);
     }
 }

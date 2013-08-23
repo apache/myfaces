@@ -32,6 +32,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowHandler;
 import javax.faces.flow.FlowScoped;
+import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 
@@ -62,7 +63,7 @@ public class FlowScopedContextImpl implements Context
      */
     private BeanManager beanManager;
 
-    private FlowScopeBeanHolder flowScopeBeanHolder;
+    //private FlowScopeBeanHolder flowScopeBeanHolder;
     
     public FlowScopedContextImpl(BeanManager beanManager)
     {
@@ -70,9 +71,30 @@ public class FlowScopedContextImpl implements Context
         passivatingScope = beanManager.isPassivatingScope(getScope());
     }
     
+    /*
     public void initFlowContext(FlowScopeBeanHolder flowScopeBeanHolder)
     {
         this.flowScopeBeanHolder = flowScopeBeanHolder;
+    }*/
+    
+    protected FlowScopeBeanHolder getFlowScopeBeanHolder()
+    {
+        return getFlowScopeBeanHolder(FacesContext.getCurrentInstance());
+    }
+    
+    protected FlowScopeBeanHolder getFlowScopeBeanHolder(FacesContext facesContext)
+    {
+        FlowScopeBeanHolder flowScopeBeanHolder = (FlowScopeBeanHolder) 
+            facesContext.getExternalContext().getApplicationMap().get(
+                "oam.flow.FlowScopeBeanHolder");
+        if (flowScopeBeanHolder == null)
+        {
+            flowScopeBeanHolder = BeanProvider.getContextualReference(
+                beanManager, FlowScopeBeanHolder.class, false);
+            facesContext.getExternalContext().getApplicationMap().put(
+                "oam.flow.FlowScopeBeanHolder", flowScopeBeanHolder);
+        }
+        return flowScopeBeanHolder;
     }
     
     public String getCurrentClientWindowFlowId(FacesContext facesContext)
@@ -103,7 +125,7 @@ public class FlowScopedContextImpl implements Context
             throw new ContextNotActiveException("FlowScopedContextImpl: no current active flow");
         }
 
-        return flowScopeBeanHolder.getContextualStorage(beanManager, clientWindowFlowId);
+        return getFlowScopeBeanHolder().getContextualStorage(beanManager, clientWindowFlowId);
     }
 
     public Class<? extends Annotation> getScope()
@@ -144,7 +166,7 @@ public class FlowScopedContextImpl implements Context
         checkActive(facesContext);
 
         
-        List<String> activeFlowMapKeys = flowScopeBeanHolder.getActiveFlowMapKeys(facesContext);
+        List<String> activeFlowMapKeys = getFlowScopeBeanHolder().getActiveFlowMapKeys(facesContext);
         for (String flowMapKey : activeFlowMapKeys)
         {
             ContextualStorage storage = getContextualStorage(false, flowMapKey);
@@ -183,7 +205,7 @@ public class FlowScopedContextImpl implements Context
             }
         }
 
-        List<String> activeFlowMapKeys = flowScopeBeanHolder.getActiveFlowMapKeys(facesContext);
+        List<String> activeFlowMapKeys = getFlowScopeBeanHolder().getActiveFlowMapKeys(facesContext);
         for (String flowMapKey : activeFlowMapKeys)
         {
             ContextualStorage storage = getContextualStorage(false, flowMapKey);
@@ -230,7 +252,7 @@ public class FlowScopedContextImpl implements Context
     public boolean destroy(Contextual bean)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        List<String> activeFlowMapKeys = flowScopeBeanHolder.getActiveFlowMapKeys(facesContext);
+        List<String> activeFlowMapKeys = getFlowScopeBeanHolder().getActiveFlowMapKeys(facesContext);
         for (String flowMapKey : activeFlowMapKeys)
         {
             ContextualStorage storage = getContextualStorage(false, flowMapKey);

@@ -30,6 +30,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import org.apache.myfaces.cdi.util.BeanProvider;
 
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.view.ViewScopeProxyMap;
@@ -46,7 +47,7 @@ public class ViewScopeContextImpl implements Context
     /**
      * Contains the stored WindowScoped contextual instances.
      */
-    private ViewScopeBeanHolder windowBeanHolder;
+    //private ViewScopeBeanHolder windowBeanHolder;
 
     /**
      * needed for serialisation and passivationId
@@ -59,15 +60,36 @@ public class ViewScopeContextImpl implements Context
         this.beanManager = beanManager;
     }
 
+    protected ViewScopeBeanHolder getViewScopeBeanHolder()
+    {
+        return getViewScopeBeanHolder(FacesContext.getCurrentInstance());
+    }
+    
+    protected ViewScopeBeanHolder getViewScopeBeanHolder(FacesContext facesContext)
+    {
+        ViewScopeBeanHolder viewScopeBeanHolder = (ViewScopeBeanHolder) 
+            facesContext.getExternalContext().getApplicationMap().get(
+                "oam.view.ViewScopeBeanHolder");
+        if (viewScopeBeanHolder == null)
+        {
+            viewScopeBeanHolder = BeanProvider.getContextualReference(
+                beanManager, ViewScopeBeanHolder.class, false);
+            facesContext.getExternalContext().getApplicationMap().put(
+                "oam.flow.FlowScopeBeanHolder", viewScopeBeanHolder);
+        }
+        return viewScopeBeanHolder;
+    }
+
     /**
      * We need to pass the session scoped windowbean holder and the
      * requestscoped windowIdHolder in a later phase because
      * getBeans is only allowed from AfterDeploymentValidation onwards.
      */
+    /*
     void initViewScopeContext(ViewScopeBeanHolder windowBeanHolder)
     {
         this.windowBeanHolder = windowBeanHolder;
-    }
+    }*/
 
     //@Override
     public String getCurrentViewScopeId(boolean create)
@@ -98,7 +120,7 @@ public class ViewScopeContextImpl implements Context
         }
         if (viewScopeId != null)
         {
-            return windowBeanHolder.getContextualStorage(beanManager, viewScopeId);
+            return getViewScopeBeanHolder().getContextualStorage(beanManager, viewScopeId);
         }
         return null;
     }

@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import org.apache.myfaces.cdi.util.BeanProvider;
+import javax.faces.view.ViewScoped;
 
 /**
  * Handle ViewScope related features.
@@ -39,6 +39,7 @@ public class ViewScopeContextExtension implements Extension
     void beforeBeanDiscovery(
         @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
+        event.addScope(ViewScoped.class, true, true);
         // Register ViewScopeBeanHolder as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
         AnnotatedType bean = beanManager.createAnnotatedType(ViewScopeBeanHolder.class);
@@ -58,9 +59,10 @@ public class ViewScopeContextExtension implements Extension
      */
     void initializeViewScopeContexts(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
     {
+        /*
         ViewScopeBeanHolder viewScopeBeanHolder
             = BeanProvider.getContextualReference(beanManager, ViewScopeBeanHolder.class, false);
         
-        viewScopeContext.initViewScopeContext(viewScopeBeanHolder);
+        viewScopeContext.initViewScopeContext(viewScopeBeanHolder);*/
     }
 }
