@@ -974,6 +974,11 @@ public class FacesConfigurator
                 new String[runtimeConfig.getResourceLibraryContracts().size()]);
             runtimeConfig.addContractMapping("*", contracts);
         }
+        
+        for (String resourceResolver : dispenser.getResourceResolvers())
+        {
+            runtimeConfig.addResourceResolver(resourceResolver);
+        }
     }
 
     private void removePurgedBeansFromSessionAndApplication(RuntimeConfig runtimeConfig)
@@ -1023,8 +1028,6 @@ public class FacesConfigurator
             for (Renderer element : dispenser.getRenderers(renderKitId))
             {
                 javax.faces.render.Renderer renderer;
-                Collection<ClientBehaviorRenderer> clientBehaviorRenderers
-                        = dispenser.getClientBehaviorRenderers(renderKitId);
                 
                 if (element.getRendererClass() != null)
                 {    
@@ -1055,28 +1058,32 @@ public class FacesConfigurator
                                 element.getRendererClass());
                 }
 
-                // Add in client behavior renderers.
+            }
+            
+            Collection<ClientBehaviorRenderer> clientBehaviorRenderers
+                    = dispenser.getClientBehaviorRenderers(renderKitId);
 
-                for (ClientBehaviorRenderer clientBehaviorRenderer : clientBehaviorRenderers)
+            // Add in client behavior renderers.
+
+            for (ClientBehaviorRenderer clientBehaviorRenderer : clientBehaviorRenderers)
+            {
+                try
                 {
-                    try
+                    javax.faces.render.ClientBehaviorRenderer behaviorRenderer
+                            = (javax.faces.render.ClientBehaviorRenderer)
+                            ClassUtils.newInstance(clientBehaviorRenderer.getRendererClass());
+
+                    renderKit.addClientBehaviorRenderer(clientBehaviorRenderer.getRendererType(), behaviorRenderer);
+                }
+
+                catch (Throwable e)
+                {
+                    // Ignore.
+
+                    if (log.isLoggable(Level.SEVERE))
                     {
-                        javax.faces.render.ClientBehaviorRenderer behaviorRenderer
-                                = (javax.faces.render.ClientBehaviorRenderer)
-                                ClassUtils.newInstance(clientBehaviorRenderer.getRendererClass());
-
-                        renderKit.addClientBehaviorRenderer(clientBehaviorRenderer.getRendererType(), behaviorRenderer);
-                    }
-
-                    catch (Throwable e)
-                    {
-                        // Ignore.
-
-                        if (log.isLoggable(Level.SEVERE))
-                        {
-                            log.log(Level.SEVERE, "failed to configure client behavior renderer class " +
-                                    clientBehaviorRenderer.getRendererClass(), e);
-                        }
+                        log.log(Level.SEVERE, "failed to configure client behavior renderer class " +
+                                clientBehaviorRenderer.getRendererClass(), e);
                     }
                 }
             }

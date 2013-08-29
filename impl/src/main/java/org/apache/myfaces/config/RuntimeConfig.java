@@ -108,6 +108,8 @@ public class RuntimeConfig
     
     private List<ComponentTagDeclaration> _componentTagDeclarations = 
             new ArrayList<ComponentTagDeclaration>();
+    
+    private List<String> _resourceResolvers = new ArrayList<String>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -489,5 +491,15 @@ public class RuntimeConfig
         }
         contractsList.add(contract);
     }    
+    
+    public List<String> getResourceResolvers()
+    {
+        return _resourceResolvers;
+    }
+    
+    public void addResourceResolver(String resourceResolver)
+    {
+        _resourceResolvers.add(resourceResolver);
+    }
 
 }

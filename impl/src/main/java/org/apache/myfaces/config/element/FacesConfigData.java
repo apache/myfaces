@@ -274,4 +274,9 @@ public abstract class FacesConfigData implements Serializable
     {
         return Collections.emptyList();
     }
+    
+    public Collection<String> getResourceResolvers()
+    {
+        return Collections.emptyList();
+    }
 }

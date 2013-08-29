@@ -48,6 +48,7 @@ import javax.faces.event.NamedEvent;
 import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
+import javax.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -121,6 +122,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         //bcan.add("Ljavax/faces/event/ListenerFor;");
         //bcan.add("Ljavax/faces/event/ListenersFor;");
         bcan.add("Ljavax/faces/render/FacesBehaviorRenderer;");
+        bcan.add("Ljavax/faces/view/facelets/FaceletsResourceResolver;");
 
         byteCodeAnnotationsNames = Collections.unmodifiableSet(bcan);
     }
@@ -138,6 +140,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         bcan.add(ManagedBean.class);
         bcan.add(NamedEvent.class);
         bcan.add(FacesBehaviorRenderer.class);
+        bcan.add(FaceletsResourceResolver.class);
         JSF_ANNOTATION_CLASSES = Collections.unmodifiableSet(bcan);
     }
     

@@ -62,6 +62,7 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
         = new ArrayList<FacesFlowDefinition>();
     private List <String> protectedViewsUrlPatternList
         = new ArrayList<String>();
+    private List <String> resourceResolvers = new ArrayList<String>();
     
     private String metadataComplete;
     private String version;
@@ -289,6 +290,16 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
     public void addProtectedViewUrlPattern(String urlPattern)
     {
         protectedViewsUrlPatternList.add(urlPattern);
+    }
+    
+    public List<String> getResourceResolversList()
+    {
+        return resourceResolvers;
+    }
+    
+    public void addResourceResolver(String resourceResolverClass)
+    {
+        resourceResolvers.add(resourceResolverClass);
     }
 
 }

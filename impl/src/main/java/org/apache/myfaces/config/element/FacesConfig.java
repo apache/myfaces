@@ -98,4 +98,13 @@ public abstract class FacesConfig implements Serializable
     {
         return Collections.emptyMap();
     }
+    
+    /**
+     * @since 2.2.0
+     * @return 
+     */
+    public List<String> getResourceResolversList()
+    {
+        return Collections.emptyList();
+    }
 }

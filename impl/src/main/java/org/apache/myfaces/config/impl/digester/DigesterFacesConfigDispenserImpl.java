@@ -123,6 +123,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private List<ComponentTagDeclaration> componentTagDeclarations = new ArrayList<ComponentTagDeclaration>();
     
+    private List <String> resourceResolvers = new ArrayList<String>();
+    
     /**
      * Add another unmarshalled faces config object.
      * 
@@ -276,6 +278,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         namedEvents.addAll(config.getNamedEvents());
         facesFlowDefinitions.addAll(config.getFacesFlowDefinitions());
         protectedViewUrlPatterns.addAll(config.getProtectedViewsUrlPatternList());
+        resourceResolvers.addAll(config.getResourceResolversList());
     }
 
     /**
@@ -774,4 +777,9 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         return componentTagDeclarations;
     }
 
+    @Override
+    public Collection<String> getResourceResolvers()
+    {
+        return resourceResolvers;
+    }
 }
