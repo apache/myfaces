@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.el;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 import javax.el.ELContext;
@@ -101,12 +102,14 @@ public final class PropertyResolverImpl extends PropertyResolver
             throw new PropertyNotFoundException();
         }
 
+        Class baseType = base.getClass();
         if (base instanceof Object[])
         {
             if (index < 0 || index >= ((Object[])base).length)
             {
                 throw new PropertyNotFoundException();
             }
+            setValue(base, Integer.valueOf(index), newValue);
         }
         else if (base instanceof List)
         {
@@ -114,9 +117,22 @@ public final class PropertyResolverImpl extends PropertyResolver
             {
                 throw new PropertyNotFoundException();
             }
+            setValue(base, Integer.valueOf(index), newValue);
+        }
+        else if (baseType.isArray())
+        {
+            if (index < 0 || index >= Array.getLength(base))
+            {
+                throw new PropertyNotFoundException();
+            }
+            Array.set(base, index, getFacesContext().getApplication().
+                getExpressionFactory().coerceToType(newValue, baseType.getComponentType()));
+        }
+        else
+        {
+            setValue(base, Integer.valueOf(index), newValue);
         }
 
-        setValue(base, Integer.valueOf(index), newValue);
     }
 
     @Override
