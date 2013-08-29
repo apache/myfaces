@@ -563,6 +563,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public List<UIComponent> getComponentResources(FacesContext context, String target)
     {
+        if (target == null)
+        {
+            throw new NullPointerException("target");
+        }
         // Locate the facet for the component by calling getFacet() using target as the argument
         UIComponent facet = getFacet(target);
 
@@ -876,6 +880,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                                     boolean beforePhase)
     {
         List<PhaseListener> phaseListeners = (List<PhaseListener>) getStateHelper().get(PropertyKeys.phaseListeners);
+        // Check if any listener was called
+        boolean listenerCalled = false;
         if (listener != null || (phaseListeners != null && !phaseListeners.isEmpty()))
         {
             // how many listeners do we have? (the MethodExpression listener is counted in either way)
@@ -906,6 +912,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // or if the related before PhaseListener finished without an Exception
             if (listener != null && (beforePhase || beforePhaseSuccess[0]))
             {
+                listenerCalled = true;
                 try
                 {
                     listener.invoke(context.getELContext(), new Object[] { event });
@@ -952,6 +959,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                         PhaseId listenerPhaseId = phaseListener.getPhaseId();
                         if (phaseId.equals(listenerPhaseId) || PhaseId.ANY_PHASE.equals(listenerPhaseId))
                         {
+                            listenerCalled = true;
                             try
                             {
                                 phaseListener.beforePhase(event);
@@ -991,6 +999,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                         if ((phaseId.equals(listenerPhaseId) || PhaseId.ANY_PHASE.equals(listenerPhaseId))
                                 && beforePhaseSuccess[i])
                         {
+                            listenerCalled = true;
                             try
                             {
                                 phaseListener.afterPhase(event);
@@ -1007,14 +1016,43 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
         }
 
-        if (beforePhase)
+        // The spec javadoc says "... Upon return from the listener, call FacesContext.getResponseComplete() 
+        // and FacesContext.getRenderResponse(). If either return true set the internal state flag to true. ..."
+        // and later it says:
+        // "... Execute any processing for this phase if the internal state flag was not set. ..."
+        // But after some testing it seems if the internal state flag is not set, the check is not done and the
+        // phase is not skipped. The only exception is in render response phase.
+        if (listenerCalled)
         {
-            return context.getResponseComplete() ||
-                    (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
+            if (beforePhase)
+            {
+                return context.getResponseComplete() ||
+                        (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
+            }
+            else
+            {
+                return context.getResponseComplete() || context.getRenderResponse();
+            }
         }
         else
         {
-            return context.getResponseComplete() || context.getRenderResponse();
+            if (beforePhase)
+            {
+                if (PhaseId.RENDER_RESPONSE.equals(phaseId))
+                {
+                    return context.getResponseComplete();
+                }
+                else
+                {
+                    // Don't check and don't skip
+                    return false;
+                }
+            }
+            else
+            {
+                // Note if is afterPhase the return value is not relevant.
+                return context.getResponseComplete() || context.getRenderResponse();
+            }
         }
     }
 
