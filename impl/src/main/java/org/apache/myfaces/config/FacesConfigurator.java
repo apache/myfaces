@@ -865,8 +865,6 @@ public class FacesConfigurator
             for (Renderer element : dispenser.getRenderers(renderKitId))
             {
                 javax.faces.render.Renderer renderer;
-                Collection<ClientBehaviorRenderer> clientBehaviorRenderers
-                        = dispenser.getClientBehaviorRenderers(renderKitId);
 
                 try
                 {
@@ -880,29 +878,31 @@ public class FacesConfigurator
                 }
 
                 renderKit.addRenderer(element.getComponentFamily(), element.getRendererType(), renderer);
+            }
+            
+            // Add in client behavior renderers.
+            Collection<ClientBehaviorRenderer> clientBehaviorRenderers
+                        = dispenser.getClientBehaviorRenderers(renderKitId);
 
-                // Add in client behavior renderers.
-
-                for (ClientBehaviorRenderer clientBehaviorRenderer : clientBehaviorRenderers)
+            for (ClientBehaviorRenderer clientBehaviorRenderer : clientBehaviorRenderers)
+            {
+                try
                 {
-                    try
+                    javax.faces.render.ClientBehaviorRenderer behaviorRenderer
+                            = (javax.faces.render.ClientBehaviorRenderer)
+                            ClassUtils.newInstance(clientBehaviorRenderer.getRendererClass());
+
+                    renderKit.addClientBehaviorRenderer(clientBehaviorRenderer.getRendererType(), behaviorRenderer);
+                }
+
+                catch (Throwable e)
+                {
+                    // Ignore.
+
+                    if (log.isLoggable(Level.SEVERE))
                     {
-                        javax.faces.render.ClientBehaviorRenderer behaviorRenderer
-                                = (javax.faces.render.ClientBehaviorRenderer)
-                                ClassUtils.newInstance(clientBehaviorRenderer.getRendererClass());
-
-                        renderKit.addClientBehaviorRenderer(clientBehaviorRenderer.getRendererType(), behaviorRenderer);
-                    }
-
-                    catch (Throwable e)
-                    {
-                        // Ignore.
-
-                        if (log.isLoggable(Level.SEVERE))
-                        {
-                            log.log(Level.SEVERE, "failed to configure client behavior renderer class " +
-                                    clientBehaviorRenderer.getRendererClass(), e);
-                        }
+                        log.log(Level.SEVERE, "failed to configure client behavior renderer class " +
+                                clientBehaviorRenderer.getRendererClass(), e);
                     }
                 }
             }
