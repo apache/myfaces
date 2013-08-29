@@ -130,6 +130,18 @@ final class CompilationManager
         }
         unit.writeInstruction(value);
     }
+    
+    public void writeDoctype(String name, String publicId, String systemId)
+    {
+        if (this.finished)
+        {
+            return;
+        }
+
+        DoctypeUnit unit = new DoctypeUnit(this.alias, this.nextTagId(),
+            name, publicId, systemId, faceletsProcessingInstructions.isHtml5Doctype());
+        this.startUnit(unit);
+    }
 
     public void writeText(String value)
     {

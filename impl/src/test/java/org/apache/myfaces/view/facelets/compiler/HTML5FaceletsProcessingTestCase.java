@@ -44,7 +44,7 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Test;
 
-public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
+public class HTML5FaceletsProcessingTestCase extends FaceletTestCase {
 
     @Override
     protected void setupComponents() throws Exception
@@ -83,12 +83,13 @@ public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
     protected void setUpExternalContext() throws Exception
     {
         super.setUpExternalContext();
-
-        FaceletsProcessing item = new FaceletsProcessing();
+        
+        // In JSF 2.2 xhtml default is html5
+        /*FaceletsProcessing item = new FaceletsProcessing();
         item.setFileExtension(".xhtml");
-        item.setProcessAs(FaceletsProcessing.PROCESS_AS_XHTML);
+        item.setProcessAs(FaceletsProcessing.PROCESS_AS_HTML5);
         RuntimeConfig.getCurrentInstance(externalContext).addFaceletProcessingConfiguration(
-            FaceletsProcessing.PROCESS_AS_XHTML, item);
+            FaceletsProcessing.PROCESS_AS_HTML5, item);*/
     }
 
     @Test
@@ -107,8 +108,7 @@ public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
         
         String resp = sw.toString();
         
-        Assert.assertTrue("Response contains DOCTYPE declaration", resp.contains("<!DOCTYPE"));
-        Assert.assertFalse("Response not contains DOCTYPE html declaration", resp.contains("<!DOCTYPE html>"));
+        Assert.assertTrue("Response contains DOCTYPE declaration", resp.contains("<!DOCTYPE html>"));
         Assert.assertTrue("Response contains xml declaration", resp.contains("<?xml"));
         Assert.assertTrue("Response contains xml processing instructions", resp.contains("<?name"));
         Assert.assertTrue("Response contains cdata section", resp.contains("<![CDATA["));

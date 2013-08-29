@@ -25,10 +25,15 @@ package org.apache.myfaces.view.facelets.compiler;
  */
 public final class FaceletsProcessingInstructions
 {
+    public static final String PROCESS_AS_HTML5 = "html5";
     public static final String PROCESS_AS_JSPX = "jspx";
     public static final String PROCESS_AS_XHTML = "xhtml";
     public static final String PROCESS_AS_XML = "xml";
     
+    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_HTML5 =
+        new FaceletsProcessingInstructions(
+                false, false, false, false, true, false, true, false, true);
+
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XHTML =
         new FaceletsProcessingInstructions(
                 false, false, false, false, true, false, true);
@@ -40,6 +45,10 @@ public final class FaceletsProcessingInstructions
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_JSPX =
         new FaceletsProcessingInstructions(
                 true, true, true, true, false, true, false);
+    
+    private static final FaceletsProcessingInstructions FACELETS_PROCESSING_HTML5_COMPRESS_SPACES =
+        new FaceletsProcessingInstructions(
+                false, false, false, false, true, false, true, true, true);
     
     private static final FaceletsProcessingInstructions FACELETS_PROCESSING_XHTML_COMPRESS_SPACES =
         new FaceletsProcessingInstructions(
@@ -69,11 +78,17 @@ public final class FaceletsProcessingInstructions
     
     private final boolean compressSpaces;
     
+    private final boolean html5Doctype;
+    
     public final static FaceletsProcessingInstructions getProcessingInstructions(String processAs)
     {
         if (processAs == null)
         {
-            return FACELETS_PROCESSING_XHTML;
+            return FACELETS_PROCESSING_HTML5;
+        }
+        else if (PROCESS_AS_HTML5.equals(processAs))
+        {
+            return FACELETS_PROCESSING_HTML5;
         }
         else if (PROCESS_AS_XHTML.equals(processAs))
         {
@@ -102,7 +117,11 @@ public final class FaceletsProcessingInstructions
         }
         if (processAs == null)
         {
-            return FACELETS_PROCESSING_XHTML_COMPRESS_SPACES;
+            return FACELETS_PROCESSING_HTML5_COMPRESS_SPACES;
+        }
+        else if (PROCESS_AS_HTML5.equals(processAs))
+        {
+            return FACELETS_PROCESSING_HTML5_COMPRESS_SPACES;
         }
         else if (PROCESS_AS_XHTML.equals(processAs))
         {
@@ -131,17 +150,15 @@ public final class FaceletsProcessingInstructions
             boolean consumeXMLComments,
             boolean swallowCDataContent)
     {
-        super();
-        this.consumeXmlDocType = consumeXmlDocType;
-        this.consumeXmlDeclaration = consumeXmlDeclaration;
-        this.consumeProcessingInstructions = consumeProcessingInstructions;
-        this.consumeCDataSections = consumeCDataSections;
-        this.escapeInlineText = escapeInlineText;
-        this.consumeXMLComments = consumeXMLComments;
-        this.swallowCDataContent = swallowCDataContent;
-        this.compressSpaces = false;
+        this(consumeXmlDocType, 
+            consumeXmlDeclaration, 
+            consumeProcessingInstructions, 
+            consumeCDataSections, 
+            escapeInlineText, 
+            consumeXMLComments, 
+            swallowCDataContent, 
+            false);
     }
-    
     
     public FaceletsProcessingInstructions(
             boolean consumeXmlDocType,
@@ -153,6 +170,28 @@ public final class FaceletsProcessingInstructions
             boolean swallowCDataContent,
             boolean compressSpaces)
     {
+        this(consumeXmlDocType, 
+            consumeXmlDeclaration, 
+            consumeProcessingInstructions, 
+            consumeCDataSections, 
+            escapeInlineText, 
+            consumeXMLComments, 
+            swallowCDataContent, 
+            compressSpaces,
+            false);
+    }
+    
+    public FaceletsProcessingInstructions(
+            boolean consumeXmlDocType,
+            boolean consumeXmlDeclaration,
+            boolean consumeProcessingInstructions,
+            boolean consumeCDataSections, 
+            boolean escapeInlineText,
+            boolean consumeXMLComments,
+            boolean swallowCDataContent,
+            boolean compressSpaces,
+            boolean html5Doctype)
+    {
         super();
         this.consumeXmlDocType = consumeXmlDocType;
         this.consumeXmlDeclaration = consumeXmlDeclaration;
@@ -162,7 +201,8 @@ public final class FaceletsProcessingInstructions
         this.consumeXMLComments = consumeXMLComments;
         this.swallowCDataContent = swallowCDataContent;
         this.compressSpaces = compressSpaces;
-    }
+        this.html5Doctype = html5Doctype;
+    }    
 
     public boolean isConsumeXmlDocType()
     {
@@ -207,4 +247,8 @@ public final class FaceletsProcessingInstructions
         return compressSpaces;
     }
 
+    public boolean isHtml5Doctype()
+    {
+        return html5Doctype;
+    }
 }

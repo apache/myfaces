@@ -228,6 +228,8 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && !unit.getFaceletsProcessingInstructions().isConsumeXmlDocType())
             {
+                this.unit.writeDoctype(name, publicId, systemId);
+                /*
                 StringBuffer sb = new StringBuffer(64);
                 sb.append("<!DOCTYPE ").append(name);
                 if (publicId != null)
@@ -244,6 +246,7 @@ public final class SAXCompiler extends Compiler
                 }
                 sb.append(" >\n");
                 this.unit.writeInstruction(sb.toString());
+                */
             }
             this.inDocument = false;
         }
