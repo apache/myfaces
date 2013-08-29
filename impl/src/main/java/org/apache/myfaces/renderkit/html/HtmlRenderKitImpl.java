@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,7 +57,7 @@ public class HtmlRenderKitImpl extends RenderKit
 
     private Map<String, Map<String, Renderer>> _renderers;
     private ResponseStateManager _responseStateManager;
-    private Map<String,Set<String>> _families;
+    //private Map<String,Set<String>> _families;
     private Map<String, ClientBehaviorRenderer> _clientBehaviorRenderers;
 
     // ~ Constructors -------------------------------------------------------------------------------
@@ -67,7 +66,7 @@ public class HtmlRenderKitImpl extends RenderKit
     {
         _renderers = new ConcurrentHashMap<String, Map<String, Renderer>>(64, 0.75f, 1);
         _responseStateManager = new HtmlResponseStateManager();
-        _families = new HashMap<String, Set<String> >();
+        //_families = new HashMap<String, Set<String> >();
         _clientBehaviorRenderers = new HashMap<String, ClientBehaviorRenderer>();
     }
 
@@ -199,7 +198,8 @@ public class HtmlRenderKitImpl extends RenderKit
     @Override
     public Iterator<String> getComponentFamilies()
     {
-        return _families.keySet().iterator();
+        //return _families.keySet().iterator();
+        return _renderers.keySet().iterator();
     }
     
     /**
@@ -209,11 +209,17 @@ public class HtmlRenderKitImpl extends RenderKit
     public Iterator<String> getRendererTypes(String componentFamily)
     {
         //Return an Iterator over the renderer-type entries for the given component-family.
+        Map<String, Renderer> map = _renderers.get(componentFamily);
+        if (map != null)
+        {
+            return map.keySet().iterator();
+        }
+        /*
         Set<String> rendererTypes = _families.get(componentFamily);
         if(rendererTypes != null)
         {
             return rendererTypes.iterator();
-        }
+        }*/
         //If the specified componentFamily is not known to this RenderKit implementation, return an empty Iterator
         return Collections.<String>emptySet().iterator();
         
