@@ -35,6 +35,7 @@ import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.facelets.FaceletMultipleRequestsTestCase;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
@@ -254,6 +255,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
             request.setAttribute("condition", false);
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
+            ((MockFacesContext20)facesContext).setPostback(true);
     
             UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdCif.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
@@ -635,6 +637,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
             request.setAttribute("pageSelected", "testUniqueComponentIdInclude1_0.xhtml");
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
+            ((MockFacesContext20)facesContext).setPostback(true);
     
             UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
@@ -783,6 +786,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
             request.setAttribute("pageSelected", "testUniqueComponentIdInclude1_2.xhtml");
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
+            ((MockFacesContext20)facesContext).setPostback(true);
     
             UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdInclude1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
@@ -1193,6 +1197,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
             request.setAttribute("pageSelected", "testUniqueComponentIdDecorate1_0.xhtml");
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
+            ((MockFacesContext20)facesContext).setPostback(true);
     
             UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdDecorate1.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
@@ -1424,6 +1429,7 @@ public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
             facesContext.setCurrentPhaseId(PhaseId.RESTORE_VIEW);
             request.setAttribute("selectionX", true);
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
+            ((MockFacesContext20)facesContext).setPostback(true);
     
             UIViewRoot root = application.getStateManager().restoreView(facesContext, "/testUniqueComponentIdChoose.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
 
