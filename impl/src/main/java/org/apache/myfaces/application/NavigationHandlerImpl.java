@@ -631,6 +631,14 @@ public class NavigationHandlerImpl
                             continue;
                         }
                     }
+                    else
+                    {
+                        // cazeActionRef != null and cazeOutcome == null
+                        // but cazeActionRef does not match. No additional operation
+                        // required because cazeIf is only taken into account 
+                        // it cazeActionRef match. 
+                        continue;
+                    }
                 }
             }
             else
