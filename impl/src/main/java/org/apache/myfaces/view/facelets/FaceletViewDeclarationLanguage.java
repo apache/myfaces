@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,8 @@ import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
@@ -52,6 +55,7 @@ import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIPanel;
+import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -67,6 +71,8 @@ import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.render.ResponseStateManager;
 import javax.faces.validator.MethodExpressionValidator;
 import javax.faces.validator.Validator;
 import javax.faces.view.ActionSource2AttachedObjectHandler;
@@ -300,6 +306,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     private FaceletFactory _faceletFactory;
 
     private StateManagementStrategy _stateMgmtStrategy;
+    
+    private RenderKitFactory _renderKitFactory = null;
 
     private boolean _partialStateSaving;
 
@@ -516,7 +524,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             // DefaultFaceletsStateManagement.restoreView after calling 
             // _publishPostBuildComponentTreeOnRestoreViewEvent(), to ensure 
             // relocated components are not retrieved later on getClientIdsRemoved().
-            if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())))
+            if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())) &&
+                !view.isTransient())
             {
                 ((DefaultFaceletsStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).
                         suscribeListeners(view);
@@ -2113,38 +2122,60 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             context, viewId);
         context.setResourceLibraryContracts(contracts);
         
-        return super.restoreView(context, viewId);
-        //}
-        //else
-        //{
-        // TODO: VALIDATE - Is _buildBeforeRestore relevant at all for 2.0? -= SL =-
-        // ANS: buildBeforeRestore evolved to partial state saving, so this logic
-        // is now on StateManagerStrategy implementation -= Leo U =-
-        /*
-            UIViewRoot viewRoot = createView(context, viewId);
+        // JSF 2.2 stateless views
+        // We need to check if the incoming view is stateless or not and if that so rebuild it here
+        // note we cannot do this in DefaultFaceletsStateManagementStrategy because it is only used
+        // when PSS is enabled, but stateless views can be used without PSS. If the view is stateless,
+        // there is no need to ask to the StateManager.
+        Application application = context.getApplication();
+        ViewHandler applicationViewHandler = application.getViewHandler();
+        String renderKitId = applicationViewHandler.calculateRenderKitId(context);
 
-            context.setViewRoot(viewRoot);
-
+        ResponseStateManager manager = getRenderKitFactory().getRenderKit(
+            context, renderKitId).getResponseStateManager();
+        
+        if (manager.isStateless(context, viewId))
+        {
+            // Per the spec: build the view.
+            UIViewRoot view = null;
             try
             {
-                buildView(context, viewRoot);
+                ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
+                Collection<UIViewParameter> viewParameters = null;
+                if (metadata != null)
+                {
+                    view = metadata.createMetadataView(context);
+                    if (view != null)
+                    {
+                        viewParameters = metadata.getViewParameters(view);
+                    }
+                }
+                if (view == null)
+                {
+                    view = context.getApplication().getViewHandler().createView(context, viewId);
+                }
+                context.setViewRoot (view); 
+                boolean oldContextEventState = context.isProcessingEvents();
+                try 
+                {
+                    context.setProcessingEvents (true);
+                    vdl.buildView (context, view);
+                }
+                finally
+                {
+                    context.setProcessingEvents (oldContextEventState);
+                } 
             }
-            catch (IOException ioe)
+            catch (Throwable e)
             {
-                log.severe("Error Building View", ioe);
+                throw new FacesException ("unable to create view \"" + viewId + "\"", e);
             }
-
-            Application application = context.getApplication();
-
-            ViewHandler applicationViewHandler = application.getViewHandler();
-
-            String renderKitId = applicationViewHandler.calculateRenderKitId(context);
-
-            application.getStateManager().restoreView(context, viewId, renderKitId);
-
-            return viewRoot;
+            return view;
         }
-        */
+        else
+        {
+            return super.restoreView(context, viewId);
+        }
     }
 
     /**
@@ -2215,12 +2246,21 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
         // resource resolver
         ResourceResolver resolver = new DefaultResourceResolver();
+        ArrayList<String> classNames = new ArrayList<String>();
         String faceletsResourceResolverClassName = WebConfigParamUtils.getStringInitParameter(eContext,
                 PARAMS_RESOURCE_RESOLVER, null);
+        List<String> resourceResolversFromAnnotations = RuntimeConfig.getCurrentInstance(
+            context.getExternalContext()).getResourceResolvers();
         if (faceletsResourceResolverClassName != null)
         {
-            ArrayList<String> classNames = new ArrayList<String>(1);
             classNames.add(faceletsResourceResolverClassName);
+        }
+        if (!resourceResolversFromAnnotations.isEmpty())
+        {
+            classNames.addAll(resourceResolversFromAnnotations);
+        }
+        if (!classNames.isEmpty())
+        {
             resolver = ClassUtils.buildApplicationObject(ResourceResolver.class, classNames, resolver);
         }
 
@@ -2946,5 +2986,14 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             throw new FacesException(e);
         }
         return createdComponent;
+    }
+    
+    protected RenderKitFactory getRenderKitFactory()
+    {
+        if (_renderKitFactory == null)
+        {
+            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        }
+        return _renderKitFactory;
     }
 }

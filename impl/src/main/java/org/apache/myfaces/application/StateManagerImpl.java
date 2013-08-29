@@ -167,8 +167,14 @@ public class StateManagerImpl extends StateManager
     @Override
     public Object saveView(FacesContext facesContext)
     {
-        Object serializedView = null;
         UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        
+        if (uiViewRoot.isTransient())
+        {
+            return null;
+        }
+        
+        Object serializedView = null;
         ResponseStateManager responseStateManager = facesContext.getRenderKit().getResponseStateManager();
         
         String viewId = uiViewRoot.getViewId();

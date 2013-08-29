@@ -34,6 +34,7 @@ import org.apache.myfaces.application.StateCacheFactory;
 import org.apache.myfaces.application.viewstate.StateCacheFactoryImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
+import org.apache.myfaces.renderkit.StateTokenProcessor;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
@@ -75,9 +76,12 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     
     private StateCacheFactory _stateCacheFactory;
     
+    private StateTokenProcessor _stateTokenProcessor;
+    
     public HtmlResponseStateManager()
     {
         _stateCacheFactory = new StateCacheFactoryImpl();
+        _stateTokenProcessor = new DefaultStateTokenProcessor();
     }
     
     protected boolean isHandlingStateCachingMechanics(FacesContext facesContext)
@@ -97,42 +101,46 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         Object savedStateObject = null;
         
-        if (isHandlingStateCachingMechanics(facesContext))
+        if (!facesContext.getViewRoot().isTransient())
         {
-            savedStateObject = getStateCache(facesContext).encodeSerializedState(facesContext, state);
-        }
-        else
-        {
-            Object token = null;
-            Object[] savedState = new Object[2];
-            token = state;
-            
-            if (log.isLoggable(Level.FINEST))
+            // Only if the view is not transient needs to be saved
+            if (isHandlingStateCachingMechanics(facesContext))
             {
-                log.finest("Writing state in client");
-            }
-
-
-            if (token != null)
-            {
-                savedState[STATE_PARAM] = token;
+                savedStateObject = getStateCache(facesContext).encodeSerializedState(facesContext, state);
             }
             else
             {
+                Object token = null;
+                Object[] savedState = new Object[2];
+                token = state;
+
                 if (log.isLoggable(Level.FINEST))
                 {
-                    log.finest("No component states to be saved in client response!");
+                    log.finest("Writing state in client");
                 }
-            }
 
-            savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
 
-            if (log.isLoggable(Level.FINEST))
-            {
-                log.finest("Writing view state and renderKit fields");
+                if (token != null)
+                {
+                    savedState[STATE_PARAM] = token;
+                }
+                else
+                {
+                    if (log.isLoggable(Level.FINEST))
+                    {
+                        log.finest("No component states to be saved in client response!");
+                    }
+                }
+
+                savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
+
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Writing view state and renderKit fields");
+                }
+
+                savedStateObject = savedState;
             }
-            
-            savedStateObject = savedState;
         }
 
         // write the view state field
@@ -162,20 +170,23 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     @Override
     public void saveState(FacesContext facesContext, Object state)
     {
-        if (isHandlingStateCachingMechanics(facesContext))
+        if (!facesContext.getViewRoot().isTransient())
         {
-            getStateCache(facesContext).saveSerializedView(facesContext, state);
-        }
-        else
-        {
-            //This is done outside
+            if (isHandlingStateCachingMechanics(facesContext))
+            {
+                getStateCache(facesContext).saveSerializedView(facesContext, state);
+            }
+            else
+            {
+                //This is done outside
+            }
         }
     }
 
     private void writeViewStateField(FacesContext facesContext, ResponseWriter responseWriter, Object savedState)
         throws IOException
     {
-        String serializedState = StateUtils.construct(savedState, facesContext.getExternalContext());
+        String serializedState = _stateTokenProcessor.encode(facesContext, savedState);
         ExternalContext extContext = facesContext.getExternalContext();
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(extContext);
         // Write Javascript viewstate if enabled and if javascript is allowed,
@@ -191,7 +202,12 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
             if (myfacesConfig.isRenderViewStateId())
             {
-                responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+                // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+                // JSF 2.2 if javax.faces.ViewState is used as the id, in portlet
+                // case it will be duplicate ids and that not xml friendly.
+                responseWriter.writeAttribute(HTML.ID_ATTR,
+                    HtmlResponseStateManager.generateUpdateViewStateId(
+                        facesContext), null);
             }
             responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
             responseWriter.endElement(HTML.INPUT_ELEM);
@@ -277,7 +293,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             return null;
         }
 
-        Object savedStateObject = StateUtils.reconstruct((String)encodedState, facesContext.getExternalContext());
+        Object savedStateObject = _stateTokenProcessor.decode(facesContext, (String)encodedState);
         
         if (isHandlingStateCachingMechanics(facesContext))
         {
@@ -327,7 +343,15 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     @Override
     public String getViewState(FacesContext facesContext, Object baseState)
     {
+        // If the view is transient, baseState is null, so it should return null.
+        // In this way, PartialViewContext will skip <update ...> section related
+        // to view state (stateless view does not have state, so it does not need
+        // to update the view state section). 
         if (baseState == null)
+        {
+            return null;
+        }
+        if (facesContext.getViewRoot().isTransient())
         {
             return null;
         }
@@ -348,10 +372,35 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             }
 
             savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
-            
+
             state = savedState;
         }
-        return StateUtils.construct(state, facesContext.getExternalContext());
+        return _stateTokenProcessor.encode(facesContext, state);
+    }
+
+    @Override
+    public boolean isStateless(FacesContext context, String viewId)
+    {
+        if (context.isPostback())
+        {
+            String encodedState = 
+                context.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
+            if(encodedState==null || (((String) encodedState).length() == 0))
+            {
+                return false;
+            }
+
+            return _stateTokenProcessor.isStateless(context, encodedState);
+        }
+        else 
+        {
+            // "... java.lang.IllegalStateException - if this method is invoked 
+            // and the statefulness of the preceding call to writeState(
+            // javax.faces.context.FacesContext, java.lang.Object) cannot be determined.
+            throw new IllegalStateException(
+                "Cannot decide if the view is stateless or not, since the request is "
+                + "not postback (no preceding writeState(...)).");
+        }
     }
     
     @Override
@@ -421,4 +470,38 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         return id;
     }
 
+    private static class DefaultStateTokenProcessor extends StateTokenProcessor
+    {
+        private static final String STATELESS_TOKEN = "stateless";
+
+        @Override
+        public Object decode(FacesContext facesContext, String token)
+        {
+            if (STATELESS_TOKEN.equals(token))
+            {
+                // Should not happen, because ResponseStateManager.isStateless(context,viewId) should
+                // catch it first
+                return null;
+            }
+            Object savedStateObject = StateUtils.reconstruct((String)token, facesContext.getExternalContext());
+            return savedStateObject;
+        }
+
+        @Override
+        public String encode(FacesContext facesContext, Object savedStateObject)
+        {
+            if (facesContext.getViewRoot().isTransient())
+            {
+                return STATELESS_TOKEN;
+            }
+            String serializedState = StateUtils.construct(savedStateObject, facesContext.getExternalContext());
+            return serializedState;
+        }
+
+        @Override
+        public boolean isStateless(FacesContext facesContext, String token)
+        {
+            return STATELESS_TOKEN.equals(token);
+        }
+    }
 }

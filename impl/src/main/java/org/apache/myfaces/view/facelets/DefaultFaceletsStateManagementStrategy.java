@@ -329,7 +329,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
 
             // Stateless mode only for transient views and non stateless mode for
-            // stateful views.
+            // stateful views. This check avoid apply state over a stateless view.
             boolean statelessMode = manager.isStateless(context, viewId);
             if (statelessMode && !view.isTransient())
             {

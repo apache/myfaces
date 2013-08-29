@@ -27,6 +27,7 @@ import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.junit.Test;
 import org.testng.Assert;
@@ -78,6 +79,7 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
             setupRequest();
             
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
+            ((MockFacesContext20)facesContext).setPostback(true);
     
             UIViewRoot restoredViewRoot = application.getStateManager().restoreView(facesContext, "/simpleTree.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
@@ -121,6 +123,7 @@ public class StateManagerWithFaceletsTest extends FaceletMultipleRequestsTestCas
             setupRequest();
             
             request.addParameter(ResponseStateManager.VIEW_STATE_PARAM, viewStateParam);
+            ((MockFacesContext20)facesContext).setPostback(true);
     
             UIViewRoot restoredViewRoot = application.getStateManager().restoreView(facesContext, "/simpleTree.xhtml", RenderKitFactory.HTML_BASIC_RENDER_KIT);
             
