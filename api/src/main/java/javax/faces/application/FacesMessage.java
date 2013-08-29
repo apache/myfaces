@@ -66,22 +66,22 @@ public class FacesMessage implements Serializable
     /**
      * Message severity level indicating an informational message rather than an error.
      */
-    public static final FacesMessage.Severity SEVERITY_INFO = new Severity("Info", 1);
+    public static final FacesMessage.Severity SEVERITY_INFO = new Severity("INFO", 1);
 
     /**
      * Message severity level indicating that an error might have occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_WARN = new Severity("Warn", 2);
+    public static final FacesMessage.Severity SEVERITY_WARN = new Severity("WARN", 2);
 
     /**
      * Message severity level indicating that an error has occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_ERROR = new Severity("Error", 3);
+    public static final FacesMessage.Severity SEVERITY_ERROR = new Severity("ERROR", 3);
 
     /**
      * Message severity level indicating that a serious error has occurred.
      */
-    public static final FacesMessage.Severity SEVERITY_FATAL = new Severity("Fatal", 4);
+    public static final FacesMessage.Severity SEVERITY_FATAL = new Severity("FATAL", 4);
 
     /**
      * Immutable <code>Lis</code> of valid {@link FacesMessage.Severity}instances, in ascending order of their ordinal
