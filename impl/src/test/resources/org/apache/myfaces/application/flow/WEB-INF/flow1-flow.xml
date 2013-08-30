@@ -30,6 +30,8 @@
             <from-outcome>exit</from-outcome>
         </flow-return>
         
+        <flow-return id="back"/>
+        
         <navigation-rule>
             <from-view-id>*</from-view-id>
             <navigation-case>
@@ -67,6 +69,14 @@
 
         <flow-return id="end">
             <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <!-- The idea of this return is "back" is not mapped to anything,
+             so the navigation algorithm should not return any navigation
+             case and it should be used the last displayed view id by
+             default-->
+        <flow-return id="back">
+            <from-outcome>back</from-outcome>
         </flow-return>
         
         <navigation-rule>

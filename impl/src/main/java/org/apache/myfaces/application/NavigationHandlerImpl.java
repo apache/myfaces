@@ -120,7 +120,8 @@ public class NavigationHandlerImpl
     {
         //NavigationCase navigationCase = getNavigationCase(facesContext, fromAction, outcome);
         NavigationContext navigationContext = new NavigationContext();
-        NavigationCase navigationCase = getNavigationCommand(facesContext, navigationContext, fromAction, outcome);
+        NavigationCase navigationCase = getNavigationCommand(facesContext, navigationContext, fromAction, outcome,
+            toFlowDocumentId);
 
         if (navigationCase != null)
         {
@@ -340,7 +341,7 @@ public class NavigationHandlerImpl
     public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         NavigationContext navigationContext = new NavigationContext();
-        return getNavigationCommand(facesContext, navigationContext, fromAction, outcome);
+        return getNavigationCommand(facesContext, navigationContext, fromAction, outcome, null);
     }
     
     public NavigationCase getNavigationCommandFromGlobalNavigationCases(
@@ -388,7 +389,8 @@ public class NavigationHandlerImpl
     }
     
     public NavigationCase getNavigationCommand(
-        FacesContext facesContext, NavigationContext navigationContext, String fromAction, String outcome)
+        FacesContext facesContext, NavigationContext navigationContext, String fromAction, String outcome, 
+        String toFlowDocumentId)
     {
         String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
         NavigationCase navigationCase = getNavigationCommandFromGlobalNavigationCases(
@@ -402,7 +404,11 @@ public class NavigationHandlerImpl
             // has the additional possibility of being a flow id.
             Flow targetFlow = null;
             FlowCallNode targetFlowCallNode = null;
-            if (currentFlow != null)
+            if (toFlowDocumentId != null)
+            {
+                targetFlow = flowHandler.getFlow(facesContext, toFlowDocumentId, outcome);
+            }
+            if (targetFlow == null && currentFlow != null)
             {
                 targetFlow = flowHandler.getFlow(facesContext, currentFlow.getDefiningDocumentId(), outcome);
             }
@@ -595,19 +601,34 @@ public class NavigationHandlerImpl
                                 }                                    
                                 // This is the part when the pseudo "recursive call" is done. 
                                 navigationContext.popFlow(facesContext);
-                                //getNavigationCommand(
-                                //    facesContext, navigationContext, currentFlow.getId(), fromOutcome);
-                                
-                                // TODO: add logic for exit the flow properly
                                 currentFlow = navigationContext.getCurrentFlow(facesContext);
                                 navigationContext.addTargetFlow(currentFlow, null);
                                 outcomeToGo = fromOutcome;
-                                
+                                // The part where FlowHandler.NULL_FLOW is passed as documentId causes the effect of
+                                // do not take into account the documentId of the returned flow in the command. In theory
+                                // there is no Flow with defining documentId as FlowHandler.NULL_FLOW. It has sense
+                                // because the one who specify the return rules should be the current flow after it is
+                                // returned.
                                 navigationCase = getNavigationCommand(facesContext, 
-                                        navigationContext, actionToGo, outcomeToGo);
+                                        navigationContext, actionToGo, outcomeToGo, FlowHandler.NULL_FLOW);
                                 if (navigationCase != null)
                                 {
                                     complete = true;
+                                }
+                                else
+                                {
+                                    // No navigation case
+                                    if (currentFlow != null)
+                                    {
+                                        String lastDisplayedViewId = navigationContext.getLastDisplayedViewId(facesContext, 
+                                            currentFlow);
+                                        if (lastDisplayedViewId != null)
+                                        {
+                                            navigationCase = createNavigationCase(
+                                                viewId, flowNode.getId(), lastDisplayedViewId);
+                                            complete = true;
+                                        }
+                                    }
                                 }
                                 if (currentFlow == null)
                                 {
@@ -1356,6 +1377,7 @@ public class NavigationHandlerImpl
         private List<Flow> targetFlows;
         private List<FlowCallNode> targetFlowCallNodes;
         private List<Flow> currentFlows;
+        private Map<Flow, String> lastDisplayedViewIdMap;
 
         public NavigationContext()
         {
@@ -1418,13 +1440,16 @@ public class NavigationHandlerImpl
                 Flow curFlow = flowHandler.getCurrentFlow(facesContext);
                 // Save the top one
                 currentFlow = curFlow;
-                currentFlows = new ArrayList<Flow>();                
+                currentFlows = new ArrayList<Flow>();
                 if (curFlow != null)
                 {
+                    lastDisplayedViewIdMap = new HashMap<Flow, String>();
                     // Fill the stack
                     while (curFlow != null)
                     {
+                        String lastDisplayedViewId = flowHandler.getLastDisplayedViewId(facesContext);
                         currentFlows.add(0,curFlow);
+                        lastDisplayedViewIdMap.put(curFlow, lastDisplayedViewId);
                         flowHandler.pushReturnMode(facesContext);
                         curFlow = flowHandler.getCurrentFlow(facesContext);
                     }
@@ -1460,6 +1485,15 @@ public class NavigationHandlerImpl
         public void pushFlow(FacesContext facesContext, Flow flow)
         {
             currentFlows.add(flow);
+        }
+        
+        public String getLastDisplayedViewId(FacesContext facesContext, Flow flow)
+        {
+            if (lastDisplayedViewIdMap != null)
+            {
+                return lastDisplayedViewIdMap.get(flow);
+            }
+            return null;
         }
     }
 }

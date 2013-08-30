@@ -164,14 +164,13 @@ public class FlowHandlerImpl extends FlowHandler
         }
         
         
-        FlowReference flowReference = getCurrentFlowReference(context, clientWindow);
-        //String flowReference = getCurrentFlowReference(context, clientWindow);
-        if (flowReference == null)
+        _FlowContextualInfo info = getCurrentFlowReference(context, clientWindow);
+        if (info == null)
         {
             return null;
         }
+        FlowReference flowReference = info.getFlowReference();
         return getFlow(context, flowReference.getDocumentId(), flowReference.getId());
-        //return getFlow(context, null, flowReference);
     }
     
     @Override
@@ -202,19 +201,20 @@ public class FlowHandlerImpl extends FlowHandler
                 targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
             outboundCallNodeProcessed = true;
             pushFlowReference(context, clientWindow, 
-                    new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()));
+                    new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId);
             doAfterEnterFlow(context, targetFlow, outboundParameters);
         }
         else if (targetFlow == null)
         {
             // Getting out of the flow, since targetFlow is null, just clear the stack
-            List<FlowReference> currentFlowStack = getCurrentFlowStack(context, clientWindow);
+            List<_FlowContextualInfo> currentFlowStack = getCurrentFlowStack(context, clientWindow);
             if (currentFlowStack != null)
             {
                 //currentFlowStack.clear();
                 for (int i = currentFlowStack.size()-1; i >= 0; i--)
                 {
-                    FlowReference fr = currentFlowStack.get(i);
+                    _FlowContextualInfo fci = currentFlowStack.get(i);
+                    FlowReference fr = fci.getFlowReference();
                     doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
                     currentFlowStack.remove(i);
                 }
@@ -225,17 +225,26 @@ public class FlowHandlerImpl extends FlowHandler
             // Both sourceFlow and targetFlow are not null, so we need to check the direction
             // If targetFlow is on the stack, remove elements until get there.
             // If targetFlow is not there, add it to the stack.
-            List<FlowReference> currentFlowStack = getCurrentFlowStack(context, clientWindow);
+            List<_FlowContextualInfo> currentFlowStack = getCurrentFlowStack(context, clientWindow);
             if (currentFlowStack != null)
             {
                 FlowReference targetFlowReference = new FlowReference(
                         targetFlow.getDefiningDocumentId(), targetFlow.getId());
-                int targetFlowIndex = currentFlowStack.lastIndexOf(targetFlowReference);
+                int targetFlowIndex = -1;
+                for (int j = currentFlowStack.size()-1; j >= 0; j--)
+                {
+                    if (targetFlowReference.equals(currentFlowStack.get(j).getFlowReference()))
+                    {
+                        targetFlowIndex = j;
+                        break;
+                    }
+                }
                 if (targetFlowIndex >= 0)
                 {
                     for (int i = currentFlowStack.size()-1; i > targetFlowIndex; i--)
                     {
-                        FlowReference fr = currentFlowStack.get(i);
+                        _FlowContextualInfo fci = currentFlowStack.get(i);
+                        FlowReference fr = fci.getFlowReference();
                         doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
                         currentFlowStack.remove(i);
                     }
@@ -245,22 +254,22 @@ public class FlowHandlerImpl extends FlowHandler
                     // sourceFlow should match.
                     FlowReference sourceFlowReference = new FlowReference(
                             sourceFlow.getDefiningDocumentId(), sourceFlow.getId());
-                    if ( sourceFlowReference.equals(currentFlowStack.get(currentFlowStack.size()-1)) )
+                    if ( sourceFlowReference.equals(currentFlowStack.get(currentFlowStack.size()-1).getFlowReference()) )
                     {
                         Map<String, Object> outboundParameters = doBeforeEnterFlow(context,
                             targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
                         outboundCallNodeProcessed = true;
                         pushFlowReference(context, clientWindow, 
-                                new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()));
+                                new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId);
                         doAfterEnterFlow(context, targetFlow, outboundParameters);
                     }
                     else
                     {
                         // Chain gets broken. Clear stack and start again.
-                        //currentFlowStack.clear();
                         for (int i = currentFlowStack.size()-1; i >= 0; i--)
                         {
-                            FlowReference fr = currentFlowStack.get(i);
+                            _FlowContextualInfo fci = currentFlowStack.get(i);
+                            FlowReference fr = fci.getFlowReference();
                             doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
                             currentFlowStack.remove(i);
                         }
@@ -269,7 +278,7 @@ public class FlowHandlerImpl extends FlowHandler
                             targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
                         outboundCallNodeProcessed = true;
                         pushFlowReference(context, clientWindow, 
-                                new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()));
+                                new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId);
                         doAfterEnterFlow(context, targetFlow, outboundParameters);
                     }
                 }
@@ -280,7 +289,7 @@ public class FlowHandlerImpl extends FlowHandler
                     targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
                 outboundCallNodeProcessed = true;
                 pushFlowReference(context, clientWindow, 
-                        new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()));
+                        new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId);
                 doAfterEnterFlow(context, targetFlow, outboundParameters);
             }
         }
@@ -369,15 +378,19 @@ public class FlowHandlerImpl extends FlowHandler
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
 
-        List<FlowReference> currentFlowStack = (List<FlowReference>) sessionMap.get(currentFlowMapKey);
+        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) sessionMap.get(currentFlowMapKey);
         if (currentFlowStack == null)
         {
             return false;
         }
         FlowReference reference = new FlowReference(definingDocumentId, id);
-        if (currentFlowStack.contains(reference))
+        
+        for (_FlowContextualInfo info : currentFlowStack)
         {
-            return true;
+            if (reference.equals(info.getFlowReference()))
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -393,43 +406,6 @@ public class FlowHandlerImpl extends FlowHandler
     public void clientWindowTransition(FacesContext context)
     {
         // throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /**
-     * TODO: Something like this should be included in the spec.
-     * 
-     * @param context
-     * @return 
-     */
-    private List<Flow> getFlowStack(FacesContext context)
-    {
-        Object session = context.getExternalContext().getSession(false);
-        if (session != null)
-        {
-            return Collections.emptyList();
-        }
-        ClientWindow clientWindow = context.getExternalContext().getClientWindow();
-        if (clientWindow == null)
-        {
-            return Collections.emptyList();
-        }
-        
-        Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
-        String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
-        //LinkedList<FlowReference> currentFlowStack = (LinkedList<FlowReference>) sessionMap.get(currentFlowMapKey);
-        List<FlowReference> currentFlowStack = (List<FlowReference>) sessionMap.get(currentFlowMapKey);
-        if (currentFlowStack == null)
-        {
-            return Collections.emptyList();
-        }
-
-        // Convert flowReference list into Flow list
-        List<Flow> flowList = new ArrayList<Flow>(currentFlowStack.size());
-        for (FlowReference flowReference : currentFlowStack)
-        {
-            flowList.add(getFlow(context, flowReference.getDocumentId(), flowReference.getId()));
-        }
-        return flowList;
     }
 
     private void checkNull(final Object o, final String param)
@@ -452,15 +428,16 @@ public class FlowHandlerImpl extends FlowHandler
         }
     }
     
-    private FlowReference getCurrentFlowReference(FacesContext context, ClientWindow clientWindow)
+    private _FlowContextualInfo getCurrentFlowReference(FacesContext context, ClientWindow clientWindow)
     {
         if ( Boolean.TRUE.equals(context.getAttributes().get(RETURN_MODE)) )
         {
-            List<FlowReference> returnFlowList = getCurrentReturnModeFlowStack(
+            List<_FlowContextualInfo> returnFlowList = getCurrentReturnModeFlowStack(
                     context, clientWindow, CURRENT_FLOW_REQUEST_STACK);
             if (returnFlowList != null && !returnFlowList.isEmpty())
             {
-                return returnFlowList.get(returnFlowList.size()-1);
+                _FlowContextualInfo info = returnFlowList.get(returnFlowList.size()-1);
+                return info;
             }
             return null;
         }
@@ -468,55 +445,59 @@ public class FlowHandlerImpl extends FlowHandler
         {
             Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
             String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
-            List<FlowReference> currentFlowStack = (List<FlowReference>) sessionMap.get(currentFlowMapKey);
+            List<_FlowContextualInfo> currentFlowStack = 
+                (List<_FlowContextualInfo>) sessionMap.get(currentFlowMapKey);
             if (currentFlowStack == null)
             {
                 return null;
             }
-            return currentFlowStack.size() > 0 ? currentFlowStack.get(currentFlowStack.size()-1) : null;
+            return currentFlowStack.size() > 0 ? 
+                currentFlowStack.get(currentFlowStack.size()-1) : null;
         }
     }
     
-    private void pushFlowReference(FacesContext context, ClientWindow clientWindow, FlowReference flowReference)
+    private void pushFlowReference(FacesContext context, ClientWindow clientWindow, FlowReference flowReference,
+        String lastDisplayedViewId)
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
-        //LinkedList<FlowReference> currentFlowStack = (LinkedList<FlowReference>) sessionMap.get(currentFlowMapKey);
-        List<FlowReference> currentFlowStack = (List<FlowReference>) sessionMap.get(currentFlowMapKey);
+        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) sessionMap.get(currentFlowMapKey);
         if (currentFlowStack == null)
         {
-            currentFlowStack = new ArrayList<FlowReference>(4);
+            currentFlowStack = new ArrayList<_FlowContextualInfo>(4);
             sessionMap.put(currentFlowMapKey, currentFlowStack);
         }
-        currentFlowStack.add(flowReference);
-    }
-
-    private FlowReference popFlowReference(FacesContext context, ClientWindow clientWindow)
-    {
-        Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
-        String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
-        //LinkedList<FlowReference> currentFlowStack = (LinkedList<FlowReference>) sessionMap.get(currentFlowMapKey);
-        List<FlowReference> currentFlowStack = (List<FlowReference>) sessionMap.get(currentFlowMapKey);
-        if (currentFlowStack == null)
-        {
-            return null;
-        }
-        return currentFlowStack.size() > 0 ? currentFlowStack.remove(currentFlowStack.size()-1) : null;
+        currentFlowStack.add(new _FlowContextualInfo(flowReference, lastDisplayedViewId));
     }
     
-    private List<FlowReference> getCurrentFlowStack(FacesContext context, ClientWindow clientWindow)
+    private List<_FlowContextualInfo> getCurrentFlowStack(FacesContext context, ClientWindow clientWindow)
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
-        //LinkedList<FlowReference> currentFlowStack = (LinkedList<FlowReference>) sessionMap.get(currentFlowMapKey);
-        List<FlowReference> currentFlowStack = (List<FlowReference>) sessionMap.get(currentFlowMapKey);
+        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) sessionMap.get(currentFlowMapKey);
         return currentFlowStack;
     }
 
     @Override
     public String getLastDisplayedViewId(FacesContext context)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Object session = context.getExternalContext().getSession(false);
+        if (session == null)
+        {
+            return null;
+        }
+        ClientWindow clientWindow = context.getExternalContext().getClientWindow();
+        if (clientWindow == null)
+        {
+            return null;
+        }
+        
+        _FlowContextualInfo info = getCurrentFlowReference(context, clientWindow);
+        if (info == null)
+        {
+            return null;
+        }
+        return info.getLastDisplayedViewId();
     }
 
     @Override
@@ -548,18 +529,17 @@ public class FlowHandlerImpl extends FlowHandler
         else
         {
             // Return mode not active, activate it, copy the current flow stack.
-            List<FlowReference> currentFlowStack = getCurrentFlowStack(context, clientWindow);
+            List<_FlowContextualInfo> currentFlowStack = getCurrentFlowStack(context, clientWindow);
             
             Map<Object, Object> attributesMap = context.getAttributes();
             String returnFlowMapKey = CURRENT_FLOW_REQUEST_STACK + clientWindow.getId();
-            List<FlowReference> returnFlowStack = new ArrayList<FlowReference>(currentFlowStack);
+            List<_FlowContextualInfo> returnFlowStack = new ArrayList<_FlowContextualInfo>(currentFlowStack);
             attributesMap.put(returnFlowMapKey, returnFlowStack);
             context.getAttributes().put(RETURN_MODE, Boolean.TRUE);
         }
         
-        FlowReference flowReference = popFlowReferenceReturnMode(context, clientWindow, CURRENT_FLOW_REQUEST_STACK);
+        _FlowContextualInfo flowReference = popFlowReferenceReturnMode(context, clientWindow, CURRENT_FLOW_REQUEST_STACK);
         pushFlowReferenceReturnMode(context, clientWindow, FLOW_RETURN_STACK, flowReference);
-        //popFlowReferenceReturnMode(context, clientWindow);
     }
 
     @Override
@@ -572,12 +552,12 @@ public class FlowHandlerImpl extends FlowHandler
             return;
         }
         
-        FlowReference flowReference = popFlowReferenceReturnMode(context, clientWindow, CURRENT_FLOW_REQUEST_STACK);
-        pushFlowReferenceReturnMode(context, clientWindow, FLOW_RETURN_STACK, flowReference);
+        _FlowContextualInfo flowReference = popFlowReferenceReturnMode(context, clientWindow, FLOW_RETURN_STACK);
+        pushFlowReferenceReturnMode(context, clientWindow, CURRENT_FLOW_REQUEST_STACK, flowReference);
         
         Map<Object, Object> attributesMap = context.getAttributes();
-        String returnFlowMapKey = CURRENT_FLOW_REQUEST_STACK + clientWindow.getId();
-        List<FlowReference> returnFlowStack = (List<FlowReference>) attributesMap.get(returnFlowMapKey);
+        String returnFlowMapKey = FLOW_RETURN_STACK + clientWindow.getId();
+        List<_FlowContextualInfo> returnFlowStack = (List<_FlowContextualInfo>) attributesMap.get(returnFlowMapKey);
         if (returnFlowStack != null && returnFlowStack.isEmpty())
         {
             context.getAttributes().put(RETURN_MODE, Boolean.FALSE);
@@ -585,28 +565,25 @@ public class FlowHandlerImpl extends FlowHandler
     }
 
     private void pushFlowReferenceReturnMode(FacesContext context, ClientWindow clientWindow,
-            String stackKey, FlowReference flowReference)
+            String stackKey, _FlowContextualInfo flowReference)
     {
         Map<Object, Object> attributesMap = context.getAttributes();
         String currentFlowMapKey = stackKey + clientWindow.getId();
-        //LinkedList<FlowReference> currentFlowStack = (LinkedList<FlowReference>) sessionMap.get(currentFlowMapKey);
-        List<FlowReference> currentFlowStack = (List<FlowReference>) attributesMap.get(currentFlowMapKey);
+        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) attributesMap.get(currentFlowMapKey);
         if (currentFlowStack == null)
         {
-            //currentFlowStack = new LinkedList<FlowReference>();
-            currentFlowStack = new ArrayList<FlowReference>(4);
+            currentFlowStack = new ArrayList<_FlowContextualInfo>(4);
             attributesMap.put(currentFlowMapKey, currentFlowStack);
         }
         currentFlowStack.add(flowReference);
     }
 
-    private FlowReference popFlowReferenceReturnMode(FacesContext context, ClientWindow clientWindow,
+    private _FlowContextualInfo popFlowReferenceReturnMode(FacesContext context, ClientWindow clientWindow,
             String stackKey)
     {
         Map<Object, Object> attributesMap = context.getAttributes();
         String currentFlowMapKey = stackKey + clientWindow.getId();
-        //LinkedList<FlowReference> currentFlowStack = (LinkedList<FlowReference>) sessionMap.get(currentFlowMapKey);
-        List<FlowReference> currentFlowStack = (List<FlowReference>) attributesMap.get(currentFlowMapKey);
+        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) attributesMap.get(currentFlowMapKey);
         if (currentFlowStack == null)
         {
             return null;
@@ -614,45 +591,12 @@ public class FlowHandlerImpl extends FlowHandler
         return currentFlowStack.size() > 0 ? currentFlowStack.remove(currentFlowStack.size()-1) : null;
     }
     
-    private List<FlowReference> getCurrentReturnModeFlowStack(FacesContext context, ClientWindow clientWindow,
+    private List<_FlowContextualInfo> getCurrentReturnModeFlowStack(FacesContext context, ClientWindow clientWindow,
             String stackKey)
     {
         Map<Object, Object> attributesMap = context.getAttributes();
         String currentFlowMapKey = stackKey + clientWindow.getId();
-        //LinkedList<FlowReference> currentFlowStack = (LinkedList<FlowReference>) sessionMap.get(currentFlowMapKey);
-        List<FlowReference> currentFlowStack = (List<FlowReference>) attributesMap.get(currentFlowMapKey);
+        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) attributesMap.get(currentFlowMapKey);
         return currentFlowStack;
-    }
-        
-    private class FlowContext
-    {
-        public final static String FLOW_CONTEXT_KEY = "oam.flow.CTX";
-        
-        private List<String> currentFlowStack;
-        private int index;
-
-        public FlowContext getFlowContext(FacesContext facesContext)
-        {
-            FlowContext fctx = (FlowContext) facesContext.getAttributes().get(FLOW_CONTEXT_KEY);
-            if (fctx == null)
-            {
-                fctx = new FlowContext();
-            }
-            return fctx;
-        }
-        
-        public List<String> getCurrentFlowStack(FacesContext facesContext)
-        {
-            if (currentFlowStack == null)
-            {
-                Map<String, Object> sessionMap = facesContext.getExternalContext().getSessionMap();
-                String currentFlowMapKey = CURRENT_FLOW_STACK + 
-                    facesContext.getExternalContext().getClientWindow().getId();
-                // LinkedList<FlowReference> currentFlowStack = 
-                // (LinkedList<FlowReference>) sessionMap.get(currentFlowMapKey);
-                currentFlowStack = (List<String>) sessionMap.get(currentFlowMapKey);
-            }
-            return currentFlowStack;
-        }
     }
 }
