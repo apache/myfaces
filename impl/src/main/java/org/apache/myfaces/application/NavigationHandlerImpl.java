@@ -391,6 +391,25 @@ public class NavigationHandlerImpl
         return navigationCase;
     }
     
+    private Flow calculateTargetFlow(FacesContext facesContext, String outcome, 
+        FlowHandler flowHandler, Flow currentFlow, String toFlowDocumentId)
+    {
+        Flow targetFlow = null;
+        if (toFlowDocumentId != null)
+        {
+            targetFlow = flowHandler.getFlow(facesContext, toFlowDocumentId, outcome);
+        }
+        if (targetFlow == null && currentFlow != null)
+        {
+            targetFlow = flowHandler.getFlow(facesContext, currentFlow.getDefiningDocumentId(), outcome);
+        }
+        if (targetFlow == null)
+        {
+            targetFlow = flowHandler.getFlow(facesContext, "", outcome);
+        }
+        return targetFlow;
+    }
+    
     public NavigationCase getNavigationCommand(
         FacesContext facesContext, NavigationContext navigationContext, String fromAction, String outcome, 
         String toFlowDocumentId)
@@ -405,20 +424,9 @@ public class NavigationHandlerImpl
             Flow currentFlow = navigationContext.getCurrentFlow(facesContext);
             // JSF 2.2 section 7.4.2: "... When outside of a flow, view identifier 
             // has the additional possibility of being a flow id.
-            Flow targetFlow = null;
+            Flow targetFlow = calculateTargetFlow(facesContext, outcome, flowHandler, currentFlow, toFlowDocumentId);
             FlowCallNode targetFlowCallNode = null;
-            if (toFlowDocumentId != null)
-            {
-                targetFlow = flowHandler.getFlow(facesContext, toFlowDocumentId, outcome);
-            }
-            if (targetFlow == null && currentFlow != null)
-            {
-                targetFlow = flowHandler.getFlow(facesContext, currentFlow.getDefiningDocumentId(), outcome);
-            }
-            if (targetFlow == null)
-            {
-                targetFlow = flowHandler.getFlow(facesContext, "", outcome);
-            }
+
             boolean startFlow = false;
             boolean checkFlowNode = false;
             if (currentFlow != null)
@@ -542,8 +550,7 @@ public class NavigationHandlerImpl
                                     flowCallNode.getCalledFlowId(facesContext));
                                 if (targetFlow == null && !"".equals(calledFlowDocumentId))
                                 {
-                                    targetFlow = flowHandler.getFlow(facesContext, 
-                                        "", 
+                                    targetFlow = flowHandler.getFlow(facesContext, "", 
                                         flowCallNode.getCalledFlowId(facesContext));
                                 }
                                 if (targetFlow != null)
@@ -611,10 +618,10 @@ public class NavigationHandlerImpl
                                 navigationContext.addTargetFlow(currentFlow, null);
                                 outcomeToGo = fromOutcome;
                                 // The part where FlowHandler.NULL_FLOW is passed as documentId causes the effect of
-                                // do not take into account the documentId of the returned flow in the command. In theory
-                                // there is no Flow with defining documentId as FlowHandler.NULL_FLOW. It has sense
-                                // because the one who specify the return rules should be the current flow after it is
-                                // returned.
+                                // do not take into account the documentId of the returned flow in the command. In 
+                                // theory there is no Flow with defining documentId as FlowHandler.NULL_FLOW. It has 
+                                // sense because the one who specify the return rules should be the current flow 
+                                // after it is returned.
                                 navigationCase = getNavigationCommand(facesContext, 
                                         navigationContext, actionToGo, outcomeToGo, FlowHandler.NULL_FLOW);
                                 if (navigationCase != null)

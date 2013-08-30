@@ -19,7 +19,6 @@
 package org.apache.myfaces.flow;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -254,7 +253,8 @@ public class FlowHandlerImpl extends FlowHandler
                     // sourceFlow should match.
                     FlowReference sourceFlowReference = new FlowReference(
                             sourceFlow.getDefiningDocumentId(), sourceFlow.getId());
-                    if ( sourceFlowReference.equals(currentFlowStack.get(currentFlowStack.size()-1).getFlowReference()) )
+                    if ( sourceFlowReference.equals(
+                        currentFlowStack.get(currentFlowStack.size()-1).getFlowReference()) )
                     {
                         Map<String, Object> outboundParameters = doBeforeEnterFlow(context,
                             targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
@@ -538,7 +538,8 @@ public class FlowHandlerImpl extends FlowHandler
             context.getAttributes().put(RETURN_MODE, Boolean.TRUE);
         }
         
-        _FlowContextualInfo flowReference = popFlowReferenceReturnMode(context, clientWindow, CURRENT_FLOW_REQUEST_STACK);
+        _FlowContextualInfo flowReference = popFlowReferenceReturnMode(context, 
+            clientWindow, CURRENT_FLOW_REQUEST_STACK);
         pushFlowReferenceReturnMode(context, clientWindow, FLOW_RETURN_STACK, flowReference);
     }
 

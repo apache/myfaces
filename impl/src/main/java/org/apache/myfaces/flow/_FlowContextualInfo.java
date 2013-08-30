@@ -62,11 +62,13 @@ class _FlowContextualInfo implements Serializable
             return false;
         }
         final _FlowContextualInfo other = (_FlowContextualInfo) obj;
-        if (this.flowReference != other.flowReference && (this.flowReference == null || !this.flowReference.equals(other.flowReference)))
+        if (this.flowReference != other.flowReference && (this.flowReference == null || 
+            !this.flowReference.equals(other.flowReference)))
         {
             return false;
         }
-        if ((this.lastDisplayedViewId == null) ? (other.lastDisplayedViewId != null) : !this.lastDisplayedViewId.equals(other.lastDisplayedViewId))
+        if ((this.lastDisplayedViewId == null) ? (other.lastDisplayedViewId != null) : 
+            !this.lastDisplayedViewId.equals(other.lastDisplayedViewId))
         {
             return false;
         }
