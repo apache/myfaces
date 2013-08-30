@@ -216,6 +216,7 @@ public class NavigationHandlerImpl
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 //create new view
                 String newViewId = navigationCase.getToViewId(facesContext);
+                String lastDisplayedViewId = null;
                 // JSF 2.0 the javadoc of handleNavigation() says something like this 
                 // "...If the view has changed after an application action, call
                 // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
@@ -232,6 +233,8 @@ public class NavigationHandlerImpl
 
                 if (facesContext.getViewRoot() != null)
                 {
+                    lastDisplayedViewId = facesContext.getViewRoot().getViewId();
+                    
                     if (facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
                     {
                         facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
@@ -256,7 +259,7 @@ public class NavigationHandlerImpl
                             Flow targetFlow = navigationContext.getTargetFlows().get(i);
                             flowHandler.transition(facesContext, sourceFlow, targetFlow, 
                                 navigationContext.getFlowCallNodes().get(i), 
-                                navigationContext.getNavigationCase().getToViewId(facesContext));
+                                lastDisplayedViewId);
                             sourceFlow = targetFlow;
                         }
                     }
@@ -598,7 +601,10 @@ public class NavigationHandlerImpl
                                 {
                                     navigationContext.setSourceFlow(
                                         navigationContext.getCurrentFlow(facesContext));
-                                }                                    
+                                }
+                                String lastDisplayedViewId = navigationContext.getLastDisplayedViewId(facesContext, 
+                                            currentFlow);
+                                
                                 // This is the part when the pseudo "recursive call" is done. 
                                 navigationContext.popFlow(facesContext);
                                 currentFlow = navigationContext.getCurrentFlow(facesContext);
@@ -618,16 +624,11 @@ public class NavigationHandlerImpl
                                 else
                                 {
                                     // No navigation case
-                                    if (currentFlow != null)
+                                    if (lastDisplayedViewId != null)
                                     {
-                                        String lastDisplayedViewId = navigationContext.getLastDisplayedViewId(facesContext, 
-                                            currentFlow);
-                                        if (lastDisplayedViewId != null)
-                                        {
-                                            navigationCase = createNavigationCase(
-                                                viewId, flowNode.getId(), lastDisplayedViewId);
-                                            complete = true;
-                                        }
+                                        navigationCase = createNavigationCase(
+                                            viewId, flowNode.getId(), lastDisplayedViewId);
+                                        complete = true;
                                     }
                                 }
                                 if (currentFlow == null)
