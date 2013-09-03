@@ -54,7 +54,9 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
     public void doAfterEnterFlow(FacesContext facesContext, Flow flow)
     {
         // Reset current flow scope map
-        facesContext.getAttributes().remove(CURRENT_FLOW_SCOPE_MAP);
+        String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
+            flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();        
+        facesContext.getAttributes().remove(mapKey);
     }
 
     @Override
@@ -64,8 +66,10 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
             facesContext.getExternalContext().getClientWindow());
         String fullToken = FLOW_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + flowMapKey;
 
+        String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
+            flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();
         Map<Object, Object> map = (Map<Object, Object>) facesContext.getAttributes().get(
-            CURRENT_FLOW_SCOPE_MAP);
+            mapKey);
         if (map != null)
         {
             map.clear();
@@ -83,18 +87,20 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
         facesContext.getExternalContext().getSessionMap().remove(fullToken);
         
         // Reset current flow scope map
-        facesContext.getAttributes().remove(CURRENT_FLOW_SCOPE_MAP);
+        facesContext.getAttributes().remove(mapKey);
     }
 
     @Override
     public Map<Object, Object> getCurrentFlowScope(FacesContext facesContext)
     {
-        Map<Object, Object> map = (Map<Object, Object>) facesContext.getAttributes().get(
-            CURRENT_FLOW_SCOPE_MAP);
-        if (map == null)
+        Flow flow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Map<Object, Object> map = null;
+        if (flow != null)
         {
-            Flow flow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
-            if (flow != null)
+            String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
+                flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();
+            map = (Map<Object, Object>) facesContext.getAttributes().get(mapKey);
+            if (map == null)
             {
                 String flowMapKey = flow.getClientWindowFlowId(
                     facesContext.getExternalContext().getClientWindow());
@@ -103,7 +109,7 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
                 //String fullToken = FLOW_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + flowMapKey;
                 //map = createOrRestoreMap(facesContext, fullToken);
                 
-                facesContext.getAttributes().put(CURRENT_FLOW_SCOPE_MAP, map);
+                facesContext.getAttributes().put(mapKey, map);
             }
         }
         return map;

@@ -40,6 +40,8 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
     
     private final static String CURRENT_FLOW_SCOPE_MAP = "oam.flow.SCOPE_MAP";
     
+    static final char SEPARATOR_CHAR = '.';
+    
     @Override
     public Iterator<Flow> getAnnotatedFlows(FacesContext facesContext)
     {
@@ -70,6 +72,9 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
             FlowScopeBeanHolder beanHolder = CDIUtils.lookup(beanManager, FlowScopeBeanHolder.class);
             beanHolder.createCurrentFlowScope(context);
         }
+        String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
+                flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();
+        context.getAttributes().remove(mapKey);
     }
     
     @Override
@@ -81,6 +86,9 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
             FlowScopeBeanHolder beanHolder = CDIUtils.lookup(beanManager, FlowScopeBeanHolder.class);
             beanHolder.destroyCurrentFlowScope(context);
         }
+        String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
+                flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();
+        context.getAttributes().remove(mapKey);
     }
     
     public Map<Object, Object> getCurrentFlowScope(FacesContext facesContext)
@@ -88,14 +96,16 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         Flow flow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
         if (flow != null)
         {
+            String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
+                flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();
             Map<Object, Object> map = (Map<Object, Object>) facesContext.getAttributes().get(
-                CURRENT_FLOW_SCOPE_MAP);
+                mapKey);
             if (map == null)
             {
                 map = new FlowScopeMap(getBeanManager(), flow.getClientWindowFlowId(
                     facesContext.getExternalContext().getClientWindow()));
                 
-                facesContext.getAttributes().put(CURRENT_FLOW_SCOPE_MAP, map);
+                facesContext.getAttributes().put(mapKey, map);
             }
             return map;
         }
