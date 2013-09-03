@@ -18,11 +18,14 @@
  */
 package org.apache.myfaces.application.flow;
 
+import javax.el.ExpressionFactory;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
 import javax.faces.application.StateManager;
 import javax.faces.component.UICommand;
 import javax.faces.flow.Flow;
+import javax.faces.flow.FlowHandler;
+import javax.faces.render.ResponseStateManager;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.junit.Test;
@@ -256,4 +259,225 @@ public class FlowMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         
     }
 
+    @Test
+    public void testFlow1_4() throws Exception
+    {
+        setupRequest("/flow1_2.xhtml");
+        processLifecycleExecute();
+        
+        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        
+        NavigationCase navCase = handler.getNavigationCase(facesContext, null, "flow1");
+        
+        Assert.assertNotNull(navCase);
+        
+        // Check begin view node
+        Assert.assertEquals("/flow1/begin.xhtml", navCase.getToViewId(facesContext));
+        
+        processRender();
+       
+        //Enter flow 1
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:startFlow1");
+        submit(button);
+        
+        processLifecycleExecute();
+        
+        Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flow1", currentFlow.getId());
+        
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flow1","value1");
+        
+        processRender();
+        
+        UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow2");
+        submit(button2);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flow2", currentFlow.getId());
+        Assert.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flow1"));
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flow2","value2");
+        
+        processRender();
+        
+        //Check current view is the begin of flow2
+        Assert.assertEquals("/flow2/begin.xhtml", facesContext.getViewRoot().getViewId());
+        
+        UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:content");
+        submit(button3);
+        processLifecycleExecute();
+        processRender();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flow2", currentFlow.getId());
+
+        NavigationCase endCase = handler.getNavigationCase(facesContext, null, "back");
+        Assert.assertNotNull(endCase);
+        String toViewId = endCase.getToViewId(facesContext);
+        String fromOutcome = endCase.getFromOutcome();
+        String clientWindowId = facesContext.getExternalContext().getClientWindow().getId();
+        
+        tearDownRequest();
+        setupRequest(toViewId);
+        request.addParameter(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, FlowHandler.NULL_FLOW);
+        request.addParameter(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, fromOutcome);
+        request.addParameter(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, clientWindowId);
+        
+        processLifecycleExecute();
+        
+        // Check it should go back to flow1 
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flow1", currentFlow.getId());
+        Assert.assertTrue(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flow1"));
+        // Check lastDisplayedViewId
+        //Assert.assertEquals("/flow1/begin.xhtml", facesContext.getViewRoot().getViewId());
+        
+        processRender();
+        
+        endCase = handler.getNavigationCase(facesContext, null, "back");
+        Assert.assertNotNull(endCase);
+
+        toViewId = endCase.getToViewId(facesContext);
+        fromOutcome = endCase.getFromOutcome();
+        clientWindowId = facesContext.getExternalContext().getClientWindow().getId();
+        
+        tearDownRequest();
+        setupRequest(toViewId);
+        request.addParameter(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, FlowHandler.NULL_FLOW);
+        request.addParameter(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, fromOutcome);
+        request.addParameter(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, clientWindowId);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNull(currentFlow);
+        Assert.assertEquals("/flow1_2.xhtml", facesContext.getViewRoot().getViewId());
+    }     
+    
+    @Test
+    public void testFlow1_5() throws Exception
+    {
+        setupRequest("/flow1_2.xhtml");
+        processLifecycleExecute();
+        
+        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        
+        NavigationCase navCase = handler.getNavigationCase(facesContext, null, "flow3");
+        
+        Assert.assertNotNull(navCase); 
+        
+        // Check begin view node
+        Assert.assertEquals("/flow1/begin.xhtml", navCase.getToViewId(facesContext));
+        
+        processRender();
+        String clientWindowId = facesContext.getExternalContext().getClientWindow().getId();
+        
+        setupRequest(navCase.getToViewId(facesContext));
+        request.addParameter(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, navCase.getToFlowDocumentId());
+        request.addParameter(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, navCase.getFromOutcome());
+        request.addParameter(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, clientWindowId);
+       
+        //Enter flow 1
+        //UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:startFlow1");
+        //submit(button);
+        
+        processLifecycleExecute();
+        
+        Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flow1", currentFlow.getId());
+        
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flow1","value1");
+        
+        processRender();
+        
+        //UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow2");
+        //submit(button2);
+        navCase = handler.getNavigationCase(facesContext, null, "call_flow2");
+        
+        clientWindowId = facesContext.getExternalContext().getClientWindow().getId();
+        
+        setupRequest(navCase.getToViewId(facesContext));
+        request.addParameter(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, navCase.getToFlowDocumentId());
+        request.addParameter(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, navCase.getFromOutcome());
+        request.addParameter(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, clientWindowId);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flow2", currentFlow.getId());
+        Assert.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flow1"));
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flow2","value2");
+        
+        processRender();
+        
+        //Check current view is the begin of flow2
+        Assert.assertEquals("/flow2/begin.xhtml", facesContext.getViewRoot().getViewId());
+        
+        UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:content");
+        submit(button3);
+        processLifecycleExecute();
+        processRender();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flow2", currentFlow.getId());
+
+        NavigationCase endCase = handler.getNavigationCase(facesContext, null, "back");
+        Assert.assertNotNull(endCase);
+        String toViewId = endCase.getToViewId(facesContext);
+        String fromOutcome = endCase.getFromOutcome();
+        clientWindowId = facesContext.getExternalContext().getClientWindow().getId();
+        
+        tearDownRequest();
+        setupRequest(toViewId);
+        request.addParameter(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, FlowHandler.NULL_FLOW);
+        request.addParameter(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, fromOutcome);
+        request.addParameter(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, clientWindowId);
+        
+        processLifecycleExecute();
+        
+        // Check it should go back to flow1 
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flow1", currentFlow.getId());
+        Assert.assertTrue(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flow1"));
+        // Check lastDisplayedViewId (since it was GET, it should be the start viewId)
+        Assert.assertEquals("/flow2/begin.xhtml", facesContext.getViewRoot().getViewId());
+        
+        processRender();
+        
+        endCase = handler.getNavigationCase(facesContext, null, "switchBack");
+        Assert.assertNotNull(endCase);
+
+        toViewId = endCase.getToViewId(facesContext);
+        // Check if the dynamic outcome return hack has been correctly resolved. 
+        Assert.assertEquals(toViewId, "/flow3/content.xhtml");
+        fromOutcome = endCase.getFromOutcome();
+        clientWindowId = facesContext.getExternalContext().getClientWindow().getId();
+        
+        tearDownRequest();
+        setupRequest(toViewId);
+        request.addParameter(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, FlowHandler.NULL_FLOW);
+        request.addParameter(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, fromOutcome);
+        request.addParameter(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, clientWindowId);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        
+        //Assert.assertEquals("/flow1_2.xhtml", facesContext.getViewRoot().getViewId());
+    }    
+    
+    protected ExpressionFactory createExpressionFactory()
+    {
+        return new org.apache.el.ExpressionFactoryImpl();
+    }
 }

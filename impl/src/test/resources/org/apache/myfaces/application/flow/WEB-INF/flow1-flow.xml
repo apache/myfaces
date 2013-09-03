@@ -23,8 +23,18 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
+    <name>flow_def_1</name>
+    
     <flow-definition id="flow1">
         <start-node>begin</start-node>
+        
+        <inbound-parameter>
+            <!-- The idea is when entering a flow pass the return outcome in
+                 the flow call. This value will be saved in flowScope
+                 and used later to calculate the returning outcome -->
+            <name>backOutcome</name>
+            <value>#{flowScope.backOutcome}</value>
+        </inbound-parameter>
 
         <flow-return id="end">
             <from-outcome>exit</from-outcome>
@@ -34,6 +44,21 @@
             <!-- note the outcome will not be resolved, so the
             last displayed view should be used -->
             <from-outcome>back</from-outcome>
+        </flow-return>
+        
+        <!-- The idea is use a switch combo to get back, since
+             the from-outcome of the switch cannot receive
+             EL expressions -->
+        <switch id="switchBack">
+            <case>
+                <if>#{not empty flowScope.backOutcome}</if>
+                <from-outcome>backEL</from-outcome>
+            </case>
+            <default-outcome>back</default-outcome>
+        </switch>
+        
+        <flow-return id="backEL">
+            <from-outcome>#{flowScope.backOutcome}</from-outcome>
         </flow-return>
         
         <navigation-rule>
@@ -97,6 +122,41 @@
         </view>
     </flow-definition>
     
+    <!-- The idea of this flow is call a second flow, so as soon as
+    the algorithm try to enter flow3 it should enter flow1. -->
+    <flow-definition id="flow3">
+        <start-node>call_flow1</start-node>
+        
+        <flow-call id="call_flow1">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flow1</flow-id>
+            </flow-reference>
+            <outbound-parameter>
+                <name>backOutcome</name>
+                <value>content</value>
+            </outbound-parameter>
+        </flow-call>
+        
+        <navigation-rule>
+            <from-view-id>*</from-view-id>
+            <navigation-case>
+                <from-action>flow1</from-action>
+                <from-outcome>exit</from-outcome>
+                <to-view-id>content</to-view-id>
+            </navigation-case>
+        </navigation-rule>
+        
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <view id="content">
+            <vdl-document>/flow3/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>
+    
     <navigation-rule>
         <from-view-id>*</from-view-id>
         <!-- End Flow 1 -->
@@ -105,6 +165,7 @@
             <from-outcome>exit</from-outcome>
             <to-view-id>/flow1_end.xhtml</to-view-id>
         </navigation-case>
+        
     </navigation-rule>
     
 </faces-config>

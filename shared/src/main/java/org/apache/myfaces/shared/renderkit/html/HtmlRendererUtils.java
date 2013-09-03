@@ -34,11 +34,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ViewHandler;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -64,7 +59,6 @@ import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
-import org.apache.myfaces.shared.application.NavigationUtils;
 import org.apache.myfaces.shared.component.DisplayValueOnlyCapable;
 import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -74,6 +68,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared.renderkit.html.util.OutcomeTargetUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -1635,101 +1630,7 @@ public final class HtmlRendererUtils
     public static String getOutcomeTargetHref(FacesContext facesContext,
             UIOutcomeTarget component) throws IOException
     {
-        String outcome = component.getOutcome();
-        outcome = (outcome == null) ? facesContext.getViewRoot().getViewId()
-                : outcome;
-        outcome = ((outcome == null) ? STR_EMPTY : outcome.trim());
-        // Get the correct URL for the outcome.
-        NavigationHandler nh = facesContext.getApplication().getNavigationHandler();
-        if (!(nh instanceof ConfigurableNavigationHandler))
-        {
-            throw new FacesException(
-                    "Navigation handler must be an instance of "
-                            + "ConfigurableNavigationHandler for using h:link or h:button");
-        }
-        ConfigurableNavigationHandler navigationHandler = (ConfigurableNavigationHandler) nh;
-        // fromAction is null because there is no action method that was called to get the outcome
-        NavigationCase navigationCase = navigationHandler.getNavigationCase(
-                facesContext, null, outcome);
-        // when navigation case is null, force the link or button to be disabled and log a warning
-        if (navigationCase == null)
-        {
-            // log a warning
-            log.warning("Could not determine NavigationCase for UIOutcomeTarget component "
-                    + RendererUtils.getPathToComponent(component));
-
-            return null;
-        }
-        Map<String, List<String>> parameters = null;
-        // handle URL parameters
-        if (component.getChildCount() > 0)
-        {
-            List<UIParameter> validParams = getValidUIParameterChildren(
-                    facesContext, component.getChildren(), true, false);
-            if (validParams.size() > 0)
-            {
-                parameters = new HashMap<String, List<String>>();
-            }
-            for (int i = 0, size = validParams.size(); i < size; i++)
-            {
-                UIParameter param = validParams.get(i);
-                String name = param.getName();
-                Object value = param.getValue();
-                if (parameters.containsKey(name))
-                {
-                    parameters.get(name).add(value.toString());
-                }
-                else
-                {
-                    List<String> list = new ArrayList<String>(1);
-                    list.add(value.toString());
-                    parameters.put(name, list);
-                }
-            }
-        }
-        // handle NavigationCase parameters
-        Map<String, List<String>> navigationCaseParams = 
-            NavigationUtils.getEvaluatedNavigationParameters(facesContext,
-                navigationCase.getParameters());
-        if (navigationCaseParams != null)
-        {
-            if (parameters == null)
-            {
-                parameters = new HashMap<String, List<String>>();
-            }
-            //parameters.putAll(navigationCaseParams);
-            for (Map.Entry<String, List<String>> entry : navigationCaseParams
-                    .entrySet())
-            {
-                if (!parameters.containsKey(entry.getKey()))
-                {
-                    parameters.put(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-        if (parameters == null)
-        {
-            parameters = Collections.emptyMap();
-        }
-        // In theory the precedence order to deal with params is this:
-        // component parameters, navigation-case parameters, view parameters
-        // getBookmarkableURL deal with this details.
-        ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
-        String href = viewHandler.getBookmarkableURL(facesContext,
-                navigationCase.getToViewId(facesContext),
-                parameters, navigationCase.isIncludeViewParams() || component.isIncludeViewParams());
-        // handle fragment (viewId#fragment)
-        String fragment = (String) component.getAttributes().get("fragment");
-        if (fragment != null)
-        {
-            fragment = fragment.trim();
-
-            if (fragment.length() > 0)
-            {
-                href += "#" + fragment;
-            }
-        }
-        return href;
+        return OutcomeTargetUtils.getOutcomeTargetHref(facesContext, component);
     }
 
     private static final String HTML_CONTENT_TYPE = "text/html";
@@ -2296,55 +2197,8 @@ public final class HtmlRendererUtils
             FacesContext facesContext, List<UIComponent> children,
             boolean skipNullValue, boolean skipUnrendered, boolean skipNullName)
     {
-        List<UIParameter> params = null;
-        for (int i = 0, size = children.size(); i < size; i++)
-        {
-            UIComponent child = children.get(i);
-            if (child instanceof UIParameter)
-            {
-                UIParameter param = (UIParameter) child;
-                // check for the disable attribute (since 2.0)
-                // and the render attribute (only if skipUnrendered is true)
-                if (param.isDisable() || (skipUnrendered && !param.isRendered()))
-                {
-                    // ignore this UIParameter and continue
-                    continue;
-                }
-                // check the name
-                String name = param.getName();
-                if (skipNullName && (name == null || STR_EMPTY.equals(name)))
-                {
-                    // warn for a null-name
-                    log.log(Level.WARNING, "The UIParameter " + RendererUtils.getPathToComponent(param)
-                                    + " has a name of null or empty string and thus will not be added to the URL.");
-                    // and skip it
-                    continue;
-                }
-                // check the value
-                if (skipNullValue && param.getValue() == null)
-                {
-                    if (facesContext.isProjectStage(ProjectStage.Development))
-                    {
-                        // inform the user about the null value when in Development stage
-                        log.log(Level.INFO, "The UIParameter " + RendererUtils.getPathToComponent(param)
-                                        + " has a value of null and thus will not be added to the URL.");
-                    }
-                    // skip a null-value
-                    continue;
-                }
-                // add the param
-                if (params == null)
-                {
-                    params = new ArrayList<UIParameter>();
-                }
-                params.add(param);
-            }
-        }
-        if (params == null)
-        {
-            params = Collections.emptyList();
-        }
-        return params;
+        return OutcomeTargetUtils.getValidUIParameterChildren(
+            facesContext, children, skipNullValue, skipUnrendered, skipNullName);
     }
 
     /**

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.shared.renderkit;
 
+import javax.faces.event.ActionListener;
+
 
 /**
  * Constant declarations for JSF tags
@@ -166,4 +168,6 @@ public interface JSFAttr
     // HtmlSelectManyCheckbox attributes
     String LAYOUT_WIDTH_ATTR           = "layoutWidth";
 
+    //
+    String TO_FLOW_DOCUMENT_ID_ATTR    = ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME;
 }

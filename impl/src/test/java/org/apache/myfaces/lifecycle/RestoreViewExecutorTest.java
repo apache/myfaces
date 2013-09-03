@@ -104,7 +104,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
         expect(vdl.getViewMetadata(same(_facesContext), eq("calculatedViewId")))
             .andReturn(null);
         expect(_viewHandler.createView(same(_facesContext), eq("calculatedViewId"))).andReturn(viewRoot);
-
+        expect(_application.getFlowHandler()).andReturn(null);
         _application.publishEvent(same(_facesContext), same(PostAddToViewEvent.class), same(viewRoot));
         _facesContext.setViewRoot(same(viewRoot));
         expect(_facesContext.getViewRoot()).andReturn(viewRoot);

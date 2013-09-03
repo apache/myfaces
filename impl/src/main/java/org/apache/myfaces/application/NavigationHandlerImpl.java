@@ -216,7 +216,7 @@ public class NavigationHandlerImpl
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 //create new view
                 String newViewId = navigationCase.getToViewId(facesContext);
-                String lastDisplayedViewId = null;
+
                 // JSF 2.0 the javadoc of handleNavigation() says something like this 
                 // "...If the view has changed after an application action, call
                 // PartialViewContext.setRenderAll(true)...". The effect is that ajax requests
@@ -233,8 +233,6 @@ public class NavigationHandlerImpl
 
                 if (facesContext.getViewRoot() != null)
                 {
-                    lastDisplayedViewId = facesContext.getViewRoot().getViewId();
-                    
                     if (facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
                     {
                         facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
@@ -257,9 +255,15 @@ public class NavigationHandlerImpl
                         for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
                         {
                             Flow targetFlow = navigationContext.getTargetFlows().get(i);
+                            // TODO: Here there is an inconsistency with the spec. The javadoc
+                            // for transition says "... toViewId - the viewId of the view 
+                            // being displayed as a result of this transition. This parameter 
+                            // makes it possible to implement getLastDisplayedViewId(
+                            // javax.faces.context.FacesContext).  ...", but JSF 2.2 section
+                            // 7.4.2.1 says "...  ..."
                             flowHandler.transition(facesContext, sourceFlow, targetFlow, 
                                 navigationContext.getFlowCallNodes().get(i), 
-                                lastDisplayedViewId);
+                                navigationContext.getNavigationCase().getToViewId(facesContext));
                             sourceFlow = targetFlow;
                         }
                     }
@@ -428,6 +432,8 @@ public class NavigationHandlerImpl
             FlowCallNode targetFlowCallNode = null;
 
             boolean startFlow = false;
+            String startFlowDocumentId = null;
+            String startFlowId = null;
             boolean checkFlowNode = false;
             if (currentFlow != null)
             {
@@ -469,6 +475,11 @@ public class NavigationHandlerImpl
                 {
                     if (startFlow)
                     {
+                        if (startFlowId == null)
+                        {
+                            startFlowDocumentId = targetFlow.getDefiningDocumentId();
+                            startFlowId = targetFlowCallNode == null ? targetFlow.getId() : targetFlowCallNode.getId();
+                        }
                         navigationContext.setSourceFlow(currentFlow);
                         navigationContext.addTargetFlow(targetFlow, targetFlowCallNode);
                         targetFlowCallNode = null;
@@ -531,28 +542,8 @@ public class NavigationHandlerImpl
                             {
                                 // "... If the node is a FlowCallNode, save it aside as facesFlowCallNode. ..."
                                 FlowCallNode flowCallNode = (FlowCallNode) flowNode;
-
-                                // " ... Let flowId be the value of its calledFlowId property and flowDocumentId 
-                                // be the value of its calledFlowDocumentId property. .."
-
-                                // " ... If no flowDocumentId exists for the node, let it be the string 
-                                // resulting from flowId + "/" + flowId + ".xhtml". ..." 
-                                // -=Leonardo Uribe=- flowDocumentId is inconsistent, waiting for answer of the EG,
-                                // for not let it be null.
-
-                                String calledFlowDocumentId = flowCallNode.getCalledFlowDocumentId(facesContext);
-                                if (calledFlowDocumentId == null)
-                                {
-                                    calledFlowDocumentId = currentFlow.getDefiningDocumentId();
-                                }
-                                targetFlow = flowHandler.getFlow(facesContext, 
-                                    calledFlowDocumentId, 
-                                    flowCallNode.getCalledFlowId(facesContext));
-                                if (targetFlow == null && !"".equals(calledFlowDocumentId))
-                                {
-                                    targetFlow = flowHandler.getFlow(facesContext, "", 
-                                        flowCallNode.getCalledFlowId(facesContext));
-                                }
+                                targetFlow = calculateFlowCallTargetFlow(facesContext, 
+                                    flowHandler, flowCallNode, currentFlow);
                                 if (targetFlow != null)
                                 {
                                     targetFlowCallNode = flowCallNode;
@@ -565,30 +556,14 @@ public class NavigationHandlerImpl
                                     // reference to the start node and execute this algorithm again, on that start node.
                                     complete = true;
                                 }
-                                //complete = true;
                             }
                             if (!complete && flowNode instanceof MethodCallNode)
                             {
                                 MethodCallNode methodCallNode = (MethodCallNode) flowNode;
-                                String vdlViewIdentifier = null;
-                                MethodExpression method = methodCallNode.getMethodExpression();
-                                if (method != null)
-                                {
-                                    Object value = invokeMethodCallNode(facesContext, methodCallNode);
-                                    if (value != null)
-                                    {
-                                        vdlViewIdentifier = value.toString();
-                                    }
-                                    else if (methodCallNode.getOutcome() != null)
-                                    {
-                                        vdlViewIdentifier = (String) methodCallNode.getOutcome().getValue(
-                                            facesContext.getELContext());
-                                    }
-                                }
+                                String vdlViewIdentifier = calculateVdlViewIdentifier(facesContext, methodCallNode);
                                 // note a vdlViewIdentifier could be a flow node too
                                 if (vdlViewIdentifier != null)
                                 {
-                                    //navigationCase = createNavigationCase(viewId, outcomeToGo, vdlViewIdentifier);
                                     outcomeToGo = vdlViewIdentifier;
                                     actionToGo = currentFlow.getId();
                                     continue;
@@ -609,14 +584,14 @@ public class NavigationHandlerImpl
                                     navigationContext.setSourceFlow(
                                         navigationContext.getCurrentFlow(facesContext));
                                 }
-                                String lastDisplayedViewId = navigationContext.getLastDisplayedViewId(facesContext, 
-                                            currentFlow);
-                                
                                 // This is the part when the pseudo "recursive call" is done. 
                                 navigationContext.popFlow(facesContext);
                                 currentFlow = navigationContext.getCurrentFlow(facesContext);
                                 navigationContext.addTargetFlow(currentFlow, null);
                                 outcomeToGo = fromOutcome;
+                                String lastDisplayedViewId = navigationContext.getLastDisplayedViewId(facesContext, 
+                                            currentFlow);
+                                
                                 // The part where FlowHandler.NULL_FLOW is passed as documentId causes the effect of
                                 // do not take into account the documentId of the returned flow in the command. In 
                                 // theory there is no Flow with defining documentId as FlowHandler.NULL_FLOW. It has 
@@ -626,6 +601,8 @@ public class NavigationHandlerImpl
                                         navigationContext, actionToGo, outcomeToGo, FlowHandler.NULL_FLOW);
                                 if (navigationCase != null)
                                 {
+                                    navigationCase = new FlowNavigationCase(navigationCase, 
+                                        flowNode.getId(), FlowHandler.NULL_FLOW);
                                     complete = true;
                                 }
                                 else
@@ -634,7 +611,7 @@ public class NavigationHandlerImpl
                                     if (lastDisplayedViewId != null)
                                     {
                                         navigationCase = createNavigationCase(
-                                            viewId, flowNode.getId(), lastDisplayedViewId);
+                                            viewId, flowNode.getId(), lastDisplayedViewId, FlowHandler.NULL_FLOW);
                                         complete = true;
                                     }
                                 }
@@ -692,6 +669,10 @@ public class NavigationHandlerImpl
                     navigationCase = getOutcomeNavigationCase (facesContext, actionToGo, outcomeToGo);
                 }
             }
+            if (startFlowId != null)
+            {
+                navigationCase = new FlowNavigationCase(navigationCase, startFlowId, startFlowDocumentId);
+            }
         }
         if (outcome != null && navigationCase == null)
         {
@@ -712,6 +693,54 @@ public class NavigationHandlerImpl
         }
         return navigationContext.getNavigationCase();
         // if navigationCase == null, will stay on current view
+    }
+    
+    private Flow calculateFlowCallTargetFlow(FacesContext facesContext, FlowHandler flowHandler,
+        FlowCallNode flowCallNode, Flow currentFlow)
+    {
+        Flow targetFlow = null;
+        // " ... Let flowId be the value of its calledFlowId property and flowDocumentId 
+        // be the value of its calledFlowDocumentId property. .."
+
+        // " ... If no flowDocumentId exists for the node, let it be the string 
+        // resulting from flowId + "/" + flowId + ".xhtml". ..." 
+        // -=Leonardo Uribe=- flowDocumentId is inconsistent, waiting for answer of the EG,
+        // for not let it be null.
+
+        String calledFlowDocumentId = flowCallNode.getCalledFlowDocumentId(facesContext);
+        if (calledFlowDocumentId == null)
+        {
+            calledFlowDocumentId = currentFlow.getDefiningDocumentId();
+        }
+        targetFlow = flowHandler.getFlow(facesContext, 
+            calledFlowDocumentId, 
+            flowCallNode.getCalledFlowId(facesContext));
+        if (targetFlow == null && !"".equals(calledFlowDocumentId))
+        {
+            targetFlow = flowHandler.getFlow(facesContext, "", 
+                flowCallNode.getCalledFlowId(facesContext));
+        }
+        return targetFlow;
+    }
+    
+    private String calculateVdlViewIdentifier(FacesContext facesContext, MethodCallNode methodCallNode)
+    {
+        String vdlViewIdentifier = null;
+        MethodExpression method = methodCallNode.getMethodExpression();
+        if (method != null)
+        {
+            Object value = invokeMethodCallNode(facesContext, methodCallNode);
+            if (value != null)
+            {
+                vdlViewIdentifier = value.toString();
+            }
+            else if (methodCallNode.getOutcome() != null)
+            {
+                vdlViewIdentifier = (String) methodCallNode.getOutcome().getValue(
+                    facesContext.getELContext());
+            }
+        }
+        return vdlViewIdentifier;
     }
     
     private Object invokeMethodCallNode(FacesContext facesContext, MethodCallNode methodCallNode)
@@ -799,6 +828,13 @@ public class NavigationHandlerImpl
     private NavigationCase createNavigationCase(String fromViewId, String outcome, String toViewId)
     {
         return new NavigationCase(fromViewId, null, outcome, null, toViewId, null, false, false);
+    }
+    
+    private NavigationCase createNavigationCase(String fromViewId, String outcome, 
+        String toViewId, String toFlowDocumentId)
+    {
+        return new NavigationCase(fromViewId, null, outcome, null, toViewId, 
+            toFlowDocumentId, null, false, false);
     }
     
     /**
@@ -1386,6 +1422,7 @@ public class NavigationHandlerImpl
         private List<FlowCallNode> targetFlowCallNodes;
         private List<Flow> currentFlows;
         private Map<Flow, String> lastDisplayedViewIdMap;
+        private String rootLastDisplayedViewId;
 
         public NavigationContext()
         {
@@ -1461,7 +1498,9 @@ public class NavigationHandlerImpl
                         flowHandler.pushReturnMode(facesContext);
                         curFlow = flowHandler.getCurrentFlow(facesContext);
                     }
-                
+
+                    rootLastDisplayedViewId = flowHandler.getLastDisplayedViewId(facesContext);
+
                     for (int i = 0; i < currentFlows.size(); i++)
                     {
                         flowHandler.popReturnMode(facesContext);
@@ -1497,6 +1536,10 @@ public class NavigationHandlerImpl
         
         public String getLastDisplayedViewId(FacesContext facesContext, Flow flow)
         {
+            if (flow == null)
+            {
+                return rootLastDisplayedViewId;
+            }
             if (lastDisplayedViewIdMap != null)
             {
                 return lastDisplayedViewIdMap.get(flow);

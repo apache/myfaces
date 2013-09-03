@@ -24,13 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.application.ConfigurableNavigationHandler;
+import javax.faces.application.NavigationCase;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.NavigationHandlerWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowCallNode;
 import javax.faces.flow.FlowHandler;
+import javax.faces.flow.FlowNode;
 import javax.faces.flow.Parameter;
+import javax.faces.flow.ReturnNode;
 import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
@@ -43,6 +46,7 @@ import org.apache.myfaces.spi.FacesFlowProviderFactory;
 public class FlowHandlerImpl extends FlowHandler
 {
     private final static String CURRENT_FLOW_STACK = "oam.flow.STACK.";
+    private final static String ROOT_LAST_VIEW_ID = "oam.flow.ROOT_LAST_VIEW_ID.";
     
     private final static String RETURN_MODE = "oam.flow.RETURN_MODE";
     private final static String FLOW_RETURN_STACK = "oam.flow.RETURN_STACK.";
@@ -215,7 +219,7 @@ public class FlowHandlerImpl extends FlowHandler
                     _FlowContextualInfo fci = currentFlowStack.get(i);
                     FlowReference fr = fci.getFlowReference();
                     doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
-                    currentFlowStack.remove(i);
+                    popFlowReference(context, clientWindow, currentFlowStack, i);
                 }
             }            
         }
@@ -245,7 +249,7 @@ public class FlowHandlerImpl extends FlowHandler
                         _FlowContextualInfo fci = currentFlowStack.get(i);
                         FlowReference fr = fci.getFlowReference();
                         doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
-                        currentFlowStack.remove(i);
+                        popFlowReference(context, clientWindow, currentFlowStack, i);
                     }
                 }
                 else
@@ -271,7 +275,7 @@ public class FlowHandlerImpl extends FlowHandler
                             _FlowContextualInfo fci = currentFlowStack.get(i);
                             FlowReference fr = fci.getFlowReference();
                             doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
-                            currentFlowStack.remove(i);
+                            popFlowReference(context, clientWindow, currentFlowStack, i);
                         }
                         
                         Map<String, Object> outboundParameters = doBeforeEnterFlow(context,
@@ -405,9 +409,241 @@ public class FlowHandlerImpl extends FlowHandler
     @Override
     public void clientWindowTransition(FacesContext context)
     {
+        String flowDocumentIdRequestParam = (String) context.getExternalContext().
+            getRequestParameterMap().get(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME);
+        
+        if (flowDocumentIdRequestParam != null)
+        {
+            String flowIdRequestParam = (String) context.getExternalContext().
+                getRequestParameterMap().get(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME);
+            
+            if (flowIdRequestParam == null)
+            {
+                // If we don't have an fromOutcome, it is not possible to calculate the transitions
+                // involved.
+                return;
+            }
+            
+            FlowHandler flowHandler = context.getApplication().getFlowHandler();
+            ConfigurableNavigationHandler nh = 
+                (ConfigurableNavigationHandler) context.getApplication().getNavigationHandler();
+            
+            if (FlowHandler.NULL_FLOW.equals(flowDocumentIdRequestParam))
+            {
+                // It is a return node. The trick here is we need to calculate
+                // where the flow should return, because that information was not passed
+                // in the parameters of the link. 
+                String toFlowDocumentId = FlowHandler.NULL_FLOW;
+                String targetFlowId = null;
+                String fromOutcome = flowIdRequestParam;
+                
+                boolean failed = false;
+                int i = 0;
+                while (FlowHandler.NULL_FLOW.equals(toFlowDocumentId) && !failed)
+                {
+                    Flow currentFlow = flowHandler.getCurrentFlow(context);
+                    if (currentFlow == null)
+                    {
+                        failed = true;
+                        break;
+                    }
+                    String currentLastDisplayedViewId = flowHandler.getLastDisplayedViewId(context);
+                    FlowNode node = currentFlow.getNode(fromOutcome);
+                    if (node instanceof ReturnNode)
+                    {
+                        // Get the navigation case using the outcome
+                        flowHandler.pushReturnMode(context);
+                        currentFlow = flowHandler.getCurrentFlow(context);
+                        i++;
+                        
+                        NavigationCase navCase = nh.getNavigationCase(context, null, 
+                            ((ReturnNode) node).getFromOutcome(context), FlowHandler.NULL_FLOW);
+
+                        if (navCase == null)
+                        {
+                            if (currentLastDisplayedViewId != null)
+                            {
+                                if (currentFlow != null)
+                                {
+                                    toFlowDocumentId = currentFlow.getDefiningDocumentId();
+                                    targetFlowId = currentFlow.getId();
+                                }
+                                else
+                                {
+                                    // No active flow
+                                    toFlowDocumentId = null;
+                                }
+                            }
+                            else
+                            {
+                                // Invalid state because no navCase and 
+                                // no saved lastDisplayedViewId into session
+                                failed = true;
+                            }
+                        }
+                        else
+                        {
+                            if (FlowHandler.NULL_FLOW.equals(navCase.getToFlowDocumentId()))
+                            {
+                                fromOutcome = navCase.getFromOutcome();
+                            }
+                            else
+                            {
+                                // The absence of FlowHandler.NULL_FLOW means the return went somewhere else.
+                                if (currentFlow != null)
+                                {
+                                    toFlowDocumentId = currentFlow.getDefiningDocumentId();
+                                    targetFlowId = currentFlow.getId();
+                                }
+                                else
+                                {
+                                    // No active flow
+                                    toFlowDocumentId = null;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        failed = true;
+                    }
+                }
+                for (int j = 0; j<i; j++)
+                {
+                    flowHandler.popReturnMode(context);
+                }
+                if (failed)
+                {
+                    // Do nothing.
+                }
+                else 
+                {
+                    Flow targetFlow = targetFlowId == null ? null : 
+                        getFlow(context, toFlowDocumentId, targetFlowId);
+                    //Call transitions.
+                    flowHandler.transition(context, 
+                        flowHandler.getCurrentFlow(context),
+                        targetFlow, null, context.getViewRoot().getViewId());
+                }
+            }
+            else
+            {
+                // This transition is for start a new flow. In this case 
+                // FlowHandler.FLOW_ID_REQUEST_PARAM_NAME could be the flow name to enter
+                // or the flow call node to activate.
+                Flow currentFlow = flowHandler.getCurrentFlow(context);
+                FlowNode node = currentFlow != null ? currentFlow.getNode(flowIdRequestParam) : null;
+                Flow targetFlow = null;
+                FlowCallNode outboundCallNode = null;
+                if (node != null && node instanceof FlowCallNode)
+                {
+                    outboundCallNode = (FlowCallNode) node;
+                    
+                    String calledFlowDocumentId = outboundCallNode.getCalledFlowDocumentId(context);
+                    if (calledFlowDocumentId == null)
+                    {
+                        calledFlowDocumentId = currentFlow.getDefiningDocumentId();
+                    }
+                    targetFlow = flowHandler.getFlow(context, 
+                        calledFlowDocumentId, 
+                        outboundCallNode.getCalledFlowId(context));
+                    if (targetFlow == null && !"".equals(calledFlowDocumentId))
+                    {
+                        targetFlow = flowHandler.getFlow(context, "", 
+                            outboundCallNode.getCalledFlowId(context));
+                    }
+                    
+                    //targetFlow = flowHandler.getFlow(context, 
+                    //    outboundCallNode.getCalledFlowDocumentId(context), 
+                    //    outboundCallNode.getCalledFlowId(context));
+                }
+                else
+                {
+                    targetFlow = flowHandler.getFlow(context, flowDocumentIdRequestParam, flowIdRequestParam);
+                }
+                
+                if (targetFlow != null)
+                {
+                    // Invoke transition
+                    flowHandler.transition(context, 
+                        currentFlow, targetFlow, outboundCallNode, context.getViewRoot().getViewId());
+
+                    // TODO: Handle 2 or more flow start.
+                    boolean failed = false;
+                    
+                    String startNodeId = targetFlow.getStartNodeId();
+                    while (startNodeId != null && !failed)
+                    {
+                        NavigationCase navCase = nh.getNavigationCase(context, null, 
+                                    startNodeId, targetFlow.getDefiningDocumentId());
+                        
+                        if (navCase != null && navCase.getToFlowDocumentId() != null)
+                        {
+                            currentFlow = flowHandler.getCurrentFlow(context);
+                            node = currentFlow.getNode(navCase.getFromOutcome());
+                            if (node != null && node instanceof FlowCallNode)
+                            {
+                                outboundCallNode = (FlowCallNode) node;
+                                
+                                String calledFlowDocumentId = outboundCallNode.getCalledFlowDocumentId(context);
+                                if (calledFlowDocumentId == null)
+                                {
+                                    calledFlowDocumentId = currentFlow.getDefiningDocumentId();
+                                }
+                                targetFlow = flowHandler.getFlow(context, 
+                                    calledFlowDocumentId, 
+                                    outboundCallNode.getCalledFlowId(context));
+                                if (targetFlow == null && !"".equals(calledFlowDocumentId))
+                                {
+                                    targetFlow = flowHandler.getFlow(context, "", 
+                                        outboundCallNode.getCalledFlowId(context));
+                                }
+
+                                //targetFlow = flowHandler.getFlow(context, 
+                                //    outboundCallNode.getCalledFlowDocumentId(context), 
+                                //    outboundCallNode.getCalledFlowId(context));
+                            }
+                            else
+                            {
+                                String calledFlowDocumentId = navCase.getToFlowDocumentId();
+                                if (calledFlowDocumentId == null)
+                                {
+                                    calledFlowDocumentId = currentFlow.getDefiningDocumentId();
+                                }
+                                targetFlow = flowHandler.getFlow(context, 
+                                    calledFlowDocumentId, 
+                                    navCase.getFromOutcome());
+                                if (targetFlow == null && !"".equals(calledFlowDocumentId))
+                                {
+                                    targetFlow = flowHandler.getFlow(context, "", 
+                                        navCase.getFromOutcome());
+                                }
+                                //targetFlow = flowHandler.getFlow(context, 
+                                //    , navCase.getFromOutcome());
+                            }
+                            if (targetFlow != null)
+                            {
+                                flowHandler.transition(context, 
+                                    currentFlow, targetFlow, outboundCallNode, context.getViewRoot().getViewId());
+                                startNodeId = targetFlow.getStartNodeId();
+                            }
+                            else
+                            {
+                                startNodeId = null;
+                            }
+                        }
+                        else
+                        {
+                            startNodeId = null;
+                        }
+                    }
+                }
+                
+            }
+        }
         // throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     private void checkNull(final Object o, final String param)
     {
         if (o == null)
@@ -457,7 +693,7 @@ public class FlowHandlerImpl extends FlowHandler
     }
     
     private void pushFlowReference(FacesContext context, ClientWindow clientWindow, FlowReference flowReference,
-        String lastDisplayedViewId)
+        String toViewId)
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
@@ -467,7 +703,29 @@ public class FlowHandlerImpl extends FlowHandler
             currentFlowStack = new ArrayList<_FlowContextualInfo>(4);
             sessionMap.put(currentFlowMapKey, currentFlowStack);
         }
-        currentFlowStack.add(new _FlowContextualInfo(flowReference, lastDisplayedViewId));
+        if (!currentFlowStack.isEmpty())
+        {
+            currentFlowStack.get(currentFlowStack.size()-1).setLastDisplayedViewId(context.getViewRoot().getViewId());
+        }
+        else
+        {
+            //Save root lastDisplayedViewId
+            context.getExternalContext().getSessionMap().put(ROOT_LAST_VIEW_ID + clientWindow.getId(), 
+                context.getViewRoot().getViewId());
+        }
+        currentFlowStack.add(new _FlowContextualInfo(flowReference, toViewId));
+    }
+    
+    private void popFlowReference(FacesContext context, ClientWindow clientWindow,
+        List<_FlowContextualInfo> currentFlowStack, int i)
+    {
+        currentFlowStack.remove(i);
+        if (currentFlowStack.isEmpty())
+        {
+            // Remove it from session but keep it in request scope.
+            context.getAttributes().put(ROOT_LAST_VIEW_ID, 
+                context.getExternalContext().getSessionMap().remove(ROOT_LAST_VIEW_ID + clientWindow.getId()));
+        }
     }
     
     private List<_FlowContextualInfo> getCurrentFlowStack(FacesContext context, ClientWindow clientWindow)
@@ -495,7 +753,13 @@ public class FlowHandlerImpl extends FlowHandler
         _FlowContextualInfo info = getCurrentFlowReference(context, clientWindow);
         if (info == null)
         {
-            return null;
+            String lastDisplayedViewId = (String) context.getAttributes().get(ROOT_LAST_VIEW_ID);
+            if (lastDisplayedViewId == null)
+            {
+                lastDisplayedViewId = (String) context.getExternalContext().getSessionMap().
+                    get(ROOT_LAST_VIEW_ID + clientWindow.getId());
+            }
+            return lastDisplayedViewId;
         }
         return info.getLastDisplayedViewId();
     }

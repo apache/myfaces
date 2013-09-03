@@ -35,6 +35,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.flow.FlowHandler;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -226,6 +227,12 @@ class RestoreViewExecutor extends PhaseExecutor
             // Store the new UIViewRoot instance in the FacesContext.
             facesContext.setViewRoot(viewRoot);
             
+            FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+            if (flowHandler != null)
+            {
+                flowHandler.clientWindowTransition(facesContext);
+            }
+
             // Publish an AfterAddToParent event with the created UIViewRoot as the event source.
             application.publishEvent(facesContext, PostAddToViewEvent.class, viewRoot);
         }
