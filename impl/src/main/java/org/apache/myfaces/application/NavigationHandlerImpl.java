@@ -120,8 +120,16 @@ public class NavigationHandlerImpl
     {
         //NavigationCase navigationCase = getNavigationCase(facesContext, fromAction, outcome);
         NavigationContext navigationContext = new NavigationContext();
-        NavigationCase navigationCase = getNavigationCommand(facesContext, navigationContext, fromAction, outcome,
-            toFlowDocumentId);
+        NavigationCase navigationCase = null;
+        try
+        {
+            navigationCase = getNavigationCommand(facesContext, navigationContext, fromAction, outcome,
+                toFlowDocumentId);
+        }
+        finally
+        {
+            navigationContext.finish(facesContext);
+        }
 
         if (navigationCase != null)
         {
@@ -348,7 +356,14 @@ public class NavigationHandlerImpl
     public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         NavigationContext navigationContext = new NavigationContext();
-        return getNavigationCommand(facesContext, navigationContext, fromAction, outcome, null);
+        try
+        {
+            return getNavigationCommand(facesContext, navigationContext, fromAction, outcome, null);
+        }
+        finally
+        {
+            navigationContext.finish(facesContext);
+        }
     }
     
     public NavigationCase getNavigationCommandFromGlobalNavigationCases(
@@ -1421,8 +1436,7 @@ public class NavigationHandlerImpl
         private List<Flow> targetFlows;
         private List<FlowCallNode> targetFlowCallNodes;
         private List<Flow> currentFlows;
-        private Map<Flow, String> lastDisplayedViewIdMap;
-        private String rootLastDisplayedViewId;
+        private int returnCount = 0;
 
         public NavigationContext()
         {
@@ -1476,75 +1490,55 @@ public class NavigationHandlerImpl
         
         public Flow getCurrentFlow(FacesContext facesContext)
         {
-            Flow currentFlow = null;
-            if (currentFlows == null)
-            {
-                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
-                
-                // Fill the stack with the current flows.
-                Flow curFlow = flowHandler.getCurrentFlow(facesContext);
-                // Save the top one
-                currentFlow = curFlow;
-                currentFlows = new ArrayList<Flow>();
-                if (curFlow != null)
-                {
-                    lastDisplayedViewIdMap = new HashMap<Flow, String>();
-                    // Fill the stack
-                    while (curFlow != null)
-                    {
-                        String lastDisplayedViewId = flowHandler.getLastDisplayedViewId(facesContext);
-                        currentFlows.add(0,curFlow);
-                        lastDisplayedViewIdMap.put(curFlow, lastDisplayedViewId);
-                        flowHandler.pushReturnMode(facesContext);
-                        curFlow = flowHandler.getCurrentFlow(facesContext);
-                    }
-
-                    rootLastDisplayedViewId = flowHandler.getLastDisplayedViewId(facesContext);
-
-                    for (int i = 0; i < currentFlows.size(); i++)
-                    {
-                        flowHandler.popReturnMode(facesContext);
-                    }
-                }
-            }
-            if (currentFlow != null)
-            {
-                return currentFlow;
-            }
-            else if (currentFlows != null && !currentFlows.isEmpty())
+            if (currentFlows != null && !currentFlows.isEmpty())
             {
                 return currentFlows.get(currentFlows.size()-1);
             }
             else
             {
-                return null;
+                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+                return flowHandler.getCurrentFlow();
             }
+        }
+        
+        public void finish(FacesContext facesContext)
+        {
+            // Get back flowHandler to its original state
+            for (int i=0; i < returnCount; i++)
+            {
+                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+                flowHandler.popReturnMode(facesContext);
+            }
+            returnCount = 0;
         }
         
         public void popFlow(FacesContext facesContext)
         {
-            if (currentFlows.size() > 0)
+            if (currentFlows != null && !currentFlows.isEmpty())
             {
                 currentFlows.remove(currentFlows.size()-1);
+            }
+            else
+            {
+                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+                flowHandler.pushReturnMode(facesContext);
+                returnCount++;
             }
         }
         
         public void pushFlow(FacesContext facesContext, Flow flow)
         {
+            if (currentFlows == null)
+            {
+                currentFlows = new ArrayList<Flow>();
+            }
             currentFlows.add(flow);
         }
         
         public String getLastDisplayedViewId(FacesContext facesContext, Flow flow)
         {
-            if (flow == null)
-            {
-                return rootLastDisplayedViewId;
-            }
-            if (lastDisplayedViewIdMap != null)
-            {
-                return lastDisplayedViewIdMap.get(flow);
-            }
-            return null;
+            FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+            return flowHandler.getLastDisplayedViewId(facesContext);
         }
     }
 }
