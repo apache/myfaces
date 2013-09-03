@@ -406,6 +406,36 @@ public class FlowHandlerImpl extends FlowHandler
         return getFacesFlowProvider(facesContext).getCurrentFlowScope(facesContext);
     }
 
+    /**
+     * The interpretation done for this issue is this:
+     * 
+     * There are two basic cases: Enter into a flow and return from a flow.
+     * 
+     * - FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME : value of the toFlowDocumentId property 
+     *   of the navigation case when enter into a flow OR FlowHandler.NULL_FLOW when return from a flow.
+     * 
+     * - FlowHandler.FLOW_ID_REQUEST_PARAM_NAME : value of the fromOutcome property of the navigation case.
+     * According to the intention it has multiple options:
+     * 
+     *  1. It can be a flowId, which means enter into a flow.
+     *  2. It can be a flow call id, which means enter into a flow.
+     *  3. It can be a flow return id, which means return from a flow.
+
+     * - The javadoc of NavigationCase.getToFlowDocumentId() says this:
+     * "... If this navigation case represents a flow invocation, this property is the documentId in 
+     * which the flow whose id is given by the return from getFromOutcome() is defined. Implementations 
+     * must override this method to return the value defined in the corresponding application 
+     * configuration resources element. The base implementation returns the empty string. ..."
+     * 
+     * This is consistent with the previous interpretation, but we need to include the case where 
+     * toFlowDocumentId is FlowHandler.NULL_FLOW too, which is derived implicitly. The key of the trick 
+     * is override fromOutcome / toFlowDocumentId in the navigation algorithm to indicate when the 
+     * navigation case is entering into a flow or return from a flow. In that way, it is possible 
+     * to use ConfigurableNavigationHandler.getNavigationCase(...) to know the "route" using the 
+     * initial fromOutcome given in FLOW_ID_REQUEST_PARAM_NAME.
+     * 
+     * @param context 
+     */
     @Override
     public void clientWindowTransition(FacesContext context)
     {
@@ -552,10 +582,6 @@ public class FlowHandlerImpl extends FlowHandler
                         targetFlow = flowHandler.getFlow(context, "", 
                             outboundCallNode.getCalledFlowId(context));
                     }
-                    
-                    //targetFlow = flowHandler.getFlow(context, 
-                    //    outboundCallNode.getCalledFlowDocumentId(context), 
-                    //    outboundCallNode.getCalledFlowId(context));
                 }
                 else
                 {
@@ -568,7 +594,7 @@ public class FlowHandlerImpl extends FlowHandler
                     flowHandler.transition(context, 
                         currentFlow, targetFlow, outboundCallNode, context.getViewRoot().getViewId());
 
-                    // TODO: Handle 2 or more flow start.
+                    // Handle 2 or more flow consecutive start.
                     boolean failed = false;
                     
                     String startNodeId = targetFlow.getStartNodeId();
@@ -598,10 +624,6 @@ public class FlowHandlerImpl extends FlowHandler
                                     targetFlow = flowHandler.getFlow(context, "", 
                                         outboundCallNode.getCalledFlowId(context));
                                 }
-
-                                //targetFlow = flowHandler.getFlow(context, 
-                                //    outboundCallNode.getCalledFlowDocumentId(context), 
-                                //    outboundCallNode.getCalledFlowId(context));
                             }
                             else
                             {
@@ -618,8 +640,6 @@ public class FlowHandlerImpl extends FlowHandler
                                     targetFlow = flowHandler.getFlow(context, "", 
                                         navCase.getFromOutcome());
                                 }
-                                //targetFlow = flowHandler.getFlow(context, 
-                                //    , navCase.getFromOutcome());
                             }
                             if (targetFlow != null)
                             {
@@ -641,7 +661,6 @@ public class FlowHandlerImpl extends FlowHandler
                 
             }
         }
-        // throw new UnsupportedOperationException("Not supported yet.");
     }
     
     private void checkNull(final Object o, final String param)
