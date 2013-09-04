@@ -36,6 +36,9 @@ import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.AbortProcessingException;
@@ -85,6 +88,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private static final PhaseProcessor PROCESS_VALIDATORS_PROCESSOR = new ProcessValidatorPhaseProcessor();
     private static final PhaseProcessor UPDATE_MODEL_PROCESSOR = new UpdateModelPhaseProcessor();
 
+    private static final VisitCallback RESET_VALUES_CALLBACK = new ResetValuesCallback();
+    
     /**
      * Class that is used to create the view scope map. This strategy
      * allows change the implementation of view scope map to use cdi or
@@ -106,6 +111,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
         VIEW_SCOPE_PROXY_MAP_CLASS = viewMapClass;
     }
+
     /**
      * The counter which will ensure a unique component id for every component instance in the tree that doesn't have an
      * id attribute set.
@@ -1335,7 +1341,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     public void resetValues(FacesContext context,
                         java.util.Collection<java.lang.String> clientIds)    
     {
-        //TODO: Implement me!
+        VisitContext visitContext = (VisitContext) VisitContext.createVisitContext(
+            context, clientIds, null);
+        this.visitTree(visitContext, RESET_VALUES_CALLBACK);
     }
 
     /**
@@ -1791,6 +1799,18 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         public List<FacesEvent> getOnPhase()
         {
             return _onPhase;
+        }
+    }
+    
+    private static class ResetValuesCallback implements VisitCallback
+    {
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (target instanceof EditableValueHolder)
+            {
+                ((EditableValueHolder)target).resetValue();
+            }
+            return VisitResult.ACCEPT;
         }
     }
 }

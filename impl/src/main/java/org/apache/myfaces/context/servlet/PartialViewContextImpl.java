@@ -102,6 +102,7 @@ public class PartialViewContextImpl extends PartialViewContext
     private Boolean _renderAll = null;
     private PartialResponseWriter _partialResponseWriter = null;
     private VisitContextFactory _visitContextFactory = null;
+    private Boolean _resetValues = null;
 
     public PartialViewContextImpl(FacesContext context)
     {
@@ -728,6 +729,18 @@ public class PartialViewContextImpl extends PartialViewContext
             _visitContextFactory = (VisitContextFactory)FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
         }
         return _visitContextFactory;
+    }
+
+    @Override
+    public boolean isResetValues()
+    {
+        if (_resetValues == null)
+        {
+            String value = _facesContext.getExternalContext().getRequestParameterMap().
+                get(RESET_VALUES_PARAM_NAME);
+            _resetValues = "true".equals(value);
+        }
+        return _resetValues;
     }
 
     private class PhaseAwareVisitCallback implements VisitCallback

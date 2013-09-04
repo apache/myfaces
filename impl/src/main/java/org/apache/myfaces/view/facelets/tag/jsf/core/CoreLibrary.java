@@ -82,6 +82,8 @@ public final class CoreLibrary extends AbstractTagLibrary
         this.addTagHandler("passThroughAttributes", PassThroughAttributesHandler.class);
 
         this.addTagHandler("phaseListener", PhaseListenerHandler.class);
+        
+        this.addTagHandler("resetValues", ResetValuesActionListenerHandler.class);
 
         this.addComponent("selectItem", UISelectItem.COMPONENT_TYPE, null, SelectItemHandler.class);
 

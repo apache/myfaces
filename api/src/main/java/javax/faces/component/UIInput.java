@@ -672,8 +672,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     public void resetValue()
     {
+        super.resetValue();
         setSubmittedValue(null);
-        setValue(null);
         setLocalValueSet(false);
         setValid(true);
     }

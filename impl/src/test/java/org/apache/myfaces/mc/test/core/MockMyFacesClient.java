@@ -117,14 +117,19 @@ public class MockMyFacesClient
     
     public void ajax(UIComponent source, String event, String execute, String render, boolean submit) throws Exception
     {
+        ajax(source, event, execute, render, submit, false);
+    }
+            
+    public void ajax(UIComponent source, String event, String execute, String render, boolean submit, boolean resetValues) throws Exception
+    {
         testCase.processRemainingPhases();
-        this.internalAjax(source, event, execute, render, submit);
+        this.internalAjax(source, event, execute, render, submit, resetValues);
         String viewId = facesContext.getViewRoot().getViewId();
         testCase.tearDownRequest();
         testCase.setupRequest(viewId);
     }
     
-    public void internalAjax(UIComponent source, String event, String execute, String render, boolean submit)
+    protected void internalAjax(UIComponent source, String event, String execute, String render, boolean submit, boolean resetValues)
     {
         parameters.put("javax.faces.partial.ajax", "true");
         parameters.put("javax.faces.behavior.event", event);
@@ -148,6 +153,11 @@ public class MockMyFacesClient
         {
             parameters.put(source.getClientId(facesContext)+"_SUBMIT", "1");
             parameters.put(source.getClientId(facesContext), source.getClientId(facesContext));
+        }
+        
+        if (resetValues)
+        {
+            parameters.put("javax.faces.partial.resetValues", "true");
         }
         
         MockHttpServletResponse response = (MockHttpServletResponse) facesContext.getExternalContext().getResponse(); 

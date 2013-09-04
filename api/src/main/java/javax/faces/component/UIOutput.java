@@ -80,7 +80,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
      */
     public void resetValue()
     {
-        //TODO: Implement me!
+        setValue(null);
     }
 
     /**

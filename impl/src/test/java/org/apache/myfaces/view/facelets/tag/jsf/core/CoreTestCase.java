@@ -19,6 +19,7 @@
 
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
+import org.apache.myfaces.view.facelets.tag.jsf.core.reset.ResetValuesBean;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -33,6 +34,7 @@ import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlCommandLink;
 import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlForm;
@@ -41,11 +43,13 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.convert.NumberConverter;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.faces.validator.DoubleRangeValidator;
 import javax.faces.validator.LengthValidator;
 import javax.faces.validator.LongRangeValidator;
 import javax.faces.validator.Validator;
+import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlImageRenderer;
@@ -68,6 +72,8 @@ public class CoreTestCase extends FaceletTestCase
                 UIPanel.class.getName());
         application.addComponent(HtmlCommandLink.COMPONENT_TYPE,
                 HtmlCommandLink.class.getName());
+        application.addComponent(HtmlCommandButton.COMPONENT_TYPE,
+                HtmlCommandButton.class.getName());
         application.addComponent(HtmlGraphicImage.COMPONENT_TYPE,
                 HtmlGraphicImage.class.getName());
         application.addComponent(HtmlForm.COMPONENT_TYPE, HtmlForm.class
@@ -110,6 +116,9 @@ public class CoreTestCase extends FaceletTestCase
                 new HtmlFormRenderer());
         renderKit.addRenderer(UIData.COMPONENT_FAMILY, "javax.faces.Table",
                 new HtmlTableRenderer());
+        renderKit.addRenderer(UICommand.COMPONENT_FAMILY, "javax.faces.Button",
+                new HtmlButtonRenderer());
+        
     }
 
     @Test
@@ -376,5 +385,43 @@ public class CoreTestCase extends FaceletTestCase
 
         Assert.assertEquals("german locale", Locale.GERMAN, root.getLocale());
     }
+    
+    @Test
+    public void testResetValuesActionListenerHandler() throws Exception
+    {
+        ResetValuesBean bean = new ResetValuesBean();
+
+        facesContext.getExternalContext().getRequestMap().put("bean", bean);
+        bean.setField1("Hello");
+        bean.setField2(2);
+
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "resetValuesActionListener_1.xhtml");
+
+        UICommand action1 = (UICommand) root.findComponent("mainForm:submit");
+
+        Assert.assertNotNull("mainForm:submit", action1);
+
+        Assert.assertEquals("mainForm:submit listeners", 1,
+                action1.getActionListeners().length);
+
+        UIInput field1 = (UIInput) root.findComponent("mainForm:field1");
+        field1.setValue("xxx");
+        Assert.assertEquals("xxx", field1.getValue());
+        Assert.assertTrue(field1.isLocalValueSet());
+        
+        UIInput field2 = (UIInput) root.findComponent("mainForm:field2");
+        field2.setSubmittedValue("1");
+        field2.setValid(false);
+        
+        action1.getActionListeners()[0].processAction(new ActionEvent(action1));
+        
+        // If resetValues() was activated, 
+        Assert.assertEquals("Hello",field1.getValue());
+        Assert.assertFalse(field1.isLocalValueSet());
+        Assert.assertNull(field2.getSubmittedValue());
+        Assert.assertTrue(field2.isValid());
+    }
+
 
 }
