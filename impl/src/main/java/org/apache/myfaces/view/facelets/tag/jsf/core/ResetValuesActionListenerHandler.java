@@ -36,6 +36,8 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.faces.view.ActionSource2AttachedObjectHandler;
+import javax.faces.view.AttachedObjectHandler;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
@@ -47,6 +49,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 
 /**
  *
@@ -105,7 +108,7 @@ public class ResetValuesActionListenerHandler extends TagHandler
         }
         if (parent instanceof ActionSource)
         {
-            applyAttachedObject(ctx.getFacesContext(), parent);
+            applyAttachedObject(ctx.getFacesContext(), parent, false);
         }
         else if (UIComponent.isCompositeComponent(parent))
         {
@@ -126,21 +129,51 @@ public class ResetValuesActionListenerHandler extends TagHandler
 
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
+        applyAttachedObject(context, parent, true);
+    }
+    
+    public void applyAttachedObject(FacesContext context, UIComponent parent, boolean checkForParentCC)
+    {
+        UIComponent topParentComponent = null;
         // Retrieve the current FaceletContext from FacesContext object
         FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(
                 FaceletContext.FACELET_CONTEXT_KEY);
+        
+        if (checkForParentCC)
+        {
+            FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(faceletContext);
+            UIComponent parentComponent = parent;
+            while (parentComponent != null)
+            {
+                if (UIComponent.isCompositeComponent(parentComponent))
+                {
+                    List<AttachedObjectHandler> handlerList = mctx.getAttachedObjectHandlers(parentComponent);
+                    if (handlerList != null && handlerList.contains(this))
+                    {
+                        //Found, but we need to go right to the top for it. 
+                        topParentComponent = parentComponent;
+                    }
+                }
+                parentComponent = parentComponent.getParent();
+            }
+        }
 
         ActionSource as = (ActionSource) parent;
         ActionListener listener = null;
         if (_render.isLiteral())
         {
-            listener = new LiteralResetValuesActionListener(_clientIds);
-        
+            listener = new LiteralResetValuesActionListener(_clientIds,
+                topParentComponent != null ? 
+                (Location) topParentComponent.getAttributes().get(
+                    CompositeComponentELUtils.LOCATION_KEY) : null);
         }
         else
         {
             listener = new ResetValuesActionListener(_render
-                .getValueExpression(faceletContext, Object.class));
+                .getValueExpression(faceletContext, Object.class) ,
+                topParentComponent != null ? 
+                (Location) topParentComponent.getAttributes().get(
+                    CompositeComponentELUtils.LOCATION_KEY) : null);
         }
         as.addActionListener(listener);
     }
@@ -169,13 +202,16 @@ public class ResetValuesActionListenerHandler extends TagHandler
 
         private ValueExpression renderExpression;
         
+        private Location topCompositeComponentReference;
+        
         private ResetValuesActionListener()
         {
         }
         
-        public ResetValuesActionListener(ValueExpression renderExpression)
+        public ResetValuesActionListener(ValueExpression renderExpression, Location location)
         {
             this.renderExpression = renderExpression;
+            this.topCompositeComponentReference = location;
         }
 
         public void processAction(ActionEvent event) throws AbortProcessingException
@@ -212,7 +248,24 @@ public class ResetValuesActionListenerHandler extends TagHandler
             }
             
             // Calculate the final clientIds
-            UIComponent contextComponent = event.getComponent();
+            UIComponent contextComponent = null;
+            if (topCompositeComponentReference != null)
+            {
+                contextComponent = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(
+                    faces, event.getComponent(), topCompositeComponentReference);
+                if (contextComponent == null)
+                {
+                    contextComponent = event.getComponent();
+                }
+                else
+                {
+                    contextComponent = contextComponent.getParent();
+                }
+            }
+            else
+            {
+                contextComponent = event.getComponent();
+            }
             List<String> list = new ArrayList<String>();
             for (String id : clientIds)
             {
@@ -230,13 +283,16 @@ public class ResetValuesActionListenerHandler extends TagHandler
 
         private Collection<String> clientIds;
         
+        private Location topCompositeComponentReference;
+        
         private LiteralResetValuesActionListener()
         {
         }
         
-        public LiteralResetValuesActionListener(Collection<String> clientIds)
+        public LiteralResetValuesActionListener(Collection<String> clientIds, Location location)
         {
             this.clientIds = clientIds;
+            this.topCompositeComponentReference = location;
         }
 
         public void processAction(ActionEvent event) throws AbortProcessingException
@@ -253,7 +309,24 @@ public class ResetValuesActionListenerHandler extends TagHandler
             }
             
             // Calculate the final clientIds
-            UIComponent contextComponent = event.getComponent();
+            UIComponent contextComponent = null;
+            if (topCompositeComponentReference != null)
+            {
+                contextComponent = CompositeComponentELUtils.getCompositeComponentBasedOnLocation(
+                    faces, event.getComponent(), topCompositeComponentReference);
+                if (contextComponent == null)
+                {
+                    contextComponent = event.getComponent();
+                }
+                else
+                {
+                    contextComponent = contextComponent.getParent();
+                }
+            }
+            else
+            {
+                contextComponent = event.getComponent();
+            }
             List<String> list = new ArrayList<String>();
             for (String id : clientIds)
             {

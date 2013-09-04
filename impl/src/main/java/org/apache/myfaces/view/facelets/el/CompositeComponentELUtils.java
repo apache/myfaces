@@ -252,6 +252,26 @@ public final class CompositeComponentELUtils
         return ccLevel.intValue();
     }
     
+    public static UIComponent getCompositeComponentBasedOnLocation(final FacesContext facesContext, 
+            UIComponent baseComponent, final Location location)
+    {
+        UIComponent currentComponent = baseComponent;
+        while (currentComponent != null)
+        {
+            Location componentLocation = (Location) currentComponent.getAttributes().get(
+                LOCATION_KEY);
+            if (componentLocation != null 
+                    && componentLocation.getPath().equals(location.getPath()))
+            {
+                return currentComponent;
+            }
+            // get the composite component's parent
+            currentComponent = UIComponent.getCompositeComponentParent(currentComponent);
+        }
+        return null;
+    }
+
+    
     /**
      * Same as getCompositeComponentBasedOnLocation(final FacesContext facesContext, final Location location),
      * but takes into account the ccLevel to resolve the composite component. 

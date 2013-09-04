@@ -1,17 +1,20 @@
 /*
- * Copyright 2013 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core.reset;
 
@@ -85,6 +88,7 @@ public class ResetValuesTestCase extends AbstractMyFacesRequestTestCase
         processLifecycleExecute();
         processRender();
 
+        submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
         field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
@@ -110,6 +114,7 @@ public class ResetValuesTestCase extends AbstractMyFacesRequestTestCase
         processLifecycleExecute();
         processRender();
 
+        submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
         field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
@@ -141,6 +146,7 @@ public class ResetValuesTestCase extends AbstractMyFacesRequestTestCase
         processLifecycleExecute();
         processRender();
 
+        submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
         field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
         field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
@@ -153,4 +159,43 @@ public class ResetValuesTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals(Integer.valueOf(3), bean.getField2());
     }
 
+    @Test
+    public void testResetValuesActionListenerHandler3() throws Exception
+    {
+        setupRequest("/resetValuesActionListener_3.xhtml");
+
+        processLifecycleExecute();
+        
+        ResetValuesBean bean = facesContext.getApplication().evaluateExpressionGet(facesContext, 
+            "#{bean}", ResetValuesBean.class);
+        
+        bean.setField1("Hello");
+        bean.setField2(1);
+        
+        executeBuildViewCycle(facesContext);
+                
+        UIComponent submitButton = facesContext.getViewRoot().findComponent("mainForm:submit:button");
+        
+        UIInput field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
+        UIInput field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        client.inputText(field1, "xxx");
+        client.inputText(field2, "2");
+        
+        submit(submitButton);
+        
+        processLifecycleExecute();
+        processRender();
+
+        submitButton = facesContext.getViewRoot().findComponent("mainForm:submit:button");
+        field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
+        field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
+
+        Assert.assertEquals("Hello", field1.getValue());
+        Assert.assertEquals(1, field2.getValue());
+
+    }
 }
