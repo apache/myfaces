@@ -111,8 +111,8 @@ public class HtmlButtonRendererBase
             || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);
     }
 
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    @Override
+    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
                 facesContext, uiComponent, UICommand.class);
@@ -299,9 +299,16 @@ public class HtmlButtonRendererBase
             writer.writeAttribute(HTML.READONLY_ATTR, Boolean.TRUE, 
                     org.apache.myfaces.shared.renderkit.JSFAttr.READONLY_ATTR);
         }
+    }
+    
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
+            throws IOException
+    {
+        ResponseWriter writer = facesContext.getResponseWriter();
 
         writer.endElement(HTML.INPUT_ELEM);
         
+        FormInfo formInfo = findNestingForm(uiComponent, facesContext);
         if (formInfo != null)
         {
             HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(
