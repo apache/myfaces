@@ -21,6 +21,8 @@ package org.apache.myfaces.shared.renderkit.html;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -103,6 +105,9 @@ public class HtmlResponseWriterImpl
     private FacesContext _facesContext;
 
     private boolean _cdataOpen;
+    
+    private List<String> _startedChangedElements;
+    private List<Integer> _startedElementsCount;
 
     private static final String CDATA_START = "<![CDATA[ \n";
     private static final String CDATA_START_NO_LINE_RETURN = "<![CDATA[";
@@ -253,6 +258,8 @@ public class HtmlResponseWriterImpl
             }
         }
         _isUTF8 = UTF8.equals(_characterEncoding);
+        _startedChangedElements = new ArrayList<String>();
+        _startedElementsCount = new ArrayList<Integer>();
     }
 
     public static boolean supportsContentType(String contentType)
@@ -336,6 +343,12 @@ public class HtmlResponseWriterImpl
                 }
                 String elementName = value.toString().trim();
                 
+                if (!name.equals(elementName))
+                {
+                    _startElementName = elementName;
+                    _startedChangedElements.add(elementName);
+                    _startedElementsCount.add(0);
+                }
                 _currentWriter.write((String) elementName);
             }
             else
@@ -347,18 +360,24 @@ public class HtmlResponseWriterImpl
         {
             _currentWriter.write(name);
         }
+
+        if (!_startedElementsCount.isEmpty())
+        {
+            int i = _startedElementsCount.size()-1;
+            _startedElementsCount.set(i, _startedElementsCount.get(i)+1);
+        }
         
         // Each time we start a element, it is necessary to check <script> or <style>,
         // because we need to buffer all content to post process it later when it reach its end
         // according to the initialization properties used.
-        if(isScript(name))
+        if(isScript(_startElementName))
         {
             // handle a <script> start
             _isInsideScript = Boolean.TRUE;
             _isStyle = Boolean.FALSE;
             _isTextArea = Boolean.FALSE;
         }
-        else if (isStyle(name))
+        else if (isStyle(_startElementName))
         {
             _isInsideScript = Boolean.FALSE;
             _isStyle = Boolean.TRUE;
@@ -409,6 +428,7 @@ public class HtmlResponseWriterImpl
                     encodeAndWriteURIAttribute(key, value, key);
                 }
             }
+
             if (!_useStraightXml && isEmptyElement(_startElementName))
             {
                 _currentWriter.write(" />");
@@ -419,7 +439,6 @@ public class HtmlResponseWriterImpl
             else
             {
                 _currentWriter.write('>');
-
                 /*
                 if(isScript(_startElementName))
                 {
@@ -493,12 +512,26 @@ public class HtmlResponseWriterImpl
             throw new NullPointerException("elementName name must not be null");
         }
 
+        String elementName = name;
+
+        if (!_startedElementsCount.isEmpty())
+        {
+            int i = _startedElementsCount.size()-1;
+            _startedElementsCount.set(i, _startedElementsCount.get(i)-1);
+            if (_startedElementsCount.get(i) == 0)
+            {
+                elementName = _startedChangedElements.get(i);
+                _startedChangedElements.remove(i);
+                _startedElementsCount.remove(i);
+            }
+        }
+
         if (log.isLoggable(Level.WARNING))
         {
             if (_startElementName != null &&
-                !name.equals(_startElementName))
+                !elementName.equals(_startElementName))
             {
-                log.warning("HTML nesting warning on closing " + name + ": element " + _startElementName +
+                log.warning("HTML nesting warning on closing " + elementName + ": element " + _startElementName +
                         (_startElementUIComponent==null?"":(" rendered by component : "+
                         RendererUtils.getPathToComponent(_startElementUIComponent)))+" not explicitly closed");
             }
@@ -513,7 +546,7 @@ public class HtmlResponseWriterImpl
 
             //tag was no empty tag - it has no accompanying end tag now.
             if(_startElementName!=null)
-            {
+            {                
                 if (isScript() && (_isXhtmlContentType || _wrapScriptContentWithXmlCommentTag))
                 {
                     writeScriptContent();
@@ -526,12 +559,12 @@ public class HtmlResponseWriterImpl
                 }
 
                 //write closing tag
-                writeEndTag(name);
+                writeEndTag(elementName);
             }
         }
         else
         {
-            if (!_useStraightXml && isEmptyElement(name))
+            if (!_useStraightXml && isEmptyElement(elementName))
             {
            /*
            Should this be here?  It warns even when you have an x:htmlTag value="br", it should just close.
@@ -553,7 +586,7 @@ public class HtmlResponseWriterImpl
                     writeStyleContent();
                     _currentWriter = _outputWriter;
                 }
-                writeEndTag(name);
+                writeEndTag(elementName);
             }
         }
 
