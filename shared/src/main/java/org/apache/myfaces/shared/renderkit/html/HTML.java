@@ -113,19 +113,22 @@ public interface HTML
     String STYLE_ATTR = "style";
     String TITLE_ATTR = "title";
     String STYLE_CLASS_ATTR = "styleClass"; //"class" cannot be used as property name
-     
+    // Role attribute (applies for "every" html tag)
+    String ROLE_ATTR  = "role"; 
+    
     String[] UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE =
     {
         DIR_ATTR,
         LANG_ATTR,
         TITLE_ATTR,
-
+        ROLE_ATTR,
         //NOTE: if changed, please verify universal attributes in HtmlMessageRenderer !
     };
     String[] UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE_AND_TITLE =
     {
         DIR_ATTR,
         LANG_ATTR,
+        ROLE_ATTR,
     };
     String[] UNIVERSAL_ATTRIBUTES =
             (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(

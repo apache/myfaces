@@ -91,6 +91,7 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
             new HtmlRenderedAttr("dir"), 
             new HtmlRenderedAttr("lang"), 
             new HtmlRenderedAttr("title"),
+            new HtmlRenderedAttr("role"),
 
             /* If js is set to false, no need to bother over event attributes
             //_FocusBlurProperties
@@ -141,6 +142,7 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
                new HtmlRenderedAttr("dir"), 
                new HtmlRenderedAttr("lang"), 
                new HtmlRenderedAttr("title"),
+               new HtmlRenderedAttr("role"),
                //_FocusBlurProperties
                new HtmlRenderedAttr("onfocus"), 
                new HtmlRenderedAttr("onblur"),

@@ -95,6 +95,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
             //_StyleProperties
             new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
             new HtmlRenderedAttr("style"),
+            new HtmlRenderedAttr("role"),
             new HtmlRenderedAttr("warnClass", "warnClass", "class=\"warnClass\"",2),
             new HtmlRenderedAttr("warnStyle", "warnStyle", "style=\"warnStyle\"",2)
         };

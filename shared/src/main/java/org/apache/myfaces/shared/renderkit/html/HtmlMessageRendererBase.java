@@ -305,6 +305,12 @@ public abstract class HtmlMessageRendererBase
                     writer, message, HTML.SPAN_ELEM, HTML.STYLE_ATTR, style, span);
             span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(
                     writer, message, HTML.SPAN_ELEM, HTML.STYLE_CLASS_ATTR, styleClass, span);
+            // Remember if renderStyleAndStyleClass is true, it means style and styleClass
+            // are rendered on the outer tag, and in that sense, role attribute should
+            // be rendered there too.
+            span |= HtmlRendererUtils.renderHTMLAttributeWithOptionalStartElement(
+                    writer, message, HTML.ROLE_ATTR, HTML.ROLE_ATTR, 
+                    message.getAttributes().get(HTML.ROLE_ATTR), span);
         }
 
         if (showSummary && !(title == null && tooltip))

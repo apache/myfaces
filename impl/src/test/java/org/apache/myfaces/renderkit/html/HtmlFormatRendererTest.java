@@ -72,6 +72,7 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
                 new HtmlRenderedAttr("dir"), 
                 new HtmlRenderedAttr("lang"), 
                 new HtmlRenderedAttr("title"),
+                new HtmlRenderedAttr("role"),
                 //_StyleProperties
                 new HtmlRenderedAttr("style"), 
                 new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),

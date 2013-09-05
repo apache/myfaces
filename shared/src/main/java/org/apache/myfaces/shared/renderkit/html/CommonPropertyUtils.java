@@ -62,6 +62,11 @@ public final class CommonPropertyUtils
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.TITLE_ATTR, HTML.TITLE_ATTR);
         }
+        if ((commonPropertiesMarked & CommonPropertyConstants.ROLE_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.ROLE_ATTR, HTML.ROLE_ATTR);
+        }
     }
     
     public static final void renderUniversalPropertiesWithoutTitle(ResponseWriter writer,
@@ -77,6 +82,11 @@ public final class CommonPropertyUtils
         {
             HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
                     HTML.LANG_ATTR, HTML.LANG_ATTR);
+        }
+        if ((commonPropertiesMarked & CommonPropertyConstants.ROLE_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.ROLE_ATTR, HTML.ROLE_ATTR);
         }
     }
 

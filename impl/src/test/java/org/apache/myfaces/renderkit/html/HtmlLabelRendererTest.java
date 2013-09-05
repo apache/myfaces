@@ -76,6 +76,7 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
             new HtmlRenderedAttr("dir"), 
             new HtmlRenderedAttr("lang"), 
             new HtmlRenderedAttr("title"),
+            new HtmlRenderedAttr("role"),
             //_FocusBlurProperties
             new HtmlRenderedAttr("onfocus"), 
             new HtmlRenderedAttr("onblur"),

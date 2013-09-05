@@ -176,6 +176,7 @@ public class HtmlCheckAttributesUtil
             new HtmlRenderedAttr("dir"), 
             new HtmlRenderedAttr("lang"), 
             new HtmlRenderedAttr("title"),
+            new HtmlRenderedAttr("role"),
             //_FocusBlurProperties
             new HtmlRenderedAttr("onfocus"), 
             new HtmlRenderedAttr("onblur"),
@@ -226,6 +227,7 @@ public class HtmlCheckAttributesUtil
             new HtmlRenderedAttr("dir"), 
             new HtmlRenderedAttr("lang"), 
             new HtmlRenderedAttr("title"),
+            new HtmlRenderedAttr("role"),
             //_EventProperties
             new HtmlRenderedAttr("onclick"), 
             new HtmlRenderedAttr("ondblclick"), 
