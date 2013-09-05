@@ -27,7 +27,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  *
- * @author lu4242
+ * @author Leonardo Uribe
  */
 public class ClassLoaderContractResourceLoader extends ContractResourceLoader
 {
@@ -49,7 +49,8 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
         InputStream is = null;
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
+            String name = getPrefix() + '/' + resourceMeta.getContractName() 
+                + '/' + resourceMeta.getResourceIdentifier();
             is = getClassLoader().getResourceAsStream(name);
             if (is == null)
             {
@@ -59,22 +60,25 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
         }
         else
         {
-            is = getClassLoader().getResourceAsStream(resourceMeta.getResourceIdentifier());
+            String name = resourceMeta.getContractName() 
+                + '/' + resourceMeta.getResourceIdentifier();
+            is = getClassLoader().getResourceAsStream(name);
             if (is == null)
             {
-                is = this.getClass().getClassLoader().getResourceAsStream(resourceMeta.getResourceIdentifier());
+                is = this.getClass().getClassLoader().getResourceAsStream(name);
             }
             return is;
         }
     }
 
-    //@Override
-    public URL getResourceURL(String resourceId)
+    @Override
+    public URL getResourceURL(ResourceMeta resourceMeta)
     {
         URL url = null;
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            String name = getPrefix() + '/' + resourceId;
+            String name = getPrefix() + '/' + resourceMeta.getContractName() + 
+                '/' + resourceMeta.getResourceIdentifier();
             url = getClassLoader().getResource(name);
             if (url == null)
             {
@@ -84,19 +88,14 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
         }
         else
         {
-            url = getClassLoader().getResource(resourceId);
+            String name = resourceMeta.getContractName() + '/' + resourceMeta.getResourceIdentifier();
+            url = getClassLoader().getResource(name);
             if (url == null)
             {
-                url = this.getClass().getClassLoader().getResource(resourceId);
+                url = this.getClass().getClassLoader().getResource(name);
             }
             return url;
         }
-    }
-    
-    @Override
-    public URL getResourceURL(ResourceMeta resourceMeta)
-    {
-        return getResourceURL(resourceMeta.getContractName() + '/' + resourceMeta.getResourceIdentifier());
     }
 
     @Override
@@ -130,10 +129,12 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
     {
         if (getPrefix() != null && !"".equals(getPrefix()))
         {
-            URL url = getClassLoader().getResource(getPrefix() + '/' + libraryName);
+            String name = getPrefix() + '/' + 
+                contractName + '/' + libraryName;
+            URL url = getClassLoader().getResource(name);
             if (url == null)
             {
-                url = this.getClass().getClassLoader().getResource(getPrefix() + '/' + libraryName);
+                url = this.getClass().getClassLoader().getResource(name);
             }
             if (url != null)
             {
@@ -142,10 +143,11 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
         }
         else
         {
-            URL url = getClassLoader().getResource(libraryName);
+            String name = contractName + '/' + libraryName;
+            URL url = getClassLoader().getResource(name);
             if (url == null)
             {
-                url = this.getClass().getClassLoader().getResource(libraryName);
+                url = this.getClass().getClassLoader().getResource(name);
             }
             if (url != null)
             {
