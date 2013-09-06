@@ -88,72 +88,72 @@ public class ResetValuesTestCase extends AbstractMyFacesRequestTestCase
         processLifecycleExecute();
         processRender();
 
-        submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
-        field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
-        field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
+        UIComponent submitButton_2 = facesContext.getViewRoot().findComponent("mainForm:submit");
+        UIInput field1_2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
+        UIInput field2_2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
-        Assert.assertEquals("Hello", field1.getValue());
-        Assert.assertEquals(1, field2.getValue());
-        Assert.assertNull(field1.getSubmittedValue());
-        Assert.assertNull(field2.getSubmittedValue());
+        Assert.assertEquals("Hello", field1_2.getValue());
+        Assert.assertEquals(1, field2_2.getValue());
+        Assert.assertNull(field1_2.getSubmittedValue());
+        Assert.assertNull(field2_2.getSubmittedValue());
         
         Assert.assertEquals("Hello", bean.getField1());
         Assert.assertEquals(Integer.valueOf(1), bean.getField2());
 
         //Now let's try the normal way with no resetValues
-        client.inputText(field1, "xxx");
-        client.inputText(field2, "2");
+        client.inputText(field1_2, "xxx");
+        client.inputText(field2_2, "2");
         
-        client.ajax(submitButton, "action", 
-            submitButton.getClientId(facesContext) +" "+
-            field1.getClientId(facesContext) + " "+ 
-            field2.getClientId(facesContext), 
-            field1.getClientId(facesContext) + " "+ 
-            field2.getClientId(facesContext), true, false);
+        client.ajax(submitButton_2, "action", 
+            submitButton_2.getClientId(facesContext) +" "+
+            field1_2.getClientId(facesContext) + " "+ 
+            field2_2.getClientId(facesContext), 
+            field1_2.getClientId(facesContext) + " "+ 
+            field2_2.getClientId(facesContext), true, false);
         
         processLifecycleExecute();
         processRender();
 
-        submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
-        field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
-        field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
+        UIComponent submitButton_3 = facesContext.getViewRoot().findComponent("mainForm:submit");
+        UIInput field1_3 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
+        UIInput field2_3 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
         // The values in the model are kept but the submitted values are there
         // and the renderer takes them.
-        Assert.assertEquals("Hello", field1.getValue());
+        Assert.assertEquals("Hello", field1_3.getValue());
         // the second field doesn't have validation error!, but the local value
         // is set with 2, but the model still is 1 because update model phase
         // was not executed.
-        Assert.assertEquals(2, field2.getValue());
-        Assert.assertTrue(field2.isLocalValueSet());
-        Assert.assertEquals("xxx", field1.getSubmittedValue());
-        Assert.assertNull(field2.getSubmittedValue());
+        Assert.assertEquals(2, field2_3.getValue());
+        Assert.assertTrue(field2_3.isLocalValueSet());
+        Assert.assertEquals("xxx", field1_3.getSubmittedValue());
+        Assert.assertNull(field2_3.getSubmittedValue());
         
         Assert.assertEquals("Hello", bean.getField1());
         Assert.assertEquals(Integer.valueOf(1), bean.getField2());
         
         // Now let's try a valid one, in this case the model is updated
-        client.inputText(field1, "xxxx");
-        client.inputText(field2, "3");
+        client.inputText(field1_3, "xxxx");
+        client.inputText(field2_3, "3");
         
-        client.ajax(submitButton, "action", 
-            submitButton.getClientId(facesContext) +" "+
-            field1.getClientId(facesContext) + " "+ 
-            field2.getClientId(facesContext), 
-            field1.getClientId(facesContext) + " "+ 
-            field2.getClientId(facesContext), true, true);
+        client.ajax(submitButton_3, "action", 
+            submitButton_3.getClientId(facesContext) +" "+
+            field1_3.getClientId(facesContext) + " "+ 
+            field2_3.getClientId(facesContext), 
+            field1_3.getClientId(facesContext) + " "+ 
+            field2_3.getClientId(facesContext), true, true);
         
         processLifecycleExecute();
         processRender();
 
-        submitButton = facesContext.getViewRoot().findComponent("mainForm:submit");
-        field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
-        field2 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
+        //UIComponent submitButton_4 = facesContext.getViewRoot().findComponent("mainForm:submit");
+        UIInput field1_4 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
+        UIInput field2_4 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field2");
         
-        Assert.assertEquals("xxxx", field1.getValue());
-        Assert.assertEquals(3, field2.getValue());
-        Assert.assertNull(field1.getSubmittedValue());
-        Assert.assertNull(field2.getSubmittedValue());
+        Assert.assertEquals("xxxx", field1_4.getValue());
+        Assert.assertEquals(3, field2_4.getValue());
+        Assert.assertNull(field1_4.getSubmittedValue());
+        Assert.assertNull(field2_4.getSubmittedValue());
         
         Assert.assertEquals("xxxx", bean.getField1());
         Assert.assertEquals(Integer.valueOf(3), bean.getField2());
