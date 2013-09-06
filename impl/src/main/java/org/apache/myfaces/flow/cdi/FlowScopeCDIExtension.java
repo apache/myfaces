@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.flow.cdi;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
@@ -25,7 +27,9 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessBean;
 import javax.faces.flow.FlowScoped;
+import org.apache.myfaces.flow.FlowReference;
 
 /**
  *
@@ -34,6 +38,13 @@ import javax.faces.flow.FlowScoped;
 public class FlowScopeCDIExtension implements Extension
 {
     private FlowScopedContextImpl flowScopedContext;
+    
+    private Map<Class, FlowReference> flowBeanReferences;
+    
+    public FlowScopeCDIExtension()
+    {
+        flowBeanReferences = new ConcurrentHashMap<Class, FlowReference>();
+    }
     
     void beforeBeanDiscovery(
         @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
@@ -45,9 +56,26 @@ public class FlowScopeCDIExtension implements Extension
         event.addAnnotatedType(bean);
     }
     
+    void onProcessBean(@Observes ProcessBean event, BeanManager manager)
+    {
+        // Register all beans who are annotated with FlowScoped and has a flow reference
+        // restriction, to take it into account later when it is created and store it
+        // in the right context so @PreDestroy is called when the referenced flow is.
+        if (event.getAnnotated().isAnnotationPresent(FlowScoped.class))
+        {
+            FlowScoped flowScoped = event.getAnnotated().getAnnotation(FlowScoped.class);
+            String flowId = flowScoped.value();
+            if (flowId != null)
+            {
+                flowBeanReferences.put(event.getBean().getBeanClass(), new FlowReference(
+                    flowScoped.definingDocumentId(), flowId));
+            }
+        }
+    }
+    
     void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager)
     {
-        flowScopedContext = new FlowScopedContextImpl(manager);
+        flowScopedContext = new FlowScopedContextImpl(manager, flowBeanReferences);
         event.addContext(flowScopedContext);
     }
     

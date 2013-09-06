@@ -34,6 +34,7 @@ import javax.faces.flow.FlowHandler;
 import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
+import org.apache.myfaces.flow.FlowReference;
 
 
 /**
@@ -197,6 +198,26 @@ public class FlowScopeBeanHolder implements Serializable
             return activeFlowKeys;
         }
     }
+    
+    public String getFlowMapKey(FacesContext facesContext, FlowReference flowReference)
+    {
+        Flow flow = null;
+        if (flowReference.getDocumentId() == null)
+        {
+            flow = facesContext.getApplication().getFlowHandler().getFlow(
+                facesContext, "", flowReference.getId());
+        }
+        else
+        {
+            flow = facesContext.getApplication().getFlowHandler().getFlow(
+                facesContext, flowReference.getDocumentId(), flowReference.getId());
+        }
+        if (flow != null)
+        {
+            return flow.getClientWindowFlowId(facesContext.getExternalContext().getClientWindow());
+        }
+        return null;
+    }
 
     public void createCurrentFlowScope(FacesContext facesContext)
     {
@@ -228,7 +249,7 @@ public class FlowScopeBeanHolder implements Serializable
         String flowMapKey = flow.getClientWindowFlowId(
             facesContext.getExternalContext().getClientWindow());
 
-        ContextualStorage contextualStorage = storageMap.get(flowMapKey);
+        ContextualStorage contextualStorage = storageMap.remove(flowMapKey);
         if (contextualStorage != null)
         {
             FlowScopedContextImpl.destroyAllActive(contextualStorage);
