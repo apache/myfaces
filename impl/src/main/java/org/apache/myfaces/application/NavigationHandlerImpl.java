@@ -64,6 +64,7 @@ import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
+import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.shared.application.NavigationUtils;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.ClassUtils;
@@ -174,12 +175,17 @@ public class NavigationHandlerImpl
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 String toViewId = navigationCase.getToViewId(facesContext);
                 
-
                 String redirectPath = viewHandler.getRedirectURL(
                         facesContext, toViewId, 
                         NavigationUtils.getEvaluatedNavigationParameters(facesContext,
                         navigationCase.getParameters()) ,
                         navigationCase.isIncludeViewParams());
+                
+                // The spec doesn't say anything about how to handle redirect but it is
+                // better to apply the transition here where we have already calculated the
+                // route than add the parameters and delegate to 
+                // FlowHandler.clientWindowTransition(facesContext)
+                applyFlowTransition(facesContext, navigationContext);
                 
                 //Clear ViewMap if we are redirecting to other resource
                 UIViewRoot viewRoot = facesContext.getViewRoot(); 
@@ -250,32 +256,7 @@ public class NavigationHandlerImpl
                     }
                 }
                 
-                //Apply Flow transition if any
-                if (navigationContext != null)
-                {
-                    // Is any flow transition on the way?
-                    if (navigationContext.getSourceFlow() != null ||
-                        (navigationContext.getTargetFlows() != null &&
-                         !navigationContext.getTargetFlows().isEmpty()))
-                    {
-                        FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
-                        Flow sourceFlow = navigationContext.getSourceFlow();
-                        for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
-                        {
-                            Flow targetFlow = navigationContext.getTargetFlows().get(i);
-                            // TODO: Here there is an inconsistency with the spec. The javadoc
-                            // for transition says "... toViewId - the viewId of the view 
-                            // being displayed as a result of this transition. This parameter 
-                            // makes it possible to implement getLastDisplayedViewId(
-                            // javax.faces.context.FacesContext).  ...", but JSF 2.2 section
-                            // 7.4.2.1 says "...  ..."
-                            flowHandler.transition(facesContext, sourceFlow, targetFlow, 
-                                navigationContext.getFlowCallNodes().get(i), 
-                                navigationContext.getNavigationCase().getToViewId(facesContext));
-                            sourceFlow = targetFlow;
-                        }
-                    }
-                }
+                applyFlowTransition(facesContext, navigationContext);
 
                 // create UIViewRoot for new view
                 UIViewRoot viewRoot = null;
@@ -317,6 +298,31 @@ public class NavigationHandlerImpl
             {
                 log.finest("handleNavigation fromAction=" + fromAction + " outcome=" + outcome +
                           " no matching navigation-case found, staying on current ViewRoot");
+            }
+        }
+    }
+    
+    private void applyFlowTransition(FacesContext facesContext, NavigationContext navigationContext)
+    {
+        //Apply Flow transition if any
+        if (navigationContext != null)
+        {
+            // Is any flow transition on the way?
+            if (navigationContext.getSourceFlow() != null ||
+                (navigationContext.getTargetFlows() != null &&
+                 !navigationContext.getTargetFlows().isEmpty()))
+            {
+                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+                Flow sourceFlow = navigationContext.getSourceFlow();
+                for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
+                {
+                    Flow targetFlow = navigationContext.getTargetFlows().get(i);
+
+                    flowHandler.transition(facesContext, sourceFlow, targetFlow, 
+                        navigationContext.getFlowCallNodes().get(i), 
+                        navigationContext.getNavigationCase().getToViewId(facesContext));
+                    sourceFlow = targetFlow;
+                }
             }
         }
     }
@@ -411,16 +417,23 @@ public class NavigationHandlerImpl
     }
     
     private Flow calculateTargetFlow(FacesContext facesContext, String outcome, 
-        FlowHandler flowHandler, Flow currentFlow, String toFlowDocumentId)
+        FlowHandler flowHandler, List<Flow> activeFlows, String toFlowDocumentId)
     {
         Flow targetFlow = null;
         if (toFlowDocumentId != null)
         {
             targetFlow = flowHandler.getFlow(facesContext, toFlowDocumentId, outcome);
         }
-        if (targetFlow == null && currentFlow != null)
+        if (targetFlow == null && !activeFlows.isEmpty())
         {
-            targetFlow = flowHandler.getFlow(facesContext, currentFlow.getDefiningDocumentId(), outcome);
+            for (Flow currentFlow : activeFlows)
+            {
+                targetFlow = flowHandler.getFlow(facesContext, currentFlow.getDefiningDocumentId(), outcome);
+                if (targetFlow != null)
+                {
+                    break;
+                }
+            }
         }
         if (targetFlow == null)
         {
@@ -428,7 +441,7 @@ public class NavigationHandlerImpl
         }
         return targetFlow;
     }
-    
+
     public NavigationCase getNavigationCommand(
         FacesContext facesContext, NavigationContext navigationContext, String fromAction, String outcome, 
         String toFlowDocumentId)
@@ -436,20 +449,22 @@ public class NavigationHandlerImpl
         String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
         NavigationCase navigationCase = getNavigationCommandFromGlobalNavigationCases(
                 facesContext, viewId, navigationContext, fromAction, outcome);
-        // TODO: Add navigation commands for JSF 2.2 Faces Flow Here!
         if (outcome != null && navigationCase == null)
         {
             FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
-            Flow currentFlow = navigationContext.getCurrentFlow(facesContext);
+            List<Flow> activeFlows = FlowHandlerImpl.getActiveFlows(facesContext, flowHandler);
             // JSF 2.2 section 7.4.2: "... When outside of a flow, view identifier 
             // has the additional possibility of being a flow id.
-            Flow targetFlow = calculateTargetFlow(facesContext, outcome, flowHandler, currentFlow, toFlowDocumentId);
+            Flow targetFlow = calculateTargetFlow(facesContext, outcome, flowHandler, activeFlows, toFlowDocumentId);
+            Flow currentFlow = navigationContext.getCurrentFlow(facesContext);
             FlowCallNode targetFlowCallNode = null;
-
             boolean startFlow = false;
             String startFlowDocumentId = null;
             String startFlowId = null;
             boolean checkFlowNode = false;
+            String outcomeToGo = outcome;
+            String actionToGo = fromAction;
+            
             if (currentFlow != null)
             {
                 // JSF 2.2 section 7.4.2: When inside a flow, a view identifier has 
@@ -457,11 +472,7 @@ public class NavigationHandlerImpl
                 // current flow or the id of another flow
                 if (targetFlow != null)
                 {
-                    if (!currentFlow.getId().equals(targetFlow.getId()))
-                    {
-                        //Start sub flow!
-                        startFlow = true;
-                    }
+                    startFlow = true;
                 }
                 else
                 {
@@ -477,12 +488,31 @@ public class NavigationHandlerImpl
                     startFlow = true;
                 }
             }
+            if (!startFlow)
+            {
+                for (Flow activeFlow : activeFlows)
+                {
+                    FlowNode node = activeFlow.getNode(outcome);
+                    if (node != null)
+                    {
+                        currentFlow = activeFlow;
+                        break;
+                    }
+                    _FlowNavigationStructure flowNavigationStructure = _flowNavigationStructureMap.get(
+                            activeFlow.getId());
+                    navigationCase = getNavigationCaseFromFlowStructure(facesContext, 
+                            flowNavigationStructure, fromAction, outcome, viewId);
+                    if (navigationCase != null)
+                    {
+                        currentFlow = activeFlow;
+                        break;
+                    }
+                }
+            }
             // If is necessary to enter a flow or there is a current
             // flow and it is necessary to check a flow node
-            if (startFlow || checkFlowNode)
+            if (startFlow || (checkFlowNode && currentFlow != null))
             {
-                String outcomeToGo = outcome;
-                String actionToGo = fromAction;
                 boolean complete = false;
                 boolean checkNavCase = true;
 
@@ -490,6 +520,27 @@ public class NavigationHandlerImpl
                 {
                     if (startFlow)
                     {
+                        if (flowHandler.isActive(facesContext, targetFlow.getDefiningDocumentId(), targetFlow.getId()))
+                        {
+                            // Add the transition to exit from the flow
+                            Flow baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
+                            if (navigationContext.getSourceFlow() == null)
+                            {
+                                navigationContext.setSourceFlow(baseReturnFlow);
+                            }
+                            // This is the part when the pseudo "recursive call" is done. 
+                            while (baseReturnFlow != null && !(baseReturnFlow.getDefiningDocumentId().equals(
+                                    targetFlow.getDefiningDocumentId()) &&
+                                   baseReturnFlow.getId().equals(targetFlow.getId())) )
+                            {
+                                navigationContext.popFlow(facesContext);
+                                baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
+                                navigationContext.addTargetFlow(baseReturnFlow, null);
+                            }
+                            navigationContext.popFlow(facesContext);
+                            currentFlow = navigationContext.getCurrentFlow(facesContext);
+                            navigationContext.addTargetFlow(currentFlow, null);                            
+                        }
                         if (startFlowId == null)
                         {
                             startFlowDocumentId = targetFlow.getDefiningDocumentId();
@@ -504,18 +555,7 @@ public class NavigationHandlerImpl
                         currentFlow = targetFlow;
                         //No outboundCallNode.
                         //Resolve start node.
-                        if (targetFlow.getStartNodeId() == null)
-                        {
-                            // In faces-config javadoc says:
-                            // "If there is no <start-node> element declared, it 
-                            //  is assumed to be <flowName>.xhtml."
-                            outcomeToGo = "/" + targetFlow.getId()+ "/" + 
-                                targetFlow.getId() + ".xhtml";
-                        }
-                        else
-                        {
-                            outcomeToGo = targetFlow.getStartNodeId();
-                        }
+                        outcomeToGo = resolveStartNodeOutcome(targetFlow);
                         checkFlowNode = true;
                         startFlow = false;
                     }
@@ -527,26 +567,7 @@ public class NavigationHandlerImpl
                             checkNavCase = true;
                             if (!complete && flowNode instanceof SwitchNode)
                             {
-                                SwitchNode switchNode = (SwitchNode) flowNode;
-                                boolean resolved = false;
-                                // "... iterate over the NavigationCase instances returned from its getCases()
-                                // method. For each, one call getCondition(). If the result is true, let vdl 
-                                // view identifier be the value of its fromOutcome property.
-                                for (SwitchCase switchCase : switchNode.getCases())
-                                {
-                                    Boolean isConditionTrue = switchCase.getCondition(facesContext);
-                                    if (Boolean.TRUE.equals(isConditionTrue))
-                                    {
-                                        outcomeToGo = switchCase.getFromOutcome();
-                                        resolved = true;
-                                        break;
-                                    }
-                                }
-                                if (!resolved)
-                                {
-                                    outcomeToGo = switchNode.getDefaultOutcome(facesContext);
-                                }
-
+                                outcomeToGo = calculateSwitchOutcome(facesContext, (SwitchNode) flowNode);
                                 // Start over again checking if the node exists.
                                 //fromAction = currentFlow.getId();
                                 actionToGo = currentFlow.getId();
@@ -594,12 +615,20 @@ public class NavigationHandlerImpl
                                 String fromOutcome = returnNode.getFromOutcome(facesContext);
                                 
                                 actionToGo = currentFlow.getId();
+                                Flow baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
                                 if (navigationContext.getSourceFlow() == null)
                                 {
-                                    navigationContext.setSourceFlow(
-                                        navigationContext.getCurrentFlow(facesContext));
+                                    navigationContext.setSourceFlow(baseReturnFlow);
                                 }
                                 // This is the part when the pseudo "recursive call" is done. 
+                                while (baseReturnFlow != null && !(baseReturnFlow.getDefiningDocumentId().equals(
+                                        currentFlow.getDefiningDocumentId()) &&
+                                       baseReturnFlow.getId().equals(currentFlow.getId())) )
+                                {
+                                    navigationContext.popFlow(facesContext);
+                                    baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
+                                    navigationContext.addTargetFlow(baseReturnFlow, null);
+                                }
                                 navigationContext.popFlow(facesContext);
                                 currentFlow = navigationContext.getCurrentFlow(facesContext);
                                 navigationContext.addTargetFlow(currentFlow, null);
@@ -708,6 +737,48 @@ public class NavigationHandlerImpl
         }
         return navigationContext.getNavigationCase();
         // if navigationCase == null, will stay on current view
+    }
+
+    private String resolveStartNodeOutcome(Flow targetFlow)
+    {
+        String outcomeToGo;
+        if (targetFlow.getStartNodeId() == null)
+        {
+            // In faces-config javadoc says:
+            // "If there is no <start-node> element declared, it 
+            //  is assumed to be <flowName>.xhtml."
+            outcomeToGo = "/" + targetFlow.getId()+ "/" + 
+                targetFlow.getId() + ".xhtml";
+        }
+        else
+        {
+            outcomeToGo = targetFlow.getStartNodeId();
+        }
+        return outcomeToGo;
+    }
+    
+    private String calculateSwitchOutcome(FacesContext facesContext, SwitchNode switchNode)
+    {
+        String outcomeToGo = null;
+        boolean resolved = false;
+        // "... iterate over the NavigationCase instances returned from its getCases()
+        // method. For each, one call getCondition(). If the result is true, let vdl 
+        // view identifier be the value of its fromOutcome property.
+        for (SwitchCase switchCase : switchNode.getCases())
+        {
+            Boolean isConditionTrue = switchCase.getCondition(facesContext);
+            if (Boolean.TRUE.equals(isConditionTrue))
+            {
+                outcomeToGo = switchCase.getFromOutcome();
+                resolved = true;
+                break;
+            }
+        }
+        if (!resolved)
+        {
+            outcomeToGo = switchNode.getDefaultOutcome(facesContext);
+        }
+        return outcomeToGo;
     }
     
     private Flow calculateFlowCallTargetFlow(FacesContext facesContext, FlowHandler flowHandler,

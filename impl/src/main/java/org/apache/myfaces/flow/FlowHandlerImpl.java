@@ -19,10 +19,12 @@
 package org.apache.myfaces.flow;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.faces.FacesWrapper;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
 import javax.faces.application.NavigationHandler;
@@ -370,7 +372,7 @@ public class FlowHandlerImpl extends FlowHandler
         checkNull(id, "id");
         
         Object session = context.getExternalContext().getSession(false);
-        if (session != null)
+        if (session == null)
         {
             return false;
         }
@@ -561,35 +563,61 @@ public class FlowHandlerImpl extends FlowHandler
                 // This transition is for start a new flow. In this case 
                 // FlowHandler.FLOW_ID_REQUEST_PARAM_NAME could be the flow name to enter
                 // or the flow call node to activate.
-                Flow currentFlow = flowHandler.getCurrentFlow(context);
-                FlowNode node = currentFlow != null ? currentFlow.getNode(flowIdRequestParam) : null;
-                Flow targetFlow = null;
+                // 1. check if is a flow
+                Flow targetFlow = flowHandler.getFlow(context, flowDocumentIdRequestParam, flowIdRequestParam);
+                Flow currentFlow = null;
                 FlowCallNode outboundCallNode = null;
-                if (node != null && node instanceof FlowCallNode)
+                FlowNode node = null;
+                if (targetFlow == null)
                 {
-                    outboundCallNode = (FlowCallNode) node;
-                    
-                    String calledFlowDocumentId = outboundCallNode.getCalledFlowDocumentId(context);
-                    if (calledFlowDocumentId == null)
+                    //Check if is a call flow node
+                    List<Flow> activeFlows = FlowHandlerImpl.getActiveFlows(context, flowHandler);
+                    for (Flow activeFlow : activeFlows)
                     {
-                        calledFlowDocumentId = currentFlow.getDefiningDocumentId();
+                        node = activeFlow != null ? activeFlow.getNode(flowIdRequestParam) : null;
+                        if (node != null && node instanceof FlowCallNode)
+                        {
+                            outboundCallNode = (FlowCallNode) node;
+
+                            String calledFlowDocumentId = outboundCallNode.getCalledFlowDocumentId(context);
+                            if (calledFlowDocumentId == null)
+                            {
+                                calledFlowDocumentId = activeFlow.getDefiningDocumentId();
+                            }
+                            targetFlow = flowHandler.getFlow(context, 
+                                calledFlowDocumentId, 
+                                outboundCallNode.getCalledFlowId(context));
+                            if (targetFlow == null && !"".equals(calledFlowDocumentId))
+                            {
+                                targetFlow = flowHandler.getFlow(context, "", 
+                                    outboundCallNode.getCalledFlowId(context));
+                            }
+                            if (targetFlow != null)
+                            {
+                                currentFlow = activeFlow;
+                                break;
+                            }
+                        }
                     }
-                    targetFlow = flowHandler.getFlow(context, 
-                        calledFlowDocumentId, 
-                        outboundCallNode.getCalledFlowId(context));
-                    if (targetFlow == null && !"".equals(calledFlowDocumentId))
-                    {
-                        targetFlow = flowHandler.getFlow(context, "", 
-                            outboundCallNode.getCalledFlowId(context));
-                    }
-                }
-                else
-                {
-                    targetFlow = flowHandler.getFlow(context, flowDocumentIdRequestParam, flowIdRequestParam);
                 }
                 
                 if (targetFlow != null)
                 {
+                    if (flowHandler.isActive(context, targetFlow.getDefiningDocumentId(), targetFlow.getId()))
+                    {
+                        Flow baseReturnFlow = flowHandler.getCurrentFlow();
+                        if (!(baseReturnFlow.getDefiningDocumentId().equals(targetFlow.getDefiningDocumentId()) &&
+                             baseReturnFlow.getId().equals(targetFlow.getId())))
+                        {
+                            flowHandler.transition(context, 
+                                baseReturnFlow, targetFlow, outboundCallNode, context.getViewRoot().getViewId());
+                        }
+                        flowHandler.pushReturnMode(context);
+                        Flow previousFlow = flowHandler.getCurrentFlow(context);
+                        flowHandler.popReturnMode(context);
+                        flowHandler.transition(context, 
+                                targetFlow, previousFlow, outboundCallNode, context.getViewRoot().getViewId());
+                    }
                     // Invoke transition
                     flowHandler.transition(context, 
                         currentFlow, targetFlow, outboundCallNode, context.getViewRoot().getViewId());
@@ -847,6 +875,71 @@ public class FlowHandlerImpl extends FlowHandler
             context.getAttributes().put(RETURN_MODE, Boolean.FALSE);
         }
     }
+    
+    public List<Flow> getActiveFlows(FacesContext context)
+    {
+        Object session = context.getExternalContext().getSession(false);
+        if (session == null)
+        {
+            return Collections.emptyList();
+        }
+        ClientWindow clientWindow = context.getExternalContext().getClientWindow();
+        if (clientWindow == null)
+        {
+            return Collections.emptyList();
+        }
+        if ( Boolean.TRUE.equals(context.getAttributes().get(RETURN_MODE)) )
+        {
+            // Use the standard form
+            FlowHandler fh = context.getApplication().getFlowHandler();
+            Flow curFlow = fh.getCurrentFlow(context);
+            if (curFlow != null)
+            {
+                List<Flow> activeFlows = new ArrayList<Flow>();
+                while (curFlow != null)
+                {
+                    activeFlows.add(curFlow);
+                    fh.pushReturnMode(context);
+                    curFlow = fh.getCurrentFlow(context);
+                }
+
+                for (int i = 0; i < activeFlows.size(); i++)
+                {
+                    fh.popReturnMode(context);
+                }
+                return activeFlows;
+            }
+            else
+            {
+                return Collections.emptyList();
+            }
+        }
+        else
+        {
+            Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
+            String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
+
+            List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) sessionMap.get(currentFlowMapKey);
+            if (currentFlowStack == null)
+            {
+                return Collections.emptyList();
+            }
+
+            if (!currentFlowStack.isEmpty())
+            {
+                List<Flow> activeFlows = new ArrayList<Flow>();
+                for(_FlowContextualInfo info : currentFlowStack)
+                {
+                    activeFlows.add(0, getFlow(context, 
+                        info.getFlowReference().getDocumentId(), 
+                        info.getFlowReference().getId()));
+                }
+                return activeFlows;
+            }
+
+            return Collections.emptyList();
+        }
+    }
 
     private void pushFlowReferenceReturnMode(FacesContext context, ClientWindow clientWindow,
             String stackKey, _FlowContextualInfo flowReference)
@@ -883,4 +976,55 @@ public class FlowHandlerImpl extends FlowHandler
         List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) attributesMap.get(currentFlowMapKey);
         return currentFlowStack;
     }
+    
+    public static List<Flow> getActiveFlows(FacesContext facesContext, FlowHandler fh)
+    {
+        FlowHandler flowHandler = fh;
+        while (flowHandler != null)
+        {
+            if (flowHandler instanceof FlowHandlerImpl)
+            {
+                break;
+            }
+            else if (flowHandler instanceof FacesWrapper)
+            {
+                flowHandler = ((FacesWrapper<FlowHandler>)flowHandler).getWrapped();
+            }
+            else
+            {
+                flowHandler = null;
+            }
+        }
+        if (flowHandler == null)
+        {
+            // Use the standard form
+            Flow curFlow = fh.getCurrentFlow(facesContext);
+            if (curFlow != null)
+            {
+                List<Flow> activeFlows = new ArrayList<Flow>();
+                while (curFlow != null)
+                {
+                    activeFlows.add(curFlow);
+                    fh.pushReturnMode(facesContext);
+                    curFlow = fh.getCurrentFlow(facesContext);
+                }
+
+                for (int i = 0; i < activeFlows.size(); i++)
+                {
+                    fh.popReturnMode(facesContext);
+                }
+                return activeFlows;
+            }
+            else
+            {
+                return Collections.emptyList();
+            }
+        }
+        else
+        {
+            FlowHandlerImpl flowHandlerImpl = (FlowHandlerImpl) flowHandler;
+            return flowHandlerImpl.getActiveFlows(facesContext);
+        }
+    }
+
 }
