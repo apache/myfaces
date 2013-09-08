@@ -30,15 +30,18 @@ class _FlowContextualInfo implements Serializable
     
     private FlowReference flowReference;
     private String lastDisplayedViewId;
+    private FlowReference sourceFlowReference;
 
     public _FlowContextualInfo()
     {
     }
     
-    public _FlowContextualInfo(FlowReference flowReference, String lastDisplayedViewId)
+    public _FlowContextualInfo(FlowReference flowReference, String lastDisplayedViewId, 
+        FlowReference souFlowReference)
     {
         this.flowReference = flowReference;
         this.lastDisplayedViewId = lastDisplayedViewId;
+        this.sourceFlowReference = souFlowReference;
     }
 
     @Override
@@ -106,5 +109,21 @@ class _FlowContextualInfo implements Serializable
     public void setLastDisplayedViewId(String lastDisplayedViewId)
     {
         this.lastDisplayedViewId = lastDisplayedViewId;
+    }
+
+    /**
+     * @return the sourceFlowReference
+     */
+    public FlowReference getSourceFlowReference()
+    {
+        return sourceFlowReference;
+    }
+
+    /**
+     * @param sourceFlowReference the sourceFlowReference to set
+     */
+    public void setSourceFlowReference(FlowReference sourceFlowReference)
+    {
+        this.sourceFlowReference = sourceFlowReference;
     }
 }

@@ -46,6 +46,16 @@
             <from-outcome>back</from-outcome>
         </flow-return>
         
+        <flow-return id="back_flow_1"/>
+        
+        <flow-return id="back_flow_1_3">
+            <from-outcome>back_flow_3</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back_flow_1_4">
+            <from-outcome>back_flow_4</from-outcome>
+        </flow-return>
+        
         <!-- The idea is use a switch combo to get back, since
              the from-outcome of the switch cannot receive
              EL expressions -->
@@ -106,6 +116,8 @@
              default-->
         <flow-return id="back"/>
         
+        <flow-return id="back_flow_2"/>
+        
         <navigation-rule>
             <from-view-id>*</from-view-id>
             <navigation-case>
@@ -151,12 +163,48 @@
             <from-outcome>exit</from-outcome>
         </flow-return>
         
+        <flow-return id="back_flow_3"/>
+        
         <view id="content">
             <vdl-document>/flow3/content.xhtml</vdl-document>
         </view>
         
     </flow-definition>
     
+    <flow-definition id="flow4">
+        
+        <flow-call id="call_flow1_4">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flow1</flow-id>
+            </flow-reference>
+            <outbound-parameter>
+                <name>backOutcome</name>
+                <value>content</value>
+            </outbound-parameter>
+        </flow-call>
+        
+        <navigation-rule>
+            <from-view-id>*</from-view-id>
+            <navigation-case>
+                <from-action>flow1</from-action>
+                <from-outcome>exit</from-outcome>
+                <to-view-id>content</to-view-id>
+            </navigation-case>
+        </navigation-rule>
+        
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back_flow_4"/>
+        
+        <view id="content">
+            <vdl-document>/flow4/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>
+
     <navigation-rule>
         <from-view-id>*</from-view-id>
         <!-- End Flow 1 -->
@@ -165,7 +213,10 @@
             <from-outcome>exit</from-outcome>
             <to-view-id>/flow1_end.xhtml</to-view-id>
         </navigation-case>
-        
+        <navigation-case>
+            <from-outcome>flow_base</from-outcome>
+            <to-view-id>/flow_base.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     
 </faces-config>

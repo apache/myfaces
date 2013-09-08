@@ -191,14 +191,15 @@ public class FlowHandlerImpl extends FlowHandler
             return;
         }
         
-        // TODO: Implement me! In theory here lies the push/pop logic, but to know how it works, it is necessary
-        // to add the code inside NavigationHandlerImpl first. For now, the logic only allows 1 flow at the time
-        // but this should work with multiple nested flows.
         if (sourceFlow == null && targetFlow == null)
         {
             return;
         }
 
+        // Calculate the parentFlowReference, since it will be used later.
+        FlowReference parentFlowReference = (outboundCallNode != null && sourceFlow != null) ?
+            new FlowReference(sourceFlow.getDefiningDocumentId(), sourceFlow.getId()) : null;
+        
         if (sourceFlow == null)
         {
             // Entering a flow
@@ -206,24 +207,19 @@ public class FlowHandlerImpl extends FlowHandler
                 targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
             outboundCallNodeProcessed = true;
             pushFlowReference(context, clientWindow, 
-                    new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId);
+                    new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), 
+                    toViewId, parentFlowReference);
             doAfterEnterFlow(context, targetFlow, outboundParameters);
         }
         else if (targetFlow == null)
         {
-            // Getting out of the flow, since targetFlow is null, just clear the stack
+            // Getting out of the flow, since targetFlow is null,
+            // we need to take sourceFlow and take it out and all the chain
             List<_FlowContextualInfo> currentFlowStack = getCurrentFlowStack(context, clientWindow);
             if (currentFlowStack != null)
             {
-                //currentFlowStack.clear();
-                for (int i = currentFlowStack.size()-1; i >= 0; i--)
-                {
-                    _FlowContextualInfo fci = currentFlowStack.get(i);
-                    FlowReference fr = fci.getFlowReference();
-                    doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
-                    popFlowReference(context, clientWindow, currentFlowStack, i);
-                }
-            }            
+                removeFlowFromStack(context, currentFlowStack, sourceFlow);
+            }
         }
         else
         {
@@ -246,57 +242,99 @@ public class FlowHandlerImpl extends FlowHandler
                 }
                 if (targetFlowIndex >= 0)
                 {
-                    for (int i = currentFlowStack.size()-1; i > targetFlowIndex; i--)
-                    {
-                        _FlowContextualInfo fci = currentFlowStack.get(i);
-                        FlowReference fr = fci.getFlowReference();
-                        doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
-                        popFlowReference(context, clientWindow, currentFlowStack, i);
-                    }
+                    // targetFlow is on the stack, so it is a return.
+                    removeFlowFromStack(context, currentFlowStack, sourceFlow);
                 }
                 else
                 {
-                    // sourceFlow should match.
-                    FlowReference sourceFlowReference = new FlowReference(
-                            sourceFlow.getDefiningDocumentId(), sourceFlow.getId());
-                    if ( sourceFlowReference.equals(
-                        currentFlowStack.get(currentFlowStack.size()-1).getFlowReference()) )
-                    {
-                        Map<String, Object> outboundParameters = doBeforeEnterFlow(context,
-                            targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
-                        outboundCallNodeProcessed = true;
-                        pushFlowReference(context, clientWindow, 
-                                new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId);
-                        doAfterEnterFlow(context, targetFlow, outboundParameters);
-                    }
-                    else
-                    {
-                        // Chain gets broken. Clear stack and start again.
-                        for (int i = currentFlowStack.size()-1; i >= 0; i--)
-                        {
-                            _FlowContextualInfo fci = currentFlowStack.get(i);
-                            FlowReference fr = fci.getFlowReference();
-                            doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
-                            popFlowReference(context, clientWindow, currentFlowStack, i);
-                        }
-                        
-                        Map<String, Object> outboundParameters = doBeforeEnterFlow(context,
-                            targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
-                        outboundCallNodeProcessed = true;
-                        pushFlowReference(context, clientWindow, 
-                                new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId);
-                        doAfterEnterFlow(context, targetFlow, outboundParameters);
-                    }
+                    // targetFlow is not on the stack, so it is flow call.
+                    Map<String, Object> outboundParameters = doBeforeEnterFlow(context,
+                        targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
+                    outboundCallNodeProcessed = true;
+                    pushFlowReference(context, clientWindow, 
+                            new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId,
+                            parentFlowReference);
+                    doAfterEnterFlow(context, targetFlow, outboundParameters);
                 }
             }
             else
             {
+                // sourceFlow and targetFlow are not null, but there is no currentFlowStack. It that
+                // case just enter into targetFlow
                 Map<String, Object> outboundParameters = doBeforeEnterFlow(context, 
                     targetFlow, !outboundCallNodeProcessed ? outboundCallNode : null);
                 outboundCallNodeProcessed = true;
                 pushFlowReference(context, clientWindow, 
-                        new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId);
+                        new FlowReference(targetFlow.getDefiningDocumentId(), targetFlow.getId()), toViewId,
+                        parentFlowReference);
                 doAfterEnterFlow(context, targetFlow, outboundParameters);
+            }
+        }
+    }
+    
+    private void removeFlowFromStack(FacesContext context, List<_FlowContextualInfo> currentFlowStack, Flow sourceFlow)
+    {
+        // Steps to remove a flow:
+        // 1. locate where is the flow in the chain
+        int sourceFlowIndex = -1;
+        FlowReference sourceFlowReference = new FlowReference(sourceFlow.getDefiningDocumentId(),
+            sourceFlow.getId());
+        List<_FlowContextualInfo> flowsToRemove = new ArrayList<_FlowContextualInfo>();
+        for (int i = currentFlowStack.size()-1; i >= 0; i--)
+        {
+            _FlowContextualInfo fci = currentFlowStack.get(i);
+            if (fci.getFlowReference().equals(sourceFlowReference))
+            {
+                sourceFlowIndex = i;
+                flowsToRemove.add(fci);
+                break;
+            }
+        }
+
+        if (sourceFlowIndex != -1)
+        {
+            // From sourceFlowIndex, add all flows 
+            traverseDependantFlows(sourceFlowReference, sourceFlowIndex+1, currentFlowStack, flowsToRemove);
+
+            // Remove all marked elements
+            if (!flowsToRemove.isEmpty())
+            {
+                for (int i = flowsToRemove.size()-1; i >= 0; i--)
+                {
+                    _FlowContextualInfo fci = flowsToRemove.get(i);
+                    FlowReference fr = fci.getFlowReference();
+                    doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
+                    //popFlowReference(context, clientWindow, currentFlowStack, i);
+                    currentFlowStack.remove(fci);
+                }
+            }
+
+            if (currentFlowStack.isEmpty())
+            {
+                // Remove it from session but keep it in request scope.
+                context.getAttributes().put(ROOT_LAST_VIEW_ID, 
+                    context.getExternalContext().getSessionMap().remove(ROOT_LAST_VIEW_ID + 
+                    context.getExternalContext().getClientWindow().getId()));
+            }
+        }
+    }
+    
+    private void traverseDependantFlows(FlowReference sourceFlowReference, 
+        int index, List<_FlowContextualInfo> currentFlowStack, List<_FlowContextualInfo> flowsToRemove)
+    {
+        if (index < currentFlowStack.size())
+        {
+            for (int i = index; i < currentFlowStack.size(); i++)
+            {
+                _FlowContextualInfo info = currentFlowStack.get(i);
+                if (sourceFlowReference.equals(info.getSourceFlowReference()))
+                {
+                    if (!flowsToRemove.contains(info))
+                    {
+                        flowsToRemove.add(info);
+                        traverseDependantFlows(info.getFlowReference(), i+1, currentFlowStack, flowsToRemove);
+                    }
+                }
             }
         }
     }
@@ -466,8 +504,10 @@ public class FlowHandlerImpl extends FlowHandler
                 // where the flow should return, because that information was not passed
                 // in the parameters of the link. 
                 String toFlowDocumentId = FlowHandler.NULL_FLOW;
-                String targetFlowId = null;
                 String fromOutcome = flowIdRequestParam;
+                //Flow sourceFlow = null;
+                List<Flow> sourceFlows = null;
+                List<Flow> targetFlows = null;
                 
                 boolean failed = false;
                 int i = 0;
@@ -483,7 +523,13 @@ public class FlowHandlerImpl extends FlowHandler
                     FlowNode node = currentFlow.getNode(fromOutcome);
                     if (node instanceof ReturnNode)
                     {
+                        if (targetFlows == null)
+                        {
+                            sourceFlows = new ArrayList<Flow>(4);
+                            targetFlows = new ArrayList<Flow>(4);
+                        }
                         // Get the navigation case using the outcome
+                        Flow sourceFlow = currentFlow;
                         flowHandler.pushReturnMode(context);
                         currentFlow = flowHandler.getCurrentFlow(context);
                         i++;
@@ -495,15 +541,17 @@ public class FlowHandlerImpl extends FlowHandler
                         {
                             if (currentLastDisplayedViewId != null)
                             {
+                                sourceFlows.add(sourceFlow);
                                 if (currentFlow != null)
                                 {
                                     toFlowDocumentId = currentFlow.getDefiningDocumentId();
-                                    targetFlowId = currentFlow.getId();
+                                    targetFlows.add(currentFlow);
                                 }
                                 else
                                 {
                                     // No active flow
                                     toFlowDocumentId = null;
+                                    targetFlows.add(null);
                                 }
                             }
                             else
@@ -521,23 +569,33 @@ public class FlowHandlerImpl extends FlowHandler
                             }
                             else
                             {
+                                sourceFlows.add(sourceFlow);
                                 // The absence of FlowHandler.NULL_FLOW means the return went somewhere else.
                                 if (currentFlow != null)
                                 {
                                     toFlowDocumentId = currentFlow.getDefiningDocumentId();
-                                    targetFlowId = currentFlow.getId();
+                                    targetFlows.add(currentFlow);
                                 }
                                 else
                                 {
                                     // No active flow
                                     toFlowDocumentId = null;
+                                    targetFlows.add(null);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        failed = true;
+                        // No return node found in current flow, push it and check 
+                        // the next flow
+                        flowHandler.pushReturnMode(context);
+                        currentFlow = flowHandler.getCurrentFlow(context);
+                        i++;
+                        if (currentFlow == null)
+                        {
+                            failed = true;
+                        }
                     }
                 }
                 for (int j = 0; j<i; j++)
@@ -550,12 +608,16 @@ public class FlowHandlerImpl extends FlowHandler
                 }
                 else 
                 {
-                    Flow targetFlow = targetFlowId == null ? null : 
-                        getFlow(context, toFlowDocumentId, targetFlowId);
                     //Call transitions.
-                    flowHandler.transition(context, 
-                        flowHandler.getCurrentFlow(context),
-                        targetFlow, null, context.getViewRoot().getViewId());
+                    for (int j = 0; j < targetFlows.size(); j++)
+                    {
+                        Flow sourceFlow = sourceFlows.get(j);
+                        Flow targetFlow = targetFlows.get(j);
+                        flowHandler.transition(context, 
+                            sourceFlow,
+                            targetFlow, null, context.getViewRoot().getViewId());
+                        
+                    }
                 }
             }
             else
@@ -740,7 +802,7 @@ public class FlowHandlerImpl extends FlowHandler
     }
     
     private void pushFlowReference(FacesContext context, ClientWindow clientWindow, FlowReference flowReference,
-        String toViewId)
+        String toViewId, FlowReference sourceFlowReference)
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
@@ -760,7 +822,7 @@ public class FlowHandlerImpl extends FlowHandler
             context.getExternalContext().getSessionMap().put(ROOT_LAST_VIEW_ID + clientWindow.getId(), 
                 context.getViewRoot().getViewId());
         }
-        currentFlowStack.add(new _FlowContextualInfo(flowReference, toViewId));
+        currentFlowStack.add(new _FlowContextualInfo(flowReference, toViewId, sourceFlowReference));
     }
     
     private void popFlowReference(FacesContext context, ClientWindow clientWindow,

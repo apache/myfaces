@@ -30,12 +30,7 @@
     <h1>Myfaces Flow Examples</h1>
     <h2>begin.xhtml</h2>
     <h:form id="mainForm">
-        <h:commandButton value="End" action="content"/>
-        
-        <h:commandButton id="call_flow2" value="Start Flow 2" action="call_flow2"/>
-        <h:commandButton id="end_flow" value="End" action="end"/>
-        <h:commandButton id="back_flow" value="Back" action="back"/>
-        <h:commandButton id="go_flow_base" value="Go to base" action="flow_base"/>
+        <h:commandButton value="End" action="end"/>
     </h:form>
     <!-- resolve outcome is quite useful to check how the flow target is resolved -->
     <h:link outcome="end" value="End Outcome Link"/>

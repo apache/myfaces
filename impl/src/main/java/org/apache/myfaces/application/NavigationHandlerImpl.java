@@ -308,14 +308,14 @@ public class NavigationHandlerImpl
         if (navigationContext != null)
         {
             // Is any flow transition on the way?
-            if (navigationContext.getSourceFlow() != null ||
+            if (navigationContext.getSourceFlows() != null ||
                 (navigationContext.getTargetFlows() != null &&
                  !navigationContext.getTargetFlows().isEmpty()))
             {
                 FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
-                Flow sourceFlow = navigationContext.getSourceFlow();
                 for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
                 {
+                    Flow sourceFlow = navigationContext.getSourceFlows().get(i);
                     Flow targetFlow = navigationContext.getTargetFlows().get(i);
 
                     flowHandler.transition(facesContext, sourceFlow, targetFlow, 
@@ -524,10 +524,7 @@ public class NavigationHandlerImpl
                         {
                             // Add the transition to exit from the flow
                             Flow baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
-                            if (navigationContext.getSourceFlow() == null)
-                            {
-                                navigationContext.setSourceFlow(baseReturnFlow);
-                            }
+                            Flow sourceFlow = baseReturnFlow;
                             // This is the part when the pseudo "recursive call" is done. 
                             while (baseReturnFlow != null && !(baseReturnFlow.getDefiningDocumentId().equals(
                                     targetFlow.getDefiningDocumentId()) &&
@@ -535,19 +532,17 @@ public class NavigationHandlerImpl
                             {
                                 navigationContext.popFlow(facesContext);
                                 baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
-                                navigationContext.addTargetFlow(baseReturnFlow, null);
                             }
                             navigationContext.popFlow(facesContext);
                             currentFlow = navigationContext.getCurrentFlow(facesContext);
-                            navigationContext.addTargetFlow(currentFlow, null);                            
+                            navigationContext.addTargetFlow(baseReturnFlow, currentFlow, null);
                         }
                         if (startFlowId == null)
                         {
                             startFlowDocumentId = targetFlow.getDefiningDocumentId();
                             startFlowId = targetFlowCallNode == null ? targetFlow.getId() : targetFlowCallNode.getId();
                         }
-                        navigationContext.setSourceFlow(currentFlow);
-                        navigationContext.addTargetFlow(targetFlow, targetFlowCallNode);
+                        navigationContext.addTargetFlow(currentFlow, targetFlow, targetFlowCallNode);
                         targetFlowCallNode = null;
                         // Since we start a new flow, the current flow is now the
                         // target flow.
@@ -613,13 +608,9 @@ public class NavigationHandlerImpl
                             {
                                 ReturnNode returnNode = (ReturnNode) flowNode;
                                 String fromOutcome = returnNode.getFromOutcome(facesContext);
-                                
                                 actionToGo = currentFlow.getId();
+                                Flow sourceFlow = currentFlow;
                                 Flow baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
-                                if (navigationContext.getSourceFlow() == null)
-                                {
-                                    navigationContext.setSourceFlow(baseReturnFlow);
-                                }
                                 // This is the part when the pseudo "recursive call" is done. 
                                 while (baseReturnFlow != null && !(baseReturnFlow.getDefiningDocumentId().equals(
                                         currentFlow.getDefiningDocumentId()) &&
@@ -627,11 +618,10 @@ public class NavigationHandlerImpl
                                 {
                                     navigationContext.popFlow(facesContext);
                                     baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
-                                    navigationContext.addTargetFlow(baseReturnFlow, null);
                                 }
                                 navigationContext.popFlow(facesContext);
                                 currentFlow = navigationContext.getCurrentFlow(facesContext);
-                                navigationContext.addTargetFlow(currentFlow, null);
+                                navigationContext.addTargetFlow(sourceFlow, currentFlow, null);
                                 outcomeToGo = fromOutcome;
                                 String lastDisplayedViewId = navigationContext.getLastDisplayedViewId(facesContext, 
                                             currentFlow);
@@ -664,7 +654,6 @@ public class NavigationHandlerImpl
                                     complete = true;
                                 }
                                 continue;
-                                //complete = true;
                             }
                             if (!complete && flowNode instanceof ViewNode)
                             {
@@ -1503,7 +1492,7 @@ public class NavigationHandlerImpl
     protected static class NavigationContext
     {
         private NavigationCase navigationCase;
-        private Flow sourceFlow;
+        private List<Flow> sourceFlows;
         private List<Flow> targetFlows;
         private List<FlowCallNode> targetFlowCallNodes;
         private List<Flow> currentFlows;
@@ -1528,14 +1517,9 @@ public class NavigationHandlerImpl
             this.navigationCase = navigationCase;
         }
 
-        public Flow getSourceFlow()
+        public List<Flow> getSourceFlows()
         {
-            return sourceFlow;
-        }
-
-        public void setSourceFlow(Flow sourceFlow)
-        {
-            this.sourceFlow = sourceFlow;
+            return sourceFlows;
         }
 
         public List<Flow> getTargetFlows()
@@ -1548,13 +1532,15 @@ public class NavigationHandlerImpl
             return targetFlowCallNodes;
         }
 
-        public void addTargetFlow(Flow targetFlow, FlowCallNode flowCallNode)
+        public void addTargetFlow(Flow sourceFlow, Flow targetFlow, FlowCallNode flowCallNode)
         {
             if (targetFlows == null)
             {
+                sourceFlows = new ArrayList<Flow>(4);
                 targetFlows = new ArrayList<Flow>(4);
                 targetFlowCallNodes = new ArrayList<FlowCallNode>(4);
             }
+            this.sourceFlows.add(sourceFlow);
             this.targetFlows.add(targetFlow);
             this.targetFlowCallNodes.add(flowCallNode);
         }
