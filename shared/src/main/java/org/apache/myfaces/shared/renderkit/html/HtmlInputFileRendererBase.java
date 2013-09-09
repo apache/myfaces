@@ -32,11 +32,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.FacesException;
+import javax.faces.application.FacesMessage;
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
+import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
+import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
+import org.apache.myfaces.shared.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
+import org.apache.myfaces.shared.util._ComponentUtils;
 
 /**
  * @author Werner Punz (latest modification by $Author$)
@@ -52,7 +59,6 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
     @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
-        //TODO: implement me!
         try
         {
            Part part = ((HttpServletRequest) facesContext.getExternalContext().getRequest()).
@@ -62,15 +68,15 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
            {
                return;
            }
-           ((UIInput) component).setSubmittedValue(part);
+           ((UIInput) component).setSubmittedValue(new HttpPartWrapper(part));
         }
         catch (IOException e)
         {
-           e.printStackTrace();
+            throw new FacesException(e);
         }
         catch (ServletException e)
         {
-           e.printStackTrace();
+            throw new FacesException(e);
         }
         
         if (component instanceof ClientBehaviorHolder &&
@@ -86,27 +92,25 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
     {   
         renderInput(facesContext, component);
         
-        // TODO: "... verify that the enclosing form has an enctype ..." is different than
-        // "... check the incoming request has an enctype ...". The code below do that, but
-        // what we really want to do is check if there is a parent in the component
-        // hierarchy that is UIForm and has "multipart/form-data" content type. I'll comment
-        // this code temporally.
-        /*
         if(!facesContext.isProjectStage(ProjectStage.Production) 
               && facesContext.isPostback() &&
              (facesContext.getPartialViewContext().isPartialRequest() ||
               facesContext.getPartialViewContext().isAjaxRequest()))
         {
-            String content = ((HttpServletRequest) facesContext.getExternalContext()
-                 .getRequest()).getContentType();
-            if(content==null || !content.contains("multipart/form-data"))
+            FormInfo formInfo = _ComponentUtils.findNestingForm(component, facesContext);
+            if (formInfo != null && formInfo.getForm() instanceof HtmlForm)
             {
-                 //Add facemessage
-                 FacesMessage message = new FacesMessage("file upload requires a form with"+
-                 " enctype equal to multipart/form-data");
-                 facesContext.addMessage(component.getClientId(), message);
+                HtmlForm form = (HtmlForm) formInfo.getForm();
+                String content = form.getEnctype();
+                if(content==null || !content.contains("multipart/form-data"))
+                {
+                     //Add facemessage
+                     FacesMessage message = new FacesMessage("file upload requires a form with"+
+                            " enctype equal to multipart/form-data");
+                     facesContext.addMessage(component.getClientId(), message);
+                }
             }
-        }*/
+        }
     }
    
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
