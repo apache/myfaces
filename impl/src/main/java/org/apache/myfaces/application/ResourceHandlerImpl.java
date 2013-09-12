@@ -1586,7 +1586,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     }
 
     @Override
-    public Resource createViewResource(FacesContext context, String resourceName)
+    public Resource createViewResource(FacesContext facesContext, String resourceName)
     {
         // There are some special points to remember for a view resource in comparison
         // with a normal resource:
@@ -1629,7 +1629,6 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             return null;
         }
-        FacesContext facesContext = FacesContext.getCurrentInstance();
         final String localePrefix = getLocalePrefixForLocateResource(facesContext);
         String contentType = facesContext.getExternalContext().getMimeType(resourceName);
         final List<String> contracts = facesContext.getResourceLibraryContracts(); 

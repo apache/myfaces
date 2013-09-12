@@ -239,7 +239,7 @@ public class ResourceHandlerCache
             return false;
         }
 
-        ResourceKey key = new ResourceKey(resourceName, null, contentType, localePrefix);
+        ResourceKey key = new ResourceKey(resourceName, null, contentType, localePrefix, contractName);
         return _viewResourceCacheMap.get(key) != null;
     }
     
@@ -299,7 +299,7 @@ public class ResourceHandlerCache
                     (maxSize * 4 + 3) / 3, maxSize);
         }
 
-        _viewResourceCacheMap.put(new ResourceKey(resourceName,
+        _viewResourceCacheMap.put(new ResourceKey(resourceName, null,
                 contentType, localePrefix, contractName), new ResourceValue(resource, loader));
     }
 
