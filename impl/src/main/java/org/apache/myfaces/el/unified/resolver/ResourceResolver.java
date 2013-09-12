@@ -29,6 +29,7 @@ import javax.faces.application.ResourceHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.resource.ContractResource;
 
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
@@ -121,6 +122,7 @@ public final class ResourceResolver extends ELResolver
                             Resource ccResource = (Resource) cc.getAttributes().get(
                                     Resource.COMPONENT_RESOURCE_KEY); 
                             libraryName = ccResource.getLibraryName();
+                            contractName = ResourceUtils.getContractName(ccResource);
                         }
                         else
                         {
