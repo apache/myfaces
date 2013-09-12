@@ -24,6 +24,7 @@ import javax.faces.view.facelets.FaceletException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletContext;
 
@@ -38,6 +39,8 @@ public abstract class FaceletFactory
 
     private static ThreadLocal<FaceletFactory> instance = new ThreadLocal<FaceletFactory>();
 
+    public final static String LAST_RESOURCE_RESOLVED = "oam.facelets.LAST_RESOURCE_RESOLVED";
+
     /**
      * Return a Facelet instance as specified by the file at the passed URI.
      * 
@@ -48,7 +51,7 @@ public abstract class FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    public abstract Facelet getFacelet(String uri) throws IOException;
+    public abstract Facelet getFacelet(FacesContext context, String uri) throws IOException;
     
     /**
      * Create a Facelet from the passed URL. This method checks if the cached Facelet needs to be refreshed before
@@ -63,7 +66,7 @@ public abstract class FaceletFactory
      * @throws ELException
      */
     public abstract Facelet getFacelet(URL url) throws IOException, FaceletException, FacesException, ELException;
-
+    
     /**
      * Create a Facelet from the passed URL, but take into account the context. This method is
      * useful in cases where the facelet instance must replace the one in the cache based on 
@@ -78,9 +81,9 @@ public abstract class FaceletFactory
      * @throws FacesException
      * @throws ELException
      */
-    public abstract Facelet getFacelet(FaceletContext ctx, URL url) 
+    public abstract Facelet getFacelet(FaceletContext ctx, URL url)
         throws IOException, FaceletException, FacesException, ELException;    
-    
+
     /**
      * Return a Facelet instance as specified by the file at the passed URI. The returned facelet is used
      * to create view metadata in this form: 
@@ -96,7 +99,8 @@ public abstract class FaceletFactory
      * @return
      * @throws IOException
      */
-    public abstract Facelet getViewMetadataFacelet(String uri) throws IOException;
+    public abstract Facelet getViewMetadataFacelet(
+        FacesContext context, String uri) throws IOException;
     
     /**
      * Create a Facelet used to create view metadata from the passed URL. This method checks if the 
@@ -125,7 +129,8 @@ public abstract class FaceletFactory
      * @return
      * @throws IOException
      */
-    public abstract Facelet getCompositeComponentMetadataFacelet(String uri) throws IOException;
+    public abstract Facelet getCompositeComponentMetadataFacelet(FacesContext context, String uri) 
+        throws IOException;
     
     /**
      * Create a Facelet used to create composite component metadata from the passed URL. This method checks if the 
@@ -141,7 +146,7 @@ public abstract class FaceletFactory
      */
     public abstract Facelet getCompositeComponentMetadataFacelet(URL url)
             throws IOException, FaceletException, FacesException, ELException;
-    
+
     /**
      * Compile a component tag on the fly.
      * 

@@ -23,6 +23,7 @@ import java.net.URL;
 import javax.faces.application.ViewResource;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.ResourceResolver;
+import org.apache.myfaces.view.facelets.FaceletFactory;
 
 
 public class DefaultResourceResolver extends ResourceResolver
@@ -35,6 +36,11 @@ public class DefaultResourceResolver extends ResourceResolver
 
     public URL resolveUrl(String path)
     {
+        return resolveUrl(FacesContext.getCurrentInstance(), path);
+    }
+    
+    public URL resolveUrl(FacesContext facesContext, String path)
+    {
         /*
         try
         {
@@ -44,10 +50,18 @@ public class DefaultResourceResolver extends ResourceResolver
         {
             throw new FacesException(e);
         }*/
-        FacesContext facesContext = FacesContext.getCurrentInstance();
         ViewResource resource = facesContext.getApplication().
             getResourceHandler().createViewResource(facesContext, path);
-        return resource == null ? null : resource.getURL();
+        //return resource == null ? null : resource.getURL();
+        if (resource != null)
+        {
+            facesContext.getAttributes().put(FaceletFactory.LAST_RESOURCE_RESOLVED, resource);
+            return resource.getURL();
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public String toString()

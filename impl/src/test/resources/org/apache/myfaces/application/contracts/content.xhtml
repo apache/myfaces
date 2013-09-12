@@ -20,6 +20,18 @@
       xmlns:f="http://java.sun.com/jsf/core">
 <head>
 </head>
+<!-- This page test what happen when a template that comes from
+a resource library contract is defined in another template that is used
+for views with different contracts. The algorithm that comes from old
+facelets 1.1.x cache the urls of the templates, causing in this case
+to use the wrong template file. The code should always check if the result
+comes from ResourceHandler.createViewResource() and if that so, don't cache
+that part, otherwise it is ok to cache it. -->
+<ui:composition template="/template.xhtml">
+    <ui:define name="footer">
+        FOOTER_TEXT
+    </ui:define>
+</ui:composition>
 <body>
 </body>
 </html>

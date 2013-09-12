@@ -32,6 +32,8 @@ import java.util.regex.Pattern;
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.application.ViewResource;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletCacheFactory;
@@ -75,6 +77,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private Map<String, URL> _relativeLocations;
 
     private javax.faces.view.facelets.ResourceResolver _resolver;
+    private DefaultResourceResolver _defaultResolver;
     
     private FaceletCache<Facelet> _faceletCache;
     private AbstractFaceletCache<Facelet> _abstractFaceletCache;
@@ -100,6 +103,10 @@ public final class DefaultFaceletFactory extends FaceletFactory
         _relativeLocations = new HashMap<String, URL>();
 
         _resolver = resolver;
+        if (_resolver instanceof DefaultResourceResolver)
+        {
+            _defaultResolver = (DefaultResourceResolver) _resolver;
+        }
 
         //_baseUrl = resolver.resolveUrl("/");
 
@@ -208,17 +215,28 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @see org.apache.myfaces.view.facelets.FaceletFactory#getFacelet(java.lang.String)
      */
     @Override
-    public Facelet getFacelet(String uri) throws IOException, FaceletException, FacesException, ELException
+    public Facelet getFacelet(FacesContext facesContext, String uri) 
+        throws IOException, FaceletException, FacesException, ELException
     {
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
-            url = resolveURL(getBaseUrl(), uri);
+            url = resolveURL(facesContext, getBaseUrl(), uri);
             if (url != null)
             {
-                Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
-                newLoc.put(uri, url);
-                _relativeLocations = newLoc;
+                ViewResource viewResource = (ViewResource) facesContext.getAttributes().get(
+                    FaceletFactory.LAST_RESOURCE_RESOLVED);
+                if (viewResource != null)
+                {
+                    // If a view resource has been used to resolve a resource, the cache is in
+                    // the ResourceHandler implementation. No need to cache in _relativeLocations.
+                }
+                else
+                {
+                    Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
+                    newLoc.put(uri, url);
+                    _relativeLocations = newLoc;
+                }
             }
             else
             {
@@ -279,11 +297,12 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @return resolved URL
      * @throws IOException
      */
-    public URL resolveURL(URL source, String path) throws IOException
+    public URL resolveURL(FacesContext context, URL source, String path) throws IOException
     {
         if (path.startsWith("/"))
         {
-            URL url = _resolver.resolveUrl(path);
+            context.getAttributes().put(LAST_RESOURCE_RESOLVED, null);
+            URL url = resolveURL(context, path);
             if (url == null)
             {
                 throw new FileNotFoundException(path + " Not Found in ExternalContext as a Resource");
@@ -443,17 +462,28 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @since 2.0
      */
     @Override
-    public Facelet getViewMetadataFacelet(String uri) throws IOException
+    public Facelet getViewMetadataFacelet(FacesContext facesContext, String uri) 
+        throws IOException
     {
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
-            url = resolveURL(getBaseUrl(), uri);
+            url = resolveURL(facesContext, getBaseUrl(), uri);
+            ViewResource viewResource = (ViewResource) facesContext.getAttributes().get(
+                FaceletFactory.LAST_RESOURCE_RESOLVED);
             if (url != null)
             {
-                Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
-                newLoc.put(uri, url);
-                _relativeLocations = newLoc;
+                if (viewResource != null)
+                {
+                    // If a view resource has been used to resolve a resource, the cache is in
+                    // the ResourceHandler implementation. No need to cache in _relativeLocations.
+                }
+                else
+                {
+                    Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
+                    newLoc.put(uri, url);
+                    _relativeLocations = newLoc;
+                }
             }
             else
             {
@@ -486,17 +516,28 @@ public final class DefaultFaceletFactory extends FaceletFactory
      * @since 2.0.1
      */
     @Override
-    public Facelet getCompositeComponentMetadataFacelet(String uri) throws IOException
+    public Facelet getCompositeComponentMetadataFacelet(FacesContext facesContext, String uri)
+        throws IOException
     {
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
-            url = resolveURL(getBaseUrl(), uri);
+            url = resolveURL(facesContext, getBaseUrl(), uri);
+            ViewResource viewResource = (ViewResource) facesContext.getAttributes().get(
+                FaceletFactory.LAST_RESOURCE_RESOLVED);            
             if (url != null)
             {
-                Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
-                newLoc.put(uri, url);
-                _relativeLocations = newLoc;
+                if (viewResource != null)
+                {
+                    // If a view resource has been used to resolve a resource, the cache is in
+                    // the ResourceHandler implementation. No need to cache in _relativeLocations.
+                }
+                else
+                {
+                    Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
+                    newLoc.put(uri, url);
+                    _relativeLocations = newLoc;
+                }
             }
             else
             {
@@ -537,6 +578,18 @@ public final class DefaultFaceletFactory extends FaceletFactory
                 }
             }
             return f;
+        }
+    }
+    
+    private URL resolveURL(FacesContext context, String path)
+    {
+        if (_defaultResolver != null)
+        {
+            return _defaultResolver.resolveUrl(context, path);
+        }
+        else
+        {
+            return _resolver.resolveUrl(path);
         }
     }
 

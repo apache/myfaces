@@ -139,10 +139,9 @@ public class ResourceHandlerImpl extends ResourceHandler
 
         final String localePrefix = getLocalePrefixForLocateResource(facesContext);
         final List<String> contracts = facesContext.getResourceLibraryContracts(); 
-        boolean found = false;
-        String contractSelected = null;
         String contractPreferred = getContractNameForLocateResource(facesContext);
-        
+        ResourceValue resourceValue = null;
+
         // Check cache:
         //
         // Contracts are on top of everything, because it is a concept that defines
@@ -156,39 +155,31 @@ public class ResourceHandlerImpl extends ResourceHandler
         // contract name.
         if (contractPreferred != null)
         {
-            if (getResourceLoaderCache().containsResource(
-                    resourceName, libraryName, contentType, localePrefix, contractPreferred))
-            {
-                contractSelected = contractPreferred;
-                found = true;
-            }
+            resourceValue = getResourceLoaderCache().getResource(
+                    resourceName, libraryName, contentType, localePrefix, contractPreferred);
         }
-        if (!found && !contracts.isEmpty())
+        if (resourceValue == null && !contracts.isEmpty())
         {
             // Try to get resource but try with a contract name
             for (String contract : contracts)
             {
-                if (getResourceLoaderCache().containsResource(
-                    resourceName, libraryName, contentType, localePrefix, contract))
+                resourceValue = getResourceLoaderCache().getResource(
+                    resourceName, libraryName, contentType, localePrefix, contract);
+                if (resourceValue != null)
                 {
-                    contractSelected = contract;
-                    found = true;
                     break;
                 }
             }
         }
         // Only if no contract preferred try without it.
-        if (!found)
+        if (resourceValue == null)
         {
             // Try to get resource without contract name
-            found = getResourceLoaderCache().containsResource(resourceName, libraryName, contentType, localePrefix);
+            resourceValue = getResourceLoaderCache().getResource(resourceName, libraryName, contentType, localePrefix);
         }
         
-        if(found)
+        if(resourceValue != null)
         {
-            ResourceValue resourceValue = getResourceLoaderCache().getResource(
-                    resourceName, libraryName, contentType, localePrefix, contractSelected);
-            
             resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
                     getResourceHandlerSupport(), contentType);
         }
@@ -1005,9 +996,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         
         FacesContext facesContext = FacesContext.getCurrentInstance();
         final List<String> contracts = facesContext.getResourceLibraryContracts(); 
-        boolean found = false;
-        String contractSelected = null;
         String contractPreferred = getContractNameForLocateResource(facesContext);
+        ResourceValue resourceValue = null;
         
         // Check cache:
         //
@@ -1018,38 +1008,29 @@ public class ResourceHandlerImpl extends ResourceHandler
         // a contract.
         if (contractPreferred != null)
         {
-            if (getResourceLoaderCache().containsResource(
-                    resourceId, contractPreferred))
-            {
-                contractSelected = contractPreferred;
-                found = true;
-            }
+            resourceValue = getResourceLoaderCache().getResource(
+                    resourceId, contractPreferred);
         }
-        if (!found && !contracts.isEmpty())
+        if (resourceValue == null && !contracts.isEmpty())
         {
             // Try to get resource but try with a contract name
             for (String contract : contracts)
             {
-                if (getResourceLoaderCache().containsResource(resourceId, contract))
+                resourceValue = getResourceLoaderCache().getResource(resourceId, contract);
+                if (resourceValue != null)
                 {
-                    contractSelected = contract;
-                    found = true;
                     break;
                 }
             }
         }
-        if (!found)
+        if (resourceValue == null)
         {
             // Try to get resource without contract name
-            found = getResourceLoaderCache().containsResource(resourceId);
+            resourceValue = getResourceLoaderCache().getResource(resourceId);
         }
         
-        if(found)
+        if(resourceValue != null)
         {        
-            ResourceValue resourceValue = contractSelected != null ?
-                getResourceLoaderCache().getResource(resourceId, contractSelected) :
-                getResourceLoaderCache().getResource(resourceId);
-            
             //Resolve contentType using ExternalContext.getMimeType
             String contentType = facesContext.getExternalContext().getMimeType(
                 resourceValue.getResourceMeta().getResourceName());
@@ -1057,7 +1038,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
                     getResourceHandlerSupport(), contentType);
         }
-        else 
+        else
         {
             boolean resolved = false;
             if (contractPreferred != null)
@@ -1632,9 +1613,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         final String localePrefix = getLocalePrefixForLocateResource(facesContext);
         String contentType = facesContext.getExternalContext().getMimeType(resourceName);
         final List<String> contracts = facesContext.getResourceLibraryContracts(); 
-        boolean found = false;
-        String contractSelected = null;
         String contractPreferred = getContractNameForLocateResource(facesContext);
+        ResourceValue resourceValue = null;
         
         // Check cache:
         //
@@ -1645,47 +1625,38 @@ public class ResourceHandlerImpl extends ResourceHandler
         // a contract.
         if (contractPreferred != null)
         {
-            if (getResourceLoaderCache().containsViewResource(
-                    resourceName, contentType, localePrefix, contractPreferred))
-            {
-                contractSelected = contractPreferred;
-                found = true;
-            }
+            resourceValue = getResourceLoaderCache().getViewResource(
+                    resourceName, contentType, localePrefix, contractPreferred);
         }
-        if (!found && !contracts.isEmpty())
+        if (resourceValue == null && !contracts.isEmpty())
         {
             // Try to get resource but try with a contract name
             for (String contract : contracts)
             {
-                if (getResourceLoaderCache().containsViewResource(
-                    resourceName, contentType, localePrefix, contract))
+                resourceValue = getResourceLoaderCache().getViewResource(
+                    resourceName, contentType, localePrefix, contract);
+                if (resourceValue != null)
                 {
-                    contractSelected = contract;
-                    found = true;
                     break;
                 }
             }
         }
-        if (!found)
+        if (resourceValue == null)
         {
             // Try to get resource without contract name
-            found = getResourceLoaderCache().containsViewResource(
+            resourceValue = getResourceLoaderCache().getViewResource(
                 resourceName, contentType, localePrefix);
         }
-                
-        
-        if(found)
+
+        if(resourceValue != null)
         {        
-            ResourceValue resourceValue = contractSelected != null ?
-                getResourceLoaderCache().getViewResource(resourceName, 
-                    contentType, localePrefix, contractSelected) :
-                getResourceLoaderCache().getViewResource(resourceName,
-                    contentType, localePrefix);
-            
-            resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
-                    getResourceHandlerSupport(), contentType);
+            if (resourceValue != null)
+            {
+                resource = new ResourceImpl(resourceValue.getResourceMeta(), resourceValue.getResourceLoader(),
+                        getResourceHandlerSupport(), contentType);
+            }
         }
-        else 
+        else
         {
             boolean resolved = false;
             if (contractPreferred != null)

@@ -39,6 +39,7 @@ import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
+import javax.faces.application.ViewResource;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
@@ -51,6 +52,7 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.EncodingHandler;
 
 
@@ -437,13 +439,26 @@ final class DefaultFacelet extends AbstractFacelet
      * @throws IOException
      *             if there is a problem creating the URL for the path specified
      */
-    private URL getRelativePath(String path) throws IOException
+    private URL getRelativePath(FacesContext facesContext, String path) throws IOException
     {
         URL url = (URL) _relativePaths.get(path);
         if (url == null)
         {
-            url = _factory.resolveURL(_src, path);
-            _relativePaths.put(path, url);
+            url = _factory.resolveURL(facesContext, _src, path);
+            if (url != null)
+            {
+                ViewResource viewResource = (ViewResource) facesContext.getAttributes().get(
+                    FaceletFactory.LAST_RESOURCE_RESOLVED);
+                if (viewResource != null)
+                {
+                    // If a view resource has been used to resolve a resource, the cache is in
+                    // the ResourceHandler implementation. No need to cache in _relativeLocations.
+                }
+                else
+                {
+                    _relativePaths.put(path, url);
+                }
+            }
         }
         return url;
     }
@@ -511,7 +526,7 @@ final class DefaultFacelet extends AbstractFacelet
     public void include(AbstractFaceletContext ctx, UIComponent parent, String path)
             throws IOException, FacesException, FaceletException, ELException
     {
-        URL url = this.getRelativePath(path);
+        URL url = this.getRelativePath(ctx.getFacesContext(), path);
         this.include(ctx, parent, url);
     }
 

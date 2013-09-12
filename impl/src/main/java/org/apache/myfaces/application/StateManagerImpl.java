@@ -19,7 +19,9 @@
 package org.apache.myfaces.application;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +30,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.application.StateManager;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
@@ -140,7 +143,8 @@ public class StateManagerImpl extends StateManager
             {
                 Object[] stateArray = (Object[])state;
                 TreeStructureManager tsm = new TreeStructureManager();
-                uiViewRoot = tsm.restoreTreeStructure(stateArray[0]);
+                
+                uiViewRoot = tsm.restoreTreeStructure(((Object[])stateArray[0])[0]);
 
                 if (uiViewRoot != null)
                 {
@@ -149,6 +153,17 @@ public class StateManagerImpl extends StateManager
                     
                     RequestViewContext.getCurrentInstance(facesContext).refreshRequestViewContext(
                             facesContext, uiViewRoot);
+                    
+                    // If state is saved fully, there outer f:view tag handler will not be executed,
+                    // so "contracts" attribute will not be set properly. We need to save it and
+                    // restore it from here. With PSS, the view will always be built so it is not
+                    // necessary to save it on the state.
+                    Object rlc = ((Object[])stateArray[0])[1];
+                    if (rlc != null)
+                    {
+                        facesContext.setResourceLibraryContracts((List) UIComponentBase.
+                            restoreAttachedState(facesContext, rlc));
+                    }
                 }
             }            
         }
@@ -242,7 +257,12 @@ public class StateManagerImpl extends StateManager
                 // first call to saveSerializedView --> create SerializedView
                 Object treeStruct = getTreeStructureToSave(facesContext);
                 Object compStates = getComponentStateToSave(facesContext);
-                serializedView = new Object[] {treeStruct, compStates};
+                Object rlcStates = !facesContext.getResourceLibraryContracts().isEmpty() ? 
+                    UIComponentBase.saveAttachedState(facesContext, 
+                                new ArrayList<String>(facesContext.getResourceLibraryContracts())) : null;
+                serializedView = new Object[] {
+                        new Object[]{treeStruct, rlcStates} ,
+                        compStates};
                 facesContext.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR,
                                                     serializedView);
     

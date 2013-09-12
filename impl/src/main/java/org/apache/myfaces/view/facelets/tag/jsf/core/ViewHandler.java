@@ -19,6 +19,8 @@
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
@@ -34,6 +36,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -72,6 +75,8 @@ public final class ViewHandler extends TagHandler
     
     @JSFFaceletAttribute(name="transient")
     private final TagAttribute transientAttribute;
+    
+    private final TagAttribute contracts;
 
     /**
      * @param config
@@ -86,6 +91,7 @@ public final class ViewHandler extends TagHandler
         this.beforePhase = this.getAttribute("beforePhase");
         this.afterPhase = this.getAttribute("afterPhase");
         this.transientAttribute = this.getAttribute("transient");
+        this.contracts = this.getAttribute("contracts");
     }
 
     /**
@@ -159,6 +165,24 @@ public final class ViewHandler extends TagHandler
             if (this.transientAttribute != null)
             {
                 root.setTransient(this.transientAttribute.getBoolean(ctx));
+            }
+            if (this.contracts != null)
+            {
+                String contractsValue = this.contracts.getValue(ctx);
+                if (contractsValue != null)
+                {
+                    String[] values = StringUtils.trim(
+                        StringUtils.splitShortString(contractsValue, ','));
+                    if (values != null)
+                    {
+                        List<String> list = new ArrayList<String>();
+                        for (String v : values)
+                        {
+                            list.add(v);
+                        }
+                        ctx.getFacesContext().setResourceLibraryContracts(list);
+                    }
+                }
             }
         }
         this.nextHandler.apply(ctx, parent);

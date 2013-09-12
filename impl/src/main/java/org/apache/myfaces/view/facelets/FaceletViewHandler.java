@@ -562,7 +562,7 @@ public class FaceletViewHandler extends ViewHandler
         FaceletFactory.setInstance(this.faceletFactory);
         try
         {
-            f = this.faceletFactory.getFacelet(viewToRender.getViewId());
+            f = this.faceletFactory.getFacelet(context, viewToRender.getViewId());
         }
         finally
         {

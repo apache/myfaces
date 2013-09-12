@@ -21,6 +21,19 @@
 <head>
 </head>
 <body>
+<ui:composition>
+<ui:decorate template="/content.xhtml">
+    <ui:define name="header">
+        HEADER_TEXT
+    </ui:define>
+    <ui:define name="content">
+        CONTENT_TEXT
+        <h:form id="mainForm">
+            <h:commandButton id="submit" value="Submit"/>
+        </h:form>
+    </ui:define>
+</ui:decorate>
+</ui:composition>
 </body>
 </html>
 

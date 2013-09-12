@@ -231,6 +231,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 // to the tree, making the state bigger without real need.
                 RequestViewContext.getCurrentInstance(context).
                         refreshRequestViewContext(context, view);
+                
+                if (fullState.length == 3 && fullState[2] != null)
+                {
+                    context.setResourceLibraryContracts((List) UIComponentBase.
+                        restoreAttachedState(context, fullState[2]));
+                }
             }
         }
         else
@@ -612,9 +618,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
             {
                 ensureClearInitialState(view);
+                Object rlcStates = !context.getResourceLibraryContracts().isEmpty() ? 
+                    UIComponentBase.saveAttachedState(context, 
+                                new ArrayList<String>(context.getResourceLibraryContracts())) : null;
                 states = new Object[]{
                             internalBuildTreeStructureToSave(view),
-                            view.processSaveState(context)};
+                            view.processSaveState(context), rlcStates};
             }
             else
             {

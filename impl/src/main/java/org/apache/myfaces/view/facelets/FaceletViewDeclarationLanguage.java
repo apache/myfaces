@@ -434,7 +434,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 //context.setProcessingEvents(false);
             }
             // populate UIViewRoot
-            _getFacelet(renderedViewId).apply(context, view);
+            _getFacelet(context, renderedViewId).apply(context, view);
         }
         finally
         {
@@ -2677,13 +2677,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
      * @throws IOException
      *             if a read or parsing error occurs
      */
-    private Facelet _getFacelet(String viewId) throws IOException
+    private Facelet _getFacelet(FacesContext context, String viewId) throws IOException
     {
         // grab our FaceletFactory and create a Facelet
         FaceletFactory.setInstance(_faceletFactory);
         try
         {
-            return _faceletFactory.getFacelet(viewId);
+            return _faceletFactory.getFacelet(context, viewId);
         }
         finally
         {
@@ -2691,13 +2691,13 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         }
     }
 
-    private Facelet _getViewMetadataFacelet(String viewId) throws IOException
+    private Facelet _getViewMetadataFacelet(FacesContext context, String viewId) throws IOException
     {
         // grab our FaceletFactory and create a Facelet used to create view metadata
         FaceletFactory.setInstance(_faceletFactory);
         try
         {
-            return _faceletFactory.getViewMetadataFacelet(viewId);
+            return _faceletFactory.getViewMetadataFacelet(context, viewId);
         }
         finally
         {
@@ -2852,7 +2852,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // inside createView(context,viewId), calculateViewId() is called and
                     // the result is stored inside created UIViewRoot, so we can safely take the derived
                     // viewId from there.
-                    Facelet facelet = _getViewMetadataFacelet(view.getViewId());
+                    Facelet facelet = _getViewMetadataFacelet(context, view.getViewId());
                     facelet.apply(context, view);
                 }
 

@@ -347,11 +347,11 @@ public class ResourceHandlerCache
 
     public static class ResourceKey
     {
-        private String resourceName;
-        private String libraryName;
-        private String contentType;
-        private String localePrefix;
-        private String contractName;
+        private final String resourceName;
+        private final String libraryName;
+        private final String contentType;
+        private final String localePrefix;
+        private final String contractName;
 
         public ResourceKey(String resourceName, String libraryName,
                 String contentType, String localePrefix)
@@ -421,9 +421,9 @@ public class ResourceHandlerCache
 
     public static class ResourceValue
     {
-        private ResourceMeta resourceMeta;
+        private final ResourceMeta resourceMeta;
         
-        private ResourceLoader resourceLoader;
+        private final ResourceLoader resourceLoader;
 
         public ResourceValue(ResourceMeta resourceMeta,
                 ResourceLoader resourceLoader)
