@@ -58,6 +58,7 @@ public class MockMyFacesViewDeclarationLanguageFactory extends ViewDeclarationLa
             _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
             _supportedLanguages[0] = new MockMyFacesFaceletViewDeclarationLanguageStrategy();
             _supportedLanguages[1] = new MockDefaultViewDeclarationLanguageStrategy(); 
+            _initialized = true;
         }
     }
 
