@@ -21,6 +21,7 @@ package org.apache.myfaces.shared.renderkit.html.util;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.faces.FacesWrapper;
 
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
@@ -30,6 +31,7 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.resource.ContractResource;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -303,4 +305,23 @@ public class ResourceUtils
         return;
     }
 
+    public static String getContractName(Resource resource)
+    {
+        while (resource != null)
+        {
+            if (resource instanceof ContractResource)
+            {
+                return ((ContractResource)resource).getContractName();
+            }
+            else if (resource instanceof FacesWrapper)
+            {
+                resource = (Resource)((FacesWrapper)resource).getWrapped();
+            }
+            else
+            {
+                resource = null;
+            }
+        }
+        return null;
+    }
 }
