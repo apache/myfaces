@@ -2708,7 +2708,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     private void _initializeBuffer(ExternalContext context)
     {
-        _bufferSize = WebConfigParamUtils.getIntegerInitParameter(context, PARAMS_BUFFER_SIZE, -1);
+        _bufferSize = WebConfigParamUtils.getIntegerInitParameter(context, PARAMS_BUFFER_SIZE, 1024);
     }
 
     private void _initializeMode(ExternalContext context)

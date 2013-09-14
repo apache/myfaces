@@ -292,11 +292,11 @@ public abstract class StateManager
             _savingStateInClient = Boolean.FALSE; // Specs 10.1.3: default server saving
             context.getExternalContext().log("No state saving method defined, assuming default server state saving");
         }
-        else if (stateSavingMethod.equals(STATE_SAVING_METHOD_CLIENT))
+        else if (stateSavingMethod.equalsIgnoreCase(STATE_SAVING_METHOD_CLIENT))
         {
             _savingStateInClient = Boolean.TRUE;
         }
-        else if (stateSavingMethod.equals(STATE_SAVING_METHOD_SERVER))
+        else if (stateSavingMethod.equalsIgnoreCase(STATE_SAVING_METHOD_SERVER))
         {
             _savingStateInClient = Boolean.FALSE;
         }
