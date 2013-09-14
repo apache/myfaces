@@ -25,6 +25,7 @@ import java.util.List;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
+import javax.faces.FacesException;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
@@ -65,7 +66,25 @@ public class RepeatTestCase extends FaceletTestCase
         rw = rw.cloneWithWriter(fw);
         facesContext.setResponseWriter(rw);
         root.encodeAll(facesContext);
-        //System.out.println(fw);
+        String content = fw.toString();
+        
+        int hrIndex = content.indexOf("<dt>HR</dt>");
+        Assert.assertNotSame(-1, hrIndex);
+        int rdIndex = content.indexOf("<dt>RD</dt>", hrIndex);
+        Assert.assertNotSame(-1, rdIndex);
+
+        int empIndex1 = content.indexOf(
+            "<dd class=\"3\">Ellen, Sue</dd><dd class=\"4\">Scooner, Mary</dd>", hrIndex);
+        Assert.assertNotSame(-1, empIndex1);
+        int empIndex2 = content.indexOf(
+            "<dd class=\"6\">Burns, Ed</dd><dd class=\"7\">Lubke, Ryan</dd><dd class=\"8\">Kitain, Roger</dd>",
+            rdIndex);
+        Assert.assertNotSame(-1, empIndex2);
+        
+        int hrIndex2 = content.indexOf("<li class=\"HR\">HR</li>");
+        Assert.assertNotSame(-1, hrIndex2);
+        int rdIndex2 = content.indexOf("<li class=\"RD\">RD</li>", hrIndex2);
+        Assert.assertNotSame(-1, rdIndex2);
     }
     
     /**
@@ -323,7 +342,6 @@ public class RepeatTestCase extends FaceletTestCase
         
     }
     
-    
     @Test
     public void testRepeatOffset() throws Exception 
     {
@@ -333,14 +351,223 @@ public class RepeatTestCase extends FaceletTestCase
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
         
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
         rw = rw.cloneWithWriter(fw);
         facesContext.setResponseWriter(rw);
-        root.encodeAll(facesContext);
-        //System.out.println(fw);
+        
+        repeat.encodeAll(facesContext);
+        String content = fw.toString();
+        
+        // offset="2" size="1" should render only 1 row
+        int itemIndex1 = content.indexOf("B1");
+        Assert.assertEquals(-1, itemIndex1);
+        int itemIndex2 = content.indexOf("B2");
+        Assert.assertEquals(-1, itemIndex2);
+        
+        String item1 = "B3";
+        int itemIndex3 = content.indexOf(item1);
+        Assert.assertNotSame(-1, itemIndex3);
+        String item2 = "B4";
+        // the second item should not be there
+        Assert.assertEquals(-1, content.indexOf(item2, itemIndex1+2));
     }
     
+    @Test
+    public void testRepeatOffset_0() throws Exception 
+    {
+        final String[] repeatValues = new String[] {"B1", "B2", "B3", "B4", "B5", "B6", "B7"};
+        facesContext.getExternalContext().getRequestMap().put("repeatValues", repeatValues);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat0");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        int itemIndex1 = content.indexOf("B1");
+        Assert.assertNotSame(-1, itemIndex1);
+        int itemIndex2 = content.indexOf("B2");
+        Assert.assertNotSame(-1, itemIndex2);
+        int itemIndex3 = content.indexOf("B3");
+        Assert.assertEquals(-1, itemIndex3);
+    }
+
+    @Test
+    public void testRepeatOffset_0_7() throws Exception 
+    {
+        final String[] repeatValues = new String[] {"B1", "B2", "B3", "B4", "B5", "B6", "B7"};
+        facesContext.getExternalContext().getRequestMap().put("repeatValues", repeatValues);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat0_7");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        int itemIndex1 = content.indexOf("B1");
+        Assert.assertNotSame(-1, itemIndex1);
+        int itemIndex2 = content.indexOf("B2", itemIndex1);
+        Assert.assertNotSame(-1, itemIndex2);
+        int itemIndex3 = content.indexOf("B3", itemIndex2);
+        Assert.assertNotSame(-1, itemIndex3);
+        int itemIndex4 = content.indexOf("B4", itemIndex3);
+        Assert.assertNotSame(-1, itemIndex4);
+        int itemIndex5 = content.indexOf("B5", itemIndex4);
+        Assert.assertNotSame(-1, itemIndex5);
+        int itemIndex6 = content.indexOf("B6", itemIndex5);
+        Assert.assertNotSame(-1, itemIndex6);
+        int itemIndex7 = content.indexOf("B7", itemIndex6);
+        Assert.assertNotSame(-1, itemIndex7);
+    }
+    
+    @Test
+    public void testRepeatOffset_0_8() throws Exception 
+    {
+        final String[] repeatValues = new String[] {"B1", "B2", "B3", "B4", "B5", "B6", "B7"};
+        facesContext.getExternalContext().getRequestMap().put("repeatValues", repeatValues);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat0_8");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        try
+        {
+            repeat.encodeAll(facesContext);
+            Assert.fail();
+        }
+        catch(FacesException e)
+        {
+            // size cannot be greater than collection size
+        }
+    }
+    
+    @Test
+    public void testRepeatOffset_1() throws Exception 
+    {
+        final String[] repeatValues = new String[] {"B1", "B2", "B3", "B4", "B5", "B6", "B7"};
+        facesContext.getExternalContext().getRequestMap().put("repeatValues", repeatValues);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat1");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        int itemIndex1 = content.indexOf("B1");
+        Assert.assertEquals(-1, itemIndex1);
+        int itemIndex2 = content.indexOf("B2");
+        Assert.assertNotSame(-1, itemIndex2);
+        int itemIndex3 = content.indexOf("B3", itemIndex2);
+        Assert.assertNotSame(-1, itemIndex3);
+        int itemIndex4 = content.indexOf("B4", itemIndex3);
+        Assert.assertNotSame(-1, itemIndex4);
+        int itemIndex5 = content.indexOf("B5", itemIndex4);
+        Assert.assertEquals(-1, itemIndex5);
+    }
+
+    @Test
+    public void testRepeatOffset_1_7() throws Exception 
+    {
+        final String[] repeatValues = new String[] {"B1", "B2", "B3", "B4", "B5", "B6", "B7"};
+        facesContext.getExternalContext().getRequestMap().put("repeatValues", repeatValues);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat1_7");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        int itemIndex1 = content.indexOf("B1");
+        Assert.assertEquals(-1, itemIndex1);
+        int itemIndex2 = content.indexOf("B2");
+        Assert.assertNotSame(-1, itemIndex2);
+        int itemIndex3 = content.indexOf("B3", itemIndex2);
+        Assert.assertNotSame(-1, itemIndex3);
+        int itemIndex4 = content.indexOf("B4", itemIndex3);
+        Assert.assertNotSame(-1, itemIndex4);
+        int itemIndex5 = content.indexOf("B5", itemIndex4);
+        Assert.assertNotSame(-1, itemIndex5);
+        int itemIndex6 = content.indexOf("B6", itemIndex5);
+        Assert.assertNotSame(-1, itemIndex6);
+        int itemIndex7 = content.indexOf("B7", itemIndex6);
+        Assert.assertNotSame(-1, itemIndex7);
+    }
+    
+    @Test
+    public void testRepeatOffset_1_8() throws Exception 
+    {
+        final String[] repeatValues = new String[] {"B1", "B2", "B3", "B4", "B5", "B6", "B7"};
+        facesContext.getExternalContext().getRequestMap().put("repeatValues", repeatValues);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_offset.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat1_8");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        try
+        {
+            repeat.encodeAll(facesContext);
+            Assert.fail();
+        }
+        catch(FacesException e)
+        {
+            // size cannot be greater than collection size
+        }
+    }
+
     @Test
     public void testRepeatOffset2() throws Exception 
     {
@@ -350,11 +577,33 @@ public class RepeatTestCase extends FaceletTestCase
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "ui_repeat_offset2.xhtml");
         
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
         FastWriter fw = new FastWriter();
         ResponseWriter rw = facesContext.getResponseWriter();
         rw = rw.cloneWithWriter(fw);
         facesContext.setResponseWriter(rw);
-        root.encodeAll(facesContext);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        int itemIndex1 = content.indexOf("B1");
+        Assert.assertEquals(-1, itemIndex1);
+        int itemIndex2 = content.indexOf("B2");
+        Assert.assertEquals(-1, itemIndex2);
+        int itemIndex3 = content.indexOf("B3");
+        Assert.assertNotSame(-1, itemIndex3);
+        int itemIndex4 = content.indexOf("B4", itemIndex3);
+        Assert.assertNotSame(-1, itemIndex4);
+        int itemIndex5 = content.indexOf("B5", itemIndex4);
+        Assert.assertNotSame(-1, itemIndex5);
+        int itemIndex6 = content.indexOf("B6", itemIndex5);
+        Assert.assertNotSame(-1, itemIndex6);
+        int itemIndex7 = content.indexOf("B7", itemIndex6);
+        Assert.assertNotSame(-1, itemIndex7);
+        
         //System.out.println(fw);
     }
 }

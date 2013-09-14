@@ -901,7 +901,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 _count = 0;
                 
                 _setIndex(i);
-                while (i <= end && _isIndexAvailable())
+                while (i < end && _isIndexAvailable())
                 {
 
                     if (PhaseId.RENDER_RESPONSE.equals(phase) && renderer != null)
@@ -1176,7 +1176,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         _count = 0;
                         
                         _setIndex(i);
-                        while (i <= end && _isIndexAvailable())
+                        while (i < end && _isIndexAvailable())
                         {
                             for (int j = 0, childCount = getChildCount(); j < childCount; j++)
                             {
