@@ -18,7 +18,8 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import java.util.Set;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +32,7 @@ import javax.faces.application.ProtectedViewException;
 import javax.faces.application.ViewExpiredException;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
@@ -38,11 +40,16 @@ import javax.faces.event.PostAddToViewEvent;
 import javax.faces.flow.FlowHandler;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
+import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
+import org.apache.myfaces.shared.util.ExternalContextUtils;
+import org.apache.myfaces.shared.util.ViewProtectionUtils;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
@@ -58,6 +65,8 @@ class RestoreViewExecutor extends PhaseExecutor
     private static final Logger log = Logger.getLogger(RestoreViewExecutor.class.getName());
     
     private RestoreViewSupport _restoreViewSupport;
+    
+    private RenderKitFactory _renderKitFactory = null;
     
     @Override
     public void doPrePhaseActions(FacesContext facesContext)
@@ -133,6 +142,12 @@ class RestoreViewExecutor extends PhaseExecutor
                     throw new ViewExpiredException("No saved view state could be found for the view identifier: "
                                                    + viewId, viewId);
                 }
+                // If the view is transient (stateless), it is necessary to check the view protection
+                // in POST case.
+                if (viewRoot.isTransient())
+                {
+                    checkViewProtection(facesContext, viewHandler, viewRoot.getViewId(), viewRoot);
+                }
                 
                 // Store the restored UIViewRoot in the FacesContext.
                 facesContext.setViewRoot(viewRoot);
@@ -155,8 +170,8 @@ class RestoreViewExecutor extends PhaseExecutor
             
             //viewHandler.deriveViewId(facesContext, viewId)
             //restoreViewSupport.deriveViewId(facesContext, viewId)
-            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
-                    viewHandler.deriveLogicalViewId(facesContext, viewId));
+            String logicalViewId = viewHandler.deriveLogicalViewId(facesContext, viewId);
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, logicalViewId);
             
             // viewHandler.deriveLogicalViewId() could trigger an InvalidViewIdException, which
             // it is handled internally sending a 404 error code set the response as complete.
@@ -207,6 +222,8 @@ class RestoreViewExecutor extends PhaseExecutor
                 // Call renderResponse
                 facesContext.renderResponse();
             }
+
+            checkViewProtection(facesContext, viewHandler, logicalViewId, viewRoot);
             
             // viewRoot can be null here, if ...
             //   - we don't have a ViewDeclarationLanguage (e.g. when using facelets-1.x)
@@ -253,32 +270,160 @@ class RestoreViewExecutor extends PhaseExecutor
     }
     
     private void checkViewProtection(FacesContext facesContext, ViewHandler viewHandler, 
-        UIViewRoot root) throws ProtectedViewException
+        String viewId, UIViewRoot root) throws ProtectedViewException
     {
-        Set<String> protectedViews = viewHandler.getProtectedViewsUnmodifiable();
-        
-        if (protectedViews.contains(root.getViewId()))
+        boolean valid = true;
+        if (ViewProtectionUtils.isViewProtected(facesContext, viewId))
         {
-            String referer = facesContext.getExternalContext().
-                getRequestHeaderMap().get("Referer");
-            if (referer != null)
+            // "... Obtain the value of the value of the request parameter whose 
+            // name is given by the value of ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM. 
+            // If there is no value, throw ProtectedViewException ..."
+            String token = (String) facesContext.getExternalContext().getRequestParameterMap().get(
+                ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM);
+            if (token != null && token.length() > 0)
             {
-                // If the header is present, use the protected view API to determine if any of
-                // the declared protected views match the value of the Referer header.
+                String renderKitId = null;
+                if (root != null)
+                {
+                    renderKitId = root.getRenderKitId();
+                }
+                if (renderKitId == null)
+                {
+                    renderKitId = viewHandler.calculateRenderKitId(facesContext);
+                }
+                RenderKit renderKit = getRenderKitFactory().getRenderKit(facesContext, renderKitId);
+                ResponseStateManager rsm = renderKit.getResponseStateManager();
                 
-                // - If so, conclude that the previously visited page is also a protected 
-                //   view and it is therefore safe to continue
-                
-                // - Otherwise, try to determine if the value of the Referer header corresponds 
-                //   to any of the views in the current web application.
-                
-                //   - If not, throw a ProtectedViewException
+                String storedToken = rsm.getCryptographicallyStrongTokenFromSession(facesContext);
+                if (token.equals(storedToken))
+                {
+                    if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
+                    {
+                        // Any check beyond this point only has sense for servlet requests.
+                        String referer = facesContext.getExternalContext().
+                            getRequestHeaderMap().get("Referer");
+                        if (referer != null)
+                        {
+                            valid = valid && checkRefererOrOriginHeader(
+                                facesContext, viewHandler, referer);
+                        }
+                        String origin = facesContext.getExternalContext().
+                            getRequestHeaderMap().get("Origin");
+                        if (valid && origin != null)
+                        {
+                            valid = valid && checkRefererOrOriginHeader(
+                                facesContext, viewHandler, origin);
+                        }
+                    }
+                }
+                else
+                {
+                    valid = false;
+                }
             }
             else
             {
-                // fall back on inspecting the incoming URL.
+                valid = false;
             }
-            
+        }
+        if (!valid)
+        {
+            throw new ProtectedViewException();
+        }
+    }
+    
+    private boolean checkRefererOrOriginHeader(FacesContext facesContext, 
+        ViewHandler viewHandler, String refererOrOrigin)
+    {
+        try
+        {
+            // The referer can be absolute or relative. 
+            ExternalContext ectx = facesContext.getExternalContext();
+            URI refererURI = new URI(refererOrOrigin);
+            String path = refererURI.getPath();
+            String appContextPath = ectx.getApplicationContextPath();
+            if (refererURI.isAbsolute())
+            {
+                // Check if the referer comes from the same host
+                String host = refererURI.getHost();
+                int port = refererURI.getPort();
+                String serverHost = ectx.getRequestServerName();
+                int serverPort = ectx.getRequestServerPort();
+
+                boolean matchPort = true;
+                if (serverPort != -1 && port != -1)
+                {
+                    matchPort = (serverPort == port);
+                }
+                if (serverHost.equals(host) &&  matchPort && path.contains(appContextPath))
+                {
+                    // Referer Header match
+                }
+                else
+                {
+                    // Referer Header does not match
+                    return false;
+                }
+            }
+            // In theory path = appContextPath + servletPath + pathInfo. 
+            int appContextPathIndex = appContextPath != null ? path.indexOf(appContextPath) : -1;
+            int servletPathIndex = -1;
+            int pathInfoIndex = -1;
+            if (ectx.getRequestServletPath() != null && ectx.getRequestPathInfo() != null)
+            {
+                servletPathIndex = ectx.getRequestServletPath() != null ? 
+                    path.indexOf(ectx.getRequestServletPath(), 
+                                 appContextPathIndex >= 0 ? appContextPathIndex : 0) : -1;
+                if (servletPathIndex != -1)
+                {
+                    pathInfoIndex = servletPathIndex + ectx.getRequestServletPath().length();
+                }
+            }
+            else
+            {
+                servletPathIndex = -1;
+                pathInfoIndex = (appContextPathIndex >= 0 ? appContextPathIndex : 0) + appContextPath.length();
+            }
+
+            // If match appContextPath(if any) and match servletPath or pathInfo referer header is ok
+            if ((appContextPath == null || appContextPathIndex >= 0) && 
+                (servletPathIndex >= 0 || pathInfoIndex >= 0))
+            {
+                String refererViewId;
+                if (pathInfoIndex >= 0)
+                {
+                    refererViewId = path.substring(pathInfoIndex);
+                }
+                else
+                {
+                    refererViewId = path.substring(servletPathIndex);
+                }
+                
+                String logicalViewId = viewHandler.deriveViewId(facesContext, refererViewId);
+                    
+                // If the header is present, use the protected view API to determine if any of
+                // the declared protected views match the value of the Referer header.
+                // - If so, conclude that the previously visited page is also a protected 
+                //   view and it is therefore safe to continue.
+                // - Otherwise, try to determine if the value of the Referer header corresponds 
+                //   to any of the views in the current web application.
+                // -= Leonardo Uribe =- All views that are protected also should exists!. the
+                // only relevant check is use ViewHandler.deriveViewId(...) here. Check if the
+                // view is protected here is not necessary.
+                if (logicalViewId != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    // View do not exists
+                }
+            }
+            return true;
+        }
+        catch (URISyntaxException ex)
+        {
+            return false;
         }
     }
     
@@ -341,6 +486,15 @@ class RestoreViewExecutor extends PhaseExecutor
         return _restoreViewSupport;
     }
 
+    protected RenderKitFactory getRenderKitFactory()
+    {
+        if (_renderKitFactory == null)
+        {
+            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        }
+        return _renderKitFactory;
+    }
+    
     /**
      * @param restoreViewSupport
      *            the restoreViewSupport to set

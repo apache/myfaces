@@ -19,6 +19,7 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,6 +58,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     
     private static final String VIEW_STATE_COUNTER = "oam.partial.VIEW_STATE_COUNTER";
     private static final String CLIENT_WINDOW_COUNTER = "oam.partial.CLIENT_WINDOW_COUNTER";
+    
+    private static final String SESSION_TOKEN = "oam.rsm.SESSION_TOKEN";
 
     /**
      * Define if the state caching code should be handled by the ResponseStateManager or by the StateManager used.
@@ -401,6 +404,19 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
                 "Cannot decide if the view is stateless or not, since the request is "
                 + "not postback (no preceding writeState(...)).");
         }
+    }
+
+    @Override
+    public String getCryptographicallyStrongTokenFromSession(FacesContext context)
+    {
+        Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
+        String savedToken = (String) sessionMap.get(SESSION_TOKEN);
+        if (savedToken == null)
+        {
+            savedToken = getStateCache(context).createCryptographicallyStrongTokenFromSession(context);
+            sessionMap.put(SESSION_TOKEN, savedToken);
+        }
+        return savedToken;
     }
     
     @Override

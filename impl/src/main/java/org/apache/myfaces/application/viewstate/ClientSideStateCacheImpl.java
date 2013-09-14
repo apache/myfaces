@@ -45,6 +45,25 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
     private static final Object[] EMPTY_STATES = new Object[]{null, null};
     
     private Long _clientViewStateTimeout;
+    
+    private CsrfSessionTokenFactory csrfSessionTokenFactory;
+    
+    public ClientSideStateCacheImpl()
+    {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        
+        String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
+                RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM, 
+                RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT);
+        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        {
+            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
+        }
+        else
+        {
+            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
+        }
+    }
 
     @Override
     public Object saveSerializedView(FacesContext facesContext,
@@ -172,4 +191,9 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
         return _clientViewStateTimeout;
     }
 
+    @Override
+    public String createCryptographicallyStrongTokenFromSession(FacesContext context)
+    {
+        return csrfSessionTokenFactory.createCryptographicallyStrongTokenFromSession(context);
+    }
 }

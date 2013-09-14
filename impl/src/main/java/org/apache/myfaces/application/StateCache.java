@@ -19,6 +19,7 @@
 package org.apache.myfaces.application;
 
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * This class provides an interface to separate the state caching operations (saving/restoring)
@@ -29,6 +30,50 @@ import javax.faces.context.FacesContext;
  */
 public abstract class StateCache<K, V>
 {
+    
+    /**
+     * Defines how to generate the csrf session token.
+     */
+    @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", 
+            defaultValue="none", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN";
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT = "random";
+    
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
+
+    /**
+     * Set the default length of the random key used for the csrf session token.
+     * By default is 16. 
+     */
+    @JSFWebConfigParam(since="2.2.0", defaultValue="16", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM 
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH";
+    public static final int RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM_DEFAULT = 16;
+
+    /**
+     * Sets the random class to initialize the secure random id generator. 
+     * By default it uses java.security.SecureRandom
+     */
+    @JSFWebConfigParam(since="2.2.0", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_CLASS";
+
+    /**
+     * Sets the random provider to initialize the secure random id generator.
+     */
+    @JSFWebConfigParam(since="2.2.0", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_PROVIDER";
+    
+    /**
+     * Sets the random algorithm to initialize the secure random id generator. 
+     * By default is SHA1PRNG
+     */
+    @JSFWebConfigParam(since="2.2.0", defaultValue="SHA1PRNG", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
 
     /**
      * Put the state on the cache, to can be restored later.
@@ -72,4 +117,11 @@ public abstract class StateCache<K, V>
      * @return
      */
     public abstract boolean isWriteStateAfterRenderViewRequired(FacesContext facesContext);
+    
+    /**
+     * @since 2.2
+     * @param context
+     * @return 
+     */
+    public abstract String createCryptographicallyStrongTokenFromSession(FacesContext context);
 }

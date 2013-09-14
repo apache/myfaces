@@ -234,6 +234,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     private SessionViewStorageFactory sessionViewStorageFactory;
 
+    private CsrfSessionTokenFactory csrfSessionTokenFactory;
+
     public ServerSideStateCacheImpl()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -253,6 +255,18 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         else
         {
             sessionViewStorageFactory = new CounterSessionViewStorageFactory(new CounterKeyFactory());
+        }
+        
+        String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
+                RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM, 
+                RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT);
+        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        {
+            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
+        }
+        else
+        {
+            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
         }
     }
     
@@ -674,5 +688,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     protected SessionViewStorageFactory getSessionViewStorageFactory()
     {
         return sessionViewStorageFactory;
+    }
+
+    @Override
+    public String createCryptographicallyStrongTokenFromSession(FacesContext context)
+    {
+        return csrfSessionTokenFactory.createCryptographicallyStrongTokenFromSession(context);
     }
 }

@@ -27,6 +27,7 @@ import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -34,6 +35,7 @@ import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.ConcurrentLRUCache;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.shared.util.ViewProtectionUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
@@ -255,6 +257,25 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             builder.append(viewId);
         }
+        
+        //JSF 2.2 check view protection.
+        if (ViewProtectionUtils.isViewProtected(context, viewId))
+        {
+            int index = builder.indexOf("?");
+            if (index >= 0)
+            {
+                builder.append("&");
+            }
+            else
+            {
+                builder.append("?");
+            }
+            builder.append(ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM);
+            builder.append("=");
+            ResponseStateManager rsm = context.getRenderKit().getResponseStateManager();
+            builder.append(rsm.getCryptographicallyStrongTokenFromSession(context));
+        }
+        
         String calculatedActionURL = builder.toString();
         if (log.isLoggable(Level.FINEST))
         {
