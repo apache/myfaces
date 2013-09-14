@@ -1129,7 +1129,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                                 }
                                 else
                                 {
-                                    required = Boolean.getBoolean(requiredValue.toString());
+                                    required = Boolean.valueOf(requiredValue.toString());
                                 }
 
                                 if (required != null && required.booleanValue())
