@@ -127,7 +127,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     }
                     else
                     {
-                        required = Boolean.getBoolean(value.toString());
+                        required = Boolean.valueOf(value.toString());
                     } 
                     
                     if (required != null && required.booleanValue())
