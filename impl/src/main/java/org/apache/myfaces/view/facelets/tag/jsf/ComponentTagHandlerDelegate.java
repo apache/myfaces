@@ -211,7 +211,14 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
             else
             {
-                c = ComponentSupport.findChildByTagId(parent, id); 
+                if (facetName != null)
+                {
+                    c = ComponentSupport.findChildInFacetByTagId(parent, id, facetName);
+                }
+                else
+                {
+                    c = ComponentSupport.findChildInChildrenByTagId(parent, id);
+                }
             }
         }
         boolean componentFound = false;

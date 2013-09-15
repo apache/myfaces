@@ -92,7 +92,14 @@ final class UIInstructionHandler extends AbstractUIHandler
             
             if (mctx.isRefreshingSection())
             {
-                c = ComponentSupport.findChildByTagId(parent, id);
+                if (facetName != null)
+                {
+                    c = ComponentSupport.findChildInFacetByTagId(parent, id, facetName);
+                }
+                else
+                {
+                    c = ComponentSupport.findChildInChildrenByTagId(parent, id);
+                }
             }
             boolean componentFound = false;
             if (c != null)

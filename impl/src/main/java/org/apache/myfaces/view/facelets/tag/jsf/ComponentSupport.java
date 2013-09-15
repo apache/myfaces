@@ -137,10 +137,73 @@ public final class ComponentSupport
                 }
             }
         }
-
         return null;
     }
 
+    public static UIComponent findChildInFacetByTagId(
+        UIComponent parent, String id, String facetName)
+    {
+        if (parent.getFacetCount() > 0)
+        {
+            UIComponent facet = parent.getFacet(facetName);
+            if (facet != null)
+            {
+                // check if this is a dynamically generated UIPanel
+                if (Boolean.TRUE.equals(facet.getAttributes()
+                             .get(FACET_CREATED_UIPANEL_MARKER)))
+                {
+                    // only check the children and facets of the panel
+                    if (facet.getChildCount() > 0)
+                    {
+                        for (int i = 0, childCount = facet.getChildCount(); i < childCount; i ++)
+                        {
+                            UIComponent child = facet.getChildren().get(i);
+                            if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                            {
+                                return child;
+                            }
+                        }
+                    }
+                    if (facet.getFacetCount() > 0)
+                    {
+                        Iterator<UIComponent> itr2 = facet.getFacets().values().iterator();
+                        while (itr2.hasNext())
+                        {
+                            UIComponent child = itr2.next();
+                            if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                            {
+                                return child;
+                            }
+                        }
+                    }
+                }
+                else if (id.equals(facet.getAttributes().get(MARK_CREATED)))
+                {
+                    return facet;
+                }
+            }
+            return facet;
+        }
+        return null;
+    }
+    
+    public static UIComponent findChildInChildrenByTagId(
+        UIComponent parent, String id)
+    {
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
+            {
+                UIComponent child = parent.getChildren().get(i);
+                if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * By TagId, find Child
      * 
