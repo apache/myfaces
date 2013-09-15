@@ -670,32 +670,20 @@ public class ResourceHandlerImpl extends ResourceHandler
     public boolean isResourceRequest(FacesContext facesContext)
     {
         // Since this method could be called many times we save it
-        //on request map so the first time is calculated it remains
-        //alive until the end of the request
+        // on request map so the first time is calculated it remains
+        // alive until the end of the request
         Boolean value = (Boolean) facesContext.getAttributes().get(IS_RESOURCE_REQUEST);
 
-        if (value != null && value)
-        {
-            //return the saved value
-            return value;
-        }
-        else
+        if (value == null)
         {
             String resourceBasePath = getResourceHandlerSupport()
                     .calculateResourceBasePath(facesContext);
 
-            if (resourceBasePath != null
-                    && resourceBasePath.startsWith(ResourceHandler.RESOURCE_IDENTIFIER))
-            {
-                facesContext.getAttributes().put(IS_RESOURCE_REQUEST, Boolean.TRUE);
-                return true;
-            }
-            else
-            {
-                facesContext.getAttributes().put(IS_RESOURCE_REQUEST, Boolean.FALSE);
-                return false;
-            }
+            value = resourceBasePath != null
+                    && resourceBasePath.startsWith(ResourceHandler.RESOURCE_IDENTIFIER);
+            facesContext.getAttributes().put(IS_RESOURCE_REQUEST, value);
         }
+        return value;
     }
 
     protected String getLocalePrefixForLocateResource()
