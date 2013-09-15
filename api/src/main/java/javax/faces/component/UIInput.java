@@ -507,35 +507,45 @@ public class UIInput extends UIOutput implements EditableValueHolder
         return ((value instanceof String) && (((String) value).length() == 0));
     }
 
+
     private boolean shouldValidateEmptyFields(FacesContext context)
     {
-        ExternalContext extCtx = context.getExternalContext();
-        String validateEmptyFields = (String) extCtx.getInitParameter(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+        ExternalContext ec = context.getExternalContext();
+        Boolean validateEmptyFields = (Boolean) ec.getApplicationMap().get(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+
         if (validateEmptyFields == null)
         {
-            validateEmptyFields = (String) extCtx.getApplicationMap().get(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+             String param = ec.getInitParameter(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+
+             // null means the same as auto.
+             if (param == null)
+             {
+                 param = "auto";
+             }
+             else
+             {
+                 // The environment variables are case insensitive.
+                 param = param.toLowerCase();
+             }
+
+             if (param.equals("auto") && _ExternalSpecifications.isBeanValidationAvailable())
+             {
+                 validateEmptyFields = true;
+             }
+             else if (param.equals("true"))
+             {
+                 validateEmptyFields = true;
+             }
+             else
+             {
+                 validateEmptyFields = false;
+             }
+
+             // cache the parsed value
+             ec.getApplicationMap().put(VALIDATE_EMPTY_FIELDS_PARAM_NAME, validateEmptyFields);
         }
 
-        // null means the same as auto.
-        if (validateEmptyFields == null)
-        {
-            validateEmptyFields = "auto";
-        }
-        else
-        {
-            // The environment variables are case insensitive.
-            validateEmptyFields = validateEmptyFields.toLowerCase();
-        }
-
-        if (validateEmptyFields.equals("auto") && _ExternalSpecifications.isBeanValidationAvailable())
-        {
-            return true;
-        }
-        else if (validateEmptyFields.equals("true"))
-        {
-            return true;
-        }
-        return false;
+        return validateEmptyFields;
     }
 
     /**
