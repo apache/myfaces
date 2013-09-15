@@ -197,7 +197,7 @@ public class FacesMessageTest extends TestCase
         for (int i = 0, sz = FacesMessage.VALUES.size(); i < sz; i++)
         {
             FacesMessage.Severity severity = (Severity) FacesMessage.VALUES.get(i);
-            assertEquals(i + 1, severity.getOrdinal());
+            assertEquals(i, severity.getOrdinal());
         }
     }
 

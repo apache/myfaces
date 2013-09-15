@@ -259,7 +259,7 @@ public class FacesMessage implements Serializable
 
         // FacesMessage.Severity is not Serializable, read ordinal and get related FacesMessage.Severity
         int severityOrdinal = in.readInt();
-        _severity = (Severity) VALUES.get(severityOrdinal - 1);
+        _severity = (Severity) VALUES.get(severityOrdinal);
     }
 
     public static class Severity implements Comparable
