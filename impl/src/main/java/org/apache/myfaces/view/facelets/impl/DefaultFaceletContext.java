@@ -151,10 +151,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _elExpressionCacheMode = ctx._elExpressionCacheMode;
         _isCacheELExpressions = ctx._isCacheELExpressions;
 
-        //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
-        //reflect the current facelet context instance
-        ctx.getFacesContext().getAttributes().put(
-                FaceletContext.FACELET_CONTEXT_KEY, this);
     }
 
     public DefaultFaceletContext(FacesContext faces, AbstractFacelet facelet, FaceletCompositionContext mctx)
