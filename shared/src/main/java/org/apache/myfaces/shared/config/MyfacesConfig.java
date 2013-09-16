@@ -418,6 +418,15 @@ public class MyfacesConfig
             "org.apache.myfaces.GAE_JSF_ANNOTATIONS_JAR_FILES";
     public final static String INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT = null;
 
+    @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="render",
+            tags="performance",
+            desc="Enable or disable an early flush which allows to send e.g. the HTML-Head to the client " +
+                    "while the rest gets rendered. It's a well known technique to reduce the time for loading a page.")
+    private static final String INIT_PARAM_EARLY_FLUSH_ENABLED =
+        "org.apache.myfaces.EARLY_FLUSH_ENABLED";
+    private static final boolean INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT = false;
+
+
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -449,6 +458,7 @@ public class MyfacesConfig
     private boolean _supportJSPAndFacesEL;
     private String _gaeJsfJarFiles;
     private String _gaeJsfAnnotationsJarFiles;
+    private boolean _earlyFlushEnabled;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -549,6 +559,7 @@ public class MyfacesConfig
         setSupportJSPAndFacesEL(INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT);
         setGaeJsfJarFiles(INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT);
         setGaeJsfAnnotationsJarFiles(INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
+        setEarlyFlushEnabled(INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -655,7 +666,10 @@ public class MyfacesConfig
                 INIT_PARAM_GAE_JSF_JAR_FILES, INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT));
         myfacesConfig.setGaeJsfAnnotationsJarFiles(WebConfigParamUtils.getStringInitParameter(extCtx, 
                 INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES, INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT));
-        
+
+        myfacesConfig.setEarlyFlushEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
+                INIT_PARAM_EARLY_FLUSH_ENABLED, INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT));
+
         if (TOMAHAWK_AVAILABLE)
         {
             myfacesConfig.setDetectJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_DETECT_JAVASCRIPT,
@@ -1174,4 +1188,13 @@ public class MyfacesConfig
         this._gaeJsfAnnotationsJarFiles = gaeJsfAnnotationsJarFiles;
     }
 
+    public boolean isEarlyFlushEnabled()
+    {
+        return _earlyFlushEnabled;
+    }
+
+    public void setEarlyFlushEnabled(boolean earlyFlushEnabled)
+    {
+        this._earlyFlushEnabled = earlyFlushEnabled;
+    }
 }

@@ -21,6 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.util.List;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -28,6 +29,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 
@@ -81,5 +83,11 @@ public class HtmlHeadRenderer extends Renderer
             child.encodeAll(facesContext);
         }
         writer.endElement(HEAD_ELEM);
+
+        if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isEarlyFlushEnabled() &&
+                facesContext.isProjectStage(ProjectStage.Production))
+        {
+            writer.flush();
+        }
     }
 }
