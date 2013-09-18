@@ -243,7 +243,7 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
                 .toString());
         if (expression != null)
         {
-            return expression.getValue(FacesContext.getCurrentInstance()
+            return expression.getValue(_target.getFacesContext()
                     .getELContext());
         }
         return null;
@@ -260,7 +260,7 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
                 .toString());
         if (expression != null)
         {
-            return expression.getValue(FacesContext.getCurrentInstance()
+            return expression.getValue(_target.getFacesContext()
                     .getELContext());
         }
         return defaultValue;

@@ -34,6 +34,8 @@ import javax.faces.render.ClientBehaviorRenderer;
 public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
 {
 
+    private transient FacesContext _facesContext;
+    
     /**
      * 
      */
@@ -96,7 +98,15 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
         {
             // If a BehaviorRenderer is available for the specified behavior renderer type, this method delegates 
             // to the BehaviorRenderer.getScript method.
-            return renderer.getScript(behaviorContext, this);
+            try
+            {
+                setCachedFacesContext(behaviorContext.getFacesContext());
+                return renderer.getScript(behaviorContext, this);
+            }
+            finally
+            {
+                setCachedFacesContext(null);
+            }
         }
         
         // Otherwise, this method returns null.
@@ -117,5 +127,27 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
         }
         
         return null;
+    }
+    
+    FacesContext getFacesContext()
+    {
+        if (_facesContext == null)
+        {
+            return FacesContext.getCurrentInstance();
+        }
+        else
+        {
+            return _facesContext;
+        }
+    }
+    
+    boolean isCachedFacesContext()
+    {
+        return _facesContext != null;
+    }
+    
+    void setCachedFacesContext(FacesContext facesContext)
+    {
+        _facesContext = facesContext;
     }
 }
