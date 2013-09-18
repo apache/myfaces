@@ -106,11 +106,12 @@ public class ResourceHandlerCache
     public void putResource(String resourceName, String libraryName,
             String contentType, String localePrefix, ResourceMeta resource, ResourceLoader loader)
     {
-        putResource(resourceName, libraryName, contentType, localePrefix, null, resource, loader);
+        putResource(resourceName, libraryName, contentType, localePrefix, null, resource, loader, null);
     }
     
     public void putResource(String resourceName, String libraryName,
-            String contentType, String localePrefix, String contractName, ResourceMeta resource, ResourceLoader loader)
+            String contentType, String localePrefix, String contractName, ResourceMeta resource, ResourceLoader loader,
+            ResourceCachedInfo info)
     {
         if (!isResourceCachingEnabled())
         {
@@ -135,7 +136,7 @@ public class ResourceHandlerCache
         }
 
         _resourceCacheMap.put(new ResourceKey(resourceName, libraryName,
-                contentType, localePrefix, contractName), new ResourceValue(resource, loader));
+                contentType, localePrefix, contractName), new ResourceValue(resource, loader, info));
     }
     
     public ResourceValue getResource(String resourceId)
@@ -190,7 +191,8 @@ public class ResourceHandlerCache
         return _resourceCacheMap.get(resourceId) != null;
     }
 
-    public void putResource(String resourceId, ResourceMeta resource, ResourceLoader loader)
+    public void putResource(String resourceId, ResourceMeta resource, ResourceLoader loader, 
+        ResourceCachedInfo info)
     {
         if (!isResourceCachingEnabled())
         {
@@ -221,7 +223,7 @@ public class ResourceHandlerCache
         }
         else
         {
-            _resourceCacheMap.put(resourceId, new ResourceValue(resource, loader));
+            _resourceCacheMap.put(resourceId, new ResourceValue(resource, loader, info));
         }
     }
 
@@ -269,13 +271,14 @@ public class ResourceHandlerCache
     }
     
     public void putViewResource(String resourceName, String contentType, 
-        String localePrefix, ResourceMeta resource, ResourceLoader loader)
+        String localePrefix, ResourceMeta resource, ResourceLoader loader, ResourceCachedInfo info)
     {
-        putViewResource(resourceName, contentType, localePrefix, null, resource, loader);
+        putViewResource(resourceName, contentType, localePrefix, null, resource, loader, info);
     }
     
     public void putViewResource(String resourceName, String contentType, 
-        String localePrefix, String contractName, ResourceMeta resource, ResourceLoader loader)
+        String localePrefix, String contractName, ResourceMeta resource, ResourceLoader loader,
+        ResourceCachedInfo info)
     {
         if (!isResourceCachingEnabled())
         {
@@ -300,7 +303,7 @@ public class ResourceHandlerCache
         }
 
         _viewResourceCacheMap.put(new ResourceKey(resourceName, null,
-                contentType, localePrefix, contractName), new ResourceValue(resource, loader));
+                contentType, localePrefix, contractName), new ResourceValue(resource, loader, info));
     }
 
     private boolean isResourceCachingEnabled()
@@ -424,13 +427,25 @@ public class ResourceHandlerCache
         private final ResourceMeta resourceMeta;
         
         private final ResourceLoader resourceLoader;
-
+        
+        private final ResourceCachedInfo info;
+        
         public ResourceValue(ResourceMeta resourceMeta,
                 ResourceLoader resourceLoader)
+        {
+            this.resourceMeta = resourceMeta;
+            this.resourceLoader = resourceLoader;
+            this.info = null;
+        }
+        
+        public ResourceValue(ResourceMeta resourceMeta,
+                ResourceLoader resourceLoader,
+                ResourceCachedInfo info)
         {
             super();
             this.resourceMeta = resourceMeta;
             this.resourceLoader = resourceLoader;
+            this.info = info;
         }
 
         public ResourceMeta getResourceMeta()
@@ -442,6 +457,11 @@ public class ResourceHandlerCache
         {
             return resourceLoader;
         }
+        
+        public ResourceCachedInfo getCachedInfo()
+        {
+            return info;
+        }
     }
-
+        
 }

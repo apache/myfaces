@@ -44,7 +44,9 @@ public class ResourceImpl extends Resource implements ContractResource
     private ResourceMeta _resourceMeta;
     private ResourceLoader _resourceLoader;
     private ResourceHandlerSupport _resourceHandlerSupport;
-    private URL _url; 
+    
+    private URL _url;
+    private String _requestPath;
     
     public ResourceImpl(ResourceMeta resourceMeta, 
             ResourceLoader resourceLoader, ResourceHandlerSupport support, String contentType)
@@ -52,6 +54,21 @@ public class ResourceImpl extends Resource implements ContractResource
         _resourceMeta = resourceMeta;
         _resourceLoader = resourceLoader;
         _resourceHandlerSupport = support;
+        setLibraryName(resourceMeta.getLibraryName());
+        setResourceName(resourceMeta.getResourceName());
+        setContentType(contentType);
+    }
+    
+    public ResourceImpl(ResourceMeta resourceMeta, 
+            ResourceLoader resourceLoader, ResourceHandlerSupport support, String contentType,
+            URL url, String requestPath)
+    {
+        
+        _resourceMeta = resourceMeta;
+        _resourceLoader = resourceLoader;
+        _resourceHandlerSupport = support;
+        _url = url;
+        _requestPath = requestPath;
         setLibraryName(resourceMeta.getLibraryName());
         setResourceName(resourceMeta.getResourceName());
         setContentType(contentType);
@@ -94,47 +111,51 @@ public class ResourceImpl extends Resource implements ContractResource
     @Override
     public String getRequestPath()
     {
-        String path;
-        if (_resourceHandlerSupport.isExtensionMapping())
+        if (_requestPath == null)
         {
-            path = _resourceHandlerSupport.getResourceIdentifier() + '/' + 
-                getResourceName() + _resourceHandlerSupport.getMapping();
-        }
-        else
-        {
-            String mapping = _resourceHandlerSupport.getMapping(); 
-            path = _resourceHandlerSupport.getResourceIdentifier() + '/' + getResourceName();
-            path = (mapping == null) ? path : mapping + path;
-        }
- 
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        String metadata = null;
-        boolean useAmp = false;
-        if (getLibraryName() != null)
-        {
-            metadata = "?ln=" + getLibraryName();
-            path = path + metadata;
-            useAmp = true;
-            
-            if (!facesContext.isProjectStage(ProjectStage.Production)
-                    && JSF_JS_RESOURCE_NAME.equals(getResourceName()) 
-                    && JAVAX_FACES_LIBRARY_NAME.equals(getLibraryName()))
+            String path;
+            if (_resourceHandlerSupport.isExtensionMapping())
             {
-                // append &stage=?? for all ProjectStages except Production
-                path = path + "&stage=" + facesContext.getApplication().getProjectStage().toString();
+                path = _resourceHandlerSupport.getResourceIdentifier() + '/' + 
+                    getResourceName() + _resourceHandlerSupport.getMapping();
             }
+            else
+            {
+                String mapping = _resourceHandlerSupport.getMapping(); 
+                path = _resourceHandlerSupport.getResourceIdentifier() + '/' + getResourceName();
+                path = (mapping == null) ? path : mapping + path;
+            }
+
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            String metadata = null;
+            boolean useAmp = false;
+            if (getLibraryName() != null)
+            {
+                metadata = "?ln=" + getLibraryName();
+                path = path + metadata;
+                useAmp = true;
+
+                if (!facesContext.isProjectStage(ProjectStage.Production)
+                        && JSF_JS_RESOURCE_NAME.equals(getResourceName()) 
+                        && JAVAX_FACES_LIBRARY_NAME.equals(getLibraryName()))
+                {
+                    // append &stage=?? for all ProjectStages except Production
+                    path = path + "&stage=" + facesContext.getApplication().getProjectStage().toString();
+                }
+            }
+            if (_resourceMeta.getLocalePrefix() != null)
+            {
+                path = path + (useAmp ? '&' : '?') + "loc=" + _resourceMeta.getLocalePrefix();
+                useAmp = true;
+            }
+            if (_resourceMeta.getContractName() != null)
+            {
+                path = path + (useAmp ? '&' : '?') + "con=" + _resourceMeta.getContractName();
+                useAmp = true;
+            }
+            _requestPath = facesContext.getApplication().getViewHandler().getResourceURL(facesContext, path);
         }
-        if (_resourceMeta.getLocalePrefix() != null)
-        {
-            path = path + (useAmp ? '&' : '?') + "loc=" + _resourceMeta.getLocalePrefix();
-            useAmp = true;
-        }
-        if (_resourceMeta.getContractName() != null)
-        {
-            path = path + (useAmp ? '&' : '?') + "con=" + _resourceMeta.getContractName();
-            useAmp = true;
-        }
-        return facesContext.getApplication().getViewHandler().getResourceURL(facesContext, path);
+        return _requestPath;
     }
 
     @Override

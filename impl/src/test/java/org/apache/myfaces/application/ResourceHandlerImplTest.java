@@ -58,6 +58,7 @@ public class ResourceHandlerImplTest extends AbstractJsfTestCase
         super.setUp();
 
         resourceHandler = new ResourceHandlerImpl();
+        request.setPathElements("/xxx", "/yyy", "/test.xhtml", null);
     }
 
     @Override
