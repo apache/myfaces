@@ -217,7 +217,8 @@ public abstract class UIComponentBase extends UIComponent
                 // Application.publishEvent(java.lang.Class, java.lang.Object)  must be called, passing 
                 // PostAddToViewEvent.class as the first argument and the newly added component as the second 
                 // argument.
-                FacesContext facesContext = getFacesContext();
+                FacesContext facesContext = parent.isCachedFacesContext() ?
+                    parent.getFacesContext() : getFacesContext();
                 if (facesContext.isProcessingEvents())
                 {
                     _publishPostAddToViewEvent(facesContext, this);

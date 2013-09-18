@@ -71,6 +71,7 @@ public abstract class FacesContextImplBase extends FacesContext
     
     private List<String> _resourceLibraryContracts;
     private Character _separatorChar;
+    private FacesContext _currentFacesContext;
 
     /**
      * Base constructor.
@@ -111,7 +112,7 @@ public abstract class FacesContextImplBase extends FacesContext
     public void release()
     {
         _applicationFactory = null;
-
+        _currentFacesContext = null;
         if (_defaultExternalContext != null)
         {
             _defaultExternalContext.release();
@@ -215,7 +216,7 @@ public abstract class FacesContextImplBase extends FacesContext
             return _elContext;
         }
 
-        _elContext = new FacesELContext(getApplication().getELResolver(), FacesContext.getCurrentInstance());
+        _elContext = new FacesELContext(getApplication().getELResolver(), getCurrentFacesContext());
 
         ELContextEvent event = new ELContextEvent(_elContext);
         for (ELContextListener listener : getApplication().getELContextListeners())
@@ -311,7 +312,7 @@ public abstract class FacesContextImplBase extends FacesContext
             {
                 _renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
             }
-            _cachedRenderKit = _renderKitFactory.getRenderKit(FacesContext.getCurrentInstance(), renderKitId);
+            _cachedRenderKit = _renderKitFactory.getRenderKit(getCurrentFacesContext(), renderKitId);
         }
         
         return _cachedRenderKit;
@@ -372,4 +373,12 @@ public abstract class FacesContextImplBase extends FacesContext
         }
     }
     
+    protected FacesContext getCurrentFacesContext()
+    {
+        if (_currentFacesContext == null)
+        {
+            _currentFacesContext = FacesContext.getCurrentInstance();
+        }
+        return _currentFacesContext;
+    }
 }

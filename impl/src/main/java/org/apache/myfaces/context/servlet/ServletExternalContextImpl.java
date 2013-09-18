@@ -86,6 +86,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     private String _requestPathInfo;
     private FlashFactory _flashFactory;
     private Flash _flash;
+    private FacesContext _currentFacesContext;
 
     public ServletExternalContextImpl(final ServletContext servletContext, 
             final ServletRequest servletRequest,
@@ -128,6 +129,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         super.release(); // releases fields on ServletExternalContextImplBase
         
+        _currentFacesContext = null;
         _servletRequest = null;
         _servletResponse = null;
         _sessionMap = null;
@@ -352,7 +354,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     
     private String encodeWindowId(String encodedUrl)
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = getCurrentFacesContext();
         ClientWindow window = facesContext.getExternalContext().getClientWindow();
         if (window != null)
         {
@@ -507,7 +509,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public void redirect(final String url) throws IOException
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = getCurrentFacesContext();
         PartialViewContext partialViewContext = facesContext.getPartialViewContext(); 
         if (partialViewContext.isPartialRequest())
         {
@@ -846,7 +848,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             }
         }
         
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = getCurrentFacesContext();
         ClientWindow window = facesContext.getExternalContext().getClientWindow();
         if (window != null)
         {
@@ -964,5 +966,14 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         HttpSession session = _httpServletRequest.getSession();
         session.setMaxInactiveInterval(interval);
+    }
+    
+    protected FacesContext getCurrentFacesContext()
+    {
+        if (_currentFacesContext == null)
+        {
+            _currentFacesContext = FacesContext.getCurrentInstance();
+        }
+        return _currentFacesContext;
     }
 }

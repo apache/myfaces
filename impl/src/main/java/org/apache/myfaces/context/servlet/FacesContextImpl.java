@@ -297,7 +297,7 @@ public class FacesContextImpl extends FacesContextImplBase
                     FactoryFinder.getFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
             }
             // Put actual facesContext as param, not this - this can be wrapped
-            _partialViewContext = _partialViewContextFactory.getPartialViewContext(FacesContext.getCurrentInstance());
+            _partialViewContext = _partialViewContextFactory.getPartialViewContext(getCurrentFacesContext());
         }
         return _partialViewContext;
     }
@@ -380,7 +380,7 @@ public class FacesContextImpl extends FacesContextImplBase
         assertNotReleased();
 
         RenderKit renderKit = getRenderKit();
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = getCurrentFacesContext();
         if (renderKit == null)
         {
             // NullPointerException with StateManager, because

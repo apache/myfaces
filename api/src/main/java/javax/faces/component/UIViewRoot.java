@@ -225,7 +225,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                     UIComponent component = it.next();
                     if(componentId.equals(component.getId()) && componentResource != component)
                     {
-                        it.remove();
+                        if (!component.isCachedFacesContext())
+                        {
+                            try
+                            {
+                                component.setCachedFacesContext(context);
+                                it.remove();
+                            }
+                            finally
+                            {
+                                component.setCachedFacesContext(null);
+                            }
+                        }
+                        else
+                        {
+                            it.remove();
+                        }
                     }
                     else if (componentResource == component)
                     {
@@ -241,7 +256,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 UIComponent component = it.next();
                 if(componentId.equals(component.getId()) && componentResource != component)
                 {
-                    it.remove();
+                    if (!component.isCachedFacesContext())
+                    {
+                        try
+                        {
+                            component.setCachedFacesContext(context);
+                            it.remove();
+                        }
+                        finally
+                        {
+                            component.setCachedFacesContext(null);
+                        }
+                    }
+                    else
+                    {
+                        it.remove();
+                    }
                 }
                 else if (componentResource == component)
                 {
@@ -253,7 +283,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // Add the component resource to the list
         if (!alreadyAdded)
         {
-            componentResources.add(componentResource);
+            if (!componentResource.isCachedFacesContext())
+            {
+                try
+                {
+                    componentResource.setCachedFacesContext(context);
+                    componentResources.add(componentResource);
+                }
+                finally
+                {
+                    componentResource.setCachedFacesContext(context);
+                }
+            }
+            else
+            {
+                componentResources.add(componentResource);
+            }
         }
     }
 
@@ -622,7 +667,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             // create the facet by calling context.getApplication().createComponent()
             // using javax.faces.Panel as the argument
-            facet = context.getApplication().createComponent("javax.faces.ComponentResourceContainer");
+            facet = context.getApplication().createComponent(context,
+                "javax.faces.ComponentResourceContainer", null);
 
             // Set the id of the facet to be target
             if (target.equals("head"))

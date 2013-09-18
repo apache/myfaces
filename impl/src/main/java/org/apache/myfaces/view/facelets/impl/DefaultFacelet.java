@@ -54,6 +54,7 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.EncodingHandler;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 
 /**
@@ -156,6 +157,10 @@ final class DefaultFacelet extends AbstractFacelet
                     myFaceletContext.setUniqueIdsIterator(uniqueIdList.iterator());
                 }
             }
+            if (parent instanceof UIViewRoot)
+            {
+                ComponentSupport.setCachedFacesContext((UIViewRoot)parent, facesContext);
+            }
         }
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, myFaceletContext);
         
@@ -212,6 +217,10 @@ final class DefaultFacelet extends AbstractFacelet
             
             if (faceletCompositionContextInitialized)
             {
+                if (parent instanceof UIViewRoot)
+                {
+                    ComponentSupport.setCachedFacesContext((UIViewRoot)parent, null);
+                }
                 myFaceletContext.release(facesContext);
                 List<String> uniqueIdList = ((EncodingHandler)_root).getUniqueIdList();
                 if (recordUniqueIds &&  uniqueIdList == null)

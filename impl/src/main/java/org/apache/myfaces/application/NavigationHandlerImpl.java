@@ -1554,7 +1554,7 @@ public class NavigationHandlerImpl
             else
             {
                 FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
-                return flowHandler.getCurrentFlow();
+                return flowHandler.getCurrentFlow(facesContext);
             }
         }
         

@@ -19,6 +19,8 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
@@ -49,6 +51,30 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
  */
 public final class ComponentSupport
 {
+    private static final Method SET_CACHED_FACES_CONTEXT;
+        
+    static
+    {
+        Method method = null;
+        try
+        {
+            // The trick here is define this method in UIComponent as a class scoped method
+            // and get it from there. Even if the real implementation is in UIComponentBase,
+            // the jvm will always call the right one and in case of a instance not extending
+            // from UIComponentBase it will call a dummy method.
+            method = UIComponent.class.getDeclaredMethod("setCachedFacesContext", FacesContext.class);
+            method.setAccessible(true);
+        }
+        catch (NoSuchMethodException ex)
+        {
+            method = null;
+        }
+        catch (SecurityException ex)
+        {
+            method = null;
+        }
+        SET_CACHED_FACES_CONTEXT = method;
+    }
 
     private final static String MARK_DELETED = "oam.vf.MARK_DELETED";
     public final static String MARK_CREATED = "oam.vf.MARK_ID";
@@ -706,5 +732,25 @@ public final class ComponentSupport
             map.putState(uniqueId, value);
         }
     }
-
+    
+    public static void setCachedFacesContext(UIComponent component,
+        FacesContext context)
+    {
+        if (SET_CACHED_FACES_CONTEXT != null)
+        {
+            try
+            {
+                SET_CACHED_FACES_CONTEXT.invoke(component, context);
+            }
+            catch (IllegalAccessException ex)
+            {
+            }
+            catch (IllegalArgumentException ex)
+            {
+            }
+            catch (InvocationTargetException ex)
+            {
+            }
+        }
+    }
 }

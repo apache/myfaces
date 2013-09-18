@@ -333,6 +333,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                         // Replace parent with the relocated parent.
                         parent = c.getParent();
                     }
+                    ComponentSupport.setCachedFacesContext(c, facesContext);
                 }
                 if (facetName == null)
                 {
@@ -344,6 +345,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
                 if (mctx.isRefreshingSection())
                 {
+                    ComponentSupport.setCachedFacesContext(c, null);
                     facesContext.setProcessingEvents(oldProcessingEvents);
                 }
             //}
@@ -377,6 +379,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         if (componentFound && mctx.isRefreshingSection())
         {
             facesContext.setProcessingEvents(false);
+            ComponentSupport.setCachedFacesContext(c, facesContext);
         }
         if (facetName == null)
         {
@@ -388,6 +391,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         if (componentFound && mctx.isRefreshingSection())
         {
+            ComponentSupport.setCachedFacesContext(c, null);
             facesContext.setProcessingEvents(oldProcessingEvents);
         }
 
