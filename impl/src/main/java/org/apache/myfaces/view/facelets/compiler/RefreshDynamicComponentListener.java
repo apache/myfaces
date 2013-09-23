@@ -94,27 +94,53 @@ public final class RefreshDynamicComponentListener implements
             facesContext.getAttributes().put(FaceletViewDeclarationLanguage.REFRESHING_TRANSIENT_BUILD,
                 Boolean.TRUE);
             
-            // The trick here is restore MARK_CREATED, just to allow ComponentTagHandlerDelegate to
-            // find the component. Then we reset it to exclude it from facelets refresh algorithm.
-            // Note oam.vf.GEN_MARK_ID helps to identify when there is a wrapper component or not,
-            // and in that way identify which component is the parent.
-            String markId = (String) component.getAttributes().get("oam.vf.GEN_MARK_ID");
-            if (markId == null)
+            
+            // Detect the relationship between parent and child, to ensure the component is properly created
+            // and refreshed. In facelets this is usually done by core.FacetHandler, but since it is a 
+            // dynamic component, we need to do it here before apply the handler
+            UIComponent parent = component.getParent();
+            String facetName = null;
+            if (parent.getFacetCount() > 0 && !parent.getChildren().contains(component))
             {
-                ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
-                    facesContext, component, baseKey);
+                facetName = ComponentSupport.findFacetNameByComponentInstance(parent, component);
             }
-            else
+
+            try
             {
-                try
+                if (facetName != null)
                 {
-                    component.getAttributes().put(ComponentSupport.MARK_CREATED, markId);
+                    parent.getAttributes().put(org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY, 
+                            facetName);
+                }            
+                // The trick here is restore MARK_CREATED, just to allow ComponentTagHandlerDelegate to
+                // find the component. Then we reset it to exclude it from facelets refresh algorithm.
+                // Note oam.vf.GEN_MARK_ID helps to identify when there is a wrapper component or not,
+                // and in that way identify which component is the parent.
+                String markId = (String) component.getAttributes().get("oam.vf.GEN_MARK_ID");
+                if (markId == null)
+                {
                     ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
-                        facesContext, component.getParent(), baseKey);
+                        facesContext, component, baseKey);
                 }
-                finally
+                else
                 {
-                    component.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                    try
+                    {
+                        component.getAttributes().put(ComponentSupport.MARK_CREATED, markId);
+                        ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                            facesContext, component.getParent(), baseKey);
+                    }
+                    finally
+                    {
+                        component.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                    }
+                }
+            }
+            finally
+            {
+                if (facetName != null)
+                {
+                    parent.getAttributes().remove(org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY);
                 }
             }
         }

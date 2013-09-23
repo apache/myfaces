@@ -31,6 +31,7 @@ import junit.framework.Assert;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
+import org.apache.myfaces.view.facelets.pss.acid.managed.CheckActionEventBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
 import org.junit.Test;
 
@@ -740,7 +741,48 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 
         tearDownRequest();
     }
-    
+
+    @Test
+    public void testAddSimpleCCVDL2() throws Exception
+    {
+        setupRequest("/addSimpleCCVDL2.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
+        Assert.assertEquals(1, comp.getChildCount());
+        UIComponent wrapper = comp.getChildren().get(0);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
+        String content1 = new String(writer1.content());
+        Assert.assertTrue(content1.contains("Dynamically added header"));
+        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        processLifecycleExecuteAndRender();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:component");
+        Assert.assertEquals(1, comp.getChildCount());
+        wrapper = comp.getChildren().get(0);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
+        String content2 = new String(writer2.content());
+        Assert.assertTrue(content2.contains("Dynamically added header"));
+        Assert.assertTrue(content2.contains("Dynamically added markup"));
+
+        tearDownRequest();
+    }
+
     @Test
     public void testComponentBindingVDL_1() throws Exception
     {
@@ -761,7 +803,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
         Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
+        String content1 = new String(writer1.content());
+        Assert.assertTrue(content1.contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         submit(button);
@@ -784,7 +827,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
         Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
+        String content2 = new String(writer2.content());
+        Assert.assertTrue(content2.contains("Dynamically added markup"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         submit(button);
@@ -807,8 +851,101 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
         Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer3.content()).contains("Dynamically added markup"));
+        String content3 = new String(writer3.content());
+        Assert.assertTrue(content3.contains("Dynamically added markup"));
         
         tearDownRequest();
-    }    
+    }
+    
+    @Test
+    public void testComponentBindingVDL_2() throws Exception
+    {
+        setupRequest("/componentBindingVDL_2.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(2, comp.getChildCount());
+
+        UIComponent wrapper = comp.getChildren().get(1);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
+        String content1 = new String(writer1.content());
+        Assert.assertTrue(content1.contains("Dynamically added header"));
+        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        
+        UIComponent ccpanel = facesContext.getViewRoot().findComponent("mainForm:ccpanel");
+        Assert.assertNotNull(ccpanel);
+        UIComponent ccinnerpanel = facesContext.getViewRoot().findComponent("mainForm:ccpanel:component");
+        Assert.assertNotNull(ccinnerpanel);
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:ccpanel:component:increment");
+        Assert.assertNotNull(button);
+        
+        CheckActionEventBean checkBean = facesContext.getApplication().evaluateExpressionGet(facesContext,
+                "#{checkActionEventBean}", CheckActionEventBean.class);
+        int oldcount1 = checkBean.getActionListenerCount();
+        
+        submit(button);
+        processLifecycleExecute();
+        
+        Assert.assertEquals("event not called", oldcount1+1, checkBean.getActionListenerCount());
+        processRender();
+
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(2, comp.getChildCount());
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        
+        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        
+        wrapper = comp.getChildren().get(1);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
+        String content2 = new String(writer2.content());
+        Assert.assertTrue(content2.contains("Dynamically added header"));
+        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:ccpanel:component:increment");
+        Assert.assertNotNull(button);
+        int oldcount2 = checkBean.getActionListenerCount();        
+        
+        submit(button);
+        processLifecycleExecute();
+        
+        Assert.assertEquals("event not called", oldcount2+1, checkBean.getActionListenerCount());
+        
+        processRender();
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(2, comp.getChildCount());
+
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        
+        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        
+        wrapper = comp.getChildren().get(1);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
+        String content3 = new String(writer3.content());
+        Assert.assertTrue(content3.contains("Dynamically added header"));
+        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        
+        tearDownRequest();
+    }
 }

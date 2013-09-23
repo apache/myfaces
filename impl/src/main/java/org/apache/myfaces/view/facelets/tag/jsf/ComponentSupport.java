@@ -165,6 +165,53 @@ public final class ComponentSupport
         }
         return null;
     }
+    
+    public static String findFacetNameByComponentInstance(
+        UIComponent parent, UIComponent instance)
+    {
+        if (parent.getFacetCount() > 0)
+        {
+            for (Map.Entry<String, UIComponent> entry : parent.getFacets().entrySet())
+            {
+                UIComponent facet = entry.getValue();
+                // check if this is a dynamically generated UIPanel
+                if (Boolean.TRUE.equals(facet.getAttributes()
+                             .get(FACET_CREATED_UIPANEL_MARKER)))
+                {
+                    // only check the children and facets of the panel
+                    if (facet.getChildCount() > 0)
+                    {
+                        for (int i = 0, childCount = facet.getChildCount(); i < childCount; i ++)
+                        {
+                            UIComponent child = facet.getChildren().get(i);
+                            if (instance.equals(child))
+                            {
+                                return entry.getKey();
+                            }
+                        }
+                    }
+                    if (facet.getFacetCount() > 0)
+                    {
+                        Iterator<UIComponent> itr2 = facet.getFacets().values().iterator();
+                        while (itr2.hasNext())
+                        {
+                            UIComponent child = itr2.next();
+                            if (instance.equals(child))
+                            {
+                                return entry.getKey();
+                            }
+                        }
+                    }
+                }
+                else if (instance.equals(facet))
+                {
+                    return entry.getKey();
+                }
+            }
+            return null;
+        }
+        return null;
+    }
 
     public static UIComponent findChildInFacetByTagId(
         UIComponent parent, String id, String facetName)

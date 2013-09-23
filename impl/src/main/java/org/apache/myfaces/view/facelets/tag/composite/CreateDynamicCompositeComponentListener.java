@@ -80,43 +80,73 @@ public class CreateDynamicCompositeComponentListener
         {
             FaceletFactory.setInstance(null);
         }
+        
+        UIComponent component = event.getComponent(); 
+        // The execution of this listener activated another call to PostAddToViewEvent, because
+        // ComponentTagHandlerDelegate removes and add the component again. This is necessary because
+        // the inner components also require the propagation of PostAddToViewEvent to refresh themselves.
+        // but this check avoids the duplicate call to the facelet, even if the duplicate call does not
+        // have any side effect (counts as a refresh).
+        Integer step = (Integer) component.getAttributes().get(
+            CompositeComponentResourceTagHandler.CREATE_CC_ON_POST_ADD_TO_VIEW); 
+        if (step != null && step.intValue() == 0)
+        {
+            component.getAttributes().put(CompositeComponentResourceTagHandler.CREATE_CC_ON_POST_ADD_TO_VIEW, 1);
+        }
+        else
+        {
+            return;
+        }
         try
         {
-            UIComponent component = event.getComponent(); 
-            
-            Integer step = (Integer) component.getAttributes().get(
-                CompositeComponentResourceTagHandler.CREATE_CC_ON_POST_ADD_TO_VIEW); 
-            if (step != null && step.intValue() == 0)
-            {
-                component.getAttributes().put(CompositeComponentResourceTagHandler.CREATE_CC_ON_POST_ADD_TO_VIEW, 1);
-            }
-            else
-            {
-                return;
-            }
-            
             facesContext.getAttributes().put(FaceletViewDeclarationLanguage.REFRESHING_TRANSIENT_BUILD,
                 Boolean.TRUE);
             
-            // The trick here is restore MARK_CREATED, just to allow ComponentTagHandlerDelegate to
-            // find the component. Then we reset it to exclude it from facelets refresh algorithm.
-            String markId = (String) component.getAttributes().get("oam.vf.GEN_MARK_ID");
-            if (markId == null)
+            // Detect the relationship between parent and child, to ensure the component is properly created
+            // and refreshed. In facelets this is usually done by core.FacetHandler, but since it is a 
+            // dynamic component, we need to do it here before apply the handler
+            UIComponent parent = component.getParent();
+            String facetName = null;
+            if (parent.getFacetCount() > 0 && !parent.getChildren().contains(component))
             {
-                ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
-                    facesContext, component, baseKey);
+                facetName = ComponentSupport.findFacetNameByComponentInstance(parent, component);
             }
-            else
+            
+            
+            try
             {
-                try
+                if (facetName != null)
                 {
-                    component.getAttributes().put(ComponentSupport.MARK_CREATED, markId);
-                    ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
-                        facesContext, component.getParent(), baseKey);
+                    parent.getAttributes().put(org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY, 
+                            facetName);
                 }
-                finally
+                // The trick here is restore MARK_CREATED, just to allow ComponentTagHandlerDelegate to
+                // find the component. Then we reset it to exclude it from facelets refresh algorithm.
+                String markId = (String) component.getAttributes().get("oam.vf.GEN_MARK_ID");
+                if (markId == null)
                 {
-                    component.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                    ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                        facesContext, component, baseKey);
+                }
+                else
+                {
+                    try
+                    {
+                        component.getAttributes().put(ComponentSupport.MARK_CREATED, markId);
+                        ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                            facesContext, component.getParent(), baseKey);
+                    }
+                    finally
+                    {
+                        component.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                    }
+                }
+            }
+            finally
+            {
+                if (facetName != null)
+                {
+                    parent.getAttributes().remove(org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY);
                 }
             }
         }
