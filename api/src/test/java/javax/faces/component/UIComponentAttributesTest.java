@@ -51,7 +51,7 @@ public class UIComponentAttributesTest extends AbstractJsfTestCase
     {
         input.getAttributes().put("style", null);
     }
-
+/*
     public void testSetNullAttributeOnInvalidProperty()
     {
         try
@@ -63,5 +63,5 @@ public class UIComponentAttributesTest extends AbstractJsfTestCase
         {
             // expected
         }
-    }
+    }*/
 }
