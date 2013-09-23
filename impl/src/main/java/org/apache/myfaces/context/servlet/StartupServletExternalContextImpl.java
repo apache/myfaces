@@ -96,7 +96,8 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public Object getRequest()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        return null;
+        //throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
@@ -174,19 +175,28 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public Object getResponse()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        return null;
+        //throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
     @Override
     public Object getSession(boolean create)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        if (create)
+        {
+            throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        }
+        return null;
     }
 
     @Override
     public String getSessionId(boolean create)
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        if (create)
+        {
+            throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        }
+        return null;
     }
 
     @Override
