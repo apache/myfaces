@@ -561,6 +561,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 {
                     if (innerCompositeComponent.getChildCount() > 0)
                     {
+                        String facetName = (String) parent.getAttributes().get(
+                                org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY);
                         // Insert children
                         List<UIComponent> children = new ArrayList<UIComponent>(
                             innerCompositeComponent.getChildCount());
@@ -570,10 +572,93 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                         }
                         while (children.size() > 0)
                         {
-                            parent.getChildren().add(children.remove(0));
+                            UIComponent child = children.remove(0);
+                            child.getAttributes().put(InsertChildrenHandler.INSERT_CHILDREN_USED,
+                                    Boolean.TRUE);
+                            if (facetName != null)
+                            {
+                                ComponentSupport.addFacet(ctx, parent, child, facetName);
+                            }
+                            else
+                            { 
+                                parent.getChildren().add(child);
+                            }
                         }
                     }
                     return true;
+                }
+            }
+            else if (step != null && step.intValue() > 1)
+            {
+                // refresh case, in facet case it is not necessary to remove/add the facet, because there
+                // is no relative order (it is always on the same spot).
+                if (name == null)
+                {
+                    String facetName = (String) parent.getAttributes().get(
+                            org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler.KEY);
+                    // refresh case, remember the inserted children does not have any
+                    // associated tag handler, so in this case we just need to remove and add them in the same order 
+                    // we found them
+                    List<UIComponent> children = null;
+                    if (facetName == null)
+                    {
+                        children = new ArrayList<UIComponent>(parent.getChildCount());
+                        int i = 0;
+                        while (parent.getChildCount()-i > 0)
+                        {
+                            UIComponent child = parent.getChildren().get(i);
+                            if (Boolean.TRUE.equals(child.getAttributes().get(
+                                    InsertChildrenHandler.INSERT_CHILDREN_USED)))
+                            {
+                                children.add(parent.getChildren().remove(i));
+                            }
+                            else
+                            {
+                                i++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        children = new ArrayList<UIComponent>();
+                        UIComponent child = parent.getFacet(facetName);
+                        if (Boolean.TRUE.equals(child.getAttributes().get(
+                                    InsertChildrenHandler.INSERT_CHILDREN_USED)))
+                        {
+                            parent.getFacets().remove(facetName);
+                            children.add(child);
+                        }
+                        else
+                        {
+                            UIComponent parentToApply = child;
+                            int i = 0;
+                            while (parentToApply.getChildCount()-i > 0)
+                            {
+                                child = parentToApply.getChildren().get(i);
+                                if (Boolean.TRUE.equals(child.getAttributes().get(
+                                        InsertChildrenHandler.INSERT_CHILDREN_USED)))
+                                {
+                                    children.add(parentToApply.getChildren().remove(i));
+                                }
+                                else
+                                {
+                                    i++;
+                                }
+                            }
+                        }
+                    }
+                    while (children.size() > 0)
+                    {
+                        UIComponent child = children.remove(0);
+                        if (facetName != null)
+                        {
+                            ComponentSupport.addFacet(ctx, parent, child, facetName);
+                        }
+                        else
+                        { 
+                            parent.getChildren().add(child);
+                        }
+                    }
                 }
             }
             return true;
@@ -722,5 +807,4 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             }
         }
     }
-    
 }

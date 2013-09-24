@@ -2810,9 +2810,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             super(viewId);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public UIViewRoot createMetadataView(FacesContext context)
         {
@@ -2899,7 +2896,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             {
                 return null;
             }
-            
             // Create a temporal component base class where all components will be put, but we are only
             // interested in the inner UIComponent and if multiple are created, return this one.
             UIPanel tempParent
@@ -2924,6 +2920,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 // Multiple child. The tempParent will be returned. No need to
                 // save MARK_CREATED.
                 createdComponent = tempParent;
+                tempParent.getAttributes().put("oam.vf.DYN_WRAPPER", baseKey);
                 tempParent.subscribeToEvent(PostRestoreStateEvent.class, new 
                     RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
             }
@@ -2967,6 +2964,7 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // that content into a component. Requires refresh. No need to
                     // save MARK_CREATED.
                     createdComponent = tempParent;
+                    tempParent.getAttributes().put("oam.vf.DYN_WRAPPER", baseKey);
                     createdComponent.subscribeToEvent(PostRestoreStateEvent.class, new 
                         RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
                 }

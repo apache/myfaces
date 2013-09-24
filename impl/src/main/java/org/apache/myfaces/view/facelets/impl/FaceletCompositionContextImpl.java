@@ -151,6 +151,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private boolean _dynamicComponentHandler;
     private boolean _oldRefreshingTransientBuild;
+    private boolean _dynamicComponentTopLevel;
     
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
@@ -207,6 +208,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_"+ base +"_");
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
+        _dynamicComponentTopLevel = true;
     }
     
     
@@ -1133,6 +1135,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_"+ base +"_");
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
+        _dynamicComponentTopLevel = true;
     }
 
     @Override
@@ -1151,8 +1154,18 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
+        _dynamicComponentTopLevel = false;
     }
     
+    public boolean isDynamicComponentTopLevel()
+    {
+        return _dynamicComponentTopLevel;
+    }
+    
+    public void setDynamicComponentTopLevel(boolean value)
+    {
+        _dynamicComponentTopLevel = value;
+    }
     
     private static class KeyEntryIterator<K, V> implements Iterator<K>
     {

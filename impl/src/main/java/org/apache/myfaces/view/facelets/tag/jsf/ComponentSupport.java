@@ -255,7 +255,6 @@ public final class ComponentSupport
                     return facet;
                 }
             }
-            return facet;
         }
         return null;
     }

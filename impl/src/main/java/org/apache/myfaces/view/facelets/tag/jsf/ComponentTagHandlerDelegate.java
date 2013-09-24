@@ -313,12 +313,22 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             mctx.pushUniqueIdVendorToStack((UniqueIdVendor)c);
         }
-        // first allow c to get populated
-        _delegate.applyNextHandler(ctx, c);
-
+        
+        if (mctx.isDynamicComponentTopLevel())
+        {
+            mctx.setDynamicComponentTopLevel(false);
+            _delegate.applyNextHandler(ctx, c);
+            mctx.setDynamicComponentTopLevel(true);
+        }
+        else
+        {
+            // first allow c to get populated
+            _delegate.applyNextHandler(ctx, c);
+        }
+        
         boolean oldProcessingEvents = facesContext.isProcessingEvents();
         // finish cleaning up orphaned children
-        if (componentFound)
+        if (componentFound && !mctx.isDynamicComponentTopLevel())
         {
             mctx.finalizeForDeletion(c);
 
@@ -376,23 +386,26 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         
         _delegate.onComponentPopulated(ctx, c, oldParent);
 
-        if (componentFound && mctx.isRefreshingSection())
+        if (!mctx.isDynamicComponentTopLevel() || !componentFound)
         {
-            facesContext.setProcessingEvents(false);
-            ComponentSupport.setCachedFacesContext(c, facesContext);
-        }
-        if (facetName == null)
-        {
-            parent.getChildren().add(c);
-        }
-        else
-        {
-            ComponentSupport.addFacet(ctx, parent, c, facetName);
-        }
-        if (componentFound && mctx.isRefreshingSection())
-        {
-            ComponentSupport.setCachedFacesContext(c, null);
-            facesContext.setProcessingEvents(oldProcessingEvents);
+            if (componentFound && mctx.isRefreshingSection())
+            {
+                facesContext.setProcessingEvents(false);
+                ComponentSupport.setCachedFacesContext(c, facesContext);
+            }
+            if (facetName == null)
+            {
+                parent.getChildren().add(c);
+            }
+            else
+            {
+                ComponentSupport.addFacet(ctx, parent, c, facetName);
+            }
+            if (componentFound && mctx.isRefreshingSection())
+            {
+                ComponentSupport.setCachedFacesContext(c, null);
+                facesContext.setProcessingEvents(oldProcessingEvents);
+            }
         }
 
         if (c instanceof UniqueIdVendor)

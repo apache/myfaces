@@ -641,4 +641,26 @@ abstract public class FaceletCompositionContext
     public void popDynamicComponentSection()
     {
     }
+    
+    /**
+     * Check if the algorithm is applying a dynamic component and the current component
+     * is the top level one. This is necessary to avoid remove/add the component under
+     * a refresh and in that way change the position of the component in the tree. Remember
+     * facelets algorithm removes/add components to sort the components under a refresh, but
+     * in this case, it is up to the user to put the component in the tree, so the idea is
+     * do not make interference with the user's code. Note if the dynamic content is wrapped
+     * by a generated panel, the top level component is the wrapper itself, which has no 
+     * attached tag handler.
+     * 
+     * @since 2.2
+     * @return 
+     */
+    public boolean isDynamicComponentTopLevel()
+    {
+        return false;
+    }
+    
+    public void setDynamicComponentTopLevel(boolean value)
+    {
+    }
 }

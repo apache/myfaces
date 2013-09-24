@@ -253,6 +253,13 @@ final class DefaultFacelet extends AbstractFacelet
             pushDynCompSection = true;
             fcctx.pushDynamicComponentSection(baseKey);
         }
+        // Disable dynamic component top level if the parent is a
+        // dynamic wrapper, to allow the content to be reorganized properly under
+        // a refresh.
+        if (parent.getAttributes().containsKey("oam.vf.DYN_WRAPPER"))
+        {
+            fcctx.setDynamicComponentTopLevel(false);
+        }
         
         FaceletContext oldCtx = (FaceletContext) facesContext.getAttributes().get(
             FaceletContext.FACELET_CONTEXT_KEY);
