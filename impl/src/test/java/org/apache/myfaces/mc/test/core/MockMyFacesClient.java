@@ -178,7 +178,7 @@ public class MockMyFacesClient
             {
                 return (UIForm) parent;
             }
-            parent = parent.getParent().getParent();
+            parent = parent.getParent();
         }
         return null;
     }
