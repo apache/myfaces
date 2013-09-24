@@ -262,6 +262,43 @@ public final class ClassUtils
         
     }
 
+    /**
+     * This method is similar to shared ClassUtils.javaTypeToClass,
+     * but the default package for the type is java.lang
+     *
+     * @param type
+     * @return
+     * @throws ClassNotFoundException
+     */
+    public static Class javaDefaultTypeToClass(String type)
+            throws ClassNotFoundException
+    {
+        if (type == null)
+        {
+            throw new NullPointerException("type");
+        }
+
+        // try common types and arrays of common types first
+        Class clazz = (Class) ClassUtils.COMMON_TYPES.get(type);
+        if (clazz != null)
+        {
+            return clazz;
+        }
+
+        int len = type.length();
+        if (len > 2 && type.charAt(len - 1) == ']' && type.charAt(len - 2) == '[')
+        {
+            String componentType = type.substring(0, len - 2);
+            Class componentTypeClass = ClassUtils.classForName(componentType);
+            return Array.newInstance(componentTypeClass, 0).getClass();
+        }
+
+        if (type.indexOf('.') == -1)
+        {
+            type = "java.lang." + type;
+        }
+        return ClassUtils.classForName(type);
+    }
 
     /**
      * Same as {@link #javaTypeToClass(String)}, but throws a RuntimeException

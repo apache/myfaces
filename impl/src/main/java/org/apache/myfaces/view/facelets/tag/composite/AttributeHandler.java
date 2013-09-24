@@ -36,8 +36,8 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -335,7 +335,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
                     {
                         try
                         {
-                            clazz = FaceletViewDeclarationLanguage._javaTypeToClass(type);
+                            clazz = ClassUtils.javaDefaultTypeToClass(type);
                         }
                         catch (ClassNotFoundException e)
                         {

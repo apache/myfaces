@@ -28,8 +28,8 @@ import java.util.Map;
 import javax.el.ValueExpression;
 import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.shared.util.ClassUtils;
 
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
  * Like MetadataTargetImpl but integrate composite component bean info
@@ -82,7 +82,7 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
                 {
                     try
                     {
-                        type = FaceletViewDeclarationLanguage._javaTypeToClass((String)type);
+                        type = ClassUtils.javaDefaultTypeToClass((String)type);
                     }
                     catch (ClassNotFoundException e)
                     {

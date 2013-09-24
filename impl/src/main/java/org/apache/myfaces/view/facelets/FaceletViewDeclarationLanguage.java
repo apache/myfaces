@@ -24,7 +24,6 @@ import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -147,6 +146,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionLis
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValidator;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValueChangeListener;
 import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
+import org.apache.myfaces.view.facelets.util.FaceletsViewDeclarationLanguageUtils;
 
 /**
  * This class represents the abstraction of Facelets as a ViewDeclarationLanguage.
@@ -1269,8 +1269,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                         methodSignature = methodSignature.trim();
                         methodExpression = context.getApplication().getExpressionFactory().
                                 createMethodExpression(elContext,
-                                        attributeExpressionString, _getReturnType(methodSignature),
-                                        _getParameters(methodSignature));
+                                        attributeExpressionString, 
+                                        FaceletsViewDeclarationLanguageUtils.getReturnType(methodSignature),
+                                        FaceletsViewDeclarationLanguageUtils.getParameters(methodSignature));
 
                         methodExpression = reWrapMethodExpression(methodExpression, attributeNameValueExpression);
 
@@ -1753,113 +1754,6 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
         {
             return createdMethodExpression;
         }
-    }
-
-    /**
-     * This method is similar to shared ClassUtils.javaTypeToClass,
-     * but the default package is java.lang
-     * TODO: Move to shared project
-     *
-     * @param type
-     * @return
-     * @throws ClassNotFoundException
-     */
-    public static Class _javaTypeToClass(String type)
-            throws ClassNotFoundException
-    {
-        if (type == null)
-        {
-            throw new NullPointerException("type");
-        }
-
-        // try common types and arrays of common types first
-        Class clazz = (Class) ClassUtils.COMMON_TYPES.get(type);
-        if (clazz != null)
-        {
-            return clazz;
-        }
-
-        int len = type.length();
-        if (len > 2 && type.charAt(len - 1) == ']' && type.charAt(len - 2) == '[')
-        {
-            String componentType = type.substring(0, len - 2);
-            Class componentTypeClass = ClassUtils.classForName(componentType);
-            return Array.newInstance(componentTypeClass, 0).getClass();
-        }
-
-        if (type.indexOf('.') == -1)
-        {
-            type = "java.lang." + type;
-        }
-        return ClassUtils.classForName(type);
-    }
-
-    private Class _getReturnType(String signature)
-    {
-        int endName = signature.indexOf('(');
-        if (endName < 0)
-        {
-            throw new FacesException("Invalid method signature:" + signature);
-        }
-        int end = signature.lastIndexOf(' ', endName);
-        if (end < 0)
-        {
-            throw new FacesException("Invalid method signature:" + signature);
-        }
-        try
-        {
-            return _javaTypeToClass(signature.substring(0, end));
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new FacesException("Invalid method signature:" + signature);
-        }
-    }
-
-    /**
-     * Get the parameters types from the function signature.
-     *
-     * @return An array of parameter class names
-     */
-    private Class[] _getParameters(String signature) throws FacesException
-    {
-        ArrayList<Class> params = new ArrayList<Class>();
-        // Signature is of the form
-        // <return-type> S <method-name S? '('
-        // < <arg-type> ( ',' <arg-type> )* )? ')'
-        int start = signature.indexOf('(') + 1;
-        boolean lastArg = false;
-        while (true)
-        {
-            int p = signature.indexOf(',', start);
-            if (p < 0)
-            {
-                p = signature.indexOf(')', start);
-                if (p < 0)
-                {
-                    throw new FacesException("Invalid method signature:" + signature);
-                }
-                lastArg = true;
-            }
-            String arg = signature.substring(start, p).trim();
-            if (!"".equals(arg))
-            {
-                try
-                {
-                    params.add(_javaTypeToClass(arg));
-                }
-                catch (ClassNotFoundException e)
-                {
-                    throw new FacesException("Invalid method signature:" + signature);
-                }
-            }
-            if (lastArg)
-            {
-                break;
-            }
-            start = p + 1;
-        }
-        return params.toArray(new Class[params.size()]);
     }
 
     /**

@@ -36,7 +36,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.CompositeComponentExpressionHolder;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo;
 
 /**
@@ -144,7 +144,7 @@ public final class CompositeComponentELResolver extends ELResolver
                 {
                     try
                     {
-                        type = FaceletViewDeclarationLanguage._javaTypeToClass((String)type);
+                        type = ClassUtils.javaDefaultTypeToClass((String)type);
                     }
                     catch (ClassNotFoundException e)
                     {
