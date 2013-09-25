@@ -236,6 +236,10 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
+        if (!_template.isLiteral() && fcc.isDynamicComponentSection())
+        {
+            ComponentSupport.markComponentToRefreshDynamically(ctx.getFacesContext(), parent);
+        }
     }
 
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException, FacesException,

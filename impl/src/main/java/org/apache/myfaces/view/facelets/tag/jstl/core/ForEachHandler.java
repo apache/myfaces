@@ -317,6 +317,10 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
+        if (fcc.isDynamicComponentSection())
+        {
+            ComponentSupport.markComponentToRefreshDynamically(ctx.getFacesContext(), parent);
+        }
     }
 
     private final ValueExpression capture(String name, PageContext pctx)

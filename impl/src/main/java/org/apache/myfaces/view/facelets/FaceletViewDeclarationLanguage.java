@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +57,8 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -102,7 +105,6 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
-import org.apache.myfaces.shared.view.ViewDeclarationLanguageBase;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
@@ -156,7 +158,7 @@ import org.apache.myfaces.view.facelets.util.FaceletsViewDeclarationLanguageUtil
  *
  * @since 2.0
  */
-public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
+public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLanguageBase
 {
     //private static final Log log = LogFactory.getLog(FaceletViewDeclarationLanguage.class);
     private static final Logger log = Logger.getLogger(FaceletViewDeclarationLanguage.class.getName());
@@ -287,6 +289,9 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
 
     private final static int STATE_KEY_LEN = STATE_KEY.length();
     
+    private static final Set<VisitHint> VISIT_HINTS_DYN_REFRESH = Collections.unmodifiableSet( 
+            EnumSet.of(VisitHint.SKIP_ITERATION));
+    
     /**
      * Key used to cache component ids for the counter
      */
@@ -366,7 +371,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
     {
         if (isFilledView(context, view))
         {
-            return;
+            if (view != null && 
+                FaceletViewDeclarationLanguageBase.isDynamicComponentRefreshTransientBuildActive(context, view))
+            {
+                // don't return
+            }
+            else
+            {
+                return;
+            }
         }
 
         // setup our viewId
@@ -445,7 +458,12 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             if (refreshTransientBuild)
             {
                 //context.setProcessingEvents(true);
-
+                if (FaceletViewDeclarationLanguageBase.isDynamicComponentRefreshTransientBuildActive(context))
+                {
+                    VisitContext visitContext = (VisitContext) getVisitContextFactory().
+                        getVisitContext(context, null, VISIT_HINTS_DYN_REFRESH);
+                    view.visitTree(visitContext, new PublishDynamicComponentRefreshTransientBuildCallback());
+                }
                 if (!usePartialStateSavingOnThisView || refreshTransientBuildOnPSS)
                 {
                     // When the facelet is applied, all components are removed and added from view,
@@ -2792,6 +2810,8 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             }
             // Create a temporal component base class where all components will be put, but we are only
             // interested in the inner UIComponent and if multiple are created, return this one.
+            boolean requiresDynamicRefresh = false;
+            boolean requiresFaceletDynamicRefresh = false;
             UIPanel tempParent
                     = (UIPanel) context.getApplication().createComponent(
                     context, UIPanel.COMPONENT_TYPE, null);
@@ -2808,6 +2828,24 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
             finally
             {
                 tempParent.popComponentFromEL(context);
+                // There are two cases:
+                // 1. If we are under facelets algorithm control (binding case), the refreshing logic will be done
+                // outside this block. We can check that condition easily with FaceletCompositionContext
+                // 2. If we are not under facelets algorithm control, check if the dynamic component requires refresh,
+                // if that so, mark the view to be refreshed and reset the flag, otherwise continue. This check
+                // allows us to decide if we add a third listener to refresh on transient build.
+                    // Check if the current component requires dynamic refresh and if that so,
+                FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(context);
+                if (fcc != null)
+                {
+                    requiresFaceletDynamicRefresh = true;
+                }
+                else if (FaceletViewDeclarationLanguageBase.isDynamicComponentNeedsRefresh(context))
+                {
+                    FaceletViewDeclarationLanguageBase.activateDynamicComponentRefreshTransientBuild(context);
+                    FaceletViewDeclarationLanguageBase.resetDynamicComponentNeedsRefreshFlag(context);
+                    requiresDynamicRefresh = true;
+                }
             }
             if (tempParent.getChildCount() > 1)
             {
@@ -2817,11 +2855,15 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                 tempParent.getAttributes().put("oam.vf.DYN_WRAPPER", baseKey);
                 tempParent.subscribeToEvent(PostRestoreStateEvent.class, new 
                     RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                if (requiresFaceletDynamicRefresh)
+                {
+                    FaceletViewDeclarationLanguageBase.dynamicComponentNeedsRefresh(context);
+                }
             }
             else if (tempParent.getChildCount() == 1)
             {
                 createdComponent = tempParent.getChildren().get(0);
-                
+                boolean requiresRefresh = false;
                 // One child. In that case there are three choices:
                 if (UIComponent.isCompositeComponent(createdComponent))
                 {
@@ -2837,8 +2879,11 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
                     createdComponent.subscribeToEvent(PostAddToViewEvent.class, new 
                         CreateDynamicCompositeComponentListener(taglibURI, tagName, attributes, baseKey));
-                    createdComponent.subscribeToEvent(PostRestoreStateEvent.class, new 
-                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                    requiresRefresh = true;
+                    if (requiresFaceletDynamicRefresh)
+                    {
+                        FaceletViewDeclarationLanguageBase.dynamicComponentNeedsRefresh(context);
+                    }
                 }
                 else if (createdComponent.getChildCount() > 0)
                 {
@@ -2849,18 +2894,20 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     createdComponent.getAttributes().put("oam.vf.GEN_MARK_ID",
                         createdComponent.getAttributes().get(ComponentSupport.MARK_CREATED));
                     createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
-                    createdComponent.subscribeToEvent(PostRestoreStateEvent.class, new 
-                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                    requiresRefresh = true;
+                    if (requiresFaceletDynamicRefresh)
+                    {
+                        FaceletViewDeclarationLanguageBase.dynamicComponentNeedsRefresh(context);
+                    }
                 }
                 else if (createdComponent.isTransient())
                 {
                     // Just transient markup inside. It is necessary to wrap
                     // that content into a component. Requires refresh. No need to
-                    // save MARK_CREATED.
+                    // save MARK_CREATED. No requires dynamic refresh.
                     createdComponent = tempParent;
                     tempParent.getAttributes().put("oam.vf.DYN_WRAPPER", baseKey);
-                    createdComponent.subscribeToEvent(PostRestoreStateEvent.class, new 
-                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                    requiresRefresh = true;
                 }
                 else
                 {
@@ -2870,6 +2917,23 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // tree, it will be saved and restored as if was a programatically
                     // added component.
                     createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                }
+                if (requiresRefresh)
+                {
+                    createdComponent.subscribeToEvent(PostRestoreStateEvent.class, new 
+                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                }
+                if (requiresDynamicRefresh)
+                {
+                    createdComponent.subscribeToEvent(DynamicComponentRefreshTransientBuildEvent.class, new 
+                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                    createdComponent.getAttributes().put(
+                            DynamicComponentRefreshTransientBuildEvent.DYN_COMP_REFRESH_FLAG, Boolean.TRUE);
+                }
+                if (requiresFaceletDynamicRefresh)
+                {
+                    createdComponent.subscribeToEvent(FaceletDynamicComponentRefreshTransientBuildEvent.class, new 
+                        RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
                 }
             }
         }

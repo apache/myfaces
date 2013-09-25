@@ -30,6 +30,7 @@ import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CheckActionEventBean;
+import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
 import org.junit.Assert;
 import org.junit.Test;
@@ -994,6 +995,74 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 
         tearDownRequest();
     }
+    
+    @Test
+    public void testAddSimpleCCVDL7() throws Exception
+    {
+        setupRequest("/addSimpleCCVDL7.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
+        Assert.assertEquals(1, comp.getChildCount());
+        UIComponent wrapper = comp.getChildren().get(0);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        //Assert.assertEquals("Dynamically added header", 
+        //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
+        String content1 = new String(writer1.content());
+        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
+        int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
+        int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
+        Assert.assertNotSame(-1, indexDynHeader1_1);
+        Assert.assertNotSame(-1, indexDynHeader1_2);
+        Assert.assertNotSame(-1, indexDynHeader1_3);
+        
+        Assert.assertFalse(content1.contains("This is section 1"));
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        processLifecycleExecute();
+
+        CustomSessionBean sessionBean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{customSessionBean}", CustomSessionBean.class);
+        // Here we change the value to show the section 1 part. If the refresh algorithm works, 
+        // this part should be rendered
+        sessionBean.setShowSection1(true);
+
+        processRender();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:component");
+        Assert.assertEquals(1, comp.getChildCount());
+        wrapper = comp.getChildren().get(0);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        //Assert.assertEquals("Dynamically added header", 
+        //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));        
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
+        String content2 = new String(writer2.content());
+        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        int indexDynHeader1 = content2.indexOf("Start Dynamic Header");
+        int indexDynHeader2 = content2.indexOf("Dynamically added header", indexDynHeader1);
+        int indexDynHeader3 = content2.indexOf("End Dynamic Header", indexDynHeader2);
+        Assert.assertNotSame(-1, indexDynHeader1);
+        Assert.assertNotSame(-1, indexDynHeader2);
+        Assert.assertNotSame(-1, indexDynHeader3);
+        
+        Assert.assertTrue(content2.contains("This is section 1"));
+
+        tearDownRequest();
+    }
+
 
     @Test
     public void testComponentBindingVDL_1() throws Exception
@@ -1020,7 +1089,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         submit(button);
-        processLifecycleExecuteAndRender();
+        processLifecycleExecute();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
         
@@ -1038,6 +1107,9 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("Dynamically added header", 
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
         Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        
+        processRender();
+        
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
         Assert.assertTrue(content2.contains("Dynamically added markup"));
@@ -1558,4 +1630,115 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         
         tearDownRequest();
     }
+    
+    @Test
+    public void testComponentBindingVDL_7() throws Exception
+    {
+        setupRequest("/componentBindingVDL_7.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(2, comp.getChildCount());
+
+        UIComponent wrapper = comp.getChildren().get(1);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        UIComponent ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        //Assert.assertEquals("Dynamically added header", 
+        //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
+        String content1 = new String(writer1.content());
+        Assert.assertTrue(content1.contains("Dynamically added markup"));
+        int indexDynHeader1_1 = content1.indexOf("Start Dynamic Header");
+        int indexDynHeader1_2 = content1.indexOf("Dynamically added header", indexDynHeader1_1);
+        int indexDynHeader1_3 = content1.indexOf("End Dynamic Header", indexDynHeader1_2);
+        Assert.assertNotSame(-1, indexDynHeader1_1);
+        Assert.assertNotSame(-1, indexDynHeader1_2);
+        Assert.assertNotSame(-1, indexDynHeader1_3);
+        
+        Assert.assertFalse(content1.contains("This is section 1"));
+
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        processLifecycleExecute();
+        
+        CustomSessionBean sessionBean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{customSessionBean}", CustomSessionBean.class);
+        // Here we change the value to show the section 1 part. If the refresh algorithm works, 
+        // this part should be rendered
+        sessionBean.setShowSection1(true);
+        
+        processRender();
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(2, comp.getChildCount());
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        
+        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        
+        wrapper = comp.getChildren().get(1);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        //Assert.assertEquals("Dynamically added header", 
+        //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
+        String content2 = new String(writer2.content());
+        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        int indexDynHeader2_1 = content2.indexOf("Start Dynamic Header");
+        int indexDynHeader2_2 = content2.indexOf("Dynamically added header", indexDynHeader2_1);
+        int indexDynHeader2_3 = content2.indexOf("End Dynamic Header", indexDynHeader2_2);
+        Assert.assertNotSame(-1, indexDynHeader2_1);
+        Assert.assertNotSame(-1, indexDynHeader2_2);
+        Assert.assertNotSame(-1, indexDynHeader2_3);
+        
+        Assert.assertTrue(content2.contains("This is section 1"));
+        
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        processLifecycleExecute();
+        
+        sessionBean.setShowSection1(false);
+        
+        processRender();
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(2, comp.getChildCount());
+
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        
+        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        
+        wrapper = comp.getChildren().get(1);
+        Assert.assertNotNull(wrapper);
+        Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
+        ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+        Assert.assertNotNull(ccContent);
+        Assert.assertEquals(3, ccContent.getChildCount());
+        //Assert.assertEquals("Dynamically added header", 
+        //    ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
+        Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
+        MockPrintWriter writer3 = (MockPrintWriter) response.getWriter();
+        String content3 = new String(writer3.content());
+        Assert.assertTrue(content3.contains("Dynamically added markup"));
+        int indexDynHeader3_1 = content3.indexOf("Start Dynamic Header");
+        int indexDynHeader3_2 = content3.indexOf("Dynamically added header", indexDynHeader3_1);
+        int indexDynHeader3_3 = content3.indexOf("End Dynamic Header", indexDynHeader3_2);
+        Assert.assertNotSame(-1, indexDynHeader3_1);
+        Assert.assertNotSame(-1, indexDynHeader3_2);
+        Assert.assertNotSame(-1, indexDynHeader3_3);
+        
+        Assert.assertFalse(content3.contains("This is section 1"));
+
+        tearDownRequest();
+    }
+
 }

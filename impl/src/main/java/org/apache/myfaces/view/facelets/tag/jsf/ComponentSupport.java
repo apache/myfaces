@@ -43,6 +43,7 @@ import org.apache.myfaces.view.facelets.ComponentState;
 import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
 
 /**
  * 
@@ -629,6 +630,11 @@ public final class ComponentSupport
         {
             FaceletViewDeclarationLanguage.cleanTransientBuildOnRestore(context);
         }
+    }
+    
+    public static void markComponentToRefreshDynamically(FacesContext context, UIComponent component)
+    {
+        FaceletViewDeclarationLanguageBase.dynamicComponentNeedsRefresh(context);
     }
     
     public static UIComponent findComponentChildOrFacetFrom(FacesContext facesContext, UIComponent parent, String expr)

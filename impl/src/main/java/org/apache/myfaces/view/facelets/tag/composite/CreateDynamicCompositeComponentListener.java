@@ -28,8 +28,13 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.view.facelets.Facelet;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
+import org.apache.myfaces.view.facelets.DynamicComponentRefreshTransientBuildEvent;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.FaceletDynamicComponentRefreshTransientBuildEvent;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
+import org.apache.myfaces.view.facelets.compiler.RefreshDynamicComponentListener;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -139,6 +144,26 @@ public class CreateDynamicCompositeComponentListener
                     finally
                     {
                         component.getAttributes().put(ComponentSupport.MARK_CREATED, null);
+                    }
+                }
+                
+                if (FaceletViewDeclarationLanguageBase.isDynamicComponentNeedsRefresh(facesContext))
+                {
+                    FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(facesContext);
+                    if (fcc == null)
+                    {
+                        FaceletViewDeclarationLanguageBase.activateDynamicComponentRefreshTransientBuild(facesContext);
+                        FaceletViewDeclarationLanguageBase.resetDynamicComponentNeedsRefreshFlag(facesContext);
+                        component.subscribeToEvent(DynamicComponentRefreshTransientBuildEvent.class, new 
+                            RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
+                        component.getAttributes().put(
+                            DynamicComponentRefreshTransientBuildEvent.DYN_COMP_REFRESH_FLAG, Boolean.TRUE);
+
+                    }
+                    else
+                    {
+                        component.subscribeToEvent(FaceletDynamicComponentRefreshTransientBuildEvent.class, new 
+                            RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
                     }
                 }
             }

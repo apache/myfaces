@@ -259,5 +259,9 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
+        if (!src.isLiteral() && fcc.isDynamicComponentSection())
+        {
+            ComponentSupport.markComponentToRefreshDynamically(ctx.getFacesContext(), parent);
+        }
     }
 }

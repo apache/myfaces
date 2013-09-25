@@ -206,6 +206,10 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
+        if (fcc.isDynamicComponentSection())
+        {
+            ComponentSupport.markComponentToRefreshDynamically(ctx.getFacesContext(), parent);
+        }
     }
     
     private Integer getSavedOption(FaceletContext ctx, FaceletCompositionContext fcc,

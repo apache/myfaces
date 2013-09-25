@@ -21,10 +21,12 @@ package org.apache.myfaces.view.facelets;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.faces.FactoryFinder;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
+import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
@@ -662,5 +664,22 @@ abstract public class FaceletCompositionContext
     
     public void setDynamicComponentTopLevel(boolean value)
     {
+    }
+    
+    /**
+     * Indicate if the current facelet section is a dynamic component section,
+     * which means it was added to the component tree using vdl.createComponent(...);
+     * 
+     * @since 2.2
+     * @return 
+     */
+    public boolean isDynamicComponentSection()
+    {
+        return false;
+    }
+    
+    public VisitContextFactory getVisitContextFactory()
+    {
+        return (VisitContextFactory)FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
     }
 }

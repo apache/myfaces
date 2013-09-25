@@ -24,10 +24,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.faces.FactoryFinder;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
+import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
@@ -152,6 +154,11 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private boolean _dynamicComponentHandler;
     private boolean _oldRefreshingTransientBuild;
     private boolean _dynamicComponentTopLevel;
+    private int _dynamicComponentSection = 0;
+    
+    private List<Integer> _dynamicOldDeletionLevel;
+    
+    private VisitContextFactory _visitContextFactory = null;
     
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
@@ -209,6 +216,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
         _dynamicComponentTopLevel = true;
+        _dynamicComponentSection = 1;
     }
     
     
@@ -277,6 +285,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sectionUniqueComponentNormalIdCounter = null;
         _sectionUniqueComponentMetadataIdCounter = null;
         _sharedStringBuilder = null;
+        _visitContextFactory = null;
+        _dynamicOldDeletionLevel = null;
     }
    
     @Override
@@ -1136,11 +1146,30 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
         _dynamicComponentTopLevel = true;
+        _dynamicComponentSection++;
+        if (_dynamicOldDeletionLevel == null)
+        {
+            _dynamicOldDeletionLevel = new ArrayList<Integer>(4);
+        }
+        _dynamicOldDeletionLevel.add(_deletionLevel);
+        // Increase one level in the mark/delete algorithm to avoid any interference in the previous code.
+        increaseComponentLevelMarkedForDeletion();
+        
     }
 
     @Override
     public void popDynamicComponentSection()
     {
+        decreaseComponentLevelMarkedForDeletion();
+        int oldDeletionLevel = _dynamicOldDeletionLevel.remove(_dynamicOldDeletionLevel.size()-1);
+        if (_deletionLevel != oldDeletionLevel)
+        {
+            // This happens because in a dynamic component section, the dynamic top component level does not take
+            // part in the algorithm. The easiest solution so far is just decrease one level to let it as it was
+            // before enter the algorithm.
+            decreaseComponentLevelMarkedForDeletion();
+        }
+        
         _sectionUniqueIdCounter = _sectionUniqueIdCounterStack.remove(
             _sectionUniqueIdCounterStack.size()-1);
         _sectionUniqueComponentIdCounter = _sectionUniqueComponentIdCounterStack.remove(
@@ -1155,16 +1184,46 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
         _dynamicComponentTopLevel = false;
+        _dynamicComponentSection--;
     }
     
+    @Override
     public boolean isDynamicComponentTopLevel()
     {
         return _dynamicComponentTopLevel;
     }
     
+    @Override
     public void setDynamicComponentTopLevel(boolean value)
     {
         _dynamicComponentTopLevel = value;
+    }
+    
+    @Override
+    public boolean isDynamicComponentSection()
+    {
+        return _dynamicComponentSection > 0;
+    }
+    
+    @Override
+    public VisitContextFactory getVisitContextFactory()
+    {
+        if (_visitContextFactory == null)
+        {
+            // Store it in application map improve performance because it avoids FactoryFinde.getFactory(...) call
+            // which has synchronized blocks.
+            _visitContextFactory = (VisitContextFactory) _facesContext.getExternalContext().
+                    getApplicationMap().get("oam.vf.VisitContextFactory");
+            if (_visitContextFactory == null)
+            {
+                VisitContextFactory factory = (VisitContextFactory) 
+                        FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+                _facesContext.getExternalContext().
+                        getApplicationMap().put("oam.vf.VisitContextFactory", factory);
+                _visitContextFactory = factory;
+            }
+        }
+        return _visitContextFactory;
     }
     
     private static class KeyEntryIterator<K, V> implements Iterator<K>

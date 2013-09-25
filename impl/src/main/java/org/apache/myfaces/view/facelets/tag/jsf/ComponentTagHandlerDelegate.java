@@ -19,9 +19,12 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +38,10 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehaviorHolder;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
@@ -53,6 +60,9 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ComponentState;
 import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
+import org.apache.myfaces.view.facelets.FaceletDynamicComponentRefreshTransientBuildEvent;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
@@ -70,6 +80,9 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 {
     private final static Logger log = Logger.getLogger(ComponentTagHandlerDelegate.class.getName());
+    
+    private static final Set<VisitHint> VISIT_HINTS_DYN_REFRESH = Collections.unmodifiableSet( 
+            EnumSet.of(VisitHint.SKIP_ITERATION));
 
     private final ComponentHandler _delegate;
 
@@ -225,6 +238,16 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         if (c != null)
         {
             componentFound = true;
+            // Check if the binding needs dynamic refresh and if that so, invoke the refresh from this location, to
+            // preserve the same context
+            if (_delegate.getBinding() != null &&
+                c.getAttributes().containsKey(
+                    FaceletDynamicComponentRefreshTransientBuildEvent.DYNAMIC_COMPONENT_BINDING_NEEDS_REFRESH))
+            {
+                VisitContext visitContext = (VisitContext) mctx.getVisitContextFactory().
+                    getVisitContext(facesContext, null, VISIT_HINTS_DYN_REFRESH);
+                c.visitTree(visitContext, new PublishFaceletDynamicComponentRefreshTransientBuildCallback());
+            }
             
             mctx.incrementUniqueComponentId();
             
@@ -486,6 +509,29 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     // and this ensures stability of the generated ids.
                     c.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
                                           ComponentState.REMOVE_ADD);
+                    
+                    if (FaceletViewDeclarationLanguageBase.isDynamicComponentNeedsRefresh(ctx.getFacesContext()))
+                    {
+                        FaceletViewDeclarationLanguageBase.resetDynamicComponentNeedsRefreshFlag(
+                                ctx.getFacesContext());
+                        FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
+                        if (mctx.isUsingPSSOnThisView())
+                        {
+                            FaceletViewDeclarationLanguage.cleanTransientBuildOnRestore(faces);
+                        }
+                        else
+                        {
+                            FaceletViewDeclarationLanguageBase.activateDynamicComponentRefreshTransientBuild(faces);
+                        }
+                        //
+                        // Mark top binding component to be dynamically refreshed. In that way, facelets algorithm
+                        // will be able to decide if the component children requires to be refreshed dynamically 
+                        // or not.
+                        c.getAttributes().put(
+                                FaceletDynamicComponentRefreshTransientBuildEvent.
+                                    DYNAMIC_COMPONENT_BINDING_NEEDS_REFRESH,
+                                Boolean.TRUE);
+                    }
                 }
             }
         }
@@ -863,5 +909,16 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
         // By default, all default validators should be added
         return true;
+    }
+    
+    private static class PublishFaceletDynamicComponentRefreshTransientBuildCallback implements VisitCallback
+    {
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            context.getFacesContext().getApplication().publishEvent(
+                    context.getFacesContext(), FaceletDynamicComponentRefreshTransientBuildEvent.class, 
+                    target.getClass(), target);
+            return VisitResult.ACCEPT;
+        }
     }
 }

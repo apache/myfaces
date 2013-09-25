@@ -152,5 +152,9 @@ public final class IfHandler extends TagHandler implements ComponentContainerHan
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
         }
+        if (fcc.isDynamicComponentSection())
+        {
+            ComponentSupport.markComponentToRefreshDynamically(ctx.getFacesContext(), parent);
+        }
     }
 }
