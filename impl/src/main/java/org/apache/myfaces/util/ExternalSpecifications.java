@@ -45,6 +45,7 @@ public final class ExternalSpecifications
     private static volatile Boolean beanValidationAvailable;
     private static volatile Boolean unifiedELAvailable;
     private static volatile Boolean cdiAvailable;
+    private static volatile Boolean el3Available;
 
     /**
      * This method determines if Bean Validation is present.
@@ -161,6 +162,23 @@ public final class ExternalSpecifications
             }
             return cdiAvailable;
         }
+    }
+    
+    public static boolean isEL3Available()
+    {
+        if (el3Available == null)
+        {
+            try
+            {
+                el3Available = Class.forName("javax.el.StaticFieldELResolver") != null ;
+            }
+            catch (Throwable t)
+            {
+                el3Available = false;
+            }
+            log.info("MyFaces EL 3.0 support " + (el3Available ? "enabled" : "disabled"));
+        }
+        return el3Available;
     }
 
     /**

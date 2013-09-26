@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.el.unified;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
@@ -38,6 +41,7 @@ import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceResolver;
 import org.apache.myfaces.el.unified.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  * Create the el resolver for faces. see 1.2 spec section 5.6.2
@@ -47,6 +51,34 @@ import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResol
  */
 public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELResolverBuilder
 {
+    private static final Class STATIC_FIELD_EL_RESOLVER_CLASS;
+    private static final Method GET_STREAM_EL_RESOLVER_METHOD;
+    
+    static
+    {
+        Class staticFieldELResolverClass = null;
+        Method getStreamELResolverMethod = null;
+        try
+        {
+            staticFieldELResolverClass = ClassUtils.classForName("javax.el.StaticFieldELResolver");
+            getStreamELResolverMethod = ExpressionFactory.class.getMethod("getStreamELResolver");
+        }
+        catch (NoSuchMethodException ex)
+        {
+            //No op
+        }
+        catch (SecurityException ex)
+        {
+            //No op
+        }
+        catch (ClassNotFoundException ex)
+        {
+            //No op
+        }
+        STATIC_FIELD_EL_RESOLVER_CLASS = staticFieldELResolverClass;
+        GET_STREAM_EL_RESOLVER_METHOD = getStreamELResolverMethod;
+    }
+    
     public ResolverBuilderForFaces(RuntimeConfig config)
     {
         super(config);
@@ -69,6 +101,36 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         list.add(new ResourceResolver());
         list.add(new ResourceBundleELResolver());
         list.add(new ResourceBundleResolver());
+        
+        if (STATIC_FIELD_EL_RESOLVER_CLASS != null &&
+            GET_STREAM_EL_RESOLVER_METHOD != null)
+        {
+            try
+            {
+                ELResolver streamElResolver = (ELResolver) GET_STREAM_EL_RESOLVER_METHOD.invoke(
+                        getRuntimeConfig().getExpressionFactory());
+                if (streamElResolver != null)
+                {
+                    // By default return null, but in a EL 3 implementation it should be there,
+                    // this is just to avoid exceptions in junit testing
+                    list.add(streamElResolver);
+                }
+                list.add((ELResolver) STATIC_FIELD_EL_RESOLVER_CLASS.newInstance());
+            } 
+            catch (IllegalAccessException ex)
+            {
+            }
+            catch (IllegalArgumentException ex)
+            {
+            }
+            catch (InvocationTargetException ex)
+            {
+            }
+            catch (InstantiationException ex)
+            {
+            }
+        }
+        
         list.add(new MapELResolver());
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());

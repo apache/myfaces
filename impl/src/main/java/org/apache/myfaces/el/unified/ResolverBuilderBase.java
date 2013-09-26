@@ -216,4 +216,8 @@ public class ResolverBuilderBase
         return new PropertyResolverToELResolver(resolver);
     }
 
+    protected RuntimeConfig getRuntimeConfig()
+    {
+        return _config;
+    }
 }
