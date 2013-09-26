@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import java.util.Locale;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,6 +27,7 @@ import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.view.ViewMetadata;
+import org.apache.myfaces.view.facelets.bean.ViewBean;
 
 /**
  * Test cases for FaceletViewDeclarationLanguage.
@@ -69,4 +71,26 @@ public class FaceletViewDeclarationLanguageTest extends FaceletTestCase
         Assert.assertTrue(viewParameter instanceof UIViewParameter);
     }
 
+    @Test
+    public void testBuildViewUIViewParametersLocale() throws Exception
+    {
+        request.setAttribute("viewBean", new ViewBean());
+        
+        // build a UIViewRoot with a UIViewParameter
+        ViewMetadata viewMetadata = this.vdl.getViewMetadata(facesContext, "viewparameter2.xhtml");
+        UIViewRoot root = viewMetadata.createMetadataView(facesContext);
+        facesContext.setViewRoot(root);
+
+        // UIViewParameter must be there
+        checkUIViewParameter(root);
+        
+        Assert.assertEquals(Locale.FRANCE, root.getLocale());
+
+        // build and render view (must not remove UIViewParameter)
+        vdl.buildView(facesContext, root, "viewparameter2.xhtml");
+        vdl.renderView(facesContext, root);
+
+        // UIViewParameter must still be there, because its value is saved in the state!
+        checkUIViewParameter(root);
+    }
 }
