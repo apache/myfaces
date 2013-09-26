@@ -131,9 +131,12 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
      * traversal is done, instead a plain traversal like previous versions (2.0.7/2.1.1 and earlier) of MyFaces Core.
      * 
      * This param is just provided to preserve backwards behavior. 
+     * @deprecated JSF 2.2 change enforces tree visiting as the preferred way. Performance tests shows that plain
+     * visit is faster but the difference is negligible.
      */
+    @Deprecated
     @JSFWebConfigParam(since="2.0.8, 2.1.2", defaultValue="true", expectedValues="true, false",
-                       group="state", tags="performance")
+                       group="state", tags="performance", deprecated=true)
     public static final String SAVE_STATE_WITH_VISIT_TREE_ON_PSS
             = "org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS";
     
@@ -180,8 +183,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private RenderKitFactory _renderKitFactory = null;
     
     private VisitContextFactory _visitContextFactory = null;
-    
-    private Boolean _saveStateWithVisitTreeOnPSS;
     
     private String _checkIdsProductionMode;
     
@@ -637,14 +638,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     //Do not save on UIViewRoot
                     view.getAttributes().remove(ComponentSupport.FACELET_STATE_INSTANCE);
                 }
-                if (isSaveStateWithVisitTreeOnPSS(context))
-                {
-                    saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
-                }
-                else
-                {
-                    saveStateOnMap(context,(Map<String,Object>) states, view);
-                }
+                saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
                 
                 if ( ((Map<String,Object>)states).isEmpty())
                 {
@@ -849,17 +843,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         setClientsIdsAdded(uiViewRoot, clientIdsAdded);
     }
 
-    public boolean isSaveStateWithVisitTreeOnPSS(FacesContext facesContext)
-    {
-        if (_saveStateWithVisitTreeOnPSS == null)
-        {
-            _saveStateWithVisitTreeOnPSS
-                    = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    SAVE_STATE_WITH_VISIT_TREE_ON_PSS, Boolean.TRUE);
-        }
-        return Boolean.TRUE.equals(_saveStateWithVisitTreeOnPSS);
-    }
-
     private void saveStateOnMapVisitTree(final FacesContext facesContext, final Map<String,Object> states,
             final UIViewRoot uiViewRoot)
     {
@@ -975,123 +958,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
         }
     }
-
-    private void saveStateOnMap(final FacesContext context, final Map<String,Object> states,
-            final UIComponent component)
-    {
-        ComponentState componentAddedAfterBuildView = null;
-        try
-        {
-            component.pushComponentToEL(context, component);
-            
-            //Scan children
-            if (component.getChildCount() > 0)
-            {
-                List<UIComponent> children  = component.getChildren();
-                for (int i = 0; i < children.size(); i++)
-                {
-                    UIComponent child = children.get(i);
-                    if (child != null && !child.isTransient())
-                    {
-                        componentAddedAfterBuildView
-                                = (ComponentState) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
-                        if (componentAddedAfterBuildView != null)
-                        {
-                            if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
-                            {
-                                registerOnAddRemoveList(context, child.getClientId(context));
-                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
-                            }
-                            else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
-                            {
-                                registerOnAddList(context, child.getClientId(context));
-                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
-                            }
-                            else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
-                            {
-                                registerOnAddList(context, child.getClientId(context));
-                            }
-                            ensureClearInitialState(child);
-                            //Save all required info to restore the subtree.
-                            //This includes position, structure and state of subtree
-                            states.put(child.getClientId(context), new AttachedFullStateWrapper( 
-                                    new Object[]{
-                                        component.getClientId(context),
-                                        null,
-                                        i,
-                                        internalBuildTreeStructureToSave(child),
-                                        child.processSaveState(context)}));
-                        }
-                        else
-                        {
-                            saveStateOnMap( context, states, child);
-                        }
-                    }
-                }
-            }
-    
-            //Scan facets
-            
-            if (component.getFacetCount() > 0)
-            {
-                Map<String, UIComponent> facetMap = component.getFacets();
-                
-                for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
-                {
-                    UIComponent child = entry.getValue();
-                    if (child != null && !child.isTransient())
-                    {
-                        String facetName = entry.getKey();
-                        componentAddedAfterBuildView
-                                = (ComponentState) child.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
-                        if (componentAddedAfterBuildView != null)
-                        {
-                            if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
-                            {
-                                registerOnAddRemoveList(context, child.getClientId(context));
-                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
-                            }
-                            else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
-                            {
-                                registerOnAddList(context, child.getClientId(context));
-                                child.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
-                            }
-                            else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
-                            {
-                                registerOnAddList(context, child.getClientId(context));
-                            }
-                            //Save all required info to restore the subtree.
-                            //This includes position, structure and state of subtree
-                            ensureClearInitialState(child);
-                            states.put(child.getClientId(context),new AttachedFullStateWrapper(new Object[]{
-                                component.getClientId(context),
-                                facetName,
-                                null,
-                                internalBuildTreeStructureToSave(child),
-                                child.processSaveState(context)}));
-                        }
-                        else
-                        {
-                            saveStateOnMap( context, states, child);
-                        }
-                    }
-                }
-            }
-            
-            //Save state        
-            Object savedState = component.saveState(context);
-            
-            //Only save if the value returned is null
-            if (savedState != null)
-            {
-                states.put(component.getClientId(context), savedState);            
-            }
-        }
-        finally
-        {
-            component.popComponentFromEL(context);
-        }
-    }
     
     protected void ensureClearInitialState(UIComponent c)
     {
@@ -1118,42 +984,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         PostAddPreRemoveFromViewListener componentListener = new PostAddPreRemoveFromViewListener();
         uiViewRoot.subscribeToViewEvent(PostAddToViewEvent.class, componentListener);
         uiViewRoot.subscribeToViewEvent(PreRemoveFromViewEvent.class, componentListener);
-    }
-    
-    private void checkIds (FacesContext context, UIComponent component, Set<String> existingIds)
-    {
-        String id;
-        Iterator<UIComponent> children;
-        
-        if (component == null)
-        {
-            return;
-        }
-        
-        // Need to use this form of the client ID method so we generate the client-side ID.
-        
-        id = component.getClientId (context);
-        
-        if (existingIds.contains (id))
-        {
-            throw new IllegalStateException ("component with duplicate id \"" + id + "\" found");
-        }
-        
-        existingIds.add (id);
-        
-        int facetCount = component.getFacetCount();
-        if (facetCount > 0)
-        {
-            for (UIComponent facet : component.getFacets().values())
-            {
-                checkIds (context, facet, existingIds);
-            }
-        }
-        for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
-        {
-            UIComponent child = component.getChildren().get(i);
-            checkIds (context, child, existingIds);
-        }
     }
     
     protected RenderKitFactory getRenderKitFactory()
