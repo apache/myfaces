@@ -331,10 +331,17 @@ public final class SAXCompiler extends Compiler
             {
                 this.unit.popTag();
             }
-            if (CoreLibrary.Namespace.equals(uri) && "metadata".equals(localName))
+            if ( CoreLibrary.Namespace.equals(uri) )
             {
-                this.inMetadata=false;
-            }            
+                if ("metadata".equals(localName))
+                {
+                    this.inMetadata=false;
+                }
+                else if (!inMetadata && "view".equals(localName))
+                {
+                    this.unit.popTag();
+                }
+            }
         }
 
         public void endEntity(String name) throws SAXException
@@ -403,9 +410,16 @@ public final class SAXCompiler extends Compiler
 
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-            if (CoreLibrary.Namespace.equals(uri) && "metadata".equals(localName))
+            if ( CoreLibrary.Namespace.equals(uri) )
             {
-                this.inMetadata=true;
+                if ("metadata".equals(localName))
+                {
+                    this.inMetadata=true;
+                }
+                else if (!inMetadata && "view".equals(localName))
+                {
+                    this.unit.pushTag(new Tag(this.createLocation(), uri, localName, qName, this.createAttributes(attributes)));
+                }
             }
             if (inMetadata)
             {
