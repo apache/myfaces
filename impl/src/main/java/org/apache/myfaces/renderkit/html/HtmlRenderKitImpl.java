@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.ProjectStage;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseStream;
@@ -345,9 +346,19 @@ public class HtmlRenderKitImpl extends RenderKit
             characterEncoding = HtmlRendererUtils.DEFAULT_CHAR_ENCODING;
         }
 
-        return new HtmlResponseWriterImpl(writer, selectedContentType, characterEncoding, 
+        if (myfacesConfig.isEarlyFlushEnabled() &&
+                facesContext.isProjectStage(ProjectStage.Production))
+        {
+            return new EarlyFlushHtmlResponseWriterImpl(writer, selectedContentType, characterEncoding, 
                 myfacesConfig.isWrapScriptContentWithXmlCommentTag(),
                         writerContentType);
+        }
+        else
+        {
+            return new HtmlResponseWriterImpl(writer, selectedContentType, characterEncoding, 
+                myfacesConfig.isWrapScriptContentWithXmlCommentTag(),
+                        writerContentType);
+        }
     }
 
     @Override

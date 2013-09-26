@@ -1183,4 +1183,14 @@ public class HtmlResponseWriterImpl
         }
         return _facesContext;
     }
+    
+    protected boolean getWrapScriptContentWithXmlCommentTag()
+    {
+        return _wrapScriptContentWithXmlCommentTag;
+    }
+    
+    protected void forceFlush() throws IOException
+    {
+        _currentWriter.flush();
+    }
 }

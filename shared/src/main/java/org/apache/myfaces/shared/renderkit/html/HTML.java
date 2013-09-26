@@ -506,6 +506,9 @@ public interface HTML
             UL_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES);
 
+    //head
+    String HEAD_ELEM = "head";
+    
     //body
     String BODY_ELEM = "body";
     String BODY_TARGET = BODY_ELEM;

@@ -161,7 +161,10 @@ public final class StateWriter extends Writer
 
     public void flush() throws IOException
     {
-        // do nothing
+        if (!this.writtenState)
+        {
+            this.out.flush();
+        }
     }
 
     public void write(char[] cbuf, int off, int len) throws IOException
