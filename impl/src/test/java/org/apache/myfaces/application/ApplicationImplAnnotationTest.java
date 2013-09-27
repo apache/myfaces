@@ -29,12 +29,16 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
+import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.ListenerFor;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
+import javax.faces.render.RendererWrapper;
 
 import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -139,10 +143,78 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     @ListenerFor(systemEventClass=PostAddToViewEvent.class,
             sourceClass=UIComponentBase.class)
     @ResourceDependency(library = "testLib", name = "testResource.js")
-    public static class TestRendererA extends Renderer
+    public static class TestRendererA extends Renderer implements ComponentSystemEventListener
     {
-
+        public void processEvent(ComponentSystemEvent event)
+        {
+            FacesContext.getCurrentInstance().getAttributes().put("oam.test.TestRendererA", Boolean.TRUE);
+        }
     }
+    
+    public static class FakeTestRendererWrapper extends RendererWrapper implements ComponentSystemEventListener
+    {
+        private Renderer delegate;
+        
+        public FakeTestRendererWrapper(Renderer delegate)
+        {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Renderer getWrapped()
+        {
+            return delegate;
+        }
+
+        public void processEvent(ComponentSystemEvent event)
+        {
+            // Note there is no @ListenerFor annotation, so this should not happen, but the interesting thing
+            // here is the wrapper should not stop an inner renderer to be notified about an event. So, if
+            // the delegate renderer implements ComponentSystemEventListener and has @ListenerFor annotations,
+            // it should be notified anyway
+            FacesContext.getCurrentInstance().getAttributes().put("oam.test.FakeTestRendererWrapper", Boolean.TRUE);
+        }
+    }
+    
+    @ListenerFor(systemEventClass=PostAddToViewEvent.class,
+            sourceClass=UIComponentBase.class)
+    public static class TestRendererWrapper extends RendererWrapper implements ComponentSystemEventListener
+    {
+        private Renderer delegate;
+        
+        public TestRendererWrapper(Renderer delegate)
+        {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Renderer getWrapped()
+        {
+            return delegate;
+        }
+
+        public void processEvent(ComponentSystemEvent event)
+        {
+            FacesContext.getCurrentInstance().getAttributes().put("oam.test.TestRendererWrapper", Boolean.TRUE);
+        }
+    }
+    
+    public static class TestRendererWrapper2 extends RendererWrapper
+    {
+        private Renderer delegate;
+        
+        public TestRendererWrapper2(Renderer delegate)
+        {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Renderer getWrapped()
+        {
+            return delegate;
+        }
+    }
+
 
     @Test
     public void testCreateComponentRenderer() throws Exception
@@ -165,6 +237,245 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         Map<String,Object> attrMap = componentResources.get(0).getAttributes();
         Assert.assertEquals("testResource.js",attrMap.get("name"));
         Assert.assertEquals("testLib",attrMap.get("library"));
+    }
+    
+    /**
+     * This test has a RendererWrapper that implement ComponentSystemEventListener, but it does not
+     * have a @ListenerFor annotation, in this case the listener that receive the event is the 
+     * inner renderer, and the outer wrapper should not be notified about the event
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testCreateComponentRendererWrapper1() throws Exception
+    {
+        facesContext.getViewRoot().setRenderKitId(
+                MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
+        facesContext.getRenderKit().addRenderer(
+                UITestComponentA.COMPONENT_FAMILY,
+                UITestComponentA.DEFAULT_RENDERER_TYPE, new FakeTestRendererWrapper(new TestRendererA()));
+
+        application.addComponent(UITestComponentA.COMPONENT_TYPE,
+                UITestComponentA.class.getName());
+        
+        UITestComponentA comp = (UITestComponentA) application.createComponent(facesContext, 
+                UITestComponentA.COMPONENT_TYPE,
+                UITestComponentA.DEFAULT_RENDERER_TYPE);
+        
+        List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
+        Assert.assertEquals(1,componentResources.size());
+        Map<String,Object> attrMap = componentResources.get(0).getAttributes();
+        Assert.assertEquals("testResource.js",attrMap.get("name"));
+        Assert.assertEquals("testLib",attrMap.get("library"));
+        
+        // Invoke PostAddToViewEvent
+        facesContext.getViewRoot().getChildren().add(comp);
+        
+        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        
+        facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
+        facesContext.getAttributes().remove("oam.test.TestRendererA");
+        
+        facesContext.getViewRoot().pushComponentToEL(facesContext, facesContext.getViewRoot());
+        comp.pushComponentToEL(facesContext, comp);
+        Object state = comp.saveState(facesContext);
+        comp.popComponentFromEL(facesContext);
+        facesContext.getViewRoot().popComponentFromEL(facesContext);
+        
+        UITestComponentA comp2 = new UITestComponentA();
+        
+        facesContext.getViewRoot().pushComponentToEL(facesContext, facesContext.getViewRoot());
+        comp.pushComponentToEL(facesContext, comp);
+        comp2.restoreState(facesContext, state);
+        comp.popComponentFromEL(facesContext);
+        facesContext.getViewRoot().popComponentFromEL(facesContext);
+        
+        facesContext.getViewRoot().getChildren().clear();
+        
+        // Invoke PostAddToViewEvent
+        facesContext.getViewRoot().getChildren().add(comp2);
+        
+        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+    }
+    
+    /**
+     * This test has a RendererWrapper that does not implement ComponentSystemEventListener, in this case
+     * the listener is the wrapped Renderer (TestRendererA).
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testCreateComponentRendererWrapper2() throws Exception
+    {
+        facesContext.getViewRoot().setRenderKitId(
+                MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
+        facesContext.getRenderKit().addRenderer(
+                UITestComponentA.COMPONENT_FAMILY,
+                UITestComponentA.DEFAULT_RENDERER_TYPE, new TestRendererWrapper2(new TestRendererA()));
+
+        application.addComponent(UITestComponentA.COMPONENT_TYPE,
+                UITestComponentA.class.getName());
+        
+        UITestComponentA comp = (UITestComponentA) application.createComponent(facesContext, 
+                UITestComponentA.COMPONENT_TYPE,
+                UITestComponentA.DEFAULT_RENDERER_TYPE);
+        
+        List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
+        Assert.assertEquals(1,componentResources.size());
+        Map<String,Object> attrMap = componentResources.get(0).getAttributes();
+        Assert.assertEquals("testResource.js",attrMap.get("name"));
+        Assert.assertEquals("testLib",attrMap.get("library"));
+        
+        // Invoke PostAddToViewEvent
+        facesContext.getViewRoot().getChildren().add(comp);
+        
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        
+        facesContext.getAttributes().remove("oam.test.TestRendererA");
+        
+        facesContext.getViewRoot().pushComponentToEL(facesContext, facesContext.getViewRoot());
+        comp.pushComponentToEL(facesContext, comp);
+        Object state = comp.saveState(facesContext);
+        comp.popComponentFromEL(facesContext);
+        facesContext.getViewRoot().popComponentFromEL(facesContext);
+        
+        UITestComponentA comp2 = new UITestComponentA();
+        
+        facesContext.getViewRoot().pushComponentToEL(facesContext, facesContext.getViewRoot());
+        comp.pushComponentToEL(facesContext, comp);
+        comp2.restoreState(facesContext, state);
+        comp.popComponentFromEL(facesContext);
+        facesContext.getViewRoot().popComponentFromEL(facesContext);
+        
+        facesContext.getViewRoot().getChildren().clear();
+        
+        // Invoke PostAddToViewEvent
+        facesContext.getViewRoot().getChildren().add(comp2);
+        
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+    }
+    
+    /**
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testCreateComponentRendererWrapper3() throws Exception
+    {
+        facesContext.getViewRoot().setRenderKitId(
+                MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
+        facesContext.getRenderKit().addRenderer(
+                UITestComponentA.COMPONENT_FAMILY,
+                UITestComponentA.DEFAULT_RENDERER_TYPE, 
+                    new FakeTestRendererWrapper(new TestRendererWrapper2(new TestRendererA())));
+
+        application.addComponent(UITestComponentA.COMPONENT_TYPE,
+                UITestComponentA.class.getName());
+        
+        UITestComponentA comp = (UITestComponentA) application.createComponent(facesContext, 
+                UITestComponentA.COMPONENT_TYPE,
+                UITestComponentA.DEFAULT_RENDERER_TYPE);
+        
+        List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
+        Assert.assertEquals(1,componentResources.size());
+        Map<String,Object> attrMap = componentResources.get(0).getAttributes();
+        Assert.assertEquals("testResource.js",attrMap.get("name"));
+        Assert.assertEquals("testLib",attrMap.get("library"));
+        
+        // Invoke PostAddToViewEvent
+        facesContext.getViewRoot().getChildren().add(comp);
+        
+        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        
+        facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
+        facesContext.getAttributes().remove("oam.test.TestRendererA");
+        
+        facesContext.getViewRoot().pushComponentToEL(facesContext, facesContext.getViewRoot());
+        comp.pushComponentToEL(facesContext, comp);
+        Object state = comp.saveState(facesContext);
+        comp.popComponentFromEL(facesContext);
+        facesContext.getViewRoot().popComponentFromEL(facesContext);
+        
+        UITestComponentA comp2 = new UITestComponentA();
+        
+        facesContext.getViewRoot().pushComponentToEL(facesContext, facesContext.getViewRoot());
+        comp.pushComponentToEL(facesContext, comp);
+        comp2.restoreState(facesContext, state);
+        comp.popComponentFromEL(facesContext);
+        facesContext.getViewRoot().popComponentFromEL(facesContext);
+        
+        facesContext.getViewRoot().getChildren().clear();
+        
+        // Invoke PostAddToViewEvent
+        facesContext.getViewRoot().getChildren().add(comp2);
+        
+        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+    }
+    
+    /**
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testCreateComponentRendererWrapper4() throws Exception
+    {
+        facesContext.getViewRoot().setRenderKitId(
+                MockRenderKitFactory.HTML_BASIC_RENDER_KIT);
+        facesContext.getRenderKit().addRenderer(
+                UITestComponentA.COMPONENT_FAMILY,
+                UITestComponentA.DEFAULT_RENDERER_TYPE, 
+                    new TestRendererWrapper(new FakeTestRendererWrapper(
+                        new TestRendererWrapper2(new TestRendererA()))) );
+
+        application.addComponent(UITestComponentA.COMPONENT_TYPE,
+                UITestComponentA.class.getName());
+        
+        UITestComponentA comp = (UITestComponentA) application.createComponent(facesContext, 
+                UITestComponentA.COMPONENT_TYPE,
+                UITestComponentA.DEFAULT_RENDERER_TYPE);
+        
+        List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext, "head");
+        Assert.assertEquals(1,componentResources.size());
+        Map<String,Object> attrMap = componentResources.get(0).getAttributes();
+        Assert.assertEquals("testResource.js",attrMap.get("name"));
+        Assert.assertEquals("testLib",attrMap.get("library"));
+        
+        // Invoke PostAddToViewEvent
+        facesContext.getViewRoot().getChildren().add(comp);
+        
+        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
+        
+        facesContext.getAttributes().remove("oam.test.TestRendererWrapper");
+        facesContext.getAttributes().remove("oam.test.TestRendererA");
+        
+        facesContext.getViewRoot().pushComponentToEL(facesContext, facesContext.getViewRoot());
+        comp.pushComponentToEL(facesContext, comp);
+        Object state = comp.saveState(facesContext);
+        comp.popComponentFromEL(facesContext);
+        facesContext.getViewRoot().popComponentFromEL(facesContext);
+        
+        UITestComponentA comp2 = new UITestComponentA();
+        
+        facesContext.getViewRoot().pushComponentToEL(facesContext, facesContext.getViewRoot());
+        comp.pushComponentToEL(facesContext, comp);
+        comp2.restoreState(facesContext, state);
+        comp.popComponentFromEL(facesContext);
+        facesContext.getViewRoot().popComponentFromEL(facesContext);
+        
+        facesContext.getViewRoot().getChildren().clear();
+        
+        // Invoke PostAddToViewEvent
+        facesContext.getViewRoot().getChildren().add(comp2);
+        
+        Assert.assertFalse(facesContext.getAttributes().containsKey("oam.test.FakeTestRendererWrapper"));
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererWrapper"));
+        Assert.assertTrue(facesContext.getAttributes().containsKey("oam.test.TestRendererA"));
     }
 
     @ResourceDependency(name = "testResource.js")

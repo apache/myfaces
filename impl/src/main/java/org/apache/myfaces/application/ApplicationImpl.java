@@ -81,6 +81,7 @@ import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.flow.FlowHandler;
 import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.Renderer;
+import javax.faces.render.RendererWrapper;
 import javax.faces.validator.Validator;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.naming.Context;
@@ -2148,7 +2149,37 @@ public class ApplicationImpl extends Application
 
         _handleResourceDependencyAnnotations(context, inspectedClass, component, isProduction);
     }
-    
+
+    private void _handleRendererAnnotations(FacesContext context, Renderer inspected, UIComponent component)
+    {   
+        // determine the ProjectStage setting via the given FacesContext
+        // note that a local getProjectStage() could cause problems in wrapped environments
+        boolean isProduction = context.isProjectStage(ProjectStage.Production);
+        Renderer innerRenderer = inspected;
+        while (innerRenderer != null)
+        {
+            if (innerRenderer instanceof RendererWrapper)
+            {
+                Class<?> inspectedClass = innerRenderer.getClass();
+                _handleListenerForAnnotations(context, innerRenderer, inspectedClass, component, isProduction);
+
+                _handleResourceDependencyAnnotations(context, inspectedClass, component, isProduction);
+                
+                // get the inner wrapper
+                innerRenderer = ((RendererWrapper)innerRenderer).getWrapped();
+            }
+            else
+            {
+                Class<?> inspectedClass = innerRenderer.getClass();
+                _handleListenerForAnnotations(context, innerRenderer, inspectedClass, component, isProduction);
+
+                _handleResourceDependencyAnnotations(context, inspectedClass, component, isProduction);
+                
+                innerRenderer = null;
+            }
+        }
+    }
+
     private void _handleListenerForAnnotations(FacesContext context, Object inspected, Class<?> inspectedClass,
                                                UIComponent component, boolean isProduction)
     {
@@ -2473,7 +2504,7 @@ public class ApplicationImpl extends Application
              * except the Renderer for the component to be returned must be inspected for the annotations mentioned in
              * createComponent(ValueExpression, FacesContext, String) as specified in the documentation for that method.
              */
-            _handleAnnotations(context, renderer, component);
+            _handleRendererAnnotations(context, renderer, component);
         }
     }
 

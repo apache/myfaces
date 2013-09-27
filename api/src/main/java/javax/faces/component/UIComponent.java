@@ -54,6 +54,7 @@ import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.render.Renderer;
+import javax.faces.render.RendererWrapper;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -1501,6 +1502,7 @@ public abstract class UIComponent
         private boolean _initialStateMarked;
 
         private int listenerCapability;
+        private transient UIComponent _component;
 
         private static final int LISTENER_SAVE_STATE_HOLDER = 1;
         private static final int LISTENER_SAVE_PARTIAL_STATE_HOLDER = 2;
@@ -1537,7 +1539,7 @@ public abstract class UIComponent
 
             this.componentClass = component.getClass();
             this.listener = listener;
-
+            this._component = component;
             initListenerCapability();
         }
 
@@ -1676,14 +1678,26 @@ public abstract class UIComponent
                 //Full restore
                 listenerCapability = (Integer) values[2];
 
+                _component = UIComponent.getCurrentComponent(context);
                 if ((listenerCapability & LISTENER_TYPE_COMPONENT) != 0)
                 {
-                    listener = UIComponent.getCurrentComponent(context);
+                    listener = _component;
                 }
                 else if ((listenerCapability & LISTENER_TYPE_RENDERER) != 0)
                 {
-                    listener = (ComponentSystemEventListener)
-                            UIComponent.getCurrentComponent(context).getRenderer(context);
+                    //listener = (ComponentSystemEventListener)
+                    //        UIComponent.getCurrentComponent(context).getRenderer(context);
+                    Renderer renderer = _component.getRenderer(context);
+                    Integer i = (Integer) values[1];
+                    if (i != null && i >= 0)
+                    {
+                        while (i > 0)
+                        {
+                            renderer = ((RendererWrapper) renderer).getWrapped();
+                            i--;
+                        }
+                    }
+                    listener = (ComponentSystemEventListener) renderer;
                 }
                 else
                 {
@@ -1721,7 +1735,38 @@ public abstract class UIComponent
                 }
                 else
                 {
-                    state[1] = null;
+                    if ( (listenerCapability & LISTENER_TYPE_RENDERER) != 0)
+                    {
+                        UIComponent componentRef = _component != null ? _component : getCurrentComponent(context);
+                        Renderer renderer = componentRef.getRenderer(context);
+                        int i = 0;
+                        while (renderer != null && !renderer.getClass().equals(listener.getClass()))
+                        {
+                            if (renderer instanceof RendererWrapper)
+                            {
+                                renderer = ((RendererWrapper) renderer).getWrapped();
+                                i++;
+                            }
+                            else
+                            {
+                                renderer = null;
+                                i = -1;
+                            }
+                        }
+                        if (i != -1)
+                        {
+                            // Store the number so we can get the right wrapper to invoke the method.
+                            state[1] = i;
+                        }
+                        else
+                        {
+                            state[1] = null;
+                        }
+                    }
+                    else
+                    {
+                        state[1] = null;
+                    }
                 }
                 state[2] = (Integer) listenerCapability;
                 return state;
