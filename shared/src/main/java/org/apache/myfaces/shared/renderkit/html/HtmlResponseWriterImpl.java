@@ -425,7 +425,22 @@ public class HtmlResponseWriterImpl
                     {
                         value = ((ValueExpression)value).getValue(getFacesContext().getELContext());
                     }
-                    encodeAndWriteURIAttribute(key, value, key);
+                    // encodeAndWriteURIAttribute(key, value, key);
+                    // JSF 2.2 In the renderkit javadoc of jsf 2.2 spec says this 
+                    // (Rendering Pass Through Attributes):
+                    // "... The ResponseWriter must ensure that any pass through attributes are 
+                    // rendered on the outer-most markup element for the component. If there is 
+                    // a pass through attribute with the same name as a renderer specific 
+                    // attribute, the pass through attribute takes precedence. Pass through 
+                    // attributes are rendered as if they were passed to 
+                    // ResponseWriter.writeURIAttribute(). ..."
+                    // Note here it says "as if they were passed", instead say "... attributes are
+                    // encoded and rendered as if ...". Black box testing against RI shows that there
+                    // is no URI encoding at all in this part, so in this case the best is do the
+                    // same here. After all, it is resposibility of the one who set the passthrough
+                    // attribute to do the proper encoding in cases when a URI is provided. However,
+                    // that does not means the attribute should not be encoded as other attributes.
+                    encodeAndWriteAttribute(key, value, key);
                 }
             }
 
@@ -835,6 +850,17 @@ public class HtmlResponseWriterImpl
                     strValue, false, false, !_isUTF8);
             _currentWriter.write('"');
         }
+    }
+    
+    private void encodeAndWriteAttribute(String name, Object value, String componentPropertyName) throws IOException
+    {
+        String strValue = (value==null)?"":value.toString();
+        _currentWriter.write(' ');
+        _currentWriter.write(name);
+        _currentWriter.write("=\"");
+        org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
+                strValue, false, false, !_isUTF8);
+        _currentWriter.write('"');
     }
 
     public void writeURIAttribute(String name, Object value, String componentPropertyName) throws IOException
