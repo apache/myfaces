@@ -18,15 +18,16 @@
  */
 package org.apache.myfaces.flow.cdi;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.flow.Flow;
 import javax.faces.flow.builder.FlowBuilder;
 import javax.faces.flow.builder.FlowBuilderParameter;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;
 
 /**
