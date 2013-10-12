@@ -59,6 +59,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.annotation.NoAnnotationLifecyleProvider;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.Factory;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
@@ -69,6 +70,7 @@ import org.apache.myfaces.mc.test.core.annotation.PageBean;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
+import org.apache.myfaces.spi.impl.NoAnnotationInjectionProvider;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.test.mock.MockServletConfig;
@@ -192,6 +194,10 @@ public abstract class AbstractMyFacesTestCase
         servletContext.addInitParameter("javax.faces.PROJECT_STAGE", "UnitTest");
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,"-1");
+        servletContext.addInitParameter("org.apache.myfaces.spi.InjectionProvider", 
+            NoAnnotationInjectionProvider.class.getName());
+        servletContext.addInitParameter("org.apache.myfaces.config.annotation.LifecycleProvider",
+            NoAnnotationLifecyleProvider.class.getName());
     }
     
     /**

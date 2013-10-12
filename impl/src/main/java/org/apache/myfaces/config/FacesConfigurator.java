@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 
 import javax.el.ELResolver;
 import javax.faces.FacesException;
+import javax.faces.FacesWrapper;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
@@ -132,6 +133,9 @@ import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
+import org.apache.myfaces.spi.InjectionProvider;
+import org.apache.myfaces.spi.InjectionProviderException;
+import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
 import org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory;
 import org.apache.myfaces.util.ContainerUtils;
@@ -190,6 +194,8 @@ public class FacesConfigurator
     private AnnotationConfigurator _annotationConfigurator;
 
     private RuntimeConfig _runtimeConfig;
+    
+    private InjectionProvider _injectionProvider;
 
     private static long lastUpdate;
 
@@ -561,8 +567,10 @@ public class FacesConfigurator
                 FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
 
         FacesConfigData dispenser = getDispenser();
-        application.setActionListener(ClassUtils.buildApplicationObject(ActionListener.class,
-                dispenser.getActionListenerIterator(), null));
+        ActionListener actionListener = ClassUtils.buildApplicationObject(ActionListener.class,
+                dispenser.getActionListenerIterator(), null);
+        _callInjectAndPostConstruct(actionListener);
+        application.setActionListener(actionListener);
 
         if (dispenser.getDefaultLocale() != null)
         {
@@ -578,20 +586,26 @@ public class FacesConfigurator
         {
             application.setMessageBundle(dispenser.getMessageBundle());
         }
-
-        application.setNavigationHandler(ClassUtils.buildApplicationObject(NavigationHandler.class,
+        
+        NavigationHandler navigationHandler = ClassUtils.buildApplicationObject(NavigationHandler.class,
                 ConfigurableNavigationHandler.class,
                 BackwardsCompatibleNavigationHandlerWrapper.class,
                 dispenser.getNavigationHandlerIterator(),
-                application.getNavigationHandler()));
+                application.getNavigationHandler());
+        _callInjectAndPostConstruct(navigationHandler);
+        application.setNavigationHandler(navigationHandler);
 
-        application.setStateManager(ClassUtils.buildApplicationObject(StateManager.class,
+        StateManager stateManager = ClassUtils.buildApplicationObject(StateManager.class,
                 dispenser.getStateManagerIterator(),
-                application.getStateManager()));
+                application.getStateManager());
+        _callInjectAndPostConstruct(stateManager);
+        application.setStateManager(stateManager);
 
-        application.setResourceHandler(ClassUtils.buildApplicationObject(ResourceHandler.class,
+        ResourceHandler resourceHandler = ClassUtils.buildApplicationObject(ResourceHandler.class,
                 dispenser.getResourceHandlerIterator(),
-                application.getResourceHandler()));
+                application.getResourceHandler());
+        _callInjectAndPostConstruct(resourceHandler);
+        application.setResourceHandler(resourceHandler);
 
         List<Locale> locales = new ArrayList<Locale>();
         for (String locale : dispenser.getSupportedLocalesIterator())
@@ -604,6 +618,9 @@ public class FacesConfigurator
         application.setViewHandler(ClassUtils.buildApplicationObject(ViewHandler.class,
                 dispenser.getViewHandlerIterator(),
                 application.getViewHandler()));
+        
+        RuntimeConfig runtimeConfig = getRuntimeConfig();
+        
         for (SystemEventListener systemEventListener : dispenser.getSystemEventListeners())
         {
 
@@ -618,20 +635,22 @@ public class FacesConfigurator
                         ? systemEventListener.getSystemEventClass()
                         : SystemEvent.class.getName());
 
+                javax.faces.event.SystemEventListener listener = (javax.faces.event.SystemEventListener) 
+                        ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass());
+                _callInjectAndPostConstruct(listener);
+                runtimeConfig.addInjectedObject(listener);
                 if (systemEventListener.getSourceClass() != null && systemEventListener.getSourceClass().length() > 0)
                 {
                     application.subscribeToEvent(
                             (Class<? extends SystemEvent>) eventClass,
                             ClassUtils.classForName(systemEventListener.getSourceClass()),
-                            (javax.faces.event.SystemEventListener)
-                                    ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass()));
+                                    listener);
                 }
                 else
                 {
                     application.subscribeToEvent(
                             (Class<? extends SystemEvent>) eventClass,
-                            (javax.faces.event.SystemEventListener)
-                                    ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass()));
+                            listener);
                 }
             }
             catch (ClassNotFoundException e)
@@ -732,8 +751,6 @@ public class FacesConfigurator
             FacesContext.getCurrentInstance());
         application.setFlowHandler(flowHandler);
 
-        RuntimeConfig runtimeConfig = getRuntimeConfig();
-
         if (MyfacesConfig.getCurrentInstance(_externalContext).isSupportJSPAndFacesEL())
         {
             // If no JSP and old Faces EL, there is no need to initialize PropertyResolver
@@ -752,6 +769,28 @@ public class FacesConfigurator
             String urlPattern = mapping.getUrlPattern();
             String[] contracts = StringUtils.trim(StringUtils.splitShortString(mapping.getContracts(), ' '));
             runtimeConfig.addContractMapping(urlPattern, contracts);
+        }
+    }
+    
+    private void _callInjectAndPostConstruct(Object instance)
+    {
+        try
+        {
+            //invoke the injection over the inner one first
+            if (instance instanceof FacesWrapper)
+            {
+                Object innerInstance = ((FacesWrapper)instance).getWrapped();
+                if (innerInstance != null)
+                {
+                    _callInjectAndPostConstruct(innerInstance);
+                }
+            }
+            getInjectionProvider().inject(instance);
+            getInjectionProvider().postConstruct(instance);
+        }
+        catch (InjectionProviderException ex)
+        {
+            log.log(Level.INFO, "Exception on PreDestroy", ex);
         }
     }
 
@@ -841,7 +880,17 @@ public class FacesConfigurator
 
         for (String className : dispenser.getElResolvers())
         {
-            runtimeConfig.addFacesConfigElResolver((ELResolver) ClassUtils.newInstance(className, ELResolver.class));
+            ELResolver elResolver = (ELResolver) ClassUtils.newInstance(className, ELResolver.class);
+            try
+            {
+                getInjectionProvider().inject(elResolver);
+                getInjectionProvider().postConstruct(elResolver);
+            }
+            catch (InjectionProviderException e)
+            {
+                log.log(Level.SEVERE, "Error while injecting ELResolver", e);
+            }
+            runtimeConfig.addFacesConfigElResolver(elResolver);
         }
 
         runtimeConfig.setFacesVersion(dispenser.getFacesVersion());
@@ -1108,12 +1157,19 @@ public class FacesConfigurator
             {
                 try
                 {
-                    lifecycle.addPhaseListener((PhaseListener)
-                            ClassUtils.newInstance(listenerClassName, PhaseListener.class));
+                    PhaseListener listener = (PhaseListener)
+                            ClassUtils.newInstance(listenerClassName, PhaseListener.class);
+                    getInjectionProvider().inject(listener);
+                    getInjectionProvider().postConstruct(listener);
+                    lifecycle.addPhaseListener(listener);
                 }
                 catch (ClassCastException e)
                 {
                     log.severe("Class " + listenerClassName + " does not implement PhaseListener");
+                }
+                catch (InjectionProviderException e)
+                {
+                    log.log(Level.SEVERE, "Error while injecting PhaseListener", e);
                 }
             }
 
@@ -1191,6 +1247,8 @@ public class FacesConfigurator
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         LifecycleProvider lifecycleProvider = LifecycleProviderFactory
                 .getLifecycleProviderFactory(externalContext).getLifecycleProvider(externalContext);
+        InjectionProvider injectionProvider = InjectionProviderFactory
+            .getInjectionProviderFactory(externalContext).getInjectionProvider(externalContext);
 
         // create ManagedBeanDestroyer
         ManagedBeanDestroyer mbDestroyer
@@ -1437,5 +1495,15 @@ public class FacesConfigurator
         {
             viewHandler.addProtectedView(urlPattern);
         }
+    }
+    
+    protected InjectionProvider getInjectionProvider()
+    {
+        if (_injectionProvider == null)
+        {
+            _injectionProvider = InjectionProviderFactory.getInjectionProviderFactory(
+                _externalContext).getInjectionProvider(_externalContext);
+        }
+        return _injectionProvider;
     }
 }

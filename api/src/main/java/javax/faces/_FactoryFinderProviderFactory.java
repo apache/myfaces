@@ -24,6 +24,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.context.ExternalContext;
 
 /**
  * Provide utility methods used by FactoryFinder class to lookup for SPI interface FactoryFinderProvider.
@@ -39,6 +40,11 @@ class _FactoryFinderProviderFactory
 
     public static final String FACTORY_FINDER_PROVIDER_CLASS_NAME = "org.apache.myfaces.spi.FactoryFinderProvider";
 
+    public static final String INJECTION_PROVIDER_FACTORY_CLASS_NAME = 
+        "org.apache.myfaces.spi.InjectionProviderFactory";
+
+    public static final String INJECTION_PROVIDER_CLASS_NAME = "org.apache.myfaces.spi.InjectionProvider";
+    
     public static final Class<?> FACTORY_FINDER_PROVIDER_FACTORY_CLASS;
 
     public static final Method FACTORY_FINDER_PROVIDER_GET_INSTANCE_METHOD;
@@ -48,7 +54,15 @@ class _FactoryFinderProviderFactory
     public static final Method FACTORY_FINDER_PROVIDER_GET_FACTORY_METHOD;
     public static final Method FACTORY_FINDER_PROVIDER_SET_FACTORY_METHOD;
     public static final Method FACTORY_FINDER_PROVIDER_RELEASE_FACTORIES_METHOD;
-
+    
+    public static final Class<?> INJECTION_PROVIDER_FACTORY_CLASS;
+    public static final Method INJECTION_PROVIDER_FACTORY_GET_INSTANCE_METHOD;
+    public static final Method INJECTION_PROVIDER_FACTORY_GET_INJECTION_PROVIDER_METHOD;
+    public static final Class<?> INJECTION_PROVIDER_CLASS;
+    public static final Method INJECTION_PROVIDER_INJECT_METHOD;
+    public static final Method INJECTION_PROVIDER_POST_CONSTRUCT_METHOD;
+    public static final Method INJECTION_PROVIDER_PRE_DESTROY_METHOD;
+    
     static
     {
         Class factoryFinderFactoryClass = null;
@@ -59,12 +73,18 @@ class _FactoryFinderProviderFactory
         Method factoryFinderProviderGetFactoryMethod = null;
         Method factoryFinderProviderSetFactoryMethod = null;
         Method factoryFinderProviderReleaseFactoriesMethod = null;
+        
+        Class injectionProviderFactoryClass = null;
+        Method injectionProviderFactoryGetInstanceMethod = null;
+        Method injectionProviderFactoryGetInjectionProviderMethod = null;
+        Class injectionProviderClass = null;
+        Method injectionProviderInjectMethod = null;
+        Method injectionProviderPostConstructMethod = null;
+        Method injectionProviderPreDestroyMethod = null;
 
         try
         {
             factoryFinderFactoryClass = classForName(FACTORY_FINDER_PROVIDER_FACTORY_CLASS_NAME);
-
-
             if (factoryFinderFactoryClass != null)
             {
                 factoryFinderproviderFactoryGetMethod = factoryFinderFactoryClass.getMethod
@@ -83,6 +103,28 @@ class _FactoryFinderProviderFactory
                 factoryFinderProviderReleaseFactoriesMethod = factoryFinderProviderClass.getMethod
                         ("releaseFactories", null);
             }
+            
+            injectionProviderFactoryClass = classForName(INJECTION_PROVIDER_FACTORY_CLASS_NAME);
+            
+            if (injectionProviderFactoryClass != null)
+            {
+                injectionProviderFactoryGetInstanceMethod = injectionProviderFactoryClass.
+                    getMethod("getInjectionProviderFactory", null);
+                injectionProviderFactoryGetInjectionProviderMethod = injectionProviderFactoryClass.
+                    getMethod("getInjectionProvider", ExternalContext.class);
+            }
+            
+            injectionProviderClass = classForName(INJECTION_PROVIDER_CLASS_NAME);
+            
+            if (injectionProviderClass != null)
+            {
+                injectionProviderInjectMethod = injectionProviderClass.
+                    getMethod("inject", Object.class);
+                injectionProviderPostConstructMethod = injectionProviderClass.
+                    getMethod("postConstruct", Object.class);
+                injectionProviderPreDestroyMethod = injectionProviderClass.
+                    getMethod("preDestroy", Object.class);
+            }
         }
         catch (Exception e)
         {
@@ -97,6 +139,14 @@ class _FactoryFinderProviderFactory
         FACTORY_FINDER_PROVIDER_GET_FACTORY_METHOD = factoryFinderProviderGetFactoryMethod;
         FACTORY_FINDER_PROVIDER_SET_FACTORY_METHOD = factoryFinderProviderSetFactoryMethod;
         FACTORY_FINDER_PROVIDER_RELEASE_FACTORIES_METHOD = factoryFinderProviderReleaseFactoriesMethod;
+        
+        INJECTION_PROVIDER_FACTORY_CLASS = injectionProviderFactoryClass;
+        INJECTION_PROVIDER_FACTORY_GET_INSTANCE_METHOD = injectionProviderFactoryGetInstanceMethod;
+        INJECTION_PROVIDER_FACTORY_GET_INJECTION_PROVIDER_METHOD = injectionProviderFactoryGetInjectionProviderMethod;
+        INJECTION_PROVIDER_CLASS = injectionProviderClass;
+        INJECTION_PROVIDER_INJECT_METHOD = injectionProviderInjectMethod;
+        INJECTION_PROVIDER_POST_CONSTRUCT_METHOD = injectionProviderPostConstructMethod;
+        INJECTION_PROVIDER_PRE_DESTROY_METHOD = injectionProviderPreDestroyMethod;
     }
 
     public static Object getInstance()

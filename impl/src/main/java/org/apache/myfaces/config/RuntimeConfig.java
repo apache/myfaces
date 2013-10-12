@@ -110,6 +110,8 @@ public class RuntimeConfig
             new ArrayList<ComponentTagDeclaration>();
     
     private List<String> _resourceResolvers = new ArrayList<String>();
+    
+    private List<Object> _injectedObjects = new ArrayList<Object>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -134,6 +136,7 @@ public class RuntimeConfig
         _externalContextResourceLibraryContracts.clear();
         _classLoaderResourceLibraryContracts.clear();
         _resourceLibraryContracts.clear();
+        _injectedObjects.clear();
     }
 
     /**
@@ -502,4 +505,16 @@ public class RuntimeConfig
         _resourceResolvers.add(resourceResolver);
     }
 
+    /**
+     * @return the _injectedObjects
+     */
+    public List<Object> getInjectedObjects()
+    {
+        return _injectedObjects;
+    }
+
+    public void addInjectedObject(Object object)
+    {
+        _injectedObjects.add(object);
+    }
 }

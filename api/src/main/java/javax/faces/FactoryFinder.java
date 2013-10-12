@@ -33,6 +33,7 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.context.ExceptionHandlerFactory;
 import javax.faces.context.ExternalContextFactory;
+import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.context.FlashFactory;
 import javax.faces.context.PartialViewContextFactory;
@@ -88,6 +89,8 @@ public final class FactoryFinder
     private static final Set<String> VALID_FACTORY_NAMES = new HashSet<String>();
     private static final Map<String, Class<?>> ABSTRACT_FACTORY_CLASSES = new HashMap<String, Class<?>>();
     private static final ClassLoader MYFACES_CLASSLOADER;
+    
+    private static final String INJECTION_PROVIDER_INSTANCE = "oam.spi.INJECTION_PROVIDER_KEY";
 
     static
     {
@@ -314,6 +317,7 @@ public final class FactoryFinder
 
         List<String> classNames;
         Object factory;
+        Object injectionProvider;
         synchronized (factoryClassNames)
         {
             factory = factoryMap.get(factoryName);
@@ -323,10 +327,22 @@ public final class FactoryFinder
             }
 
             classNames = factoryClassNames.get(factoryName);
+            
+            injectionProvider = factoryMap.get(INJECTION_PROVIDER_INSTANCE);
+        }
+        
+        if (injectionProvider == null)
+        {
+            injectionProvider = getInjectionProvider();
+            synchronized (factoryClassNames)
+            {
+                factoryMap.put(INJECTION_PROVIDER_INSTANCE, injectionProvider);
+            }
         }
 
         // release lock while calling out
-        factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), classNames.iterator(), classLoader);
+        factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), 
+            classNames.iterator(), classLoader, injectionProvider);
 
         synchronized (factoryClassNames)
         {
@@ -339,14 +355,76 @@ public final class FactoryFinder
 
         return factory;
     }
+    
+    private static Object getInjectionProvider()
+    {
+        try
+        {
+            // Remember the first call in a webapp over FactoryFinder.getFactory(...) comes in the 
+            // initialization block, so there is a startup FacesContext active and
+            // also a valid startup ExternalContext. Note after that, we need to cache
+            // the injection provider for the classloader, because in a normal
+            // request there is no active FacesContext in the moment and this call will
+            // surely fail.
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext != null)
+            {
+                Object injectionProviderFactory =
+                    _FactoryFinderProviderFactory.INJECTION_PROVIDER_FACTORY_GET_INSTANCE_METHOD
+                        .invoke(_FactoryFinderProviderFactory.INJECTION_PROVIDER_CLASS);
+                Object injectionProvider = 
+                    _FactoryFinderProviderFactory.INJECTION_PROVIDER_FACTORY_GET_INJECTION_PROVIDER_METHOD
+                        .invoke(injectionProviderFactory, facesContext.getExternalContext());
+                return injectionProvider;
+            }
+        }
+        catch (Exception e)
+        {
+        }
+        return null;
+    }
+    
+    private static void injectAndPostConstruct(Object injectionProvider, Object instance)
+    {
+        if (injectionProvider != null)
+        {
+            try
+            {
+                _FactoryFinderProviderFactory.INJECTION_PROVIDER_INJECT_METHOD.invoke(
+                    injectionProvider, instance);
+                _FactoryFinderProviderFactory.INJECTION_PROVIDER_POST_CONSTRUCT_METHOD.invoke(
+                    injectionProvider, instance);
+            }
+            catch (Exception ex)
+            {
+                throw new FacesException(ex);
+            }
+        }
+    }
+    
+    private static void preDestroy(Object injectionProvider, Object instance)
+    {
+        if (injectionProvider != null)
+        {
+            try
+            {
+                _FactoryFinderProviderFactory.INJECTION_PROVIDER_PRE_DESTROY_METHOD.invoke(
+                    injectionProvider, instance);
+            }
+            catch (Exception ex)
+            {
+                throw new FacesException(ex);
+            }
+        }
+    }
 
     private static Object newFactoryInstance(Class<?> interfaceClass, Iterator<String> classNamesIterator,
-                                             ClassLoader classLoader)
+                                             ClassLoader classLoader, Object injectionProvider)
     {
         try
         {
             Object current = null;
-
+            
             while (classNamesIterator.hasNext())
             {
                 String implClassName = classNamesIterator.next();
@@ -370,6 +448,7 @@ public final class FactoryFinder
                 {
                     // nothing to decorate
                     current = implClass.newInstance();
+                    injectAndPostConstruct(injectionProvider, current);
                 }
                 else
                 {
@@ -382,6 +461,7 @@ public final class FactoryFinder
                         {
                             // create new decorator wrapping current
                             current = delegationConstructor.newInstance(new Object[] { current });
+                            injectAndPostConstruct(injectionProvider, current);
                         }
                         catch (InstantiationException e)
                         {
@@ -400,6 +480,7 @@ public final class FactoryFinder
                     {
                         // no decorator pattern support
                         current = implClass.newInstance();
+                        injectAndPostConstruct(injectionProvider, current);
                     }
                 }
             }
@@ -570,10 +651,11 @@ public final class FactoryFinder
     {
         ClassLoader classLoader = getClassLoader();
 
+        Map<String, Object> factoryMap;
         // This code must be synchronized
         synchronized (registeredFactoryNames)
         {
-            factories.remove(classLoader);
+            factoryMap = factories.remove(classLoader);
 
             // _registeredFactoryNames has as value type Map<String,List> and this must
             // be cleaned before release (for gc).
@@ -584,6 +666,30 @@ public final class FactoryFinder
             }
 
             registeredFactoryNames.remove(classLoader);
+        }
+
+        if (factoryMap != null)
+        {
+            Object injectionProvider = factoryMap.remove(INJECTION_PROVIDER_INSTANCE);
+            if (injectionProvider != null)
+            {
+                for (Map.Entry<String, Object> entry : factoryMap.entrySet())
+                {
+                    Object instance = entry.getValue();
+                    while (instance != null)
+                    {
+                        preDestroy(injectionProvider, instance);
+                        if (instance instanceof FacesWrapper)
+                        {
+                            instance = ((FacesWrapper) instance).getWrapped();
+                        }
+                        else
+                        {
+                            instance = null;
+                        }
+                    }
+                }
+            }
         }
     }
 

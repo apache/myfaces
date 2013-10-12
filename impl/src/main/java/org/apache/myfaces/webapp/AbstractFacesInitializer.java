@@ -48,13 +48,23 @@ import javax.faces.event.PreDestroyApplicationEvent;
 import javax.faces.event.SystemEvent;
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.el.ELResolver;
+import javax.faces.FacesWrapper;
+import javax.faces.FactoryFinder;
+import javax.faces.event.PhaseListener;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.myfaces.spi.InjectionProvider;
+import org.apache.myfaces.spi.InjectionProviderException;
+import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
@@ -342,6 +352,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
         _dispatchApplicationEvent(servletContext, PreDestroyApplicationEvent.class);
 
+        _callPreDestroyOnInjectedJSFArtifacts(facesContext);
+        
         // clear the cache of MetaRulesetImpl in order to prevent a memory leak
         MetaRulesetImpl.clearMetadataTargetCache();
         
@@ -572,6 +584,81 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         {
             externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE, 
                 beanManager);
+        }
+    }
+    
+    public void _callPreDestroyOnInjectedJSFArtifacts(FacesContext facesContext)
+    {
+        InjectionProvider injectionProvider = InjectionProviderFactory.getInjectionProviderFactory(
+            facesContext.getExternalContext()).getInjectionProvider(facesContext.getExternalContext());
+        
+        // javax.el.ELResolver
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
+        
+        if (runtimeConfig.getFacesConfigElResolvers() != null)
+        {
+            for (ELResolver elResolver : runtimeConfig.getFacesConfigElResolvers())
+            {
+                _callPreDestroy(injectionProvider, elResolver);
+            }
+        }
+        
+        //javax.faces.application.NavigationHandler
+        _callPreDestroy(injectionProvider, facesContext.getApplication().getNavigationHandler());
+        
+        //javax.faces.application.ResourceHandler
+        _callPreDestroy(injectionProvider, facesContext.getApplication().getResourceHandler());
+        
+        //javax.faces.application.StateManager
+        _callPreDestroy(injectionProvider, facesContext.getApplication().getStateManager());
+        
+        //javax.faces.event.ActionListener
+        _callPreDestroy(injectionProvider, facesContext.getApplication().getActionListener());
+        
+        // javax.faces.lifecycle.PhaseListener
+        LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        for (Iterator<String> iter = factory.getLifecycleIds(); iter.hasNext();)
+        {
+            Lifecycle lifecycle = factory.getLifecycle(iter.next());
+            if (lifecycle != null)
+            {
+                for (PhaseListener listener : lifecycle.getPhaseListeners())
+                {
+                    _callPreDestroy(injectionProvider, listener);
+                }
+            }
+        }
+        
+        //javax.faces.event.SystemEventListener
+        if (runtimeConfig.getInjectedObjects() != null)
+        {
+            for (Object object : runtimeConfig.getInjectedObjects())
+            {
+                _callPreDestroy(injectionProvider, object);
+            }
+        }
+    }
+    
+    public void _callPreDestroy(InjectionProvider injectionProvider, Object instance)
+    {
+        while (instance != null)
+        {
+            try
+            {
+                injectionProvider.preDestroy(instance);
+                if (instance instanceof FacesWrapper)
+                {
+                    instance = ((FacesWrapper)instance).getWrapped();
+                }
+                else
+                {
+                    instance = null;
+                }
+            }
+            catch (InjectionProviderException ex)
+            {
+                log.log(Level.INFO, "Exception on PreDestroy", ex);
+            }
         }
     }
 }
