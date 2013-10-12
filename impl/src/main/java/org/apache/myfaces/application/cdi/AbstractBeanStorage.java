@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AbstractBeanStorage
+public abstract class AbstractBeanStorage
 {
     private static final Logger LOG = Logger.getLogger(AbstractBeanStorage.class.getName());
 
