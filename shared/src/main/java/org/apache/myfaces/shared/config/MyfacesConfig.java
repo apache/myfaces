@@ -426,6 +426,18 @@ public class MyfacesConfig
         "org.apache.myfaces.EARLY_FLUSH_ENABLED";
     private static final boolean INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT = false;
 
+    @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="cdi",
+            tags="injection",
+            desc="Enable or disable CDI support for converters.")
+    private static final String INIT_PARAM_CONVERTER_INJECTION_ENABLED =
+        "org.apache.myfaces.CONVERTER_INJECTION_ENABLED";
+    private static final boolean INIT_PARAM_CONVERTER_INJECTION_DEFAULT = false;
+    @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="cdi",
+            tags="injection",
+            desc="Enable or disable CDI support for validators.")
+    private static final String INIT_PARAM_VALIDATOR_INJECTION_ENABLED =
+        "org.apache.myfaces.VALIDATOR_INJECTION_ENABLED";
+    private static final boolean INIT_PARAM_VALIDATOR_INJECTION_DEFAULT = false;
 
     private boolean _prettyHtml;
     private boolean _detectJavascript;
@@ -459,6 +471,8 @@ public class MyfacesConfig
     private String _gaeJsfJarFiles;
     private String _gaeJsfAnnotationsJarFiles;
     private boolean _earlyFlushEnabled;
+    private boolean _converterInjectionEnabled;
+    private boolean _validatorInjectionEnabled;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -560,6 +574,8 @@ public class MyfacesConfig
         setGaeJsfJarFiles(INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT);
         setGaeJsfAnnotationsJarFiles(INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
         setEarlyFlushEnabled(INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT);
+        setConverterInjectionEnabled(INIT_PARAM_CONVERTER_INJECTION_DEFAULT);
+        setValidatorInjectionEnabled(INIT_PARAM_VALIDATOR_INJECTION_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -669,6 +685,11 @@ public class MyfacesConfig
 
         myfacesConfig.setEarlyFlushEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
                 INIT_PARAM_EARLY_FLUSH_ENABLED, INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT));
+
+        myfacesConfig.setConverterInjectionEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
+                INIT_PARAM_CONVERTER_INJECTION_ENABLED, INIT_PARAM_CONVERTER_INJECTION_DEFAULT));
+        myfacesConfig.setValidatorInjectionEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
+                INIT_PARAM_VALIDATOR_INJECTION_ENABLED, INIT_PARAM_VALIDATOR_INJECTION_DEFAULT));
 
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1196,5 +1217,25 @@ public class MyfacesConfig
     public void setEarlyFlushEnabled(boolean earlyFlushEnabled)
     {
         this._earlyFlushEnabled = earlyFlushEnabled;
+    }
+
+    public boolean isConverterInjectionEnabled()
+    {
+        return _converterInjectionEnabled;
+    }
+
+    public void setConverterInjectionEnabled(boolean converterInjectionEnabled)
+    {
+        this._converterInjectionEnabled = converterInjectionEnabled;
+    }
+
+    public boolean isValidatorInjectionEnabled()
+    {
+        return _validatorInjectionEnabled;
+    }
+
+    public void setValidatorInjectionEnabled(boolean validatorInjectionEnabled)
+    {
+        this._validatorInjectionEnabled = validatorInjectionEnabled;
     }
 }

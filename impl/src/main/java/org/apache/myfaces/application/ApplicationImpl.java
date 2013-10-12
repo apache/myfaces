@@ -89,6 +89,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.myfaces.application.cdi.ConverterWrapper;
+import org.apache.myfaces.application.cdi.ExternalArtifactResolver;
+import org.apache.myfaces.application.cdi.ValidatorWrapper;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.Property;
@@ -305,21 +308,13 @@ public class ApplicationImpl extends Application
     {
         if (_validatorClassMap.containsKey(validatorId))
         {
-            Object validatorClass = getObjectFromClassMap(validatorId, _validatorClassMap);
-            String className;
+            Class<? extends Validator> validatorClass =
+                    getObjectFromClassMap(validatorId, _validatorClassMap, Validator.class);
 
-            if (validatorClass instanceof Class)
-            {
-                className = ((Class<?>)validatorClass).getName();
-            }
-            else
-            {
-                className = validatorClass.toString();
-            }
             // Ensure atomicity between _defaultValidatorsIds and _cachedDefaultValidatorsIds
             synchronized(_defaultValidatorsIds)
             {
-                _defaultValidatorsIds.put(validatorId, className);
+                _defaultValidatorsIds.put(validatorId, validatorClass.getName());
                 _cachedDefaultValidatorsIds = null;
             }
         }
@@ -1173,7 +1168,8 @@ public class ApplicationImpl extends Application
         checkNull(behaviorId, "behaviorId");
         checkEmpty(behaviorId, "behaviorId");
 
-        final Class<?> behaviorClass = getObjectFromClassMap(behaviorId, _behaviorClassMap);
+        final Class<? extends Behavior> behaviorClass =
+                getObjectFromClassMap(behaviorId, _behaviorClassMap, Behavior.class);
         
         if (behaviorClass == null)
         {
@@ -1182,7 +1178,7 @@ public class ApplicationImpl extends Application
         
         try
         {
-            Behavior behavior = (Behavior)behaviorClass.newInstance();
+            Behavior behavior = behaviorClass.newInstance();
             FacesContext facesContext = FacesContext.getCurrentInstance();
             _handleAttachedResourceDependencyAnnotations(facesContext, behavior);
 
@@ -1417,7 +1413,8 @@ public class ApplicationImpl extends Application
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
 
-        final Class<?> componentClass = getObjectFromClassMap(componentType, _componentClassMap);
+        final Class<? extends UIComponent> componentClass =
+                getObjectFromClassMap(componentType, _componentClassMap, UIComponent.class);
         if (componentClass == null)
         {
             log.log(Level.SEVERE, "Undefined component type " + componentType);
@@ -1426,7 +1423,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            UIComponent component = (UIComponent)componentClass.newInstance();            
+            UIComponent component = componentClass.newInstance();
             _handleAnnotations(facesContext, component, component);
             return component;
         }
@@ -1443,7 +1440,8 @@ public class ApplicationImpl extends Application
         checkNull(componentType, "componentType");
         checkEmpty(componentType, "componentType");
 
-        final Class<?> componentClass = getObjectFromClassMap(componentType, _componentClassMap);
+        final Class<? extends UIComponent> componentClass =
+                getObjectFromClassMap(componentType, _componentClassMap, UIComponent.class);
         if (componentClass == null)
         {
             log.log(Level.SEVERE, "Undefined component type " + componentType);
@@ -1452,7 +1450,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            UIComponent component = (UIComponent)componentClass.newInstance();            
+            UIComponent component = componentClass.newInstance();
             _handleAnnotations(FacesContext.getCurrentInstance(), component, component);
             return component;
         }
@@ -1512,7 +1510,8 @@ public class ApplicationImpl extends Application
         checkNull(converterId, "converterId");
         checkEmpty(converterId, "converterId");
 
-        final Class<?> converterClass = getObjectFromClassMap(converterId, _converterIdToClassMap);
+        final Class<? extends Converter> converterClass =
+                getObjectFromClassMap(converterId, _converterIdToClassMap, Converter.class);
         if (converterClass == null)
         {
             throw new FacesException("Could not find any registered converter-class by converterId : " + converterId);
@@ -1520,7 +1519,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            final Converter converter = (Converter)converterClass.newInstance();
+            final Converter converter = createConverterInstance(converterClass);
 
             setConverterProperties(converterClass, converter);
             
@@ -1532,6 +1531,21 @@ public class ApplicationImpl extends Application
         {
             log.log(Level.SEVERE, "Could not instantiate converter " + converterClass, e);
             throw new FacesException("Could not instantiate converter: " + converterClass, e);
+        }
+    }
+
+    private Converter createConverterInstance(Class<? extends Converter> converterClass)
+            throws InstantiationException, IllegalAccessException
+    {
+        Converter result = ExternalArtifactResolver.resolveManagedConverter(converterClass);
+
+        if (result == null)
+        {
+            return converterClass.newInstance();
+        }
+        else
+        {
+            return new ConverterWrapper(result);
         }
     }
 
@@ -1621,13 +1635,13 @@ public class ApplicationImpl extends Application
                         _noArgConstructorConverterClasses.add(converterClass);
                         
                         // use no-arg constructor
-                        converter = converterClass.newInstance();
+                        converter = createConverterInstance(converterClass);
                     }
                 }
                 else
                 {
                     // use no-arg constructor
-                    converter = converterClass.newInstance();
+                    converter = createConverterInstance(converterClass);
                 }
 
                 setConverterProperties(converterClass, converter);
@@ -1983,7 +1997,8 @@ public class ApplicationImpl extends Application
         checkNull(validatorId, "validatorId");
         checkEmpty(validatorId, "validatorId");
 
-        Class<?> validatorClass = getObjectFromClassMap(validatorId, _validatorClassMap);
+        Class<? extends Validator> validatorClass =
+                getObjectFromClassMap(validatorId, _validatorClassMap, Validator.class);
         if (validatorClass == null)
         {
             String message = "Unknown validator id '" + validatorId + "'.";
@@ -1993,7 +2008,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            Validator validator = (Validator) validatorClass.newInstance();
+            Validator validator = createValidatorInstance(validatorClass);
             
             _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), validator);
             
@@ -2003,6 +2018,21 @@ public class ApplicationImpl extends Application
         {
             log.log(Level.SEVERE, "Could not instantiate validator " + validatorClass, e);
             throw new FacesException("Could not instantiate validator: " + validatorClass, e);
+        }
+    }
+
+    private Validator createValidatorInstance(Class<? extends Validator> validatorClass)
+            throws InstantiationException, IllegalAccessException
+    {
+        Validator result = ExternalArtifactResolver.resolveManagedValidator(validatorClass);
+
+        if (result == null)
+        {
+            return validatorClass.newInstance();
+        }
+        else
+        {
+            return new ValidatorWrapper(result);
         }
     }
 
@@ -2784,7 +2814,7 @@ public class ApplicationImpl extends Application
      * @param classMap 
      * @return
      */
-    private Class<?> getObjectFromClassMap(String id, Map<String, Object> classMap)
+    private <T> Class<? extends T> getObjectFromClassMap(String id, Map<String, Object> classMap, Class<T> targetType)
     {
         Object obj = classMap.get(id);
         
@@ -2795,13 +2825,13 @@ public class ApplicationImpl extends Application
         
         if(obj instanceof Class<?>)
         {
-            return (Class<?>)obj;
+            return (Class<? extends T>)obj;
         }
         else if (obj instanceof String )
         {
             Class<?> clazz = ClassUtils.simpleClassForName((String)obj);
             classMap.put(id, clazz);
-            return clazz;
+            return (Class<? extends T>)clazz;
         }
         
         //object stored in the map for this id is an invalid type.  remove it and return null
