@@ -290,7 +290,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
          *      <error-message><![CDATA[message]]></error-message>
          * <error>
          */
-        var errorName = node.firstChild.textContent || "",
+        var errorName = node.firstChild.textContent || node.firstChild.text || "",
                 errorMessage = node.childNodes[1].firstChild.data || "";
 
         this.attr("impl").sendError(request, context, this.attr("impl").SERVER_ERROR, errorName, errorMessage, "myfaces._impl.xhrCore._AjaxResponse", "processError");

@@ -239,7 +239,7 @@ if (!myfaces._impl.core._Runtime.fetchNamespace(_PFX_XHR + "_AjaxResponseJSF22")
              *      <error-message><![CDATA[message]]></error-message>
              * <error>
              */
-            var errorName = node.firstChild.textContent || "",
+            var errorName = node.firstChild.textContent || node.firstChild.text || "",
                     errorMessage = node.childNodes[1].firstChild.data || "";
 
             _getImpl().sendError(request, context, _getImpl().SERVER_ERROR, errorName, errorMessage, "myfaces._impl.xhrCore._AjaxResponse", "_processError");
