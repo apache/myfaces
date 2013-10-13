@@ -135,11 +135,6 @@ public class ExternalArtifactResolver
             return null;
         }
 
-        return getContextualReference(type, beanManager, beans);
-    }
-
-    private static <T> T getContextualReference(Class<T> type, BeanManager beanManager, Set<Bean<?>> beans)
-    {
         Bean<?> bean = beanManager.resolve(beans);
 
         CreationalContext<?> creationalContext = beanManager.createCreationalContext(bean);
