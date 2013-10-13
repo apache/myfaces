@@ -23,7 +23,7 @@ import javax.faces.component.PartialStateHolder;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 
-public abstract class AbstractExternalBeanWrapper<T> implements PartialStateHolder, FacesWrapper<T>
+abstract class AbstractExternalBeanWrapper<T> implements PartialStateHolder, FacesWrapper<T>
 {
     private T wrapped;
 

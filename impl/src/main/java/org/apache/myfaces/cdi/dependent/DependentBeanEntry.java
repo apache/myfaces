@@ -16,11 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.cdi;
+package org.apache.myfaces.cdi.dependent;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
-@RequestScoped
-public class DependentBeanStorage extends AbstractBeanStorage
+public class DependentBeanEntry<T> extends DependentInstanceEntry<T>
 {
+    private static final long serialVersionUID = -6024053044999581580L;
+
+    private final Bean<?> bean;
+
+    public DependentBeanEntry(T instance, Bean<?> bean, CreationalContext<T> creationalContext)
+    {
+        super(instance, creationalContext);
+        this.bean = bean;
+    }
+
+    public Bean<?> getBean()
+    {
+        return bean;
+    }
 }

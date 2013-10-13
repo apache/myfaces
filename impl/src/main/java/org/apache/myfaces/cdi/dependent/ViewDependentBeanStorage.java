@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.cdi;
+package org.apache.myfaces.cdi.dependent;
 
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;

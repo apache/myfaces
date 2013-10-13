@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.cdi.impl;
 
-import org.apache.myfaces.cdi.DependentInstanceEntry;
+import org.apache.myfaces.cdi.dependent.DependentInstanceEntry;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;

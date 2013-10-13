@@ -16,9 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.cdi;
+package org.apache.myfaces.cdi.util;
 
-import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.cdi.dependent.AbstractBeanStorage;
+import org.apache.myfaces.cdi.dependent.DependentBeanEntry;
+import org.apache.myfaces.cdi.dependent.DependentBeanStorage;
+import org.apache.myfaces.cdi.dependent.ViewDependentBeanStorage;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.util.ExternalSpecifications;
 

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi;
+package org.apache.myfaces.cdi.dependent;
 
 import javax.enterprise.context.spi.CreationalContext;
 import java.io.Serializable;

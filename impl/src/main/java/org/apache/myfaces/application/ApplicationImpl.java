@@ -90,7 +90,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.myfaces.application.cdi.ConverterWrapper;
-import org.apache.myfaces.application.cdi.ExternalArtifactResolver;
+import org.apache.myfaces.cdi.util.ExternalArtifactResolver;
 import org.apache.myfaces.application.cdi.ValidatorWrapper;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
