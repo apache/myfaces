@@ -18,13 +18,18 @@
  */
 package org.apache.myfaces.cdi.impl;
 
+import org.apache.myfaces.cdi.DependentInstanceEntry;
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.spi.InjectionProvider;
+import org.apache.myfaces.spi.InjectionProviderException;
+
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.spi.InjectionProvider;
-import org.apache.myfaces.spi.InjectionProviderException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -33,6 +38,9 @@ import org.apache.myfaces.spi.InjectionProviderException;
 public class CDIAnnotationInjectionProvider extends InjectionProvider
 {
     private BeanManager beanManager;
+
+    private Map<Integer, DependentInstanceEntry> facesApplicationDependentBeans =
+            new ConcurrentHashMap<Integer, DependentInstanceEntry>();
     
     public CDIAnnotationInjectionProvider(ExternalContext externalContext)
     {
@@ -44,7 +52,13 @@ public class CDIAnnotationInjectionProvider extends InjectionProvider
     {
         AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
         InjectionTarget target = beanManager.createInjectionTarget(annoType);
-        target.inject(instance, beanManager.createCreationalContext(null));
+        CreationalContext<?> creationalContext =  beanManager.createCreationalContext(null);
+
+        facesApplicationDependentBeans.put(
+                System.identityHashCode(instance),
+                new DependentInstanceEntry(instance, creationalContext));
+
+        target.inject(instance, creationalContext);
     }
 
     @Override
@@ -61,5 +75,12 @@ public class CDIAnnotationInjectionProvider extends InjectionProvider
         AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
         InjectionTarget target = beanManager.createInjectionTarget(annoType);
         target.preDestroy(instance);
+
+        DependentInstanceEntry entry = facesApplicationDependentBeans.get(System.identityHashCode(instance));
+
+        if (entry != null)
+        {
+            entry.getCreationalContext().release();
+        }
     }
 }

@@ -18,37 +18,25 @@
  */
 package org.apache.myfaces.application.cdi;
 
+import org.apache.myfaces.cdi.DependentInstanceEntry;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
-import java.io.Serializable;
 
-class DependentBeanEntry<T> implements Serializable
+class DependentBeanEntry<T> extends DependentInstanceEntry<T>
 {
-    private static final long serialVersionUID = 7148484695430831322L;
+    private static final long serialVersionUID = -6024053044999581580L;
 
-    private final T instance;
     private final Bean<?> bean;
-    private final CreationalContext<T> creationalContext;
 
-    DependentBeanEntry(T instance, Bean<?> bean, CreationalContext<T> creationalContext)
+    public DependentBeanEntry(T instance, Bean<?> bean, CreationalContext<T> creationalContext)
     {
-        this.instance = instance;
+        super(instance, creationalContext);
         this.bean = bean;
-        this.creationalContext = creationalContext;
     }
 
-    T getInstance()
-    {
-        return instance;
-    }
-
-    Bean<?> getBean()
+    public Bean<?> getBean()
     {
         return bean;
-    }
-
-    CreationalContext<T> getCreationalContext()
-    {
-        return creationalContext;
     }
 }
