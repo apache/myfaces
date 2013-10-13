@@ -20,7 +20,7 @@ package org.apache.myfaces.cdi.util;
 
 import org.apache.myfaces.cdi.dependent.AbstractBeanStorage;
 import org.apache.myfaces.cdi.dependent.DependentBeanEntry;
-import org.apache.myfaces.cdi.dependent.DependentBeanStorage;
+import org.apache.myfaces.cdi.dependent.RequestDependentBeanStorage;
 import org.apache.myfaces.cdi.dependent.ViewDependentBeanStorage;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -41,34 +41,34 @@ public class ExternalArtifactResolver
     public static final String JAVAX_FACES_CONVERT_PACKAGE_NAME = "javax.faces.convert";
     public static final String JAVAX_FACES_VALIDATOR_PACKAGE_NAME = "javax.faces.validator";
 
-    private static volatile Boolean converterInjectionEnabled;
-    private static volatile Boolean validatorInjectionEnabled;
+    private static volatile Boolean managedConvertersEnabled;
+    private static volatile Boolean managedValidatorsEnabled;
 
-    public static boolean isConverterInjectionEnabled()
+    private static boolean isManagedConvertersEnabled()
     {
-        if (converterInjectionEnabled != null)
+        if (managedConvertersEnabled != null)
         {
-            return converterInjectionEnabled;
+            return managedConvertersEnabled;
         }
 
         initConverterInjectionEnabled();
-        return converterInjectionEnabled;
+        return managedConvertersEnabled;
     }
 
     private static synchronized void initConverterInjectionEnabled()
     {
-        if (converterInjectionEnabled != null)
+        if (managedConvertersEnabled != null)
         {
             return;
         }
 
-        converterInjectionEnabled = MyfacesConfig.getCurrentInstance(
-                FacesContext.getCurrentInstance().getExternalContext()).isConverterInjectionEnabled();
+        managedConvertersEnabled = MyfacesConfig.getCurrentInstance(
+                FacesContext.getCurrentInstance().getExternalContext()).isCdiManagedConvertersEnabled();
     }
 
     public static Converter resolveManagedConverter(Class<? extends Converter> converterClass)
     {
-        if (!isConverterInjectionEnabled())
+        if (!isManagedConvertersEnabled())
         {
             return null;
         }
@@ -85,31 +85,31 @@ public class ExternalArtifactResolver
         return getContextualReference(beanManager, converterClass);
     }
 
-    public static boolean isValidatorInjectionEnabled()
+    private static boolean isManagedValidatorsEnabled()
     {
-        if (validatorInjectionEnabled != null)
+        if (managedValidatorsEnabled != null)
         {
-            return validatorInjectionEnabled;
+            return managedValidatorsEnabled;
         }
 
         initValidatorInjectionEnabled();
-        return validatorInjectionEnabled;
+        return managedValidatorsEnabled;
     }
 
     private static synchronized void initValidatorInjectionEnabled()
     {
-        if (validatorInjectionEnabled != null)
+        if (managedValidatorsEnabled != null)
         {
             return;
         }
 
-        validatorInjectionEnabled = MyfacesConfig.getCurrentInstance(
-                FacesContext.getCurrentInstance().getExternalContext()).isValidatorInjectionEnabled();
+        managedValidatorsEnabled = MyfacesConfig.getCurrentInstance(
+                FacesContext.getCurrentInstance().getExternalContext()).isCdiManagedValidatorsEnabled();
     }
 
     public static Validator resolveManagedValidator(Class<? extends Validator> validatorClass)
     {
-        if (!isValidatorInjectionEnabled())
+        if (!isManagedValidatorsEnabled())
         {
             return null;
         }
@@ -157,7 +157,7 @@ public class ExternalArtifactResolver
             }
             else
             {
-                beanStorage = getContextualReference(beanManager, DependentBeanStorage.class);
+                beanStorage = getContextualReference(beanManager, RequestDependentBeanStorage.class);
             }
 
             //noinspection unchecked

@@ -28,7 +28,7 @@ public class DependentBeanExtension implements Extension
     @SuppressWarnings("UnusedDeclaration")
     public void registerAnnotatedTypes(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager)
     {
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(DependentBeanStorage.class));
+        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(RequestDependentBeanStorage.class));
         beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(ViewDependentBeanStorage.class));
     }
 }

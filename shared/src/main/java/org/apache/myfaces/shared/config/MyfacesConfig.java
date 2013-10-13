@@ -429,15 +429,15 @@ public class MyfacesConfig
     @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="cdi",
             tags="injection",
             desc="Enable or disable CDI support for converters.")
-    private static final String INIT_PARAM_CONVERTER_INJECTION_ENABLED =
-        "org.apache.myfaces.CONVERTER_INJECTION_ENABLED";
-    private static final boolean INIT_PARAM_CONVERTER_INJECTION_DEFAULT = false;
+    private static final String INIT_PARAM_CDI_MANAGED_CONVERTERS_ENABLED =
+        "org.apache.myfaces.CDI_MANAGED_CONVERTERS_ENABLED";
+    private static final boolean INIT_PARAM_CDI_MANAGED_CONVERTERS_DEFAULT = false;
     @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="cdi",
             tags="injection",
             desc="Enable or disable CDI support for validators.")
-    private static final String INIT_PARAM_VALIDATOR_INJECTION_ENABLED =
-        "org.apache.myfaces.VALIDATOR_INJECTION_ENABLED";
-    private static final boolean INIT_PARAM_VALIDATOR_INJECTION_DEFAULT = false;
+    private static final String INIT_PARAM_CDI_MANAGED_VALIDATORS_ENABLED =
+        "org.apache.myfaces.CDI_MANAGED_VALIDATORS_ENABLED";
+    private static final boolean INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT = false;
 
     private boolean _prettyHtml;
     private boolean _detectJavascript;
@@ -471,8 +471,8 @@ public class MyfacesConfig
     private String _gaeJsfJarFiles;
     private String _gaeJsfAnnotationsJarFiles;
     private boolean _earlyFlushEnabled;
-    private boolean _converterInjectionEnabled;
-    private boolean _validatorInjectionEnabled;
+    private boolean _cdiManagedConvertersEnabled;
+    private boolean _cdiManagedValidatorsEnabled;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -574,8 +574,8 @@ public class MyfacesConfig
         setGaeJsfJarFiles(INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT);
         setGaeJsfAnnotationsJarFiles(INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
         setEarlyFlushEnabled(INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT);
-        setConverterInjectionEnabled(INIT_PARAM_CONVERTER_INJECTION_DEFAULT);
-        setValidatorInjectionEnabled(INIT_PARAM_VALIDATOR_INJECTION_DEFAULT);
+        setCdiManagedConvertersEnabled(INIT_PARAM_CDI_MANAGED_CONVERTERS_DEFAULT);
+        setCdiManagedValidatorsEnabled(INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -686,10 +686,10 @@ public class MyfacesConfig
         myfacesConfig.setEarlyFlushEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
                 INIT_PARAM_EARLY_FLUSH_ENABLED, INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT));
 
-        myfacesConfig.setConverterInjectionEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
-                INIT_PARAM_CONVERTER_INJECTION_ENABLED, INIT_PARAM_CONVERTER_INJECTION_DEFAULT));
-        myfacesConfig.setValidatorInjectionEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
-                INIT_PARAM_VALIDATOR_INJECTION_ENABLED, INIT_PARAM_VALIDATOR_INJECTION_DEFAULT));
+        myfacesConfig.setCdiManagedConvertersEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
+                INIT_PARAM_CDI_MANAGED_CONVERTERS_ENABLED, INIT_PARAM_CDI_MANAGED_CONVERTERS_DEFAULT));
+        myfacesConfig.setCdiManagedValidatorsEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
+                INIT_PARAM_CDI_MANAGED_VALIDATORS_ENABLED, INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT));
 
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1219,23 +1219,23 @@ public class MyfacesConfig
         this._earlyFlushEnabled = earlyFlushEnabled;
     }
 
-    public boolean isConverterInjectionEnabled()
+    public boolean isCdiManagedConvertersEnabled()
     {
-        return _converterInjectionEnabled;
+        return _cdiManagedConvertersEnabled;
     }
 
-    public void setConverterInjectionEnabled(boolean converterInjectionEnabled)
+    public void setCdiManagedConvertersEnabled(boolean cdiManagedConvertersEnabled)
     {
-        this._converterInjectionEnabled = converterInjectionEnabled;
+        this._cdiManagedConvertersEnabled = cdiManagedConvertersEnabled;
     }
 
-    public boolean isValidatorInjectionEnabled()
+    public boolean isCdiManagedValidatorsEnabled()
     {
-        return _validatorInjectionEnabled;
+        return _cdiManagedValidatorsEnabled;
     }
 
-    public void setValidatorInjectionEnabled(boolean validatorInjectionEnabled)
+    public void setCdiManagedValidatorsEnabled(boolean cdiManagedValidatorsEnabled)
     {
-        this._validatorInjectionEnabled = validatorInjectionEnabled;
+        this._cdiManagedValidatorsEnabled = cdiManagedValidatorsEnabled;
     }
 }

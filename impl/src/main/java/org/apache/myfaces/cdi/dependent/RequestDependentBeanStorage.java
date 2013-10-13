@@ -21,6 +21,6 @@ package org.apache.myfaces.cdi.dependent;
 import javax.enterprise.context.RequestScoped;
 
 @RequestScoped
-public class DependentBeanStorage extends AbstractBeanStorage
+public class RequestDependentBeanStorage extends AbstractBeanStorage
 {
 }
