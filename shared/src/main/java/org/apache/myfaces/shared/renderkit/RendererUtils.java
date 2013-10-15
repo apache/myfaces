@@ -1265,17 +1265,32 @@ public final class RendererUtils
         {
             final char separatorChar = UINamingContainer
                     .getSeparatorChar(facesContext);
-            if (log.isLoggable(Level.INFO))
+            
+            Level level = Level.WARNING;
+            boolean productionStage = facesContext.isProjectStage(ProjectStage.Production);
+            if (productionStage)
             {
-                log.info("Unable to find component '"
-                        + forAttr
-                        + "' (calling findComponent on component '"
-                        + uiComponent.getClientId(facesContext)
-                        + "')."
-                        + " We'll try to return a guessed client-id anyways -"
-                        + " this will be a problem if you put the referenced component"
-                        + " into a different naming-container. If this is the case, " 
-                        + "you can always use the full client-id.");
+                level = Level.FINE;
+            }
+            if (log.isLoggable(level))
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Unable to find component '");
+                sb.append(forAttr);
+                sb.append("' (calling findComponent on component '");
+                sb.append(uiComponent.getClientId(facesContext));
+                sb.append("'");
+                if (!productionStage)
+                {
+                    sb.append(", viewLocation: ");
+                    sb.append(uiComponent.getAttributes().get(UIComponent.VIEW_LOCATION_KEY));
+                }
+                sb.append(").");
+                sb.append(" We'll try to return a guessed client-id anyways -");
+                sb.append(" this will be a problem if you put the referenced component");
+                sb.append(" into a different naming-container. If this is the case, ");
+                sb.append("you can always use the full client-id.");
+                log.info(sb.toString());
             }
             if (forAttr.length() > 0 && forAttr.charAt(0) == separatorChar)
             {
