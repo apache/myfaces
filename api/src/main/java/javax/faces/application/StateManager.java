@@ -107,7 +107,16 @@ public abstract class StateManager
     public static final String IS_BUILDING_INITIAL_STATE = "javax.faces.IS_BUILDING_INITIAL_STATE";
     
     public static final String IS_SAVING_STATE = "javax.faces.IS_SAVING_STATE";
-    
+
+    /**
+     * Indicate if the state should be serialized before save it on the session.
+     * <p>
+     * Only applicable if state saving method is "server" (= default).
+     * If <code>true</code> (default) the state will be serialized to a byte stream before it is
+     * written to the session.
+     * If <code>false</code> the state will not be serialized to a byte stream.
+     * </p>
+     */
     @JSFWebConfigParam(since="2.2", group="state", tags="performance", 
             defaultValue="false", expectedValues="true,false")
     public static final java.lang.String SERIALIZE_SERVER_STATE_PARAM_NAME = "javax.faces.SERIALIZE_SERVER_STATE";
