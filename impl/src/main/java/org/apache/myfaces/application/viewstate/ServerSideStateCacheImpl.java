@@ -97,8 +97,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * If <code>true</code> (default) the state will be serialized to a byte stream before it is written to the session.
      * If <code>false</code> the state will not be serialized to a byte stream.
      * </p>
+     * @deprecated 
      */
-    @JSFWebConfigParam(defaultValue="false",since="1.1", expectedValues="true,false", group="state", tags="performance")
+    @Deprecated
+    @JSFWebConfigParam(defaultValue="false",since="1.1", expectedValues="true,false", 
+        group="state", tags="performance", deprecated=true)
     public static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
 
     /**
