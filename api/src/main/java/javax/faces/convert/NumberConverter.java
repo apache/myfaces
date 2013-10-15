@@ -133,6 +133,7 @@ public class NumberConverter
                 {
                   dfs.setGroupingSeparator(' ');
                   df.setDecimalFormatSymbols(dfs);
+                  value = value.replace('\u00a0', ' ');
                   changed = true;
                 }
                 
