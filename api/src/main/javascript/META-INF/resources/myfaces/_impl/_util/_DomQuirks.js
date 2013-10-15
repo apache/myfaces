@@ -439,29 +439,7 @@ if (_MF_SINGLTN) {
                     node.htmlFor = val;
                 }
             } else if (attr === "style") {
-                //We have to split the styles here and assign them one by one
-                var styles = val.split(";");
-                var stylesLen = styles.length;
-                for (var loop = 0; loop < stylesLen; loop++) {
-                    var keyVal = styles[loop].split(":");
-                    if (keyVal[0] != "" && keyVal[0] == "opacity") {
-                        //special ie quirks handling for opacity
-
-                        var opacityVal = Math.max(100, Math.round(parseFloat(keyVal[1]) * 10));
-                        //probably does not work in ie mobile anyway
-                        if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
-                            node.style.setAttribute("arrFilter", "alpha(opacity=" + opacityVal + ")");
-                        }
-                        //if you need more hacks I would recommend
-                        //to use the class attribute and conditional ie includes!
-                    } else if (keyVal[0] != "") {
-                        if (!_Browser.isIEMobile || _Browser.isIEMobile >= 7) {
-                            node.style.setAttribute(keyVal[0], keyVal[1]);
-                        } else {
-                            node.style[keyVal[0]] = keyVal[1];
-                        }
-                    }
-                }
+                node.style.cssText = val;
             } else {
                 //check if the attribute is an event, since this applies only
                 //to quirks mode of ie anyway we can live with the standard html4/xhtml
