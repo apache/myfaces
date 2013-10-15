@@ -46,12 +46,13 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
     }
 
     @Override
-    public void inject(Object object) throws InjectionProviderException
+    public Object inject(Object instance) throws InjectionProviderException
     {
+        return null;
     }
 
     @Override
-    public void preDestroy(Object instance) throws InjectionProviderException
+    public void preDestroy(Object instance, Object creationMetaData) throws InjectionProviderException
     {
         InstanceManager manager = instanceManagers
                 .get(ClassUtils.getContextClassLoader());
@@ -74,7 +75,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
     }
 
     @Override
-    public void postConstruct(Object instance) throws InjectionProviderException
+    public void postConstruct(Object instance, Object creationMetaData) throws InjectionProviderException
     {
         InstanceManager manager = instanceManagers
                 .get(ClassUtils.getContextClassLoader());

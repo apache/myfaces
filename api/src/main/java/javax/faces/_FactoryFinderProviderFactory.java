@@ -62,7 +62,7 @@ class _FactoryFinderProviderFactory
     public static final Method INJECTION_PROVIDER_INJECT_METHOD;
     public static final Method INJECTION_PROVIDER_POST_CONSTRUCT_METHOD;
     public static final Method INJECTION_PROVIDER_PRE_DESTROY_METHOD;
-    
+
     static
     {
         Class factoryFinderFactoryClass = null;
@@ -121,9 +121,9 @@ class _FactoryFinderProviderFactory
                 injectionProviderInjectMethod = injectionProviderClass.
                     getMethod("inject", Object.class);
                 injectionProviderPostConstructMethod = injectionProviderClass.
-                    getMethod("postConstruct", Object.class);
+                    getMethod("postConstruct", Object.class, Object.class);
                 injectionProviderPreDestroyMethod = injectionProviderClass.
-                    getMethod("preDestroy", Object.class);
+                    getMethod("preDestroy", Object.class, Object.class);
             }
         }
         catch (Exception e)

@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.cdi.impl;
 
-import org.apache.myfaces.cdi.dependent.DependentInstanceEntry;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
@@ -28,8 +27,6 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.faces.context.ExternalContext;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -39,30 +36,25 @@ public class CDIAnnotationInjectionProvider extends InjectionProvider
 {
     private BeanManager beanManager;
 
-    private Map<Integer, DependentInstanceEntry> facesApplicationDependentBeans =
-            new ConcurrentHashMap<Integer, DependentInstanceEntry>();
-    
     public CDIAnnotationInjectionProvider(ExternalContext externalContext)
     {
         beanManager = CDIUtils.getBeanManager(externalContext);
     }
 
     @Override
-    public void inject(Object instance) throws InjectionProviderException
+    public Object inject(Object instance) throws InjectionProviderException
     {
         AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
         InjectionTarget target = beanManager.createInjectionTarget(annoType);
         CreationalContext<?> creationalContext =  beanManager.createCreationalContext(null);
 
-        facesApplicationDependentBeans.put(
-                System.identityHashCode(instance),
-                new DependentInstanceEntry(instance, creationalContext));
-
         target.inject(instance, creationalContext);
+
+        return creationalContext;
     }
 
     @Override
-    public void postConstruct(Object instance) throws InjectionProviderException
+    public void postConstruct(Object instance, Object creationMetaData) throws InjectionProviderException
     {
         AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
         InjectionTarget target = beanManager.createInjectionTarget(annoType);
@@ -70,17 +62,15 @@ public class CDIAnnotationInjectionProvider extends InjectionProvider
     }
 
     @Override
-    public void preDestroy(Object instance) throws InjectionProviderException
+    public void preDestroy(Object instance, Object creationMetaData) throws InjectionProviderException
     {
-        AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
-        InjectionTarget target = beanManager.createInjectionTarget(annoType);
-        target.preDestroy(instance);
-
-        DependentInstanceEntry entry = facesApplicationDependentBeans.get(System.identityHashCode(instance));
-
-        if (entry != null)
+        if (creationMetaData instanceof CreationalContext)
         {
-            entry.getCreationalContext().release();
+            AnnotatedType annoType = beanManager.createAnnotatedType(instance.getClass());
+            InjectionTarget target = beanManager.createInjectionTarget(annoType);
+            target.preDestroy(instance);
+
+            ((CreationalContext)creationMetaData).release();
         }
     }
 }

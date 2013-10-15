@@ -16,30 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.spi.impl;
+package org.apache.myfaces.cdi.dependent;
 
-import org.apache.myfaces.spi.InjectionProvider;
-import org.apache.myfaces.spi.InjectionProviderException;
-
-public class NoAnnotationInjectionProvider extends InjectionProvider
+public class BeanEntry
 {
+    private final Object instance;
+    private final Object creationMetaData;
 
-    @Override
-    public void postConstruct(Object instance, Object creationMetaData) throws InjectionProviderException
+    public BeanEntry(Object instance, Object creationMetaData)
     {
-        // No op
+        this.instance = instance;
+        this.creationMetaData = creationMetaData;
     }
 
-    @Override
-    public Object inject(Object instance) throws InjectionProviderException
+    public Object getInstance()
     {
-        // No op
-        return null;
+        return instance;
     }
 
-    @Override
-    public void preDestroy(Object instance, Object creationMetaData) throws InjectionProviderException
+    public Object getCreationMetaData()
     {
-        // No op
+        return creationMetaData;
     }
 }

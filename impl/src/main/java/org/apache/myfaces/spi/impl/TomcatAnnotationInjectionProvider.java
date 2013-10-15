@@ -42,11 +42,11 @@ public class TomcatAnnotationInjectionProvider extends InjectionProvider
     }
 
     @Override
-    public void inject(Object object) throws InjectionProviderException
+    public Object inject(Object instance) throws InjectionProviderException
     {
         try
         {
-            annotationProcessor.processAnnotations(object);
+            annotationProcessor.processAnnotations(instance);
         }
         catch (IllegalAccessException ex)
         {
@@ -60,18 +60,19 @@ public class TomcatAnnotationInjectionProvider extends InjectionProvider
         {
             throw new InjectionProviderException(ex);
         }
+        return null;
     }
 
     @Override
-    public void preDestroy(Object o) throws InjectionProviderException
+    public void preDestroy(Object instance, Object creationMetaData) throws InjectionProviderException
     {
         if (log.isLoggable(Level.FINEST))
         {
-            log.info("Destroy instance of " + o.getClass().getName());
+            log.info("Destroy instance of " + instance.getClass().getName());
         }
         try
         {
-            annotationProcessor.preDestroy(o);
+            annotationProcessor.preDestroy(instance);
         }
         catch (IllegalAccessException ex)
         {
@@ -100,11 +101,11 @@ public class TomcatAnnotationInjectionProvider extends InjectionProvider
     }
 
     @Override
-    public void postConstruct(Object o) throws InjectionProviderException
+    public void postConstruct(Object instance, Object creationMetaData) throws InjectionProviderException
     {
         try
         {
-            annotationProcessor.postConstruct(o);
+            annotationProcessor.postConstruct(instance);
         }
         catch (IllegalAccessException ex)
         {

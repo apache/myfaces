@@ -26,11 +26,11 @@ package org.apache.myfaces.spi;
  */
 public abstract class InjectionProvider
 {
-    public abstract void inject(Object instance) throws InjectionProviderException;
+    public abstract Object inject(Object instance) throws InjectionProviderException;
 
-    public abstract void postConstruct(Object instance) throws InjectionProviderException;
+    public abstract void postConstruct(Object instance, Object creationMetaData) throws InjectionProviderException;
 
-    public abstract void preDestroy(Object instance) throws InjectionProviderException;
+    public abstract void preDestroy(Object instance, Object creationMetaData) throws InjectionProviderException;
     
     public boolean isAvailable()
     {

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -131,6 +132,7 @@ import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
+import org.apache.myfaces.cdi.dependent.BeanEntry;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.spi.InjectionProvider;
@@ -181,7 +183,9 @@ public class FacesConfigurator
     private static final String DEFAULT_CLIENT_WINDOW_FACTORY = ClientWindowFactoryImpl.class.getName();
     private static final String DEFAULT_FLOW_FACTORY = FlowHandlerFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
-    
+
+    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
+
     /**
      * Set this attribute if the current configuration requires enable window mode
      */
@@ -207,6 +211,7 @@ public class FacesConfigurator
         }
         _externalContext = externalContext;
 
+        _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
     }
 
     /**
@@ -785,8 +790,14 @@ public class FacesConfigurator
                     _callInjectAndPostConstruct(innerInstance);
                 }
             }
-            getInjectionProvider().inject(instance);
-            getInjectionProvider().postConstruct(instance);
+            List<BeanEntry> injectedBeanStorage =
+                    (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
+
+            Object creationMetaData = getInjectionProvider().inject(instance);
+
+            injectedBeanStorage.add(new BeanEntry(instance, creationMetaData));
+
+            getInjectionProvider().postConstruct(instance, creationMetaData);
         }
         catch (InjectionProviderException ex)
         {
@@ -878,13 +889,19 @@ public class FacesConfigurator
             runtimeConfig.addResourceBundle(bundle);
         }
 
+        List<BeanEntry> injectedBeansAndMetaData =
+                (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
+
         for (String className : dispenser.getElResolvers())
         {
             ELResolver elResolver = (ELResolver) ClassUtils.newInstance(className, ELResolver.class);
             try
             {
-                getInjectionProvider().inject(elResolver);
-                getInjectionProvider().postConstruct(elResolver);
+                Object creationMetaData = getInjectionProvider().inject(elResolver);
+
+                injectedBeansAndMetaData.add(new BeanEntry(elResolver, creationMetaData));
+
+                getInjectionProvider().postConstruct(elResolver, creationMetaData);
             }
             catch (InjectionProviderException e)
             {
@@ -1146,7 +1163,10 @@ public class FacesConfigurator
         // create the lifecycle used by the app
         LifecycleFactory lifecycleFactory
                 = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        
+
+        List<BeanEntry> injectedBeanStorage =
+                (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
+
         //Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
         for (Iterator<String> it = lifecycleFactory.getLifecycleIds(); it.hasNext();)
         {
@@ -1159,8 +1179,12 @@ public class FacesConfigurator
                 {
                     PhaseListener listener = (PhaseListener)
                             ClassUtils.newInstance(listenerClassName, PhaseListener.class);
-                    getInjectionProvider().inject(listener);
-                    getInjectionProvider().postConstruct(listener);
+
+                    Object creationMetaData = getInjectionProvider().inject(listener);
+
+                    injectedBeanStorage.add(new BeanEntry(listener, creationMetaData));
+
+                    getInjectionProvider().postConstruct(listener, creationMetaData);
                     lifecycle.addPhaseListener(listener);
                 }
                 catch (ClassCastException e)

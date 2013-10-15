@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.webapp;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
@@ -32,8 +30,15 @@ import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.cdi.dependent.BeanEntry;
+import org.apache.myfaces.spi.InjectionProvider;
+import org.apache.myfaces.spi.InjectionProviderException;
+import org.apache.myfaces.spi.InjectionProviderFactory;
+import org.apache.myfaces.spi.ViewScopeProvider;
+import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
 import javax.el.ExpressionFactory;
@@ -46,28 +51,17 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyApplicationEvent;
 import javax.faces.event.SystemEvent;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ELResolver;
-import javax.faces.FacesWrapper;
-import javax.faces.FactoryFinder;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import org.apache.myfaces.spi.InjectionProvider;
-import org.apache.myfaces.spi.InjectionProviderException;
-import org.apache.myfaces.spi.InjectionProviderFactory;
-import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.spi.ViewScopeProvider;
-import org.apache.myfaces.spi.ViewScopeProviderFactory;
 
 /**
  * Performs common initialization tasks.
@@ -113,6 +107,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     
     private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
         "javax.enterprise.inject.spi.BeanManager";
+
+    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
 
     /**
      * Performs all necessary initialization tasks like configuring this JSF
@@ -591,74 +587,23 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     {
         InjectionProvider injectionProvider = InjectionProviderFactory.getInjectionProviderFactory(
             facesContext.getExternalContext()).getInjectionProvider(facesContext.getExternalContext());
-        
-        // javax.el.ELResolver
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
-        
-        if (runtimeConfig.getFacesConfigElResolvers() != null)
+        List<BeanEntry> injectedBeanStorage =
+                (List<BeanEntry>)facesContext.getExternalContext().getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
+
+        if (injectedBeanStorage != null)
         {
-            for (ELResolver elResolver : runtimeConfig.getFacesConfigElResolvers())
+            for (BeanEntry entry : injectedBeanStorage)
             {
-                _callPreDestroy(injectionProvider, elResolver);
-            }
-        }
-        
-        //javax.faces.application.NavigationHandler
-        _callPreDestroy(injectionProvider, facesContext.getApplication().getNavigationHandler());
-        
-        //javax.faces.application.ResourceHandler
-        _callPreDestroy(injectionProvider, facesContext.getApplication().getResourceHandler());
-        
-        //javax.faces.application.StateManager
-        _callPreDestroy(injectionProvider, facesContext.getApplication().getStateManager());
-        
-        //javax.faces.event.ActionListener
-        _callPreDestroy(injectionProvider, facesContext.getApplication().getActionListener());
-        
-        // javax.faces.lifecycle.PhaseListener
-        LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        for (Iterator<String> iter = factory.getLifecycleIds(); iter.hasNext();)
-        {
-            Lifecycle lifecycle = factory.getLifecycle(iter.next());
-            if (lifecycle != null)
-            {
-                for (PhaseListener listener : lifecycle.getPhaseListeners())
+                try
                 {
-                    _callPreDestroy(injectionProvider, listener);
+                    injectionProvider.preDestroy(entry.getInstance(), entry.getCreationMetaData());
+                }
+                catch (InjectionProviderException ex)
+                {
+                    log.log(Level.INFO, "Exception on PreDestroy", ex);
                 }
             }
-        }
-        
-        //javax.faces.event.SystemEventListener
-        if (runtimeConfig.getInjectedObjects() != null)
-        {
-            for (Object object : runtimeConfig.getInjectedObjects())
-            {
-                _callPreDestroy(injectionProvider, object);
-            }
-        }
-    }
-    
-    public void _callPreDestroy(InjectionProvider injectionProvider, Object instance)
-    {
-        while (instance != null)
-        {
-            try
-            {
-                injectionProvider.preDestroy(instance);
-                if (instance instanceof FacesWrapper)
-                {
-                    instance = ((FacesWrapper)instance).getWrapped();
-                }
-                else
-                {
-                    instance = null;
-                }
-            }
-            catch (InjectionProviderException ex)
-            {
-                log.log(Level.INFO, "Exception on PreDestroy", ex);
-            }
+            injectedBeanStorage.clear();
         }
     }
 }

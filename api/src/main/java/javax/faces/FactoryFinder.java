@@ -18,17 +18,6 @@
  */
 package javax.faces;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import javax.faces.application.ApplicationFactory;
 import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.context.ExceptionHandlerFactory;
@@ -44,6 +33,20 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.facelets.FaceletCacheFactory;
 import javax.faces.view.facelets.TagHandlerDelegateFactory;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -91,6 +94,10 @@ public final class FactoryFinder
     private static final ClassLoader MYFACES_CLASSLOADER;
     
     private static final String INJECTION_PROVIDER_INSTANCE = "oam.spi.INJECTION_PROVIDER_KEY";
+    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
+    private static final String BEAN_ENTRY_CLASS_NAME = "org.apache.myfaces.cdi.dependent.BeanEntry";
+
+    private static final Logger LOGGER = Logger.getLogger(FactoryFinder.class.getName());
 
     static
     {
@@ -315,6 +322,19 @@ public final class FactoryFinder
             }
         }
 
+        List beanEntryStorage;
+
+        synchronized (factoryClassNames)
+        {
+            beanEntryStorage = (List)factoryMap.get(INJECTED_BEAN_STORAGE_KEY);
+
+            if (beanEntryStorage == null)
+            {
+                beanEntryStorage = new CopyOnWriteArrayList();
+                factoryMap.put(INJECTED_BEAN_STORAGE_KEY, beanEntryStorage);
+            }
+        }
+
         List<String> classNames;
         Object factory;
         Object injectionProvider;
@@ -330,7 +350,7 @@ public final class FactoryFinder
             
             injectionProvider = factoryMap.get(INJECTION_PROVIDER_INSTANCE);
         }
-        
+
         if (injectionProvider == null)
         {
             injectionProvider = getInjectionProvider();
@@ -342,7 +362,7 @@ public final class FactoryFinder
 
         // release lock while calling out
         factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), 
-            classNames.iterator(), classLoader, injectionProvider);
+            classNames.iterator(), classLoader, injectionProvider, beanEntryStorage);
 
         synchronized (factoryClassNames)
         {
@@ -384,16 +404,19 @@ public final class FactoryFinder
         return null;
     }
     
-    private static void injectAndPostConstruct(Object injectionProvider, Object instance)
+    private static void injectAndPostConstruct(Object injectionProvider, Object instance, List injectedBeanStorage)
     {
         if (injectionProvider != null)
         {
             try
             {
-                _FactoryFinderProviderFactory.INJECTION_PROVIDER_INJECT_METHOD.invoke(
+                Object creationMetaData = _FactoryFinderProviderFactory.INJECTION_PROVIDER_INJECT_METHOD.invoke(
                     injectionProvider, instance);
+
+                addBeanEntry(instance, creationMetaData, injectedBeanStorage);
+
                 _FactoryFinderProviderFactory.INJECTION_PROVIDER_POST_CONSTRUCT_METHOD.invoke(
-                    injectionProvider, instance);
+                    injectionProvider, instance, creationMetaData);
             }
             catch (Exception ex)
             {
@@ -402,14 +425,14 @@ public final class FactoryFinder
         }
     }
     
-    private static void preDestroy(Object injectionProvider, Object instance)
+    private static void preDestroy(Object injectionProvider, Object beanEntry)
     {
         if (injectionProvider != null)
         {
             try
             {
                 _FactoryFinderProviderFactory.INJECTION_PROVIDER_PRE_DESTROY_METHOD.invoke(
-                    injectionProvider, instance);
+                    injectionProvider, getInstance(beanEntry), getCreationMetaData(beanEntry));
             }
             catch (Exception ex)
             {
@@ -418,8 +441,56 @@ public final class FactoryFinder
         }
     }
 
+    private static Object getInstance(Object beanEntry)
+    {
+        try
+        {
+            Method getterMethod = getMethod(beanEntry, "getInstance");
+            return getterMethod.invoke(beanEntry);
+        }
+        catch (Exception e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static Object getCreationMetaData(Object beanEntry)
+    {
+        try
+        {
+            Method getterMethod = getMethod(beanEntry, "getCreationMetaData");
+            return getterMethod.invoke(beanEntry);
+        }
+        catch (Exception e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static Method getMethod(Object beanEntry, String methodName) throws NoSuchMethodException
+    {
+        return beanEntry.getClass().getDeclaredMethod(methodName);
+    }
+
+    private static void addBeanEntry(Object instance, Object creationMetaData, List injectedBeanStorage)
+    {
+        try
+        {
+            Class<?> beanEntryClass = _FactoryFinderProviderFactory.classForName(BEAN_ENTRY_CLASS_NAME);
+            Constructor beanEntryConstructor = beanEntryClass.getDeclaredConstructor(Object.class, Object.class);
+
+            Object result = beanEntryConstructor.newInstance(instance, creationMetaData);
+            injectedBeanStorage.add(result);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static Object newFactoryInstance(Class<?> interfaceClass, Iterator<String> classNamesIterator,
-                                             ClassLoader classLoader, Object injectionProvider)
+                                             ClassLoader classLoader, Object injectionProvider,
+                                             List injectedBeanStorage)
     {
         try
         {
@@ -448,7 +519,7 @@ public final class FactoryFinder
                 {
                     // nothing to decorate
                     current = implClass.newInstance();
-                    injectAndPostConstruct(injectionProvider, current);
+                    injectAndPostConstruct(injectionProvider, current, injectedBeanStorage);
                 }
                 else
                 {
@@ -461,7 +532,7 @@ public final class FactoryFinder
                         {
                             // create new decorator wrapping current
                             current = delegationConstructor.newInstance(new Object[] { current });
-                            injectAndPostConstruct(injectionProvider, current);
+                            injectAndPostConstruct(injectionProvider, current, injectedBeanStorage);
                         }
                         catch (InstantiationException e)
                         {
@@ -480,7 +551,7 @@ public final class FactoryFinder
                     {
                         // no decorator pattern support
                         current = implClass.newInstance();
-                        injectAndPostConstruct(injectionProvider, current);
+                        injectAndPostConstruct(injectionProvider, current, injectedBeanStorage);
                     }
                 }
             }
@@ -673,21 +744,30 @@ public final class FactoryFinder
             Object injectionProvider = factoryMap.remove(INJECTION_PROVIDER_INSTANCE);
             if (injectionProvider != null)
             {
-                for (Map.Entry<String, Object> entry : factoryMap.entrySet())
+                List injectedBeanStorage = (List)factoryMap.get(INJECTED_BEAN_STORAGE_KEY);
+
+                FacesException firstException = null;
+                for (Object entry : injectedBeanStorage)
                 {
-                    Object instance = entry.getValue();
-                    while (instance != null)
+                    try
                     {
-                        preDestroy(injectionProvider, instance);
-                        if (instance instanceof FacesWrapper)
+                        preDestroy(injectionProvider, entry);
+                    }
+                    catch (FacesException e)
+                    {
+                        LOGGER.log(Level.SEVERE, "#preDestroy failed", e);
+
+                        if (firstException == null)
                         {
-                            instance = ((FacesWrapper) instance).getWrapped();
-                        }
-                        else
-                        {
-                            instance = null;
+                            firstException = e; //all preDestroy callbacks need to get invoked
                         }
                     }
+                }
+                injectedBeanStorage.clear();
+
+                if (firstException != null)
+                {
+                    throw firstException;
                 }
             }
         }

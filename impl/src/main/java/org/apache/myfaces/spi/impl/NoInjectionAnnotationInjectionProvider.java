@@ -85,11 +85,11 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
     }
 
     @Override
-    public void inject(Object object) throws InjectionProviderException
+    public Object inject(Object instance) throws InjectionProviderException
     {
         try
         {
-            processAnnotations(object);
+            processAnnotations(instance);
         }
         catch (IllegalAccessException ex)
         {
@@ -103,6 +103,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
         {
             throw new InjectionProviderException(ex);
         }
+        return null;
     }
     
     
@@ -125,7 +126,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
      * Call postConstruct method on the specified instance.
      */
     @Override
-    public void postConstruct(Object instance) throws InjectionProviderException
+    public void postConstruct(Object instance, Object creationMetaData) throws InjectionProviderException
     {
         // TODO the servlet spec is not clear about searching in superclass??
         Class clazz = instance.getClass();
@@ -177,7 +178,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
     }
 
     @Override
-    public void preDestroy(Object instance) throws InjectionProviderException
+    public void preDestroy(Object instance, Object creationMetaData) throws InjectionProviderException
     {
 
         // TODO the servlet spec is not clear about searching in superclass??
