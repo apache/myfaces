@@ -291,11 +291,11 @@ public class MyfacesConfig
     /**
      * Wrap content inside script with xml comment to prevent old browsers to display it. By default it is true. 
      */
-    @JSFWebConfigParam(since="2.0.1", expectedValues="true, false, on, off, yes, no", defaultValue="true",
+    @JSFWebConfigParam(since="2.0.1", expectedValues="true, false, on, off, yes, no", defaultValue="false",
             ignoreUpperLowerCase=true, group="render")
     public final static String INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG = 
         "org.apache.myfaces.WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG";
-    public final static boolean INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = true;
+    public final static boolean INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = false;
     
     /**
      * If set true, render the form submit script inline, as in myfaces core 1.2 and earlier versions 
