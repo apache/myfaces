@@ -166,5 +166,21 @@ public class NumberConverterTest extends AbstractJsfTestCase
         assertNotNull(number);
         assertEquals(testValue, number);        
     }
+    
+    @Test
+    public void testCzechLocaleWithNonBreakingSpace()
+    {
+        mock.setLocale(new Locale("cs"));
+        mock.setIntegerOnly(true);
+        mock.setGroupingUsed(true);
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale("cs"));
+        UIInput input = new UIInput();
+        String stringValue = mock.getAsString(facesContext, input, new Long(7000));
+        assertEquals("must return 7&NBSP000", "7\u00a0000", stringValue);
+        
+        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, stringValue);
+        assertNotNull(number);
+        assertEquals(new Long(7000), number);
+    }
 
 }
