@@ -236,8 +236,8 @@ public final class ErrorPageWriter
      * creating the extended component tree is saved under this key in the component's
      * attribute map.
      */
-    //private static final String VISITED_FACET_COUNT_KEY = "org.apache.myfaces.debug.VISITED_FACET_COUNT";
-    private static Map<UIComponent, Integer> visitedFacetCount = new HashMap<UIComponent, Integer>();
+    private static final String VISITED_FACET_COUNT_KEY = "org.apache.myfaces.debug.VISITED_FACET_COUNT";
+    //private static Map<UIComponent, Integer> visitedFacetCount = new HashMap<UIComponent, Integer>();
 
     /**
      * Indicate if myfaces is responsible to handle errors. 
@@ -908,6 +908,7 @@ public final class ErrorPageWriter
         VisitContext visitContext = VisitContext.createVisitContext(
                 facesContext, null, EnumSet.of(VisitHint.SKIP_UNRENDERED));
         facesContext.getViewRoot().visitTree(visitContext, new ExtendedComponentTreeVisitCallback(writer));
+        _clearVisitedFacetCountMap(facesContext);
     }
 
     /**
@@ -946,7 +947,8 @@ public final class ErrorPageWriter
                 {
                     if (parent instanceof UIColumn
                             && ((parent.getChildCount() > 0 && parent.getChildren().get(0) == target)
-                                    ||  (facetName != null &&_getVisitedFacetCount(parent) == 0)))
+                                    ||  (facetName != null &&
+                                            _getVisitedFacetCount(context.getFacesContext(), parent) == 0)))
                     {
                         if (parent.getParent() instanceof UIData
                                 && _isFirstUIColumn(parent.getParent(), (UIColumn) parent))
@@ -969,7 +971,7 @@ public final class ErrorPageWriter
                     if (facetName != null)
                     {
                         _writer.write("<span>" + facetName + "</span>");
-                        _incrementVisitedFacetCount(parent);
+                        _incrementVisitedFacetCount(context.getFacesContext(), parent);
                     }
                     _writer.write("<dl><dt");
                     if (_isText(target))
@@ -1123,12 +1125,13 @@ public final class ErrorPageWriter
                     while (parent != null &&
                            ((parent.getChildCount()>0 && parent.getChildren().get(parent.getChildCount()-1) == target)
                                     || (parent.getFacetCount() != 0
-                                            && _getVisitedFacetCount(parent) == parent.getFacetCount())))
+                                            && _getVisitedFacetCount(context.getFacesContext(), parent) == 
+                                                    parent.getFacetCount())))
                     {
                         // target is last child of parent or the "last" facet
 
                         // remove the visited facet count from the attribute map
-                        _removeVisitedFacetCount(parent);
+                        _removeVisitedFacetCount(context.getFacesContext(), parent);
 
                         // check for componentes that visit their children multiple times
                         if (parent instanceof UIData)
@@ -1206,8 +1209,14 @@ public final class ErrorPageWriter
         return null;
     }
 
-    private static int _getVisitedFacetCount(UIComponent component)
+    private static int _getVisitedFacetCount(FacesContext facesContext, UIComponent component)
     {
+        Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
+            facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
+        if (visitedFacetCount == null)
+        {
+            return 0;
+        }
         Integer count = visitedFacetCount.get(component);
         if (count != null)
         {
@@ -1216,14 +1225,38 @@ public final class ErrorPageWriter
         return 0;
     }
 
-    private static void _incrementVisitedFacetCount(UIComponent component)
+    private static void _incrementVisitedFacetCount(FacesContext facesContext, UIComponent component)
     {
-        visitedFacetCount.put(component, _getVisitedFacetCount(component) + 1);
+        Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
+            facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
+        if (visitedFacetCount == null)
+        {
+            visitedFacetCount = new HashMap<UIComponent, Integer>();
+            facesContext.getAttributes().put(VISITED_FACET_COUNT_KEY, visitedFacetCount);
+        }
+        visitedFacetCount.put(component, _getVisitedFacetCount(facesContext, component) + 1);
     }
 
-    private static void _removeVisitedFacetCount(UIComponent component)
+    private static void _removeVisitedFacetCount(FacesContext facesContext, UIComponent component)
     {
+        Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
+            facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
+        if (visitedFacetCount == null)
+        {
+            return;
+        }
         visitedFacetCount.remove(component);
+    }
+    
+    private static void _clearVisitedFacetCountMap(FacesContext facesContext)
+    {
+        Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
+            facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
+        if (visitedFacetCount != null)
+        {
+            visitedFacetCount.clear();
+            facesContext.getAttributes().remove(VISITED_FACET_COUNT_KEY);
+        }
     }
 
     private static void _writeEnd(Writer writer, UIComponent c) throws IOException
