@@ -20,6 +20,7 @@ package org.apache.myfaces.config;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -97,10 +98,16 @@ public class ManagedBeanDestroyer implements SystemEventListener
             return;
         }
         
-        for (String key : scope.keySet())
+        if (!scope.isEmpty())
         {
-            Object value = scope.get(key);
-            this.destroy(key, value);
+            Set<String> keySet = scope.keySet();
+            String[] keys = keySet.toArray(new String[keySet.size()]);
+            
+            for (String key : keys)
+            {
+                Object value = scope.get(key);
+                this.destroy(key, value);
+            }
         }
     }
     
