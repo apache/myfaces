@@ -20,22 +20,18 @@ package org.apache.myfaces.config;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.event.PreDestroyCustomScopeEvent;
 import javax.faces.event.PreDestroyViewMapEvent;
 import javax.faces.event.ScopeContext;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
-import javax.servlet.ServletContext;
 
 import org.apache.myfaces.config.annotation.LifecycleProvider;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
-import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 
 /**
  * Destroyes managed beans with the current LifecycleProvider.
@@ -102,10 +98,16 @@ public class ManagedBeanDestroyer implements SystemEventListener
             return;
         }
         
-        for (String key : scope.keySet())
+        if (!scope.isEmpty())
         {
-            Object value = scope.get(key);
-            this.destroy(key, value);
+            Set<String> keySet = scope.keySet();
+            String[] keys = keySet.toArray(new String[keySet.size()]);
+            
+            for (String key : keys)
+            {
+                Object value = scope.get(key);
+                this.destroy(key, value);
+            }
         }
     }
     
