@@ -103,6 +103,14 @@ public abstract class HTMLEncoder
                     default:
                         break;
                 }
+                // http://www.w3.org/MarkUp/html3/specialchars.html
+                // From C0 extension U+0000-U+001F only U+0009, U+000A and
+                // U+000D are valid control characters
+                if (c <= 0x1F && c != 0x09 && c != 0x0A && c != 0x0D)
+                {
+                    // Ignore escape character
+                    app = "";
+                }
             }
             else if (encodeNonLatin && (int)c > 0x80)
             {
@@ -225,6 +233,14 @@ public abstract class HTMLEncoder
                         break;
                     default:
                         break;
+                }
+                // http://www.w3.org/MarkUp/html3/specialchars.html
+                // From C0 extension U+0000-U+001F only U+0009, U+000A and
+                // U+000D are valid control characters
+                if (c <= 0x1F && c != 0x09 && c != 0x0A && c != 0x0D)
+                {
+                    // Ignore escape character
+                    app = "";
                 }
             }
             else if (encodeNonLatin && (int)c > 0x80)
@@ -376,6 +392,14 @@ public abstract class HTMLEncoder
                         break;
                     default:
                         break;
+                }
+                // http://www.w3.org/MarkUp/html3/specialchars.html
+                // From C0 extension U+0000-U+001F only U+0009, U+000A and
+                // U+000D are valid control characters
+                if (c <= 0x1F && c != 0x09 && c != 0x0A && c != 0x0D)
+                {
+                    // Ignore escape character
+                    app = "";
                 }
             }
             else if (encodeNonLatin && (int)c > 0x80)
