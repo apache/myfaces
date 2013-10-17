@@ -427,9 +427,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                 //TODO: Log using a localized message (which one?)
                 if (log.isLoggable(Level.SEVERE))
                 {
-                    log.severe("Error trying to load resource " + resourceName
+                    log.log(Level.SEVERE,"Error trying to load resource " + resourceName
                             + " with library " + libraryName + " :"
-                            + e.getMessage());
+                            + e.getMessage(), e);
                 }
                 httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
