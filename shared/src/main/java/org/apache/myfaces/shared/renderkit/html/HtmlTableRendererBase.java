@@ -483,6 +483,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 }
 
                 List children = null;
+                int columnStyleIndex = 0;
                 for (int j = 0, size = getChildCount(component); j < size; j++)
                 {
                     if (children == null)
@@ -496,16 +497,18 @@ public class HtmlTableRendererBase extends HtmlRenderer
                         
                         if (columnRendering)
                         {
-                            beforeColumn(facesContext, uiData, j);
+                            beforeColumn(facesContext, uiData, columnStyleIndex);
                         }
                            
                         encodeColumnChild(facesContext, writer, uiData, child, 
-                                styles, nc * uiData.getChildCount() + j);                    
+                                styles, nc * uiData.getChildCount() + columnStyleIndex);
                        
                         if (columnRendering)
                         {
-                            afterColumn(facesContext, uiData, j);
+                            afterColumn(facesContext, uiData, columnStyleIndex);
                         }
+                        columnStyleIndex = columnStyleIndex + 
+                            getColumnCountForComponent(facesContext, uiData, child);
                     }
                 }
 
@@ -582,6 +585,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
             renderRowStart(facesContext, writer, uiData, styles, currentRow);
             
             List<UIComponent> children = null;
+            int columnStyleIndex = 0;
             for (int j = 0, size = getChildCount(component); j < size; j++)
             {
                 if (children == null)
@@ -595,16 +599,18 @@ public class HtmlTableRendererBase extends HtmlRenderer
                     
                     if (columnRendering)
                     {
-                        beforeColumn(facesContext, uiData, j);
+                        beforeColumn(facesContext, uiData, columnStyleIndex);
                     }
                        
                     encodeColumnChild(facesContext, writer, uiData, child, 
-                            styles, j);                    
+                            styles, columnStyleIndex);
                    
                     if (columnRendering)
                     {
-                        afterColumn(facesContext, uiData, j);
+                        afterColumn(facesContext, uiData, columnStyleIndex);
                     }
+                    columnStyleIndex = columnStyleIndex + 
+                            getColumnCountForComponent(facesContext, uiData, child);
                 }
             }
 
@@ -819,6 +825,22 @@ public class HtmlTableRendererBase extends HtmlRenderer
      */
     protected void afterColumn(FacesContext facesContext, UIData uiData, int columnIndex) throws IOException
     {        
+    }
+    /**
+     * Indicates the number of columns the component represents. By default each UIColumn instance
+     * is 1 column
+     * @param facesContext
+     * @param uiData
+     * @param child
+     * @return 
+     */
+    protected int getColumnCountForComponent(FacesContext facesContext, UIData uiData, UIComponent child)
+    {
+        if (child instanceof UIColumn)
+        {
+            return 1;
+        }
+        return 0;
     }
     /**
      *Perform any operations necessary immediately before each column child's header or footer is rendered
