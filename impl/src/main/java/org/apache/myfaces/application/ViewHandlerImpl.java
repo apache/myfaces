@@ -248,7 +248,14 @@ public class ViewHandlerImpl extends ViewHandler
        //        .getViewDeclarationLanguage(context, calculatedViewId)
        //            .createView(context, calculatedViewId);
        // -= Leonardo Uribe =- Temporally reverted by TCK issues.
-       return getViewDeclarationLanguage(context,calculatedViewId).createView(context,calculatedViewId);
+       ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
+       if (vdl == null)
+       {
+           // If there is no VDL that can handle the view, throw 404 response.
+           sendSourceNotFound(context, viewId);
+           return null;
+       }
+       return vdl.createView(context,calculatedViewId);
     }
 
     @Override
@@ -310,7 +317,15 @@ public class ViewHandlerImpl extends ViewHandler
         //        .getViewDeclarationLanguage(context,calculatedViewId)
         //            .restoreView(context, calculatedViewId);
         // -= Leonardo Uribe =- Temporally reverted by TCK issues.
-        return getViewDeclarationLanguage(context,calculatedViewId).restoreView(context, calculatedViewId); 
+        ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
+        if (vdl == null)
+        {
+            // If there is no VDL that can handle the view, throw 404 response.
+            sendSourceNotFound(context, viewId);
+            return null;
+            
+        }
+        return vdl.restoreView(context, calculatedViewId); 
     }
     
     @Override

@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,8 +41,10 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 import javax.faces.webapp.FacesServlet;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
@@ -57,6 +60,8 @@ class RestoreViewExecutor extends PhaseExecutor
     private static final Logger log = Logger.getLogger(RestoreViewExecutor.class.getName());
     
     private RestoreViewSupport _restoreViewSupport;
+    
+    private Boolean _viewNotFoundCheck;
     
     @Override
     public void doPrePhaseActions(FacesContext facesContext)
@@ -119,18 +124,53 @@ class RestoreViewExecutor extends PhaseExecutor
                 log.finest("Request is a postback");
             }
 
+            if (checkViewNotFound(facesContext))
+            {
+                String derivedViewId = viewHandler.deriveLogicalViewId(facesContext, viewId);
+                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
+                    derivedViewId);
+            
+                // viewHandler.deriveLogicalViewId() could trigger an InvalidViewIdException, which
+                // it is handled internally sending a 404 error code set the response as complete.
+                if (facesContext.getResponseComplete())
+                {
+                    return true;
+                }
+            
+                if (vdl == null || derivedViewId == null)
+                {
+                    sendSourceNotFound(facesContext, viewId);
+                    return true;
+                }
+                else if (!restoreViewSupport.checkViewExists(facesContext, derivedViewId))
+                {
+                    sendSourceNotFound(facesContext, viewId);
+                    return true;
+                }
+            }
+            
             try
             {
                 facesContext.setProcessingEvents(false);
                 // call ViewHandler.restoreView(), passing the FacesContext instance for the current request and the 
                 // view identifier, and returning a UIViewRoot for the restored view.
+                
                 viewRoot = viewHandler.restoreView(facesContext, viewId);
                 if (viewRoot == null)
                 {
-                    // If the return from ViewHandler.restoreView() is null, throw a ViewExpiredException with an 
-                    // appropriate error message.
-                    throw new ViewExpiredException("No saved view state could be found for the view identifier: "
+                    if (facesContext.getResponseComplete())
+                    {
+                        // If the view handler cannot restore the view and the response
+                        // is complete, it can be an error or some logic in restoreView.
+                        return true;
+                    }
+                    else
+                    {
+                        // If the return from ViewHandler.restoreView() is null, throw a ViewExpiredException with an 
+                        // appropriate error message.
+                        throw new ViewExpiredException("No saved view state could be found for the view identifier: "
                                                    + viewId, viewId);
+                    }
                 }
                 
                 // Store the restored UIViewRoot in the FacesContext.
@@ -154,14 +194,28 @@ class RestoreViewExecutor extends PhaseExecutor
             
             //viewHandler.deriveViewId(facesContext, viewId)
             //restoreViewSupport.deriveViewId(facesContext, viewId)
-            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
-                    viewHandler.deriveLogicalViewId(facesContext, viewId));
+            String logicalViewId = viewHandler.deriveLogicalViewId(facesContext, viewId);
+            ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, logicalViewId);
             
             // viewHandler.deriveLogicalViewId() could trigger an InvalidViewIdException, which
             // it is handled internally sending a 404 error code set the response as complete.
             if (facesContext.getResponseComplete())
             {
                 return true;
+            }
+            
+            if (checkViewNotFound(facesContext))
+            {
+                if (vdl == null || logicalViewId == null)
+                {
+                    sendSourceNotFound(facesContext, viewId);
+                    return true;
+                }
+                else if (!restoreViewSupport.checkViewExists(facesContext, logicalViewId))
+                {
+                    sendSourceNotFound(facesContext, viewId);
+                    return true;
+                }
             }
             
             if (vdl != null)
@@ -207,6 +261,13 @@ class RestoreViewExecutor extends PhaseExecutor
                 // call ViewHandler.createView(), passing the FacesContext instance for the current request and 
                 // the view identifier
                 viewRoot = viewHandler.createView(facesContext, viewId);
+            }
+            
+            if (viewRoot == null && facesContext.getResponseComplete())
+            {
+                // If the view handler cannot create the view and the response
+                // is complete, it can be an error, just get out of the algorithm.
+                return true;
             }
             
             // Subscribe the newly created UIViewRoot instance to the AfterAddToParent event, passing the 
@@ -308,5 +369,30 @@ class RestoreViewExecutor extends PhaseExecutor
     public PhaseId getPhase()
     {
         return PhaseId.RESTORE_VIEW;
+    }
+    
+    protected boolean checkViewNotFound(FacesContext facesContext)
+    {
+        if (_viewNotFoundCheck == null)
+        {
+            
+            _viewNotFoundCheck = MyfacesConfig.getCurrentInstance(
+                facesContext.getExternalContext()).isStrictJsf2ViewNotFound();
+        }
+        return _viewNotFoundCheck;
+    }
+    
+    private void sendSourceNotFound(FacesContext context, String message)
+    {
+        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+        try
+        {
+            context.responseComplete();
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, message);
+        }
+        catch (IOException ioe)
+        {
+            throw new FacesException(ioe);
+        }
     }
 }

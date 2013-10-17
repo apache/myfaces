@@ -2746,7 +2746,17 @@ public class FaceletViewDeclarationLanguage extends ViewDeclarationLanguageBase
                     // inside createView(context,viewId), calculateViewId() is called and
                     // the result is stored inside created UIViewRoot, so we can safely take the derived
                     // viewId from there.
-                    Facelet facelet = _getViewMetadataFacelet(view.getViewId());
+                    Facelet facelet = null;
+                    try
+                    {
+                        facelet = _getViewMetadataFacelet(view.getViewId());
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        sendSourceNotFound(context, getViewId());
+                        return null;
+                    }
+
                     facelet.apply(context, view);
                 }
 

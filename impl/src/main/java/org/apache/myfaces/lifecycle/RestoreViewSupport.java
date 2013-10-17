@@ -82,4 +82,13 @@ public interface RestoreViewSupport
      * @return
      */
     boolean isPostback(FacesContext facesContext);
+    
+    /**
+     * Check if a view exists
+     * 
+     * @param facesContext
+     * @param viewId
+     * @return 
+     */
+    boolean checkViewExists(FacesContext facesContext, String viewId);
 }
