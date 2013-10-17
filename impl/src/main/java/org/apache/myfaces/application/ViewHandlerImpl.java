@@ -256,7 +256,14 @@ public class ViewHandlerImpl extends ViewHandler
        //        .getViewDeclarationLanguage(context, calculatedViewId)
        //            .createView(context, calculatedViewId);
        // -= Leonardo Uribe =- Temporally reverted by TCK issues.
-       return getViewDeclarationLanguage(context,calculatedViewId).createView(context,calculatedViewId);
+       ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
+       if (vdl == null)
+       {
+           // If there is no VDL that can handle the view, throw 404 response.
+           sendSourceNotFound(context, viewId);
+           return null;
+       }
+       return vdl.createView(context,calculatedViewId);
     }
 
     @Override
@@ -274,9 +281,22 @@ public class ViewHandlerImpl extends ViewHandler
         checkNull(path, "path");
         if (path.length() > 0 && path.charAt(0) == '/')
         {
-            return facesContext.getExternalContext().getRequestContextPath() + path;
+            String contextPath = facesContext.getExternalContext().getRequestContextPath();
+            if (contextPath == null)
+            {
+                return path;
+            }
+            else if (contextPath.length() == 1 && contextPath.charAt(0) == '/')
+            {
+                // If the context path is root, it is not necessary to append it, otherwise
+                // and extra '/' will be set.
+                return path;
+            }
+            else
+            {
+                return  contextPath + path;
+            }
         }
-
         return path;
 
     }
@@ -309,7 +329,15 @@ public class ViewHandlerImpl extends ViewHandler
         //        .getViewDeclarationLanguage(context,calculatedViewId)
         //            .restoreView(context, calculatedViewId);
         // -= Leonardo Uribe =- Temporally reverted by TCK issues.
-        return getViewDeclarationLanguage(context,calculatedViewId).restoreView(context, calculatedViewId); 
+        ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
+        if (vdl == null)
+        {
+            // If there is no VDL that can handle the view, throw 404 response.
+            sendSourceNotFound(context, viewId);
+            return null;
+            
+        }
+        return vdl.restoreView(context, calculatedViewId); 
     }
     
     @Override

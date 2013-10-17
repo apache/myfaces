@@ -258,6 +258,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     {
                         viewParameters = metadata.getViewParameters(view);
                     }
+                    // If no view and response complete there is no need to continue
+                    if (view == null && context.getResponseComplete())
+                    {
+                        return null;
+                    }
                 }
                 if (view == null)
                 {

@@ -41,6 +41,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
+import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.application.FacesServletMapping;
@@ -48,6 +49,7 @@ import org.apache.myfaces.shared.application.InvalidViewIdException;
 import org.apache.myfaces.shared.util.Assert;
 import org.apache.myfaces.shared.util.ConcurrentLRUCache;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -72,15 +74,25 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     //private final Log log = LogFactory.getLog(DefaultRestoreViewSupport.class);
     private final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
 
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler",
-                       tags="performance", classType="java.lang.Integer")
+    /**
+     * Controls the size of the cache used to "remember" if a view exists or not.
+     */
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", 
+            classType="java.lang.Integer",
+            desc="Controls the size of the cache used to 'remember' if a view exists or not.")
     private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
     private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
 
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="viewhandler",
-                       expectedValues="true,false", tags="performance")
-    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE
-            = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
+    /**
+     * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
+     * sucesive calls to ExternalContext.getResource().
+     */
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
+            tags="performance",
+            desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact " +
+                 "of sucesive calls to ExternalContext.getResource().")
+    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = 
+        "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
     private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
     
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
@@ -505,7 +517,6 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         //Otherwise return null.
         return null;
     }
-
     protected boolean checkResourceExists(FacesContext context, String viewId)
     {
         try
@@ -516,16 +527,41 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
                         viewId);
                 if (resourceExists == null)
                 {
-                    resourceExists = context.getExternalContext().getResource(
-                            viewId) != null;
+                    ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
+                            .getViewDeclarationLanguage(context, viewId);
+                    if (vdl != null)
+                    {
+                        resourceExists = vdl.viewExists(context, viewId);
+                    }
+                    else
+                    {
+                        // Fallback to default strategy
+                        resourceExists = context.getExternalContext().getResource(
+                                viewId) != null;
+                    }
                     getCheckedViewIDMap(context).put(viewId, resourceExists);
                 }
                 return resourceExists;
             }
-
-            if (context.getExternalContext().getResource(viewId) != null)
+            else
             {
-                return true;
+                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
+                            .getViewDeclarationLanguage(context, viewId);
+                if (vdl != null)
+                {
+                    if (vdl.viewExists(context, viewId))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    // Fallback to default strategy
+                    if (context.getExternalContext().getResource(viewId) != null)
+                    {
+                        return true;
+                    }
+                }
             }
         }
         catch(MalformedURLException e)
@@ -533,6 +569,11 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             //ignore and move on
         }     
         return false;
+    }
+
+    public boolean checkViewExists(FacesContext facesContext, String viewId)
+    {
+        return checkResourceExists(facesContext, viewId);
     }
 
     /**
@@ -615,18 +656,18 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         if (_checkedViewIdCacheEnabled == null)
         {
-            //first, check to make sure that ProjectStage is production, if not, skip caching
-            if (!context.isProjectStage(ProjectStage.Production))
+            // first, check if the ProjectStage is development and skip caching in this case
+            if (context.isProjectStage(ProjectStage.Development))
             {
                 _checkedViewIdCacheEnabled = Boolean.FALSE;
-                return _checkedViewIdCacheEnabled;
             }
-
-            //if in production, make sure that the cache is not explicitly disabled via context param
-            String configParam = context.getExternalContext().getInitParameter(
-                    CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE);
-            _checkedViewIdCacheEnabled = configParam == null ? CHECKED_VIEWID_CACHE_ENABLED_DEFAULT
-                    : Boolean.parseBoolean(configParam);
+            else
+            {
+                // in all ohter cases, make sure that the cache is not explicitly disabled via context param
+                _checkedViewIdCacheEnabled = WebConfigParamUtils.getBooleanInitParameter(context.getExternalContext(),
+                        CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE,
+                        CHECKED_VIEWID_CACHE_ENABLED_DEFAULT);
+            }
 
             if (log.isLoggable(Level.FINE))
             {
@@ -641,10 +682,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     {
         ExternalContext externalContext = context.getExternalContext();
 
-        String configParam = externalContext == null ? null : externalContext
-                .getInitParameter(CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE);
-        return configParam == null ? CHECKED_VIEWID_CACHE_DEFAULT_SIZE
-                : Integer.parseInt(configParam);
+        return WebConfigParamUtils.getIntegerInitParameter(externalContext,
+                CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE, CHECKED_VIEWID_CACHE_DEFAULT_SIZE);
     }
-
 }
