@@ -68,7 +68,9 @@ public class HtmlButtonRendererBase
                 facesContext, uiComponent, UICommand.class);
 
         //super.decode must not be called, because value is handled here
-        if (!isReset(uiComponent) && isSubmitted(facesContext, uiComponent))
+        boolean disabled = isDisabled(facesContext, uiComponent);
+        if (!isReset(uiComponent) && isSubmitted(facesContext, uiComponent) &&
+            !disabled)
         {
             uiComponent.queueEvent(new ActionEvent(uiComponent));
 
@@ -77,7 +79,7 @@ public class HtmlButtonRendererBase
         }
         
         if (uiComponent instanceof ClientBehaviorHolder &&
-                !HtmlRendererUtils.isDisabled(uiComponent))
+                !disabled)
         {
             HtmlRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
         }

@@ -84,7 +84,8 @@ public abstract class HtmlLinkRendererBase
         {
             String clientId = component.getClientId(facesContext);
             FormInfo formInfo = findNestingForm(component, facesContext);
-            if (formInfo != null)
+            boolean disabled = HtmlRendererUtils.isDisabled(component);
+            if (formInfo != null && !disabled)
             {
                 String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
                         HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
@@ -97,7 +98,7 @@ public abstract class HtmlLinkRendererBase
                 }
             }
             if (component instanceof ClientBehaviorHolder &&
-                    !HtmlRendererUtils.isDisabled(component))
+                    !disabled)
             {
                 HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
             }
