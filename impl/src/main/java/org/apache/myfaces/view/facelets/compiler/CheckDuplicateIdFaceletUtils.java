@@ -20,8 +20,14 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
+import javax.faces.view.Location;
+
+import org.apache.myfaces.shared.renderkit.RendererUtils;
 
 /**
  *
@@ -51,7 +57,8 @@ public final class CheckDuplicateIdFaceletUtils
         
         if (existingIds.contains (id))
         {
-            throw new IllegalStateException ("component with duplicate id \"" + id + "\" found");
+            DuplicateIdException duplicateIdException = createAndQueueException(context, component, id);
+            throw duplicateIdException;
         }
         
         existingIds.add (id);
@@ -97,7 +104,8 @@ public final class CheckDuplicateIdFaceletUtils
         
         if (existingIds.contains (id))
         {
-            throw new IllegalStateException ("component with duplicate id \"" + id + "\" found");
+            DuplicateIdException duplicateIdException = createAndQueueException(context, component, id);
+            throw duplicateIdException;
         }
         
         existingIds.add (id);
@@ -115,5 +123,41 @@ public final class CheckDuplicateIdFaceletUtils
             UIComponent child = component.getChildren().get(i);
             checkIds (context, child, existingIds);
         }
+    }
+
+    private static DuplicateIdException createAndQueueException(FacesContext context, UIComponent component, String id)
+    {
+        String message = "Component with duplicate id \"" + id + "\" found. The first component is ";
+
+        
+        // We report as problematic the second component. The client (an exception handler mostly)
+        // has the possibility to report all about the second component, 
+        // but the first component is hard to find, especially in large view with tons of naming containers
+        // So we do here two things:
+        // 1) provide an info about the first component in exception message 
+        UIComponent firstComponent = context.getViewRoot().findComponent(id);
+        Location location = (Location) firstComponent.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
+        if (location != null)
+        {
+            message += location.toString();
+        }
+        else
+        {
+            // location is not available in production mode or if the component
+            // doesn't come from Facelets VDL.
+            message += RendererUtils.getPathToComponent(firstComponent);
+        }
+        
+        // 2) we store the first commponent in exception attributes
+        DuplicateIdException duplicateIdException = new DuplicateIdException 
+                (message, firstComponent, component);
+        
+        ExceptionQueuedEventContext exceptionContext 
+        = new ExceptionQueuedEventContext(context, duplicateIdException,
+                component, context.getCurrentPhaseId());
+
+        
+        context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, exceptionContext);
+        return duplicateIdException;
     }
 }
