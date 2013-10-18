@@ -19,6 +19,9 @@
 package org.apache.myfaces.webapp;
 
 import java.util.Enumeration;
+import javax.faces.context.ExceptionHandler;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextAttributeEvent;
@@ -36,6 +39,10 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.myfaces.config.ManagedBeanDestroyer;
+import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.spi.ViewScopeProvider;
 
 /**
@@ -145,7 +152,30 @@ public class ManagedBeanDestroyerListener implements
         // with attributeRemoved, but on cdi a wrapper is used instead, avoiding the problem.
         if (_viewScopeHandler != null)
         {
-            _viewScopeHandler.onSessionDestroyed();
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext != null)
+            {
+                _viewScopeHandler.onSessionDestroyed();
+            }
+            else
+            {
+                // In case no FacesContext is available, we are on session invalidation
+                // through timeout. In that case, create a dummy FacesContext for this one
+                // like the one used in startup or shutdown and invoke the destroy method.
+                try
+                {
+                    ServletContext servletContext = event.getSession().getServletContext();
+                    ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
+                    ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
+                    facesContext = new StartupFacesContextImpl(externalContext, 
+                            (ReleaseableExternalContext) externalContext, exceptionHandler, false);
+                    _viewScopeHandler.onSessionDestroyed();
+                }
+                finally
+                {
+                    facesContext.release();
+                }
+            }
         }
     }
     
