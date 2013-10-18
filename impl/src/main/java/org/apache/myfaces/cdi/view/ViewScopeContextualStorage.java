@@ -88,10 +88,13 @@ public class ViewScopeContextualStorage implements Serializable
         instanceInfo.setContextualInstance(bean.create(creationalContext));
 
         contextualInstances.put(beanKey, instanceInfo);
-        String name = ((Bean<T>) bean).getName();
-        if (name != null)
+        if(bean instanceof Bean)
         {
-            nameBeanKeyMap.put(name, beanKey);
+            String name = ((Bean<T>) bean).getName();
+            if (name != null)
+            {
+                nameBeanKeyMap.put(name, beanKey);
+            }
         }
 
         return instanceInfo.getContextualInstance();
