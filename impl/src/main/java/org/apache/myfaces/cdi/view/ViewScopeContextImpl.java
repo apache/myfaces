@@ -270,10 +270,10 @@ public class ViewScopeContextImpl implements Context
     
     public static void destroyAllActive(ViewScopeContextualStorage storage)
     {
-        Map<String, Object> nameBeanKeyMap = storage.getNameBeanKeyMap();
+        //Map<String, Object> nameBeanKeyMap = storage.getNameBeanKeyMap();
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
         
-        nameBeanKeyMap.clear();
+        //nameBeanKeyMap.clear();
         
         for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
         {
@@ -286,9 +286,9 @@ public class ViewScopeContextImpl implements Context
                     contextualInstanceInfo.getCreationalContext());
             }
         }
-        contextMap.clear();
+        //contextMap.clear();
     }
-
+    
     /**
      * Make sure that the Context is really active.
      * @throws ContextNotActiveException if there is no active

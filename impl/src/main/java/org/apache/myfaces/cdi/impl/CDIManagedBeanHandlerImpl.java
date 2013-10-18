@@ -20,10 +20,13 @@ package org.apache.myfaces.cdi.impl;
 
 import java.util.Map;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import org.apache.myfaces.cdi.DefaultCDIViewScopeHandler;
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.cdi.view.ApplicationContextBean;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
@@ -43,8 +46,15 @@ public class CDIManagedBeanHandlerImpl extends DefaultCDIViewScopeHandler
     
     public CDIManagedBeanHandlerImpl()
     {
-        beanManager = CDIUtils.getBeanManager(
-            FacesContext.getCurrentInstance().getExternalContext());
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        beanManager = CDIUtils.getBeanManager(externalContext);
+        Object context = externalContext.getContext();
+        if (context instanceof ServletContext)
+        {
+            ApplicationContextBean appBean = CDIUtils.lookup(beanManager, 
+                ApplicationContextBean.class);
+            appBean.setServletContext((ServletContext) context);
+        }
     }
     
     private ViewScopeBeanHolder getViewScopeBeanHolder()

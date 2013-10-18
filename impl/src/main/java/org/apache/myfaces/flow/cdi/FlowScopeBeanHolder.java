@@ -26,15 +26,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.context.ExceptionHandler;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowHandler;
 import javax.faces.lifecycle.ClientWindow;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
+import org.apache.myfaces.cdi.view.ApplicationContextBean;
+import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
+import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.flow.FlowReference;
+import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 
 
 /**
@@ -62,6 +72,9 @@ public class FlowScopeBeanHolder implements Serializable
     private static final String FLOW_SCOPE_PREFIX = "oam.flow.SCOPE";
     
     public static final String FLOW_SCOPE_PREFIX_KEY = FLOW_SCOPE_PREFIX+".KEY";
+    
+    @Inject
+    ApplicationContextBean applicationContextBean;
 
     public FlowScopeBeanHolder()
     {
@@ -181,6 +194,46 @@ public class FlowScopeBeanHolder implements Serializable
         for (ContextualStorage contextualStorage : oldWindowContextStorages.values())
         {
             FlowScopedContextImpl.destroyAllActive(contextualStorage);
+        }
+    }
+    
+    /**
+     * See description on ViewScopeBeanHolder for details about how this works
+     */
+    @PreDestroy
+    public void destroyBeansOnPreDestroy()
+    {
+        Map<String, ContextualStorage> oldWindowContextStorages = forceNewStorage();
+        if (!oldWindowContextStorages.isEmpty())
+        {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext == null &&
+                applicationContextBean.getServletContext() != null)
+            {
+                try
+                {
+                    ServletContext servletContext = applicationContextBean.getServletContext();
+                    ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
+                    ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
+                    facesContext = new StartupFacesContextImpl(externalContext, 
+                            (ReleaseableExternalContext) externalContext, exceptionHandler, false);
+                    for (ContextualStorage contextualStorage : oldWindowContextStorages.values())
+                    {
+                        FlowScopedContextImpl.destroyAllActive(contextualStorage);
+                    }
+                }
+                finally
+                {
+                    facesContext.release();
+                }
+            }
+            else
+            {
+                for (ContextualStorage contextualStorage : oldWindowContextStorages.values())
+                {
+                    FlowScopedContextImpl.destroyAllActive(contextualStorage);
+                }
+            }
         }
     }
     
