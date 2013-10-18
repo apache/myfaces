@@ -538,7 +538,10 @@ public class FlashImpl extends Flash
         final PhaseId currentPhaseId = facesContext.getCurrentPhaseId();
         
         boolean lastPhaseNormalRequest = PhaseId.RENDER_RESPONSE.equals(currentPhaseId);
-        boolean lastPhaseIfRedirect = PhaseId.INVOKE_APPLICATION.equals(currentPhaseId) 
+        // According to the spec, if there is a redirect, responseComplete() 
+        // has been called, and Flash.setRedirect() has been called too,
+        // so we just need to check both are present.
+        boolean lastPhaseIfRedirect = facesContext.getResponseComplete()
                 && _isRedirectTrueOnThisRequest(facesContext);
         
         return lastPhaseNormalRequest || lastPhaseIfRedirect;

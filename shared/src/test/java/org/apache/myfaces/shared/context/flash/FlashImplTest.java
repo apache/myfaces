@@ -471,7 +471,8 @@ public class FlashImplTest extends AbstractViewControllerTestCase
         _flash.setRedirect(true);
         assertTrue("setRedirect(true) was just called, thus isRedirect() must be true",
                 _flash.isRedirect());
-        
+        // The redirect cause responseComplete() method to be called.
+        facesContext.responseComplete();
         // note that setRedirect(true) was called, thus the cleanup happens
         // in phase 5, because doPostPhaseActions() won't be called on phase 6.
         _flash.doPostPhaseActions(facesContext);
@@ -592,6 +593,8 @@ public class FlashImplTest extends AbstractViewControllerTestCase
         _flash.setRedirect(true);
         assertTrue("setRedirect(true) was just called, thus isRedirect() must be true",
                 _flash.isRedirect());
+        // The redirect cause responseComplete() method to be called.
+        facesContext.responseComplete();
         
         // note that setRedirect(true) was called, thus the cleanup happens
         // in phase 5, because doPostPhaseActions() won't be called on phase 6.
@@ -630,6 +633,8 @@ public class FlashImplTest extends AbstractViewControllerTestCase
         _flash.setKeepMessages(true);
         assertTrue("setKeepMessages(true) was just called, thus isKeepMessages() "
                 + "must be true.", _flash.isKeepMessages());
+        // The redirect cause responseComplete() method to be called.
+        facesContext.responseComplete();
         
         _flash.doPostPhaseActions(facesContext);
         
