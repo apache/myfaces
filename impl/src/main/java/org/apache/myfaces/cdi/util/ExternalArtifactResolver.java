@@ -21,7 +21,6 @@ package org.apache.myfaces.cdi.util;
 import org.apache.myfaces.cdi.dependent.AbstractBeanStorage;
 import org.apache.myfaces.cdi.dependent.DependentBeanEntry;
 import org.apache.myfaces.cdi.dependent.RequestDependentBeanStorage;
-import org.apache.myfaces.cdi.dependent.ViewDependentBeanStorage;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.util.ExternalSpecifications;
 
@@ -33,7 +32,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.validator.Validator;
-import java.io.Serializable;
 import java.util.Set;
 
 public class ExternalArtifactResolver
@@ -144,16 +142,8 @@ public class ExternalArtifactResolver
 
         if (bean.getScope().equals(Dependent.class))
         {
-            AbstractBeanStorage beanStorage;
-
-            if (Serializable.class.isAssignableFrom(bean.getBeanClass()))
-            {
-                beanStorage = getContextualReference(beanManager, ViewDependentBeanStorage.class);
-            }
-            else
-            {
-                beanStorage = getContextualReference(beanManager, RequestDependentBeanStorage.class);
-            }
+            //TODO add serializable check again or remove this TODO once MYFACES-3805 is clarified
+            AbstractBeanStorage beanStorage = getContextualReference(beanManager, RequestDependentBeanStorage.class);
 
             //noinspection unchecked
             beanStorage.add(new DependentBeanEntry(result, bean, creationalContext));

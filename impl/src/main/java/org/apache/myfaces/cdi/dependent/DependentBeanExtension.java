@@ -29,6 +29,5 @@ public class DependentBeanExtension implements Extension
     public void registerAnnotatedTypes(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager)
     {
         beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(RequestDependentBeanStorage.class));
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(ViewDependentBeanStorage.class));
     }
 }
