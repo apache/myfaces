@@ -574,10 +574,10 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor(key);
         if (propertyDescriptor == null)
         {
-            //if (value == null)
-            //{
-            //    throw new NullPointerException("value is null for a not available property: " + key);
-            //}
+            if (value == null)
+            {
+                throw new NullPointerException("value is null for a not available property: " + key);
+            }
         }
         else
         {
