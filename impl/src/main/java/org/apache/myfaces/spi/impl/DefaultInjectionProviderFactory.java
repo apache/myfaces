@@ -269,6 +269,8 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
 
     private InjectionProvider resolveFallbackInjectionProvider(ExternalContext externalContext)
     {
+        /* Added entry in META-INF/services/org.apache.myfaces.spi.InjectionProvider to
+         * give precedence to CDI integration instead server integration.
         if (ExternalSpecifications.isCDIAvailable(externalContext))
         {
             try
@@ -283,6 +285,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
                 //Ignore
             }
         }
+        */
         
         try
         {
