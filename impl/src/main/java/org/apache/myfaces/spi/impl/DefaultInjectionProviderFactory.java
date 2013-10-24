@@ -38,7 +38,6 @@ import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
-import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * 
