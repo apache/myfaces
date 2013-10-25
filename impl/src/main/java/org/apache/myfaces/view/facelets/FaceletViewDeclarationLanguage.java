@@ -2484,6 +2484,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         compiler.addTagLibrary(new HtmlLibrary());
         compiler.addTagLibrary(new UILibrary());
         compiler.addTagLibrary(new JstlCoreLibrary());
+        compiler.addTagLibrary(new JstlCoreLibrary(JstlCoreLibrary.ALTERNATIVE_NAMESPACE));
         compiler.addTagLibrary(new JstlFnLibrary());
         compiler.addTagLibrary(new CompositeLibrary());
         compiler.addTagLibrary(new CompositeResourceLibrary(context,
