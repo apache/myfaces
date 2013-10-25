@@ -2204,11 +2204,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                 {
                                     return true;
                                 }
-                                for (UIComponent facet : child.getFacets().values())
+                                if (child.getFacetCount() > 0)
                                 {
-                                    if (facet.visitTree(context, callback))
+                                    for (UIComponent facet : child.getFacets().values())
                                     {
-                                        return true;
+                                        if (facet.visitTree(context, callback))
+                                        {
+                                            return true;
+                                        }
                                     }
                                 }
                             }

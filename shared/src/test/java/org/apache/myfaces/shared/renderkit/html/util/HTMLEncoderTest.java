@@ -271,6 +271,27 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
       
   }
   
+  public void testUsAsciiEscapedCharactersBeforeQueryLowerCase() throws Exception
+  {
+      // Escape
+      // - From %00 to %20, 
+      // - <"> %22, "%" %25
+      // - "<" %3C, ">" %3E,
+      // - "\" %5C, "^" %5E, "`" %60 
+      // - "{" %7B, "|" %7C, "}" %7D
+      // - From %7F ad infinitum
+      String cad1 = "?key=\"%<>\\`{|}^\n "; //Omit %
+      String cad2 = "?key=%22%25%3c%3e%5c%60%7b%7c%7d%5e%0a%20";
+      String cad3 = HTMLEncoder.encodeURIAtributte(cad1,"UTF-8");
+      assertEquals(cad2.substring(0,5) + cad2.substring(5).toUpperCase(), cad3);
+      
+      String cad4 = "\"%<>\\`{|}^\n ";
+      String cad5 = "%22%25%3c%3e%5c%60%7b%7c%7d%5e%0a%20";
+      String cad6 = HTMLEncoder.encodeURIAtributte(cad4,"UTF-8");
+      assertEquals(cad5.substring(0,5) + cad5.substring(5).toUpperCase(), cad6);
+      
+  }  
+  
   public void testWriteNonUsAsciiOnURIAttribute() throws Exception
   {
       // Character ü in ISO-8859-1 is %FC but on UTF-8 is %C3%BC. In this case,
