@@ -505,7 +505,7 @@
 
         <!-- This profile verifies the binary compablity with the jsf api of the RI -->
         <profile>
-            <id>checkCompability</id>
+            <id>checkCompatibility</id>
             <build>
                 <plugins>
                     <plugin>
@@ -517,7 +517,7 @@
                                 <comparisonArtifact>
                                     <groupId>com.sun.faces</groupId>
                                     <artifactId>jsf-api</artifactId>
-                                    <version>2.2.0</version>
+                                    <version>2.2.4</version>
                                 </comparisonArtifact>
                             </comparisonArtifacts>
                         </configuration>
