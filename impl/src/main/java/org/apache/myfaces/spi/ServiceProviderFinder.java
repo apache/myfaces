@@ -90,7 +90,10 @@ public abstract class ServiceProviderFinder
      */
     public abstract List<String> getServiceProviderList(String spiClass);
     
-    public abstract <S> ServiceLoader<S> load(Class<S> spiClass);
+    public <S> ServiceLoader<S> load(Class<S> spiClass)
+    {
+        return ServiceLoader.load(spiClass);
+    }
     
     /**
      * If ServiceProviderFinderFactory knows beforehand or has stored somewhere the
