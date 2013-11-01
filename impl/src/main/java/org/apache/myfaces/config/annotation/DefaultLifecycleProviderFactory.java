@@ -35,7 +35,6 @@ import javax.naming.NamingException;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
-import org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider;
 
 /*
  * Date: Mar 12, 2007
