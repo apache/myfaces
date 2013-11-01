@@ -94,9 +94,13 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     private static final Set<String> FACTORY_NAMES = new HashSet<String>();
     {
         FACTORY_NAMES.add(FactoryFinder.APPLICATION_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.CLIENT_WINDOW_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.EXCEPTION_HANDLER_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.EXTERNAL_CONTEXT_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.FACELET_CACHE_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.FACES_CONTEXT_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.FLASH_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.FLOW_HANDLER_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.LIFECYCLE_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.RENDER_KIT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY);
@@ -272,6 +276,10 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     else if(factoryName.equals(FactoryFinder.CLIENT_WINDOW_FACTORY)) 
                     {
                         factory.addClientWindowFactory(className);
+                    }
+                    else if(factoryName.equals(FactoryFinder.FACELET_CACHE_FACTORY)) 
+                    {
+                        factory.addFaceletCacheFactory(className);
                     }
                     else
                     {

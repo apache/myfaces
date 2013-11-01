@@ -62,6 +62,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.spi.ServiceProviderFinder;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
 /**
  * Performs common initialization tasks.
@@ -132,6 +134,16 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             FacesContext facesContext = FacesContext.getCurrentInstance();
             ExternalContext externalContext = facesContext.getExternalContext();
 
+            // Setup ServiceProviderFinder
+            ServiceProviderFinder spf = ServiceProviderFinderFactory.getServiceProviderFinder(
+                externalContext);
+            Map<String, List<String>> spfConfig = spf.calculateKnownServiceProviderMapInfo(
+                externalContext, ServiceProviderFinder.KNOWN_SERVICES);
+            if (spfConfig != null)
+            {
+                spf.initKnownServiceProviderMapInfo(externalContext, spfConfig);
+            }
+            
             // Parse and validate the web.xml configuration file
             
             if (!WebConfigParamUtils.getBooleanInitParameter(externalContext, INITIALIZE_ALWAYS_STANDALONE, false))

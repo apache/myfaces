@@ -29,8 +29,10 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinder;
@@ -44,6 +46,8 @@ import org.apache.myfaces.spi.ServiceProviderFinder;
 public class DefaultServiceProviderFinder extends ServiceProviderFinder
 {
     private static final String META_INF_SERVICES = "META-INF/services/";
+    
+    private Map<String, List<String>> knownServicesMap = null;
 
     protected Set<URL> getURLs(String spiClass)
     {
@@ -71,8 +75,18 @@ public class DefaultServiceProviderFinder extends ServiceProviderFinder
         return Collections.emptySet();
     }
 
+    @Override
     public List<String> getServiceProviderList(String spiClass)
     {
+        if (knownServicesMap != null)
+        {
+            List<String> result = knownServicesMap.get(spiClass);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+        
         Set<URL> urls = getURLs(spiClass);
 
         if (!urls.isEmpty())
@@ -156,8 +170,15 @@ public class DefaultServiceProviderFinder extends ServiceProviderFinder
         return connection.getInputStream();
     }
     
+    @Override
     public <S> ServiceLoader<S> load(Class<S> spiClass)
     {
         return ServiceLoader.load(spiClass);
+    }
+
+    @Override
+    public void initKnownServiceProviderMapInfo(ExternalContext ectx, Map<String, List<String>> map)
+    {
+        knownServicesMap = map;
     }
 }
