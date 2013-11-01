@@ -51,8 +51,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.PreDestroyApplicationEvent;
 import javax.faces.event.SystemEvent;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -62,6 +60,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
@@ -564,27 +563,47 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE);
         if (beanManager == null)
         {
-            // Try with JNDI
+            // Use reflection to avoid restricted API in GAE
+            Class icclazz = null;
+            Method lookupMethod = null;
             try
             {
-                // in an application server
-                beanManager = InitialContext.doLookup("java:comp/BeanManager");
+                icclazz = ClassUtils.simpleClassForName("javax.naming.InitialContext");
+                if (icclazz != null)
+                {
+                    lookupMethod = icclazz.getMethod("doLookup", String.class);
+                }
             }
-            catch (NamingException e)
+            catch (Throwable t)
             {
-                // silently ignore
+                //
             }
-
-            if (beanManager == null)
+            if (lookupMethod != null)
             {
+                // Try with JNDI
                 try
                 {
-                    // in a servlet container
-                    beanManager = InitialContext.doLookup("java:comp/env/BeanManager");
+                    // in an application server
+                    //beanManager = InitialContext.doLookup("java:comp/BeanManager");
+                    beanManager = lookupMethod.invoke(icclazz, "java:comp/BeanManager");
                 }
-                catch (NamingException e)
+                catch (Exception e)
                 {
                     // silently ignore
+                }
+
+                if (beanManager == null)
+                {
+                    try
+                    {
+                        // in a servlet container
+                        //beanManager = InitialContext.doLookup("java:comp/env/BeanManager");
+                        beanManager = lookupMethod.invoke(icclazz, "java:comp/env/BeanManager");
+                    }
+                    catch (Exception e)
+                    {
+                        // silently ignore
+                    }
                 }
             }
         }
