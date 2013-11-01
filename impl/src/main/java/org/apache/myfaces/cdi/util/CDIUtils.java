@@ -24,8 +24,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.ExternalContext;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
@@ -40,6 +38,7 @@ public class CDIUtils
             AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
     }
 
+    /*
     public static BeanManager getBeanManagerFromJNDI()
     {
         try
@@ -62,7 +61,7 @@ public class CDIUtils
             // silently ignore
         }
         return null;
-    }
+    }*/
 
     @SuppressWarnings("unchecked")
     public static <T> T lookup(BeanManager bm, Class<T> clazz)

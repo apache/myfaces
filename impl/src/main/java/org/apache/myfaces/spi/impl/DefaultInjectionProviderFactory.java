@@ -317,5 +317,13 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
             log.log(Level.SEVERE, "No InitialContext found. Using NoInjectionAnnotationProcessor.", e);
             return new NoInjectionAnnotationInjectionProvider();
         }
+        catch (NoClassDefFoundError e)
+        {
+            //On Google App Engine, javax.naming.Context is a restricted class.
+            //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
+            //below by context parameter.
+            log.log(Level.SEVERE, "No InitialContext class found. Using NoInjectionAnnotationProcessor.", e);
+            return new NoInjectionAnnotationInjectionProvider();
+        }
     }
 }

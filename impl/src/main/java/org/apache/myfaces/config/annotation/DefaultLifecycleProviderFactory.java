@@ -35,6 +35,7 @@ import javax.naming.NamingException;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
+import org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider;
 
 /*
  * Date: Mar 12, 2007
@@ -289,6 +290,14 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
         {
             // no initial context available no injection
             log.log(Level.SEVERE, "No InitialContext found. Using NoInjectionAnnotationProcessor.", e);
+            return new NoInjectionAnnotationLifecycleProvider();
+        }
+        catch (NoClassDefFoundError e)
+        {
+            //On Google App Engine, javax.naming.Context is a restricted class.
+            //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
+            //below by context parameter.
+            log.log(Level.SEVERE, "No InitialContext class found. Using NoInjectionAnnotationProcessor.", e);
             return new NoInjectionAnnotationLifecycleProvider();
         }
     }
