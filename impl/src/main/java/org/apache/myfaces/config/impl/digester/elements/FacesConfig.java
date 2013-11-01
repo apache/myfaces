@@ -20,11 +20,13 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -63,6 +65,8 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
     private List <String> protectedViewsUrlPatternList
         = new ArrayList<String>();
     private List <String> resourceResolvers = new ArrayList<String>();
+    private List<FaceletTagLibrary> faceletTagLibraryList;
+    private transient List<FaceletTagLibrary> unmodifiableFaceletTagLibraryList;
     
     private String metadataComplete;
     private String version;
@@ -302,4 +306,27 @@ public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig i
         resourceResolvers.add(resourceResolverClass);
     }
 
+    @Override
+    public List<FaceletTagLibrary> getFaceletTagLibraryList()
+    {
+        if (faceletTagLibraryList == null)
+        {
+            return Collections.emptyList();
+        }
+        if (unmodifiableFaceletTagLibraryList == null)
+        {
+            unmodifiableFaceletTagLibraryList = 
+                Collections.unmodifiableList(faceletTagLibraryList);
+        }
+        return unmodifiableFaceletTagLibraryList;
+    }
+    
+    public void addFaceletTagLibrary(FaceletTagLibrary library)
+    {
+        if (faceletTagLibraryList == null)
+        {
+            faceletTagLibraryList = new ArrayList<FaceletTagLibrary>();
+        }
+        faceletTagLibraryList.add(library);
+    }
 }

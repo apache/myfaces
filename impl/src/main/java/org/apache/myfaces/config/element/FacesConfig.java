@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -104,6 +105,15 @@ public abstract class FacesConfig implements Serializable
      * @return 
      */
     public List<String> getResourceResolversList()
+    {
+        return Collections.emptyList();
+    }
+    
+    /**
+     * @since 2.2.0
+     * @return 
+     */
+    public List<FaceletTagLibrary> getFaceletTagLibraryList()
     {
         return Collections.emptyList();
     }

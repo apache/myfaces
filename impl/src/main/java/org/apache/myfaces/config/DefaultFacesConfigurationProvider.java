@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config;
 
+import java.io.FileNotFoundException;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
@@ -51,6 +52,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.ApplicationConfigurationPopulator;
+import javax.faces.application.ViewHandler;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -61,11 +63,17 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowReturnImpl;
 import org.apache.myfaces.config.impl.digester.elements.NavigationCase;
 import org.apache.myfaces.shared.util.FastWriter;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.spi.FaceletConfigResourceProvider;
+import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinder;
+import org.apache.myfaces.view.facelets.compiler.TagLibraryConfigUnmarshallerImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
@@ -96,6 +104,17 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         FACTORY_NAMES.add(FactoryFinder.VISIT_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
     }
+    
+    /**
+     * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
+     */
+    @JSFWebConfigParam(since = "2.0",
+            desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
+            deprecated = true)
+    private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
+
+    private final static String[] PARAMS_LIBRARIES = {ViewHandler.FACELETS_LIBRARIES_PARAM_NAME,
+        PARAM_LIBRARIES_DEPRECATED};
 
     private static final Logger log = Logger.getLogger(DefaultFacesConfigurationProvider.class.getName());
 
@@ -719,5 +738,81 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 }
             }
         }
+    }
+
+    @Override
+    public List<FacesConfig> getFaceletTaglibFacesConfig(ExternalContext externalContext)
+    {
+        List<FacesConfig> facesConfigFilesList = new ArrayList<FacesConfig>();
+        
+        String param = WebConfigParamUtils.getStringInitParameter(externalContext, PARAMS_LIBRARIES);
+        if (param != null)
+        {
+            for (String library : param.split(";"))
+            {
+                try
+                {
+                    URL src = externalContext.getResource(library.trim());
+                    if (src == null)
+                    {
+                        throw new FileNotFoundException(library);
+                    }
+                    
+                    FaceletTagLibrary tl = TagLibraryConfigUnmarshallerImpl.create(externalContext, src);
+                    if (tl != null)
+                    {
+                        org.apache.myfaces.config.impl.digester.elements.FacesConfig config = 
+                            new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                        config.addFaceletTagLibrary(tl);
+                        facesConfigFilesList.add(config);
+                    }
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("Successfully loaded library: " + library);
+                    }
+                }
+                catch (IOException e)
+                {
+                    log.log(Level.SEVERE, "Error Loading library: " + library, e);
+                }
+            }
+        }
+        
+        try
+        {
+            FaceletConfigResourceProvider provider = FaceletConfigResourceProviderFactory.
+                getFacesConfigResourceProviderFactory(externalContext).
+                    createFaceletConfigResourceProvider(externalContext);
+            Collection<URL> urls = provider.getFaceletTagLibConfigurationResources(externalContext);
+            for (URL url : urls)
+            {
+                try
+                {
+                    FaceletTagLibrary tl = TagLibraryConfigUnmarshallerImpl.create(externalContext, url);
+                    if (tl != null)
+                    {
+                        org.apache.myfaces.config.impl.digester.elements.FacesConfig config = 
+                            new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                        config.addFaceletTagLibrary(tl);
+                        facesConfigFilesList.add(config);
+                    }
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        //log.fine("Added Library from: " + urls[i]);
+                        log.fine("Added Library from: " + url);
+                    }
+                }
+                catch (Exception e)
+                {
+                    //log.log(Level.SEVERE, "Error Loading Library: " + urls[i], e);
+                    log.log(Level.SEVERE, "Error Loading Library: " + url, e);
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            log.log(Level.SEVERE, "Compiler Initialization Error", e);
+        }
+        return facesConfigFilesList;
     }
 }

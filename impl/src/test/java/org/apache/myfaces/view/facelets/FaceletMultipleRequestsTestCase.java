@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
@@ -46,11 +47,13 @@ import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.Renderer;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockExternalContext;
@@ -267,6 +270,19 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
         super.setUp();
         //facesContext.setViewRoot(facesContext.getApplication().getViewHandler()
         //        .createView(facesContext, "/test"));
+        
+        FacesConfigurationProviderFactory factory = FacesConfigurationProviderFactory.
+            getFacesConfigurationProviderFactory(externalContext);
+        List<FacesConfig> list = factory.getFacesConfigurationProvider(externalContext)
+            .getFaceletTaglibFacesConfig(externalContext);
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
+        for (FacesConfig fc : list)
+        {
+            for (FaceletTagLibrary lib : fc.getFaceletTagLibraryList())
+            {
+                runtimeConfig.addFaceletTagLibrary(lib);
+            }
+        }
         
         vdl = (MockFaceletViewDeclarationLanguage) application.getViewHandler().
             getViewDeclarationLanguage(facesContext,"/test");

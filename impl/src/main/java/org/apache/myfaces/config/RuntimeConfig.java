@@ -43,6 +43,7 @@ import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
 /**
  * Holds all configuration information (from the faces-config xml files) that is needed later during runtime. The config
@@ -112,6 +113,8 @@ public class RuntimeConfig
     private List<String> _resourceResolvers = new ArrayList<String>();
     
     private List<Object> _injectedObjects = new ArrayList<Object>();
+    
+    private List<FaceletTagLibrary> _faceletTagLibraries = new ArrayList<FaceletTagLibrary>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -137,6 +140,7 @@ public class RuntimeConfig
         _classLoaderResourceLibraryContracts.clear();
         _resourceLibraryContracts.clear();
         _injectedObjects.clear();
+        _faceletTagLibraries.clear();
     }
 
     /**
@@ -198,6 +202,16 @@ public class RuntimeConfig
     public List<ComponentTagDeclaration> getComponentTagDeclarations()
     {
         return Collections.unmodifiableList(_componentTagDeclarations);
+    }
+    
+    public void addFaceletTagLibrary(FaceletTagLibrary library)
+    {
+        _faceletTagLibraries.add(library);
+    }
+    
+    public List<FaceletTagLibrary> getFaceletTagLibraries()
+    {
+        return Collections.unmodifiableList(_faceletTagLibraries);
     }
     
     public final void addConverterConfiguration(final String converterClassName,

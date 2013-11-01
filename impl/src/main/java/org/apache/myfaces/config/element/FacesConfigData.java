@@ -21,6 +21,7 @@ package org.apache.myfaces.config.element;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
 
 
@@ -276,6 +277,11 @@ public abstract class FacesConfigData implements Serializable
     }
     
     public Collection<String> getResourceResolvers()
+    {
+        return Collections.emptyList();
+    }
+    
+    public Collection<FaceletTagLibrary> getTagLibraries()
     {
         return Collections.emptyList();
     }

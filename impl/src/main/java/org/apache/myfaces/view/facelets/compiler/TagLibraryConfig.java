@@ -18,27 +18,15 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ArrayUtils;
-import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
-import org.apache.myfaces.spi.FaceletConfigResourceProvider;
-import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
@@ -51,18 +39,19 @@ import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.apache.myfaces.config.element.facelets.FaceletBehaviorTag;
+import org.apache.myfaces.config.element.facelets.FaceletComponentTag;
+import org.apache.myfaces.config.element.facelets.FaceletConverterTag;
+import org.apache.myfaces.config.element.facelets.FaceletFunction;
+import org.apache.myfaces.config.element.facelets.FaceletHandlerTag;
+import org.apache.myfaces.config.element.facelets.FaceletSourceTag;
+import org.apache.myfaces.config.element.facelets.FaceletTag;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.config.element.facelets.FaceletValidatorTag;
 
 /**
  * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary}
@@ -413,486 +402,205 @@ public final class TagLibraryConfig
             return this.parent.getTagId();
         }
     }    
-    
-    private static class LibraryHandler extends DefaultHandler
-    {
-        private final URL source;
-        
-        private final FacesContext facesContext;
-
-        private TagLibrary library;
-
-        private final StringBuffer buffer;
-
-        private Locator locator;
-
-        private String tagName;
-
-        private String converterId;
-
-        private String validatorId;
-        
-        private String behaviorId;
-
-        private String componentType;
-
-        private String rendererType;
-
-        private String functionName;
-
-        private Class<? extends TagHandler> handlerClass;
-
-        private Class<?> functionClass;
-
-        private String functionSignature;
-        
-        private String compositeLibraryName;
-        
-        private String resourceId;
-        
-        public LibraryHandler(FacesContext facesContext, URL source)
-        {
-            this.source = source;
-            this.buffer = new StringBuffer(64);
-            this.facesContext = facesContext;
-        }
-
-        public TagLibrary getLibrary()
-        {
-            return this.library;
-        }
-
-        public void endElement(String uri, String localName, String qName) throws SAXException
-        {
-            try
-            {
-                if ("facelet-taglib".equals(qName))
-                {
-                    // Nothing to do
-                }                
-                else if ("library-class".equals(qName))
-                {
-                    this.processLibraryClass();
-                }
-                else if ("namespace".equals(qName))
-                {
-                    this.library = new TagLibraryImpl(facesContext, this.captureBuffer());
-                    if (this.compositeLibraryName != null)
-                    {
-                        ((TagLibraryImpl)this.library).setCompositeLibrary(compositeLibraryName);
-                    }
-                }
-                else if ("composite-library-name".equals(qName))
-                {
-                    this.compositeLibraryName = this.captureBuffer();
-                    if (this.library != null)
-                    {
-                        ((TagLibraryImpl)this.library).setCompositeLibrary(compositeLibraryName);
-                    }
-                }
-                else if ("component-type".equals(qName))
-                {
-                    this.componentType = this.captureBuffer();
-                }
-                else if ("renderer-type".equals(qName))
-                {
-                    this.rendererType = this.captureBuffer();
-                }
-                else if ("tag-name".equals(qName))
-                {
-                    this.tagName = this.captureBuffer();
-                }
-                else if ("function-name".equals(qName))
-                {
-                    this.functionName = this.captureBuffer();
-                }
-                else if ("function-class".equals(qName))
-                {
-                    String className = this.captureBuffer();
-                    this.functionClass = createClass(Object.class, className);
-                }
-                else if ("description".equals(qName))
-                {
-                    //Not used
-                }
-                else if ("display-name".equals(qName))
-                {
-                    //Not used
-                }
-                else if ("icon".equals(qName))
-                {
-                    //Not used
-                }                
-                else if ("resource-id".equals(qName))
-                {
-                    this.resourceId = this.captureBuffer();
-                }
-                else
-                {
-                    // Make sure there we've seen a namespace element
-                    // before trying any of the following elements to avoid
-                    // obscure NPEs
-                    if (this.library == null)
-                    {
-                        throw new IllegalStateException("No <namespace> element");
-                    }
-
-                    TagLibraryImpl impl = (TagLibraryImpl) this.library;
-
-                    if ("tag".equals(qName))
-                    {
-                        if (this.handlerClass != null)
-                        {
-                            impl.putTagHandler(this.tagName, this.handlerClass);
-                        }
-                    }
-                    else if ("handler-class".equals(qName))
-                    {
-                        String cName = this.captureBuffer();
-                        this.handlerClass = createClass(TagHandler.class, cName);
-                    }
-                    else if ("component".equals(qName))
-                    {
-                        if (this.handlerClass != null)
-                        {
-                            impl.putComponent(this.tagName, this.componentType, this.rendererType, this.handlerClass);
-                            this.handlerClass = null;
-                        }
-                        else if (this.resourceId != null)
-                        {
-                            impl.putComponentFromResourceId(this.tagName, this.resourceId);
-                        }
-                        else
-                        {
-                            impl.putComponent(this.tagName, this.componentType, this.rendererType);
-                        }
-                    }
-                    else if ("converter-id".equals(qName))
-                    {
-                        this.converterId = this.captureBuffer();
-                    }
-                    else if ("converter".equals(qName))
-                    {
-                        if (this.handlerClass != null)
-                        {
-                            impl.putConverter(this.tagName, this.converterId, handlerClass);
-                            this.handlerClass = null;
-                        }
-                        else
-                        {
-                            impl.putConverter(this.tagName, this.converterId);
-                        }
-                        this.converterId = null;
-                    }
-                    else if ("validator-id".equals(qName))
-                    {
-                        this.validatorId = this.captureBuffer();
-                    }
-                    else if ("validator".equals(qName))
-                    {
-                        if (this.handlerClass != null)
-                        {
-                            impl.putValidator(this.tagName, this.validatorId, handlerClass);
-                            this.handlerClass = null;
-                        }
-                        else
-                        {
-                            impl.putValidator(this.tagName, this.validatorId);
-                        }
-                        this.validatorId = null;
-                    }
-                    else if ("behavior-id".equals(qName))
-                    {
-                        this.behaviorId = this.captureBuffer();
-                    }
-                    else if ("behavior".equals(qName))
-                    {
-                        if (this.handlerClass != null)
-                        {
-                            impl.putBehavior(this.tagName, this.behaviorId, handlerClass);
-                            this.handlerClass = null;
-                        }
-                        else
-                        {
-                            impl.putBehavior(this.tagName, this.behaviorId);
-                        }
-                        this.behaviorId = null;
-                    }
-                    else if ("source".equals(qName))
-                    {
-                        String path = this.captureBuffer();
-                        URL url = new URL(this.source, path);
-                        impl.putUserTag(this.tagName, url);
-                    }
-                    else if ("function-signature".equals(qName))
-                    {
-                        this.functionSignature = this.captureBuffer();
-                        Method m = createMethod(this.functionClass, this.functionSignature);
-                        impl.putFunction(this.functionName, m);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new SAXParseException("Error Handling [" + this.source + "@" + this.locator.getLineNumber()
-                        + "," + this.locator.getColumnNumber() + "] <" + qName + ">", locator, e);
-            }
-        }
-
-        private String captureBuffer() throws Exception
-        {
-            String s = this.buffer.toString().trim();
-            if (s.length() == 0)
-            {
-                throw new Exception("Value Cannot be Empty");
-            }
-            this.buffer.setLength(0);
-            return s;
-        }
-
-        @SuppressWarnings("unchecked")
-        private static <T> Class<? extends T> createClass(Class<T> type, String name) throws Exception
-        {
-            Class<? extends T> factory = (Class<? extends T>)ReflectionUtil.forName(name);
-            if (!type.isAssignableFrom(factory))
-            {
-                throw new Exception(name + " must be an instance of " + type.getName());
-            }
-            return factory;
-        }
-
-        private static Method createMethod(Class<?> type, String s) throws Exception
-        {
-            int pos = s.indexOf(' ');
-            if (pos == -1)
-            {
-                throw new Exception("Must Provide Return Type: " + s);
-            }
-            else
-            {
-                int pos2 = s.indexOf('(', pos + 1);
-                if (pos2 == -1)
-                {
-                    throw new Exception("Must provide a method name, followed by '(': " + s);
-                }
-                else
-                {
-                    String mn = s.substring(pos + 1, pos2).trim();
-                    pos = s.indexOf(')', pos2 + 1);
-                    if (pos == -1)
-                    {
-                        throw new Exception("Must close parentheses, ')' missing: " + s);
-                    }
-                    else
-                    {
-                        String[] ps = s.substring(pos2 + 1, pos).trim().split(",");
-                        Class<?>[] pc;
-                        if (ps.length == 1 && "".equals(ps[0]))
-                        {
-                            pc = new Class[0];
-                        }
-                        else
-                        {
-                            pc = new Class[ps.length];
-                            for (int i = 0; i < pc.length; i++)
-                            {
-                                pc[i] = ReflectionUtil.forName(ps[i].trim());
-                            }
-                        }
-                        try
-                        {
-                            return type.getMethod(mn, pc);
-                        }
-                        catch (NoSuchMethodException e)
-                        {
-                            throw new Exception("No Function Found on type: " + type.getName() + " with signature: "
-                                    + s);
-                        }
-
-                    }
-
-                }
-            }
-        }
-
-        private void processLibraryClass() throws Exception
-        {
-            String name = this.captureBuffer();
-            Class<?> type = createClass(TagLibrary.class, name);
-            this.library = (TagLibrary) type.newInstance();
-        }
-
-        public InputSource resolveEntity(String publicId, String systemId) throws SAXException
-        {
-            if ("-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN".equals(publicId))
-            {
-                URL url = ClassUtils.getResource("org/apache/myfaces/resource/facelet-taglib_1_0.dtd");
-                return new InputSource(url.toExternalForm());
-            }
-            return null;
-        }
-
-        public void characters(char[] ch, int start, int length) throws SAXException
-        {
-            this.buffer.append(ch, start, length);
-        }
-
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
-        {
-            this.buffer.setLength(0);
-            if ("tag".equals(qName))
-            {
-                this.handlerClass = null;
-                this.componentType = null;
-                this.rendererType = null;
-                this.tagName = null;
-            }
-            else if ("function".equals(qName))
-            {
-                this.functionName = null;
-                this.functionClass = null;
-                this.functionSignature = null;
-            }
-        }
-
-        public void error(SAXParseException e) throws SAXException
-        {
-            throw new SAXException(
-                    "Error Handling [" + this.source + "@" + e.getLineNumber() + "," + e.getColumnNumber() + "]", e);
-        }
-
-        public void setDocumentLocator(Locator locator)
-        {
-            this.locator = locator;
-        }
-
-        public void fatalError(SAXParseException e) throws SAXException
-        {
-            throw e;
-        }
-
-        public void warning(SAXParseException e) throws SAXException
-        {
-            throw e;
-        }
-    }
 
     public TagLibraryConfig()
     {
         super();
     }
-
-    public static TagLibrary create(FacesContext facesContext, URL url) throws IOException
+    
+    public static TagLibrary create(FacesContext facesContext, FaceletTagLibrary faceletTagLibrary)
     {
-        InputStream is = null;
-        TagLibrary t = null;
-        URLConnection conn = null;
-        try
+        if (isNotEmpty(faceletTagLibrary.getLibraryClass()))
         {
-            ExternalContext externalContext = facesContext.getExternalContext();
-            boolean schemaValidating = false;
-
-            // validate XML
-            if (MyfacesConfig.getCurrentInstance(externalContext).isValidateXML())
+            TagLibrary t = null;
+            Class<?> type;
+            try
             {
-                String version = ConfigFilesXmlValidationUtils.getFaceletTagLibVersion(url);
-                schemaValidating = "2.0".equals(version);
-                if (schemaValidating)
-                {
-                    ConfigFilesXmlValidationUtils.validateFaceletTagLibFile(url, externalContext, version);
-                }
+                type = createClass(TagLibrary.class, faceletTagLibrary.getLibraryClass());
+                t = (TagLibrary) type.newInstance();
             }
-            
-            // parse file
-            LibraryHandler handler = new LibraryHandler(facesContext, url);
-            SAXParser parser = createSAXParser(handler, externalContext, schemaValidating);
-            conn = url.openConnection();
-            conn.setUseCaches(false);
-            is = conn.getInputStream();
-            parser.parse(is, handler);
-            t = handler.getLibrary();
-        }
-        catch (SAXException e)
-        {
-            IOException ioe = new IOException("Error parsing [" + url + "]: ");
-            ioe.initCause(e);
-            throw ioe;
-        }
-        catch (ParserConfigurationException e)
-        {
-            IOException ioe = new IOException("Error parsing [" + url + "]: ");
-            ioe.initCause(e);
-            throw ioe;
-        }
-        finally
-        {
-            if (is != null)
+            catch (Exception ex)
             {
-                is.close();
+                throw new FacesException("Cannot instantiate TagLibrary", ex);
             }
+            // No further processing required.
+            return t;
         }
-        return t;
-    }
-
-    public void loadImplicit(FacesContext facesContext, Compiler compiler) throws IOException
-    {
-        //URL[] urls = Classpath.search(cl, "META-INF/", SUFFIX);
-        //for (int i = 0; i < urls.length; i++)
-        ExternalContext externalContext = facesContext.getExternalContext();
-        FaceletConfigResourceProvider provider = FaceletConfigResourceProviderFactory.
-            getFacesConfigResourceProviderFactory(externalContext).
-                createFaceletConfigResourceProvider(externalContext);
-        Collection<URL> urls = provider.getFaceletTagLibConfigurationResources(externalContext);
-        for (URL url : urls)
+        
+        TagLibraryImpl impl = new TagLibraryImpl(facesContext, faceletTagLibrary.getNamespace());
+        
+        impl.setCompositeLibrary(faceletTagLibrary.getCompositeLibraryName());
+        
+        for (FaceletFunction ff : faceletTagLibrary.getFunctions())
         {
             try
             {
-                //TagLibrary tl = create(urls[i]);
-                TagLibrary tl = create(facesContext, url);
-                if (tl != null)
+                Class<?> functionClass = createClass(Object.class, ff.getFunctionClass());
+                impl.putFunction(ff.getFunctionName(), createMethod(functionClass, ff.getFunctionSignature()));
+            }
+            catch (Exception ex)
+            {
+                throw new FacesException("Cannot instantiate Function Class", ex);
+            }
+        }
+        
+        for (FaceletTag ft : faceletTagLibrary.getTags())
+        {
+            try
+            {
+                if (ft.isHandlerTag())
                 {
-                    compiler.addTagLibrary(tl);
+                    FaceletHandlerTag tag = (FaceletHandlerTag) ft.getTagDefinition();
+                    if (tag.getHandlerClass() != null)
+                    {
+                        Class<? extends TagHandler> handlerClass = 
+                            createClass(TagHandler.class, tag.getHandlerClass());
+                        impl.putTagHandler(ft.getName(), handlerClass);
+                    }
                 }
-                if (log.isLoggable(Level.FINE))
+                else if (ft.isComponentTag())
                 {
-                    //log.fine("Added Library from: " + urls[i]);
-                    log.fine("Added Library from: " + url);
+                    FaceletComponentTag tag = (FaceletComponentTag) ft.getTagDefinition();
+                    if (tag.getHandlerClass() != null)
+                    {
+                        Class<? extends TagHandler> handlerClass = 
+                            createClass(TagHandler.class, tag.getHandlerClass());
+                        impl.putComponent(ft.getName(), tag.getComponentType(), tag.getRendererType(), handlerClass);
+                    }
+                    else if (tag.getResourceId() != null)
+                    {
+                        impl.putComponentFromResourceId(ft.getName(), tag.getResourceId());
+                    }
+                    else 
+                    {
+                        impl.putComponent(ft.getName(), tag.getComponentType(), tag.getRendererType());
+                    }
+                }
+                else if (ft.isSourceTag())
+                {
+                    FaceletSourceTag tag = (FaceletSourceTag) ft.getTagDefinition();
+                    impl.putUserTag(ft.getName(), new URL(tag.getSource()));
+                }
+                else if (ft.isConverterTag())
+                {
+                    FaceletConverterTag tag = (FaceletConverterTag) ft.getTagDefinition();
+                    if (tag.getHandlerClass() != null)
+                    {
+                        Class<? extends TagHandler> handlerClass = 
+                            createClass(TagHandler.class, tag.getHandlerClass());
+                        impl.putConverter(ft.getName(), tag.getConverterId(), handlerClass);
+                    }
+                    else
+                    {
+                        impl.putConverter(ft.getName(), tag.getConverterId());
+                    }
+                }
+                else if (ft.isValidatorTag())
+                {
+                    FaceletValidatorTag tag = (FaceletValidatorTag) ft.getTagDefinition();
+                    if (tag.getHandlerClass() != null)
+                    {
+                        Class<? extends TagHandler> handlerClass = 
+                            createClass(TagHandler.class, tag.getHandlerClass());
+                        impl.putValidator(ft.getName(), tag.getValidatorId(), handlerClass);
+                    }
+                    else
+                    {
+                        impl.putValidator(ft.getName(), tag.getValidatorId());
+                    }
+                }
+                else if (ft.isBehaviorTag())
+                {
+                    FaceletBehaviorTag tag = (FaceletBehaviorTag) ft.getTagDefinition();
+                    if (tag.getHandlerClass() != null)
+                    {
+                        Class<? extends TagHandler> handlerClass = 
+                            createClass(TagHandler.class, tag.getHandlerClass());
+                        impl.putBehavior(ft.getName(), tag.getBehaviorId(), handlerClass);
+                    }
+                    else
+                    {
+                        impl.putBehavior(ft.getName(), tag.getBehaviorId());
+                    }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                //log.log(Level.SEVERE, "Error Loading Library: " + urls[i], e);
-                log.log(Level.SEVERE, "Error Loading Library: " + url, e);
+                throw new FacesException("Cannot instantiate Tag "+ft.getName()+" from namespace "+
+                    faceletTagLibrary.getNamespace(), ex);
+            }
+        }
+        return impl;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private static <T> Class<? extends T> createClass(Class<T> type, String name) throws Exception
+    {
+        Class<? extends T> factory = (Class<? extends T>)ReflectionUtil.forName(name);
+        if (!type.isAssignableFrom(factory))
+        {
+            throw new Exception(name + " must be an instance of " + type.getName());
+        }
+        return factory;
+    }
+
+    private static Method createMethod(Class<?> type, String s) throws Exception
+    {
+        int pos = s.indexOf(' ');
+        if (pos == -1)
+        {
+            throw new Exception("Must Provide Return Type: " + s);
+        }
+        else
+        {
+            int pos2 = s.indexOf('(', pos + 1);
+            if (pos2 == -1)
+            {
+                throw new Exception("Must provide a method name, followed by '(': " + s);
+            }
+            else
+            {
+                String mn = s.substring(pos + 1, pos2).trim();
+                pos = s.indexOf(')', pos2 + 1);
+                if (pos == -1)
+                {
+                    throw new Exception("Must close parentheses, ')' missing: " + s);
+                }
+                else
+                {
+                    String[] ps = s.substring(pos2 + 1, pos).trim().split(",");
+                    Class<?>[] pc;
+                    if (ps.length == 1 && "".equals(ps[0]))
+                    {
+                        pc = new Class[0];
+                    }
+                    else
+                    {
+                        pc = new Class[ps.length];
+                        for (int i = 0; i < pc.length; i++)
+                        {
+                            pc[i] = ReflectionUtil.forName(ps[i].trim());
+                        }
+                    }
+                    try
+                    {
+                        return type.getMethod(mn, pc);
+                    }
+                    catch (NoSuchMethodException e)
+                    {
+                        throw new Exception("No Function Found on type: " + type.getName() + " with signature: "
+                                + s);
+                    }
+
+                }
+
             }
         }
     }
 
-    private static final SAXParser createSAXParser(LibraryHandler handler, ExternalContext externalContext,
-                                                   boolean schemaValidating)
-            throws SAXException, ParserConfigurationException
+    private static boolean isNotEmpty(String value)
     {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-
-        if (MyfacesConfig.getCurrentInstance(externalContext).isValidateXML() && !schemaValidating)
-        {
-            // DTD validating
-            factory.setNamespaceAware(false);
-            factory.setFeature("http://xml.org/sax/features/validation", true);
-            factory.setValidating(true);
-        }
-        else
-        {
-            //Just parse it and do not validate, because it is not necessary.
-            factory.setNamespaceAware(true);
-            factory.setFeature("http://xml.org/sax/features/validation", false);
-            factory.setValidating(false);
-        }
-
-        SAXParser parser = factory.newSAXParser();
-        XMLReader reader = parser.getXMLReader();
-        reader.setErrorHandler(handler);
-        reader.setEntityResolver(handler);
-        return parser;
+        return value != null && value.length() > 0;
     }
 
 }

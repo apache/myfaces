@@ -112,6 +112,19 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         
         // apply the ordering and sorting algorithm 
         orderAndFeedArtifacts(dispenser, appConfigResources, webAppFacesConfig);
+        
+        List<FacesConfig> faceletTagLibFacesConfig = 
+            facesConfigProvider.getFaceletTaglibFacesConfig(externalContext);
+        
+        // at last feed facelet taglib faces config. These ones does not need
+        // to be included in the ordering algorithm.
+        if (faceletTagLibFacesConfig != null && !faceletTagLibFacesConfig.isEmpty())
+        {
+            for (FacesConfig fc : faceletTagLibFacesConfig)
+            {
+                dispenser.feed(fc);
+            }
+        }
 
         LogMetaInfUtils.logMetaInf();
 

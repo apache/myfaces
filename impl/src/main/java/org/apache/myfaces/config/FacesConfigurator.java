@@ -133,6 +133,7 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.cdi.dependent.BeanEntry;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.spi.InjectionProvider;
@@ -1044,6 +1045,11 @@ public class FacesConfigurator
         for (String resourceResolver : dispenser.getResourceResolvers())
         {
             runtimeConfig.addResourceResolver(resourceResolver);
+        }
+        
+        for (FaceletTagLibrary faceletTagLibrary : dispenser.getTagLibraries())
+        {
+            runtimeConfig.addFaceletTagLibrary(faceletTagLibrary);
         }
     }
 

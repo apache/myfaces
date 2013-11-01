@@ -84,4 +84,8 @@ public abstract class FacesConfigurationProviderWrapper
         return getWrapped().getApplicationConfigurationResourceDocumentPopulatorFacesConfig(ectx);
     }
 
+    public List<FacesConfig> getFaceletTaglibFacesConfig(ExternalContext ectx)
+    {
+        return getWrapped().getFaceletTaglibFacesConfig(ectx);
+    }
 }

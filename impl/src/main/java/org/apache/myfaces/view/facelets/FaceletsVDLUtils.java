@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
+import java.io.Writer;
 import java.util.Comparator;
 
 /**
@@ -94,6 +95,40 @@ public class FaceletsVDLUtils
         public int compare(String s1, String s2)
         {
             return -s1.compareTo(s2);
+        }
+    }
+    
+    public static class NullWriter extends Writer
+    {
+
+        static final NullWriter INSTANCE = new NullWriter();
+
+        public void write(char[] buffer)
+        {
+        }
+
+        public void write(char[] buffer, int off, int len)
+        {
+        }
+
+        public void write(String str)
+        {
+        }
+
+        public void write(int c)
+        {
+        }
+
+        public void write(String str, int off, int len)
+        {
+        }
+
+        public void close()
+        {
+        }
+
+        public void flush()
+        {
         }
     }
 }

@@ -24,7 +24,6 @@ import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -93,12 +92,10 @@ import javax.faces.view.ViewMetadata;
 import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.ResourceResolver;
-import javax.faces.view.facelets.TagDecorator;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -107,10 +104,8 @@ import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
-import org.apache.myfaces.view.facelets.FaceletViewHandler.NullWriter;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
 import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
-import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpression;
@@ -122,32 +117,21 @@ import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
 import org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory;
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
-import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorAttachedObjectTarget;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper;
 import org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorRedirectEventComponentWrapper;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
-import org.apache.myfaces.view.facelets.tag.composite.CompositeResourceLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
-import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
-import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
-import org.apache.myfaces.view.facelets.tag.jstl.core.JstlCoreLibrary;
-import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UIDebug;
-import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 import static org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy.*;
+import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerSupport;
 import org.apache.myfaces.view.facelets.compiler.RefreshDynamicComponentListener;
 import org.apache.myfaces.view.facelets.impl.SectionUniqueIdCounter;
-import org.apache.myfaces.view.facelets.tag.ComponentTagDeclarationLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CreateDynamicCompositeComponentListener;
-import org.apache.myfaces.view.facelets.tag.jsf.JsfLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionListener;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValidator;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValueChangeListener;
-import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
 import org.apache.myfaces.view.facelets.util.FaceletsViewDeclarationLanguageUtils;
 
 /**
@@ -192,31 +176,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     //private final static String PARAM_BUILD_BEFORE_RESTORE = "facelets.BUILD_BEFORE_RESTORE";
 
     /**
-     * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
-     * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
-     */
-    @JSFWebConfigParam(since = "2.0", deprecated = true)
-    private final static String PARAM_DECORATORS_DEPRECATED = "facelets.DECORATORS";
-
-    private final static String[] PARAMS_DECORATORS = {ViewHandler.FACELETS_DECORATORS_PARAM_NAME, 
-        PARAM_DECORATORS_DEPRECATED};
-
-    /**
      * Constant used by EncodingHandler to indicate the current encoding of the page being built,
      * and indicate which one is the response encoding on getResponseEncoding(FacesContext, String) method.
      */
     public final static String PARAM_ENCODING = "facelets.Encoding";
-
-    /**
-     * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
-     */
-    @JSFWebConfigParam(since = "2.0",
-            desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
-            deprecated = true)
-    private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
-
-    private final static String[] PARAMS_LIBRARIES = {ViewHandler.FACELETS_LIBRARIES_PARAM_NAME,
-        PARAM_LIBRARIES_DEPRECATED};
 
     /**
      * Define the period used to refresh the facelet abstract syntax tree from the view definition file. 
@@ -244,18 +207,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private final static String[] PARAMS_RESOURCE_RESOLVER
             = {PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED};
 
-    /**
-     * Skip comments found on a facelet file.
-     */
-    @JSFWebConfigParam(since = "2.0", deprecated = true)
-    private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
-
     @JSFWebConfigParam(since = "2.1", defaultValue = "false", expectedValues = "true, false", tags = "performance")
     private final static String PARAM_MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW
             = "org.apache.myfaces.MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW";
-
-    private final static String[] PARAMS_SKIP_COMMENTS = {ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME,
-        PARAM_SKIP_COMMENTS_DEPRECATED};
 
     public final static String FILLED_VIEW = "org.apache.myfaces.FILLED_VIEW";
 
@@ -330,6 +284,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     
     private Map<String, List<String>> _contractMappings;
     private List<String> _prefixWildcardKeys;
+    
+    private FaceletsCompilerSupport _faceletsCompilerSupport;
 
     /**
      *
@@ -2122,10 +2078,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         loadDecorators(context, compiler);
         loadOptions(context, compiler);
 
-        compiler.setFaceletsProcessingConfigurations(
-                RuntimeConfig.getCurrentInstance(
-                        context.getExternalContext()).getFaceletProcessingConfigurations());
-
         return compiler;
     }
 
@@ -2208,7 +2160,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // -= Leonardo Uribe =- Add */* to the contentType is a fix done from FaceletViewHandler
         // to make old RI versions work, but since this is for JSF 2.0 it is not necessary that code.
-        ResponseWriter writer = renderKit.createResponseWriter(NullWriter.INSTANCE, contentType, encoding);
+        ResponseWriter writer = renderKit.createResponseWriter(FaceletsVDLUtils.NullWriter.INSTANCE,
+            contentType, encoding);
 
         //ResponseWriter writer;
         // append */* to the contentType so createResponseWriter will succeed no matter
@@ -2447,25 +2400,21 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
      */
     protected void loadDecorators(FacesContext context, Compiler compiler)
     {
-        String param = WebConfigParamUtils.getStringInitParameter(context.getExternalContext(), PARAMS_DECORATORS);
-        if (param != null)
+        getFaceletsCompilerSupport().loadDecorators(context, compiler);
+    }
+
+    protected FaceletsCompilerSupport getFaceletsCompilerSupport()
+    {
+        if (_faceletsCompilerSupport == null)
         {
-            for (String decorator : param.split(";"))
-            {
-                try
-                {
-                    compiler.addTagDecorator((TagDecorator) ReflectionUtil.forName(decorator).newInstance());
-                    if (log.isLoggable(Level.FINE))
-                    {
-                        log.fine("Successfully loaded decorator: " + decorator);
-                    }
-                }
-                catch (Exception e)
-                {
-                    log.log(Level.SEVERE, "Error Loading decorator: " + decorator, e);
-                }
-            }
+            _faceletsCompilerSupport = new FaceletsCompilerSupport();
         }
+        return _faceletsCompilerSupport;
+    }
+    
+    public void setFaceletsCompilerSupport(FaceletsCompilerSupport support)
+    {
+        _faceletsCompilerSupport = support;
     }
 
     /**
@@ -2478,71 +2427,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
      */
     protected void loadLibraries(FacesContext context, Compiler compiler)
     {
-        ExternalContext eContext = context.getExternalContext();
-
-        compiler.addTagLibrary(new CoreLibrary());
-        compiler.addTagLibrary(new HtmlLibrary());
-        compiler.addTagLibrary(new UILibrary());
-        compiler.addTagLibrary(new JstlCoreLibrary());
-        compiler.addTagLibrary(new JstlCoreLibrary(JstlCoreLibrary.ALTERNATIVE_NAMESPACE));
-        compiler.addTagLibrary(new JstlFnLibrary());
-        compiler.addTagLibrary(new CompositeLibrary());
-        compiler.addTagLibrary(new CompositeResourceLibrary(context,
-            CompositeResourceLibrary.NAMESPACE_PREFIX));
-        compiler.addTagLibrary(new CompositeResourceLibrary(context,
-            CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX));
-        compiler.addTagLibrary(new JsfLibrary());
-        compiler.addTagLibrary(new PassThroughLibrary());
-        
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(eContext);
-        if (!runtimeConfig.getComponentTagDeclarations().isEmpty())
-        {
-            ComponentTagDeclarationLibrary componentTagDeclarationLibrary = new ComponentTagDeclarationLibrary();
-            for (ComponentTagDeclaration declaration : runtimeConfig.getComponentTagDeclarations())
-            {
-                // We have here probably an inconsistency, because the annotation does not
-                // have a default renderer type. Let the renderer type be null will cause problems 
-                // later, because application.createComponent() may not scan the renderer class if
-                // a rendererType is not provided. The easy way to overcome this situation is create
-                // a dummy instance and check its rendererType. If is set the renderer if any will be
-                // scanned for annotations, if not it just do things as usual. It is unlikely to create
-                // a component and does not set a default renderer type if is required.
-                UIComponent component = context.getApplication().createComponent(declaration.getComponentType());
-                componentTagDeclarationLibrary.addComponent(declaration.getNamespace(), 
-                        declaration.getTagName(), declaration.getComponentType(), component.getRendererType());
-            }
-            compiler.addTagLibrary(componentTagDeclarationLibrary);
-        }
-        
-        String param = WebConfigParamUtils.getStringInitParameter(eContext, PARAMS_LIBRARIES);
-        if (param != null)
-        {
-            for (String library : param.split(";"))
-            {
-                try
-                {
-                    URL src = eContext.getResource(library.trim());
-                    if (src == null)
-                    {
-                        throw new FileNotFoundException(library);
-                    }
-
-                    TagLibrary tl = TagLibraryConfig.create(context, src);
-                    if (tl != null)
-                    {
-                        compiler.addTagLibrary(tl);
-                    }
-                    if (log.isLoggable(Level.FINE))
-                    {
-                        log.fine("Successfully loaded library: " + library);
-                    }
-                }
-                catch (IOException e)
-                {
-                    log.log(Level.SEVERE, "Error Loading library: " + library, e);
-                }
-            }
-        }
+        getFaceletsCompilerSupport().loadLibraries(context, compiler);
     }
 
     /**
@@ -2555,11 +2440,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
      */
     protected void loadOptions(FacesContext context, Compiler compiler)
     {
-        ExternalContext eContext = context.getExternalContext();
-
-        // skip comments?
-        compiler.setTrimmingComments(WebConfigParamUtils.getBooleanInitParameter(
-                eContext, PARAMS_SKIP_COMMENTS, false));
+        getFaceletsCompilerSupport().loadOptions(context, compiler);
     }
 
     /**
@@ -2617,7 +2498,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             FaceletFactory.setInstance(null);
         }
     }
-
 
     private void _initializeBuffer(ExternalContext context)
     {

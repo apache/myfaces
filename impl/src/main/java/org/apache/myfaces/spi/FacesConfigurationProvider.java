@@ -107,4 +107,10 @@ public abstract class FacesConfigurationProvider
      */
     public abstract List<FacesConfig> 
         getApplicationConfigurationResourceDocumentPopulatorFacesConfig(ExternalContext ectx);
+    
+    /**
+     * Return the FacesConfig object model retrieved from parsing .taglib.xml files according
+     * to spec rules.
+     */    
+    public abstract List<FacesConfig> getFaceletTaglibFacesConfig(ExternalContext ectx);
 }

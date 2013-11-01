@@ -48,6 +48,7 @@ import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.config.element.RenderKit;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.SystemEventListener;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -122,6 +123,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<ContractMapping> resourceLibraryContractMappings = new ArrayList<ContractMapping>();
     
     private List<ComponentTagDeclaration> componentTagDeclarations = new ArrayList<ComponentTagDeclaration>();
+    private List<FaceletTagLibrary> faceletTagLibraries = new ArrayList<FaceletTagLibrary>();
     
     private List <String> resourceResolvers = new ArrayList<String>();
     
@@ -270,6 +272,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             componentTagDeclarations.add(declaration);
         }
+        
+        faceletTagLibraries.addAll(config.getFaceletTagLibraryList());
 
         lifecyclePhaseListeners.addAll(config.getLifecyclePhaseListener());
         managedBeans.addAll(config.getManagedBeans());
@@ -782,4 +786,11 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     {
         return resourceResolvers;
     }
+
+    @Override
+    public Collection<FaceletTagLibrary> getTagLibraries()
+    {
+        return faceletTagLibraries;
+    }
+    
 }

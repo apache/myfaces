@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELException;
@@ -43,7 +42,6 @@ import org.apache.myfaces.view.facelets.tag.CompositeTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.html.DefaultTagDecorator;
-import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -77,8 +75,6 @@ public abstract class Compiler
 
     private final Map<String, String> features = new HashMap<String, String>();
 
-    private boolean initialized = false;
-    
     private boolean developmentProjectStage = false;
 
     private Collection<FaceletsProcessing> faceletsProcessingConfigurations;
@@ -91,74 +87,27 @@ public abstract class Compiler
 
     }
 
-    private synchronized void initialize()
-    {
-        if (this.initialized)
-        {
-            return;
-        }
-        log.fine("Initializing");
-        try
-        {
-            TagLibraryConfig cfg = new TagLibraryConfig();
-            cfg.loadImplicit(FacesContext.getCurrentInstance(), this);
-            TagLibrary tagLibrary = this.createTagLibrary();
-            if (!tagLibrary.containsNamespace(UILibrary.NAMESPACE) &&
-                !tagLibrary.containsNamespace(UILibrary.ALIAS_NAMESPACE))
-            {
-                log.severe("Missing Built-in Tag Libraries! Make sure they are included within "
-                           + "the META-INF directory of Facelets' Jar");
-            }
-
-        }
-        catch (IOException e)
-        {
-            log.log(Level.SEVERE, "Compiler Initialization Error", e);
-        }
-        finally
-        {
-            this.initialized = true;
-        }
-        log.fine("Initialization Successful");
-    }
-
     public final FaceletHandler compile(URL src, String alias) throws IOException, FaceletException, ELException,
             FacesException
     {
-        if (!this.initialized)
-        {
-            this.initialize();
-        }
         return this.doCompile(src, alias);
     }
     
     public final FaceletHandler compileViewMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException
     {
-        if (!this.initialized)
-        {
-            this.initialize();
-        }
         return this.doCompileViewMetadata(src, alias);
     }
     
     public final FaceletHandler compileCompositeComponentMetadata(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException
     {
-        if (!this.initialized)
-        {
-            this.initialize();
-        }
         return this.doCompileCompositeComponentMetadata(src, alias);
     }
     
     public final FaceletHandler compileComponent(
         String taglibURI, String tagName, Map<String,Object> attributes)
     {
-        if (!this.initialized)
-        {
-            this.initialize();
-        }
         return this.doCompileComponent(taglibURI, tagName, attributes);
     }
 
