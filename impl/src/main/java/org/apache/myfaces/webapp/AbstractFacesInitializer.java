@@ -591,6 +591,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 {
                     // silently ignore
                 }
+                catch (NoClassDefFoundError e)
+                {
+                    //On Google App Engine, javax.naming.Context is a restricted class.
+                    //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
+                    //below by context parameter.
+                }
 
                 if (beanManager == null)
                 {
@@ -603,6 +609,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                     catch (Exception e)
                     {
                         // silently ignore
+                    }
+                    catch (NoClassDefFoundError e)
+                    {
+                        //On Google App Engine, javax.naming.Context is a restricted class.
+                        //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
+                        //below by context parameter.
                     }
                 }
             }

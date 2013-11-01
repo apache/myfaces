@@ -296,7 +296,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
             //On Google App Engine, javax.naming.Context is a restricted class.
             //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
             //below by context parameter.
-            log.log(Level.SEVERE, "No InitialContext class found. Using NoInjectionAnnotationProcessor.", e);
+            log.log(Level.SEVERE, "No InitialContext class definition found. Using NoInjectionAnnotationProcessor.");
             return new NoInjectionAnnotationLifecycleProvider();
         }
     }
