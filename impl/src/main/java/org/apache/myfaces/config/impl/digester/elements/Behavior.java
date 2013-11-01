@@ -31,8 +31,8 @@ public class Behavior extends org.apache.myfaces.config.element.Behavior impleme
     private String behaviorClass;
     private String behaviorId;
     
-    private List<Attribute> attributes = new ArrayList<Attribute>();
-    private List<Property> properties = new ArrayList<Property>();
+    private List<AttributeImpl> attributes = new ArrayList<AttributeImpl>();
+    private List<PropertyImpl> properties = new ArrayList<PropertyImpl>();
     // TODO: what about extensions and descriptionGroup elems?  Not addressed in other
     // config objects either.
 
@@ -56,22 +56,22 @@ public class Behavior extends org.apache.myfaces.config.element.Behavior impleme
         this.behaviorId = behaviorId;
     }
     
-    public Collection<Attribute> getAttributes ()
+    public Collection<AttributeImpl> getAttributes ()
     {
         return attributes;
     }
 
-    public void addAttribute (Attribute attribute)
+    public void addAttribute (AttributeImpl attribute)
     {
         attributes.add (attribute);
     }
 
-    public Collection<Property> getProperties ()
+    public Collection<PropertyImpl> getProperties ()
     {
         return properties;
     }
     
-    public void addProperty (Property property)
+    public void addProperty (PropertyImpl property)
     {
         properties.add (property);
     }

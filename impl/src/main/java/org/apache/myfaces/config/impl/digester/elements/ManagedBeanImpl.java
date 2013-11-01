@@ -33,7 +33,7 @@ import org.apache.myfaces.view.facelets.el.ELText;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class ManagedBean extends org.apache.myfaces.config.element.ManagedBean implements Serializable
+public class ManagedBeanImpl extends org.apache.myfaces.config.element.ManagedBean implements Serializable
 {
 
     private String description;

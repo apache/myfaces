@@ -20,34 +20,7 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
 
-/**
- * Config holder for <client-behavior-renderer> element.
- */
-
-public class ClientBehaviorRenderer
-        extends org.apache.myfaces.config.element.ClientBehaviorRenderer
-        implements Serializable
+public class OrderSlotImpl extends org.apache.myfaces.config.element.OrderSlot implements Serializable
 {
-    private String rendererType;
-    private String rendererClass;
-    
-    public String getRendererClass ()
-    {
-        return rendererClass;
-    }
-    
-    public String getRendererType ()
-    {
-        return rendererType;
-    }
-    
-    public void setRendererClass (String clazz)
-    {
-        rendererClass = clazz;
-    }
-    
-    public void setRendererType (String type)
-    {
-        rendererType = type;
-    }
+
 }

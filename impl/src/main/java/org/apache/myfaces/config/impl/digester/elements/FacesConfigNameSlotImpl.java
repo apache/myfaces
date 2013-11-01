@@ -20,7 +20,8 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
 
-public class FacesConfigNameSlot extends org.apache.myfaces.config.element.FacesConfigNameSlot implements Serializable
+public class FacesConfigNameSlotImpl extends org.apache.myfaces.config.element.FacesConfigNameSlot
+    implements Serializable
 {
     private String name;
 

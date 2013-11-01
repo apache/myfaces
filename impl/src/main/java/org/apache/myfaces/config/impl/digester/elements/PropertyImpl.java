@@ -41,7 +41,7 @@ import java.util.List;
  *
  *          <p/>
  */
-public class Property extends org.apache.myfaces.config.element.Property implements Serializable
+public class PropertyImpl extends org.apache.myfaces.config.element.Property implements Serializable
 {
     private List<String> _description;
     private List<String> _displayName;

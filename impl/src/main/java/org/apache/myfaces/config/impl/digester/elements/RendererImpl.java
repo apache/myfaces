@@ -20,57 +20,52 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
 
+
 /**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class ResourceBundle extends org.apache.myfaces.config.element.ResourceBundle implements Serializable
+public class RendererImpl extends org.apache.myfaces.config.element.Renderer implements Serializable
 {
-    private String baseName;
-    private String var;
-    private String displayName;
 
-    /**
-     * @return the baseName
-     */
-    public String getBaseName()
+    private String componentFamily;
+    private String rendererType;
+    private String rendererClass;
+
+
+    public String getComponentFamily()
     {
-        return baseName;
+        return componentFamily;
     }
 
-    /**
-     * @param baseName
-     *            the baseName to set
-     */
-    public void setBaseName(String baseName)
+
+    public void setComponentFamily(String componentFamily)
     {
-        this.baseName = baseName;
+        this.componentFamily = componentFamily;
     }
 
-    /**
-     * @return the var
-     */
-    public String getVar()
+
+    public String getRendererType()
     {
-        return var;
+        return rendererType;
     }
 
-    /**
-     * @param var
-     *            the var to set
-     */
-    public void setVar(String var)
+
+    public void setRendererType(String rendererType)
     {
-        this.var = var;
+        this.rendererType = rendererType;
     }
 
-    public String getDisplayName()
+
+    public String getRendererClass()
     {
-        return displayName;
+        return rendererClass;
     }
 
-    public void setDisplayName(String displayName)
+
+    public void setRendererClass(String rendererClass)
     {
-        this.displayName = displayName;
+        this.rendererClass = rendererClass;
     }
+
+
 }

@@ -67,7 +67,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowReturnImpl;
-import org.apache.myfaces.config.impl.digester.elements.NavigationCase;
+import org.apache.myfaces.config.impl.digester.elements.NavigationCaseImpl;
 import org.apache.myfaces.shared.util.FastWriter;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.FaceletConfigResourceProvider;
@@ -202,10 +202,10 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         try
         {
-            org.apache.myfaces.config.impl.digester.elements.FacesConfig facesConfig
-                    = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-            org.apache.myfaces.config.impl.digester.elements.Factory factory
-                    = new org.apache.myfaces.config.impl.digester.elements.Factory();
+            org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl facesConfig
+                    = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+            org.apache.myfaces.config.impl.digester.elements.FactoryImpl factory
+                    = new org.apache.myfaces.config.impl.digester.elements.FactoryImpl();
             
             facesConfig.addFactory(factory);
             
@@ -682,7 +682,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 // Zero lenght, if that so the flow definition must be implicitly derived. 
                 // See JSF 2.2 section 11.4.3.3
                 // 
-                FacesConfig facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                FacesConfig facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
                 FacesFlowDefinitionImpl flow = new FacesFlowDefinitionImpl();
                 String flowName = systemId.substring(systemId.lastIndexOf('/')+1, systemId.lastIndexOf("-flow.xml"));
                 flow.setId(flowName);
@@ -700,7 +700,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 // that by default points to an outer /[flow-name]-return outcome
                 FacesFlowReturnImpl returnNode = new FacesFlowReturnImpl();
                 returnNode.setId(flowName+"-return");
-                NavigationCase returnNavCase = new NavigationCase();
+                NavigationCaseImpl returnNavCase = new NavigationCaseImpl();
                 returnNavCase.setFromOutcome("/"+flowName+"-return");
                 returnNode.setNavigationCase(returnNavCase);
                 flow.addReturn(returnNode);
@@ -761,8 +761,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     FaceletTagLibrary tl = TagLibraryConfigUnmarshallerImpl.create(externalContext, src);
                     if (tl != null)
                     {
-                        org.apache.myfaces.config.impl.digester.elements.FacesConfig config = 
-                            new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl config = 
+                            new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
                         config.addFaceletTagLibrary(tl);
                         facesConfigFilesList.add(config);
                     }
@@ -791,8 +791,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     FaceletTagLibrary tl = TagLibraryConfigUnmarshallerImpl.create(externalContext, url);
                     if (tl != null)
                     {
-                        org.apache.myfaces.config.impl.digester.elements.FacesConfig config = 
-                            new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl config = 
+                            new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
                         config.addFaceletTagLibrary(tl);
                         facesConfigFilesList.add(config);
                     }

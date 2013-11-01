@@ -19,40 +19,38 @@
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class LocaleConfig extends org.apache.myfaces.config.element.LocaleConfig implements Serializable
+public class ComponentImpl extends org.apache.myfaces.config.element.Component implements Serializable
 {
 
-    private String defaultLocale;
-    private List<String> supportedLocales = new ArrayList<String>();
+    private String componentType;
+    private String componentClass;
 
 
-    public void setDefaultLocale(String defaultLocale)
+    public void setComponentType(String componentType)
     {
-        this.defaultLocale = defaultLocale;
+        this.componentType = componentType;
     }
 
 
-    public void addSupportedLocale(String locale)
+    public void setComponentClass(String componentClass)
     {
-        supportedLocales.add(locale);
+        this.componentClass = componentClass;
     }
 
 
-    public String getDefaultLocale()
+    public String getComponentType()
     {
-        return defaultLocale;
+        return componentType;
     }
 
 
-    public List<String> getSupportedLocales()
+    public String getComponentClass()
     {
-        return supportedLocales;
+        return componentClass;
     }
 }

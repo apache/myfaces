@@ -16,11 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
 
-public class OrderSlot extends org.apache.myfaces.config.element.OrderSlot implements Serializable
+public class ViewParamImpl extends org.apache.myfaces.config.element.ViewParam implements Serializable
 {
+    private String name;
+    private String value;
+    
+
+    public String getName()
+    {
+        return name;
+    }
+    
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void setValue(String value)
+    {
+        this.value = value;
+    }
+
+    public String getValue()
+    {
+        return value;
+    }
 
 }

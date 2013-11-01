@@ -19,53 +19,34 @@
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-
-/**
- * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
- */
-public class Renderer extends org.apache.myfaces.config.element.Renderer implements Serializable
+public class OrderingImpl extends org.apache.myfaces.config.element.Ordering implements Serializable
 {
+    
+    private List<org.apache.myfaces.config.element.OrderSlot> beforeList
+            = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
+    private List<org.apache.myfaces.config.element.OrderSlot> afterList
+            = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
 
-    private String componentFamily;
-    private String rendererType;
-    private String rendererClass;
-
-
-    public String getComponentFamily()
+    public void addBeforeSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
-        return componentFamily;
+        beforeList.add(slot);
     }
-
-
-    public void setComponentFamily(String componentFamily)
+    
+    public List<org.apache.myfaces.config.element.OrderSlot> getBeforeList()
     {
-        this.componentFamily = componentFamily;
+        return beforeList;
     }
-
-
-    public String getRendererType()
+    
+    public void addAfterSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
-        return rendererType;
+        afterList.add(slot);
     }
-
-
-    public void setRendererType(String rendererType)
+    
+    public List<org.apache.myfaces.config.element.OrderSlot> getAfterList()
     {
-        this.rendererType = rendererType;
-    }
-
-
-    public String getRendererClass()
-    {
-        return rendererClass;
-    }
-
-
-    public void setRendererClass(String rendererClass)
-    {
-        this.rendererClass = rendererClass;
-    }
-
-
+        return afterList;
+    }    
 }

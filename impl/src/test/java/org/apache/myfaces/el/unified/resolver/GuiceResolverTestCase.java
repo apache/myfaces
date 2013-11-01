@@ -22,7 +22,7 @@ package org.apache.myfaces.el.unified.resolver;
 import javax.el.ELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
+import org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import com.google.inject.Guice;
@@ -45,7 +45,7 @@ public class GuiceResolverTestCase extends AbstractJsfTestCase {
         
         // simulate Myfaces starting up
         RuntimeConfig rc = RuntimeConfig.getCurrentInstance(externalContext);
-        ManagedBean bean = new ManagedBean();
+        ManagedBeanImpl bean = new ManagedBeanImpl();
         bean.setBeanClass(ShoppingCart.class.getName());
         bean.setScope("request");
         rc.addManagedBean("shoppingCart", bean);

@@ -16,45 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+ 
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-
-/**
- * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
- */
-public class NavigationRule extends org.apache.myfaces.config.element.NavigationRule implements Serializable
+public class SystemEventListenerImpl extends org.apache.myfaces.config.element.SystemEventListener
+    implements Serializable
 {
-
-    private String fromViewId;
-    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases
-            = new ArrayList<org.apache.myfaces.config.element.NavigationCase>();
-
-
-    public String getFromViewId()
+    private String systemEventListenerClass;
+    private String systemEventClass;
+    private String sourceClass;
+    
+    public void setSystemEventListenerClass(String listener)
     {
-        return fromViewId;
+        systemEventListenerClass = listener;
     }
 
-
-    public void setFromViewId(String fromViewId)
+    public void setSystemEventClass(String event)
     {
-        this.fromViewId = fromViewId;
+        systemEventClass = event;
+    }
+    
+    public void setSourceClass(String source)
+    {
+        sourceClass = source;
+    }
+    
+    public String getSystemEventListenerClass()
+    {
+        return systemEventListenerClass;
     }
 
-
-    public void addNavigationCase(org.apache.myfaces.config.element.NavigationCase value)
+    public String getSystemEventClass()
     {
-        navigationCases.add(value);
+        return systemEventClass;
     }
 
-
-    public List<org.apache.myfaces.config.element.NavigationCase> getNavigationCases()
+    public String getSourceClass()
     {
-        return navigationCases;
+        return sourceClass;
     }
-
 }

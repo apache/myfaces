@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Converter extends org.apache.myfaces.config.element.Converter implements Serializable
+public class ConverterImpl extends org.apache.myfaces.config.element.Converter implements Serializable
 {
 
     private String converterId;

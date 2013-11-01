@@ -31,7 +31,7 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class FacesConfig extends org.apache.myfaces.config.element.FacesConfig implements Serializable
+public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConfig implements Serializable
 {
 
     private List<org.apache.myfaces.config.element.Application> applications

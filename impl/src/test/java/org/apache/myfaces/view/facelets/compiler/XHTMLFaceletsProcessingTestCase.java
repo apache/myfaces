@@ -34,7 +34,7 @@ import javax.faces.component.html.HtmlSelectOneMenu;
 
 import junit.framework.Assert;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.FaceletsProcessing;
+import org.apache.myfaces.config.impl.digester.elements.FaceletsProcessingImpl;
 
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
@@ -84,11 +84,11 @@ public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
     {
         super.setUpExternalContext();
 
-        FaceletsProcessing item = new FaceletsProcessing();
+        FaceletsProcessingImpl item = new FaceletsProcessingImpl();
         item.setFileExtension(".xhtml");
-        item.setProcessAs(FaceletsProcessing.PROCESS_AS_XHTML);
+        item.setProcessAs(FaceletsProcessingImpl.PROCESS_AS_XHTML);
         RuntimeConfig.getCurrentInstance(externalContext).addFaceletProcessingConfiguration(
-            FaceletsProcessing.PROCESS_AS_XHTML, item);
+            FaceletsProcessingImpl.PROCESS_AS_XHTML, item);
     }
 
     @Test

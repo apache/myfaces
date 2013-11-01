@@ -17,8 +17,8 @@
 package org.apache.myfaces.config.annotation;
 
 import org.apache.myfaces.config.ManagedBeanBuilder;
-import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
-import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
+import org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl;
+import org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
@@ -32,7 +32,7 @@ public class Myfaces1761TestCase extends AbstractJsfTestCase
 
     protected ManagedBeanBuilder managedBeanBuilder;
     protected LifecycleProvider2 lifecycleProvider;
-    protected ManagedBean beanConfiguration;
+    protected ManagedBeanImpl beanConfiguration;
     
     private static final String TEST_LIFECYCLE_PROVIDER = MockLifecycleProvider2.class.getName();
     
@@ -48,12 +48,12 @@ public class Myfaces1761TestCase extends AbstractJsfTestCase
         super.setUp();
         managedBeanBuilder  = new ManagedBeanBuilder();
         
-        beanConfiguration = new ManagedBean();        
+        beanConfiguration = new ManagedBeanImpl();        
         beanConfiguration.setBeanClass(AnnotatedManagedBean2.class.getName());
         beanConfiguration.setName("managed");
         beanConfiguration.setScope("request");
         
-        ManagedProperty managedProperty = new ManagedProperty();
+        ManagedPropertyImpl managedProperty = new ManagedPropertyImpl();
         managedProperty.setPropertyName("managedProperty");
         managedProperty.setValue(INJECTED_VALUE);
         beanConfiguration.addProperty(managedProperty);

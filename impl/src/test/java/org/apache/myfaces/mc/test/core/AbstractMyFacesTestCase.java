@@ -61,7 +61,7 @@ import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.annotation.NoAnnotationLifecyleProvider;
 import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.impl.digester.elements.Factory;
+import org.apache.myfaces.config.impl.digester.elements.FactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
@@ -994,7 +994,7 @@ public abstract class AbstractMyFacesTestCase
             if (standardFacesConfig == null)
             {
                 FacesConfig sfc = super.getStandardFacesConfig(ectx);
-                Factory factory = (Factory) sfc.getFactories().get(0);
+                FactoryImpl factory = (FactoryImpl) sfc.getFactories().get(0);
                 // Override the default vdl factory with a mock one that only load
                 // facelet views
                 factory.getViewDeclarationLanguageFactory().set(0, MockMyFacesViewDeclarationLanguageFactory.class.getName());
@@ -1018,18 +1018,18 @@ public abstract class AbstractMyFacesTestCase
             {
                 if (facesConfig == null)
                 {
-                    facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                    facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
                 }
                 for (PageBean annoPageBean : annoManagedBeans.values())
                 {
-                    org.apache.myfaces.config.impl.digester.elements.ManagedBean bean = new 
-                        org.apache.myfaces.config.impl.digester.elements.ManagedBean();
+                    org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl bean = new 
+                        org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl();
                     bean.setBeanClass(annoPageBean.clazz().getName());
                     bean.setName(annoPageBean.name() == null ? annoPageBean.clazz().getName() : annoPageBean.name());
                     bean.setScope(annoPageBean.scope() == null ? "request" : annoPageBean.scope());
                     bean.setEager(Boolean.toString(annoPageBean.eager()));
                     
-                    ((org.apache.myfaces.config.impl.digester.elements.FacesConfig)facesConfig).addManagedBean(bean);
+                    ((org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl)facesConfig).addManagedBean(bean);
                 }
             }
 
@@ -1038,16 +1038,16 @@ public abstract class AbstractMyFacesTestCase
             {
                 if (facesConfig == null)
                 {
-                    facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+                    facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
                 }
-                org.apache.myfaces.config.impl.digester.elements.ManagedBean bean = new 
-                    org.apache.myfaces.config.impl.digester.elements.ManagedBean();
+                org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl bean = new 
+                    org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl();
                 bean.setBeanClass(annoPageBean.clazz().getName());
                 bean.setName(annoPageBean.name() == null ? annoPageBean.clazz().getName() : annoPageBean.name());
                 bean.setScope(annoPageBean.scope() == null ? "request" : annoPageBean.scope());
                 bean.setEager(Boolean.toString(annoPageBean.eager()));
                 
-                ((org.apache.myfaces.config.impl.digester.elements.FacesConfig)facesConfig).addManagedBean(bean);
+                ((org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl)facesConfig).addManagedBean(bean);
             }
             return facesConfig;
         }

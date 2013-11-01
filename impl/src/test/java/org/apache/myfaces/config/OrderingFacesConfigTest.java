@@ -18,10 +18,10 @@ package org.apache.myfaces.config;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.OrderSlot;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.config.impl.digester.elements.AbsoluteOrdering;
-import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlot;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlot;
-import org.apache.myfaces.config.impl.digester.elements.Ordering;
+import org.apache.myfaces.config.impl.digester.elements.AbsoluteOrderingImpl;
+import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlotImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlotImpl;
+import org.apache.myfaces.config.impl.digester.elements.OrderingImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import javax.faces.FacesException;
@@ -125,11 +125,11 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");        
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
         
         cfgA.setName("A");
         cfgB.setName("B");
@@ -137,35 +137,35 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         cfgD.setName("D");
         cfgE.setName("E");
         
-        cfgC.setOrdering(new Ordering());
-        FacesConfigNameSlot temp = new FacesConfigNameSlot();
+        cfgC.setOrdering(new OrderingImpl());
+        FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("D");
         cfgC.getOrdering().getBeforeList().add(temp);
-        temp = new FacesConfigNameSlot();
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("E");
         cfgC.getOrdering().getBeforeList().add(temp);        
-        temp = new FacesConfigNameSlot();
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("A");
         cfgC.getOrdering().getAfterList().add(temp);
-        temp = new FacesConfigNameSlot();
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
         cfgC.getOrdering().getAfterList().add(temp);
         
-        cfgA.setOrdering(new Ordering());
-        temp = new FacesConfigNameSlot();
+        cfgA.setOrdering(new OrderingImpl());
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
         cfgA.getOrdering().getBeforeList().add(temp);
-        temp = new FacesConfigNameSlot();
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("E");
         cfgA.getOrdering().getBeforeList().add(temp);
         
-        cfgE.setOrdering(new Ordering());
-        temp = new FacesConfigNameSlot();
+        cfgE.setOrdering(new OrderingImpl());
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("D");
         cfgE.getOrdering().getAfterList().add(temp);
         
-        cfgD.setOrdering(new Ordering());
-        cfgD.getOrdering().getBeforeList().add(new ConfigOthersSlot());
+        cfgD.setOrdering(new OrderingImpl());
+        cfgD.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
         
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfgA);
@@ -199,37 +199,37 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
      */
     public void testMaxConditionsOrdering() throws Exception
     {
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");        
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
 
         cfgA.setName("A");
         cfgB.setName("B");
         cfgC.setName("C");
         
-        cfgA.setOrdering(new Ordering());
-        FacesConfigNameSlot temp = new FacesConfigNameSlot();
+        cfgA.setOrdering(new OrderingImpl());
+        FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
         cfgA.getOrdering().getBeforeList().add(temp);
-        temp = new FacesConfigNameSlot();
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("C");
         cfgA.getOrdering().getBeforeList().add(temp);
         
-        cfgB.setOrdering(new Ordering());
-        temp = new FacesConfigNameSlot();
+        cfgB.setOrdering(new OrderingImpl());
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("A");
         cfgB.getOrdering().getAfterList().add(temp);
-        temp = new FacesConfigNameSlot();
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("C");
         cfgB.getOrdering().getBeforeList().add(temp);
         
-        cfgC.setOrdering(new Ordering());
-        temp = new FacesConfigNameSlot();
+        cfgC.setOrdering(new OrderingImpl());
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("A");
         cfgC.getOrdering().getAfterList().add(temp);
-        temp = new FacesConfigNameSlot();
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
         cfgC.getOrdering().getAfterList().add(temp);
         //cfgC.getOrdering().getBeforeList().add(new ConfigOthersSlot());
@@ -249,12 +249,12 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx1()
     {      
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgF = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgF = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
 
         cfgA.setName("A");
         cfgB.setName("B");
@@ -263,21 +263,21 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         cfgE.setName("E");
         cfgF.setName("F");
         
-        cfgA.setOrdering(new Ordering());
-        cfgA.getOrdering().getAfterList().add(new ConfigOthersSlot());
-        FacesConfigNameSlot temp = new FacesConfigNameSlot();
+        cfgA.setOrdering(new OrderingImpl());
+        cfgA.getOrdering().getAfterList().add(new ConfigOthersSlotImpl());
+        FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("C");
         cfgA.getOrdering().getAfterList().add(temp);
         
-        cfgB.setOrdering(new Ordering());
-        cfgB.getOrdering().getBeforeList().add(new ConfigOthersSlot());
+        cfgB.setOrdering(new OrderingImpl());
+        cfgB.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
 
-        cfgC.setOrdering(new Ordering());
-        cfgC.getOrdering().getAfterList().add(new ConfigOthersSlot());
+        cfgC.setOrdering(new OrderingImpl());
+        cfgC.getOrdering().getAfterList().add(new ConfigOthersSlotImpl());
 
-        cfgF.setOrdering(new Ordering());
-        cfgF.getOrdering().getBeforeList().add(new ConfigOthersSlot());
-        temp = new FacesConfigNameSlot();
+        cfgF.setOrdering(new OrderingImpl());
+        cfgF.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
+        temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
         cfgF.getOrdering().getBeforeList().add(temp);
         
@@ -300,12 +300,12 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx2()
     {
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfg = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgF = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfg = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgF = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
 
         cfgB.setName("B");
         cfgC.setName("C");
@@ -313,20 +313,20 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         cfgE.setName("E");
         cfgF.setName("F");
         
-        cfg.setOrdering(new Ordering());
-        cfg.getOrdering().getAfterList().add(new ConfigOthersSlot());
-        FacesConfigNameSlot temp = new FacesConfigNameSlot();
+        cfg.setOrdering(new OrderingImpl());
+        cfg.getOrdering().getAfterList().add(new ConfigOthersSlotImpl());
+        FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("C");
         cfg.getOrdering().getBeforeList().add(temp);
 
-        cfgB.setOrdering(new Ordering());
-        cfgB.getOrdering().getBeforeList().add(new ConfigOthersSlot());
+        cfgB.setOrdering(new OrderingImpl());
+        cfgB.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
         
-        cfgD.setOrdering(new Ordering());
-        cfgD.getOrdering().getAfterList().add(new ConfigOthersSlot());
+        cfgD.setOrdering(new OrderingImpl());
+        cfgD.getOrdering().getAfterList().add(new ConfigOthersSlotImpl());
 
-        cfgE.setOrdering(new Ordering());
-        cfgE.getOrdering().getBeforeList().add(new ConfigOthersSlot());
+        cfgE.setOrdering(new OrderingImpl());
+        cfgE.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
 
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfg);
@@ -346,23 +346,23 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx3()
     {
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
 
         cfgA.setName("A");
         cfgB.setName("B");
         cfgC.setName("C");
         cfgD.setName("D");
 
-        cfgA.setOrdering(new Ordering());
-        FacesConfigNameSlot temp = new FacesConfigNameSlot();
+        cfgA.setOrdering(new OrderingImpl());
+        FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
         cfgA.getOrdering().getAfterList().add(temp);
 
-        cfgC.setOrdering(new Ordering());
-        cfgC.getOrdering().getBeforeList().add(new ConfigOthersSlot());
+        cfgC.setOrdering(new OrderingImpl());
+        cfgC.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
         
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfgA);
@@ -691,17 +691,17 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testAbsoluteOrdering1() throws Exception
     {
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgAbs = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgMK = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
-        org.apache.myfaces.config.impl.digester.elements.FacesConfig cfgOWB = new org.apache.myfaces.config.impl.digester.elements.FacesConfig();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgAbs = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgMK = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl cfgOWB = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
 
         cfgMK.setName("cz_markoc_faces");
         
-        AbsoluteOrdering ao = new AbsoluteOrdering();
-        FacesConfigNameSlot temp = new FacesConfigNameSlot();
+        AbsoluteOrderingImpl ao = new AbsoluteOrderingImpl();
+        FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("cz_markoc_faces");
         ao.addOrderSlot(temp);
-        ao.addOrderSlot(new ConfigOthersSlot());
+        ao.addOrderSlot(new ConfigOthersSlotImpl());
         
         cfgAbs.setAbsoluteOrdering(ao);
 
@@ -769,7 +769,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
             //2. Scan slot by slot and merge information according
             for (OrderSlot slot : webAppConfig.getAbsoluteOrdering().getOrderList())
             {
-                if (slot instanceof ConfigOthersSlot)
+                if (slot instanceof ConfigOthersSlotImpl)
                 {
                     //Add all mentioned in othersResources
                     for (FacesConfig resource : othersResources)
@@ -780,7 +780,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
                 else
                 {
                     //Add it to the sorted list
-                    FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                    FacesConfigNameSlotImpl nameSlot = (FacesConfigNameSlotImpl) slot;
                     sortedResources.add(getFacesConfig(appConfigResources, nameSlot.getName()));
                 }
             }
@@ -807,9 +807,9 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     {
         for (OrderSlot slot: slots)
         {
-            if (slot instanceof FacesConfigNameSlot)
+            if (slot instanceof FacesConfigNameSlotImpl)
             {
-                FacesConfigNameSlot nameSlot = (FacesConfigNameSlot) slot;
+                FacesConfigNameSlotImpl nameSlot = (FacesConfigNameSlotImpl) slot;
                 if (name.equals(nameSlot.getName()))
                 {
                     return true;

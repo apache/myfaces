@@ -90,8 +90,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
     
-    private Map<String, org.apache.myfaces.config.impl.digester.elements.RenderKit> renderKits
-            = new LinkedHashMap<String, org.apache.myfaces.config.impl.digester.elements.RenderKit>();
+    private Map<String, org.apache.myfaces.config.impl.digester.elements.RenderKitImpl> renderKits
+            = new LinkedHashMap<String, org.apache.myfaces.config.impl.digester.elements.RenderKitImpl>();
     
     private List<String> actionListeners = new ArrayList<String>();
     private List<String> elResolvers = new ArrayList<String>();
@@ -242,11 +242,11 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
                 renderKitId = RenderKitFactory.HTML_BASIC_RENDER_KIT;
             }
 
-            org.apache.myfaces.config.impl.digester.elements.RenderKit existing = renderKits.get(renderKitId);
+            org.apache.myfaces.config.impl.digester.elements.RenderKitImpl existing = renderKits.get(renderKitId);
 
             if (existing == null)
             {
-                existing = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
+                existing = new org.apache.myfaces.config.impl.digester.elements.RenderKitImpl();
                 existing.merge(renderKit);
                 renderKits.put(renderKitId, existing);
                 //renderKits.put(renderKitId, renderKit);

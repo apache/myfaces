@@ -39,7 +39,7 @@ attribute-class, default-value?, suggested-value?, attribute-extension*)>
 
  *          <p/>
  */
-public class Attribute extends org.apache.myfaces.config.element.Attribute implements Serializable
+public class AttributeImpl extends org.apache.myfaces.config.element.Attribute implements Serializable
 {
     private List<String> _description;
     private List<String> _displayName;

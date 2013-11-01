@@ -22,31 +22,37 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ordering extends org.apache.myfaces.config.element.Ordering implements Serializable
-{
-    
-    private List<org.apache.myfaces.config.element.OrderSlot> beforeList
-            = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
-    private List<org.apache.myfaces.config.element.OrderSlot> afterList
-            = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
 
-    public void addBeforeSlot(org.apache.myfaces.config.element.OrderSlot slot)
+/**
+ * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
+ */
+public class LocaleConfigImpl extends org.apache.myfaces.config.element.LocaleConfig implements Serializable
+{
+
+    private String defaultLocale;
+    private List<String> supportedLocales = new ArrayList<String>();
+
+
+    public void setDefaultLocale(String defaultLocale)
     {
-        beforeList.add(slot);
+        this.defaultLocale = defaultLocale;
     }
-    
-    public List<org.apache.myfaces.config.element.OrderSlot> getBeforeList()
+
+
+    public void addSupportedLocale(String locale)
     {
-        return beforeList;
+        supportedLocales.add(locale);
     }
-    
-    public void addAfterSlot(org.apache.myfaces.config.element.OrderSlot slot)
+
+
+    public String getDefaultLocale()
     {
-        afterList.add(slot);
+        return defaultLocale;
     }
-    
-    public List<org.apache.myfaces.config.element.OrderSlot> getAfterList()
+
+
+    public List<String> getSupportedLocales()
     {
-        return afterList;
-    }    
+        return supportedLocales;
+    }
 }

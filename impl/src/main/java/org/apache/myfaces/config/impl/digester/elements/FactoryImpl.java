@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Factory extends org.apache.myfaces.config.element.Factory implements Serializable
+public class FactoryImpl extends org.apache.myfaces.config.element.Factory implements Serializable
 {
     private List<String> applicationFactories = new ArrayList<String>();
     private List<String> exceptionHandlerFactories = new ArrayList<String>();

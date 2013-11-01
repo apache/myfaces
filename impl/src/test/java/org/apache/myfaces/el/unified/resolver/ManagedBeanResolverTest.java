@@ -28,7 +28,7 @@ import javax.faces.FacesException;
 import javax.faces.application.ProjectStage;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
+import org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl;
 import org.apache.myfaces.test.mock.MockApplication20;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
@@ -109,14 +109,14 @@ public class ManagedBeanResolverTest extends AbstractJsfTestCase
     public void testCustomScope()
     {
         // create the custom scope
-        ManagedBean scopeBean = new ManagedBean();
+        ManagedBeanImpl scopeBean = new ManagedBeanImpl();
         scopeBean.setBeanClass(HashMap.class.getName());
         scopeBean.setName("scopeBean");
         scopeBean.setScope("application");
         runtimeConfig.addManagedBean("scopeBean", scopeBean);
         
         // create the managed bean
-        ManagedBean beanInCustomScope = new ManagedBean();
+        ManagedBeanImpl beanInCustomScope = new ManagedBeanImpl();
         beanInCustomScope.setBeanClass(ArrayList.class.getName());
         beanInCustomScope.setName("beanInCustomScope");
         beanInCustomScope.setScope("#{scopeBean}");
@@ -145,7 +145,7 @@ public class ManagedBeanResolverTest extends AbstractJsfTestCase
     public void testCustomScopeNoMap()
     {
         // create the custom scope
-        ManagedBean scopeBean = new ManagedBean();
+        ManagedBeanImpl scopeBean = new ManagedBeanImpl();
         // Scope is ArrayList instead of HashMap
         scopeBean.setBeanClass(ArrayList.class.getName()); 
         scopeBean.setName("scopeBean");
@@ -153,7 +153,7 @@ public class ManagedBeanResolverTest extends AbstractJsfTestCase
         runtimeConfig.addManagedBean("scopeBean", scopeBean);
         
         // create the managed bean
-        ManagedBean beanInCustomScope = new ManagedBean();
+        ManagedBeanImpl beanInCustomScope = new ManagedBeanImpl();
         beanInCustomScope.setBeanClass(ArrayList.class.getName());
         beanInCustomScope.setName("beanInCustomScope");
         beanInCustomScope.setScope("#{scopeBean}");
@@ -190,14 +190,14 @@ public class ManagedBeanResolverTest extends AbstractJsfTestCase
     public void testCustomScopeCyclicReferences()
     {
         // create m1
-        ManagedBean m1 = new ManagedBean();
+        ManagedBeanImpl m1 = new ManagedBeanImpl();
         m1.setBeanClass(TestBean.class.getName());
         m1.setName("m1");
         m1.setScope("#{m2.scope}");
         runtimeConfig.addManagedBean("m1", m1);
         
         // create m2
-        ManagedBean m2 = new ManagedBean();
+        ManagedBeanImpl m2 = new ManagedBeanImpl();
         m2.setBeanClass(TestBean.class.getName());
         m2.setName("m2");
         m2.setScope("#{m1.scope}");
@@ -222,7 +222,7 @@ public class ManagedBeanResolverTest extends AbstractJsfTestCase
     public void testViewScope()
     {
         // create the managed bean
-        ManagedBean beanInViewScope = new ManagedBean();
+        ManagedBeanImpl beanInViewScope = new ManagedBeanImpl();
         beanInViewScope.setBeanClass(ArrayList.class.getName());
         beanInViewScope.setName("beanInViewScope");
         beanInViewScope.setScope("view");

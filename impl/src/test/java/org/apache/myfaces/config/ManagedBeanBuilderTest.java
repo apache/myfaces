@@ -24,8 +24,8 @@ import java.util.Map;
 import javax.faces.FacesException;
 import javax.faces.application.ProjectStage;
 
-import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
-import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
+import org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl;
+import org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.test.mock.MockApplication20;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
@@ -121,18 +121,18 @@ public class ManagedBeanBuilderTest extends AbstractJsfTestCase
     public void testIsInValidScope()
     {
         // create sessionBean referencing requestBean
-        ManagedBean sessionBean = new ManagedBean();
+        ManagedBeanImpl sessionBean = new ManagedBeanImpl();
         sessionBean.setBeanClass(TestBean.class.getName());
         sessionBean.setName("sessionBean");
         sessionBean.setScope("session");
-        ManagedProperty anotherBeanProperty = new ManagedProperty();
+        ManagedPropertyImpl anotherBeanProperty = new ManagedPropertyImpl();
         anotherBeanProperty.setPropertyName("anotherBean");
         anotherBeanProperty.setValue("#{requestBean}");
         sessionBean.addProperty(anotherBeanProperty);
         runtimeConfig.addManagedBean("sessionBean", sessionBean);
         
         // create requestBean
-        ManagedBean requestBean = new ManagedBean();
+        ManagedBeanImpl requestBean = new ManagedBeanImpl();
         requestBean.setBeanClass(TestBean.class.getName());
         requestBean.setName("requestBean");
         requestBean.setScope("request");
@@ -160,25 +160,25 @@ public class ManagedBeanBuilderTest extends AbstractJsfTestCase
     public void testIsInValidScopeWithCustomScopes()
     {
         // create scopeBean
-        ManagedBean scopeBean = new ManagedBean();
+        ManagedBeanImpl scopeBean = new ManagedBeanImpl();
         scopeBean.setBeanClass(TestBean.class.getName());
         scopeBean.setName("scopeBean");
         scopeBean.setScope("session");
         runtimeConfig.addManagedBean("scopeBean", scopeBean);
         
         // create sessionBean referencing requestBean
-        ManagedBean sessionBean = new ManagedBean();
+        ManagedBeanImpl sessionBean = new ManagedBeanImpl();
         sessionBean.setBeanClass(TestBean.class.getName());
         sessionBean.setName("sessionBean");
         sessionBean.setScope("#{scopeBean.scope}");
-        ManagedProperty anotherBeanProperty = new ManagedProperty();
+        ManagedPropertyImpl anotherBeanProperty = new ManagedPropertyImpl();
         anotherBeanProperty.setPropertyName("anotherBean");
         anotherBeanProperty.setValue("#{requestBean}");
         sessionBean.addProperty(anotherBeanProperty);
         runtimeConfig.addManagedBean("sessionBean", sessionBean);
         
         // create requestBean
-        ManagedBean requestBean = new ManagedBean();
+        ManagedBeanImpl requestBean = new ManagedBeanImpl();
         requestBean.setBeanClass(TestBean.class.getName());
         requestBean.setName("requestBean");
         requestBean.setScope("request");
@@ -206,18 +206,18 @@ public class ManagedBeanBuilderTest extends AbstractJsfTestCase
     public void testIsInValidScopeViewScope()
     {
         // create viewBean referencing requestBean
-        ManagedBean viewBean = new ManagedBean();
+        ManagedBeanImpl viewBean = new ManagedBeanImpl();
         viewBean.setBeanClass(TestBean.class.getName());
         viewBean.setName("viewBean");
         viewBean.setScope("view");
-        ManagedProperty anotherBeanProperty = new ManagedProperty();
+        ManagedPropertyImpl anotherBeanProperty = new ManagedPropertyImpl();
         anotherBeanProperty.setPropertyName("anotherBean");
         anotherBeanProperty.setValue("#{requestBean}");
         viewBean.addProperty(anotherBeanProperty);
         runtimeConfig.addManagedBean("viewBean", viewBean);
         
         // create requestBean
-        ManagedBean requestBean = new ManagedBean();
+        ManagedBeanImpl requestBean = new ManagedBeanImpl();
         requestBean.setBeanClass(TestBean.class.getName());
         requestBean.setName("requestBean");
         requestBean.setScope("request");

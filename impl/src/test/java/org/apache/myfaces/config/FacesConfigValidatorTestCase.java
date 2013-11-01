@@ -25,14 +25,14 @@ import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 {
 
     private FacesConfigDispenser dispenser;
-    private FacesConfigUnmarshaller<FacesConfig> unmarshaller;
+    private FacesConfigUnmarshaller<FacesConfigImpl> unmarshaller;
     
     public FacesConfigValidatorTestCase(String name)
     {

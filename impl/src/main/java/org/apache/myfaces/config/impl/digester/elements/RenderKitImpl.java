@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class RenderKit extends org.apache.myfaces.config.element.RenderKit implements Serializable
+public class RenderKitImpl extends org.apache.myfaces.config.element.RenderKit implements Serializable
 {
 
     private String id;

@@ -32,7 +32,7 @@ import org.apache.myfaces.util.ContainerUtils;
  *
  * @version $Revision$ $Date$
  */
-public class ManagedProperty extends org.apache.myfaces.config.element.ManagedProperty implements Serializable
+public class ManagedPropertyImpl extends org.apache.myfaces.config.element.ManagedProperty implements Serializable
 {
     private static final ValueBinding DUMMY_VB = new DummyValueBinding();
 
@@ -65,7 +65,7 @@ public class ManagedProperty extends org.apache.myfaces.config.element.ManagedPr
         return _listEntries;
     }
     
-    public void setListEntries(ListEntries listEntries)
+    public void setListEntries(ListEntriesImpl listEntries)
     {
         _listEntries = listEntries;
         _type = TYPE_LIST;

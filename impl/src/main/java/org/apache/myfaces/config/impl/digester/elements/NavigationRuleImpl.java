@@ -16,35 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ViewParam extends org.apache.myfaces.config.element.ViewParam implements Serializable
+
+/**
+ * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
+ */
+public class NavigationRuleImpl extends org.apache.myfaces.config.element.NavigationRule implements Serializable
 {
-    private String name;
-    private String value;
-    
 
-    public String getName()
+    private String fromViewId;
+    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases
+            = new ArrayList<org.apache.myfaces.config.element.NavigationCase>();
+
+
+    public String getFromViewId()
     {
-        return name;
-    }
-    
-    public void setName(String name)
-    {
-        this.name = name;
+        return fromViewId;
     }
 
-    public void setValue(String value)
+
+    public void setFromViewId(String fromViewId)
     {
-        this.value = value;
+        this.fromViewId = fromViewId;
     }
 
-    public String getValue()
+
+    public void addNavigationCase(org.apache.myfaces.config.element.NavigationCase value)
     {
-        return value;
+        navigationCases.add(value);
+    }
+
+
+    public List<org.apache.myfaces.config.element.NavigationCase> getNavigationCases()
+    {
+        return navigationCases;
     }
 
 }

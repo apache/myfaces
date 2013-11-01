@@ -21,7 +21,7 @@ package org.apache.myfaces.config;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.element.FacesConfig;
 
 import org.xml.sax.SAXException;
 

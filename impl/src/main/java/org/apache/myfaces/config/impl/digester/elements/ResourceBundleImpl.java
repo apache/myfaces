@@ -20,37 +20,57 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
 
-
 /**
- * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
+ * @author Mathias Broekelmann (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
-public class Component extends org.apache.myfaces.config.element.Component implements Serializable
+public class ResourceBundleImpl extends org.apache.myfaces.config.element.ResourceBundle implements Serializable
 {
+    private String baseName;
+    private String var;
+    private String displayName;
 
-    private String componentType;
-    private String componentClass;
-
-
-    public void setComponentType(String componentType)
+    /**
+     * @return the baseName
+     */
+    public String getBaseName()
     {
-        this.componentType = componentType;
+        return baseName;
     }
 
-
-    public void setComponentClass(String componentClass)
+    /**
+     * @param baseName
+     *            the baseName to set
+     */
+    public void setBaseName(String baseName)
     {
-        this.componentClass = componentClass;
+        this.baseName = baseName;
     }
 
-
-    public String getComponentType()
+    /**
+     * @return the var
+     */
+    public String getVar()
     {
-        return componentType;
+        return var;
     }
 
-
-    public String getComponentClass()
+    /**
+     * @param var
+     *            the var to set
+     */
+    public void setVar(String var)
     {
-        return componentClass;
+        this.var = var;
+    }
+
+    public String getDisplayName()
+    {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName)
+    {
+        this.displayName = displayName;
     }
 }

@@ -27,7 +27,7 @@ import java.util.Iterator;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class MapEntries extends org.apache.myfaces.config.element.MapEntries implements Serializable
+public class MapEntriesImpl extends org.apache.myfaces.config.element.MapEntries implements Serializable
 {
 
     private String keyClass;

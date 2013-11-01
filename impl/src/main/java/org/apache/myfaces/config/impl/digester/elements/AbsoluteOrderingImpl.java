@@ -16,44 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SystemEventListener extends org.apache.myfaces.config.element.SystemEventListener implements Serializable
+public class AbsoluteOrderingImpl extends org.apache.myfaces.config.element.AbsoluteOrdering implements Serializable
 {
-    private String systemEventListenerClass;
-    private String systemEventClass;
-    private String sourceClass;
+    private List<org.apache.myfaces.config.element.OrderSlot> orderList = 
+        new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
     
-    public void setSystemEventListenerClass(String listener)
+    public void addOrderSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
-        systemEventListenerClass = listener;
-    }
-
-    public void setSystemEventClass(String event)
-    {
-        systemEventClass = event;
+        orderList.add(slot);
     }
     
-    public void setSourceClass(String source)
+    public List<org.apache.myfaces.config.element.OrderSlot> getOrderList()
     {
-        sourceClass = source;
-    }
-    
-    public String getSystemEventListenerClass()
-    {
-        return systemEventListenerClass;
-    }
-
-    public String getSystemEventClass()
-    {
-        return systemEventClass;
-    }
-
-    public String getSourceClass()
-    {
-        return sourceClass;
+        return orderList;
     }
 }

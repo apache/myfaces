@@ -19,21 +19,8 @@
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class AbsoluteOrdering extends org.apache.myfaces.config.element.AbsoluteOrdering implements Serializable
+public class ConfigOthersSlotImpl extends org.apache.myfaces.config.element.ConfigOthersSlot implements Serializable
 {
-    private List<org.apache.myfaces.config.element.OrderSlot> orderList = 
-        new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
-    
-    public void addOrderSlot(org.apache.myfaces.config.element.OrderSlot slot)
-    {
-        orderList.add(slot);
-    }
-    
-    public List<org.apache.myfaces.config.element.OrderSlot> getOrderList()
-    {
-        return orderList;
-    }
+
 }

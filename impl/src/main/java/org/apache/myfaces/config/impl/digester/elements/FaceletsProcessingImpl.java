@@ -23,7 +23,7 @@ package org.apache.myfaces.config.impl.digester.elements;
  * @author Leonardo Uribe
  * @since 2.1.0
  */
-public class FaceletsProcessing extends org.apache.myfaces.config.element.FaceletsProcessing 
+public class FaceletsProcessingImpl extends org.apache.myfaces.config.element.FaceletsProcessing 
 {
     /**
      * 

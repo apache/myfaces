@@ -27,7 +27,7 @@ import java.util.Iterator;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class ListEntries extends org.apache.myfaces.config.element.ListEntries implements Serializable
+public class ListEntriesImpl extends org.apache.myfaces.config.element.ListEntries implements Serializable
 {
 
     private String valueClass;

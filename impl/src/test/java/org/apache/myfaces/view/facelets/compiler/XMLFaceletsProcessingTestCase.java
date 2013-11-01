@@ -35,7 +35,7 @@ import javax.faces.component.html.HtmlSelectOneMenu;
 import junit.framework.Assert;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.FaceletsProcessing;
+import org.apache.myfaces.config.impl.digester.elements.FaceletsProcessingImpl;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
@@ -84,10 +84,10 @@ public class XMLFaceletsProcessingTestCase extends FaceletTestCase {
     {
         super.setUpExternalContext();
         
-        FaceletsProcessing item = new FaceletsProcessing();
+        FaceletsProcessingImpl item = new FaceletsProcessingImpl();
         item.setFileExtension(".view.xml");
-        item.setProcessAs(FaceletsProcessing.PROCESS_AS_XML);
-        RuntimeConfig.getCurrentInstance(externalContext).addFaceletProcessingConfiguration(FaceletsProcessing.PROCESS_AS_XML, item);
+        item.setProcessAs(FaceletsProcessingImpl.PROCESS_AS_XML);
+        RuntimeConfig.getCurrentInstance(externalContext).addFaceletProcessingConfiguration(FaceletsProcessingImpl.PROCESS_AS_XML, item);
     }
 
     @Test

@@ -16,37 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class NamedEvent extends org.apache.myfaces.config.element.NamedEvent implements Serializable
+
+public class RedirectImpl extends org.apache.myfaces.config.element.Redirect implements Serializable
 {
-    private String shortName;
-    private String eventClass;
-
-    public NamedEvent()
+    private Map<String,List<String>> viewParams = new HashMap<String,List<String>>();
+    private String includeViewParams;     
+    
+    public void addViewParam(ViewParamImpl viewParam)
     {
-        super();
+        List<String> params = viewParams.get(viewParam.getName());
+        if(params == null)
+        {
+            params = new ArrayList<String>();
+        }
+
+        params.add(viewParam.getValue());
+        viewParams.put(viewParam.getName(), params);
+    }
+    
+    public Map<String,List<String>> getViewParams()
+    {
+        return viewParams;
     }
 
-    public String getShortName()
+    public String getIncludeViewParams()
     {
-        return shortName;
+        return includeViewParams;
     }
 
-    public void setShortName(String shortName)
+    public void setIncludeViewParams(String includeViewParams)
     {
-        this.shortName = shortName;
+        this.includeViewParams = includeViewParams;
     }
-
-    public String getEventClass()
-    {
-        return eventClass;
-    }
-
-    public void setEventClass(String eventClass)
-    {
-        this.eventClass = eventClass;
-    }
+    
 }

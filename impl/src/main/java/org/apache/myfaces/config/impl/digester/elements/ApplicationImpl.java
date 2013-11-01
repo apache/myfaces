@@ -26,7 +26,7 @@ import org.apache.myfaces.config.element.ContractMapping;
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
-public class Application extends org.apache.myfaces.config.element.Application implements Serializable
+public class ApplicationImpl extends org.apache.myfaces.config.element.Application implements Serializable
 {
 
     private final List<String> actionListener = new ArrayList<String>();

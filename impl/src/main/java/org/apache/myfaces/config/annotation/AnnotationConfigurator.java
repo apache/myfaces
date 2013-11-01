@@ -46,11 +46,11 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 
-import org.apache.myfaces.config.impl.digester.elements.Application;
+import org.apache.myfaces.config.impl.digester.elements.ApplicationImpl;
 import org.apache.myfaces.config.impl.digester.elements.Behavior;
 import org.apache.myfaces.config.impl.digester.elements.ComponentTagDeclarationImpl;
-import org.apache.myfaces.config.impl.digester.elements.Converter;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfig;
+import org.apache.myfaces.config.impl.digester.elements.ConverterImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 
@@ -83,7 +83,7 @@ public class AnnotationConfigurator
     {
     }
 
-    public FacesConfig createFacesConfig(ExternalContext externalcontext, boolean metadataComplete)
+    public FacesConfigImpl createFacesConfig(ExternalContext externalcontext, boolean metadataComplete)
     {
         if (!metadataComplete)
         {
@@ -101,9 +101,9 @@ public class AnnotationConfigurator
      * @param map
      * @return
      */
-    protected FacesConfig createFacesConfig(Map<Class<? extends Annotation>, Set<Class<?>>> map)
+    protected FacesConfigImpl createFacesConfig(Map<Class<? extends Annotation>, Set<Class<?>>> map)
     {
-        FacesConfig facesConfig = new FacesConfig();
+        FacesConfigImpl facesConfig = new FacesConfigImpl();
 
         Set<Class<?>> classes = map.get(FacesComponent.class);
 
@@ -159,7 +159,7 @@ public class AnnotationConfigurator
                     boolean hasValue = conv.value().length() > 0;
                     if (hasForClass || hasValue)
                     {
-                        Converter converter = new Converter();
+                        ConverterImpl converter = new ConverterImpl();
                         if (hasForClass)
                         {
                             converter.setForClass(conv.forClass().getName());
@@ -205,14 +205,14 @@ public class AnnotationConfigurator
                     facesConfig.addValidator(value, clazz.getName());
                     if (val.isDefault())
                     {
-                        Application app = null;
+                        ApplicationImpl app = null;
                         if (facesConfig.getApplications().isEmpty())
                         {
-                            app = new Application();
+                            app = new ApplicationImpl();
                         }
                         else
                         {
-                            app = (Application) facesConfig.getApplications().get(0);
+                            app = (ApplicationImpl) facesConfig.getApplications().get(0);
                         }
                         app.addDefaultValidatorId(value);
                     }
@@ -241,18 +241,18 @@ public class AnnotationConfigurator
                                 + ", " + clazz.getName() + ")");
                     }
 
-                    org.apache.myfaces.config.impl.digester.elements.RenderKit renderKit =
-                            (org.apache.myfaces.config.impl.digester.elements.RenderKit)
+                    org.apache.myfaces.config.impl.digester.elements.RenderKitImpl renderKit =
+                            (org.apache.myfaces.config.impl.digester.elements.RenderKitImpl)
                                     facesConfig.getRenderKit(renderKitId);
                     if (renderKit == null)
                     {
-                        renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
+                        renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKitImpl();
                         renderKit.setId(renderKitId);
                         facesConfig.addRenderKit(renderKit);
                     }
 
-                    org.apache.myfaces.config.impl.digester.elements.Renderer renderer =
-                            new org.apache.myfaces.config.impl.digester.elements.Renderer();
+                    org.apache.myfaces.config.impl.digester.elements.RendererImpl renderer =
+                            new org.apache.myfaces.config.impl.digester.elements.RendererImpl();
                     renderer.setComponentFamily(rend.componentFamily());
                     renderer.setRendererClass(clazz.getName());
                     renderer.setRendererType(rend.rendererType());
@@ -294,7 +294,7 @@ public class AnnotationConfigurator
         return facesConfig;
     }
     
-    private void handleManagedBean(FacesConfig facesConfig, Set<Class<?>> classes)
+    private void handleManagedBean(FacesConfigImpl facesConfig, Set<Class<?>> classes)
     {
         for (Class<?> clazz : classes)
         {
@@ -308,8 +308,8 @@ public class AnnotationConfigurator
                     log.fine("Class '" + clazz.getName() + "' has an @ManagedBean annotation");
                 }
 
-                org.apache.myfaces.config.impl.digester.elements.ManagedBean mbc =
-                        new org.apache.myfaces.config.impl.digester.elements.ManagedBean();
+                org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl mbc =
+                        new org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl();
                 String beanName = bean.name();
 
                 if ((beanName == null) || beanName.equals(""))
@@ -410,8 +410,8 @@ public class AnnotationConfigurator
                             log.fine("  Field '" + field.getName()
                                     + "' has a @ManagedProperty annotation");
                         }
-                        org.apache.myfaces.config.impl.digester.elements.ManagedProperty mpc =
-                                new org.apache.myfaces.config.impl.digester.elements.ManagedProperty();
+                        org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl mpc =
+                                new org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl();
                         String name = property.name();
                         if ((name == null) || "".equals(name))
                         {
@@ -429,7 +429,7 @@ public class AnnotationConfigurator
         }
     }
     
-    private void handleNamedEvent(FacesConfig facesConfig, Set<Class<?>> classes)
+    private void handleNamedEvent(FacesConfigImpl facesConfig, Set<Class<?>> classes)
     {
         for (Class<?> clazz : classes)
         {
@@ -452,8 +452,8 @@ public class AnnotationConfigurator
                 // Have to register @NamedEvent annotations with the NamedEventManager class since
                 // we need to get access to this info later and can't from the dispenser (it's not a
                 // singleton).
-                org.apache.myfaces.config.impl.digester.elements.NamedEvent namedEventConfig =
-                        new org.apache.myfaces.config.impl.digester.elements.NamedEvent();
+                org.apache.myfaces.config.impl.digester.elements.NamedEventImpl namedEventConfig =
+                        new org.apache.myfaces.config.impl.digester.elements.NamedEventImpl();
                 namedEventConfig.setEventClass(clazz.getName());
                 namedEventConfig.setShortName(namedEvent.shortName());
                 facesConfig.addNamedEvent(namedEventConfig);
@@ -461,7 +461,7 @@ public class AnnotationConfigurator
         }
     }
 
-    private void handleFacesBehavior(FacesConfig facesConfig, Set<Class<?>> classes)
+    private void handleFacesBehavior(FacesConfigImpl facesConfig, Set<Class<?>> classes)
     {
         for (Class<?> clazz : classes)
         {
@@ -497,7 +497,7 @@ public class AnnotationConfigurator
         }
     }
     
-    private void handleFacesBehaviorRenderer(FacesConfig facesConfig, Set<Class<?>> classes)
+    private void handleFacesBehaviorRenderer(FacesConfigImpl facesConfig, Set<Class<?>> classes)
     {
         for (Class<?> clazz : classes)
         {
@@ -516,18 +516,18 @@ public class AnnotationConfigurator
                                + clazz.getName() + ")");
                 }
 
-                org.apache.myfaces.config.impl.digester.elements.RenderKit renderKit =
-                        (org.apache.myfaces.config.impl.digester.elements.RenderKit)
+                org.apache.myfaces.config.impl.digester.elements.RenderKitImpl renderKit =
+                        (org.apache.myfaces.config.impl.digester.elements.RenderKitImpl)
                                 facesConfig.getRenderKit(renderKitId);
                 if (renderKit == null)
                 {
-                    renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKit();
+                    renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKitImpl();
                     renderKit.setId(renderKitId);
                     facesConfig.addRenderKit(renderKit);
                 }
 
-                org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRenderer cbr =
-                        new org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRenderer();
+                org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRendererImpl cbr =
+                        new org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRendererImpl();
                 cbr.setRendererType(facesBehaviorRenderer.rendererType());
                 cbr.setRendererClass(clazz.getName());
                 renderKit.addClientBehaviorRenderer(cbr);
@@ -535,7 +535,7 @@ public class AnnotationConfigurator
         }
     }
     
-    private void handleFaceletsResourceResolver(FacesConfig facesConfig, Set<Class<?>> classes)
+    private void handleFaceletsResourceResolver(FacesConfigImpl facesConfig, Set<Class<?>> classes)
     {
         for (Class<?> clazz : classes)
         {

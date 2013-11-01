@@ -30,11 +30,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.myfaces.config.impl.digester.elements.ListEntries;
-import org.apache.myfaces.config.impl.digester.elements.ManagedBean;
-import org.apache.myfaces.config.impl.digester.elements.ManagedProperty;
-import org.apache.myfaces.config.impl.digester.elements.MapEntries;
-import org.apache.myfaces.config.impl.digester.elements.ListEntries.Entry;
+import org.apache.myfaces.config.impl.digester.elements.ListEntriesImpl;
+import org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl;
+import org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl;
+import org.apache.myfaces.config.impl.digester.elements.MapEntriesImpl;
+import org.apache.myfaces.config.impl.digester.elements.ListEntriesImpl.Entry;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTestCase {
@@ -58,7 +58,7 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
   {
         super.setUp();
         ManagedBeanBuilder managedBeanBuilder = new ManagedBeanBuilder();
-        ManagedBean managedBean = new ManagedBean();
+        ManagedBeanImpl managedBean = new ManagedBeanImpl();
         
         managedBean.setBeanClass(MangedBeanExample.class.getName());
         managedBean.setName("managed");
@@ -73,28 +73,28 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
         MANAGED_MAP.put("1", "1");
         MANAGED_MAP.put("2", "2");
         
-        ManagedProperty managedProperty = new ManagedProperty();
+        ManagedPropertyImpl managedProperty = new ManagedPropertyImpl();
         managedProperty.setPropertyName("managedProperty");
         managedProperty.setValue(INJECTED_VALUE);
         
-        ManagedProperty managedList = new ManagedProperty();
+        ManagedPropertyImpl managedList = new ManagedPropertyImpl();
         managedList.setPropertyName("managedList");
-        ListEntries listEntries = makeListEntries();
+        ListEntriesImpl listEntries = makeListEntries();
         managedList.setListEntries(listEntries);
         
-        ManagedProperty writeOnlyList = new ManagedProperty();
+        ManagedPropertyImpl writeOnlyList = new ManagedPropertyImpl();
         writeOnlyList.setPropertyName("writeOnlyList");
-        ListEntries writeOnlyListEntries = makeListEntries();
+        ListEntriesImpl writeOnlyListEntries = makeListEntries();
         writeOnlyList.setListEntries(writeOnlyListEntries);
         
-        ManagedProperty managedMap = new ManagedProperty();
+        ManagedPropertyImpl managedMap = new ManagedPropertyImpl();
         managedMap.setPropertyName("managedMap");
-        MapEntries mapEntries = makeMapEntries();
+        MapEntriesImpl mapEntries = makeMapEntries();
         managedMap.setMapEntries(mapEntries);
         
-        ManagedProperty writeOnlyMap = new ManagedProperty();
+        ManagedPropertyImpl writeOnlyMap = new ManagedPropertyImpl();
         writeOnlyMap.setPropertyName("writeOnlyMap");
-        MapEntries writeOnlyMapEntries = makeMapEntries();
+        MapEntriesImpl writeOnlyMapEntries = makeMapEntries();
         writeOnlyMap.setMapEntries(writeOnlyMapEntries);        
         
         managedBean.addProperty(managedProperty);
@@ -115,8 +115,8 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
         MANAGED_MAP.clear();
     }
     
-    private ListEntries makeListEntries(){
-        ListEntries listEntries = new ListEntries();
+    private ListEntriesImpl makeListEntries(){
+        ListEntriesImpl listEntries = new ListEntriesImpl();
         
         for(int i = 0; i < MANAGED_LIST.size(); i++){
             Entry entry = new Entry();
@@ -126,11 +126,11 @@ public abstract class AbstractManagedBeanBuilderTestCase extends AbstractJsfTest
         return listEntries;
     }
     
-    private MapEntries makeMapEntries(){
-        MapEntries mapEntries = new MapEntries();
+    private MapEntriesImpl makeMapEntries(){
+        MapEntriesImpl mapEntries = new MapEntriesImpl();
         
         for(int i = 0 ; i < MANAGED_MAP.size(); i++){
-            MapEntries.Entry mapEntry = new MapEntries.Entry();
+            MapEntriesImpl.Entry mapEntry = new MapEntriesImpl.Entry();
             mapEntry.setKey((String) MANAGED_MAP.get(i + ""));
             mapEntry.setValue((String) MANAGED_MAP.get(i + ""));
             mapEntries.addEntry(mapEntry);
