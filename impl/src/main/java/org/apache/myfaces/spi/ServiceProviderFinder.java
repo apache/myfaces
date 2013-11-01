@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.config.annotation.LifecycleProvider;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 
 /**
  * This class provides an interface to override SPI handling done by
@@ -55,30 +53,30 @@ public abstract class ServiceProviderFinder
         FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY,
         FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
         FactoryFinder.VISIT_CONTEXT_FACTORY,
-        AnnotationProvider.class.getName(),
-        AnnotationProviderFactory.class.getName(),
-        FaceletConfigResourceProvider.class.getName(),
-        FaceletConfigResourceProviderFactory.class.getName(),
-        FacesConfigResourceProvider.class.getName(),
-        FacesConfigResourceProviderFactory.class.getName(),
-        FacesConfigurationMerger.class.getName(),
-        FacesConfigurationMergerFactory.class.getName(),
-        FacesConfigurationProvider.class.getName(),
-        FacesConfigurationProviderFactory.class.getName(),
-        FacesFlowProvider.class.getName(),
-        FacesFlowProviderFactory.class.getName(),
-        FactoryFinderProvider.class.getName(),
-        FactoryFinderProviderFactory.class.getName(),
-        InjectionProvider.class.getName(),
-        InjectionProviderFactory.class.getName(),
-        ResourceLibraryContractsProvider.class.getName(),
-        ResourceLibraryContractsProviderFactory.class.getName(),
-        ViewScopeProvider.class.getName(),
-        ViewScopeProviderFactory.class.getName(),
-        WebConfigProvider.class.getName(),
-        WebConfigProviderFactory.class.getName(),
-        LifecycleProvider.class.getName(),
-        LifecycleProviderFactory.class.getName(),
+        "org.apache.myfaces.spi.AnnotationProvider",
+        "org.apache.myfaces.spi.AnnotationProviderFactory",
+        "org.apache.myfaces.spi.FaceletConfigResourceProvider",
+        "org.apache.myfaces.spi.FaceletConfigResourceProviderFactory",
+        "org.apache.myfaces.spi.FacesConfigResourceProvider",
+        "org.apache.myfaces.spi.FacesConfigResourceProviderFactory",
+        "org.apache.myfaces.spi.FacesConfigurationMerger",
+        "org.apache.myfaces.spi.FacesConfigurationMergerFactory",
+        "org.apache.myfaces.spi.FacesConfigurationProvider",
+        "org.apache.myfaces.spi.FacesConfigurationProviderFactory",
+        "org.apache.myfaces.spi.FacesFlowProvider",
+        "org.apache.myfaces.spi.FacesFlowProviderFactory",
+        "org.apache.myfaces.spi.FactoryFinderProvider",
+        "org.apache.myfaces.spi.FactoryFinderProviderFactory",
+        "org.apache.myfaces.spi.InjectionProvider",
+        "org.apache.myfaces.spi.InjectionProviderFactory",
+        "org.apache.myfaces.spi.ResourceLibraryContractsProvider",
+        "org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory",
+        "org.apache.myfaces.spi.ViewScopeProvider",
+        "org.apache.myfaces.spi.ViewScopeProviderFactory",
+        "org.apache.myfaces.spi.WebConfigProvider",
+        "org.apache.myfaces.spi.WebConfigProviderFactory",
+        "org.apache.myfaces.config.annotation.LifecycleProvider",
+        "org.apache.myfaces.config.annotation.LifecycleProviderFactory",
     };
     
     /**
