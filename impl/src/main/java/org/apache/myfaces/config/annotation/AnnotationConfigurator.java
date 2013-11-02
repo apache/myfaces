@@ -47,7 +47,7 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.config.impl.digester.elements.ApplicationImpl;
-import org.apache.myfaces.config.impl.digester.elements.Behavior;
+import org.apache.myfaces.config.impl.digester.elements.BehaviorImpl;
 import org.apache.myfaces.config.impl.digester.elements.ComponentTagDeclarationImpl;
 import org.apache.myfaces.config.impl.digester.elements.ConverterImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
@@ -488,7 +488,7 @@ public class AnnotationConfigurator
                     log.finest("addBehavior(" + facesBehavior.value() + ", " + clazz.getName() + ")");
                 }
 
-                Behavior behavior = new Behavior();
+                BehaviorImpl behavior = new BehaviorImpl();
                 behavior.setBehaviorId(facesBehavior.value());
                 behavior.setBehaviorClass(clazz.getName());
                 facesConfig.addBehavior(behavior);

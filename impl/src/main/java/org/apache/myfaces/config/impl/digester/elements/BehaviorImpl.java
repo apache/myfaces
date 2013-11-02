@@ -26,7 +26,7 @@ import java.util.List;
  * Implementation of model for <behavior> element.
  */
 
-public class Behavior extends org.apache.myfaces.config.element.Behavior implements Serializable
+public class BehaviorImpl extends org.apache.myfaces.config.element.Behavior implements Serializable
 {
     private String behaviorClass;
     private String behaviorId;

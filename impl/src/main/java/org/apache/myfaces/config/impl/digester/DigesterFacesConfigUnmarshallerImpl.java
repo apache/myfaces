@@ -284,7 +284,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
                                "setRendererClass", 0);
         
         // 2.0 behavior start
-        digester.addObjectCreate("faces-config/behavior", Behavior.class);
+        digester.addObjectCreate("faces-config/behavior", BehaviorImpl.class);
         digester.addSetNext("faces-config/behavior", "addBehavior");
         digester.addCallMethod("faces-config/behavior/behavior-id", "setBehaviorId", 0);
         digester.addCallMethod("faces-config/behavior/behavior-class", "setBehaviorClass", 0);
@@ -317,7 +317,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallParam("faces-config/validator/validator-class", 1);
         
         // 2.1 facelets-processing start
-        digester.addObjectCreate("faces-config/faces-config-extension", FacesConfigExtension.class);
+        digester.addObjectCreate("faces-config/faces-config-extension", FacesConfigExtensionImpl.class);
         digester.addSetNext("faces-config/faces-config-extension", "addFacesConfigExtension");
         digester.addObjectCreate("faces-config/faces-config-extension/facelets-processing", 
             FaceletsProcessingImpl.class);

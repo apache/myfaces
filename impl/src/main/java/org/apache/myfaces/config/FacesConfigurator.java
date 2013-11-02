@@ -195,6 +195,7 @@ public class FacesConfigurator
         "org.apache.myfaces.ENABLE_DEFAULT_WINDOW_MODE";
 
     private final ExternalContext _externalContext;
+    private FacesContext _facesContext;
     private FacesConfigUnmarshaller<? extends FacesConfig> _unmarshaller;
     private FacesConfigData _dispenser;
     private AnnotationConfigurator _annotationConfigurator;
@@ -420,7 +421,7 @@ public class FacesConfigurator
 
                 // JSF 2.0 Publish PostConstructApplicationEvent after all configuration resources
                 // has been parsed and processed
-                FacesContext facesContext = FacesContext.getCurrentInstance();
+                FacesContext facesContext = getFacesContext();
                 Application application = facesContext.getApplication();
 
                 application.publishEvent(facesContext, PostConstructApplicationEvent.class,
@@ -666,23 +667,22 @@ public class FacesConfigurator
             }
         }
 
-
-        for (String componentType : dispenser.getComponentTypes())
+        for (Map.Entry<String, String> entry : dispenser.getComponentClassesByType().entrySet())
         {
-            application.addComponent(componentType, dispenser.getComponentClass(componentType));
+            application.addComponent(entry.getKey(), entry.getValue());
         }
 
-        for (String converterId : dispenser.getConverterIds())
+        for (Map.Entry<String, String> entry : dispenser.getConverterClassesById().entrySet())
         {
-            application.addConverter(converterId, dispenser.getConverterClassById(converterId));
+            application.addConverter(entry.getKey(), entry.getValue());
         }
 
-        for (String converterClass : dispenser.getConverterClasses())
+        for (Map.Entry<String, String> entry : dispenser.getConverterClassesByClass().entrySet())
         {
             try
             {
-                application.addConverter(ClassUtils.simpleClassForName(converterClass),
-                        dispenser.getConverterClassByClass(converterClass));
+                application.addConverter(ClassUtils.simpleClassForName(entry.getKey()),
+                        entry.getValue());
             }
             catch (Exception ex)
             {
@@ -690,9 +690,9 @@ public class FacesConfigurator
             }
         }
 
-        for (String validatorId : dispenser.getValidatorIds())
+        for (Map.Entry<String, String> entry : dispenser.getValidatorClassesById().entrySet())
         {
-            application.addValidator(validatorId, dispenser.getValidatorClass(validatorId));
+            application.addValidator(entry.getKey(), entry.getValue());
         }
 
         // programmatically add the BeanValidator if the following requirements are met:
@@ -755,7 +755,7 @@ public class FacesConfigurator
         FlowHandlerFactory flowHandlerFactory = (FlowHandlerFactory) 
             FactoryFinder.getFactory(FactoryFinder.FLOW_HANDLER_FACTORY);
         FlowHandler flowHandler = flowHandlerFactory.createFlowHandler(
-            FacesContext.getCurrentInstance());
+            getFacesContext());
         application.setFlowHandler(flowHandler);
 
         if (MyfacesConfig.getCurrentInstance(_externalContext).isSupportJSPAndFacesEL())
@@ -1220,7 +1220,7 @@ public class FacesConfigurator
             }
 
             // if ProjectStage is Development, install the DebugPhaseListener
-            FacesContext facesContext = FacesContext.getCurrentInstance();
+            FacesContext facesContext = getFacesContext();
             if (facesContext.isProjectStage(ProjectStage.Development) &&
                     MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isDebugPhaseListenerEnabled())
             {
@@ -1284,7 +1284,7 @@ public class FacesConfigurator
 
     private void configureManagedBeanDestroyer()
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = getFacesContext();
         ExternalContext externalContext = facesContext.getExternalContext();
         Map<String, Object> applicationMap = externalContext.getApplicationMap();
         Application application = facesContext.getApplication();
@@ -1322,7 +1322,7 @@ public class FacesConfigurator
     
     private void configureFlowHandler()
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = getFacesContext();
         Application application = facesContext.getApplication();
         
         FacesConfigData dispenser = getDispenser();
@@ -1551,5 +1551,14 @@ public class FacesConfigurator
                 _externalContext).getInjectionProvider(_externalContext);
         }
         return _injectionProvider;
+    }
+    
+    protected FacesContext getFacesContext()
+    {
+        if (_facesContext == null)
+        {
+            _facesContext = FacesContext.getCurrentInstance();
+        }
+        return _facesContext;
     }
 }

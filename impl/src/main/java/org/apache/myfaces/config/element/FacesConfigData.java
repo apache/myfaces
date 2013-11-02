@@ -21,6 +21,7 @@ package org.apache.myfaces.config.element;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
 
@@ -140,12 +141,17 @@ public abstract class FacesConfigData implements Serializable
     /** @return component class that belongs to the given component type */
     public abstract String getComponentClass(String componentType);
 
+    public abstract Map<String, String> getComponentClassesByType();
 
     /** @return Iterator over all defined converter ids */
     public abstract Collection<String> getConverterIds();
 
     /** @return Iterator over all classes with an associated converter  */
     public abstract Collection<String> getConverterClasses();
+    
+    public abstract Map<String, String> getConverterClassesById();
+    
+    public abstract Map<String, String> getConverterClassesByClass();
 
     /** @return Iterator over the config classes for the converters  */
     public abstract Collection<String> getConverterConfigurationByClassName();
@@ -166,6 +172,7 @@ public abstract class FacesConfigData implements Serializable
     /** @return validator class name that belongs to the given validator id */
     public abstract String getValidatorClass(String validatorId);
 
+    public abstract Map<String, String> getValidatorClassesById();
 
     /**
      * @return Iterator over {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}s
@@ -250,6 +257,11 @@ public abstract class FacesConfigData implements Serializable
     public Collection<FaceletsProcessing> getFaceletsProcessing()
     {
         return Collections.emptyList();
+    }
+    
+    public FaceletsProcessing getFaceletsProcessingConfiguration(String fileExtension)
+    {
+        return null;
     }
 
     /**

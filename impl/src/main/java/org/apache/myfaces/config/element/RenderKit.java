@@ -34,5 +34,7 @@ public abstract class RenderKit implements Serializable
     public abstract List<ClientBehaviorRenderer> getClientBehaviorRenderers();
     
     public abstract List<Renderer> getRenderer();
+    
+    public abstract void merge(RenderKit renderKit);
 
 }

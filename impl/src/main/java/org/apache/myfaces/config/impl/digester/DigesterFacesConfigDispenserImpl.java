@@ -49,6 +49,7 @@ import org.apache.myfaces.config.element.RenderKit;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.SystemEventListener;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.config.impl.digester.elements.RenderKitImpl;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -65,7 +66,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<String> externalContextFactories = new ArrayList<String>();
     private List<String> facesContextFactories = new ArrayList<String>();
     private List<String> lifecycleFactories = new ArrayList<String>();
-    private List<String> ViewDeclarationLanguageFactories = new ArrayList<String>();
+    private List<String> viewDeclarationLanguageFactories = new ArrayList<String>();
     private List<String> partialViewContextFactories = new ArrayList<String>();
     private List<String> renderKitFactories = new ArrayList<String>();
     private List<String> tagHandlerDelegateFactories = new ArrayList<String>();
@@ -90,8 +91,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
     
-    private Map<String, org.apache.myfaces.config.impl.digester.elements.RenderKitImpl> renderKits
-            = new LinkedHashMap<String, org.apache.myfaces.config.impl.digester.elements.RenderKitImpl>();
+    private Map<String, RenderKit> renderKits
+            = new LinkedHashMap<String, RenderKit>();
     
     private List<String> actionListeners = new ArrayList<String>();
     private List<String> elResolvers = new ArrayList<String>();
@@ -127,6 +128,43 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private List <String> resourceResolvers = new ArrayList<String>();
     
+    // Unmodifiable list/maps to avoid modifications
+    private transient List<String> umapplicationFactories;
+    private transient List<String> umexceptionHandlerFactories;
+    private transient List<String> umexternalContextFactories;
+    private transient List<String> umfacesContextFactories;
+    private transient List<String> umlifecycleFactories;
+    private transient List<String> umviewDeclarationLanguageFactories;
+    private transient List<String> umpartialViewContextFactories;
+    private transient List<String> umrenderKitFactories;
+    private transient List<String> umtagHandlerDelegateFactories;
+    private transient List<String> umvisitContextFactories;
+    private transient List<String> umfaceletCacheFactories;
+    private transient List<String> umflashFactories;
+    private transient List<String> umclientWindowFactories;
+    private transient List<String> umflowHandlerFactories;
+    private transient List<Behavior> umbehaviors;
+    private transient List<String> umactionListeners;
+    private transient List<String> umelResolvers;
+    private transient List<String> umlifecyclePhaseListeners;
+    private transient List<String> umnavigationHandlers;
+    private transient List<String> umpropertyResolver;
+    private transient List<String> umresourceHandlers;
+    private transient List<String> umstateManagers;
+    private transient List<String> umvariableResolver;
+    private transient List<String> umviewHandlers;
+    private transient List<ManagedBean> ummanagedBeans;
+    private transient List<NavigationRule> umnavigationRules;
+    private transient List<ResourceBundle> umresourceBundles;
+    private transient List<SystemEventListener> umsystemEventListeners;
+    private transient List<NamedEvent> umnamedEvents;
+    private transient List<FacesFlowDefinition> umfacesFlowDefinitions;
+    private transient List<String> umprotectedViewUrlPatterns;
+    private transient List<ContractMapping> umresourceLibraryContractMappings;
+    private transient List<ComponentTagDeclaration> umcomponentTagDeclarations;
+    private transient List<FaceletTagLibrary> umfaceletTagLibraries;
+    private transient List <String> umresourceResolvers;
+    
     /**
      * Add another unmarshalled faces config object.
      * 
@@ -142,7 +180,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
             externalContextFactories.addAll(factory.getExternalContextFactory());
             facesContextFactories.addAll(factory.getFacesContextFactory());
             lifecycleFactories.addAll(factory.getLifecycleFactory());
-            ViewDeclarationLanguageFactories.addAll(factory.getViewDeclarationLanguageFactory());
+            viewDeclarationLanguageFactories.addAll(factory.getViewDeclarationLanguageFactory());
             partialViewContextFactories.addAll(factory.getPartialViewContextFactory());
             renderKitFactories.addAll(factory.getRenderkitFactory());
             tagHandlerDelegateFactories.addAll(factory.getTagHandlerDelegateFactory());
@@ -242,14 +280,13 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
                 renderKitId = RenderKitFactory.HTML_BASIC_RENDER_KIT;
             }
 
-            org.apache.myfaces.config.impl.digester.elements.RenderKitImpl existing = renderKits.get(renderKitId);
+            RenderKit existing = renderKits.get(renderKitId);
 
             if (existing == null)
             {
-                existing = new org.apache.myfaces.config.impl.digester.elements.RenderKitImpl();
+                existing = new RenderKitImpl();
                 existing.merge(renderKit);
                 renderKits.put(renderKitId, existing);
-                //renderKits.put(renderKitId, renderKit);
             }
             else
             {
@@ -330,7 +367,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
 
     public void feedViewDeclarationLanguageFactory(String factoryClassName)
     {
-        ViewDeclarationLanguageFactories.add(factoryClassName);
+        viewDeclarationLanguageFactories.add(factoryClassName);
     }
 
     public void feedPartialViewContextFactory(String factoryClassName)
@@ -364,16 +401,28 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      */
     public Collection<String> getApplicationFactoryIterator()
     {
-        return applicationFactories;
+        if (umapplicationFactories == null)
+        {
+            umapplicationFactories = Collections.unmodifiableList(applicationFactories);
+        }
+        return umapplicationFactories;
     }
 
     public Collection<String> getExceptionHandlerFactoryIterator()
     {
+        if (umexceptionHandlerFactories == null)
+        {
+            umexceptionHandlerFactories = Collections.unmodifiableList(exceptionHandlerFactories);
+        }
         return exceptionHandlerFactories;
     }
 
     public Collection<String> getExternalContextFactoryIterator()
     {
+        if (umexternalContextFactories == null)
+        {
+            umexternalContextFactories = Collections.unmodifiableList(externalContextFactories);
+        }
         return externalContextFactories;
     }
 
@@ -382,6 +431,10 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      */
     public Collection<String> getFacesContextFactoryIterator()
     {
+        if (umfacesContextFactories == null)
+        {
+            umfacesContextFactories = Collections.unmodifiableList(facesContextFactories);
+        }
         return facesContextFactories;
     }
 
@@ -390,16 +443,28 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      */
     public Collection<String> getLifecycleFactoryIterator()
     {
+        if (umlifecycleFactories == null)
+        {
+            umlifecycleFactories = Collections.unmodifiableList(lifecycleFactories);
+        }
         return lifecycleFactories;
     }
 
     public Collection<String> getViewDeclarationLanguageFactoryIterator()
     {
-        return ViewDeclarationLanguageFactories;
+        if (umviewDeclarationLanguageFactories == null)
+        {
+            umviewDeclarationLanguageFactories = Collections.unmodifiableList(viewDeclarationLanguageFactories);
+        }
+        return viewDeclarationLanguageFactories;
     }
 
     public Collection<String> getPartialViewContextFactoryIterator()
     {
+        if (umpartialViewContextFactories == null)
+        {
+            umpartialViewContextFactories = Collections.unmodifiableList(partialViewContextFactories);
+        }
         return partialViewContextFactories;
     }
 
@@ -408,16 +473,28 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      */
     public Collection<String> getRenderKitFactoryIterator()
     {
+        if (umrenderKitFactories == null)
+        {
+            umrenderKitFactories = Collections.unmodifiableList(renderKitFactories);
+        }
         return renderKitFactories;
     }
 
     public Collection<String> getTagHandlerDelegateFactoryIterator()
     {
+        if (umtagHandlerDelegateFactories == null)
+        {
+            umtagHandlerDelegateFactories = Collections.unmodifiableList(tagHandlerDelegateFactories);
+        }
         return tagHandlerDelegateFactories;
     }
 
     public Collection<String> getVisitContextFactoryIterator()
     {
+        if (umvisitContextFactories == null)
+        {
+            umvisitContextFactories = Collections.unmodifiableList(visitContextFactories);
+        }
         return visitContextFactories;
     }
 
@@ -426,7 +503,11 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      */
     public Collection<String> getActionListenerIterator()
     {
-        return new ArrayList<String>(actionListeners);
+        if (umactionListeners == null)
+        {
+            umactionListeners = Collections.unmodifiableList(actionListeners);
+        }
+        return actionListeners;
     }
 
     /**
@@ -450,7 +531,11 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      */
     public Collection<String> getNavigationHandlerIterator()
     {
-        return new ArrayList<String>(navigationHandlers);
+        if (umnavigationHandlers == null)
+        {
+            umnavigationHandlers = Collections.unmodifiableList(navigationHandlers);
+        }
+        return navigationHandlers;
     }
 
     /**
@@ -464,47 +549,72 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over ResourceHandler class names
      */
+    @Override
     public Collection<String> getResourceHandlerIterator()
     {
-        return new ArrayList<String>(resourceHandlers);
+        if (umresourceHandlers == null)
+        {
+            umresourceHandlers = Collections.unmodifiableList(resourceHandlers);
+        }
+        return resourceHandlers;
     }
 
     /**
      * @return Collection over ViewHandler class names
      */
+    @Override
     public Collection<String> getViewHandlerIterator()
     {
-        return new ArrayList<String>(viewHandlers);
+        if (umviewHandlers == null)
+        {
+            umviewHandlers = Collections.unmodifiableList(viewHandlers);
+        }
+        return viewHandlers;
     }
 
     /**
      * @return Collection over StateManager class names
      */
+    @Override
     public Collection<String> getStateManagerIterator()
     {
-        return new ArrayList<String>(stateManagers);
+        if (umstateManagers == null)
+        {
+            umstateManagers = Collections.unmodifiableList(stateManagers);
+        }
+        return stateManagers;
     }
 
     /**
      * @return Collection over PropertyResolver class names
      */
+    @Override
     public Collection<String> getPropertyResolverIterator()
     {
-        return new ArrayList<String>(propertyResolver);
+        if (umpropertyResolver == null)
+        {
+            umpropertyResolver = Collections.unmodifiableList(propertyResolver);
+        }
+        return propertyResolver;
     }
 
     /**
      * @return Collection over VariableResolver class names
      */
+    @Override
     public Collection<String> getVariableResolverIterator()
     {
-
-        return new ArrayList<String>(variableResolver);
+        if (umvariableResolver == null)
+        {
+            umvariableResolver = Collections.unmodifiableList(variableResolver);
+        }
+        return variableResolver;
     }
 
     /**
      * @return the default locale name
      */
+    @Override
     public String getDefaultLocale()
     {
         if (localeConfig != null)
@@ -517,12 +627,13 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over supported locale names
      */
+    @Override
     public Collection<String> getSupportedLocalesIterator()
     {
-        List<String> locale;
+        Collection<String> locale;
         if (localeConfig != null)
         {
-            locale = localeConfig.getSupportedLocales();
+            locale = Collections.unmodifiableCollection(localeConfig.getSupportedLocales());
         }
         else
         {
@@ -535,14 +646,22 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over all defined component types
      */
+    @Override
     public Collection<String> getComponentTypes()
     {
-        return components.keySet();
+        return Collections.unmodifiableCollection(components.keySet());
     }
 
+    @Override
+    public Map<String, String> getComponentClassesByType()
+    {
+        return Collections.unmodifiableMap(components);
+    }
+        
     /**
      * @return component class that belongs to the given component type
      */
+    @Override
     public String getComponentClass(String componentType)
     {
         return components.get(componentType);
@@ -551,24 +670,40 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over all defined converter ids
      */
+    @Override
     public Collection<String> getConverterIds()
     {
-        return converterById.keySet();
+        return Collections.unmodifiableCollection(converterById.keySet());
+    }
+
+    @Override
+    public Map<String, String> getConverterClassesById()
+    {
+        return Collections.unmodifiableMap(converterById);
     }
 
     /**
      * @return Collection over all classes with an associated converter
      */
+    @Override
     public Collection<String> getConverterClasses()
     {
-        return converterByClass.keySet();
+        return Collections.unmodifiableCollection(converterByClass.keySet());
     }
 
+    @Override
+    public Map<String, String> getConverterClassesByClass()
+    {
+        return Collections.unmodifiableMap(converterByClass);
+    }
+
+    @Override
     public Collection<String> getConverterConfigurationByClassName()
     {
-        return converterConfigurationByClassName.keySet();
+        return Collections.unmodifiableCollection(converterConfigurationByClassName.keySet());
     }
 
+    @Override
     public Converter getConverterConfiguration(String converterClassName)
     {
         return converterConfigurationByClassName.get(converterClassName);
@@ -577,6 +712,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return converter class that belongs to the given converter id
      */
+    @Override
     public String getConverterClassById(String converterId)
     {
         return converterById.get(converterId);
@@ -585,6 +721,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return converter class that is associated with the given class name
      */
+    @Override
     public String getConverterClassByClass(String className)
     {
         return converterByClass.get(className);
@@ -593,25 +730,34 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over all defined default validator ids
      */
+    @Override
     public Collection<String> getDefaultValidatorIds ()
     {
         List<String> allDefaultValidatorIds = new ArrayList<String>();
         allDefaultValidatorIds.addAll(defaultAnnotatedValidatorIds);
         allDefaultValidatorIds.addAll(defaultValidatorIds);
-        return allDefaultValidatorIds;
+        return Collections.unmodifiableCollection(allDefaultValidatorIds);
     }
     
     /**
      * @return Collection over all defined validator ids
      */
+    @Override
     public Collection<String> getValidatorIds()
     {
-        return validators.keySet();
+        return Collections.unmodifiableCollection(validators.keySet());
+    }
+
+    @Override
+    public Map<String, String> getValidatorClassesById()
+    {
+        return Collections.unmodifiableMap(validators);
     }
 
     /**
      * @return validator class name that belongs to the given validator id
      */
+    @Override
     public String getValidatorClass(String validatorId)
     {
         return validators.get(validatorId);
@@ -620,30 +766,42 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}s
      */
+    @Override
     public Collection<ManagedBean> getManagedBeans()
     {
+        if (ummanagedBeans == null)
+        {
+            ummanagedBeans = Collections.unmodifiableList(managedBeans);
+        }
         return managedBeans;
     }
 
     /**
      * @return Collection over {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
      */
+    @Override
     public Collection<NavigationRule> getNavigationRules()
     {
+        if (umnavigationRules == null)
+        {
+            umnavigationRules = Collections.unmodifiableList(navigationRules);
+        }
         return navigationRules;
     }
 
     /**
      * @return Collection over all defined renderkit ids
      */
+    @Override
     public Collection<String> getRenderKitIds()
     {
-        return renderKits.keySet();
+        return Collections.unmodifiableCollection(renderKits.keySet());
     }
 
     /**
      * @return renderkit class name for given renderkit id
      */
+    @Override
     public Collection<String> getRenderKitClasses(String renderKitId)
     {
         return renderKits.get(renderKitId).getRenderKitClasses();
@@ -654,6 +812,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      * {@link org.apache.myfaces.config.element.ClientBehaviorRenderer ClientBehaviorRenderer}s
      * for the given renderKitId
      */
+    @Override
     public Collection<ClientBehaviorRenderer> getClientBehaviorRenderers (String renderKitId)
     {
         return renderKits.get (renderKitId).getClientBehaviorRenderers();
@@ -662,6 +821,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over {@link org.apache.myfaces.config.element.Renderer Renderer}s for the given renderKitId
      */
+    @Override
     public Collection<Renderer> getRenderers(String renderKitId)
     {
         return renderKits.get(renderKitId).getRenderer();
@@ -670,46 +830,79 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over {@link javax.faces.event.PhaseListener} implementation class names
      */
+    @Override
     public Collection<String> getLifecyclePhaseListeners()
     {
+        if (umlifecyclePhaseListeners == null)
+        {
+            umlifecyclePhaseListeners = Collections.unmodifiableList(lifecyclePhaseListeners);
+        }
         return lifecyclePhaseListeners;
     }
 
+    @Override
     public Collection<ResourceBundle> getResourceBundles()
     {
+        if (umresourceBundles == null)
+        {
+            umresourceBundles = Collections.unmodifiableList(resourceBundles);
+        }
         return resourceBundles;
     }
 
+    @Override
     public Collection<String> getElResolvers()
     {
+        if (umelResolvers == null)
+        {
+            umelResolvers = Collections.unmodifiableList(elResolvers);
+        }
         return elResolvers;
     }
 
+    @Override
     public Collection<SystemEventListener> getSystemEventListeners()
     {        
+        if (umsystemEventListeners == null)
+        {
+            umsystemEventListeners = Collections.unmodifiableList(systemEventListeners);
+        }
         return systemEventListeners;
     }
     
+    @Override
     public Collection<Behavior> getBehaviors ()
     {
+        if (umbehaviors == null)
+        {
+            umbehaviors = Collections.unmodifiableList(behaviors);
+        }
         return behaviors;
     }
     
+    @Override
     public String getFacesVersion ()
     {
         return facesVersion;
     }
     
+    @Override
     public Collection<NamedEvent> getNamedEvents()
     {
+        if (umnamedEvents == null)
+        {
+            umnamedEvents = Collections.unmodifiableList(namedEvents);
+        }
         return namedEvents;
     }
     
+    @Override
     public Collection<FaceletsProcessing> getFaceletsProcessing()
     {
-        return faceletsProcessingByFileExtension.values();
+        return Collections.unmodifiableCollection(faceletsProcessingByFileExtension.values());
     }
 
+    @Override
     public FaceletsProcessing getFaceletsProcessingConfiguration(String fileExtension)
     {
         return faceletsProcessingByFileExtension.get(fileExtension);
@@ -724,6 +917,10 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     @Override
     public Collection<String> getFaceletCacheFactoryIterator()
     {
+        if (umfaceletCacheFactories == null)
+        {
+            umfaceletCacheFactories = Collections.unmodifiableList(faceletCacheFactories);
+        }
         return faceletCacheFactories;
     }
 
@@ -736,12 +933,20 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     @Override
     public Collection<String> getFlashFactoryIterator()
     {
+        if (umflashFactories == null)
+        {
+            umflashFactories = Collections.unmodifiableList(flashFactories);
+        }
         return flashFactories;
     }
     
     @Override
     public Collection<String> getFlowHandlerFactoryIterator()
     {
+        if (umflowHandlerFactories == null)
+        {
+            umflowHandlerFactories = Collections.unmodifiableList(flowHandlerFactories);
+        }
         return flowHandlerFactories;
     }
 
@@ -754,42 +959,70 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     @Override
     public Collection<String> getClientWindowFactoryIterator()
     {
+        if (umclientWindowFactories == null)
+        {
+            umclientWindowFactories = Collections.unmodifiableList(clientWindowFactories);
+        }
         return clientWindowFactories;
     }
     
     @Override
     public Collection<FacesFlowDefinition> getFacesFlowDefinitions()
     {
+        if (umfacesFlowDefinitions == null)
+        {
+            umfacesFlowDefinitions = Collections.unmodifiableList(facesFlowDefinitions);
+        }
         return facesFlowDefinitions;
     }
 
     @Override
     public Collection<String> getProtectedViewUrlPatterns()
     {
+        if (umprotectedViewUrlPatterns == null)
+        {
+            umprotectedViewUrlPatterns = Collections.unmodifiableList(protectedViewUrlPatterns);
+        }
         return protectedViewUrlPatterns;
     }
 
     @Override
     public Collection<ContractMapping> getResourceLibraryContractMappings()
     {
+        if (umresourceLibraryContractMappings == null)
+        {
+            umresourceLibraryContractMappings = Collections.unmodifiableList(resourceLibraryContractMappings);
+        }
         return resourceLibraryContractMappings;
     }
 
     @Override
     public Collection<ComponentTagDeclaration> getComponentTagDeclarations()
     {
+        if (umcomponentTagDeclarations == null)
+        {
+            umcomponentTagDeclarations = Collections.unmodifiableList(componentTagDeclarations);
+        }
         return componentTagDeclarations;
     }
 
     @Override
     public Collection<String> getResourceResolvers()
     {
+        if (umresourceResolvers == null)
+        {
+            umresourceResolvers = Collections.unmodifiableList(resourceResolvers);
+        }
         return resourceResolvers;
     }
 
     @Override
     public Collection<FaceletTagLibrary> getTagLibraries()
     {
+        if (umfaceletTagLibraries == null)
+        {
+            umfaceletTagLibraries = Collections.unmodifiableList(faceletTagLibraries);
+        }
         return faceletTagLibraries;
     }
     

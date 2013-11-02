@@ -26,7 +26,7 @@ import java.util.List;
  * @author Leonardo Uribe
  * @since 2.1.0
  */
-public class FacesConfigExtension extends org.apache.myfaces.config.element.FacesConfigExtension
+public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.FacesConfigExtension
 {
     /**
      * 
