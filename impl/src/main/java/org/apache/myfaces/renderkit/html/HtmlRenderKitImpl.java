@@ -36,20 +36,23 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
+import javax.faces.render.RendererWrapper;
 import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderKit;
+import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.ContentTypeUtils;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFRenderKit(renderKitId = "HTML_BASIC")
-public class HtmlRenderKitImpl extends RenderKit
+public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
 {
     //private static final Log log = LogFactory.getLog(HtmlRenderKitImpl.class);
     private static final Logger log = Logger.getLogger(HtmlRenderKitImpl.class.getName());
@@ -60,7 +63,7 @@ public class HtmlRenderKitImpl extends RenderKit
     private ResponseStateManager _responseStateManager;
     //private Map<String,Set<String>> _families;
     private Map<String, ClientBehaviorRenderer> _clientBehaviorRenderers;
-
+    
     // ~ Constructors -------------------------------------------------------------------------------
 
     public HtmlRenderKitImpl()
@@ -126,6 +129,11 @@ public class HtmlRenderKitImpl extends RenderKit
         {
             log.warning("Unsupported component-family/renderer-type: " + componentFamily + "/" + rendererType);
         }
+        if (renderer instanceof LazyRendererWrapper)
+        {
+            renderer = ((LazyRendererWrapper)renderer).getWrapped();
+            familyRendererMap.put(rendererType, renderer);
+        }
         return renderer;
     }
 
@@ -157,6 +165,33 @@ public class HtmlRenderKitImpl extends RenderKit
         }
     }
     
+    public void addRenderer(String componentFamily, String rendererType, String rendererClass)
+    {
+        if (componentFamily == null)
+        {
+            log.severe("addRenderer: componentFamily = null is not allowed");
+            throw new NullPointerException("component family must not be null.");
+        }
+        if (rendererType == null)
+        {
+            log.severe("addRenderer: rendererType = null is not allowed");
+            throw new NullPointerException("renderer type must not be null.");
+        }
+        if (rendererClass == null)
+        {
+            log.severe("addRenderer: renderer = null is not allowed");
+            throw new NullPointerException("renderer must not be null.");
+        }
+
+        _put(componentFamily, rendererType, new LazyRendererWrapper(rendererClass));
+
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("add Renderer family = " + componentFamily + " rendererType = " + rendererType
+                    + " renderer class = " + rendererClass);
+        }
+    }
+
     /**
      * Put the renderer on the double map
      * 
@@ -412,6 +447,28 @@ public class HtmlRenderKitImpl extends RenderKit
         public void close() throws IOException
         {
             output.close();
+        }
+    }
+    
+    private static class LazyRendererWrapper extends RendererWrapper
+    {
+        private String rendererClass;
+        private Renderer delegate;
+        
+        public LazyRendererWrapper(String rendererClass)
+        {
+            this.rendererClass = rendererClass;
+        }
+
+        @Override
+        public Renderer getWrapped()
+        {
+            if (delegate == null)
+            {
+                delegate = (Renderer) ClassUtils.newInstance(
+                    ClassUtils.simpleClassForName(rendererClass));
+            }
+            return delegate;
         }
     }
 }

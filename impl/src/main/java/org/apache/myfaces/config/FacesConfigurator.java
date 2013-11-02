@@ -134,6 +134,7 @@ import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.cdi.dependent.BeanEntry;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.spi.InjectionProvider;
@@ -1096,32 +1097,47 @@ public class FacesConfigurator
 
             //RenderKit renderKit = (RenderKit) ClassUtils.newInstance(renderKitClass);
             RenderKit renderKit = (RenderKit) ClassUtils.buildApplicationObject(RenderKit.class, renderKitClass, null);
+            // If the default html RenderKit instance is wrapped, the top level object will not implement
+            // LazyRenderKit and all renderers will be added using the standard form.
+            boolean lazyRenderKit = renderKit instanceof LazyRenderKit;
 
             for (Renderer element : dispenser.getRenderers(renderKitId))
             {
                 javax.faces.render.Renderer renderer;
                 
                 if (element.getRendererClass() != null)
-                {    
-                    try
+                {
+                    if (lazyRenderKit)
                     {
-                        renderer = (javax.faces.render.Renderer) ClassUtils.newInstance(element.getRendererClass());
-                    }
-                    catch (Throwable e)
-                    {
-                        // ignore the failure so that the render kit is configured
-                        log.log(Level.SEVERE, "failed to configure class " + element.getRendererClass(), e);
-                        continue;
-                    }
-                    if (renderer != null)
-                    {
-                        renderKit.addRenderer(element.getComponentFamily(), element.getRendererType(), renderer);
+                        // Add renderer using LazyRenderKit interface. This will have the effect of improve startup
+                        // time avoiding load renderer classes that are not used.
+                        ((LazyRenderKit)renderKit).addRenderer(element.getComponentFamily(), 
+                            element.getRendererType(), element.getRendererClass());
                     }
                     else
                     {
-                        log.log(Level.INFO, "Renderer instance cannot be created for "+
-                                element.getRendererClass()+ ", ignoring..." + 
+                        // Use standard form
+                        try
+                        {
+                            renderer = (javax.faces.render.Renderer) ClassUtils.newInstance(
                                 element.getRendererClass());
+                        }
+                        catch (Throwable e)
+                        {
+                            // ignore the failure so that the render kit is configured
+                            log.log(Level.SEVERE, "failed to configure class " + element.getRendererClass(), e);
+                            continue;
+                        }
+                        if (renderer != null)
+                        {
+                            renderKit.addRenderer(element.getComponentFamily(), element.getRendererType(), renderer);
+                        }
+                        else
+                        {
+                            log.log(Level.INFO, "Renderer instance cannot be created for "+
+                                    element.getRendererClass()+ ", ignoring..." + 
+                                    element.getRendererClass());
+                        }
                     }
                 }
                 else
