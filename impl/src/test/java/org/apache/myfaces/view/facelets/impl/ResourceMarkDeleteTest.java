@@ -20,13 +20,21 @@ package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
 import java.util.List;
+import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ResourceMarkDeleteTest  extends FaceletTestCase {
+public class ResourceMarkDeleteTest  extends FaceletTestCase
+{
+    @Override
+    protected void setUpServletObjects() throws Exception
+    {
+        super.setUpServletObjects();
+        servletContext.addInitParameter(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, "false");
+    }
 
     @Test
     public void test_only_ajs_is_included() throws IOException
