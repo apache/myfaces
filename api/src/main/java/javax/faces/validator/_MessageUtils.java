@@ -31,10 +31,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 class _MessageUtils
 {
     private static final String DETAIL_SUFFIX = "_detail";

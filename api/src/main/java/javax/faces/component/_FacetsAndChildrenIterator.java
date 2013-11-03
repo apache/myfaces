@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 class _FacetsAndChildrenIterator implements Iterator<UIComponent>
 {
     private Iterator<UIComponent> _facetsIterator;

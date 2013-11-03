@@ -30,9 +30,6 @@ import org.easymock.classextension.EasyMock;
 
 /**
  * Tests for {@link MethodExpressionValueChangeListener}
- * 
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class MethodExpressionValueChangeListenerTest extends AbstractJsfTestCase 
 {

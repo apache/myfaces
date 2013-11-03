@@ -25,9 +25,6 @@ import javax.faces.component.UIComponent;
 /**
  * A participant in UIComponent tree building
  * 
- * @author Jacob Hookom (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public interface FaceletHandler

@@ -32,10 +32,6 @@ import org.easymock.classextension.IMocksControl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public abstract class AbstractUIComponentPropertyTest<T>
 {
     private final String _property;

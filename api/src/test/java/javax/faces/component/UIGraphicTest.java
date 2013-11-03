@@ -26,10 +26,6 @@ import javax.faces.el.ValueBinding;
 import org.easymock.classextension.EasyMock;
 import org.testng.annotations.Test;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 @SuppressWarnings("deprecation")
 public class UIGraphicTest
 {

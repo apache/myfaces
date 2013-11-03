@@ -67,7 +67,6 @@ import java.util.regex.PatternSyntaxException;
  *   </li>
  * </ul>
  *
- * @author Jan-Kees van Andel
  * @since 2.0
  */
 @JSFValidator(

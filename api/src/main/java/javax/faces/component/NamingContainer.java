@@ -53,9 +53,6 @@ package javax.faces.component;
  * See the javadoc for this class in the 
  * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * for further details.
- *
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public interface NamingContainer
 {

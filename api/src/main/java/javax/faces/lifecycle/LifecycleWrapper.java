@@ -23,10 +23,6 @@ import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseListener;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public abstract class LifecycleWrapper extends Lifecycle implements FacesWrapper<Lifecycle>
 {
     

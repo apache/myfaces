@@ -24,10 +24,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *
- * @author Leonardo Uribe
- */
 class _PassThroughAttributesMap implements Map<String, Object>, Serializable
 {
     private static final long serialVersionUID = -9106932179394257866L;

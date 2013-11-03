@@ -21,11 +21,6 @@ package javax.faces.view.facelets;
 
 /**
  * A set of TagAttributes, usually representing all attributes on a Tag.
- * 
- * @see com.sun.facelets.tag.Tag
- * @see com.sun.facelets.tag.TagAttribute
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class TagAttributes
 {

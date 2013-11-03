@@ -21,9 +21,6 @@ package javax.faces.view;
 import javax.faces.FacesWrapper;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public abstract class ViewDeclarationLanguageFactory implements FacesWrapper<ViewDeclarationLanguageFactory>

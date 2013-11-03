@@ -27,7 +27,6 @@ import javax.faces.context.FacesContext;
 import javax.servlet.jsp.tagext.JspTag;
 
 /**
- * @author Dennis Byrne
  * @since 1.2
  */
 

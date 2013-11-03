@@ -29,10 +29,6 @@ import javax.faces.event.BehaviorEvent;
 import javax.faces.event.BehaviorListener;
 
 /**
- * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public class BehaviorBase implements Behavior, PartialStateHolder

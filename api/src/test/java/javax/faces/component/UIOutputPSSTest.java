@@ -23,10 +23,6 @@ import junit.framework.Assert;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;
 
-/**
- *
- * @author lu4242
- */
 public class UIOutputPSSTest extends AbstractJsfTestCase
 {
     

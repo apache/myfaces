@@ -21,9 +21,6 @@ package javax.faces;
 /**
  * Any wrapper class in JSF that must provide access to the object it wraps must implement this interface.
  * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public interface FacesWrapper<T>

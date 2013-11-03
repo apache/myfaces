@@ -54,10 +54,6 @@ import javax.faces.context.FacesContext;
  * implementations come as pairs).
  * <p>
  * See also the <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Stan Silvert
- * @version $Revision$ $Date$
  */
 public abstract class StateManager
 {

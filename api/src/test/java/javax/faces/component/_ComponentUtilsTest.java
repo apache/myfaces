@@ -26,9 +26,6 @@ import org.apache.myfaces.mock.MockRenderedValueExpression;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;
 
-/**
- * @author martinkoci
- */
 public class _ComponentUtilsTest extends AbstractJsfTestCase {
 
     @Test

@@ -23,9 +23,6 @@ package javax.faces.view;
  * default implementation of Facelets must provide an implemention of this in the handler for the
  * <code>&lt;f:actionListener&gt;</code> tag.
  * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface ActionSource2AttachedObjectHandler extends AttachedObjectHandler

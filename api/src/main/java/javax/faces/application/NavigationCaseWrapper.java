@@ -26,9 +26,7 @@ import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 
 /**
- *
  * @since 2.2
- * @author Leonardo Uribe
  */
 public abstract class NavigationCaseWrapper extends NavigationCase
     implements FacesWrapper<NavigationCase>

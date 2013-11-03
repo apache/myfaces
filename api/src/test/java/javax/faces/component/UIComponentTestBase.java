@@ -24,10 +24,6 @@ import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.testng.annotations.BeforeMethod;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public abstract class UIComponentTestBase
 {
     protected IMocksControl _mocksControl;

@@ -21,9 +21,6 @@ package javax.faces.context;
 import java.util.Map;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public abstract class Flash implements Map<String, Object>

@@ -26,10 +26,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Serializable
 {
     private static final long serialVersionUID = -3456937594422167629L;

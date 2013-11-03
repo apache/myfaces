@@ -24,10 +24,6 @@ import java.util.EventListener;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @version $Revision$ $Date$
  */
 public interface Validator extends EventListener
 {

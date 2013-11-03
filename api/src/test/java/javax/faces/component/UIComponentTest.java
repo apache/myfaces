@@ -34,10 +34,6 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.TestRunner;
 import org.testng.annotations.Test;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class UIComponentTest extends UIComponentTestBase
 {
     /**

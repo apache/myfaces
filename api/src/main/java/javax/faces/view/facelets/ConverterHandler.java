@@ -31,8 +31,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @see javax.faces.webapp.ConverterELTag
  * @see javax.faces.convert.Converter
  * @see javax.faces.component.ValueHolder
- * @author Jacob Hookom
- * @version $Id$
  */
 @JSFFaceletTag
 public class ConverterHandler extends FaceletsAttachedObjectHandler implements ValueHolderAttachedObjectHandler

@@ -22,9 +22,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.Behavior;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public abstract class BehaviorEvent extends FacesEvent

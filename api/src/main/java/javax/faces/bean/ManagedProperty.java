@@ -25,9 +25,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 @Documented

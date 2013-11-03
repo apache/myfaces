@@ -19,16 +19,10 @@
 package javax.faces.event;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public class ExceptionQueuedEvent extends SystemEvent
 {
-    /**
-     * @param source
-     */
     public ExceptionQueuedEvent(ExceptionQueuedEventContext eventContext)
     {
         super(eventContext);

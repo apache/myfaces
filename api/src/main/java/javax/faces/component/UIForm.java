@@ -34,9 +34,6 @@ import java.util.Collection;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 @JSFComponent(type = "javax.faces.Form", family = "javax.faces.Form")
 public class UIForm extends UIComponentBase implements NamingContainer, UniqueIdVendor

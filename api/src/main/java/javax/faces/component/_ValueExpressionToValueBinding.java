@@ -31,7 +31,6 @@ import javax.faces.el.ValueBinding;
  * 
  * ATTENTION: If you make changes to this class, treat javax.faces.component.ValueExpressionToValueBinding accordingly.
  * 
- * @author Stan Silvert
  * @see javax.faces.component.ValueExpressionToValueBinding
  */
 class _ValueExpressionToValueBinding extends ValueBinding implements StateHolder

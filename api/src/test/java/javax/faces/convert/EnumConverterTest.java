@@ -26,9 +26,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
  * This testcase test <code>javax.faces.convert.EnumConverter</code>.
- * 
- * @author Michael Kurz (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class EnumConverterTest extends AbstractJsfTestCase
 {

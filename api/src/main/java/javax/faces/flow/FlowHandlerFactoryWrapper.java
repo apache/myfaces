@@ -22,9 +22,7 @@ import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 
 /**
- *
  * @since 2.2
- * @author Leonardo Uribe
  */
 public abstract class FlowHandlerFactoryWrapper extends FlowHandlerFactory
     implements FacesWrapper<FlowHandlerFactory>

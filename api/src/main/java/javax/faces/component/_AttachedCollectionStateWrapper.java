@@ -21,9 +21,6 @@ package javax.faces.component;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * @author Leonardo Uribe
- */
 class _AttachedCollectionStateWrapper
         implements Serializable
 {

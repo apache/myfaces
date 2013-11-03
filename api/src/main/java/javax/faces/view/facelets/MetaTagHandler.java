@@ -20,9 +20,6 @@ package javax.faces.view.facelets;
 
 /**
  * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class MetaTagHandler extends TagHandler
 {

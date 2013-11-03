@@ -21,9 +21,6 @@ package javax.faces.event;
 import javax.faces.component.UIComponent;
 
 /**
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public class PreRemoveFromViewEvent extends ComponentSystemEvent

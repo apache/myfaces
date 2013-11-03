@@ -137,12 +137,6 @@ import javax.faces.context.FacesContext;
  * is provided. Note than stateHolder aware properties like converter,
  * validator or listeners should deal with StateHolder or PartialStateHolder
  * on component classes. 
- * 
- * </p>
- *
- * @author Werner Punz
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Rev$ $Date$
  */
 class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
 {

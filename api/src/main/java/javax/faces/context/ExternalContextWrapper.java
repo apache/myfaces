@@ -36,9 +36,6 @@ import javax.faces.FacesWrapper;
 import javax.faces.lifecycle.ClientWindow;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public abstract class ExternalContextWrapper extends ExternalContext implements FacesWrapper<ExternalContext>

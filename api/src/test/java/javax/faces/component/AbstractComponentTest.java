@@ -22,8 +22,6 @@ import org.apache.myfaces.test.jmock.AbstractJmockJsfTestCase;
 
 /**
  * Abstract basis clazz for Apache MyFaces' test kit.
- * 
- * @author Matthias Wessendorf
  */
 public abstract class AbstractComponentTest extends AbstractJmockJsfTestCase
 {

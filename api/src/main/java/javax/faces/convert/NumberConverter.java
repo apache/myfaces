@@ -42,9 +42,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * Unless otherwise specified, all attributes accept static values or EL expressions.
  * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 @JSFConverter(
     name="f:convertNumber",

@@ -22,9 +22,6 @@ import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public class UpdateModelException extends FacesException

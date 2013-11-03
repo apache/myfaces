@@ -21,8 +21,6 @@ package javax.faces.context;
 import javax.faces.FacesWrapper;
 
 /**
- *
- * @author Leonardo Uribe
  * @since 2.2
  */
 public abstract class FlashFactory implements FacesWrapper<FlashFactory>

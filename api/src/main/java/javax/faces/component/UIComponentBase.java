@@ -69,9 +69,6 @@ import java.util.logging.Logger;
  * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for
  * more.
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 @JSFComponent(type = "javax.faces.ComponentBase", family = "javax.faces.ComponentBase",
               desc = "base component when all components must inherit",

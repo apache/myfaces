@@ -21,9 +21,6 @@ package javax.faces.component;
 import java.io.Serializable;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface StateHelper extends StateHolder

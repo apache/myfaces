@@ -20,10 +20,6 @@ package javax.faces.event;
 
 import javax.faces.context.Flash;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public class PostKeepFlashValueEvent extends SystemEvent
 {
     

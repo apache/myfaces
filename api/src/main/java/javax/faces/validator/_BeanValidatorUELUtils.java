@@ -29,8 +29,6 @@ import javax.faces.el.CompositeComponentExpressionHolder;
  * used in portlet case.
  * 
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 final class _BeanValidatorUELUtils
 {

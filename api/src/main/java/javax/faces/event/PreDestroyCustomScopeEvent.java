@@ -20,9 +20,6 @@ package javax.faces.event;
 
 /**
  * A system event which is dispathed prior to the destruction of a custom scope
- *
- * @author Werner Punz (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 
 public class PreDestroyCustomScopeEvent extends SystemEvent

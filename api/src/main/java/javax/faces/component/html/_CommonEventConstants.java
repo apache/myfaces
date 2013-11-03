@@ -22,10 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.faces.component.UIComponent;
 
-/**
- *
- * @author lu4242
- */
 class _CommonEventConstants
 {
     public static final String COMMON_EVENTS_MARKED = "oam.COMMON_EVENTS_MARKED";

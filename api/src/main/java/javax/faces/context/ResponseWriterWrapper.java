@@ -26,8 +26,6 @@ import java.io.Writer;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Stan Silvert
  */
 public abstract class ResponseWriterWrapper extends ResponseWriter implements FacesWrapper<ResponseWriter>
 {

@@ -37,12 +37,9 @@ import javax.servlet.jsp.tagext.Tag;
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for
  * more.
  * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Bruno Aranda
- * @version $Revision$ $Date$
- * 
  * @deprecated replaced by {@link UIComponentELTag}
  */
+@Deprecated
 public abstract class UIComponentTag extends UIComponentClassicTagBase
 {
 

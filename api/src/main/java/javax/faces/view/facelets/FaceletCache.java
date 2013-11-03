@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * 
- * @author Leonardo Uribe
  * @since 2.1
  */
 public abstract class FaceletCache<V>

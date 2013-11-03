@@ -30,9 +30,6 @@ import javax.faces.component.UIComponent;
  * Note there is a copy of this class on 
  * org.apache.myfaces.shared.renderkit.html.CommonPropertyConstants.
  * Any changes here should be committed there too.
- * 
- * @author Leonardo Uribe
- *
  */
 class _CommonPropertyConstants
 {

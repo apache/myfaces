@@ -24,10 +24,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 @Target(value=ElementType.TYPE)
 @Retention(value=RetentionPolicy.RUNTIME)
 @Inherited

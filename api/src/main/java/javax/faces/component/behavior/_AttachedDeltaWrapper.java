@@ -20,10 +20,6 @@ package javax.faces.component.behavior;
 
 import java.io.Serializable;
 
-/**
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 class _AttachedDeltaWrapper implements Serializable
 {
     private static final long serialVersionUID = 4732389964367986402L;

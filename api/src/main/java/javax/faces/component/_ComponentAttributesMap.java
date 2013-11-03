@@ -51,9 +51,6 @@ import javax.faces.context.FacesContext;
  * The term "property" is used here to refer to real javabean properties
  * on the underlying UIComponent, while "attribute" refers to an entry
  * in the associated Map.
- *
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 class _ComponentAttributesMap implements Map<String, Object>, Serializable
 {

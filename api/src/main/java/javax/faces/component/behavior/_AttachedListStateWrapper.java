@@ -21,10 +21,6 @@ package javax.faces.component.behavior;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 class _AttachedListStateWrapper
         implements Serializable
 {

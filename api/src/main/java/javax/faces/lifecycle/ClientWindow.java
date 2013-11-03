@@ -22,9 +22,7 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 
 /**
- *
  * @since 2.2
- * @author Leonardo Uribe
  */
 public abstract class ClientWindow
 {

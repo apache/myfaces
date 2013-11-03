@@ -21,9 +21,6 @@ package javax.faces.view.facelets;
 /**
  * A mutable set of rules to be used in auto-wiring state to a particular object instance. Rules assigned to this object
  * will be composed into a single Metadata instance.
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class MetaRuleset
 {

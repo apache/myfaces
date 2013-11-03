@@ -20,9 +20,6 @@ package org.apache.myfaces;
 
 /**
  * Implement a testcase which might throw an exception
- *  
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public interface TestRunner {
     void run() throws Throwable;

@@ -25,10 +25,9 @@ package javax.faces.el;
  * See the javadoc of the <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF
  * Specification</a> for more details.
  * 
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
  * @deprecated
  */
+@Deprecated
 public abstract class PropertyResolver
 {
 

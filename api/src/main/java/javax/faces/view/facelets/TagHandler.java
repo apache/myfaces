@@ -20,9 +20,6 @@ package javax.faces.view.facelets;
 
 /**
  * Foundation class for FaceletHandlers associated with markup in a Facelet document.
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class TagHandler implements FaceletHandler
 {

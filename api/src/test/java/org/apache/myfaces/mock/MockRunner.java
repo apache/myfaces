@@ -21,10 +21,6 @@ package org.apache.myfaces.mock;
 import org.apache.myfaces.TestRunner;
 import org.easymock.classextension.IMocksControl;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public abstract class MockRunner implements TestRunner
 {
     private final IMocksControl _mockControl;

@@ -26,9 +26,6 @@ package javax.faces.component.visit;
  *
  * @see VisitCallback#visit VisitCallback.visit()
  * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public enum VisitResult

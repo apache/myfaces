@@ -22,9 +22,6 @@ package javax.faces.event;
  * A system event which is dispatched after the construction
  * of a custom scope
  *
- * @author Werner Punz (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 

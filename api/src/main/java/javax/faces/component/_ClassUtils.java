@@ -38,11 +38,6 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 final class _ClassUtils
 {
     // ~ Static fields/initializers -----------------------------------------------------------------

@@ -27,9 +27,6 @@ import javax.faces.context.FacesContext;
  * {@link javax.faces.validator.Validator Validator}, {@link javax.faces.event.ValueChangeEvent ValueChangeEvent}, and
  * {@link javax.faces.event.ActionListener ActionListener} for use by <em>page authors</em>.
  * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface AttachedObjectHandler

@@ -20,10 +20,6 @@ package javax.faces.model;
 
 import java.util.Collection;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public class CollectionDataModel<E> extends DataModel<E>
 {
 

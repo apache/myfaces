@@ -20,10 +20,6 @@ package javax.faces.application;
 
 import org.w3c.dom.Document;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public abstract class ApplicationConfigurationPopulator
 {
     

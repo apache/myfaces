@@ -49,9 +49,6 @@ import java.util.Map;
  * parameter substitution required for the <code>summary</code> and <code>detail</code> of the <code>FacesMessage</code>
  * .</li> </ui>
  * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  */
 public class FacesMessage implements Serializable
 {

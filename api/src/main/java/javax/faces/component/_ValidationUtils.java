@@ -24,8 +24,6 @@ import javax.validation.Validation;
  * Utility class that isolates javax.validation, to prevent ClassNotFoundException
  * 
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 final class _ValidationUtils
 {

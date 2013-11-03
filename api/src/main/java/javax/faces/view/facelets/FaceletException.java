@@ -21,9 +21,6 @@ package javax.faces.view.facelets;
 import javax.faces.FacesException;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public class FaceletException extends FacesException

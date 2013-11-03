@@ -48,9 +48,6 @@ import javax.faces.validator.Validator;
  * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for
  * more.
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public interface EditableValueHolder extends ValueHolder
 {

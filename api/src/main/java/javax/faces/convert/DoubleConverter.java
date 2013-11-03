@@ -28,9 +28,6 @@ import java.util.Locale;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 @JSFConverter
 public class DoubleConverter

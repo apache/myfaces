@@ -32,8 +32,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListene
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- * 
- * @author Leonardo Uribe
  * @since 2.2
  */
 @JSFComponent(name = "f:viewAction")

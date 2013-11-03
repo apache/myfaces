@@ -25,10 +25,7 @@ import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.SystemEvent;
 
 /**
- * 
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public abstract class ExceptionHandlerWrapper extends ExceptionHandler implements FacesWrapper<ExceptionHandler>
 {

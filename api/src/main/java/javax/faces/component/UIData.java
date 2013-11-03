@@ -113,9 +113,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * </p>
  * see Javadoc of the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * for more information.
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 @JSFComponent(defaultRendererType = "javax.faces.Table")
 public class UIData extends UIComponentBase implements NamingContainer, UniqueIdVendor

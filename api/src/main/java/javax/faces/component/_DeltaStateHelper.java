@@ -136,10 +136,6 @@ import javax.faces.context.FacesContext;
  * on component classes. 
  * 
  * </p>
- *
- * @author Werner Punz
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Rev$ $Date$
  */
 class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientStateHolder
 {

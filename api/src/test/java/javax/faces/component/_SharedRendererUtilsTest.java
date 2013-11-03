@@ -31,15 +31,10 @@ import javax.faces.convert.ConverterException;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 
-/**
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class _SharedRendererUtilsTest extends AbstractJsfTestCase
 {
     /**
      * A POJO used for testing. 
-     * @author Jakob Korherr
      */
     public static class POJO
     {
@@ -87,7 +82,6 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
     
     /**
      * Converter for class POJO.
-     * @author Jakob Korherr
      */
     public static class POJOConverter implements Converter
     {
@@ -108,7 +102,6 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
     
     /**
      * A Bean used for testing.
-     * @author Jakob Korher
      */
     public static class Bean
     {

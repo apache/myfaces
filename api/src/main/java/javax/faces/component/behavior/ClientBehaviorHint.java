@@ -19,9 +19,6 @@
 package javax.faces.component.behavior;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public enum ClientBehaviorHint

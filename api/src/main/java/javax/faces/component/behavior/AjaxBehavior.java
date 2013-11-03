@@ -31,8 +31,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorListener;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
  * @since 2.0
  */
 public class AjaxBehavior extends ClientBehaviorBase 

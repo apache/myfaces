@@ -21,8 +21,6 @@ package javax.faces.view.facelets;
 import javax.faces.FacesWrapper;
 
 /**
- * 
- * @author Leonardo Uribe
  * @since 2.1
  */
 public abstract class FaceletCacheFactory implements FacesWrapper<FaceletCacheFactory>

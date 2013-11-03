@@ -20,10 +20,6 @@ package javax.faces.event;
 
 import javax.faces.FacesWrapper;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public abstract class ActionListenerWrapper implements ActionListener, FacesWrapper<ActionListener>
 {
 

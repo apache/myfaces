@@ -39,9 +39,6 @@ import org.easymock.classextension.IMocksControl;
 
 /**
  * Tests for {@link ValueExpressionToValueBinding}. TODO: tests for StateHolder implementation
- * 
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
 public class _ValueExpressionToValueBindingTest extends TestCase

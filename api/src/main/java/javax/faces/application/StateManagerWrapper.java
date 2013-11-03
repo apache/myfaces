@@ -26,8 +26,6 @@ import javax.faces.FacesWrapper;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Stan Silvert
  */
 public abstract class StateManagerWrapper extends StateManager implements FacesWrapper<StateManager>
 {

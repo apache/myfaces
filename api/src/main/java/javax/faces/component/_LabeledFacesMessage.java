@@ -25,9 +25,6 @@ import javax.faces.context.FacesContext;
 /**
  * This class encapsulates a FacesMessage to evaluate the label expression on render response, where f:loadBundle is
  * available
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 class _LabeledFacesMessage extends FacesMessage
 {

@@ -25,8 +25,6 @@ import javax.faces.event.ActionListener;
 
 /**
  * Converts a MethodBinding to an ActionListener
- *
- * @author Stan Silvert
  */
 class _MethodBindingToActionListener extends _MethodBindingToListener implements ActionListener
 {

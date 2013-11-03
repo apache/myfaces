@@ -31,10 +31,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  * @deprecated replaced by {@link ConverterELTag}
  */
+@Deprecated
 public class ConverterTag extends TagSupport
 {
     private static final long serialVersionUID = -6168345066829108081L;

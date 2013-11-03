@@ -27,9 +27,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
  * set/create Validator is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
  * tree.
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 @JSFFaceletTag
 public class ValidatorHandler extends FaceletsAttachedObjectHandler implements EditableValueHolderAttachedObjectHandler

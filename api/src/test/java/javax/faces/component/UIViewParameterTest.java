@@ -23,9 +23,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 /**
  * Test class for UIViewParameter.
  * 
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public class UIViewParameterTest extends AbstractJsfTestCase

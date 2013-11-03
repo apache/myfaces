@@ -30,10 +30,6 @@ import org.easymock.classextension.EasyMock;
 
 /**
  * Tests for {@link MethodExpressionActionListener}
- * 
- * @author Martin Koci (latest modification by $Author$)
- * @author Jakob Korherr
- * @version $Revision$ $Date$
  */
 public class MethodExpressionActionListenerTest extends AbstractJsfTestCase 
 {

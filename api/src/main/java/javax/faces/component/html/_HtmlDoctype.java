@@ -24,8 +24,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- *
- * @author Leonardo Uribe
  * @since 2.1
  */
 @JSFComponent

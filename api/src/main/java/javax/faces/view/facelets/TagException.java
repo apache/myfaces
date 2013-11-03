@@ -20,9 +20,6 @@ package javax.faces.view.facelets;
 
 /**
  * An Exception caused by a Tag
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 public final class TagException extends FaceletException
 {

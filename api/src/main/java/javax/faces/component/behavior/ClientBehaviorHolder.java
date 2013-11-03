@@ -23,11 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO: COMMENT
- * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public interface ClientBehaviorHolder

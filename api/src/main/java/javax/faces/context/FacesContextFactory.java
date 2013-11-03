@@ -24,9 +24,6 @@ import javax.faces.lifecycle.Lifecycle;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public abstract class FacesContextFactory implements FacesWrapper<FacesContextFactory>
 {

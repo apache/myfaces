@@ -22,9 +22,6 @@ package javax.faces.view;
  * A marker interface for PDL tags that represent <code>&lt;composite:editableValueHolder/&gt;</code> for use by the
  * <em>composite component page author</em>.
  * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface EditableValueHolderAttachedObjectTarget extends ValueHolderAttachedObjectTarget

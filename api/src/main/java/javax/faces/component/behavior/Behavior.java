@@ -21,9 +21,6 @@ package javax.faces.component.behavior;
 import javax.faces.event.BehaviorEvent;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public interface Behavior

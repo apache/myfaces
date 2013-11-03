@@ -23,8 +23,6 @@ import java.util.Map;
 /**
  * A context for scope data
  *
- * @author Werner Punz (latest modification by $Author$)
- * @version $Revision$ $Date$
  * @since 2.0
  */
 

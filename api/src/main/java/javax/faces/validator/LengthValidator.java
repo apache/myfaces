@@ -37,10 +37,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
  * Unless otherwise specified, all attributes accept static values or EL expressions.
  * 
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- *
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @version $Revision$ $Date$
  */
 @JSFValidator(
     name="f:validateLength",

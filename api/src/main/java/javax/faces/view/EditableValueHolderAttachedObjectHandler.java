@@ -25,9 +25,6 @@ package javax.faces.view;
  * <code>&lt;f:validator&gt;</code> (and any tags for any of the standard validators) and
  * <code>&lt;f:valueChangeListener&gt;</code> tags.
  * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface EditableValueHolderAttachedObjectHandler extends ValueHolderAttachedObjectHandler

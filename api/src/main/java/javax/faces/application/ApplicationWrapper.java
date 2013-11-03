@@ -46,9 +46,6 @@ import javax.faces.event.SystemEventListener;
 import javax.faces.validator.Validator;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 @SuppressWarnings("deprecation")

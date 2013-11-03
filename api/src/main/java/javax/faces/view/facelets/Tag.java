@@ -22,9 +22,6 @@ import javax.faces.view.Location;
 
 /**
  * Representation of a Tag in the Facelet definition
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 public final class Tag
 {

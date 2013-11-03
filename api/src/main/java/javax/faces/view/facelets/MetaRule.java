@@ -20,11 +20,6 @@ package javax.faces.view.facelets;
 
 /**
  * A potential rule for Metadata on the passed MetadataTarget
- * 
- * @see com.sun.facelets.tag.Metadata
- * @see com.sun.facelets.tag.MetadataTarget
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class MetaRule
 {

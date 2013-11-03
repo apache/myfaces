@@ -45,14 +45,8 @@ import javax.servlet.jsp.tagext.JspIdConsumer;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
- * @author Bruno Aranda (latest modification by $Author$)
- * @author Manfred Geiler
- * @author Dennis Byrne
- * @version $Revision$ $Date$
- * 
  * @since 1.2
  */
-
 public abstract class UIComponentClassicTagBase extends UIComponentTagBase implements BodyTag, JspIdConsumer
 {
 

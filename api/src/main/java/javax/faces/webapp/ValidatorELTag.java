@@ -25,10 +25,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public abstract class ValidatorELTag extends TagSupport
 {
     private static final long serialVersionUID = 8794036166323016663L;

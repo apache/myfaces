@@ -28,8 +28,6 @@ import javax.faces.event.FacesEvent;
 
 /**
  * Common base class for converting a MethodBinding to a FacesListener
- *
- * @author Stan Silvert
  */
 abstract class _MethodBindingToListener implements StateHolder
 {

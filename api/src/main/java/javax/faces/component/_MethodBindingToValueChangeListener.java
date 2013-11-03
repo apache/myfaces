@@ -26,8 +26,6 @@ import javax.faces.event.ValueChangeListener;
 
 /**
  * Converts a MethodBinding to a ValueChangeListener
- *
- * @author Stan Silvert
  */
 class _MethodBindingToValueChangeListener extends _MethodBindingToListener implements ValueChangeListener
 {

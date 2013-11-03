@@ -27,8 +27,6 @@ import junit.framework.Assert;
 
 /**
  * Verifies the current component on stack in method getValue. Created for MYFACES-3157
- * 
- * @author martinkoci
  */
 public class MockRenderedValueExpression extends org.apache.myfaces.test.el.MockValueExpression {
 

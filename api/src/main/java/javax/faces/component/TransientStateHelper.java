@@ -32,8 +32,6 @@ package javax.faces.component;
  * will not be preserved between requests.</p>
  * 
  * @since 2.1
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public interface TransientStateHelper extends TransientStateHolder
 {

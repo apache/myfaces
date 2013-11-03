@@ -24,9 +24,6 @@ package javax.faces.context;
  * into ExternalContext, because this can cause classloading
  * problems when accessing it from myfaces-impl when Mojarra is
  * also on the classpath.
- * 
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 final class _MyFacesExternalContextHelper
 {

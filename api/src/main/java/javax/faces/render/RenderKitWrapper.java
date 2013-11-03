@@ -35,7 +35,6 @@ import java.util.Iterator;
  *   Usage: extend this class and override getWrapped() to return the  wrapped instance.
  * </p>
  *
- * @author Jan-Kees van Andel
  * @since 2.0
  */
 public abstract class RenderKitWrapper extends RenderKit implements FacesWrapper<RenderKit>

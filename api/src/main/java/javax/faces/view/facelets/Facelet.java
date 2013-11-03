@@ -28,9 +28,6 @@ import javax.faces.context.FacesContext;
 /**
  * The parent or root object in a FaceletHandler composition. The Facelet will take care of populating the passed
  * UIComponent parent in relation to the create/restore lifecycle of JSF.
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class Facelet
 {

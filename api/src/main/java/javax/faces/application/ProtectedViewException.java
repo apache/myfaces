@@ -20,10 +20,6 @@ package javax.faces.application;
 
 import javax.faces.FacesException;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public class ProtectedViewException extends FacesException
 {
 

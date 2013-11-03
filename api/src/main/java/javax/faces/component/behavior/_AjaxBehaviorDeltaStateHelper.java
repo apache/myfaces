@@ -32,9 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Werner Punz (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * Delta state helper to deal with the ajax
  * behavior delta states, cross ported
  * from our generic delta state, due to limitations

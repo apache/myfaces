@@ -23,9 +23,6 @@ import java.util.List;
 import javax.faces.component.UIComponent;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface AttachedObjectTarget

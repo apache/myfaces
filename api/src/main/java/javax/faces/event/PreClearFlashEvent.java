@@ -20,10 +20,6 @@ package javax.faces.event;
 
 import java.util.Map;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public class PreClearFlashEvent extends SystemEvent
 {
     

@@ -22,9 +22,6 @@ import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public abstract class ExternalContextFactory implements FacesWrapper<ExternalContextFactory>

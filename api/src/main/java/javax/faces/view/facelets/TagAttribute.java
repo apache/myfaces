@@ -24,9 +24,6 @@ import javax.faces.view.Location;
 
 /**
  * Representation of a Tag's attribute in a Facelet File
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class TagAttribute
 {

@@ -20,9 +20,6 @@ package javax.faces.view.facelets;
 
 /**
  * External information on how to wire dynamic or literal state to the passed Object instance.
- * 
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class Metadata
 {

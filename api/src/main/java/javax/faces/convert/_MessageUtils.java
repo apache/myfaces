@@ -31,10 +31,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 class _MessageUtils
 {
     private static final String DETAIL_SUFFIX = "_detail";

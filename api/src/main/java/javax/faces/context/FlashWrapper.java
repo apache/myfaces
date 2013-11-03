@@ -24,8 +24,6 @@ import java.util.Set;
 import javax.faces.FacesWrapper;
 
 /**
- *
- * @author Leonardo Uribe
  * @since 2.2
  */
 public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash>

@@ -21,8 +21,6 @@ package javax.faces.flow;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author Leonardo Uribe
  * @since 2.2
  */
 public abstract class FlowHandlerFactory

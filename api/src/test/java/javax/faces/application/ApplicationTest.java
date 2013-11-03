@@ -25,9 +25,6 @@ import org.junit.Test;
 
 /**
  * Tests for {@link Application}
- * 
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class ApplicationTest extends AbstractJsfTestCase
 {

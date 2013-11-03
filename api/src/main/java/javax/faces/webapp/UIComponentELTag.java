@@ -35,10 +35,6 @@ import javax.servlet.jsp.JspException;
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for
  * more.
  * 
- * @author Bruno Aranda (latest modification by $Author$)
- * @author Manfred Geiler
- * @version $Revision$ $Date$
- * 
  * @since 1.2
  */
 public abstract class UIComponentELTag extends UIComponentClassicTagBase

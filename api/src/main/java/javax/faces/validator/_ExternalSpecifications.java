@@ -29,9 +29,6 @@ import javax.el.ELContext;
  * in the current process. See JIRA issue: http://issues.apache.org/jira/browse/MYFACES-2386
  * </p>
  *
- * @author Jan-Kees van Andel
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
  * @since 2.0
  */
 final class _ExternalSpecifications

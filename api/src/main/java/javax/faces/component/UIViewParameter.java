@@ -44,9 +44,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * If maxlength is used, we can put something like this: 
  * JSFJspProperty(name = "maxlength", returnType = "java.lang.String")
  * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 @JSFComponent(name = "f:viewParam", bodyContent = "JSP", 
@@ -316,9 +313,6 @@ public class UIViewParameter extends UIInput
     }
 
     /**
-     * @author Simon Lessard (latest modification by $Author$)
-     * @version $Revision$ $Date$
-     * 
      * @since 2.0
      */
     public static class Reference

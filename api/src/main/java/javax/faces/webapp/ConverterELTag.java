@@ -26,9 +26,6 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 1.2
  */
 public abstract class ConverterELTag extends TagSupport

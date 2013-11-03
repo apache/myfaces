@@ -23,9 +23,6 @@ package javax.faces.view;
  * implementation of Facelets must provide an implemention of this in the handler for the
  * <code>&lt;f:converter&gt;</code> (and any tags for any of the standard converters) tags.
  * 
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface ValueHolderAttachedObjectHandler extends AttachedObjectHandler

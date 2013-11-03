@@ -23,9 +23,6 @@ import java.io.IOException;
 import javax.faces.component.UIComponent;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public final class CompositeFaceletHandler implements FaceletHandler

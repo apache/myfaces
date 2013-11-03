@@ -40,10 +40,6 @@ import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 @SuppressWarnings("deprecation")
 public class _MethodBindingToMethodExpressionTest extends TestCase
 {

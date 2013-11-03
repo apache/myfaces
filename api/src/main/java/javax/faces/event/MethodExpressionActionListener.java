@@ -32,8 +32,6 @@ import javax.faces.context.FacesContext;
  * <a href=
  * "https://javaserverfaces.dev.java.net/nonav/docs/2.0/javadocs/javax/faces/event/MethodExpressionActionListener.html">
  * JSF Specification</a>
- * 
- * @author Stan Silvert
  */
 public class MethodExpressionActionListener implements ActionListener, StateHolder
 {

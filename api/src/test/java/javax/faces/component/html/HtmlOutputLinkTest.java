@@ -21,10 +21,6 @@ package javax.faces.component.html;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class HtmlOutputLinkTest
 {
 

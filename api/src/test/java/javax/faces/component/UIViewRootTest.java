@@ -62,13 +62,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
-
-
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class UIViewRootTest extends AbstractJsfTestCase
 {
     private Map<PhaseId, Class<? extends PhaseListener>> phaseListenerClasses;

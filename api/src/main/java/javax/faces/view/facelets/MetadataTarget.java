@@ -23,11 +23,6 @@ import java.lang.reflect.Method;
 
 /**
  * Information used with MetaRule for determining how and what Metadata should be wired.
- * 
- * @see com.sun.facelets.tag.MetaRule
- * @see com.sun.facelets.tag.Metadata
- * @author Jacob Hookom
- * @version $Id$
  */
 public abstract class MetadataTarget
 {

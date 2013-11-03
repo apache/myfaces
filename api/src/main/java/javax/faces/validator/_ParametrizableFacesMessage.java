@@ -29,9 +29,6 @@ import javax.faces.el.ValueBinding;
 /** 
  * This class encapsulates a FacesMessage to evaluate the label
  * expression on render response, where f:loadBundle is available
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 class _ParametrizableFacesMessage extends FacesMessage
 {

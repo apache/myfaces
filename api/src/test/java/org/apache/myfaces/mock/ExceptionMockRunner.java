@@ -20,10 +20,6 @@ package org.apache.myfaces.mock;
 
 import org.easymock.classextension.IMocksControl;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public abstract class ExceptionMockRunner extends MockRunner
 {
     private final Throwable _exception;

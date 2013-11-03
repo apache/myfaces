@@ -24,9 +24,6 @@ import java.io.Writer;
 
 /**
  * This Writer writes always to the current pageContext.getOut() Writer.
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 class _PageContextOutWriter extends Writer
 {

@@ -35,9 +35,6 @@ import javax.faces.context.FacesContext;
  * take care of populating the passed UIComponent parent in relation to the
  * create/restore lifecycle of JSF.
  * 
- * @author Jacob Hookom (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public abstract class FaceletContext extends ELContext

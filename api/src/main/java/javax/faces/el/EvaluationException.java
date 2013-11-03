@@ -23,10 +23,9 @@ import javax.faces.FacesException;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * 
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
  * @deprecated
  */
+@Deprecated
 public class EvaluationException extends FacesException
 {
     private static final long serialVersionUID = 4668524591042216006L;

@@ -27,10 +27,6 @@ import junit.framework.Assert;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public class UIDataRowStateTest extends AbstractJsfTestCase
 {
     

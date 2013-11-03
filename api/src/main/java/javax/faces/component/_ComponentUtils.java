@@ -30,9 +30,6 @@ import java.util.Collection;
 
 /**
  * A collection of static helper methods for locating UIComponents.
- * 
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 class _ComponentUtils
 {

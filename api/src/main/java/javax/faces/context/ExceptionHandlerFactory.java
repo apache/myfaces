@@ -21,10 +21,7 @@ package javax.faces.context;
 import javax.faces.FacesWrapper;
 
 /**
- * 
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public abstract class ExceptionHandlerFactory implements FacesWrapper<ExceptionHandlerFactory>
 {

@@ -19,9 +19,6 @@
 package javax.faces.event;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface AjaxBehaviorListener extends BehaviorListener

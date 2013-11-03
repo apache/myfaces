@@ -39,9 +39,6 @@ import javax.faces.context.FacesContext;
  * 
  * A facesListener could hold PartialStateHolder instances, so it 
  * is necessary to provide convenient methods to track deltas.
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
 {

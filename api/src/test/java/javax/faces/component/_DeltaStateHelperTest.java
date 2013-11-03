@@ -23,9 +23,6 @@ import java.util.Map;
 
 /**
  * A generic framework less testcase for our _DeltaStateHelper class!
- *
- * @author Werner Punz (latest modification by $Author$)
- * @version $Rev$ $Date$
  */
 public class _DeltaStateHelperTest extends AbstractComponentTest
 {

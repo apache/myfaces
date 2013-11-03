@@ -28,8 +28,6 @@ import org.apache.myfaces.test.el.MockValueExpression;
 
 /**
  * Tests for UISelectItems.
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class UISelectItemsTest extends AbstractJsfTestCase
 {

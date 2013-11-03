@@ -33,9 +33,6 @@ import javax.faces.event.PhaseId;
 import javax.faces.render.RenderKit;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public abstract class FacesContextWrapper extends FacesContext implements FacesWrapper<FacesContext>

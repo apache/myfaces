@@ -26,8 +26,6 @@ import java.lang.annotation.Target;
 
 /**
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 @Documented
 @Retention(java.lang.annotation.RetentionPolicy.CLASS)

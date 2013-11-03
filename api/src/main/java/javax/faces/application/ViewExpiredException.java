@@ -23,8 +23,6 @@ import javax.faces.FacesException;
 
 /**
  * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Stan Silvert
  */
 public class ViewExpiredException extends FacesException
 {

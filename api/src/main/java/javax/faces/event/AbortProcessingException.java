@@ -22,9 +22,6 @@ import javax.faces.FacesException;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/2.0/docs/api/index.html">JSF Specification</a>
- * 
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class AbortProcessingException extends FacesException
 {

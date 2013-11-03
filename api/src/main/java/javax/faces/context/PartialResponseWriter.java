@@ -23,9 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public class PartialResponseWriter extends ResponseWriterWrapper

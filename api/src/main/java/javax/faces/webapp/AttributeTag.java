@@ -29,9 +29,8 @@ import javax.servlet.jsp.tagext.TagSupport;
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * 
  * @deprecated the implementation of this clazz is now an implementation detail.
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
+@Deprecated
 public class AttributeTag extends TagSupport
 {
     private static final long serialVersionUID = 3147657100171678632L;

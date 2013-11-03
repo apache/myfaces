@@ -46,9 +46,6 @@ import java.util.NoSuchElementException;
   *  
   * See Javadoc of
  * <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a> for more.
-  * 
-  * @author Thomas Spiegl (latest modification by $Author$)
-  * @version $Revision$ $Date$
 */
 public abstract class DataModel<E> implements Iterable<E>
 {

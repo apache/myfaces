@@ -24,9 +24,6 @@ import javax.faces.FacesWrapper;
 import javax.faces.event.PhaseId;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public abstract class PartialViewContextWrapper extends PartialViewContext implements FacesWrapper<PartialViewContext>

@@ -24,10 +24,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-/**
- *
- * @author Leonardo Uribe
- */
 class _ViewAttributeMap implements Map<String, Object>, Serializable
 {
     private static final long serialVersionUID = -9106832109394257866L;

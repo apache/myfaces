@@ -27,10 +27,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * 
- * @author martinkoci
- */
 public class _SelectItemsUtilTest extends AbstractJsfTestCase
 {
 

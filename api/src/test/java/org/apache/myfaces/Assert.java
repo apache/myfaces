@@ -20,9 +20,6 @@ package org.apache.myfaces;
 
 /**
  * Provides various assert calls which can be used for tests.
- * 
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class Assert
 {

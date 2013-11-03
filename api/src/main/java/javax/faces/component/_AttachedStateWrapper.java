@@ -20,10 +20,6 @@ package javax.faces.component;
 
 import java.io.Serializable;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 class _AttachedStateWrapper implements Serializable
 {
     private static final long serialVersionUID = 4948301780259917764L;

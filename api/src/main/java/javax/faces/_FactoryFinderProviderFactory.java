@@ -29,7 +29,6 @@ import javax.faces.context.ExternalContext;
 /**
  * Provide utility methods used by FactoryFinder class to lookup for SPI interface FactoryFinderProvider.
  *
- * @author Leonardo Uribe
  * @since 2.0.5
  */
 class _FactoryFinderProviderFactory

@@ -31,8 +31,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
  * Check if a value is empty, in the same way as set UIInput required 
  * property to true (including all rules related to this property).
  * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  * @since 2.0
  */
 @JSFValidator(name = "f:validateRequired",

@@ -47,10 +47,6 @@ import org.apache.myfaces.test.mock.visit.MockVisitContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class UIDataTest extends AbstractJsfTestCase
 {
 
@@ -116,7 +112,6 @@ public class UIDataTest extends AbstractJsfTestCase
     {
         /**
          * Concrete class of ContextCallback needed to test invokeOnComponent. 
-         * @author Jakob Korherr
          */
         final class MyContextCallback implements ContextCallback
         {

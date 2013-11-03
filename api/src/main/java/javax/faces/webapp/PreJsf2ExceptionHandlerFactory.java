@@ -42,10 +42,6 @@ import javax.faces.event.SystemEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @author Jakob Korherr
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
@@ -53,9 +49,6 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
     //private static final Log log = LogFactory.getLog (PreJsf2ExceptionHandlerFactory.class);
     private static final Logger log = Logger.getLogger(PreJsf2ExceptionHandlerFactory.class.getName());
     
-    /**
-     * 
-     */
     public PreJsf2ExceptionHandlerFactory()
     {
     }

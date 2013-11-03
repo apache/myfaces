@@ -36,11 +36,6 @@ import javax.faces.model.SelectItem;
 // This class is associated with org.apache.myfaces.shared.util.SelectItemsIterator.
 // Changes here should also be applied to this class.
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @author Jakob Korherr (jsf 2.0)
- * @version $Revision$ $Date$
- */
 class _SelectItemsIterator implements Iterator<SelectItem>
 {
     

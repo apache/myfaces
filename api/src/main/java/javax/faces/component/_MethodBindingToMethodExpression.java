@@ -33,8 +33,6 @@ import javax.faces.el.MethodBinding;
  * Converts a MethodBinding to a MethodExpression
  * 
  * TODO: find a way to share the implementation of class with impl.
- * 
- * @author Stan Silvert
  */
 @SuppressWarnings("deprecation")
 class _MethodBindingToMethodExpression extends MethodExpression implements StateHolder

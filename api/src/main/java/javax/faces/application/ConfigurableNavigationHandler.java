@@ -25,9 +25,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public abstract class ConfigurableNavigationHandler extends NavigationHandler

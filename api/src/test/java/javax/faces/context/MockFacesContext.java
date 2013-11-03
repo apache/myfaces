@@ -20,10 +20,6 @@ package javax.faces.context;
 
 import javax.el.ELContext;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class MockFacesContext extends org.apache.myfaces.test.mock.MockFacesContext
 {
 

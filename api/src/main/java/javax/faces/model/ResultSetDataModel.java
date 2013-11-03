@@ -33,10 +33,6 @@ import java.util.TreeMap;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
- * 
- * @author Thomas Spiegl (latest modification by $Author$)
- * @author Martin Marinschek
- * @version $Revision$ $Date$
  */
 public class ResultSetDataModel extends DataModel<Map<String,Object>>
 {

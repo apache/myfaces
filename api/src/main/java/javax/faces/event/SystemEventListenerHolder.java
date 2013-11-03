@@ -21,9 +21,6 @@ package javax.faces.event;
 import java.util.List;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public interface SystemEventListenerHolder

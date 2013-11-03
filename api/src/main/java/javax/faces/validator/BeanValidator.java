@@ -62,9 +62,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  * Bean Validation.
  * </p>
  *
- * @author Jan-Kees van Andel (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 @JSFValidator(
@@ -489,8 +486,6 @@ public class BeanValidator implements Validator, PartialStateHolder
      * call FacesContext.getCurrentInstance() than create this object for bean validation.
      * 
      * Standard MessageInterpolator, as described in the JSR-314 spec.
-     * 
-     * @author Leonardo Uribe
      */
     private static class FacesMessageInterpolator implements MessageInterpolator
     {

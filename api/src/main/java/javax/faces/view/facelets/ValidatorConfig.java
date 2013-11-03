@@ -19,9 +19,6 @@
 package javax.faces.view.facelets;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @since 2.0
  */
 public interface ValidatorConfig extends TagConfig
