@@ -534,7 +534,7 @@
             </build>
         </profile>
 
-        <!-- check for Java 1.5 -->
+        <!-- check for Java 1.6 -->
         <profile>
             <id>checkJDK</id>
             <activation>

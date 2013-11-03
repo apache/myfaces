@@ -103,7 +103,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
     }
 
     /**
-     * €12,345.68
+     * 12,345.68
      */
     @Test
     public void testUKLocaleUsingEURCurrencyCode()
@@ -121,7 +121,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
     }
     
     /**
-     * 12.345,68 €
+     * 12.345,68 
      */
     @Test
     public void testGermanyLocaleUsingEURCurrencyCode()
@@ -159,7 +159,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
         mock.setLocale(Locale.GERMANY);
         UIInput input = new UIInput();
         mock.setPattern("\u00A4 ###,###.###");
-        mock.setCurrencyCode("USD"); //Since currency is €, but we are using USD currency code, the output is USD 12.345,68
+        mock.setCurrencyCode("USD"); //Since currency is EUR, but we are using USD currency code, the output is USD 12.345,68
         Number testValue = 12345.68d;
         String stringValue = mock.getAsString(facesContext, input, testValue);
         Number number = (Number) mock.getAsObject(facesContext, input, stringValue);

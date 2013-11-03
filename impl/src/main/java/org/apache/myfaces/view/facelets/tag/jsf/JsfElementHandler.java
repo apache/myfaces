@@ -27,7 +27,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  */
 @JSFFaceletTag(
         name = "jsf:element",
-        componentClass = "org.apache.myfaces.view.facelets.component")
+        componentClass = "org.apache.myfaces.view.facelets.component.JsfElement")
 public class JsfElementHandler extends javax.faces.view.facelets.ComponentHandler
 {
 
