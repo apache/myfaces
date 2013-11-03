@@ -221,17 +221,14 @@
           </configuration>
       </plugin>
       
-      <!-- 
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.1.2</version>
         <configuration>
-          <excludes>
-            <exclude>**/*StateUtilsAES_CBCTest*</exclude>
-          </excludes>
+          <parallel>classes</parallel>
+          <threadCount>4</threadCount>
+          <perCoreThreadCount>true</perCoreThreadCount>
         </configuration>
       </plugin>
-       -->
     </plugins>
   </build>
   <profiles>

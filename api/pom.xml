@@ -424,6 +424,9 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
+                            <parallel>classes</parallel>
+                            <threadCount>4</threadCount>
+                            <perCoreThreadCount>true</perCoreThreadCount>
                             <testNGArtifactName>none:none</testNGArtifactName>
                             <!-- Exclude all TestNG tests -->
                             <excludes>
