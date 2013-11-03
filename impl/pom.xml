@@ -1134,7 +1134,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <classifier>jdk15</classifier>
+            <!--<classifier>jdk15</classifier>-->
         </dependency>
 
         <!-- test cases of myfaces-api -->
