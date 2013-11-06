@@ -942,7 +942,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             // extended debug-info when in Development mode
             _createFieldDebugInfo(facesContext, "submittedValue",
-                    getSubmittedValue(), submittedValue, 1);
+                    getStateHelper().get(PropertyKeys.submittedValue), submittedValue, 1);
         }
         getStateHelper().put(PropertyKeys.submittedValue, submittedValue );
     }
