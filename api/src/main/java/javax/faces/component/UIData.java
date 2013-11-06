@@ -1968,7 +1968,21 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     protected void setDataModel(DataModel dataModel)
     {
-        throw new UnsupportedOperationException("this method is here only to maintain binary compatibility w/ the RI");
+        String clientID = "";
+
+        UIComponent parent = getParent();
+        if (parent != null)
+        {
+            clientID = parent.getContainerClientId(getFacesContext());
+        }
+        if (dataModel == null)
+        {
+            _dataModelMap.remove(clientID);
+        }
+        else
+        {
+            _dataModelMap.put(clientID, dataModel);
+        }
     }
 
     /**
