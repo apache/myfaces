@@ -30,6 +30,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.ComponentTagDeclarationLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -40,7 +41,9 @@ import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
 import org.apache.myfaces.view.facelets.tag.jstl.core.JstlCoreLibrary;
+import org.apache.myfaces.view.facelets.tag.jstl.core.LegacyJstlCoreLibrary;
 import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
+import org.apache.myfaces.view.facelets.tag.ui.LegacyUILibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
@@ -94,13 +97,23 @@ public class FaceletsCompilerSupport
     public void loadLibraries(FacesContext context, Compiler compiler)
     {
         ExternalContext eContext = context.getExternalContext();
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(eContext);
 
         // Initialize Runtime Libraries
         compiler.addTagLibrary(new CoreLibrary());
         compiler.addTagLibrary(new HtmlLibrary());
-        compiler.addTagLibrary(new UILibrary());
-        compiler.addTagLibrary(new JstlCoreLibrary());
-        compiler.addTagLibrary(new JstlCoreLibrary(JstlCoreLibrary.ALTERNATIVE_NAMESPACE));
+        if (config.isStrictJsf2FaceletsCompatibility())
+        {
+            compiler.addTagLibrary(new LegacyUILibrary());
+            compiler.addTagLibrary(new LegacyJstlCoreLibrary());
+            compiler.addTagLibrary(new LegacyJstlCoreLibrary(JstlCoreLibrary.ALTERNATIVE_NAMESPACE));
+        }
+        else
+        {
+            compiler.addTagLibrary(new UILibrary());
+            compiler.addTagLibrary(new JstlCoreLibrary());
+            compiler.addTagLibrary(new JstlCoreLibrary(JstlCoreLibrary.ALTERNATIVE_NAMESPACE));            
+        }
         compiler.addTagLibrary(new JstlFnLibrary());
         compiler.addTagLibrary(new CompositeLibrary());
         compiler.addTagLibrary(new CompositeResourceLibrary(context,

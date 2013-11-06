@@ -18,33 +18,26 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
+import javax.faces.context.FacesContext;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
 /**
- * NOTE: This implementation is provided for compatibility reasons and
- * it is considered faulty. It is enabled using
- * org.apache.myfaces.STRICT_JSF_2_FACELETS_COMPATIBILITY web config param.
- * Don't use it if EL expression caching is enabled.
- * 
  * @author Jacob Hookom
  * @version $Id$
  */
-public final class UILibrary extends AbstractTagLibrary
+public final class LegacyUILibrary extends AbstractTagLibrary
 {
 
     public final static String NAMESPACE = "http://xmlns.jcp.org/jsf/facelets";
     public final static String ALIAS_NAMESPACE = "http://java.sun.com/jsf/facelets";
 
-    public final static UILibrary INSTANCE = new UILibrary();
+    public final static LegacyUILibrary INSTANCE = new LegacyUILibrary();
 
-    public UILibrary()
+    public LegacyUILibrary()
     {
         super(NAMESPACE, ALIAS_NAMESPACE);
-
-        this.addTagHandler("include", IncludeHandler.class);
-
-        this.addTagHandler("composition", CompositionHandler.class);
 
         this.addComponent("component", ComponentRef.COMPONENT_TYPE, null, ComponentRefHandler.class);
 
@@ -54,9 +47,13 @@ public final class UILibrary extends AbstractTagLibrary
 
         this.addTagHandler("insert", InsertHandler.class);
 
-        this.addTagHandler("param", ParamHandler.class);
+        this.addTagHandler("include", LegacyIncludeHandler.class);
 
-        this.addTagHandler("decorate", DecorateHandler.class);
+        this.addTagHandler("composition", LegacyCompositionHandler.class);
+
+        this.addTagHandler("param", LegacyParamHandler.class);
+
+        this.addTagHandler("decorate", LegacyDecorateHandler.class);
 
         this.addComponent("repeat", UIRepeat.COMPONENT_TYPE, null, RepeatHandler.class);
 

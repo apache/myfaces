@@ -43,6 +43,7 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorConfig;
 import javax.faces.view.facelets.ValidatorHandler;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 
@@ -60,6 +61,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
 
     private final String _namespace;
     private final String _aliasNamespace;
+    private Boolean _strictJsf2FaceletsCompatibility;
 
     public AbstractTagLibrary(String namespace, String aliasNamespace)
     {
@@ -273,7 +275,21 @@ public abstract class AbstractTagLibrary implements TagLibrary
      */
     protected final void addUserTag(String name, URL source)
     {
-        _factories.put(name, new UserTagFactory(source));
+        if (_strictJsf2FaceletsCompatibility == null)
+        {
+            MyfacesConfig config = MyfacesConfig.getCurrentInstance(
+                    FacesContext.getCurrentInstance().getExternalContext());
+
+            _strictJsf2FaceletsCompatibility = config.isStrictJsf2FaceletsCompatibility();
+        }
+        if (Boolean.TRUE.equals(_strictJsf2FaceletsCompatibility))
+        {
+            _factories.put(name, new LegacyUserTagFactory(source));
+        }
+        else
+        {
+            _factories.put(name, new UserTagFactory(source));
+        }
     }
 
     /**
@@ -472,6 +488,21 @@ public abstract class AbstractTagLibrary implements TagLibrary
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException
         {
             return new UserTagHandler(cfg, this.location);
+        }
+    }
+    
+    private static class LegacyUserTagFactory implements TagHandlerFactory
+    {
+        protected final URL location;
+
+        public LegacyUserTagFactory(URL location)
+        {
+            this.location = location;
+        }
+
+        public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException
+        {
+            return new LegacyUserTagHandler(cfg, this.location);
         }
     }
 

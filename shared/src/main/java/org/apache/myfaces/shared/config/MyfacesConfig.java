@@ -451,6 +451,17 @@ public class MyfacesConfig
     private static final String INIT_PARAM_CDI_MANAGED_VALIDATORS_ENABLED =
         "org.apache.myfaces.CDI_MANAGED_VALIDATORS_ENABLED";
     private static final boolean INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT = false;
+    
+    /**
+     * This param makes components like c:set, ui:param and templating components like ui:decorate,
+     * ui:composition and ui:include to behave like the ones provided originally in facelets 1_1_x. 
+     * See MYFACES-3810 for details.
+     */
+    @JSFWebConfigParam(since = "2.2.0", defaultValue="false", expectedValues="true,false", 
+            group="viewhandler")
+    public static final String INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY = 
+            "org.apache.myfaces.STRICT_JSF_2_FACELETS_COMPATIBILITY";
+    public final static boolean INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT = false;    
 
     private boolean _prettyHtml;
     private boolean _detectJavascript;
@@ -487,6 +498,7 @@ public class MyfacesConfig
     private boolean _earlyFlushEnabled;
     private boolean _cdiManagedConvertersEnabled;
     private boolean _cdiManagedValidatorsEnabled;
+    private boolean _strictJsf2FaceletsCompatibility;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -591,6 +603,7 @@ public class MyfacesConfig
         setEarlyFlushEnabled(INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT);
         setCdiManagedConvertersEnabled(INIT_PARAM_CDI_MANAGED_CONVERTERS_DEFAULT);
         setCdiManagedValidatorsEnabled(INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT);
+        setStrictJsf2FaceletsCompatibility(INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -709,6 +722,10 @@ public class MyfacesConfig
         myfacesConfig.setCdiManagedValidatorsEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
                 INIT_PARAM_CDI_MANAGED_VALIDATORS_ENABLED, INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT));
 
+        myfacesConfig.setStrictJsf2FaceletsCompatibility(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY, 
+                INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT));
+        
         if (TOMAHAWK_AVAILABLE)
         {
             myfacesConfig.setDetectJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_DETECT_JAVASCRIPT,
@@ -1265,5 +1282,15 @@ public class MyfacesConfig
     public void setCdiManagedValidatorsEnabled(boolean cdiManagedValidatorsEnabled)
     {
         this._cdiManagedValidatorsEnabled = cdiManagedValidatorsEnabled;
+    }
+
+    public boolean isStrictJsf2FaceletsCompatibility()
+    {
+        return _strictJsf2FaceletsCompatibility;
+    }
+
+    public void setStrictJsf2FaceletsCompatibility(boolean strictJsf2FaceletsCompatibility)
+    {
+        this._strictJsf2FaceletsCompatibility = strictJsf2FaceletsCompatibility;
     }
 }
