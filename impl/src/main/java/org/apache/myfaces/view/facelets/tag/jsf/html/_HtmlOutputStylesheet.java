@@ -34,7 +34,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(
         configExcluded=true,
-        defaultRendererType="javax.faces.resource.Script")
+        defaultRendererType="javax.faces.resource.Stylesheet")
 abstract class _HtmlOutputStylesheet extends UIOutput
 {
     /**

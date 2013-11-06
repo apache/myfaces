@@ -35,6 +35,7 @@ import javax.faces.application.ProjectStage;
 import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIOutput;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehaviorHolder;
@@ -63,6 +64,7 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletDynamicComponentRefreshTransientBuildEvent;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
+import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
@@ -100,6 +102,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     public ComponentTagHandlerDelegate(ComponentHandler delegate)
     {
         _delegate = delegate;
+        ComponentConfig delegateComponentConfig = delegate.getComponentConfig();
+        _componentType = delegateComponentConfig.getComponentType();
+        _rendererType = delegateComponentConfig.getRendererType();
+        _id = delegate.getTagAttribute("id");      
         
         ComponentHandler handler = _delegate;
         boolean found = false;
@@ -151,13 +157,19 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         else
         {
-            _relocatableResourceHandler = null;
+            // Check if the component is a relocatable component done overriding the tag handler
+            if (_componentType != null && _rendererType != null &&
+                (_rendererType.equals("javax.faces.resource.Script") ||
+                 _rendererType.equals("javax.faces.resource.Stylesheet")) &&
+                _componentType.equals(UIOutput.COMPONENT_TYPE))
+            {
+                _relocatableResourceHandler = ComponentRelocatableResourceHandler.INSTANCE;
+            }   
+            else
+            {
+                _relocatableResourceHandler = null;
+            }
         }
-        
-        ComponentConfig delegateComponentConfig = delegate.getComponentConfig();
-        _componentType = delegateComponentConfig.getComponentType();
-        _rendererType = delegateComponentConfig.getRendererType();
-        _id = delegate.getTagAttribute("id");
     }
 
     /**
@@ -324,6 +336,18 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
             // hook method
             _delegate.onComponentCreated(ctx, c, parent);
+            
+            if (_relocatableResourceHandler != null && 
+                _relocatableResourceHandler instanceof ComponentRelocatableResourceHandler)
+            {
+                UIComponent parentCompositeComponent
+                        = mctx.getCompositeComponentFromStack();
+                if (parentCompositeComponent != null)
+                {
+                    c.getAttributes().put(CompositeComponentELUtils.LOCATION_KEY,
+                            parentCompositeComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY));
+                }
+            }
             
             if (mctx.isRefreshingTransientBuild() && _relocatableResourceHandler != null)
             {
