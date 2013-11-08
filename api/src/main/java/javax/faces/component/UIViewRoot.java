@@ -413,7 +413,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public String createUniqueId(FacesContext context, String seed)
     {
-        StringBuilder bld = _getSharedStringBuilder(context);
 
         // Generate an identifier for a component. The identifier will be prefixed with
         // UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot.
@@ -421,23 +420,43 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             if (isResourceDependencyUniqueId())
             {
-                Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.resourceDependencyUniqueIdCounter);
+                Integer uniqueIdCounter = (Integer) getStateHelper().get(
+                    PropertyKeys.resourceDependencyUniqueIdCounter);
                 uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
-                getStateHelper().put(PropertyKeys.resourceDependencyUniqueIdCounter, (uniqueIdCounter+1L));
-                return bld.append(UNIQUE_ID_PREFIX).append("__rd_").append(uniqueIdCounter).toString();
+                getStateHelper().put(PropertyKeys.resourceDependencyUniqueIdCounter, (uniqueIdCounter+1));
+                if (uniqueIdCounter >= _ComponentUtils.UNIQUE_COMPONENT_RD_IDS_SIZE)
+                {
+                    StringBuilder bld = _getSharedStringBuilder(context);
+                    return bld.append(UNIQUE_ID_PREFIX).append(
+                        _ComponentUtils.RD_ID_PREFIX).append(uniqueIdCounter).toString();
+                }
+                else
+                {
+                    return _ComponentUtils.UNIQUE_COMPONENT_RD_IDS[uniqueIdCounter];
+                }
             }
             else
             {
-                Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
+                Integer uniqueIdCounter = (Integer) getStateHelper().get(PropertyKeys.uniqueIdCounter);
                 uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
-                getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1L));
-                return bld.append(UNIQUE_ID_PREFIX).append("__v_").append(uniqueIdCounter).toString();
+                getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1));
+                if (uniqueIdCounter >= _ComponentUtils.UNIQUE_COMPONENT_V_IDS_SIZE)
+                {
+                    StringBuilder bld = _getSharedStringBuilder(context);
+                    return bld.append(UNIQUE_ID_PREFIX).append(
+                        _ComponentUtils.V_ID_PREFIX).append(uniqueIdCounter).toString();
+                }
+                else
+                {
+                    return _ComponentUtils.UNIQUE_COMPONENT_V_IDS[uniqueIdCounter];
+                }
             }
         }
         // Optionally, a unique seed value can be supplied by component creators which
         // should be included in the generated unique id.
         else
         {
+            StringBuilder bld = _getSharedStringBuilder(context);
             return bld.append(UNIQUE_ID_PREFIX).append(seed).toString();
         }
     }

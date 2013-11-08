@@ -114,7 +114,7 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
         if (UNIQUE_ID_COUNTER_KEY.length() == keyLength
             && UNIQUE_ID_COUNTER_KEY.equals(key))
         {
-            Long v = (Long) _root.getStateHelper().get(UIViewRoot.PropertyKeys.uniqueIdCounter);
+            Integer v = (Integer) _root.getStateHelper().get(UIViewRoot.PropertyKeys.uniqueIdCounter);
             _root.getStateHelper().put(UIViewRoot.PropertyKeys.uniqueIdCounter, value);
             return v;
         }

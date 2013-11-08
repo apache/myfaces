@@ -355,7 +355,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 states = (Map<String, Object>) state[1];
                 //Save the last unique id counter key in UIViewRoot
-                Long lastUniqueIdCounter = (Long) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
+                Integer lastUniqueIdCounter = (Integer) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
                 
                 // Visit the children and restore their state.
                 boolean emptyState = false;
@@ -401,9 +401,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
                 if (lastUniqueIdCounter != null)
                 {
-                    Long newUniqueIdCounter = (Long) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
+                    Integer newUniqueIdCounter = (Integer) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
                     if (newUniqueIdCounter != null && 
-                        lastUniqueIdCounter.longValue() > newUniqueIdCounter.longValue())
+                        lastUniqueIdCounter.intValue() > newUniqueIdCounter.intValue())
                     {
                         // The unique counter was restored by a side effect of 
                         // restoreState() over UIViewRoot with a lower count,
@@ -669,8 +669,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             // As required by ResponseStateManager, the return value is an Object array.  First
             // element is the structure object, second is the state map.
-            Long uniqueIdCount = (Long) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
-            if (uniqueIdCount != null && !uniqueIdCount.equals(1L))
+            Integer uniqueIdCount = (Integer) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
+            if (uniqueIdCount != null && !uniqueIdCount.equals(1))
             {
                 serializedView = new Object[] { null, states, uniqueIdCount };
             }

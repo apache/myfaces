@@ -33,6 +33,32 @@ import java.util.Collection;
  */
 class _ComponentUtils
 {
+    public static final String V_ID_PREFIX = "__v_";
+    public static final String RD_ID_PREFIX = "__rd_";
+    public static final int UNIQUE_COMPONENT_V_IDS_SIZE = 50;
+    public static final int UNIQUE_COMPONENT_RD_IDS_SIZE = 50;
+    public static final String[] UNIQUE_COMPONENT_V_IDS;
+    public static final String[] UNIQUE_COMPONENT_RD_IDS;
+    
+    static 
+    {
+        String[] uniqueV = new String[UNIQUE_COMPONENT_V_IDS_SIZE];
+        String[] uniqueRD = new String[UNIQUE_COMPONENT_RD_IDS_SIZE];
+        StringBuilder bld = new StringBuilder(20);
+        for (int i = 0; i < UNIQUE_COMPONENT_V_IDS_SIZE; i++)
+        {
+            uniqueV[i] = bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append("__v_").append(i).toString();
+            bld.setLength(0);
+        }
+        for (int i = 0; i < UNIQUE_COMPONENT_RD_IDS_SIZE; i++)
+        {
+            uniqueRD[i] = bld.append(UIViewRoot.UNIQUE_ID_PREFIX).append("__rd_").append(i).toString();
+            bld.setLength(0);
+        }
+        UNIQUE_COMPONENT_RD_IDS = uniqueRD;
+        UNIQUE_COMPONENT_V_IDS = uniqueV;
+    }
+    
     private _ComponentUtils()
     {
     }
