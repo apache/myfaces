@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.renderkit;
 
-import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
 import javax.faces.render.ResponseStateManager;
 
@@ -29,18 +28,6 @@ import javax.faces.render.ResponseStateManager;
  */
 public abstract class MyfacesResponseStateManager extends ResponseStateManager
 {
-
-    /**
-     * Writes url parameters with the state info to be saved. {@link org.apache.myfaces.application.MyfacesStateManager}
-     * delegates calls to {@link org.apache.myfaces.application.MyfacesStateManager#writeState} to this method.
-     * 
-     * @deprecated
-     */
-    @Deprecated
-    public void writeStateAsUrlParams(FacesContext facescontext, StateManager.SerializedView serializedview)
-    {
-        throw new UnsupportedOperationException("long been deprecated...");
-    }
 
     /**
      * Execute additional operations like save the state on a cache when server

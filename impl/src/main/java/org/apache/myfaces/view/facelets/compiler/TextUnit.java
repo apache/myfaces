@@ -327,92 +327,44 @@ final class TextUnit extends CompilationUnit
 
     protected void flushBufferToConfig(boolean child)
     {
+        this.flushTextBuffer(child);
 
-        // NEW IMPLEMENTATION
-        if (true)
+        int size = this.instructionBuffer.size();
+        if (size > 0)
         {
-
-            this.flushTextBuffer(child);
-
-            int size = this.instructionBuffer.size();
-            if (size > 0)
+            try
             {
-                try
-                {
-                    String s = this.buffer.toString();
-                    if (child)
-                    {
-                        s = trimRight(s);
-                    }
-                    ELText txt = ELText.parse(s);
-                    if (txt != null)
-                    {
-                        if (compressSpaces)
-                        {
-                            // Use the logic behind the instructions to remove unnecessary instructions
-                            // containing only spaces, or recreating new ones containing only the necessary
-                            // spaces.
-                            size = compressSpaces(instructionBuffer, size);
-                        }
-                        Instruction[] instructions = (Instruction[]) this.instructionBuffer
-                                .toArray(new Instruction[size]);
-                        this.children.add(new UIInstructionHandler(this.alias, this.id, instructions, txt));
-                        this.instructionBuffer.clear();
-                    }
-
-                }
-                catch (ELException e)
-                {
-                    if (this.tags.size() > 0)
-                    {
-                        throw new TagException((Tag) this.tags.peek(), e.getMessage());
-                    }
-                    else
-                    {
-                        throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
-                    }
-                }
-            }
-
-            // KEEP THESE SEPARATE SO LOGIC DOESN'T GET FUBARED
-        }
-        else if (this.buffer.length() > 0)
-        {
-            String s = this.buffer.toString();
-            if (s.trim().length() > 0)
-            {
+                String s = this.buffer.toString();
                 if (child)
                 {
                     s = trimRight(s);
                 }
-                if (s.length() > 0)
+                ELText txt = ELText.parse(s);
+                if (txt != null)
                 {
-                    try
+                    if (compressSpaces)
                     {
-                        ELText txt = ELText.parse(s);
-                        if (txt != null)
-                        {
-                            if (txt.isLiteral())
-                            {
-                                this.children.add(new UILiteralTextHandler(txt.toString()));
-                            }
-                            else
-                            {
-                                this.children.add(new UITextHandler(this.alias, txt));
-                            }
-                        }
+                        // Use the logic behind the instructions to remove unnecessary instructions
+                        // containing only spaces, or recreating new ones containing only the necessary
+                        // spaces.
+                        size = compressSpaces(instructionBuffer, size);
                     }
-                    catch (ELException e)
-                    {
-                        if (this.tags.size() > 0)
-                        {
-                            throw new TagException((Tag) this.tags.peek(), e.getMessage());
-                        }
-                        else
-                        {
-                            throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
-                        }
-                    }
+                    Instruction[] instructions = (Instruction[]) this.instructionBuffer
+                            .toArray(new Instruction[size]);
+                    this.children.add(new UIInstructionHandler(this.alias, this.id, instructions, txt));
+                    this.instructionBuffer.clear();
+                }
+
+            }
+            catch (ELException e)
+            {
+                if (this.tags.size() > 0)
+                {
+                    throw new TagException((Tag) this.tags.peek(), e.getMessage());
+                }
+                else
+                {
+                    throw new ELException(this.alias + ": " + e.getMessage(), e.getCause());
                 }
             }
         }
