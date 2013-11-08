@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
-import javax.faces.context.FacesContext;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
