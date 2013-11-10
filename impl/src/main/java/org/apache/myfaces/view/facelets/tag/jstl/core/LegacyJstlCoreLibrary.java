@@ -49,7 +49,7 @@ public final class LegacyJstlCoreLibrary extends AbstractTagLibrary
 
         this.addTagHandler("if", IfHandler.class);
 
-        this.addTagHandler("forEach", ForEachHandler.class);
+        this.addTagHandler("forEach", LegacyForEachHandler.class);
 
         this.addTagHandler("catch", CatchHandler.class);
 
@@ -68,7 +68,7 @@ public final class LegacyJstlCoreLibrary extends AbstractTagLibrary
 
         this.addTagHandler("if", IfHandler.class);
 
-        this.addTagHandler("forEach", ForEachHandler.class);
+        this.addTagHandler("forEach", LegacyForEachHandler.class);
 
         this.addTagHandler("catch", CatchHandler.class);
 

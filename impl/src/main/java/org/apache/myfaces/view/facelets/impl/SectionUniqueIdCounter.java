@@ -202,6 +202,19 @@ public class SectionUniqueIdCounter
         }
     }
     
+    public void endUniqueIdSection(String base)
+    {
+        if (_activeSection <= 0)
+        {
+            return;
+        }
+        else
+        {
+            _counterStack.remove(_activeSection);
+            _activeSection--;
+        }
+    }
+    
     private static class Section
     {
         

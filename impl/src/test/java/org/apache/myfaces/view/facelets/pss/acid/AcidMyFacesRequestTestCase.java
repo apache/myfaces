@@ -23,6 +23,7 @@ import javax.faces.application.StateManager;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
+import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
 import javax.faces.component.html.HtmlDataTable;
 
@@ -31,6 +32,7 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CheckActionEventBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
+import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
 import org.junit.Assert;
 import org.junit.Test;
@@ -1737,6 +1739,101 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader3_3);
         
         Assert.assertFalse(content3.contains("This is section 1"));
+
+        tearDownRequest();
+    }
+
+    @Test
+    public void testCForEach1() throws Exception
+    {
+        setupRequest("/forEach1.xhtml");
+        processLifecycleExecute();
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        UIOutput itemA_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
+        Assert.assertNotNull(itemA_1);
+        Assert.assertEquals("a", itemA_1.getValue());
+        itemA_1.getAttributes().put("prop", "a");
+        UIOutput itemB_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_b");
+        Assert.assertNotNull(itemB_1);
+        Assert.assertEquals("b", itemB_1.getValue());
+        itemB_1.getAttributes().put("prop", "b");
+        UIOutput itemC_1 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_c");
+        Assert.assertNotNull(itemC_1);
+        Assert.assertEquals("c", itemC_1.getValue());
+        itemC_1.getAttributes().put("prop", "c");
+        
+        executeViewHandlerRender(facesContext);
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button);
+        
+        processLifecycleExecute();
+
+        UIOutput itemA_2 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
+        Assert.assertNotNull(itemA_2);
+        Assert.assertEquals("a", itemA_2.getValue());
+        Assert.assertEquals("a", itemA_2.getAttributes().get("prop"));
+        UIOutput itemB_2 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_b");
+        Assert.assertNotNull(itemB_2);
+        Assert.assertEquals("b", itemB_2.getValue());
+        Assert.assertEquals("b", itemB_2.getAttributes().get("prop"));
+        UIOutput itemC_2 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_c");
+        Assert.assertNotNull(itemC_2);
+        Assert.assertEquals("c", itemC_2.getValue());
+        Assert.assertEquals("c", itemC_2.getAttributes().get("prop"));
+
+        ForEachBean bean = facesContext.getApplication().evaluateExpressionGet(facesContext, "#{forEachBean}", 
+            ForEachBean.class);
+        bean.addFirst();
+        bean.addMiddle();
+        bean.removeLast();
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+
+        UIOutput itemA_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
+        Assert.assertNotNull(itemA_3);
+        Assert.assertEquals("a", itemA_3.getValue());
+        Assert.assertEquals("a", itemA_3.getAttributes().get("prop"));
+        UIOutput itemB_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_b");
+        Assert.assertNotNull(itemB_3);
+        Assert.assertEquals("b", itemB_3.getValue());
+        Assert.assertEquals("b", itemB_3.getAttributes().get("prop"));
+        UIOutput itemC_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_c");
+        Assert.assertNull(itemC_3);
+        UIOutput itemZ_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_z");
+        Assert.assertNotNull(itemZ_3);
+        Assert.assertEquals("z", itemZ_3.getValue());
+        Assert.assertNull(itemZ_3.getAttributes().get("prop"));
+        UIOutput itemX_3 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_x");
+        Assert.assertNotNull(itemX_3);
+        Assert.assertEquals("x", itemX_3.getValue());
+        Assert.assertNull(itemX_3.getAttributes().get("prop"));
+        
+        executeViewHandlerRender(facesContext);
+
+        UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        submit(button2);
+        
+        processLifecycleExecute();
+
+        UIOutput itemA_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_a");
+        Assert.assertNotNull(itemA_4);
+        Assert.assertEquals("a", itemA_4.getValue());
+        UIOutput itemB_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_b");
+        Assert.assertNotNull(itemB_4);
+        Assert.assertEquals("b", itemB_4.getValue());
+        UIOutput itemC_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_c");
+        Assert.assertNull(itemC_4);
+        UIOutput itemZ_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_z");
+        Assert.assertNotNull(itemZ_4);
+        Assert.assertEquals("z", itemZ_4.getValue());
+        UIOutput itemX_4 = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:item_x");
+        Assert.assertNotNull(itemX_4);
+        Assert.assertEquals("x", itemX_4.getValue());
 
         tearDownRequest();
     }

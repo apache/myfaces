@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,7 +29,9 @@ import java.util.Map;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
+import javax.faces.event.PhaseId;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.TagAttribute;
@@ -43,6 +46,7 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 
 /**
  * The basic iteration tag, accepting many different
@@ -168,15 +172,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-
-        int s = this.getBegin(ctx);
         int e = this.getEnd(ctx);
-        int m = this.getStep(ctx);
-        Integer sO = this.begin != null ? Integer.valueOf(s) : null;
-        Integer eO = this.end != null ? Integer.valueOf(e) : null;
-        Integer mO = this.step != null ? Integer.valueOf(m) : null;
-
-        boolean t = this.getTransient(ctx);
         Object src = null;
         ValueExpression srcVE = null;
         if (this.items != null)
@@ -194,122 +190,40 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             src = b;
         }
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+        // Just increment one number to ensure the prefix doesn't conflict later if two
+        // c:forEach are close between each other. Note c:forEach is different from
+        // c:if tag and doesn't require a section because c:forEach requires to provide
+        // multiple sections starting with a specified "base" related to the element
+        // position and value in the collection.
+        fcc.incrementUniqueComponentId();
+        String uniqueId = fcc.generateUniqueId();
         if (src != null)
         {
-            fcc.startComponentUniqueIdSection();
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
             PageContext pctx = actx.getPageContext();
-            Iterator<?> itr = this.toIterator(src);
-            if (itr != null)
-            {
-                int i = 0;
+            // c:forEach is special because it requires FaceletState even if no pss is used.
+            FaceletState restoredFaceletState = ComponentSupport.getFaceletState(ctx, parent, false);
+            IterationState restoredSavedOption = (restoredFaceletState == null) ? null : 
+                (IterationState) restoredFaceletState.getState(uniqueId);
 
-                // move to start
-                while (i < s && itr.hasNext())
+            if (restoredSavedOption != null)
+            {            
+                if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
                 {
-                    itr.next();
-                    i++;
+                    // Refresh, evaluate and synchronize state
+                    applyOnRefresh(ctx, fcc, pctx, parent, uniqueId, src, srcVE, restoredSavedOption);
                 }
-
-                String v = this.getVarName(ctx);
-                String vs = this.getVarStatusName(ctx);
-                ValueExpression ve = null;
-                ValueExpression vO = this.capture(v, pctx);
-                ValueExpression vsO = this.capture(vs, pctx);
-                int mi = 0;
-                Object value = null;
-                try
+                else
                 {
-                    boolean first = true;
-                    while (i <= e && itr.hasNext())
-                    {
-                        value = itr.next();
-
-                        // set the var
-                        if (v != null)
-                        {
-                            if (t || srcVE == null)
-                            {
-                                if (value == null)
-                                {
-                                    pctx.getAttributes().put(v, null);
-                                }
-                                else
-                                {
-                                    pctx.getAttributes().put(v, 
-                                            ctx.getExpressionFactory().createValueExpression(
-                                                value, Object.class));
-                                }
-                            }
-                            else
-                            {
-                                ve = this.getVarExpr(srcVE, src, value, i);
-                                pctx.getAttributes().put(v, ve);
-                            }
-                        }
-
-                        // set the varStatus
-                        if (vs != null)
-                        {
-                            IterationStatus itrS = new IterationStatus(first, !itr.hasNext(), i, sO, eO, mO, value);
-                            if (t || srcVE == null)
-                            {
-                                if (srcVE == null)
-                                {
-                                    pctx.getAttributes().put(vs, null);
-                                }
-                                else
-                                {
-                                    pctx.getAttributes().put(vs, 
-                                            ctx.getExpressionFactory().createValueExpression(
-                                                itrS, Object.class));
-                                }
-                            }
-                            else
-                            {
-                                ve = new IterationStatusExpression(itrS);
-                                pctx.getAttributes().put(vs, ve);
-                            }
-                        }
-
-                        // execute body
-                        this.nextHandler.apply(ctx, parent);
-
-                        // increment steps
-                        mi = 1;
-                        while (mi < m && itr.hasNext())
-                        {
-                            itr.next();
-                            mi++;
-                            i++;
-                        }
-                        i++;
-
-                        first = false;
-                    }
-                }
-                finally
-                {
-                    //Remove them from PageContext
-                    if (v != null)
-                    {
-                        pctx.getAttributes().put(v, vO);
-                    }
-                    else
-                    {
-                        pctx.getAttributes().remove(v);
-                    }
-                    if (vs != null)
-                    {
-                        pctx.getAttributes().put(vs, vsO);
-                    }
-                    else
-                    {
-                        pctx.getAttributes().remove(vs);
-                    }
+                    // restore view, don't record iteration, use the saved value
+                    applyOnRestore(ctx, fcc, pctx, parent, uniqueId, src, srcVE, restoredSavedOption);
                 }
             }
-            fcc.endComponentUniqueIdSection();
+            else
+            {
+                // First time         
+                applyFirstTime(ctx, fcc, pctx, parent, uniqueId, src, srcVE);
+            }
         }
 
         if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
@@ -320,6 +234,402 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         if (fcc.isDynamicComponentSection())
         {
             ComponentSupport.markComponentToRefreshDynamically(ctx.getFacesContext(), parent);
+        }
+    }
+    
+    private void setVar(FaceletContext ctx, PageContext pctx, boolean t, Object src, 
+        ValueExpression srcVE, Object value, String v, int i)
+    {
+        // set the var
+        if (v != null)
+        {
+            if (t || srcVE == null)
+            {
+                if (value == null)
+                {
+                    pctx.getAttributes().put(v, null);
+                }
+                else
+                {
+                    pctx.getAttributes().put(v, 
+                            ctx.getExpressionFactory().createValueExpression(
+                                value, Object.class));
+                }
+            }
+            else
+            {
+                ValueExpression ve = this.getVarExpr(srcVE, src, value, i);
+                pctx.getAttributes().put(v, ve);
+            }
+        }
+    }
+    
+    private void applyFirstTime(FaceletContext ctx, FaceletCompositionContext fcc, PageContext pctx, 
+        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE) throws IOException
+    {
+        int s = this.getBegin(ctx);
+        int e = this.getEnd(ctx);
+        int m = this.getStep(ctx);
+        Integer sO = this.begin != null ? Integer.valueOf(s) : null;
+        Integer eO = this.end != null ? Integer.valueOf(e) : null;
+        Integer mO = this.step != null ? Integer.valueOf(m) : null;
+        boolean t = this.getTransient(ctx);
+        IterationState iterationState = new IterationState();
+
+        boolean serializableValues = true;
+        Iterator<?> itr = this.toIterator(src);
+        if (itr != null)
+        {
+            int i = 0;
+
+            // move to start
+            while (i < s && itr.hasNext())
+            {
+                itr.next();
+                i++;
+            }
+
+            String v = this.getVarName(ctx);
+            String vs = this.getVarStatusName(ctx);
+            ValueExpression vO = this.capture(v, pctx);
+            ValueExpression vsO = this.capture(vs, pctx);
+            int mi = 0;
+            Object value = null;
+            try
+            {
+                boolean first = true;
+                while (i <= e && itr.hasNext())
+                {
+                    value = itr.next();
+
+                    // first time, use the counter
+                    Integer count = iterationState.getCounter();
+                    String base = count.toString();
+                    iterationState.setCounter(count+1);
+
+                    if (value instanceof Serializable)
+                    {
+                        iterationState.getValueList().add(
+                            new Object[]{base, value, i});
+                    }
+                    else
+                    {
+                        serializableValues = false;
+                    }
+
+                    fcc.startComponentUniqueIdSection(base);
+
+                    setVar(ctx, pctx, t, src, srcVE, value, v, i);
+                    boolean last = !itr.hasNext();
+                    // set the varStatus
+                    if (vs != null)
+                    {
+                        IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                        if (t || srcVE == null)
+                        {
+                            if (srcVE == null)
+                            {
+                                pctx.getAttributes().put(vs, null);
+                            }
+                            else
+                            {
+                                pctx.getAttributes().put(vs, 
+                                        ctx.getExpressionFactory().createValueExpression(
+                                            itrS, Object.class));
+                            }
+                        }
+                        else
+                        {
+                            ValueExpression ve = new IterationStatusExpression(itrS);
+                            pctx.getAttributes().put(vs, ve);
+                        }
+                    }
+
+                    // execute body
+                    this.nextHandler.apply(ctx, parent);
+
+                    fcc.endComponentUniqueIdSection(base);
+
+                    // increment steps
+                    mi = 1;
+                    while (mi < m && itr.hasNext())
+                    {
+                        itr.next();
+                        mi++;
+                        i++;
+                    }
+                    i++;
+
+                    first = false;
+                }
+            }
+            finally
+            {
+                removeVarAndVarStatus(pctx, v, vO, vs, vsO);
+            }
+        }
+        if (serializableValues)
+        {
+            FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
+            faceletState.putState(uniqueId, iterationState);
+        }
+    }
+    
+    private void applyOnRestore(FaceletContext ctx, FaceletCompositionContext fcc, PageContext pctx, 
+        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE, IterationState restoredSavedOption)
+        throws IOException
+    {
+        int s = this.getBegin(ctx);
+        int e = this.getEnd(ctx);
+        int m = this.getStep(ctx);
+        Integer sO = this.begin != null ? Integer.valueOf(s) : null;
+        Integer eO = this.end != null ? Integer.valueOf(e) : null;
+        Integer mO = this.step != null ? Integer.valueOf(m) : null;
+        boolean t = this.getTransient(ctx);
+
+        // restore view, don't record iteration, use the saved value
+        String v = this.getVarName(ctx);
+        String vs = this.getVarStatusName(ctx);
+        ValueExpression vO = this.capture(v, pctx);
+        ValueExpression vsO = this.capture(vs, pctx);
+        Object value = null;
+        try
+        {
+            int size = restoredSavedOption.getValueList().size();
+            for (int si = 0; si < size; si++)
+            {
+                Object[] stateValue = restoredSavedOption.getValueList().get(si);
+                value = stateValue[1];
+                String base = (String) stateValue[0];
+
+                fcc.startComponentUniqueIdSection(base);
+
+                setVar(ctx, pctx, t, src, srcVE, value, v, (Integer) stateValue[2]);
+                
+                boolean first = (si == 0);
+                boolean last = (si == size-1);
+                int i = (Integer)stateValue[2];
+                // set the varStatus
+                if (vs != null)
+                {
+                    IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                    if (t || srcVE == null)
+                    {
+                        if (srcVE == null)
+                        {
+                            pctx.getAttributes().put(vs, null);
+                        }
+                        else
+                        {
+                            pctx.getAttributes().put(vs, 
+                                    ctx.getExpressionFactory().createValueExpression(
+                                        itrS, Object.class));
+                        }
+                    }
+                    else
+                    {
+                        ValueExpression ve = new IterationStatusExpression(itrS);
+                        pctx.getAttributes().put(vs, ve);
+                    }
+                }
+
+                // execute body
+                this.nextHandler.apply(ctx, parent);
+
+                fcc.endComponentUniqueIdSection(base);
+            }
+        }
+        finally
+        {
+            removeVarAndVarStatus(pctx, v, vO, vs, vsO);
+        }
+    }
+    
+    private void applyOnRefresh(FaceletContext ctx, FaceletCompositionContext fcc, PageContext pctx, 
+        UIComponent parent, String uniqueId, Object src, ValueExpression srcVE, IterationState restoredSavedOption)
+        throws IOException
+    {
+        int s = this.getBegin(ctx);
+        int e = this.getEnd(ctx);
+        int m = this.getStep(ctx);
+        Integer sO = this.begin != null ? Integer.valueOf(s) : null;
+        Integer eO = this.end != null ? Integer.valueOf(e) : null;
+        Integer mO = this.step != null ? Integer.valueOf(m) : null;
+        boolean t = this.getTransient(ctx);
+
+        // Refresh, evaluate and synchronize state
+        Iterator<?> itr = this.toIterator(src);
+        IterationState iterationState = new IterationState();
+        iterationState.setCounter(restoredSavedOption.getCounter());
+        if (itr != null)
+        {
+            int i = 0;
+
+            // move to start
+            while (i < s && itr.hasNext())
+            {
+                itr.next();
+                i++;
+            }
+
+            String v = this.getVarName(ctx);
+            String vs = this.getVarStatusName(ctx);
+            ValueExpression vO = this.capture(v, pctx);
+            ValueExpression vsO = this.capture(vs, pctx);
+            int mi = 0;
+            Object value = null;
+            int stateIndex = 0;
+            try
+            {
+                boolean first = true;
+                while (i <= e && itr.hasNext())
+                {
+                    value = itr.next();
+                    Object[] stateValue = null; /*restoredSavedOption.getValueList().get(stateIndex);*/
+                    String base = null;
+                    boolean found = false;
+
+                    // The important thing here is use the same base for the generated component ids
+                    // for each element in the iteration that was used on the restore. To do that
+                    // 
+                    int stateIndexCheck = stateIndex;
+                    for (; stateIndexCheck < restoredSavedOption.getValueList().size(); stateIndexCheck++)
+                    {
+                        stateValue = restoredSavedOption.getValueList().get(stateIndexCheck);
+                        if (value.equals(stateValue[1]))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found)
+                    {
+                        stateIndex = stateIndexCheck;
+                        base = (String) stateValue[0];
+                        stateIndex++;
+                    }
+                    else
+                    {
+                        // No state, added item, create new count
+                        Integer count = iterationState.getCounter();
+                        base = count.toString();
+                        iterationState.setCounter(count+1);
+                        stateValue = null;
+                    }
+
+                    if (value instanceof Serializable)
+                    {
+                        iterationState.getValueList().add(
+                            new Object[]{base, value, i});
+                    }
+
+                    fcc.startComponentUniqueIdSection(base);
+
+                    setVar(ctx, pctx, t, src, srcVE, value, v, i);
+
+                    boolean last = !itr.hasNext();
+                    // set the varStatus
+                    if (vs != null)
+                    {
+                        IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                        if (t || srcVE == null)
+                        {
+                            if (srcVE == null)
+                            {
+                                pctx.getAttributes().put(vs, null);
+                            }
+                            else
+                            {
+                                pctx.getAttributes().put(vs, 
+                                        ctx.getExpressionFactory().createValueExpression(
+                                            itrS, Object.class));
+                            }
+                        }
+                        else
+                        {
+                            ValueExpression ve = new IterationStatusExpression(itrS);
+                            pctx.getAttributes().put(vs, ve);
+                        }
+                    }
+                    //setVarStatus(ctx, pctx, t, sO, eO, mO, srcVE, value, vs, first, !itr.hasNext(), i);
+
+                    // execute body
+                    boolean markInitialState = (stateValue == null);// !restoredSavedOption.equals(i)
+                    boolean oldMarkInitialState = false;
+                    Boolean isBuildingInitialState = null;
+                    try
+                    {
+                        if (markInitialState && fcc.isUsingPSSOnThisView())
+                        {
+                            //set markInitialState flag
+                            oldMarkInitialState = fcc.isMarkInitialState();
+                            fcc.setMarkInitialState(true);
+                            isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
+                                    StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                        }                                
+                        this.nextHandler.apply(ctx, parent);
+                    }
+                    finally
+                    {
+                        if (markInitialState && fcc.isUsingPSSOnThisView())
+                        {
+                            //unset markInitialState flag
+                            if (isBuildingInitialState == null)
+                            {
+                                ctx.getFacesContext().getAttributes().remove(
+                                        StateManager.IS_BUILDING_INITIAL_STATE);
+                            }
+                            else
+                            {
+                                ctx.getFacesContext().getAttributes().put(
+                                        StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
+                            }
+                            fcc.setMarkInitialState(oldMarkInitialState);
+                        }
+                    }
+
+                    fcc.endComponentUniqueIdSection(base);
+
+                    // increment steps
+                    mi = 1;
+                    while (mi < m && itr.hasNext())
+                    {
+                        itr.next();
+                        mi++;
+                        i++;
+                    }
+                    i++;
+
+                    first = false;
+                }
+            }
+            finally
+            {
+                removeVarAndVarStatus(pctx, v, vO, vs, vsO);
+            }
+        }
+        FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
+        faceletState.putState(uniqueId, iterationState);
+    }
+    
+    private void removeVarAndVarStatus(PageContext pctx, String v, ValueExpression vO, String vs, ValueExpression vsO)
+    {
+        //Remove them from PageContext
+        if (v != null)
+        {
+            pctx.getAttributes().put(v, vO);
+        }
+        else
+        {
+            pctx.getAttributes().remove(v);
+        }
+        if (vs != null)
+        {
+            pctx.getAttributes().put(vs, vsO);
+        }
+        else
+        {
+            pctx.getAttributes().remove(vs);
         }
     }
 
@@ -372,7 +682,8 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
     {
         if (src instanceof List || src.getClass().isArray())
         {
-            return new IndexedValueExpression(ve, i);
+            //return new IndexedValueExpression(ve, i);
+            return new IteratedValueExpression(ve, value);
         }
         else if (src instanceof Map && value instanceof Map.Entry)
         {

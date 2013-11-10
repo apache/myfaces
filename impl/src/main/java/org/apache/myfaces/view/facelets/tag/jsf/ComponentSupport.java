@@ -785,6 +785,18 @@ public final class ComponentSupport
         }
     }
     
+    public static FaceletState getFaceletState(FaceletContext ctx, UIComponent parent, boolean create)
+    {
+        UIViewRoot root = getViewRoot(ctx, parent);
+        FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);
+        if (map == null && create)
+        {
+            map = new FaceletState();
+            root.getAttributes().put(FACELET_STATE_INSTANCE, map);
+        }
+        return map;
+    }
+    
     public static void setCachedFacesContext(UIComponent component,
         FacesContext context)
     {
