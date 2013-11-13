@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
-import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 
@@ -242,26 +241,6 @@ public final class JavascriptUtils
             return sb.toString();
         }
     }
-
-    public static boolean isJavascriptAllowed(ExternalContext externalContext)
-    {
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(externalContext);
-        if (myfacesConfig.isAllowJavascript())
-        {
-            if (myfacesConfig.isDetectJavascript())
-            {
-                return isJavascriptDetected(externalContext);
-            }
-            else
-            {
-                return true;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
     
     public static boolean isRenderClearJavascriptOnButton(ExternalContext externalContext)
     {
@@ -288,19 +267,6 @@ public final class JavascriptUtils
             return false;
         }
     }    
-
-    public static void setJavascriptDetected(HttpSession session, boolean value)
-    {
-        session.setAttribute(JAVASCRIPT_DETECTED, Boolean.valueOf(value));
-    }
-    
-    public static boolean isJavascriptDetected(ExternalContext externalContext)
-    {
-        //TODO/FIXME (manolito): This info should be better stored in the viewroot component and not in the session
-        Boolean sessionValue = (Boolean)externalContext.getSessionMap().get(JAVASCRIPT_DETECTED);
-        return sessionValue != null && sessionValue.booleanValue();
-    }
-
 
     public static void setOldViewId(ExternalContext externalContext, String viewId)
     {

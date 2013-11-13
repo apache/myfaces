@@ -155,9 +155,7 @@ public class HtmlButtonRendererBase
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 facesContext, childrenList, false, false);
         
-        boolean javascriptAllowed = JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext());
-        
-        if (formInfo != null && javascriptAllowed
+        if (formInfo != null 
                 && (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll() ||
                         (validParams != null && !validParams.isEmpty() )))
         {        
@@ -202,8 +200,7 @@ public class HtmlButtonRendererBase
             }
         }
         
-        if (javascriptAllowed &&
-            (HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors, facesContext) ||
+        if ((HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors, facesContext) ||
              HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.ACTION, behaviors, facesContext)))
         {
             if (!reset && !button)
@@ -236,7 +233,7 @@ public class HtmlButtonRendererBase
                     facesContext, uiComponent, ClientBehaviorEvents.DBLCLICK, null, behaviors,   
                         (String) attributes.get(HTML.ONDBLCLICK_ATTR), "");
         }
-        else if (javascriptAllowed)
+        else
         {
             //fallback into the pre 2.0 code to keep backwards compatibility with libraries which rely on internals
             if (!reset && !button)
@@ -426,20 +423,10 @@ public class HtmlButtonRendererBase
 
             String target = getTarget(component);
 
-            if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRenderFormSubmitScriptInline())
-            {
-                onClick.append("return ").
-                    append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME).append("('").
-                    append(formName).append("','").
-                    append(component.getClientId(facesContext)).append("'");                    
-            }
-            else
-            {
-                onClick.append("return ").
-                    append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-                    append(formName).append("','").
-                    append(component.getClientId(facesContext)).append("'");
-            }
+            onClick.append("return ").
+                append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
+                append(formName).append("','").
+                append(component.getClientId(facesContext)).append("'");
 
             if (params.length() > 2 || target != null)
             {
@@ -602,21 +589,10 @@ public class HtmlButtonRendererBase
 
                 String target = getTarget(uiComponent);
 
-                if (MyfacesConfig.getCurrentInstance(
-                        facesContext.getExternalContext()).isRenderFormSubmitScriptInline())
-                {
-                    onClick.append("return ").
-                        append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME).append("('").
-                        append(formName).append("','").
-                        append(uiComponent.getClientId(facesContext)).append("'");                    
-                }
-                else
-                {
-                    onClick.append("return ").
-                        append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-                        append(formName).append("','").
-                        append(uiComponent.getClientId(facesContext)).append("'");
-                }
+                onClick.append("return ").
+                    append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
+                    append(formName).append("','").
+                    append(uiComponent.getClientId(facesContext)).append("'");
 
                 if (params.length() > 2 || target != null)
                 {

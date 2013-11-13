@@ -35,7 +35,6 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
@@ -94,8 +93,7 @@ public class HtmlFormRendererBase
                 encodedActionURL,
                 null);
         
-        if (htmlForm instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                facesContext.getExternalContext()))
+        if (htmlForm instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) htmlForm).getClientBehaviors();
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))

@@ -18,8 +18,6 @@
  */
 package javax.faces.webapp;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -33,7 +31,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UpdateModelException;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerFactory;
-import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
@@ -87,7 +84,10 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
          * <li>handleException(FacesContext fc, Exception ex)</li>
          * </ul>
          * Furthermore, the init parameter only works when using the PreJsf2ExceptionHandlerFactory.
+         * 
+         * @deprecated
          */
+        @Deprecated
         @JSFWebConfigParam(since="1.2.4",desc="Deprecated: use JSF 2.0 ExceptionHandler", deprecated=true)
         private static final String ERROR_HANDLER_PARAMETER = "org.apache.myfaces.ERROR_HANDLER";
         
@@ -173,11 +173,6 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
                     handled = new LinkedList<ExceptionQueuedEvent>();
                 }
                 
-                // check the org.apache.myfaces.ERROR_HANDLER init param 
-                // for backwards compatibility to myfaces-1.2's error handling
-                String errorHandlerClass = FacesContext.getCurrentInstance()
-                        .getExternalContext().getInitParameter(ERROR_HANDLER_PARAMETER);
-                
                 FacesException toThrow = null;
                 
                 do
@@ -193,101 +188,52 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
                         
                         // and call getException() on the returned result
                         Throwable exception = context.getException();
-                        
-                        if (errorHandlerClass != null)
+
+                        // spec described behaviour of PreJsf2ExceptionHandler
+
+                        // UpdateModelException needs special treatment here
+                        if (exception instanceof UpdateModelException)
                         {
-                            // myfaces-1.2's error handler
-                            try
+                            FacesMessage message = ((UpdateModelException) exception).getFacesMessage();
+                            // Log a SEVERE message to the log
+                            log.log(Level.SEVERE, message.getSummary(), exception.getCause());
+                            // queue the FacesMessage on the FacesContext
+                            UIComponent component = context.getComponent();
+                            String clientId = null;
+                            if (component != null)
                             {
-                                Class<?> clazz = Class.forName(errorHandlerClass);
+                                clientId = component.getClientId(context.getContext());
+                            }
+                            context.getContext().addMessage(clientId, message);
+                        }
+                        else if (!shouldSkip(exception) && !context.inBeforePhase() && !context.inAfterPhase())
+                        {
+                            // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event
+                            handledAndThrown = event;
 
-                                Object errorHandler = clazz.newInstance();
-
-                                Method m = clazz.getMethod("handleException",
-                                                           new Class[] { FacesContext.class, Exception.class });
-                                m.invoke(errorHandler, new Object[] { context.getContext(), exception });
-                            }
-                            catch (ClassNotFoundException ex)
-                            {
-                                throw new FacesException("Error-Handler : " + errorHandlerClass
-                                        + " was not found. Fix your web.xml-parameter : "
-                                        + ERROR_HANDLER_PARAMETER, ex);
-                            }
-                            catch (IllegalAccessException ex)
-                            {
-                                throw new FacesException("Constructor of error-Handler : " + errorHandlerClass
-                                        + " is not accessible. Error-Handler is specified in web.xml-parameter : "
-                                        + ERROR_HANDLER_PARAMETER, ex);
-                            }
-                            catch (InstantiationException ex)
-                            {
-                                throw new FacesException("Error-Handler : " + errorHandlerClass
-                                    + " could not be instantiated. Error-Handler is specified in web.xml-parameter : "
-                                    + ERROR_HANDLER_PARAMETER, ex);
-                            }
-                            catch (NoSuchMethodException ex)
-                            {
-                                throw new FacesException("Error-Handler : " + errorHandlerClass
-                                        + " does not have a method with name : handleException and parameters : "
-                                        + "javax.faces.context.FacesContext, java.lang.Exception. Error-Handler is"
-                                        + "specified in web.xml-parameter : " + ERROR_HANDLER_PARAMETER, ex);
-                            }
-                            catch (InvocationTargetException ex)
-                            {
-                                throw new FacesException("Excecution of method handleException in Error-Handler : "
-                                        + errorHandlerClass
-                                        + " caused an exception. Error-Handler is specified in web.xml-parameter : "
-                                        + ERROR_HANDLER_PARAMETER, ex);
-                            }
+                            // Re-wrap toThrow in a ServletException or
+                            // (PortletException, if in a portlet environment)
+                            // and throw it
+                            // FIXME: The spec says to NOT use a FacesException
+                            // to propagate the exception, but I see
+                            //        no other way as ServletException is not a RuntimeException
+                            toThrow = wrap(getRethrownException(exception));
+                            break;
                         }
                         else
                         {
-                            // spec described behaviour of PreJsf2ExceptionHandler
-                            
-                            // UpdateModelException needs special treatment here
-                            if (exception instanceof UpdateModelException)
-                            {
-                                FacesMessage message = ((UpdateModelException) exception).getFacesMessage();
-                                // Log a SEVERE message to the log
-                                log.log(Level.SEVERE, message.getSummary(), exception.getCause());
-                                // queue the FacesMessage on the FacesContext
-                                UIComponent component = context.getComponent();
-                                String clientId = null;
-                                if (component != null)
-                                {
-                                    clientId = component.getClientId(context.getContext());
-                                }
-                                context.getContext().addMessage(clientId, message);
-                            }
-                            else if (!shouldSkip(exception) && !context.inBeforePhase() && !context.inAfterPhase())
-                            {
-                                // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event
-                                handledAndThrown = event;
-                                
-                                // Re-wrap toThrow in a ServletException or
-                                // (PortletException, if in a portlet environment)
-                                // and throw it
-                                // FIXME: The spec says to NOT use a FacesException
-                                // to propagate the exception, but I see
-                                //        no other way as ServletException is not a RuntimeException
-                                toThrow = wrap(getRethrownException(exception));
-                                break;
-                            }
-                            else
-                            {
-                                // Testing mojarra it logs a message and the exception
-                                // however, this behaviour is not mentioned in the spec
-                                log.log(Level.SEVERE, exception.getClass().getName() + " occured while processing " +
-                                        (context.inBeforePhase() ? "beforePhase() of " : 
-                                                (context.inAfterPhase() ? "afterPhase() of " : "")) + 
-                                        "phase " + context.getPhaseId() + ": " +
-                                        "UIComponent-ClientId=" + 
-                                        (context.getComponent() != null ? 
-                                                context.getComponent().getClientId(context.getContext()) : "") + ", " +
-                                        "Message=" + exception.getMessage());
-                                
-                                log.log(Level.SEVERE, exception.getMessage(), exception);
-                            }
+                            // Testing mojarra it logs a message and the exception
+                            // however, this behaviour is not mentioned in the spec
+                            log.log(Level.SEVERE, exception.getClass().getName() + " occured while processing " +
+                                    (context.inBeforePhase() ? "beforePhase() of " : 
+                                            (context.inAfterPhase() ? "afterPhase() of " : "")) + 
+                                    "phase " + context.getPhaseId() + ": " +
+                                    "UIComponent-ClientId=" + 
+                                    (context.getComponent() != null ? 
+                                            context.getComponent().getClientId(context.getContext()) : "") + ", " +
+                                    "Message=" + exception.getMessage());
+
+                            log.log(Level.SEVERE, exception.getMessage(), exception);
                         }
                     }
                     catch (Throwable t)

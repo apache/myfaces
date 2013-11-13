@@ -31,7 +31,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 
 /**
  *
@@ -47,8 +46,6 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.SELECT_ELEM, uiComponent);
         if (uiComponent instanceof ClientBehaviorHolder
-                && JavascriptUtils.isJavascriptAllowed(facesContext
-                        .getExternalContext())
                 && !((ClientBehaviorHolder) uiComponent).getClientBehaviors()
                         .isEmpty())
         {
@@ -86,9 +83,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.SIZE_ATTR, Integer.toString(size), null);
         }
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder
-                && JavascriptUtils.isJavascriptAllowed(facesContext
-                        .getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) uiComponent)
                     .getClientBehaviors();

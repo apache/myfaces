@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 
-import javax.faces.application.ViewHandler;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutcomeTarget;
@@ -48,7 +47,6 @@ import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util._ComponentUtils;
 
@@ -235,8 +233,7 @@ public abstract class HtmlLinkRendererBase
         if (HtmlRendererUtils.isDisabled(component) || formInfo == null)
         {
             writer.startElement(HTML.SPAN_ELEM, component);
-            if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                    facesContext.getExternalContext()))
+            if (component instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -304,103 +301,86 @@ public abstract class HtmlLinkRendererBase
         else
         {
             //String[] anchorAttrsToRender;
-            if (JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (component instanceof ClientBehaviorHolder)
             {
-                if (component instanceof ClientBehaviorHolder)
+                behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+                renderBehaviorizedJavaScriptAnchorStart(
+                        facesContext, writer, component, clientId, behaviors, formInfo);
+                if (!behaviors.isEmpty())
                 {
-                    behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
-                    renderBehaviorizedJavaScriptAnchorStart(
-                            facesContext, writer, component, clientId, behaviors, formInfo);
-                    if (!behaviors.isEmpty())
+                    HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
+                }
+                else 
+                {
+                    // If onclick is not null, both onclick and server side script are rendered 
+                    // using jsf.util.chain(...) js function. We need to check that case and force
+                    // id/name rendering. It is possible to do something else in that case and 
+                    // do not render the script using jsf.util.chain, but for now it is ok.
+                    String commandOnclick;
+                    if (component instanceof HtmlCommandLink)
+                    {
+                        commandOnclick = ((HtmlCommandLink)component).getOnclick();
+                    }
+                    else
+                    {
+                        commandOnclick = (String)component.getAttributes().get(HTML.ONCLICK_ATTR);
+                    }
+
+                    if (commandOnclick != null)
                     {
                         HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
                     }
-                    else 
+                    else
                     {
-                        // If onclick is not null, both onclick and server side script are rendered 
-                        // using jsf.util.chain(...) js function. We need to check that case and force
-                        // id/name rendering. It is possible to do something else in that case and 
-                        // do not render the script using jsf.util.chain, but for now it is ok.
-                        String commandOnclick;
-                        if (component instanceof HtmlCommandLink)
-                        {
-                            commandOnclick = ((HtmlCommandLink)component).getOnclick();
-                        }
-                        else
-                        {
-                            commandOnclick = (String)component.getAttributes().get(HTML.ONCLICK_ATTR);
-                        }
-                        
-                        if (commandOnclick != null)
-                        {
-                            HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
-                        }
-                        else
-                        {
-                            HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-                        }
+                        HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                     }
-                    long commonPropertiesMarked = 0L;
-                    if (isCommonPropertiesOptimizationEnabled(facesContext))
-                    {
-                        commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
-                    }
-                    if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
-                    {
-                        CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer,
+                }
+                long commonPropertiesMarked = 0L;
+                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                {
+                    commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                }
+                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                {
+                    CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer,
+                        commonPropertiesMarked, component);
+                    CommonPropertyUtils.renderFocusBlurEventProperties(writer,
                             commonPropertiesMarked, component);
-                        CommonPropertyUtils.renderFocusBlurEventProperties(writer,
-                                commonPropertiesMarked, component);
-                    }
-                    else
-                    {
-                        HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
-                                facesContext, writer, component, behaviors);
-                        HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                                facesContext, writer, component, behaviors);
-                    }
-                    if (isCommonPropertiesOptimizationEnabled(facesContext))
-                    {
-                        CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutStyleAndEvents(writer, 
-                                commonPropertiesMarked, component);
-                    }
-                    else
-                    {
-                        HtmlRendererUtils.renderHTMLAttributes(writer, component, 
-                                HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE_AND_EVENTS);
-                    }
                 }
                 else
                 {
-                    renderJavaScriptAnchorStart(facesContext, writer, component, clientId, formInfo);
-                    HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-                    if (isCommonPropertiesOptimizationEnabled(facesContext))
-                    {
-                        CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutOnclickAndStyle(writer, 
-                                CommonPropertyUtils.getCommonPropertiesMarked(component), component);
-                    }
-                    else
-                    {
-                        HtmlRendererUtils.renderHTMLAttributes(writer, component, 
-                                HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE);
-                    }
+                    HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
+                            facesContext, writer, component, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                            facesContext, writer, component, behaviors);
+                }
+                if (isCommonPropertiesOptimizationEnabled(facesContext))
+                {
+                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutStyleAndEvents(writer, 
+                            commonPropertiesMarked, component);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE_AND_EVENTS);
                 }
             }
             else
             {
-                renderNonJavaScriptAnchorStart(facesContext, writer, component, clientId, formInfo);
+                renderJavaScriptAnchorStart(facesContext, writer, component, clientId, formInfo);
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutStyle(writer, 
+                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutOnclickAndStyle(writer, 
                             CommonPropertyUtils.getCommonPropertiesMarked(component), component);
                 }
                 else
                 {
                     HtmlRendererUtils.renderHTMLAttributes(writer, component, 
-                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE);
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE);
                 }
             }
+
 
             //HtmlRendererUtils.renderHTMLAttributes(writer, component,
             //                                       anchorAttrsToRender);
@@ -469,20 +449,10 @@ public abstract class HtmlLinkRendererBase
 
             String target = getTarget(component);
 
-            if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRenderFormSubmitScriptInline())
-            {
-                onClick.append("return ").
-                    append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME).append("('").
-                    append(formName).append("','").
-                    append(clientId).append("'");
-            }
-            else
-            {
-                onClick.append("return ").
-                    append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-                    append(formName).append("','").
-                    append(clientId).append("'");
-            }
+            onClick.append("return ").
+                append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
+                append(formName).append("','").
+                append(clientId).append("'");
 
             if (params.length() > 2 || target != null)
             {
@@ -629,21 +599,10 @@ public abstract class HtmlLinkRendererBase
 
             String target = getTarget(component);
 
-            if (MyfacesConfig.getCurrentInstance(
-                    facesContext.getExternalContext()).isRenderFormSubmitScriptInline())
-            {
-                onClick.append("return ").
-                    append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME).append("('").
-                    append(formName).append("','").
-                    append(clientId).append("'");
-            }
-            else
-            {
-                onClick.append("return ").
-                    append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-                    append(formName).append("','").
-                    append(clientId).append("'");
-            }
+            onClick.append("return ").
+                append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
+                append(formName).append("','").
+                append(clientId).append("'");
 
             if (params.length() > 2 || target != null)
             {
@@ -779,60 +738,6 @@ public abstract class HtmlLinkRendererBase
         }
     }
 
-
-    protected void renderNonJavaScriptAnchorStart(FacesContext facesContext,
-                                                  ResponseWriter writer,
-                                                  UIComponent component,
-                                                  String clientId,
-                                                  FormInfo formInfo)
-        throws IOException
-    {
-        ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
-        String viewId = facesContext.getViewRoot().getViewId();
-        String path = viewHandler.getActionURL(facesContext, viewId);
-
-        boolean strictXhtmlLinks
-                = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isStrictXhtmlLinks();
-
-        StringBuilder hrefBuf = new StringBuilder(path);
-
-        //add clientId parameter for decode
-
-        if (path.indexOf('?') == -1)
-        {
-            hrefBuf.append('?');
-        }
-        else
-        {
-            if (strictXhtmlLinks)
-            {
-                hrefBuf.append("&amp;");
-            }
-            else
-            {
-                hrefBuf.append('&');
-            }
-        }
-        String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(
-                formInfo, facesContext);
-        hrefBuf.append(hiddenFieldName);
-        hrefBuf.append('=');
-        hrefBuf.append(clientId);
-
-        if (getChildCount(component) > 0)
-        {
-            addChildParametersToHref(facesContext, component, hrefBuf,
-                                     false, //not the first url parameter
-                                     writer.getCharacterEncoding());
-        }
-
-        String href = facesContext.getExternalContext().encodeActionURL(hrefBuf.toString());
-        writer.startElement(HTML.ANCHOR_ELEM, component);
-        writer.writeURIAttribute(HTML.HREF_ATTR,
-                                 facesContext.getExternalContext().encodeActionURL(href),
-                                 null);
-    }
-
     private void addChildParametersToHref(FacesContext facesContext,
                                           UIComponent linkComponent,
                                           StringBuilder hrefBuf,
@@ -873,8 +778,7 @@ public abstract class HtmlLinkRendererBase
         if (HtmlRendererUtils.isDisabled(output))
         {
             writer.startElement(HTML.SPAN_ELEM, output);
-            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                    facesContext.getExternalContext()))
+            if (output instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -986,8 +890,7 @@ public abstract class HtmlLinkRendererBase
             //write anchor
             writer.startElement(HTML.ANCHOR_ELEM, output);
             writer.writeURIAttribute(HTML.HREF_ATTR, href, null);
-            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                    facesContext.getExternalContext()))
+            if (output instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -1071,8 +974,7 @@ public abstract class HtmlLinkRendererBase
             //to just put this flag on FacesContext attribute map
             facesContext.getAttributes().put(END_LINK_OUTCOME_AS_SPAN, Boolean.TRUE);
             writer.startElement(HTML.SPAN_ELEM, output);
-            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                    facesContext.getExternalContext()))
+            if (output instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
                 if (!behaviors.isEmpty())
@@ -1149,8 +1051,7 @@ public abstract class HtmlLinkRendererBase
             //write anchor
             writer.startElement(HTML.ANCHOR_ELEM, output);
             writer.writeURIAttribute(HTML.HREF_ATTR, targetHref, null);
-            if (output instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                    facesContext.getExternalContext()))
+            if (output instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) output).getClientBehaviors();
                 if (!behaviors.isEmpty())

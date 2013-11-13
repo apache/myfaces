@@ -39,7 +39,6 @@ import javax.faces.convert.ConverterException;
 import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
@@ -206,8 +205,7 @@ public class HtmlTextRendererBase
         renderValue(facesContext, component, writer);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                facesContext.getExternalContext()))
+        if (component instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             

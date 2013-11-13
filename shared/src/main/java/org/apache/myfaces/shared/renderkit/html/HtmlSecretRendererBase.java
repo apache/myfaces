@@ -20,7 +20,6 @@ package org.apache.myfaces.shared.renderkit.html;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 import javax.faces.component.UIComponent;
@@ -81,8 +80,7 @@ public class HtmlSecretRendererBase
         writer.startElement(HTML.INPUT_ELEM, uiComponent);
         writer.writeAttribute(HTML.TYPE_ATTR, org.apache.myfaces.shared.renderkit.html.HTML.INPUT_TYPE_PASSWORD, null);
 
-        if (uiComponent instanceof ClientBehaviorHolder 
-                && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext())
+        if (uiComponent instanceof ClientBehaviorHolder
                 && !((ClientBehaviorHolder) uiComponent).getClientBehaviors().isEmpty())
         {
             writer.writeAttribute(HTML.ID_ATTR, 
@@ -112,8 +110,7 @@ public class HtmlSecretRendererBase
         }
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             

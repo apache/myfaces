@@ -81,35 +81,9 @@ public final class HtmlJavaScriptUtils
     private static void renderFormSubmitScriptIfNecessary(
             FacesContext facesContext) throws IOException
     {
-        final ExternalContext externalContext = facesContext
-                .getExternalContext();
-        final MyfacesConfig currentInstance = MyfacesConfig
-                .getCurrentInstance(externalContext);
         ResponseWriter writer = facesContext.getResponseWriter();
-
-        if (currentInstance.isRenderFormSubmitScriptInline())
-        {
-            writer.startElement(HTML.SCRIPT_ELEM, null);
-            writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
-
-            boolean autoScroll = currentInstance.isAutoScroll();
-
-            ScriptContext context = new ScriptContext(
-                    currentInstance.isPrettyHtml());
-            context.prettyLine();
-            context.increaseIndent();
-
-            prepareScript(facesContext, context, autoScroll);
-
-            writer.writeText(context.toString(), null);
-
-            writer.endElement(HTML.SCRIPT_ELEM);
-        }
-        else
-        {
-            ResourceUtils
-                    .renderMyfacesJSInlineIfNecessary(facesContext, writer);
-        }
+        ResourceUtils
+                .renderMyfacesJSInlineIfNecessary(facesContext, writer);
     }
     
     private static void renderConfigOptionsIfNecessary(FacesContext facesContext)
@@ -118,7 +92,7 @@ public final class HtmlJavaScriptUtils
         ResponseWriter writer = facesContext.getResponseWriter();
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext
                 .getExternalContext());
-        ScriptContext script = new ScriptContext(config.isPrettyHtml());
+        ScriptContext script = new ScriptContext();
         boolean autoScroll = config.isAutoScroll();
         boolean autoSave = JavascriptUtils.isSaveFormSubmitLinkIE(facesContext
                 .getExternalContext());
@@ -398,15 +372,7 @@ public final class HtmlJavaScriptUtils
         scriptContext.append("if(typeof window." + AUTO_SCROLL_FUNCTION
                 + "!='undefined')");
         scriptContext.append("{");
-        if (MyfacesConfig.getCurrentInstance(context.getExternalContext())
-                .isRenderFormSubmitScriptInline())
-        {
-            scriptContext.append(SET_HIDDEN_INPUT_FN_NAME);
-        }
-        else
-        {
-            scriptContext.append(SET_HIDDEN_INPUT_FN_NAME_JSF2);
-        }
+        scriptContext.append(SET_HIDDEN_INPUT_FN_NAME_JSF2);
         scriptContext.append("(").append(formNameStr).append(",")
                 .append(paramName).append(",").append(value).append(");");
         scriptContext.append("}");
@@ -415,9 +381,7 @@ public final class HtmlJavaScriptUtils
     
     public static String getAutoScrollFunction(FacesContext facesContext)
     {
-        ScriptContext script = new ScriptContext(MyfacesConfig
-                .getCurrentInstance(facesContext.getExternalContext())
-                .isPrettyHtml());
+        ScriptContext script = new ScriptContext();
 
         script.prettyLineIncreaseIndent();
 
@@ -506,12 +470,10 @@ public final class HtmlJavaScriptUtils
     public static void renderAutoScrollHiddenInput(FacesContext facesContext,
             ResponseWriter writer) throws IOException
     {
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
         writer.startElement(HTML.INPUT_ELEM, null);
         writer.writeAttribute(HTML.TYPE_ATTR, "hidden", null);
         writer.writeAttribute(HTML.NAME_ATTR, AUTO_SCROLL_PARAM, null);
         writer.endElement(HTML.INPUT_ELEM);
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
     }
 
     /**
@@ -520,13 +482,11 @@ public final class HtmlJavaScriptUtils
     public static void renderAutoScrollFunction(FacesContext facesContext,
             ResponseWriter writer) throws IOException
     {
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
         writer.startElement(HTML.SCRIPT_ELEM, null);
         writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR,
                 HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
         writer.writeText(getAutoScrollFunction(facesContext), null);
         writer.endElement(HTML.SCRIPT_ELEM);
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
     }
     
     public static void appendClearHiddenCommandFormParamsFunctionCall(
@@ -723,41 +683,5 @@ public final class HtmlJavaScriptUtils
         {
             return out.toString();
         }
-    }
-    
-    public static void renderViewStateJavascript(FacesContext facesContext,
-            String hiddenId, String serializedState) throws IOException
-    {
-        ResponseWriter writer = facesContext.getResponseWriter();
-
-        writer.startElement(HTML.SCRIPT_ELEM, null);
-        writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
-
-        final ExternalContext externalContext = facesContext
-                .getExternalContext();
-        final MyfacesConfig currentInstance = MyfacesConfig
-                .getCurrentInstance(externalContext);
-
-        ScriptContext context = new ScriptContext(
-                currentInstance.isPrettyHtml());
-        context.prettyLine();
-        context.increaseIndent();
-
-        context.append("function setViewState() {\n");
-        context.append("\tvar state = '");
-        context.append(serializedState);
-        context.append("';\n");
-        context.append("\tfor (var i = 0; i < document.forms.length; i++) {\n");
-        context.append("\t\tdocument.forms[i]['" + hiddenId
-                + "'].value = state;\n");
-        context.append("\t}\n");
-        context.append("}\n");
-        context.append("setViewState();\n");
-
-        context.decreaseIndent();
-
-        writer.writeText(context.toString(), null);
-
-        writer.endElement(HTML.SCRIPT_ELEM);
     }
 }

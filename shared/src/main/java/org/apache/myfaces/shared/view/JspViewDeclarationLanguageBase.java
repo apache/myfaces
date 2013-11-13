@@ -45,7 +45,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 
 
 public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLanguageBase
@@ -295,35 +294,24 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
 
     String state = stateWriter.getBuffer().toString();
 
-    ExternalContext extContext = facesContext.getExternalContext();
-    if (JavascriptUtils.isJavascriptAllowed(extContext)
-            && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())
+    // State markers must be replaced
+    int lastFormMarkerPos = 0;
+    int formMarkerPos = 0;
+    // Find all state markers and write out actual state instead
+    while ((formMarkerPos = buff.indexOf(JspViewDeclarationLanguageBase.FORM_STATE_MARKER, formMarkerPos)) > -1)
     {
-      // If javascript viewstate is enabled no state markers were written
-      writePartialBuffer(buff, 0, buff.length(), writer);
+      // Write content before state marker
+      writePartialBuffer(buff, lastFormMarkerPos, formMarkerPos, writer);
+      // Write state and move position in buffer after marker
       writer.write(state);
+      formMarkerPos += JspViewDeclarationLanguageBase.FORM_STATE_MARKER_LEN;
+      lastFormMarkerPos = formMarkerPos;
     }
-    else
+
+    // Write content after last state marker
+    if (lastFormMarkerPos < buff.length())
     {
-      // If javascript viewstate is disabled state markers must be replaced
-      int lastFormMarkerPos = 0;
-      int formMarkerPos = 0;
-      // Find all state markers and write out actual state instead
-      while ((formMarkerPos = buff.indexOf(JspViewDeclarationLanguageBase.FORM_STATE_MARKER, formMarkerPos)) > -1)
-      {
-        // Write content before state marker
-        writePartialBuffer(buff, lastFormMarkerPos, formMarkerPos, writer);
-        // Write state and move position in buffer after marker
-        writer.write(state);
-        formMarkerPos += JspViewDeclarationLanguageBase.FORM_STATE_MARKER_LEN;
-        lastFormMarkerPos = formMarkerPos;
-      }
-      
-      // Write content after last state marker
-      if (lastFormMarkerPos < buff.length())
-      {
-        writePartialBuffer(buff, lastFormMarkerPos, buff.length(), writer);
-      }
+      writePartialBuffer(buff, lastFormMarkerPos, buff.length(), writer);
     }
   }
   

@@ -42,7 +42,6 @@ import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HttpPartWrapper;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.util._ComponentUtils;
 
 /**
@@ -174,8 +173,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         renderValue(facesContext, component, writer);
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                facesContext.getExternalContext()))
+        if (component instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             

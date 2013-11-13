@@ -36,7 +36,6 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -179,8 +178,7 @@ public abstract class HtmlMessageRendererBase
     throws IOException
     {
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                facesContext.getExternalContext()))
+        if (message instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
         }
@@ -236,8 +234,7 @@ public abstract class HtmlMessageRendererBase
         boolean span = false;
 
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed
-                (facesContext.getExternalContext()))
+        if (message instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
             // If there is a behavior registered, force wrapSpan
@@ -259,8 +256,7 @@ public abstract class HtmlMessageRendererBase
             {
                 HtmlRendererUtils.writeIdIfNecessary(writer, message, facesContext);
             }
-            if (message instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                    facesContext.getExternalContext()))
+            if (message instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) message).getClientBehaviors();
                 if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))

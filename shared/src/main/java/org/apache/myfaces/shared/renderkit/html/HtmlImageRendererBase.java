@@ -34,7 +34,6 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 
@@ -78,8 +77,7 @@ public class HtmlImageRendererBase
         
         writer.startElement(HTML.IMG_ELEM, uiComponent);
 
-        if (uiComponent instanceof ClientBehaviorHolder 
-                && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext())
+        if (uiComponent instanceof ClientBehaviorHolder
                 && !behaviors.isEmpty())
         {
             HtmlRendererUtils.writeIdAndName(writer, uiComponent, facesContext);
@@ -117,8 +115,7 @@ public class HtmlImageRendererBase
             }
         }
 
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder)
         {
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {

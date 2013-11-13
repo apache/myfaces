@@ -52,21 +52,6 @@ public class HtmlFormRenderer
     protected void afterFormElementsEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.afterFormElementsEnd(facesContext, component);
-        
-        ResponseWriter writer = facesContext.getResponseWriter();
-        ExternalContext extContext = facesContext.getExternalContext();
-        
-        // If javascript viewstate is enabled write empty hidden input in forms 
-        if (JavascriptUtils.isJavascriptAllowed(extContext)
-            && MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript())
-        {
-            writer.startElement(HTML.INPUT_ELEM, null);
-            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-            writer.writeAttribute(HTML.NAME_ATTR, HtmlResponseStateManager.VIEW_STATE_PARAM, null);
-            writer.writeAttribute(HTML.ID_ATTR, HtmlResponseStateManager.VIEW_STATE_PARAM, null);
-            writer.writeAttribute(HTML.VALUE_ATTR, "", null);
-            writer.endElement(HTML.INPUT_ELEM);
-        }
     }
     
     @Override

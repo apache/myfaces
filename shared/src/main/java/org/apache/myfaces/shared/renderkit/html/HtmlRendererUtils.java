@@ -61,13 +61,11 @@ import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.shared.component.DisplayValueOnlyCapable;
 import org.apache.myfaces.shared.component.EscapeCapable;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.OutcomeTargetUtils;
 
 /**
@@ -358,7 +356,6 @@ public final class HtmlRendererUtils
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.SELECT_ELEM, uiComponent);
         if (uiComponent instanceof ClientBehaviorHolder
-                && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext())
                 && !((ClientBehaviorHolder) uiComponent).getClientBehaviors().isEmpty())
         {
             writer.writeAttribute(HTML.ID_ATTR, uiComponent.getClientId(facesContext), null);
@@ -393,9 +390,7 @@ public final class HtmlRendererUtils
             writer.writeAttribute(HTML.SIZE_ATTR, Integer.toString(size), null);
         }
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder
-                && JavascriptUtils.isJavascriptAllowed(facesContext
-                        .getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) uiComponent)
                     .getClientBehaviors();
@@ -656,26 +651,6 @@ public final class HtmlRendererUtils
 
                 writer.endElement(HTML.OPTION_ELEM);
             }
-        }
-    }
-
-    public static void writePrettyLineSeparator(FacesContext facesContext)
-            throws IOException
-    {
-        if (org.apache.myfaces.shared.config.MyfacesConfig.getCurrentInstance(
-                facesContext.getExternalContext()).isPrettyHtml())
-        {
-            facesContext.getResponseWriter().write(LINE_SEPARATOR);
-        }
-    }
-
-    public static void writePrettyIndent(FacesContext facesContext)
-            throws IOException
-    {
-        if (org.apache.myfaces.shared.config.MyfacesConfig.getCurrentInstance(
-                facesContext.getExternalContext()).isPrettyHtml())
-        {
-            facesContext.getResponseWriter().write('\t');
         }
     }
 
@@ -1159,7 +1134,6 @@ public final class HtmlRendererUtils
             captionStyle = (String) component.getAttributes()
                     .get(org.apache.myfaces.shared.renderkit.JSFAttr.CAPTION_STYLE_ATTR);
         }
-        HtmlRendererUtils.writePrettyLineSeparator(context);
         writer.startElement(HTML.CAPTION_ELEM, null); // component);
         if (captionClass != null)
         {
@@ -1855,10 +1829,7 @@ public final class HtmlRendererUtils
             target.append(STR_EMPTY);
             return false;
         }
-        ExternalContext externalContext = facesContext.getExternalContext();
-        boolean renderClientBehavior = JavascriptUtils
-                .isJavascriptAllowed(externalContext)
-                && clientBehaviors != null && clientBehaviors.size() > 0;
+        boolean renderClientBehavior = clientBehaviors != null && clientBehaviors.size() > 0;
         if (!renderClientBehavior)
         {
             target.append(STR_EMPTY);
@@ -1946,13 +1917,6 @@ public final class HtmlRendererUtils
             Map<String, List<ClientBehavior>> clientBehaviors,
             String userEventCode, String serverEventCode)
     {
-        ExternalContext externalContext = facesContext.getExternalContext();
-        boolean renderCode = JavascriptUtils
-                .isJavascriptAllowed(externalContext);
-        if (!renderCode)
-        {
-            return STR_EMPTY;
-        }
         List<String> finalParams = new ArrayList<String>(3);
         if (userEventCode != null && !userEventCode.trim().equals(STR_EMPTY))
         {
@@ -1960,10 +1924,8 @@ public final class HtmlRendererUtils
             // be a string attribute of jsf.util.chain
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
-        final MyfacesConfig currentInstance = MyfacesConfig
-                .getCurrentInstance(externalContext);
         ScriptContext behaviorCode = new ScriptContext();
-        ScriptContext retVal = new ScriptContext(currentInstance.isPrettyHtml());
+        ScriptContext retVal = new ScriptContext();
         getClientBehaviorScript(facesContext, uiComponent, targetClientId,
                 eventName, clientBehaviors, behaviorCode, params);
         if (behaviorCode != null
@@ -2035,22 +1997,14 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         ExternalContext externalContext = facesContext.getExternalContext();
-        boolean renderCode = JavascriptUtils
-                .isJavascriptAllowed(externalContext);
-        if (!renderCode)
-        {
-            return STR_EMPTY;
-        }
         List<String> finalParams = new ArrayList<String>(3);
         if (userEventCode != null && !userEventCode.trim().equals(STR_EMPTY))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
 
-        final MyfacesConfig currentInstance = MyfacesConfig
-                .getCurrentInstance(externalContext);
         ScriptContext behaviorCode = new ScriptContext();
-        ScriptContext retVal = new ScriptContext(currentInstance.isPrettyHtml());
+        ScriptContext retVal = new ScriptContext();
         boolean submitting1 = getClientBehaviorScript(facesContext,
                 uiComponent, targetClientId, eventName1, clientBehaviors,
                 behaviorCode, params);
@@ -2789,12 +2743,6 @@ public final class HtmlRendererUtils
             return HtmlRendererUtils.renderHTMLStringAttribute(writer, uiComponent,
                     HTML.ONCHANGE_ATTR, HTML.ONCHANGE_ATTR);
         }
-    }
-
-    public static void renderViewStateJavascript(FacesContext facesContext,
-            String hiddenId, String serializedState) throws IOException
-    {
-        HtmlJavaScriptUtils.renderViewStateJavascript(facesContext, hiddenId, serializedState);
     }
 
     /**

@@ -35,7 +35,6 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ArrayUtils;
 import org.apache.myfaces.shared.util.StringUtils;
@@ -137,12 +136,10 @@ public class HtmlTableRendererBase extends HtmlRenderer
     protected void startTable(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
         writer.startElement(HTML.TABLE_ELEM, uiComponent);
         
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             if (!behaviors.isEmpty())
@@ -247,7 +244,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
             return;
         }
         // render the facet
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
         //RendererUtils.renderChild(facesContext, colgroupsFacet);
         colgroupsFacet.encodeAll(facesContext);
     } 
@@ -466,10 +462,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
                         // close any preopened TBODY element first
                         if(bodyrowsCount != 0) 
                         {
-                            HtmlRendererUtils.writePrettyLineSeparator(facesContext);
                             writer.endElement(HTML.TBODY_ELEM);
                         }
-                        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
                         writer.startElement(HTML.TBODY_ELEM, null); // uiData); 
                         // Do not attach bodyrowsCount to the first TBODY element, because of backward compatibility
                         writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext) + ":tbody_element" + 
@@ -477,7 +471,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
                         bodyrowsCount++;
                     }
                     
-                    HtmlRendererUtils.writePrettyLineSeparator(facesContext);
                     renderRowStart(facesContext, writer, uiData, styles, nr);
                     rowStartRendered = true;
                 }
@@ -531,7 +524,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
         if(bodyrowsCount != 0)
         {
             // close the last TBODY element
-            HtmlRendererUtils.writePrettyLineSeparator(facesContext);
             writer.endElement(HTML.TBODY_ELEM);
         }
     }
@@ -570,10 +562,8 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 // close any preopened TBODY element first
                 if(bodyrowsCount != 0) 
                 {
-                    HtmlRendererUtils.writePrettyLineSeparator(facesContext);
                     writer.endElement(HTML.TBODY_ELEM);
                 }
-                HtmlRendererUtils.writePrettyLineSeparator(facesContext);
                 writer.startElement(HTML.TBODY_ELEM, null); // uiData); 
                 // Do not attach bodyrowsCount to the first TBODY element, because of backward compatibility
                 writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext) + ":tbody_element" + 
@@ -581,7 +571,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
                 bodyrowsCount++;
             }
             
-            HtmlRendererUtils.writePrettyLineSeparator(facesContext);
             renderRowStart(facesContext, writer, uiData, styles, currentRow);
             
             List<UIComponent> children = null;
@@ -641,7 +630,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
         if(bodyrowsCount != 0)
         {
             // close the last TBODY element
-            HtmlRendererUtils.writePrettyLineSeparator(facesContext);
             writer.endElement(HTML.TBODY_ELEM);
         }
     }
@@ -918,7 +906,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.endElement(HTML.TABLE_ELEM);
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
     }
 
     /**
@@ -977,7 +964,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
             // definitely need to render the THEAD or TFOOT section.
             String elemName = determineHeaderFooterTag(facesContext, component, header);
 
-            HtmlRendererUtils.writePrettyLineSeparator(facesContext);
             if (elemName != null)
             {
                 writer.startElement(elemName, null); // component);
@@ -1125,7 +1111,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
             UIComponent facet, String styleClass, String colElementName, int colspan, boolean isHeader)
             throws IOException
     {
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
         writer.startElement(HTML.TR_ELEM, null); // component);
         writer.startElement(colElementName, null); // component);
         if (colElementName.equals(determineHeaderCellTag(facesContext, component)) && isHeader)
@@ -1164,7 +1149,6 @@ public class HtmlTableRendererBase extends HtmlRenderer
     private void renderColumnHeaderOrFooterRow(FacesContext facesContext, ResponseWriter writer,
             UIComponent component, String styleClass, boolean header) throws IOException
     {
-        HtmlRendererUtils.writePrettyLineSeparator(facesContext);
 
         writer.startElement(HTML.TR_ELEM, null); // component);
         int columnIndex = 0;

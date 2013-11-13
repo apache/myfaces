@@ -35,7 +35,6 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ArrayUtils;
 import org.apache.myfaces.shared.util.StringUtils;
@@ -122,8 +121,7 @@ public class HtmlGridRendererBase
         
         writer.startElement(HTML.TABLE_ELEM, component);
         
-        if (component instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                facesContext.getExternalContext()))
+        if (component instanceof ClientBehaviorHolder)
         {
             if (!behaviors.isEmpty())
             {
@@ -211,7 +209,6 @@ public class HtmlGridRendererBase
             return;
         }
 
-        HtmlRendererUtils.writePrettyLineSeparator(context);
         writer.startElement(
                 header ? org.apache.myfaces.shared.renderkit.html.HTML.THEAD_ELEM : HTML.TFOOT_ELEM, null);
                 // component);
@@ -240,11 +237,9 @@ public class HtmlGridRendererBase
 
         writer.writeAttribute(HTML.COLSPAN_ATTR, Integer.toString(columns), null);
 
-        HtmlRendererUtils.writePrettyLineSeparator(context);
         //RendererUtils.renderChild(context, facet);
         facet.encodeAll(context);
 
-        HtmlRendererUtils.writePrettyLineSeparator(context);
         writer.endElement(header ? HTML.TH_ELEM : HTML.TD_ELEM);
         writer.endElement(HTML.TR_ELEM);
         writer.endElement(header ? HTML.THEAD_ELEM : HTML.TFOOT_ELEM);
@@ -330,7 +325,6 @@ public class HtmlGridRendererBase
                         {
                             //do we have to close the last row?
                             writer.endElement(HTML.TR_ELEM);
-                            HtmlRendererUtils.writePrettyLineSeparator(context);
                         }
                         
                         // is the current row listed in the bodyrows attribute
@@ -340,10 +334,8 @@ public class HtmlGridRendererBase
                             if(bodyrowsCount != 0) 
                             {
                                 writer.endElement(HTML.TBODY_ELEM);
-                                HtmlRendererUtils.writePrettyLineSeparator(context);
                             }
                             writer.startElement(HTML.TBODY_ELEM, null); // component); 
-                            HtmlRendererUtils.writePrettyLineSeparator(context);
                             bodyrowsCount++;
                         }
                         
@@ -402,13 +394,11 @@ public class HtmlGridRendererBase
                     }
                 }
                 writer.endElement(HTML.TR_ELEM);
-                HtmlRendererUtils.writePrettyLineSeparator(context);
                 
                 // close any preopened TBODY element first
                 if(bodyrowsCount != 0) 
                 {
                     writer.endElement(HTML.TBODY_ELEM);
-                    HtmlRendererUtils.writePrettyLineSeparator(context);
                 }
             }
         }

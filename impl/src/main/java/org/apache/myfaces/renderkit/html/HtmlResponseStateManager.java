@@ -20,7 +20,6 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
@@ -38,10 +37,7 @@ import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.renderkit.StateTokenProcessor;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HTML;
-import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.util.StateUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -50,9 +46,6 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 public class HtmlResponseStateManager extends MyfacesResponseStateManager
 {
     private static final Logger log = Logger.getLogger(HtmlResponseStateManager.class.getName());
-
-    private static final int STATE_PARAM = 0;
-    private static final int VIEWID_PARAM = 1;
 
     public static final String STANDARD_STATE_SAVING_PARAM = "javax.faces.ViewState";
     
@@ -70,12 +63,13 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
      * requires this property set to true in order to work correctly, so if you set this param to false, please
      * remember to add an entry into your faces-config.xml setting up JspStateManagerImpl as the state manager to use.
      * </p> 
+     * @deprecated 
      */
-    @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true", group="state")
+    @Deprecated
+    @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true", group="state",
+        deprecated=true)
     public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS
             = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
-    
-    private Boolean _handleStateCachingMechanics;
     
     private StateCacheFactory _stateCacheFactory;
     
@@ -87,17 +81,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         _stateTokenProcessor = new DefaultStateTokenProcessor();
     }
     
-    protected boolean isHandlingStateCachingMechanics(FacesContext facesContext)
-    {
-        if (_handleStateCachingMechanics == null)
-        {
-            _handleStateCachingMechanics
-                    = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                        INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS, true);
-        }
-        return _handleStateCachingMechanics.booleanValue();
-    }
-    
+    @Override
     public void writeState(FacesContext facesContext, Object state) throws IOException
     {
         ResponseWriter responseWriter = facesContext.getResponseWriter();
@@ -107,43 +91,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         if (!facesContext.getViewRoot().isTransient())
         {
             // Only if the view is not transient needs to be saved
-            if (isHandlingStateCachingMechanics(facesContext))
-            {
-                savedStateObject = getStateCache(facesContext).encodeSerializedState(facesContext, state);
-            }
-            else
-            {
-                Object token = null;
-                Object[] savedState = new Object[2];
-                token = state;
-
-                if (log.isLoggable(Level.FINEST))
-                {
-                    log.finest("Writing state in client");
-                }
-
-
-                if (token != null)
-                {
-                    savedState[STATE_PARAM] = token;
-                }
-                else
-                {
-                    if (log.isLoggable(Level.FINEST))
-                    {
-                        log.finest("No component states to be saved in client response!");
-                    }
-                }
-
-                savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
-
-                if (log.isLoggable(Level.FINEST))
-                {
-                    log.finest("Writing view state and renderKit fields");
-                }
-
-                savedStateObject = savedState;
-            }
+            savedStateObject = getStateCache(facesContext).encodeSerializedState(facesContext, state);
         }
 
         // write the view state field
@@ -175,14 +123,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     {
         if (!facesContext.getViewRoot().isTransient())
         {
-            if (isHandlingStateCachingMechanics(facesContext))
-            {
-                getStateCache(facesContext).saveSerializedView(facesContext, state);
-            }
-            else
-            {
-                //This is done outside
-            }
+            getStateCache(facesContext).saveSerializedView(facesContext, state);
         }
     }
 
@@ -192,29 +133,21 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         String serializedState = _stateTokenProcessor.encode(facesContext, savedState);
         ExternalContext extContext = facesContext.getExternalContext();
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(extContext);
-        // Write Javascript viewstate if enabled and if javascript is allowed,
-        // otherwise write hidden input
-        if (JavascriptUtils.isJavascriptAllowed(extContext) && myfacesConfig.isViewStateJavascript())
+
+        responseWriter.startElement(HTML.INPUT_ELEM, null);
+        responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
+        responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+        if (myfacesConfig.isRenderViewStateId())
         {
-            HtmlRendererUtils.renderViewStateJavascript(facesContext, STANDARD_STATE_SAVING_PARAM, serializedState);
+            // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+            // JSF 2.2 if javax.faces.ViewState is used as the id, in portlet
+            // case it will be duplicate ids and that not xml friendly.
+            responseWriter.writeAttribute(HTML.ID_ATTR,
+                HtmlResponseStateManager.generateUpdateViewStateId(
+                    facesContext), null);
         }
-        else
-        {
-            responseWriter.startElement(HTML.INPUT_ELEM, null);
-            responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-            responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
-            if (myfacesConfig.isRenderViewStateId())
-            {
-                // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
-                // JSF 2.2 if javax.faces.ViewState is used as the id, in portlet
-                // case it will be duplicate ids and that not xml friendly.
-                responseWriter.writeAttribute(HTML.ID_ATTR,
-                    HtmlResponseStateManager.generateUpdateViewStateId(
-                        facesContext), null);
-            }
-            responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
-            responseWriter.endElement(HTML.INPUT_ELEM);
-        }
+        responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
+        responseWriter.endElement(HTML.INPUT_ELEM);
     }
 
     private void writeRenderKitIdField(FacesContext facesContext, ResponseWriter responseWriter) throws IOException
@@ -240,44 +173,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             return null;
         }
 
-        if (isHandlingStateCachingMechanics(facesContext))
-        {
-            return getStateCache(facesContext).restoreSerializedView(facesContext, viewId, savedState);
-        }
-        else
-        {
-            return ((Object[])savedState)[STATE_PARAM];
-        }
+        return getStateCache(facesContext).restoreSerializedView(facesContext, viewId, savedState);
     }
-
-    /* There methods are no longer required
-    @Override
-    public Object getTreeStructureToRestore(FacesContext facesContext, String viewId)
-    {
-        // Although this method won't be called anymore,
-        // it has been kept for backward compatibility.
-        Object[] savedState = getSavedState(facesContext);
-        if (savedState == null)
-        {
-            return null;
-        }
-
-        return savedState[TREE_PARAM];
-    }
-
-    @Override
-    public Object getComponentStateToRestore(FacesContext facesContext)
-    {
-        // Although this method won't be called anymore,
-        // it has been kept for backward compatibility.
-        Object[] savedState = getSavedState(facesContext);
-        if (savedState == null)
-        {
-            return null;
-        }
-
-        return savedState[STATE_PARAM];
-    }*/
 
     /**
      * Reconstructs the state from the "javax.faces.ViewState" request parameter.
@@ -298,38 +195,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         Object savedStateObject = _stateTokenProcessor.decode(facesContext, (String)encodedState);
         
-        if (isHandlingStateCachingMechanics(facesContext))
-        {
-            return savedStateObject;
-        }
-        else
-        {
-            Object[] savedState = (Object[]) savedStateObject;
-
-            if (savedState == null)
-            {
-                if (log.isLoggable(Level.FINEST))
-                {
-                    log.finest("No saved state");
-                }
-                return null;
-            }
-
-            String restoredViewId = (String)savedState[VIEWID_PARAM];
-
-            if (restoredViewId == null)
-            {
-                // no saved state or state of different viewId
-                if (log.isLoggable(Level.FINEST))
-                {
-                    log.finest("No saved state or state of a different viewId: " + restoredViewId);
-                }
-
-                return null;
-            }
-
-            return savedState;
-        }
+        return savedStateObject;
     }
 
     /**
@@ -359,25 +225,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             return null;
         }
         
-        Object state = null;
-        if (isHandlingStateCachingMechanics(facesContext))
-        {
-            state = getStateCache(facesContext).saveSerializedView(facesContext, baseState);
-        }
-        else
-        {
-            //state = baseState;
-            Object[] savedState = new Object[2];
+        Object state = getStateCache(facesContext).saveSerializedView(facesContext, baseState);
 
-            if (state != null)
-            {
-                savedState[STATE_PARAM] = baseState;
-            }
-
-            savedState[VIEWID_PARAM] = facesContext.getViewRoot().getViewId();
-
-            state = savedState;
-        }
         return _stateTokenProcessor.encode(facesContext, state);
     }
 

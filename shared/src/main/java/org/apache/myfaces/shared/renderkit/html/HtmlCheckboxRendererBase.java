@@ -42,7 +42,6 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
@@ -372,8 +371,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof UISelectBoolean)
         {
-            if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                    facesContext.getExternalContext()))
+            if (uiComponent instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
                 
@@ -419,8 +417,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         else
         {
-            if (uiComponent instanceof ClientBehaviorHolder && JavascriptUtils.isJavascriptAllowed(
-                    facesContext.getExternalContext()))
+            if (uiComponent instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
                 

@@ -98,8 +98,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
         encodeBefore(facesContext, writer, uiComponent);
 
         writer.startElement(HTML.LABEL_ELEM, uiComponent);
-        if (uiComponent instanceof ClientBehaviorHolder
-            && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (uiComponent instanceof ClientBehaviorHolder)
         {
             if (!behaviors.isEmpty())
             {

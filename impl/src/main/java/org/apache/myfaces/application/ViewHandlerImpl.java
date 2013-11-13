@@ -369,12 +369,7 @@ public class ViewHandlerImpl extends ViewHandler
                     isWriteStateAfterRenderViewRequired(context))
             {
                 // Only write state marker if javascript view state is disabled
-                ExternalContext extContext = context.getExternalContext();
-                if (!(JavascriptUtils.isJavascriptAllowed(extContext) &&
-                        MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()))
-                {
-                    context.getResponseWriter().write(FORM_STATE_MARKER);
-                }
+                context.getResponseWriter().write(FORM_STATE_MARKER);
             }
             else
             {
@@ -384,12 +379,7 @@ public class ViewHandlerImpl extends ViewHandler
         else
         {
             // Only write state marker if javascript view state is disabled
-            ExternalContext extContext = context.getExternalContext();
-            if (!(JavascriptUtils.isJavascriptAllowed(extContext) &&
-                    MyfacesConfig.getCurrentInstance(extContext).isViewStateJavascript()))
-            {
-                context.getResponseWriter().write(FORM_STATE_MARKER);
-            }
+            context.getResponseWriter().write(FORM_STATE_MARKER);
         }
     }
 

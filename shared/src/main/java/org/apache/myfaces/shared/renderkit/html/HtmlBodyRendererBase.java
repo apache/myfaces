@@ -31,7 +31,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
@@ -61,8 +60,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
         Map<String, List<ClientBehavior>> behaviors = null;
-        if (component instanceof ClientBehaviorHolder && 
-                JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+        if (component instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             if (!behaviors.isEmpty())

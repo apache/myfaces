@@ -34,7 +34,6 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
@@ -136,25 +135,17 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
         {
             long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
             
-            if (JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (behaviors != null && !behaviors.isEmpty() && uiComponent instanceof ClientBehaviorHolder)
             {
-                if (behaviors != null && !behaviors.isEmpty() && uiComponent instanceof ClientBehaviorHolder)
-                {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
-                            facesContext, writer, uiComponent, behaviors);
-                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                            facesContext, writer, uiComponent, behaviors);
-                }
-                else
-                {
-                    CommonPropertyUtils.renderEventPropertiesWithoutOnclick(
-                            writer, commonPropertiesMarked, uiComponent);
-                    CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, uiComponent);
-                }
+                HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
+                        facesContext, writer, uiComponent, behaviors);
+                HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                        facesContext, writer, uiComponent, behaviors);
             }
             else
             {
-                CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer, commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderEventPropertiesWithoutOnclick(
+                        writer, commonPropertiesMarked, uiComponent);
                 CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, uiComponent);
             }
             
@@ -168,8 +159,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
         }
         else
         {
-            if (uiComponent instanceof ClientBehaviorHolder
-                    && JavascriptUtils.isJavascriptAllowed(facesContext.getExternalContext()))
+            if (uiComponent instanceof ClientBehaviorHolder)
             {
                 HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(
                         facesContext, writer, uiComponent, behaviors);
