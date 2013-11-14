@@ -639,7 +639,7 @@ public final class ComponentSupport
     
     public static UIComponent findComponentChildOrFacetFrom(FacesContext facesContext, UIComponent parent, String expr)
     {
-        final char separatorChar = UINamingContainer.getSeparatorChar(facesContext);
+        final char separatorChar = facesContext.getNamingContainerSeparatorChar();
         int separator = expr.indexOf(separatorChar);
         if (separator == -1)
         {
@@ -719,7 +719,7 @@ public final class ComponentSupport
     
     public static String getFindComponentExpression(FacesContext facesContext, UIComponent component)
     {
-        char separatorChar = UINamingContainer.getSeparatorChar(facesContext);
+        char separatorChar = facesContext.getNamingContainerSeparatorChar();
         UIComponent parent = component.getParent();
         StringBuilder sb = new StringBuilder();
         sb.append(component.getId());

@@ -271,7 +271,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
     };
 
-    private class EditableValueHolderState
+    private static class EditableValueHolderState
     {
         private final Object _value;
         private final boolean _localValueSet;
@@ -358,7 +358,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 // Check if the clientId for the component, which we 
                 // are looking for, has a rowIndex attached
-                char separator = UINamingContainer.getSeparatorChar(context);
+                char separator = context.getNamingContainerSeparatorChar();
                 String subId = clientId.substring(baseClientId.length() + 1);
                 //If the char next to baseClientId is the separator one and
                 //the subId matches the regular expression
@@ -1061,13 +1061,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public void markInitialState()
     {
-        if (isRowStatePreserved())
+        if (isRowStatePreserved() && 
+            getFacesContext().getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE))
         {
-            if (getFacesContext().getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE))
-            {
-                _initialDescendantFullComponentState
-                        = saveDescendantInitialComponentStates(getFacesContext(), getChildren().iterator(), false);
-            }
+            _initialDescendantFullComponentState
+                    = saveDescendantInitialComponentStates(getFacesContext(), getChildren().iterator(), false);
         }
         super.markInitialState();
     }
@@ -1549,7 +1547,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
         StringBuilder bld = _getSharedStringBuilder(context);
-        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
+        return bld.append(clientId).append(context.getNamingContainerSeparatorChar()).append(rowIndex).toString();
     }
 
     /**

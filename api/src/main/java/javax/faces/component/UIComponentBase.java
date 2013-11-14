@@ -59,8 +59,6 @@ import java.util.logging.Logger;
 
 
 /**
- * TODO: IMPLEMENT HERE - Delta state saving support
- * 
  * Standard implementation of the UIComponent base class; all standard JSF components extend this class.
  * <p>
  * <i>Disclaimer</i>: The official definition for the behaviour of this class is the JSF 1.1 specification but for legal
@@ -202,7 +200,7 @@ public abstract class UIComponentBase extends UIComponent
                     _updateInView(this, false);
                 }
             }
-            _parent = parent;
+            _parent = null;
         }
         else
         {
@@ -654,12 +652,12 @@ public abstract class UIComponentBase extends UIComponent
     @Override
     public void encodeEnd(FacesContext context) throws IOException
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
         try
         {
-            if (context == null)
-            {
-                throw new NullPointerException("context");
-            }
             setCachedFacesContext(context);
             if (isRendered())
             {
@@ -717,7 +715,7 @@ public abstract class UIComponentBase extends UIComponent
             return null;
         }
 
-        char separatorChar = UINamingContainer.getSeparatorChar(getFacesContext());
+        char separatorChar = getFacesContext().getNamingContainerSeparatorChar();
         UIComponent findBase;
         if (expr.charAt(0) == separatorChar)
         {
@@ -959,7 +957,7 @@ public abstract class UIComponentBase extends UIComponent
             {
                 StringBuilder bld = _getSharedStringBuilder(context);
                 _clientId = bld.append(containerClientId).append(
-                                      UINamingContainer.getSeparatorChar(context)).append(id).toString();
+                                      context.getNamingContainerSeparatorChar()).append(id).toString();
             }
             else
             {
@@ -1147,13 +1145,6 @@ public abstract class UIComponentBase extends UIComponent
             return new _ValueExpressionToValueBinding(expression);
         }
         return null;
-    }
-    
-    public boolean initialStateMarked()
-    {
-        // TODO: IMPLEMENT HERE
-        // FIXME: Nofity EG, this method should be in the specification
-        return super.initialStateMarked();
     }
     
     /**

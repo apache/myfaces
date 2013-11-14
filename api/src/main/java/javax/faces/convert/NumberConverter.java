@@ -62,13 +62,6 @@ public class NumberConverter
     public static final String PATTERN_ID = "javax.faces.converter.NumberConverter.PATTERN";
     public static final String PERCENT_ID = "javax.faces.converter.NumberConverter.PERCENT";
 
-    private static final boolean JAVA_VERSION_14;
-
-    static
-    {
-        JAVA_VERSION_14 = checkJavaVersion14();
-    }
-
     private String _currencyCode;
     private String _currencySymbol;
     private Locale _locale;
@@ -283,14 +276,7 @@ public class NumberConverter
         }
 
         boolean useCurrencyCode;
-        if (JAVA_VERSION_14)
-        {
-            useCurrencyCode = _currencyCode != null;
-        }
-        else
-        {
-            useCurrencyCode = _currencySymbol == null;
-        }
+        useCurrencyCode = _currencyCode != null;
 
         if (useCurrencyCode)
         {
@@ -572,61 +558,6 @@ public class NumberConverter
         _type = type;
         clearInitialState();
     }
-
-    private static boolean checkJavaVersion14()
-    {
-        String version = System.getProperty("java.version");
-        if (version == null)
-        {
-            return false;
-        }
-        byte java14 = 0;
-        for (int idx = version.indexOf('.'), i = 0; idx > 0 || version != null; i++)
-        {
-            if (idx > 0)
-            {
-                byte value = Byte.parseByte(version.substring(0, 1));
-                version = version.substring(idx + 1, version.length());
-                idx = version.indexOf('.');
-                switch (i)
-                {
-                    case 0:
-                        if (value == 1)
-                        {
-                            java14 = 1;
-                            break;
-                        }
-                        else if (value > 1)
-                        {
-                            java14 = 2;
-                        }
-                        // fallthru
-                    case 1:
-                        if (java14 > 0 && value >= 4)
-                        {
-                            java14 = 2;
-                        }
-                        //;
-                        // fallthru
-                    default:
-                        idx = 0;
-                        version = null;
-                        break;
-                }
-            }
-            else
-            {
-                byte value = Byte.parseByte(version.substring(0, 1));
-                if (java14 > 0 && value >= 4)
-                {
-                    java14 = 2;
-                }
-                break;
-            }
-        }
-        return java14 == 2;
-    }
-
 
     private DecimalFormatSymbols getDecimalFormatSymbols()
     {

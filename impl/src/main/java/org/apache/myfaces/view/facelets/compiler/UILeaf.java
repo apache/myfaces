@@ -117,7 +117,7 @@ class UILeaf extends UIComponent implements Map<String, Object>
             {
                 StringBuilder bld = _getSharedStringBuilder(context);
                 _clientId = bld.append(containerClientId).append(
-                                      UINamingContainer.getSeparatorChar(context)).append(id).toString();
+                                      context.getNamingContainerSeparatorChar()).append(id).toString();
             }
             else
             {

@@ -439,12 +439,14 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 
     @JSFProperty
+    @SuppressWarnings("unused")
     private Boolean isDisabled()
     {
         return null;
     }
     
     @JSFProperty
+    @SuppressWarnings("unused")
     private String getFor()
     {
         return null;
@@ -537,7 +539,7 @@ final class _ValueReferenceWrapper
      * The object the reference points to.
      * @return base.
      */
-    public final Object getBase()
+    public Object getBase()
     {
         return base;
     }
@@ -546,7 +548,7 @@ final class _ValueReferenceWrapper
      * The property the reference points to.
      * @return property.
      */
-    public final Object getProperty()
+    public Object getProperty()
     {
         return property;
     }
@@ -622,27 +624,27 @@ final class _ValueReferenceResolver extends ELResolver
     }
 
     // ############################ Standard delegating implementations ############################
-    public final Class<?> getType(final ELContext ctx, final Object base, final Object property)
+    public Class<?> getType(final ELContext ctx, final Object base, final Object property)
     {
         return resolver.getType(ctx, base, property);
     }
 
-    public final void setValue(final ELContext ctx, final Object base, final Object property, final Object value)
+    public void setValue(final ELContext ctx, final Object base, final Object property, final Object value)
     {
         resolver.setValue(ctx, base, property, value);
     }
 
-    public final boolean isReadOnly(final ELContext ctx, final Object base, final Object property)
+    public boolean isReadOnly(final ELContext ctx, final Object base, final Object property)
     {
         return resolver.isReadOnly(ctx, base, property);
     }
 
-    public final Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base)
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base)
     {
         return resolver.getFeatureDescriptors(ctx, base);
     }
 
-    public final Class<?> getCommonPropertyType(final ELContext ctx, final Object base)
+    public Class<?> getCommonPropertyType(final ELContext ctx, final Object base)
     {
         return resolver.getCommonPropertyType(ctx, base);
     }
@@ -674,48 +676,48 @@ final class _ELContextDecorator extends ELContext
      * @return The ELResolver passed into the constructor.
      */
     @Override
-    public final ELResolver getELResolver()
+    public ELResolver getELResolver()
     {
         return interceptingResolver;
     }
 
     // ############################ Standard delegating implementations ############################
-    public final FunctionMapper getFunctionMapper()
+    public FunctionMapper getFunctionMapper()
     {
         return ctx.getFunctionMapper();
     }
 
-    public final VariableMapper getVariableMapper()
+    public VariableMapper getVariableMapper()
     {
         return ctx.getVariableMapper();
     }
 
-    public final void setPropertyResolved(final boolean resolved)
+    public void setPropertyResolved(final boolean resolved)
     {
         ctx.setPropertyResolved(resolved);
     }
 
-    public final boolean isPropertyResolved()
+    public boolean isPropertyResolved()
     {
         return ctx.isPropertyResolved();
     }
 
-    public final void putContext(final Class key, Object contextObject)
+    public void putContext(final Class key, Object contextObject)
     {
         ctx.putContext(key, contextObject);
     }
 
-    public final Object getContext(final Class key)
+    public Object getContext(final Class key)
     {
         return ctx.getContext(key);
     }
 
-    public final Locale getLocale()
+    public Locale getLocale()
     {
         return ctx.getLocale();
     }
 
-    public final void setLocale(final Locale locale)
+    public void setLocale(final Locale locale)
     {
         ctx.setLocale(locale);
     }

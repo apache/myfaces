@@ -131,8 +131,7 @@ public final class HtmlJavaScriptUtils
             ScriptContext context, boolean autoScroll)
     {
 
-        final char separatorChar = UINamingContainer
-                .getSeparatorChar(facesContext);
+        final char separatorChar = facesContext.getNamingContainerSeparatorChar();
         context.prettyLine();
 
         //render a function to create a hidden input, if it doesn't exist
@@ -535,8 +534,7 @@ public final class HtmlJavaScriptUtils
     public static String getClearHiddenCommandFormParamsFunctionName(
             String formName)
     {
-        final char separatorChar = UINamingContainer
-                .getSeparatorChar(FacesContext.getCurrentInstance());
+        final char separatorChar = FacesContext.getCurrentInstance().getNamingContainerSeparatorChar();
         if (formName == null)
         {
             return "'" + HtmlRendererUtils.CLEAR_HIDDEN_FIELD_FN_NAME

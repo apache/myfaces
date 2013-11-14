@@ -453,7 +453,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         UIComponent target = contextComponent.findComponent(id);
         if (target == null)
         {
-            target = contextComponent.findComponent(UINamingContainer.getSeparatorChar(context.getFacesContext()) + id);
+            target = contextComponent.findComponent(
+                context.getFacesContext().getNamingContainerSeparatorChar() + id);
         }
         if (target != null)
         {

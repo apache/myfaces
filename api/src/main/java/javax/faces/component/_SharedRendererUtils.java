@@ -161,19 +161,17 @@ class _SharedRendererUtils
                     converter = facesContext.getApplication().createConverter(
                             componentType);
 
-                    if (converter == null)
+                    if (converter == null && !Object.class.equals(componentType))
                     {
                         // could not obtain a Converter
                         // --> check if we maybe do not really have to convert
-                        if (!Object.class.equals(componentType))
-                        {
-                            // target is not an Object array
-                            // and not a String array (checked some lines above)
-                            // and we do not have a Converter
-                            throw new ConverterException(
-                                    "Could not obtain a Converter for "
-                                            + componentType.getName());
-                        }
+
+                        // target is not an Object array
+                        // and not a String array (checked some lines above)
+                        // and we do not have a Converter
+                        throw new ConverterException(
+                                "Could not obtain a Converter for "
+                                        + componentType.getName());
                     }
                 }
                 // instantiate the array

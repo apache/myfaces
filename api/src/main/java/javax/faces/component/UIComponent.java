@@ -488,7 +488,7 @@ public abstract class UIComponent
             honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
         }
 
-        if (honorCurrentComponentAttributes == Boolean.TRUE)
+        if (Boolean.TRUE.equals(honorCurrentComponentAttributes))
         {
             return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPONENT);
         }
@@ -538,7 +538,7 @@ public abstract class UIComponent
             honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
         }
 
-        if (honorCurrentComponentAttributes == Boolean.TRUE)
+        if (Boolean.TRUE.equals(honorCurrentComponentAttributes))
         {
             return (UIComponent) context.getAttributes().get(UIComponent.CURRENT_COMPOSITE_COMPONENT);
         }
@@ -1141,7 +1141,7 @@ public abstract class UIComponent
             _honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
         }
 
-        if (_honorCurrentComponentAttributes == Boolean.TRUE)
+        if (Boolean.TRUE.equals(_honorCurrentComponentAttributes))
         {
             // Pop the current UIComponent from the FacesContext attributes map so that the previous 
             // UIComponent, if any, becomes the current component.
@@ -1183,29 +1183,26 @@ public abstract class UIComponent
             }
             oldCurrent = (UIComponent) contextAttributes.put(UIComponent.CURRENT_COMPONENT, newCurrent);
 
-            if (oldCurrent != null && oldCurrent._isCompositeComponent())
+            if (oldCurrent != null && oldCurrent._isCompositeComponent() && newCurrent != null)
             {
                 // Recalculate the current composite component
-                if (newCurrent != null)
+                if (newCurrent._isCompositeComponent())
                 {
-                    if (newCurrent._isCompositeComponent())
+                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, newCurrent);
+                }
+                else
+                {
+                    UIComponent previousCompositeComponent = null;
+                    for (int i = componentStack.size()-1; i >= 0; i--)
                     {
-                        contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, newCurrent);
-                    }
-                    else
-                    {
-                        UIComponent previousCompositeComponent = null;
-                        for (int i = componentStack.size()-1; i >= 0; i--)
+                        UIComponent component = componentStack.get(i);
+                        if (component._isCompositeComponent())
                         {
-                            UIComponent component = componentStack.get(i);
-                            if (component._isCompositeComponent())
-                            {
-                                previousCompositeComponent = component;
-                                break;
-                            }
+                            previousCompositeComponent = component;
+                            break;
                         }
-                        contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, previousCompositeComponent);
                     }
+                    contextAttributes.put(UIComponent.CURRENT_COMPOSITE_COMPONENT, previousCompositeComponent);
                 }
             }
         }
@@ -1266,7 +1263,7 @@ public abstract class UIComponent
             _honorCurrentComponentAttributes = _getHonorCurrentComponentAttributes(context);
         }
 
-        if (_honorCurrentComponentAttributes == Boolean.TRUE)
+        if (Boolean.TRUE.equals(_honorCurrentComponentAttributes))
         {
             UIComponent currentComponent = (UIComponent) contextAttributes.get(UIComponent.CURRENT_COMPONENT);
 

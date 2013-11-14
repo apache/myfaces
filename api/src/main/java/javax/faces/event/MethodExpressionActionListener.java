@@ -103,7 +103,7 @@ public class MethodExpressionActionListener implements ActionListener, StateHold
             {
                 do
                 {
-                    if (cause != null && cause instanceof AbortProcessingException)
+                    if (cause instanceof AbortProcessingException)
                     {
                         ape = (AbortProcessingException) cause;
                         break;

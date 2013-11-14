@@ -162,12 +162,6 @@ public class UIViewParameter extends UIInput
         return converter.getAsString (context, this, value);
     }
 
-    @Override
-    public Object getSubmittedValue()
-    {
-        return super.getSubmittedValue();
-    }
-
     @JSFProperty(tagExcluded=true)
     @Override
     public boolean isImmediate()
@@ -267,6 +261,10 @@ public class UIViewParameter extends UIInput
         return delegateRenderer;
     }
 
+    /**
+     * The idea of this method is to be called from AbstractFacesInitializer.
+     */
+    @SuppressWarnings("unused")
     private static void releaseRenderer() 
     {
         if (log.isLoggable(Level.FINEST))

@@ -284,16 +284,6 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     }
     
     @Override
-    public Object saveState(FacesContext context)
-    {
-        // The saveState() method of UIForm must call setSubmitted(false) before calling super.saveState() as an 
-        // extra precaution to ensure the submitted state is not persisted across requests.
-        //setSubmitted(false);
-
-        return super.saveState(context);
-    }
-    
-    @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
         if (!isPrependId())

@@ -379,20 +379,6 @@ public class UISelectMany extends UIInput
         }
     }
 
-    /**
-     * First part is identical to super.validate except the empty condition. Second part: iterate through UISelectItem
-     * and UISelectItems and check current values against these items
-     */
-    @Override
-    public void validate(FacesContext context)
-    {
-        // TODO : Setting the submitted value to null in the super class causes a bug, if set to
-        // null, you'll get the following error :
-        // java.lang.NullPointerException at
-        //org.apache.myfaces.renderkit._SharedRendererUtils.getConvertedUISelectManyValue(_SharedRendererUtils.java:118)
-        super.validate(context);
-    }
-
     @Override
     protected Object getConvertedValue(FacesContext context, Object submittedValue) throws ConverterException
     {

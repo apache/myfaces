@@ -268,7 +268,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
 
         StringBuilder bld = _getBuffer(); //SharedStringBuilder(context);
-        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(index).toString();
+        return bld.append(clientId).append(context.getNamingContainerSeparatorChar()).append(index).toString();
     }
     
     private RepeatStatus _getRepeatStatus()
@@ -1011,7 +1011,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 // Check if the clientId for the component, which we 
                 // are looking for, has a rowIndex attached
-                char separator = UINamingContainer.getSeparatorChar(context);
+                char separator = context.getNamingContainerSeparatorChar();
                 String subId = clientId.substring(baseClientId.length() + 1);
                 //If the char next to baseClientId is the separator one and
                 //the subId matches the regular expression

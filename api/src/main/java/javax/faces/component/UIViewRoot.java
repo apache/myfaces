@@ -616,19 +616,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
-     * DO NOT USE.
-     * <p>
-     * As this component has no "id" property, it has no clientId property either.
-     */
-    @Override
-    public String getClientId(FacesContext context)
-    {
-        return super.getClientId(context);
-        // Call parent method due to TCK problems
-        // return null;
-    }
-
-    /**
      * @since 2.0
      */
     public List<UIComponent> getComponentResources(FacesContext context, String target)
@@ -1278,26 +1265,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         // throw new UnsupportedOperationException();
     }
 
-    /**
-     * DO NOT USE.
-     * <p>
-     * Although this class extends a base-class that defines a read/write id property, it makes no sense for this
-     * particular subclass to support it. The tag library does not export this property for use, but there is no way to
-     * "undeclare" a java method. Yes, this is broken OO design: direct all complaints to the JSF spec group.
-     * <p>
-     * This property should be disabled (ie throw an exception if invoked). However there are currently several places
-     * that call this method (eg during restoreState) so it just does the normal thing for the moment. TODO: fix callers
-     * then make this throw an exception.
-     *
-     * @JSFProperty tagExcluded="true"
-     */
+    @JSFProperty(tagExcluded=true)
     @Override
     public void setId(String id)
     {
-        // throw new UnsupportedOperationException();
-
-        // Leave enabled for now. Things like the TreeStructureManager call this,
-        // even though they probably should not.
         super.setId(id);
     }
     
@@ -1838,7 +1809,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     /**
      * Agregates events for ANY_PHASE and current phase 
      */
-    private class Events
+    private static class Events
     {
         
         private final List<FacesEvent> _anyPhase;

@@ -206,7 +206,7 @@ public final class RendererUtils
         {
             if (parent instanceof NamingContainer)
             {
-                idBuf.insert(0, UINamingContainer.getSeparatorChar(context));
+                idBuf.insert(0, context.getNamingContainerSeparatorChar());
                 idBuf.insert(0, parent.getId());
             }
         }
@@ -1263,8 +1263,7 @@ public final class RendererUtils
         UIComponent forComponent = uiComponent.findComponent(forAttr);
         if (forComponent == null)
         {
-            final char separatorChar = UINamingContainer
-                    .getSeparatorChar(facesContext);
+            final char separatorChar = facesContext.getNamingContainerSeparatorChar();
             
             Level level = Level.WARNING;
             boolean productionStage = facesContext.isProjectStage(ProjectStage.Production);

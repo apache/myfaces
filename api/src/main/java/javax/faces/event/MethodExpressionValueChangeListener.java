@@ -100,7 +100,7 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
             {
                 do
                 {
-                    if (cause != null && cause instanceof AbortProcessingException)
+                    if (cause instanceof AbortProcessingException)
                     {
                         ape = (AbortProcessingException) cause;
                         break;

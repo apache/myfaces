@@ -293,7 +293,7 @@ public class PartialVisitContext extends VisitContext
   // out the trailing id segmetn.
   private String _getIdFromClientId(String clientId)
   {
-    final char separator = UINamingContainer.getSeparatorChar(_facesContext);
+    final char separator = getFacesContext().getNamingContainerSeparatorChar();
     int lastIndex = clientId.lastIndexOf(separator);
 
     String id = null;
@@ -323,7 +323,7 @@ public class PartialVisitContext extends VisitContext
     // each ancestor NamingContainer client id.  For each ancestor
     // NamingContainer, add an entry into the map for the full client
     // id.
-    final char separator = UINamingContainer.getSeparatorChar(_facesContext);
+    final char separator = getFacesContext().getNamingContainerSeparatorChar();
     
     int length = clientId.length();
 

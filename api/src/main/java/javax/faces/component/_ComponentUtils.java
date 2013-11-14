@@ -136,7 +136,7 @@ class _ComponentUtils
      */
     static UIComponent findComponent(UIComponent findBase, String id, final char separatorChar)
     {
-        if (!(findBase instanceof NamingContainer) && idsAreEqual(id, findBase, separatorChar))
+        if (!(findBase instanceof NamingContainer) && idsAreEqual(id, findBase))
         {
             return findBase;
         }
@@ -154,7 +154,7 @@ class _ComponentUtils
                         return find;
                     }
                 }
-                else if (idsAreEqual(id, facet, separatorChar))
+                else if (idsAreEqual(id, facet))
                 {
                     return facet;
                 }
@@ -172,13 +172,13 @@ class _ComponentUtils
                     return find;
                 }
             }
-            else if (idsAreEqual(id, child, separatorChar))
+            else if (idsAreEqual(id, child))
             {
                 return child;
             }
         }
 
-        if (findBase instanceof NamingContainer && idsAreEqual(id, findBase, separatorChar))
+        if (findBase instanceof NamingContainer && idsAreEqual(id, findBase))
         {
             return findBase;
         }
@@ -254,33 +254,14 @@ class _ComponentUtils
      * Return true if the specified component matches the provided id. This needs some quirks to handle components whose
      * id value gets dynamically "tweaked", eg a UIData component whose id gets the current row index appended to it.
      */
-    private static boolean idsAreEqual(String id, UIComponent cmp, final char separatorChar)
+    private static boolean idsAreEqual(String id, UIComponent cmp)
     {
         if (id.equals(cmp.getId()))
         {
             return true;
         }
 
-        /* By the spec, findComponent algorithm does not take into account UIData.rowIndex() property,
-         * because it just scan over nested plain ids. 
-        if (cmp instanceof UIData)
-        {
-            UIData uiData = ((UIData)cmp);
-
-            if (uiData.getRowIndex() == -1)
-            {
-                return dynamicIdIsEqual(id, cmp.getId());
-            }
-            return id.equals(cmp.getId() + separatorChar + uiData.getRowIndex());
-        }
-        */
-
         return false;
-    }
-
-    private static boolean dynamicIdIsEqual(String dynamicId, String id)
-    {
-        return dynamicId.matches(id + ":[0-9]*");
     }
 
     static void callValidators(FacesContext context, UIInput input, Object convertedValue)

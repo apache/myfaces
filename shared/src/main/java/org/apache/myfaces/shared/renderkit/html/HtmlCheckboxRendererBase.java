@@ -335,7 +335,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         String clientId = uiComponent.getClientId(facesContext);
 
         String itemId = (itemNum == null)? null : clientId + 
-                UINamingContainer.getSeparatorChar(facesContext) + itemNum;
+                facesContext.getNamingContainerSeparatorChar() + itemNum;
 
         ResponseWriter writer = facesContext.getResponseWriter();
 

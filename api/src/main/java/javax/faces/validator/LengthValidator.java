@@ -238,12 +238,14 @@ public class LengthValidator
     }
     
     @JSFProperty(faceletsOnly=true)
+    @SuppressWarnings("unused")
     private Boolean isDisabled()
     {
         return null;
     }
     
     @JSFProperty(faceletsOnly=true)
+    @SuppressWarnings("unused")
     private String getFor()
     {
         return null;

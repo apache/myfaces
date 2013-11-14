@@ -43,8 +43,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  */
 public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
 {
-    //private static final Log log = LogFactory.getLog (PreJsf2ExceptionHandlerFactory.class);
-    private static final Logger log = Logger.getLogger(PreJsf2ExceptionHandlerFactory.class.getName());
     
     public PreJsf2ExceptionHandlerFactory()
     {

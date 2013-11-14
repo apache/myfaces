@@ -34,11 +34,6 @@ class _LabeledFacesMessage extends FacesMessage
         super();
     }
 
-    public _LabeledFacesMessage(Severity severity, String summary, String detail, Object args[])
-    {
-        super(severity, summary, detail);
-    }
-
     public _LabeledFacesMessage(Severity severity, String summary, String detail)
     {
         super(severity, summary, detail);

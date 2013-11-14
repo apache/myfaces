@@ -69,7 +69,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         if (targetsArray.length > 0)
         {
             List<UIComponent> targetsList = new ArrayList<UIComponent>(targetsArray.length);
-            final char separatorChar = UINamingContainer.getSeparatorChar(facesContext);
+            final char separatorChar = facesContext.getNamingContainerSeparatorChar();
             UIComponent facetBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
             for (String target : targetsArray)
             {

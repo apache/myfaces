@@ -319,7 +319,7 @@ public class HtmlRadioRendererBase
         String clientId = uiComponent.getClientId(facesContext);
 
         String itemId = (itemNum == null)? null : clientId + 
-                UINamingContainer.getSeparatorChar(facesContext) + itemNum;
+                facesContext.getNamingContainerSeparatorChar() + itemNum;
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
