@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
 

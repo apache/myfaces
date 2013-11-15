@@ -37,7 +37,6 @@ import javax.faces.FacesException;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutcomeTarget;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIParameter;
@@ -196,7 +195,7 @@ public final class HtmlRendererUtils
     {
         if (obj instanceof String)
         {
-            return new Boolean((String) obj);
+            return Boolean.valueOf((String) obj);
         }
         if (!(obj instanceof Boolean))
         {
@@ -829,7 +828,7 @@ public final class HtmlRendererUtils
      * @return
      * @throws IOException
      */
-    public static final boolean renderHTMLStringPreserveEmptyAttribute(ResponseWriter writer,
+    public static boolean renderHTMLStringPreserveEmptyAttribute(ResponseWriter writer,
             String componentProperty, String htmlAttrName, String value)
             throws IOException
     {
@@ -848,7 +847,7 @@ public final class HtmlRendererUtils
      * @param value
      * @return
      */
-    private static final boolean isDefaultStringPreserveEmptyAttributeValue(String value)
+    private static boolean isDefaultStringPreserveEmptyAttributeValue(String value)
     {
         if (value == null)
         {
@@ -871,7 +870,7 @@ public final class HtmlRendererUtils
      * @return
      * @throws IOException
      */
-    public static final boolean renderHTMLStringAttribute(ResponseWriter writer,
+    public static boolean renderHTMLStringAttribute(ResponseWriter writer,
             UIComponent component, String componentProperty, String htmlAttrName)
             throws IOException
     {
@@ -895,7 +894,7 @@ public final class HtmlRendererUtils
      * @return
      * @throws IOException
      */
-    public static final boolean renderHTMLStringAttribute(ResponseWriter writer,
+    public static boolean renderHTMLStringAttribute(ResponseWriter writer,
             String componentProperty, String htmlAttrName, String value)
             throws IOException
     {
@@ -913,7 +912,7 @@ public final class HtmlRendererUtils
      * @param value
      * @return
      */
-    private static final boolean isDefaultStringAttributeValue(String value)
+    private static boolean isDefaultStringAttributeValue(String value)
     {
         if (value == null)
         {
@@ -1807,17 +1806,6 @@ public final class HtmlRendererUtils
      *         an empty string if none is present
      * @since 4.0.0
      */
-    private static boolean getClientBehaviorScript(FacesContext facesContext,
-            UIComponent uiComponent, String eventName,
-            Map<String, List<ClientBehavior>> clientBehaviors,
-            ScriptContext target,
-            Collection<ClientBehaviorContext.Parameter> params)
-    {
-        return getClientBehaviorScript(facesContext, uiComponent,
-                uiComponent.getClientId(facesContext), eventName,
-                clientBehaviors, target, params);
-    }
-
     private static boolean getClientBehaviorScript(FacesContext facesContext,
             UIComponent uiComponent, String targetClientId, String eventName,
             Map<String, List<ClientBehavior>> clientBehaviors,

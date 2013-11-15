@@ -1162,7 +1162,7 @@ public abstract class HTMLEncoder
         throws IOException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(10);
-        StringBuilder builder = new StringBuilder();
+
         try
         {
             OutputStreamWriter writer = new OutputStreamWriter(baos,characterEncoding);

@@ -21,15 +21,10 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 
 import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlFormRendererBase;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 
 
 /**

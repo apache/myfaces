@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.shared.util.SubKeyMap;
 import org.apache.myfaces.spi.ViewScopeProvider;
 
 /**

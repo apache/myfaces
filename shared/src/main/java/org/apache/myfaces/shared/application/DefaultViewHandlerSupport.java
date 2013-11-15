@@ -129,7 +129,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                 throw new InvalidViewIdException();
             }
         }
-        else if (viewId != null && mapping.getUrlPattern().startsWith(viewId))
+        else if (mapping.getUrlPattern().startsWith(viewId))
         {
             throw new InvalidViewIdException(viewId);
         }
@@ -164,7 +164,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                 // considered invalid, because jsp vdl will use RequestDispatcher and cause
                 // a loop that ends in a exception. Note in portlet mode the view
                 // could be encoded as a query param, so the viewId could be valid.
-                if (viewId != null && viewId.equals(mapping.getPrefix()) &&
+                if (viewId.equals(mapping.getPrefix()) &&
                     !ExternalContextUtils.isPortlet(context.getExternalContext()))
                 {
                     throw new InvalidViewIdException();
@@ -173,7 +173,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                 return (checkResourceExists(context,viewId) ? viewId : null);
             }
         }
-        else if (viewId != null && mapping.getUrlPattern().startsWith(viewId))
+        else if (mapping.getUrlPattern().startsWith(viewId))
         {
             throw new InvalidViewIdException(viewId);
         }

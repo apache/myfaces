@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.shared.context.flash;
 
+import org.apache.myfaces.shared.util.SubKeyMap;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 

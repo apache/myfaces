@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.context.flash;
+package org.apache.myfaces.shared.util;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -41,7 +41,7 @@ import java.util.Set;
  * "flaw" is actually relied on by PageFlowScopeMap (since it provides
  * a handy way to clear out all descendents), so don't "fix" it!
  */
-final class SubKeyMap<V> extends AbstractMap<String, V>
+public final class SubKeyMap<V> extends AbstractMap<String, V>
 {
     public SubKeyMap(Map<String, Object> base, String prefix)
     {

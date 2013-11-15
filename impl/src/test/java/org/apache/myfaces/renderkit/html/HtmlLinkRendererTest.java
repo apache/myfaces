@@ -150,53 +150,6 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         }
     }
     
-    public void testJSNotAllowedHtmlPropertyPassTru() throws Exception
-    {
-        HtmlRenderedAttr[] attrs = {
-            //_AccesskeyProperty
-            new HtmlRenderedAttr("accesskey"),
-            //_UniversalProperties
-            new HtmlRenderedAttr("dir"), 
-            new HtmlRenderedAttr("lang"), 
-            new HtmlRenderedAttr("title"),
-            //_FocusBlurProperties
-            new HtmlRenderedAttr("onfocus"), 
-            new HtmlRenderedAttr("onblur"),
-            //_EventProperties
-            new HtmlRenderedAttr("onclick"), 
-            new HtmlRenderedAttr("ondblclick"), 
-            new HtmlRenderedAttr("onkeydown"), 
-            new HtmlRenderedAttr("onkeypress"),
-            new HtmlRenderedAttr("onkeyup"), 
-            new HtmlRenderedAttr("onmousedown"), 
-            new HtmlRenderedAttr("onmousemove"), 
-            new HtmlRenderedAttr("onmouseout"),
-            new HtmlRenderedAttr("onmouseover"), 
-            new HtmlRenderedAttr("onmouseup"),
-            //_StyleProperties
-            new HtmlRenderedAttr("style"), 
-            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
-            //_TabindexProperty
-            new HtmlRenderedAttr("tabindex")
-        };
-
-        
-        commandLink.setValue("outputdata");
-        
-        MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT", "false");
-        MockExternalContext mockExtCtx = new MockExternalContext(servletContext, 
-                new MockHttpServletRequest(), new MockHttpServletResponse());
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(mockExtCtx);
-        facesContext.setExternalContext(mockExtCtx);
-        
-        HtmlCheckAttributesUtil.checkRenderedAttributes(
-                commandLink, facesContext, writer, attrs);
-        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
-        }
-    }
-    
     public void testOutputLink() throws Exception 
     {
         HtmlRenderedAttr[] attrs = {

@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
 import javax.faces.component.UISelectBoolean;
 import javax.faces.component.UISelectMany;
 import javax.faces.component.UISelectOne;

@@ -52,8 +52,6 @@ import org.apache.myfaces.application.viewstate.StateCacheUtils;
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.InvalidViewIdException;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
-import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 /**

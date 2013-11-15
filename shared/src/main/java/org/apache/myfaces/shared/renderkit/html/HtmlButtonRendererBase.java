@@ -30,11 +30,9 @@ import javax.faces.component.UIParameter;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHint;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlCommandLink;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
@@ -173,8 +171,6 @@ public class HtmlButtonRendererBase
 
         writer.writeAttribute(HTML.ID_ATTR, clientId, org.apache.myfaces.shared.renderkit.JSFAttr.ID_ATTR);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, JSFAttr.ID_ATTR);
-
-        ExternalContext externalContext = facesContext.getExternalContext();
 
         String image = RendererUtils.getIconSrc(facesContext, uiComponent, JSFAttr.IMAGE_ATTR);
         if (image != null)
@@ -327,22 +323,6 @@ public class HtmlButtonRendererBase
         }*/
     }
 
-    private boolean hasSubmittingBehavior(Map<String, List<ClientBehavior>> clientBehaviors, String eventName)
-    {
-        List<ClientBehavior> eventBehaviors = clientBehaviors.get(eventName);
-        if (eventBehaviors != null && !eventBehaviors.isEmpty())
-        {
-            for (ClientBehavior behavior : eventBehaviors)
-            {
-                if (behavior.getHints().contains(ClientBehaviorHint.SUBMITTING))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
     protected String buildBehaviorizedOnClick(UIComponent uiComponent, Map<String, List<ClientBehavior>> behaviors, 
                                               FacesContext facesContext, ResponseWriter writer, 
                                               FormInfo nestedFormInfo, List<UIParameter> validParams)
@@ -419,7 +399,7 @@ public class HtmlButtonRendererBase
         }
         else
         {
-            StringBuilder params = addChildParameters(facesContext, component, nestingForm, validParams);
+            StringBuilder params = addChildParameters(facesContext, nestingForm, validParams);
 
             String target = getTarget(component);
 
@@ -445,7 +425,7 @@ public class HtmlButtonRendererBase
         return onClick.toString();
     }
     
-    private StringBuilder addChildParameters(FacesContext context, UIComponent component, 
+    private StringBuilder addChildParameters(FacesContext context, 
             UIComponent nestingForm, List<UIParameter> validParams)
     {
         //add child parameters
@@ -585,7 +565,7 @@ public class HtmlButtonRendererBase
             if (validParams != null && !validParams.isEmpty() )
             {
                 StringBuilder params = addChildParameters(
-                        facesContext, uiComponent, nestedFormInfo.getForm(), validParams);
+                        facesContext, nestedFormInfo.getForm(), validParams);
 
                 String target = getTarget(uiComponent);
 
@@ -688,15 +668,6 @@ public class HtmlButtonRendererBase
         }
         return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
                 uiComponent, HTML.READONLY_ATTR, false);
-    }
-
-    private String getImage(UIComponent uiComponent)
-    {
-        if (uiComponent instanceof HtmlCommandButton)
-        {
-            return ((HtmlCommandButton)uiComponent).getImage();
-        }
-        return (String)uiComponent.getAttributes().get(JSFAttr.IMAGE_ATTR);
     }
 
     private String getType(UIComponent uiComponent)

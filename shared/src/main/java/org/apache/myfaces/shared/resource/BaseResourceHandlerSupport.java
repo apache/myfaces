@@ -51,6 +51,10 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
     private static final String CACHED_SERVLET_MAPPING =
         BaseResourceHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
     
+    private static final ResourceLoader[] EMPTY_RESOURCE_LOADERS = new ResourceLoader[]{}; 
+    private static final ContractResourceLoader[] EMPTY_CONTRACT_RESOURCE_LOADERS = 
+        new ContractResourceLoader[]{}; 
+    
     private Long _startupTime;
     
     private Long _maxTimeExpires;
@@ -62,17 +66,17 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
     
     public ResourceLoader[] getResourceLoaders()
     {
-        return null;
+        return EMPTY_RESOURCE_LOADERS;
     }
     
     public ContractResourceLoader[] getContractResourceLoaders()
     {
-        return null;
+        return EMPTY_CONTRACT_RESOURCE_LOADERS;
     }
     
     public ResourceLoader[] getViewResourceLoaders()
     {
-        return null;
+        return EMPTY_RESOURCE_LOADERS;
     }
 
     public String calculateResourceBasePath(FacesContext facesContext)

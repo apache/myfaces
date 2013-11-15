@@ -440,7 +440,7 @@ public class HtmlResponseWriterImpl
                     // same here. After all, it is resposibility of the one who set the passthrough
                     // attribute to do the proper encoding in cases when a URI is provided. However,
                     // that does not means the attribute should not be encoded as other attributes.
-                    encodeAndWriteAttribute(key, value, key);
+                    encodeAndWriteAttribute(key, value);
                 }
             }
 
@@ -852,7 +852,7 @@ public class HtmlResponseWriterImpl
         }
     }
     
-    private void encodeAndWriteAttribute(String name, Object value, String componentPropertyName) throws IOException
+    private void encodeAndWriteAttribute(String name, Object value) throws IOException
     {
         String strValue = (value==null)?"":value.toString();
         _currentWriter.write(' ');
@@ -881,10 +881,10 @@ public class HtmlResponseWriterImpl
             return;
         }
         
-        encodeAndWriteURIAttribute(name, value, componentPropertyName);
+        encodeAndWriteURIAttribute(name, value);
     }
     
-    private void encodeAndWriteURIAttribute(String name, Object value, String componentPropertyName) throws IOException
+    private void encodeAndWriteURIAttribute(String name, Object value) throws IOException
     {
         String strValue = value.toString();
         _currentWriter.write(' ');

@@ -48,7 +48,6 @@ import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIInput;
-import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UISelectMany;
 import javax.faces.component.UISelectOne;
@@ -974,7 +973,7 @@ public final class RendererUtils
         //To be compatible with jsf ri, and according to issue 69
         //[  Permit the passing of a null value to SelectItem.setValue()  ]
         //If submittedValue == "" then convert to null.
-        if ((submittedValue != null) && (submittedValue instanceof String)
+        if ((submittedValue != null)
                 && ("".equals(submittedValue)))
         {
             //Replace "" by null value
@@ -1189,28 +1188,6 @@ public final class RendererUtils
         dest.setTabindex(src.getTabindex());
         dest.setTitle(src.getTitle());
         dest.setValidator(src.getValidator());
-    }
-
-    /**
-     * @deprecated Logic corrected and encapsulated better in org.apache.myfaces.renderkit.ServerSideStateCacheImpl
-     */
-    @Deprecated
-    public static Integer getViewSequence(FacesContext facescontext)
-    {
-        Map map = facescontext.getExternalContext().getRequestMap();
-        Integer sequence = (Integer) map.get(SEQUENCE_PARAM);
-        if (sequence == null)
-        {
-            sequence = new Integer(1);
-            map.put(SEQUENCE_PARAM, sequence);
-
-            synchronized (facescontext.getExternalContext().getSession(true))
-            {
-                facescontext.getExternalContext().getSessionMap()
-                        .put(RendererUtils.SEQUENCE_PARAM, sequence);
-            }
-        }
-        return sequence;
     }
 
     public static UIComponent findComponent(UIComponent headerComp, Class clazz)
@@ -1430,7 +1407,7 @@ public final class RendererUtils
             }
         }
 
-        return content.toString();
+        return content != null ? content.toString() : null;
     }
 
     /**

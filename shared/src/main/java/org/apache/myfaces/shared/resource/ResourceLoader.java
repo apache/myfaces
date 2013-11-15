@@ -101,7 +101,7 @@ public abstract class ResourceLoader
         _versionComparator = versionComparator;
     }
 
-    public class VersionComparator implements Comparator<String>
+    public static class VersionComparator implements Comparator<String>
     {
 
         public int compare(String s1, String s2)

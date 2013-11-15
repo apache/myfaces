@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.shared.config;
 
-import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
@@ -45,9 +44,6 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
  */
 public class MyfacesConfig
 {
-    //private static final Log log = LogFactory.getLog(MyfacesConfig.class);
-    private static final Logger log = Logger.getLogger(MyfacesConfig.class.getName());
-
     private static final String APPLICATION_MAP_PARAM_NAME = MyfacesConfig.class.getName();
 
     /**

@@ -42,7 +42,6 @@ public class ValueExpressionFilterInputStream extends InputStream
     private String libraryName;
     private String resourceName;
     private String contractName;
-    private Resource resource;
     
     public ValueExpressionFilterInputStream(InputStream in, String libraryName, String resourceName)
     {
@@ -57,7 +56,6 @@ public class ValueExpressionFilterInputStream extends InputStream
     {
         super();
         delegate = new DynamicPushbackInputStream(in,300);
-        this.resource = resource;
         this.libraryName = resource.getLibraryName();
         this.resourceName = resource.getResourceName();
         this.contractName = (resource instanceof ContractResource) ? 

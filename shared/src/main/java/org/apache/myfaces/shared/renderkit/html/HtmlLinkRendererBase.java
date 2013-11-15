@@ -1120,27 +1120,6 @@ public abstract class HtmlLinkRendererBase
             writer.flush();
         }
     }
-    
-
-    private void renderLinkParameter(String name,
-                                     Object value,
-                                     StringBuilder onClick,
-                                     String jsForm,
-                                     UIComponent nestingForm)
-    {
-        if (name == null)
-        {
-            throw new IllegalArgumentException("Unnamed parameter value not allowed within command link.");
-        }
-        onClick.append(jsForm);
-        onClick.append(".elements['").append(name).append("']");
-        //UIParameter is no ValueHolder, so no conversion possible
-        String strParamValue = value != null ? org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                value.toString(), false, false) : "";
-        onClick.append(".value='").append(strParamValue).append("';");
-
-        addHiddenCommandParameter(FacesContext.getCurrentInstance(), nestingForm, name);
-    }
 
     private static void addParameterToHref(String name,
                                            Object value,

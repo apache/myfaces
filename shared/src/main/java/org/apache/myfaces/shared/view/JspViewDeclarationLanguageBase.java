@@ -264,7 +264,6 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
     if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isMyfacesImplAvailable())
     {
       // In MyFaces the viewState key is already encoded is server side state saving is being used
-      StateManager stateManager = context.getApplication().getStateManager();
       return !context.getApplication().getStateManager().isSavingStateInClient(context);
     }
     else

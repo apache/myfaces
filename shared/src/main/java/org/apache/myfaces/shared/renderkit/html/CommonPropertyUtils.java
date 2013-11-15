@@ -43,7 +43,7 @@ public final class CommonPropertyUtils
         return component.getId() != null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX);
     }
 
-    public static final void renderUniversalProperties(ResponseWriter writer,
+    public static void renderUniversalProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
@@ -69,7 +69,7 @@ public final class CommonPropertyUtils
         }
     }
     
-    public static final void renderUniversalPropertiesWithoutTitle(ResponseWriter writer,
+    public static void renderUniversalPropertiesWithoutTitle(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
@@ -90,7 +90,7 @@ public final class CommonPropertyUtils
         }
     }
 
-    public static final void renderStyleProperties(ResponseWriter writer,
+    public static void renderStyleProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
@@ -106,7 +106,7 @@ public final class CommonPropertyUtils
         }
     }
 
-    public static final void renderEventProperties(ResponseWriter writer,
+    public static void renderEventProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
@@ -118,7 +118,7 @@ public final class CommonPropertyUtils
         renderEventPropertiesWithoutOnclick(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderEventPropertiesWithoutOnclick(ResponseWriter writer,
+    public static void renderEventPropertiesWithoutOnclick(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
@@ -170,7 +170,7 @@ public final class CommonPropertyUtils
     }
     
     
-    public static final void renderChangeSelectEventProperties(ResponseWriter writer,
+    public static void renderChangeSelectEventProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
@@ -186,7 +186,7 @@ public final class CommonPropertyUtils
         }
     }
     
-    public static final void renderFocusBlurEventProperties(ResponseWriter writer,
+    public static void renderFocusBlurEventProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
@@ -202,7 +202,7 @@ public final class CommonPropertyUtils
         }
     }
     
-    public static final void renderFieldEventPropertiesWithoutOnchangeAndOnselect(ResponseWriter writer,
+    public static void renderFieldEventPropertiesWithoutOnchangeAndOnselect(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) throws IOException
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0)
@@ -217,7 +217,7 @@ public final class CommonPropertyUtils
         }
     }
     
-    public static final void renderFieldEventPropertiesWithoutOnchange(ResponseWriter writer,
+    public static void renderFieldEventPropertiesWithoutOnchange(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) throws IOException
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0)
@@ -237,7 +237,7 @@ public final class CommonPropertyUtils
         }
     }
     
-    public static final void renderChangeEventProperty(ResponseWriter writer,
+    public static void renderChangeEventProperty(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) throws IOException
     {
         if ((commonPropertiesMarked & CommonPropertyConstants.ONCHANGE_PROP) != 0)
@@ -279,7 +279,7 @@ public final class CommonPropertyUtils
         }
     }
 
-    public static final void renderInputProperties(ResponseWriter writer,
+    public static void renderInputProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -315,7 +315,7 @@ public final class CommonPropertyUtils
         }        
     }
     
-    public static final void renderAnchorProperties(ResponseWriter writer,
+    public static void renderAnchorProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -362,7 +362,7 @@ public final class CommonPropertyUtils
         }        
     }
 
-    public static final void renderCommonPassthroughPropertiesWithoutEvents(ResponseWriter writer,
+    public static void renderCommonPassthroughPropertiesWithoutEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
@@ -370,7 +370,7 @@ public final class CommonPropertyUtils
         renderUniversalProperties(writer, commonPropertiesMarked, component);
     }    
     
-    public static final void renderCommonPassthroughProperties(ResponseWriter writer,
+    public static void renderCommonPassthroughProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
@@ -380,7 +380,7 @@ public final class CommonPropertyUtils
     }
 
     //Methods 
-    public static final void renderCommonFieldEventProperties(ResponseWriter writer,
+    public static void renderCommonFieldEventProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
@@ -388,7 +388,7 @@ public final class CommonPropertyUtils
         renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
     }
 
-    public static final void renderCommonFieldPassthroughPropertiesWithoutDisabled(ResponseWriter writer,
+    public static void renderCommonFieldPassthroughPropertiesWithoutDisabled(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
@@ -397,7 +397,7 @@ public final class CommonPropertyUtils
         renderCommonFieldEventProperties(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
+    public static void renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
@@ -405,7 +405,7 @@ public final class CommonPropertyUtils
         renderAccesskeyTabindexProperties(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderInputPassthroughPropertiesWithoutDisabled(ResponseWriter writer,
+    public static void renderInputPassthroughPropertiesWithoutDisabled(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -413,7 +413,7 @@ public final class CommonPropertyUtils
         renderCommonFieldPassthroughPropertiesWithoutDisabled(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderInputPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
+    public static void renderInputPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -421,7 +421,7 @@ public final class CommonPropertyUtils
         renderCommonFieldPassthroughPropertiesWithoutDisabledAndEvents(writer, commonPropertiesMarked, component);
     }
 
-    public static final void renderAnchorPassthroughProperties(ResponseWriter writer,
+    public static void renderAnchorPassthroughProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -430,7 +430,7 @@ public final class CommonPropertyUtils
         renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderAnchorPassthroughPropertiesWithoutEvents(ResponseWriter writer,
+    public static void renderAnchorPassthroughPropertiesWithoutEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -439,7 +439,7 @@ public final class CommonPropertyUtils
         renderUniversalProperties(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderAnchorPassthroughPropertiesWithoutStyleAndEvents(ResponseWriter writer,
+    public static void renderAnchorPassthroughPropertiesWithoutStyleAndEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -447,7 +447,7 @@ public final class CommonPropertyUtils
         renderUniversalProperties(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderAnchorPassthroughPropertiesWithoutStyle(ResponseWriter writer,
+    public static void renderAnchorPassthroughPropertiesWithoutStyle(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -457,7 +457,7 @@ public final class CommonPropertyUtils
         renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderAnchorPassthroughPropertiesWithoutOnclickAndStyle(ResponseWriter writer,
+    public static void renderAnchorPassthroughPropertiesWithoutOnclickAndStyle(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -467,7 +467,7 @@ public final class CommonPropertyUtils
         renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
     }
 
-    public static final void renderButtonPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
+    public static void renderButtonPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
     {
@@ -477,7 +477,7 @@ public final class CommonPropertyUtils
         renderAltAlignProperties(writer, commonPropertiesMarked, component);
     }
 
-    public static final void renderLabelProperties(ResponseWriter writer,
+    public static void renderLabelProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
@@ -490,7 +490,7 @@ public final class CommonPropertyUtils
     }
 
     
-    public static final void renderLabelPassthroughProperties(ResponseWriter writer,
+    public static void renderLabelPassthroughProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
@@ -498,7 +498,7 @@ public final class CommonPropertyUtils
         renderCommonPassthroughProperties(writer, commonPropertiesMarked, component);
     }
 
-    public static final void renderLabelPassthroughPropertiesWithoutEvents(ResponseWriter writer,
+    public static void renderLabelPassthroughPropertiesWithoutEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
@@ -510,14 +510,14 @@ public final class CommonPropertyUtils
         renderCommonPassthroughPropertiesWithoutEvents(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderSelectPassthroughPropertiesWithoutDisabled(ResponseWriter writer,
+    public static void renderSelectPassthroughPropertiesWithoutDisabled(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {
         renderCommonFieldPassthroughPropertiesWithoutDisabled(writer, commonPropertiesMarked, component);
     }
     
-    public static final void renderSelectPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
+    public static void renderSelectPassthroughPropertiesWithoutDisabledAndEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
             throws IOException
     {

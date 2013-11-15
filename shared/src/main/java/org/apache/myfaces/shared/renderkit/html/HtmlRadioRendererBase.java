@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.UINamingContainer;
 import javax.faces.component.UISelectOne;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;

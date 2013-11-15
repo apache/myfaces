@@ -313,15 +313,6 @@ public class HtmlFormRendererBase
         }
     }
 
-    private String getAcceptCharset(UIComponent uiComponent)
-    {
-        if (uiComponent instanceof HtmlForm)
-        {
-            return ((HtmlForm)uiComponent).getAcceptcharset();
-        }
-        return (String)uiComponent.getAttributes().get(JSFAttr.ACCEPTCHARSET_ATTR);
-    }
-
     /**
      * Called before the state and any elements are added to the form tag in the
      * encodeBegin method

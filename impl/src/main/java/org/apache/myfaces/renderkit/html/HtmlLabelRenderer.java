@@ -41,7 +41,6 @@ import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
