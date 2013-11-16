@@ -540,7 +540,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     //1. Initialize map used to retrieve facets
                     if (innerCompositeComponent.getFacetCount() == 0)
                     {
-                        checkFacetRequired(ctx, parent, name);
+                        checkFacetRequired(ctx, name);
                         return true;
                     }
                     UIComponent facet = innerCompositeComponent.getFacet(name);
@@ -553,7 +553,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     }
                     else
                     {
-                        checkFacetRequired(ctx, parent, name);
+                        checkFacetRequired(ctx, name);
                         return true;
                     }
                 }
@@ -668,7 +668,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             //1. Initialize map used to retrieve facets
             if (_facetHandlers == null || _facetHandlers.isEmpty())
             {
-                checkFacetRequired(ctx, parent, name);
+                checkFacetRequired(ctx, name);
                 return true;
             }
 
@@ -702,7 +702,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             }
             else
             {
-                checkFacetRequired(ctx, parent, name);
+                checkFacetRequired(ctx, name);
                 return true;
             }
         }
@@ -734,7 +734,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         }
     }
     
-    private void checkFacetRequired(FaceletContext ctx, UIComponent parent, String name)
+    private void checkFacetRequired(FaceletContext ctx, String name)
     {
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         FaceletCompositionContext fcc = actx.getFaceletCompositionContext(); 

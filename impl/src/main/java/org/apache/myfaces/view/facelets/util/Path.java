@@ -25,7 +25,7 @@ package org.apache.myfaces.view.facelets.util;
 public final class Path
 {
 
-    public static final String normalize(String path)
+    public static String normalize(String path)
     {
         if (path.length() == 0)
         {
@@ -68,7 +68,7 @@ public final class Path
         return n;
     }
 
-    public static final String relative(String ctx, String path)
+    public static String relative(String ctx, String path)
     {
         if (path.length() == 0)
         {
@@ -96,7 +96,7 @@ public final class Path
         return p;
     }
 
-    public static final String context(String path)
+    public static String context(String path)
     {
         int idx = path.lastIndexOf('/');
         if (idx == -1)

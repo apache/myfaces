@@ -107,7 +107,7 @@ public final class IfHandler extends TagHandler implements ComponentContainerHan
         //boolean b = getTestValue(ctx, fcc, parent, uniqueId);
         if (this.var != null)
         {
-            ctx.setAttribute(var.getValue(ctx), new Boolean(b));
+            ctx.setAttribute(var.getValue(ctx), Boolean.valueOf(b));
         }
         if (b)
         {

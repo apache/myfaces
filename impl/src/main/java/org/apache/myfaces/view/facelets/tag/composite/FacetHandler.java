@@ -236,13 +236,13 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         {
             if (_propertyDescriptor == null)
             {
-                _propertyDescriptor = _createFacetPropertyDescriptor(facetName, ctx, parent);
+                _propertyDescriptor = _createFacetPropertyDescriptor(facetName, ctx);
             }
             facetPropertyDescriptorMap.put(facetName, _propertyDescriptor);
         }
         else
         {
-            PropertyDescriptor facetDescriptor = _createFacetPropertyDescriptor(facetName, ctx, parent);
+            PropertyDescriptor facetDescriptor = _createFacetPropertyDescriptor(facetName, ctx);
             facetPropertyDescriptorMap.put(facetName, facetDescriptor);
         }
                 
@@ -285,7 +285,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         }
     }
     
-    private PropertyDescriptor _createFacetPropertyDescriptor(String facetName, FaceletContext ctx, UIComponent parent)
+    private PropertyDescriptor _createFacetPropertyDescriptor(String facetName, FaceletContext ctx)
         throws TagException, IOException
     {
         try

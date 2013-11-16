@@ -329,7 +329,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         return this;
     }
 
-    private final MetadataTarget _getMetadataTarget()
+    private MetadataTarget _getMetadataTarget()
     {
         Map<String, MetadataTarget> metadata = getMetaData();
         String metaKey = _type.getName();

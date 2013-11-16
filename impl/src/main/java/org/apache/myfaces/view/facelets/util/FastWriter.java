@@ -55,7 +55,7 @@ public final class FastWriter extends Writer
         // do nothing
     }
 
-    private final void overflow(int len)
+    private void overflow(int len)
     {
         if (this.size + len > this.buff.length)
         {

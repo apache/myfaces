@@ -430,10 +430,10 @@ public class ViewHandlerImpl extends ViewHandler
             
             
         }
-        else
-        {
+        //else
+        //{
             //we're in a JSP, let the JSPStatemanager know that we need to actually write the state
-        }        
+        //}        
     }
     
     private Map<String, List<String>> getViewParameterList(FacesContext context,

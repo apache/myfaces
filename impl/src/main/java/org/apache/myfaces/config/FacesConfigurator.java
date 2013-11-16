@@ -1293,8 +1293,6 @@ public class FacesConfigurator
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         LifecycleProvider lifecycleProvider = LifecycleProviderFactory
                 .getLifecycleProviderFactory(externalContext).getLifecycleProvider(externalContext);
-        InjectionProvider injectionProvider = InjectionProviderFactory
-            .getInjectionProviderFactory(externalContext).getInjectionProvider(externalContext);
 
         // create ManagedBeanDestroyer
         ManagedBeanDestroyer mbDestroyer

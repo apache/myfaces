@@ -143,11 +143,6 @@ public final class SAXCompiler extends Compiler
             }
         }
 
-        public void endDocument() throws SAXException
-        {
-            super.endDocument();
-        }
-
         public void endDTD() throws SAXException
         {
             this.inDocument = true;
@@ -350,11 +345,6 @@ public final class SAXCompiler extends Compiler
                     this.swallowCDATAContent = false;
                 }
             }
-        }
-
-        public void endDocument() throws SAXException
-        {
-            super.endDocument();
         }
 
         public void endDTD() throws SAXException
@@ -575,11 +565,6 @@ public final class SAXCompiler extends Compiler
                     this.swallowCDATAContent = false;
                 }
             }
-        }
-
-        public void endDocument() throws SAXException
-        {
-            super.endDocument();
         }
 
         public void endDTD() throws SAXException
@@ -945,7 +930,7 @@ public final class SAXCompiler extends Compiler
         return FaceletsProcessingInstructions.getProcessingInstructions(processAs, compressSpaces);
     }
 
-    protected static final String writeXmlDecl(InputStream is, CompilationManager mngr) throws IOException
+    protected static String writeXmlDecl(InputStream is, CompilationManager mngr) throws IOException
     {
         is.mark(128);
         String encoding = null;
@@ -976,7 +961,7 @@ public final class SAXCompiler extends Compiler
         return encoding;
     }
     
-    protected static final String getXmlDecl(InputStream is, CompilationManager mngr) throws IOException
+    protected static String getXmlDecl(InputStream is, CompilationManager mngr) throws IOException
     {
         is.mark(128);
         String encoding = null;
@@ -987,13 +972,9 @@ public final class SAXCompiler extends Compiler
             {
                 String r = new String(b);
                 Matcher m = XML_DECLARATION.matcher(r);
-                if (m.find())
+                if (m.find() && m.group(3) != null)
                 {
-                    //mngr.writeInstruction(m.group(0) + "\n");
-                    if (m.group(3) != null)
-                    {
-                        encoding = m.group(3);
-                    }
+                    encoding = m.group(3);
                 }
             }
         }
@@ -1004,7 +985,7 @@ public final class SAXCompiler extends Compiler
         return encoding;
     }
 
-    private final SAXParser createSAXParser(DefaultHandler handler) throws SAXException,
+    private SAXParser createSAXParser(DefaultHandler handler) throws SAXException,
             ParserConfigurationException
     {
         SAXParserFactory factory = SAXParserFactory.newInstance();

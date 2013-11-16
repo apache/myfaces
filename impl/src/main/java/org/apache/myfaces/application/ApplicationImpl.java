@@ -323,7 +323,7 @@ public class ApplicationImpl extends Application
         if (_validatorClassMap.containsKey(validatorId))
         {
             Class<? extends Validator> validatorClass =
-                    getObjectFromClassMap(validatorId, _validatorClassMap, Validator.class);
+                    getObjectFromClassMap(validatorId, _validatorClassMap);
 
             // Ensure atomicity between _defaultValidatorsIds and _cachedDefaultValidatorsIds
             synchronized(_defaultValidatorsIds)
@@ -1183,7 +1183,7 @@ public class ApplicationImpl extends Application
         checkEmpty(behaviorId, "behaviorId");
 
         final Class<? extends Behavior> behaviorClass =
-                getObjectFromClassMap(behaviorId, _behaviorClassMap, Behavior.class);
+                getObjectFromClassMap(behaviorId, _behaviorClassMap);
         
         if (behaviorClass == null)
         {
@@ -1428,7 +1428,7 @@ public class ApplicationImpl extends Application
         checkEmpty(componentType, "componentType");
 
         final Class<? extends UIComponent> componentClass =
-                getObjectFromClassMap(componentType, _componentClassMap, UIComponent.class);
+                getObjectFromClassMap(componentType, _componentClassMap);
         if (componentClass == null)
         {
             log.log(Level.SEVERE, "Undefined component type " + componentType);
@@ -1455,7 +1455,7 @@ public class ApplicationImpl extends Application
         checkEmpty(componentType, "componentType");
 
         final Class<? extends UIComponent> componentClass =
-                getObjectFromClassMap(componentType, _componentClassMap, UIComponent.class);
+                getObjectFromClassMap(componentType, _componentClassMap);
         if (componentClass == null)
         {
             log.log(Level.SEVERE, "Undefined component type " + componentType);
@@ -1525,7 +1525,7 @@ public class ApplicationImpl extends Application
         checkEmpty(converterId, "converterId");
 
         final Class<? extends Converter> converterClass =
-                getObjectFromClassMap(converterId, _converterIdToClassMap, Converter.class);
+                getObjectFromClassMap(converterId, _converterIdToClassMap);
         if (converterClass == null)
         {
             throw new FacesException("Could not find any registered converter-class by converterId : " + converterId);
@@ -1819,14 +1819,11 @@ public class ApplicationImpl extends Application
         }
         
         //if we're in production and the list is not yet cached, store it
-        if(context.isProjectStage(ProjectStage.Production) && !isCachedList)   
+        if(context.isProjectStage(ProjectStage.Production) && !isCachedList && dependencyList != null)
         {
-            // Note at this point listenerForList cannot be null, but just let this
+            // Note at this point dependencyList cannot be null, but just let this
             // as a sanity check.
-            if (dependencyList != null)
-            {
-                _classToResourceDependencyMap.put(inspectedClass, dependencyList);
-            }
+            _classToResourceDependencyMap.put(inspectedClass, dependencyList);
         }
         
         if (!classAlreadyProcessed)
@@ -2013,7 +2010,7 @@ public class ApplicationImpl extends Application
         checkEmpty(validatorId, "validatorId");
 
         Class<? extends Validator> validatorClass =
-                getObjectFromClassMap(validatorId, _validatorClassMap, Validator.class);
+                getObjectFromClassMap(validatorId, _validatorClassMap);
         if (validatorClass == null)
         {
             String message = "Unknown validator id '" + validatorId + "'.";
@@ -2282,14 +2279,12 @@ public class ApplicationImpl extends Application
             }
         }
         
-        if(isProduction && !isCachedList) //if we're in production and the list is not yet cached, store it
+        //if we're in production and the list is not yet cached, store it
+        if(isProduction && !isCachedList && listenerForList != null) 
         {
-            // Note at this point listenerForList cannot be null, but just let this
+            // Note at this point listenerForList cannot be null, but just let listenerForList != null
             // as a sanity check.
-            if (listenerForList != null)
-            {
-                _classToListenerForMap.put(inspectedClass, listenerForList);
-            }
+            _classToListenerForMap.put(inspectedClass, listenerForList);
         }
     }
 
@@ -2431,14 +2426,12 @@ public class ApplicationImpl extends Application
             }
         }
         
-        if(isProduction && !isCachedList)   //if we're in production and the list is not yet cached, store it
+        //if we're in production and the list is not yet cached, store it
+        if(isProduction && !isCachedList && dependencyList != null)   
         {
-            // Note at this point listenerForList cannot be null, but just let this
+            // Note at this point listenerForList cannot be null, but just let dependencyList != null
             // as a sanity check.
-            if (dependencyList != null)
-            {
-                _classToResourceDependencyMap.put(inspectedClass, dependencyList);
-            }
+            _classToResourceDependencyMap.put(inspectedClass, dependencyList);
         }
         
         if (!classAlreadyProcessed)
@@ -2663,12 +2656,10 @@ public class ApplicationImpl extends Application
                             // The normal case is a listener was added, 
                             // so as heuristic, check first
                             // if we can find it at the same location
-                            if (!listener.equals(listenersCopy.get(i)))
+                            if (!listener.equals(listenersCopy.get(i)) &&
+                                !listenersCopy.contains(listener))
                             {
-                                if (!listenersCopy.contains(listener))
-                                {
-                                    listenersCopy.add(listener);
-                                }
+                                listenersCopy.add(listener);
                             }
                         }
                         else
@@ -2830,7 +2821,7 @@ public class ApplicationImpl extends Application
      * @param classMap 
      * @return
      */
-    private <T> Class<? extends T> getObjectFromClassMap(String id, Map<String, Object> classMap, Class<T> targetType)
+    private <T> Class<? extends T> getObjectFromClassMap(String id, Map<String, Object> classMap)
     {
         Object obj = classMap.get(id);
         

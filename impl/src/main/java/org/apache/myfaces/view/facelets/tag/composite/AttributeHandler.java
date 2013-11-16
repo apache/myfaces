@@ -258,13 +258,13 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         {
             if (_propertyDescriptor == null)
             {
-                _propertyDescriptor = _createPropertyDescriptor(ctx, compositeBaseParent);
+                _propertyDescriptor = _createPropertyDescriptor(ctx);
             }
             attributeList.add(_propertyDescriptor);
         }
         else
         {
-            PropertyDescriptor attribute = _createPropertyDescriptor(ctx, compositeBaseParent);
+            PropertyDescriptor attribute = _createPropertyDescriptor(ctx);
             attributeList.add(attribute);
         }
         
@@ -311,7 +311,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         }
     }
     
-    private PropertyDescriptor _createPropertyDescriptor(FaceletContext ctx, UIComponent parent)
+    private PropertyDescriptor _createPropertyDescriptor(FaceletContext ctx)
         throws TagException, IOException
     {
         try

@@ -142,7 +142,7 @@ public class InsertFacetHandler extends TagHandler
                 beanDescriptor.setValue(INSERT_FACET_KEYS, insertFacetPropertyDescriptorMap);
             }
             
-            PropertyDescriptor facetDescriptor = _createFacetPropertyDescriptor(facetName, ctx, parent);
+            PropertyDescriptor facetDescriptor = _createFacetPropertyDescriptor(facetName, ctx);
             insertFacetPropertyDescriptorMap.put(facetName, facetDescriptor);
         }
         else
@@ -151,15 +151,12 @@ public class InsertFacetHandler extends TagHandler
             
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
             
-            UIComponent parentCompositeComponent
-                    = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
-
             actx.includeCompositeComponentDefinition(parent, facetName);
         }
         
     }
     
-    private PropertyDescriptor _createFacetPropertyDescriptor(String facetName, FaceletContext ctx, UIComponent parent)
+    private PropertyDescriptor _createFacetPropertyDescriptor(String facetName, FaceletContext ctx)
     throws TagException, IOException
     {
         try

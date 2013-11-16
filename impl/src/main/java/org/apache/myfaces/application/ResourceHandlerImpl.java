@@ -308,12 +308,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                 }
             }
 
-            if (resourceId != null)
+            if (resourceId != null && !resourceLoader.resourceExists(resourceId))
             {
-                if (!resourceLoader.resourceExists(resourceId))
-                {
-                    resourceId = null;
-                }
+                resourceId = null;
             }            
         }
         
@@ -357,12 +354,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                 }
             }
 
-            if (resourceId != null)
+            if (resourceId != null && !resourceLoader.resourceExists(resourceId))
             {
-                if (!resourceLoader.resourceExists(resourceId))
-                {
-                    resourceId = null;
-                }
+                resourceId = null;
             }            
         }
         
@@ -423,12 +417,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                 }
             }
 
-            if (resourceId != null)
+            if (resourceId != null && !resourceLoader.resourceExists(resourceId))
             {
-                if (!resourceLoader.resourceExists(resourceId))
-                {
-                    resourceId = null;
-                }
+                resourceId = null;
             }            
         }
         
@@ -472,12 +463,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                 }
             }
 
-            if (resourceId != null)
+            if (resourceId != null && !resourceLoader.resourceExists(resourceId))
             {
-                if (!resourceLoader.resourceExists(resourceId))
-                {
-                    resourceId = null;
-                }
+                resourceId = null;
             }            
         }
         
@@ -1148,11 +1136,8 @@ public class ResourceHandlerImpl extends ResourceHandler
 
                 String rnToken = resourceId.substring(secondLastSlash+1, lastSlash);
                 int lastPoint = rnToken.lastIndexOf('.');
-                if (lastPoint < 0)
-                {
-                    //does not match, the token is not a resource version
-                }
-                else
+                // lastPoint < 0 means it does not match, the token is not a resource version
+                if (lastPoint >= 0)
                 {
                     String ext = rnToken.substring(lastPoint);
                     if (token.endsWith(ext))
@@ -1326,11 +1311,8 @@ public class ResourceHandlerImpl extends ResourceHandler
 
                 String rnToken = resourceId.substring(secondLastSlash+1, lastSlash);
                 int lastPoint = rnToken.lastIndexOf('.');
-                if (lastPoint < 0)
-                {
-                    //does not match, the token is not a resource version
-                }
-                else
+                // lastPoint < 0 means it does not match, the token is not a resource version
+                if (lastPoint >= 0)
                 {
                     String ext = rnToken.substring(lastPoint);
                     if (token.endsWith(ext))
@@ -1484,12 +1466,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                          resourceName, resourceVersion);
             }
 
-            if (resourceMeta != null)
+            if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
             {
-                if (!resourceLoader.resourceExists(resourceMeta))
-                {
-                    resourceMeta = null;
-                }
+                resourceMeta = null;
             }            
         }
         
@@ -1504,12 +1483,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                          resourceName, resourceVersion);
             }
 
-            if (resourceMeta != null)
+            if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
             {
-                if (!resourceLoader.resourceExists(resourceMeta))
-                {
-                    resourceMeta = null;
-                }
+                resourceMeta = null;
             }            
         }
 
@@ -1533,12 +1509,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                      resourceName, resourceVersion, contractName);
             }
 
-            if (resourceMeta != null)
+            if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
             {
-                if (!resourceLoader.resourceExists(resourceMeta))
-                {
-                    resourceMeta = null;
-                }
+                resourceMeta = null;
             }            
         }
         
@@ -1553,12 +1526,9 @@ public class ResourceHandlerImpl extends ResourceHandler
                          resourceName, resourceVersion, contractName);
             }
 
-            if (resourceMeta != null)
+            if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
             {
-                if (!resourceLoader.resourceExists(resourceMeta))
-                {
-                    resourceMeta = null;
-                }
+                resourceMeta = null;
             }            
         }
 

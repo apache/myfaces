@@ -61,8 +61,6 @@ public abstract class Compiler
 
     private static final TagLibrary EMPTY_LIBRARY = new CompositeTagLibrary(new TagLibrary[0]);
 
-    private static final TagDecorator EMPTY_DECORATOR = new CompositeTagDecorator(new TagDecorator[0]);
-
     private boolean validating = false;
 
     private boolean trimmingWhitespace = false;

@@ -19,7 +19,6 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -35,8 +34,6 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.CompositeFacet")
 public class HtmlCompositeFacetRenderer extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlCompositeFacetRenderer.class);
-    private static final Logger log = Logger.getLogger(HtmlCompositeFacetRenderer.class.getName());
     
     public boolean getRendersChildren()
     {

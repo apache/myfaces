@@ -44,7 +44,7 @@ public final class NavigationUtils
                 boolean includeViewParams = false; // default value is false
                 if (includeViewParamsAttribute != null)
                 {
-                    includeViewParams = new Boolean(includeViewParamsAttribute);
+                    includeViewParams = Boolean.valueOf(includeViewParamsAttribute);
                 }
                 apiCases.add(new javax.faces.application.NavigationCase(rule.getFromViewId(),
                         configCase.getFromAction(),

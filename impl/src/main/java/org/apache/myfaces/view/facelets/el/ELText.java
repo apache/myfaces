@@ -564,7 +564,7 @@ public class ELText
         int len = ca.length;
         int end = len - 1;
         boolean esc = false;
-        int vlen = 0;
+        //int vlen = 0;
 
         while (i < len)
         {
@@ -584,7 +584,7 @@ public class ELText
                 {
                     if ('{' == ca[i + 1])
                     {
-                        vlen = findVarLength(ca, i);
+                        //vlen = findVarLength(ca, i);
                         //In this point we have at least 1 EL expression, so it is not literal
                         return false;
                     }

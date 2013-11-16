@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -36,14 +35,12 @@ import javax.faces.application.StateManager;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PreRemoveFromViewEvent;
@@ -161,7 +158,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     private static final String CHECK_ID_PRODUCTION_MODE_DEFAULT = "auto";
     private static final String CHECK_ID_PRODUCTION_MODE_TRUE = "true";
-    private static final String CHECK_ID_PRODUCTION_MODE_FALSE = "false";
     private static final String CHECK_ID_PRODUCTION_MODE_AUTO = "auto";
     
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
@@ -248,16 +244,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
                 
-                Collection<UIViewParameter> viewParameters = null;
-                
                 if (metadata != null)
                 {
                     view = metadata.createMetadataView(context);
                     
-                    if (view != null)
-                    {
-                        viewParameters = metadata.getViewParameters(view);
-                    }
                     // If no view and response complete there is no need to continue
                     if (view == null && context.getResponseComplete())
                     {
@@ -515,27 +505,25 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         public void invokeContextCallback(FacesContext context,
                 UIComponent target)
         {
-            if (target.getParent() != null)
+            if (target.getParent() != null && 
+                !target.getParent().getChildren().remove(target))
             {
-                if (!target.getParent().getChildren().remove(target))
+                String key = null;
+                if (target.getParent().getFacetCount() > 0)
                 {
-                    String key = null;
-                    if (target.getParent().getFacetCount() > 0)
+                    for (Map.Entry<String, UIComponent> entry :
+                            target.getParent().getFacets().entrySet())
                     {
-                        for (Map.Entry<String, UIComponent> entry :
-                                target.getParent().getFacets().entrySet())
+                        if (entry.getValue()==target)
                         {
-                            if (entry.getValue()==target)
-                            {
-                                key = entry.getKey();
-                                break;
-                            }
+                            key = entry.getKey();
+                            break;
                         }
                     }
-                    if (key != null)
-                    {
-                        target.getParent().getFacets().remove(key);
-                    }
+                }
+                if (key != null)
+                {
+                    target.getParent().getFacets().remove(key);
                 }
             }
         }
@@ -602,8 +590,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             //return null;
         //}
-        
-        ExternalContext externalContext = context.getExternalContext();
         
         Object serializedView = context.getAttributes()
             .get(SERIALIZED_VIEW_REQUEST_ATTR);
@@ -708,20 +694,17 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             //Restore view
             view.pushComponentToEL(context, view);
-            if (viewState != null)
+            if (viewState != null && !(viewState instanceof AttachedFullStateWrapper))
             {
-                if (!(viewState instanceof AttachedFullStateWrapper))
+                try
                 {
-                    try
-                    {
-                        view.restoreState(context, viewState);
-                    }
-                    catch(Exception e)
-                    {
-                        throw new IllegalStateException(
-                                "Error restoring component: "+
-                                view.getClientId(context), e);
-                    }
+                    view.restoreState(context, viewState);
+                }
+                catch(Exception e)
+                {
+                    throw new IllegalStateException(
+                            "Error restoring component: "+
+                            view.getClientId(context), e);
                 }
             }
         }

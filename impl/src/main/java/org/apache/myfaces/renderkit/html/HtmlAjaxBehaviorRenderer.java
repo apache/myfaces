@@ -61,7 +61,6 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     private static final String COLON = ":";
     private static final String EMPTY = "";
     private static final String COMMA = ",";
-    private static final String TRUE  = "true";
 
     private static final String ERR_NO_AJAX_BEHAVIOR = "The behavior must be an instance of AjaxBehavior";
     private static final String L_PAREN = "(";
@@ -318,7 +317,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
          * can be sent via the options attribute to javax.faces.ajax
          * this still needs further clarifications but I assume so for now
          */
-        retVal.append(buildOptions(context.getFacesContext(), paramBuffer, parameterList));
+        retVal.append(buildOptions(paramBuffer, parameterList));
 
         retVal.append(R_PAREN);
 
@@ -344,7 +343,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     }
 
 
-    private StringBuilder buildOptions(FacesContext facesContext, StringBuilder retVal, List<String> options)
+    private StringBuilder buildOptions(StringBuilder retVal, List<String> options)
     {
         retVal.setLength(0);
 

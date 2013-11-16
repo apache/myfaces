@@ -234,13 +234,10 @@ public class FlowScopedContextImpl implements Context
         
         checkActive(facesContext);
 
-        if (passivatingScope)
+        if (passivatingScope && !(bean instanceof PassivationCapable))
         {
-            if (!(bean instanceof PassivationCapable))
-            {
-                throw new IllegalStateException(bean.toString() +
-                        " doesn't implement " + PassivationCapable.class.getName());
-            }
+            throw new IllegalStateException(bean.toString() +
+                    " doesn't implement " + PassivationCapable.class.getName());
         }
         
         FlowReference reference = flowBeanReferences.get(((Bean)bean).getBeanClass());

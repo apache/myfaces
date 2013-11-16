@@ -633,7 +633,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         }
     }
 
-    private final ValueExpression capture(String name, PageContext pctx)
+    private ValueExpression capture(String name, PageContext pctx)
     {
         if (name != null)
         {
@@ -642,7 +642,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         return null;
     }
 
-    private final int getBegin(FaceletContext ctx)
+    private int getBegin(FaceletContext ctx)
     {
         if (this.begin != null)
         {
@@ -651,7 +651,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         return 0;
     }
 
-    private final int getEnd(FaceletContext ctx)
+    private int getEnd(FaceletContext ctx)
     {
         if (this.end != null)
         {
@@ -660,7 +660,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         return Integer.MAX_VALUE - 1; // hotspot bug in the JVM
     }
 
-    private final int getStep(FaceletContext ctx)
+    private int getStep(FaceletContext ctx)
     {
         if (this.step != null)
         {
@@ -669,7 +669,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         return 1;
     }
 
-    private final boolean getTransient(FaceletContext ctx)
+    private boolean getTransient(FaceletContext ctx)
     {
         if (this.tranzient != null)
         {
@@ -678,7 +678,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         return false;
     }
 
-    private final ValueExpression getVarExpr(ValueExpression ve, Object src, Object value, int i)
+    private ValueExpression getVarExpr(ValueExpression ve, Object src, Object value, int i)
     {
         if (src instanceof List || src.getClass().isArray())
         {
@@ -696,7 +696,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         throw new IllegalStateException("Cannot create VE for: " + src);
     }
 
-    private final String getVarName(FaceletContext ctx)
+    private String getVarName(FaceletContext ctx)
     {
         if (this.var != null)
         {
@@ -705,7 +705,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         return null;
     }
 
-    private final String getVarStatusName(FaceletContext ctx)
+    private String getVarStatusName(FaceletContext ctx)
     {
         if (this.varStatus != null)
         {
@@ -714,7 +714,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         return null;
     }
 
-    private final Iterator<?> toIterator(Object src)
+    private Iterator<?> toIterator(Object src)
     {
         if (src == null)
         {

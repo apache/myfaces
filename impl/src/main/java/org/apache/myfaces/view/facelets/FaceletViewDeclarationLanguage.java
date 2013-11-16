@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -54,7 +53,6 @@ import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
@@ -68,7 +66,6 @@ import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.PostRestoreStateEvent;
-import javax.faces.event.PreRemoveFromViewEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.RenderKit;
@@ -580,27 +577,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 }
             }
 
-        }
-    }
-
-    private static void _publishPreRemoveFromViewEvent(FacesContext context, UIComponent component)
-    {
-        context.getApplication().publishEvent(context, PreRemoveFromViewEvent.class, component.getClass(), component);
-
-        if (component.getChildCount() > 0)
-        {
-            for (int j = 0, childCount = component.getChildCount(); j < childCount; j++)
-            {
-                UIComponent child = component.getChildren().get(j);
-                _publishPreRemoveFromViewEvent(context, child);
-            }
-        }
-        if (component.getFacetCount() > 0)
-        {
-            for (UIComponent child : component.getFacets().values())
-            {
-                _publishPreRemoveFromViewEvent(context, child);
-            }
         }
     }
 
@@ -1249,7 +1225,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
                         methodExpression = reWrapMethodExpression(methodExpression, attributeNameValueExpression);
 
-                        applyMethodExpression(context, mctx, elContext, topLevelComponent, attributeName, 
+                        applyMethodExpression(context, mctx, topLevelComponent, attributeName, 
                                 targetAttributeName, attributeNameValueExpression, methodExpression, 
                                 ccAttrMeRedirection, targetsArray);
                     }
@@ -1545,8 +1521,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         mctx.addMethodExpressionTargeted(innerComponent, targetAttributeName, valueChangeListener);
     }
     
-    private void applyMethodExpression(FacesContext context, FaceletCompositionContext mctx,
-            ELContext elContext, 
+    private void applyMethodExpression(FacesContext context, FaceletCompositionContext mctx, 
             UIComponent topLevelComponent,
             String attributeName,
             String targetAttributeName,
@@ -2009,14 +1984,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             try
             {
                 ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
-                Collection<UIViewParameter> viewParameters = null;
                 if (metadata != null)
                 {
                     view = metadata.createMetadataView(context);
-                    if (view != null)
-                    {
-                        viewParameters = metadata.getViewParameters(view);
-                    }
                 }
                 if (view == null)
                 {
@@ -2291,7 +2261,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         }
 
         // 2. get it from request
-        Object request = context.getExternalContext().getRequest();
         if (encoding == null)
         {
             encoding = context.getExternalContext().getRequestCharacterEncoding();

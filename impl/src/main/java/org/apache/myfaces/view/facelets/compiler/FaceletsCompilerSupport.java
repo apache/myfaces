@@ -57,17 +57,6 @@ public class FaceletsCompilerSupport
     private static final Logger log = Logger.getLogger(FaceletsCompilerSupport.class.getName());
     
     /**
-     * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
-     */
-    @JSFWebConfigParam(since = "2.0",
-            desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
-            deprecated = true)
-    private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
-
-    private final static String[] PARAMS_LIBRARIES = {ViewHandler.FACELETS_LIBRARIES_PARAM_NAME,
-        PARAM_LIBRARIES_DEPRECATED};
-    
-    /**
      * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
      * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
      */

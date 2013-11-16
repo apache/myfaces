@@ -238,17 +238,11 @@ class RestoreViewExecutor extends PhaseExecutor
             {
                 ViewMetadata metadata = vdl.getViewMetadata(facesContext, viewId);
                 
-                //Collection<UIViewParameter> viewParameters = null;
-                
                 if (metadata != null)
                 {
                     viewRoot = metadata.createMetadataView(facesContext);
                     
-                    if (viewRoot != null)
-                    {
-                        //viewParameters = ViewMetadata.getViewParameters(viewRoot);
-                    }
-                    else if(facesContext.getResponseComplete())
+                    if(facesContext.getResponseComplete())
                     {
                         // this can happen if the current request is a debug request,
                         // in this case no further processing is necessary
@@ -256,12 +250,6 @@ class RestoreViewExecutor extends PhaseExecutor
                     }
                 }
     
-                // If viewParameters is not an empty collection DO NOT call renderResponse
-                //if ( !(viewParameters != null && !viewParameters.isEmpty()) )
-                //{
-                    // Call renderResponse() on the FacesContext.
-                    //facesContext.renderResponse();
-                //}
                 if (viewRoot == null)
                 {
                     facesContext.renderResponse();

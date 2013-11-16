@@ -305,10 +305,10 @@ public class PartialVisitContext extends VisitContext
     {
       id = clientId.substring(lastIndex + 1);              
     }
-    else
-    {
+    //else
+    //{
       // TODO log warning for trailing colon case
-    }
+    //}
  
     return id;
   }

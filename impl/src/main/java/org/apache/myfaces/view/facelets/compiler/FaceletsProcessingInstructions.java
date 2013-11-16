@@ -80,7 +80,7 @@ public final class FaceletsProcessingInstructions
     
     private final boolean html5Doctype;
     
-    public final static FaceletsProcessingInstructions getProcessingInstructions(String processAs)
+    public static FaceletsProcessingInstructions getProcessingInstructions(String processAs)
     {
         if (processAs == null)
         {
@@ -108,7 +108,7 @@ public final class FaceletsProcessingInstructions
         }
     }
     
-    public final static FaceletsProcessingInstructions getProcessingInstructions(
+    public static FaceletsProcessingInstructions getProcessingInstructions(
             String processAs, boolean compressSpaces)
     {
         if (!compressSpaces)

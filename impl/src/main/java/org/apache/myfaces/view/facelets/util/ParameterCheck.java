@@ -25,7 +25,7 @@ package org.apache.myfaces.view.facelets.util;
 public final class ParameterCheck
 {
 
-    public final static void notNull(String name, Object value) throws NullPointerException
+    public static void notNull(String name, Object value) throws NullPointerException
     {
         if (value == null)
         {

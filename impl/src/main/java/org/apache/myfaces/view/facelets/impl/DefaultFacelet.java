@@ -311,7 +311,7 @@ final class DefaultFacelet extends AbstractFacelet
         }
     }    
 
-    private final void refresh(UIComponent c)
+    private void refresh(UIComponent c)
     {
         if (_refreshPeriod > 0)
         {
@@ -373,7 +373,7 @@ final class DefaultFacelet extends AbstractFacelet
         }
     }
 
-    private final void markApplied(UIComponent parent)
+    private void markApplied(UIComponent parent)
     {
         if (this._refreshPeriod > 0)
         {

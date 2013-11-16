@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf;
 
-import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
@@ -72,8 +71,6 @@ final class PassthroughRuleImpl extends MetaRule implements PassthroughRule
                 _name, _attr.getValueExpression(ctx, _type));
         }
     }
-
-    private final static Logger log = Logger.getLogger(PassthroughRuleImpl.class.getName());
 
     public final static PassthroughRuleImpl INSTANCE = new PassthroughRuleImpl();
 

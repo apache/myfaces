@@ -191,7 +191,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
     private void popAndEncodeCurrentStackEntry() throws IOException
     {
-        StackEntry elem = _nestingStack.remove(0);
+        _nestingStack.remove(0);
         StackEntry parent = (_nestingStack.isEmpty()) ? null : _nestingStack.get(0);
         if (parent != null)
         {

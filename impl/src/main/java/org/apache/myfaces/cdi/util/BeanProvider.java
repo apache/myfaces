@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.cdi.util;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.Bean;
@@ -26,11 +25,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * <p>This class contains utility methods to resolve contextual references
@@ -49,7 +45,7 @@ import java.util.logging.Logger;
 @Typed()
 public final class BeanProvider
 {
-    private static final Logger LOG = Logger.getLogger(BeanProvider.class.getName());
+    //private static final Logger LOG = Logger.getLogger(BeanProvider.class.getName());
 
     /*
     private static final boolean LOG_DEPENDENT_WARNINGS;
@@ -321,7 +317,7 @@ public final class BeanProvider
         
         return getBeanDefinitions(type, optional, includeDefaultScopedBeans, beanManager);
     }*/
-    
+    /*
     private static <T> Set<Bean<T>> getBeanDefinitions(Class<T> type,
                                                        boolean optional,
                                                        boolean includeDefaultScopedBeans,
@@ -353,7 +349,7 @@ public final class BeanProvider
         }
         
         return result;
-    }
+    }*/
     
     /**
      * Allows to perform dependency injection for instances which aren't managed by CDI.
@@ -364,9 +360,8 @@ public final class BeanProvider
      * @param instance current instance
      * @param <T> current type
      * @return instance with injected fields (if possible - or null if the given instance is null)
-     */
+     *//*
     @SuppressWarnings("unchecked")
-    /*
     public static <T> T injectFields(T instance)
     {
         if (instance == null)
@@ -384,6 +379,7 @@ public final class BeanProvider
         return instance;
     }*/
 
+    /*
     private static Set<Bean<?>> filterDefaultScopedBeans(Set<Bean<?>> beans)
     {
         Set<Bean<?>> result = new HashSet<Bean<?>>(beans.size());
@@ -401,7 +397,7 @@ public final class BeanProvider
             }
         }
         return result;
-    }
+    }*/
 
     /**
      * Internal helper method to resolve the right bean and resolve the contextual reference.

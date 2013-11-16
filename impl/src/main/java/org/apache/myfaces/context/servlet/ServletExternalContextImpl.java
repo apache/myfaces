@@ -348,32 +348,6 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         checkHttpServletRequest();
         String encodedUrl = ((HttpServletResponse) _servletResponse).encodeURL(url);
         encodedUrl = encodeURL(encodedUrl, null);
-        //encodedUrl = encodeWindowId(encodedUrl);
-        return encodedUrl;
-    }
-    
-    private String encodeWindowId(String encodedUrl)
-    {
-        FacesContext facesContext = getCurrentFacesContext();
-        ClientWindow window = facesContext.getExternalContext().getClientWindow();
-        if (window != null)
-        {
-            if (window.isClientWindowRenderModeEnabled(facesContext))
-            {
-            //TODO: Use StringBuilder or some optimization.
-                Map<String, String> map = window.getQueryURLParameters(facesContext);
-                if (map != null)
-                {
-                    for (Map.Entry<String , String> entry : map.entrySet())
-                    {
-                        encodedUrl = encodedUrl + ( (encodedUrl.indexOf(URL_QUERY_SEPERATOR) != -1) ? 
-                            URL_PARAM_SEPERATOR : URL_QUERY_SEPERATOR ) + 
-                            entry.getKey() +
-                            URL_NAME_VALUE_PAIR_SEPERATOR+ entry.getValue();
-                    }
-                }
-            }
-        }
         return encodedUrl;
     }
 
@@ -402,14 +376,12 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         checkNull(url, "url");
         checkHttpServletRequest();
-        //return encodeWindowId(((HttpServletResponse) _servletResponse).encodeURL(url));
         return encodeURL(((HttpServletResponse) _servletResponse).encodeURL(url), null);
     }
 
     @Override
     public String encodeRedirectURL(String baseUrl, Map<String,List<String>> parameters)
     {
-        //return encodeWindowId(_httpServletResponse.encodeRedirectURL(encodeURL(baseUrl, parameters)));
         return _httpServletResponse.encodeRedirectURL(encodeURL(baseUrl, parameters));
     }
 

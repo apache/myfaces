@@ -369,13 +369,10 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         {
             FacesConfig f = (FacesConfig) v.getNode();
             boolean added = false;
-            if (f.getOrdering() != null)
+            if (f.getOrdering() != null && !f.getOrdering().getBeforeList().isEmpty())
             {
-                if (!f.getOrdering().getBeforeList().isEmpty())
-                {
-                    added = true;
-                    sortedList.add(0,f);
-                }
+                added = true;
+                sortedList.add(0,f);
             }
             if (!added)
             {

@@ -327,13 +327,11 @@ public class FlowHandlerImpl extends FlowHandler
             for (int i = index; i < currentFlowStack.size(); i++)
             {
                 _FlowContextualInfo info = currentFlowStack.get(i);
-                if (sourceFlowReference.equals(info.getSourceFlowReference()))
+                if (sourceFlowReference.equals(info.getSourceFlowReference()) &&
+                    !flowsToRemove.contains(info))
                 {
-                    if (!flowsToRemove.contains(info))
-                    {
-                        flowsToRemove.add(info);
-                        traverseDependantFlows(info.getFlowReference(), i+1, currentFlowStack, flowsToRemove);
-                    }
+                    flowsToRemove.add(info);
+                    traverseDependantFlows(info.getFlowReference(), i+1, currentFlowStack, flowsToRemove);
                 }
             }
         }
@@ -602,11 +600,7 @@ public class FlowHandlerImpl extends FlowHandler
                 {
                     flowHandler.popReturnMode(context);
                 }
-                if (failed)
-                {
-                    // Do nothing.
-                }
-                else 
+                if (!failed)
                 {
                     //Call transitions.
                     for (int j = 0; j < targetFlows.size(); j++)
@@ -825,18 +819,6 @@ public class FlowHandlerImpl extends FlowHandler
         currentFlowStack.add(new _FlowContextualInfo(flowReference, toViewId, sourceFlowReference));
     }
     
-    private void popFlowReference(FacesContext context, ClientWindow clientWindow,
-        List<_FlowContextualInfo> currentFlowStack, int i)
-    {
-        currentFlowStack.remove(i);
-        if (currentFlowStack.isEmpty())
-        {
-            // Remove it from session but keep it in request scope.
-            context.getAttributes().put(ROOT_LAST_VIEW_ID, 
-                context.getExternalContext().getSessionMap().remove(ROOT_LAST_VIEW_ID + clientWindow.getId()));
-        }
-    }
-    
     private List<_FlowContextualInfo> getCurrentFlowStack(FacesContext context, ClientWindow clientWindow)
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
@@ -894,12 +876,7 @@ public class FlowHandlerImpl extends FlowHandler
             return;
         }
         
-        if ( Boolean.TRUE.equals(context.getAttributes().get(RETURN_MODE)) )
-        {
-            // Return mode active
-            
-        }
-        else
+        if ( !Boolean.TRUE.equals(context.getAttributes().get(RETURN_MODE)) )
         {
             // Return mode not active, activate it, copy the current flow stack.
             List<_FlowContextualInfo> currentFlowStack = getCurrentFlowStack(context, clientWindow);

@@ -143,7 +143,7 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                 {
                     if (_cachedBeanInfo == null)
                     {
-                        tempBeanInfo  = _createCompositeComponentMetadata(ctx, compositeBaseParent);
+                        tempBeanInfo  = _createCompositeComponentMetadata(compositeBaseParent);
                         compositeBaseParent.getAttributes().put(
                                 UIComponent.BEANINFO_KEY, tempBeanInfo);
                         
@@ -197,7 +197,7 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                 }
                 else
                 {
-                    tempBeanInfo = _createCompositeComponentMetadata(ctx, compositeBaseParent);
+                    tempBeanInfo = _createCompositeComponentMetadata(compositeBaseParent);
                     compositeBaseParent.getAttributes().put(
                             UIComponent.BEANINFO_KEY, tempBeanInfo);
                     
@@ -263,8 +263,7 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
         }
     }
     
-    private CompositeComponentBeanInfo _createCompositeComponentMetadata(
-            FaceletContext ctx, UIComponent parent)
+    private CompositeComponentBeanInfo _createCompositeComponentMetadata(UIComponent parent)
     {
         BeanDescriptor descriptor = new BeanDescriptor(parent.getClass());
         CompositeComponentBeanInfo beanInfo = new CompositeComponentBeanInfo(descriptor);

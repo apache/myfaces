@@ -245,15 +245,13 @@ public class NavigationHandlerImpl
                     partialViewContext.setRenderAll(true);
                 }
 
-                if (facesContext.getViewRoot() != null)
+                if (facesContext.getViewRoot() != null &&
+                    facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
                 {
-                    if (facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
-                    {
-                        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
-                        facesContext.getViewRoot().visitTree(VisitContext.createVisitContext(facesContext),
-                                                             new PreDisposeViewCallback());
-                        facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
-                    }
+                    facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+                    facesContext.getViewRoot().visitTree(VisitContext.createVisitContext(facesContext),
+                                                         new PreDisposeViewCallback());
+                    facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
                 }
                 
                 applyFlowTransition(facesContext, navigationContext);
@@ -305,24 +303,22 @@ public class NavigationHandlerImpl
     private void applyFlowTransition(FacesContext facesContext, NavigationContext navigationContext)
     {
         //Apply Flow transition if any
-        if (navigationContext != null)
+        // Is any flow transition on the way?
+        if (navigationContext != null &&
+            navigationContext.getSourceFlows() != null ||
+            (navigationContext.getTargetFlows() != null &&
+             !navigationContext.getTargetFlows().isEmpty()))
         {
-            // Is any flow transition on the way?
-            if (navigationContext.getSourceFlows() != null ||
-                (navigationContext.getTargetFlows() != null &&
-                 !navigationContext.getTargetFlows().isEmpty()))
+            FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+            for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
             {
-                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
-                for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
-                {
-                    Flow sourceFlow = navigationContext.getSourceFlows().get(i);
-                    Flow targetFlow = navigationContext.getTargetFlows().get(i);
+                Flow sourceFlow = navigationContext.getSourceFlows().get(i);
+                Flow targetFlow = navigationContext.getTargetFlows().get(i);
 
-                    flowHandler.transition(facesContext, sourceFlow, targetFlow, 
-                        navigationContext.getFlowCallNodes().get(i), 
-                        navigationContext.getNavigationCase().getToViewId(facesContext));
-                    sourceFlow = targetFlow;
-                }
+                flowHandler.transition(facesContext, sourceFlow, targetFlow, 
+                    navigationContext.getFlowCallNodes().get(i), 
+                    navigationContext.getNavigationCase().getToViewId(facesContext));
+                sourceFlow = targetFlow;
             }
         }
     }
@@ -524,7 +520,6 @@ public class NavigationHandlerImpl
                         {
                             // Add the transition to exit from the flow
                             Flow baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
-                            Flow sourceFlow = baseReturnFlow;
                             // This is the part when the pseudo "recursive call" is done. 
                             while (baseReturnFlow != null && !(baseReturnFlow.getDefiningDocumentId().equals(
                                     targetFlow.getDefiningDocumentId()) &&
@@ -888,12 +883,6 @@ public class NavigationHandlerImpl
         return navigationCase;
     }
     
-    private NavigationContext getFlowNavigationCommand (FacesContext facesContext, Flow targetFlow, String node)
-    {
-        return null;
-        
-    }
-    
     /**
      * Derive a NavigationCase from a flow node. 
      * 
@@ -1214,47 +1203,41 @@ public class NavigationHandlerImpl
             }
             else
             {
-                if (cazeOutcome != null)
+                if (cazeOutcome != null && (outcome != null) && cazeOutcome.equals (outcome))
                 {
-                    if ((outcome != null) && cazeOutcome.equals (outcome))
-                    {
-                        // Second case: if only <from-outcome> specified, match against outcome.
-                        // Caveat: if <if> is available, evaluate.
+                    // Second case: if only <from-outcome> specified, match against outcome.
+                    // Caveat: if <if> is available, evaluate.
 
-                        if (cazeIf != null)
+                    if (cazeIf != null)
+                    {
+                        if (ifMatches)
                         {
-                            if (ifMatches)
-                            {
-                                secondCaseIf = caze;
-                                //return caze;
-                            }
-                            
-                            continue;
-                        }
-                        else
-                        {
-                            secondCase = caze;
+                            secondCaseIf = caze;
                             //return caze;
                         }
+
+                        continue;
+                    }
+                    else
+                    {
+                        secondCase = caze;
+                        //return caze;
                     }
                 }
             }
 
             // Fourth case: anything else matches if outcome is not null or <if> is specified.
 
-            if (outcome != null)
+            if (outcome != null && cazeIf != null)
             {
                 // Again, if <if> present, evaluate.
-                if (cazeIf != null)
+                if (ifMatches)
                 {
-                    if (ifMatches)
-                    {
-                        fourthCaseIf = caze;
-                        //return caze;
-                    }
-                    
-                    continue;
+                    fourthCaseIf = caze;
+                    //return caze;
                 }
+
+                continue;
             }
 
             if ((cazeIf != null) && ifMatches)
@@ -1320,7 +1303,7 @@ public class NavigationHandlerImpl
                 ExternalContext externalContext = facesContext.getExternalContext();
                 RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
                 
-                calculateNavigationCases(facesContext, runtimeConfig);
+                calculateNavigationCases(runtimeConfig);
             }
             return _navigationCases;
         }
@@ -1332,7 +1315,7 @@ public class NavigationHandlerImpl
 
             if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
             {
-                calculateNavigationCases(facesContext, runtimeConfig);
+                calculateNavigationCases(runtimeConfig);
             }
             return _navigationCases;
         }
@@ -1386,7 +1369,7 @@ public class NavigationHandlerImpl
             new _FlowNavigationStructure(flow.getDefiningDocumentId(), flow.getId(), cases, wildcardPatterns) );
     }
     
-    private synchronized void calculateNavigationCases(FacesContext facesContext, RuntimeConfig runtimeConfig)
+    private synchronized void calculateNavigationCases(RuntimeConfig runtimeConfig)
     {
         if (_navigationCases == null || runtimeConfig.isNavigationRulesChanged())
         {
@@ -1465,7 +1448,7 @@ public class NavigationHandlerImpl
                 boolean includeViewParams = false; // default value is false
                 if (includeViewParamsAttribute != null)
                 {
-                    includeViewParams = new Boolean(includeViewParamsAttribute);
+                    includeViewParams = Boolean.valueOf(includeViewParamsAttribute);
                 }
                 apiCases.add(new NavigationCase(rule.getFromViewId(),configCase.getFromAction(),
                                                 configCase.getFromOutcome(),configCase.getIf(),configCase.getToViewId(),

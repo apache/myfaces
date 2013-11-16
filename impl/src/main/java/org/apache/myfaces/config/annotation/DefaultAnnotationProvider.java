@@ -92,8 +92,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     private static final String META_INF_PREFIX = "META-INF/";
 
     private static final String FACES_CONFIG_SUFFIX = ".faces-config.xml";
-    
-    private static final String STANDARD_FACES_CONFIG_RESOURCE = "META-INF/standard-faces-config.xml";
 
     /**
      * <p>Resource path used to acquire implicit resources buried
@@ -289,7 +287,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                     JarFile jarFile = getJarFile(url);
                     if (jarFile != null)
                     {
-                        archiveClasses(ctx, jarFile, list);
+                        archiveClasses(jarFile, list);
                     }
                 }
                 catch(IOException e)
@@ -325,7 +323,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                             JarFile jarFile = JarUtils.getJarFile(jarUrl);
                             if (jarFile != null)
                             {
-                                archiveClasses(context, jarFile, list);
+                                archiveClasses(jarFile, list);
                             }
                         }
                         catch(IOException e)
@@ -415,7 +413,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                 JarFile jarFile = ((JarURLConnection) url.openConnection())
                         .getJarFile();
 
-                archiveClasses(externalContext, jarFile, list);
+                archiveClasses(jarFile, list);
             }
             else
             {
@@ -440,9 +438,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
      *
      * @exception ClassNotFoundException if a located class cannot be loaded
      */
-    private List<Class<?>> archiveClasses(ExternalContext context, JarFile jar, List<Class<?>> list)
+    private List<Class<?>> archiveClasses(JarFile jar, List<Class<?>> list)
     {
-
         // Accumulate and return a list of classes in this JAR file
         ClassLoader loader = ClassUtils.getContextClassLoader();
         if (loader == null)
