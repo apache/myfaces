@@ -27,7 +27,8 @@ import javax.faces.render.Renderer;
 
 import org.easymock.classextension.IMocksControl;
 import org.easymock.classextension.EasyMock;
-import org.testng.annotations.BeforeMethod;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,13 +44,22 @@ public abstract class AbstractUIComponentBaseTest
     protected FacesContext _facesContext;
     protected Renderer _renderer;
 
-    @BeforeMethod(alwaysRun = true)
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
         _facesContext = _mocksControl.createMock(FacesContext.class);
         _testImpl = _mocksControl.createMock(UIComponentBase.class, getMockedMethodsArray());
         _renderer = _mocksControl.createMock(Renderer.class);
+    }
+    
+    @After
+    public void tearDown() throws Exception
+    {
+        _mocksControl = null;
+        _facesContext = null;
+        _testImpl = null;
+        _renderer = null;
     }
 
     protected final Method[] getMockedMethodsArray() throws Exception

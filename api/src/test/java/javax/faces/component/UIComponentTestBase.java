@@ -22,17 +22,25 @@ import javax.faces.context.FacesContext;
 
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.testng.annotations.BeforeMethod;
+import org.junit.After;
+import org.junit.Before;
 
 public abstract class UIComponentTestBase
 {
     protected IMocksControl _mocksControl;
     protected FacesContext _facesContext;
 
-    @BeforeMethod(alwaysRun = true)
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createNiceControl();
         _facesContext = _mocksControl.createMock(FacesContext.class);
+    }
+    
+    @After
+    public void tearDown() throws Exception
+    {
+        _mocksControl = null;
+        _facesContext = null;
     }
 }

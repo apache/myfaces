@@ -27,9 +27,8 @@ import javax.faces.el.ValueBinding;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.*;
 import org.easymock.IAnswer;
-import static org.testng.Assert.*;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,11 +42,17 @@ public class UIComponentBaseValueBindingTest extends AbstractUIComponentBaseTest
     private ValueBinding _valueBinding;
 
     @Override
-    @BeforeMethod(alwaysRun = true)
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         _valueBinding = _mocksControl.createMock(ValueBinding.class);
+    }
+
+    @Override
+    public void tearDown() throws Exception
+    {
+        super.tearDown();
+        _valueBinding = null;
     }
 
     @Override
@@ -65,7 +70,7 @@ public class UIComponentBaseValueBindingTest extends AbstractUIComponentBaseTest
     {
         expect(_testImpl.getValueExpression(EasyMock.eq("xxx"))).andReturn(null);
         _mocksControl.replay();
-        assertNull(_testImpl.getValueBinding("xxx"));
+        Assert.assertNull(_testImpl.getValueBinding("xxx"));
     }
 
     @Test
@@ -77,7 +82,7 @@ public class UIComponentBaseValueBindingTest extends AbstractUIComponentBaseTest
             public Object answer() throws Throwable
             {
                 _ValueBindingToValueExpression ve = (_ValueBindingToValueExpression) EasyMock.getCurrentArguments()[1];
-                assertEquals(_valueBinding, ve.getValueBinding());
+                Assert.assertEquals(_valueBinding, ve.getValueBinding());
                 return null;
             }
         });
@@ -99,7 +104,7 @@ public class UIComponentBaseValueBindingTest extends AbstractUIComponentBaseTest
         ValueExpression valueExpression = new _ValueBindingToValueExpression(_valueBinding);
         expect(_testImpl.getValueExpression(EasyMock.eq("xxx"))).andReturn(valueExpression);
         _mocksControl.replay();
-        assertEquals(_valueBinding, _testImpl.getValueBinding("xxx"));
+        Assert.assertEquals(_valueBinding, _testImpl.getValueBinding("xxx"));
     }
 
     @Test
@@ -109,8 +114,8 @@ public class UIComponentBaseValueBindingTest extends AbstractUIComponentBaseTest
         expect(_testImpl.getValueExpression(EasyMock.eq("xxx"))).andReturn(valueExpression);
         _mocksControl.replay();
         ValueBinding valueBinding = _testImpl.getValueBinding("xxx");
-        assertNotNull(valueBinding);
-        assertTrue(valueBinding instanceof _ValueExpressionToValueBinding);
-        assertEquals(valueExpression, ((_ValueExpressionToValueBinding) valueBinding).getValueExpression());
+        Assert.assertNotNull(valueBinding);
+        Assert.assertTrue(valueBinding instanceof _ValueExpressionToValueBinding);
+        Assert.assertEquals(valueExpression, ((_ValueExpressionToValueBinding) valueBinding).getValueExpression());
     }
 }

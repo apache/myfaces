@@ -20,7 +20,6 @@ package javax.faces.component;
 
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
-import static org.testng.Assert.assertEquals;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
@@ -29,8 +28,10 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public abstract class AbstractUIComponentPropertyTest<T>
 {
@@ -52,8 +53,8 @@ public abstract class AbstractUIComponentPropertyTest<T>
         _testValues = testValues;
     }
 
-    @BeforeMethod
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
         _facesContext = new MockFacesContext12();
@@ -62,6 +63,16 @@ public abstract class AbstractUIComponentPropertyTest<T>
         //_valueBinding = _mocksControl.createMock(ValueBinding.class);
         _valueExpression = _mocksControl.createMock(ValueExpression.class);
         _component = createComponent();
+    }
+    
+    @After
+    public void tearDown() throws Exception
+    {
+        _mocksControl = null;
+        _facesContext = null;
+        _elContext = null;
+        _valueExpression = null;
+        _component = null;
     }
     
     protected IMocksControl getMocksControl()
@@ -74,7 +85,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
     @Test
     public void testDefaultValue() throws Exception
     {
-        assertEquals(_defaultValue, PropertyUtils.getProperty(_component, _property));
+        Assert.assertEquals(_defaultValue, PropertyUtils.getProperty(_component, _property));
     }
 
     @Test
@@ -83,7 +94,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
         for (T testValue : _testValues)
         {
             PropertyUtils.setProperty(_component, _property, testValue);
-            assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
+            Assert.assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
         }
     }
 
@@ -96,7 +107,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
             expect(_valueExpression.getValue(eq(_facesContext.getELContext()))).andReturn(testValue);
             _mocksControl.replay();
             _component.setValueExpression(_property, _valueExpression);
-            assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
+            Assert.assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
             _mocksControl.reset();
         }
     }
@@ -112,7 +123,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
             _mocksControl.reset();
             expect(_valueExpression.getValue(eq(_facesContext.getELContext()))).andReturn(testValue);
             _mocksControl.replay();
-            assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
+            Assert.assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
             _mocksControl.reset();
         }
     }

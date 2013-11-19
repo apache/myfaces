@@ -19,7 +19,6 @@
 package javax.faces.validator;
 
 import static org.easymock.EasyMock.expect;
-import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
@@ -33,7 +32,8 @@ import javax.faces.component.UIViewRoot;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class _MessageUtilsTest
 {
@@ -66,7 +66,7 @@ public class _MessageUtilsTest
         expect(valueExpression.getValue(elContext)).andReturn(s);
         mocksControl.replay();
 
-        assertEquals(_MessageUtils.getErrorMessage(facesContext, "javax.faces.validator.DoubleRangeValidator.MAXIMUM",
+        Assert.assertEquals(_MessageUtils.getErrorMessage(facesContext, "javax.faces.validator.DoubleRangeValidator.MAXIMUM",
                 new Object[] { "xyz", "xxx" }).getDetail(),
                 "xxx: Validation Error: Value is greater than allowable maximum of 'xyz'");
     }

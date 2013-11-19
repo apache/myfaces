@@ -412,7 +412,7 @@
                 </executions>
             </plugin>
 
-            <!-- execute tests (JUnit and TestNG) -->
+            <!-- execute tests (JUnit) -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <executions>
@@ -428,33 +428,6 @@
                             <threadCount>4</threadCount>
                             <perCoreThreadCount>true</perCoreThreadCount>
                             <testNGArtifactName>none:none</testNGArtifactName>
-                            <!-- Exclude all TestNG tests -->
-                            <excludes>
-                                <exclude>**/UIViewRootTest*</exclude>
-                                <exclude>**/_MessageUtilsTest*</exclude>
-                                <exclude>**/UIGraphicTest*</exclude>
-                                <exclude>**/UIComponentValueExpressionTest*</exclude>
-                                <exclude>**/UIComponentTest*</exclude>
-                                <exclude>**/UIComponentInvokeOnComponentTest*</exclude>
-                                <exclude>**/UIComponentEncodeAllTest*</exclude>
-                                <exclude>**/UIComponentBaseValueBindingTest*</exclude>
-                                <exclude>**/UIComponentBaseTest*</exclude>
-                                <exclude>**/UIComponentBaseProcessSaveRestoreStateTest*</exclude>
-                                <exclude>**/UIComponentBaseFacesListenerTest*</exclude>
-                                <exclude>**/HtmlOutputLinkTest*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-
-                    <!-- TestNG -->
-                    <execution>
-                        <id>test-testng</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <junitArtifactName>none:none</junitArtifactName>
                         </configuration>
                     </execution>
                 </executions>
@@ -668,12 +641,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <!--<classifier>jdk15</classifier>-->
         </dependency>
         
         <dependency>

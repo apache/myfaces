@@ -25,11 +25,8 @@ import java.util.Date;
 import javax.faces.event.ActionListener;
 import javax.faces.event.FacesListener;
 import javax.faces.event.ValueChangeListener;
-
-import static org.testng.Assert.*;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,22 +40,33 @@ public class UIComponentBaseFacesListenerTest extends AbstractUIComponentBaseTes
     private ActionListener _actionListener;
     private ValueChangeListener _valueChangeListener;
 
+    public UIComponentBaseFacesListenerTest()
+    {
+    }
+    
     @Override
-    @BeforeMethod
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         _actionListener = _mocksControl.createMock(ActionListener.class);
         _valueChangeListener = _mocksControl.createMock(ValueChangeListener.class);
     }
+    
+    @Override
+    public void tearDown() throws Exception
+    {
+        super.tearDown();
+        _actionListener = null;
+        _valueChangeListener = null;
+    }
 
-    @Test(expectedExceptions = {NullPointerException.class})
+    @Test(expected = NullPointerException.class)
     public void testArgNPE() throws Exception
     {
         _testImpl.getFacesListeners(null);
     }
 
-    @Test(expectedExceptions = {IllegalArgumentException.class})
+    @Test(expected = IllegalArgumentException.class)
     public void testInvalidListenerType() throws Exception
     {
         _testImpl.getFacesListeners(Date.class);
@@ -68,8 +76,8 @@ public class UIComponentBaseFacesListenerTest extends AbstractUIComponentBaseTes
     public void testEmptyListener() throws Exception
     {
         FacesListener[] listener = _testImpl.getFacesListeners(ActionListener.class);
-        assertNotNull(listener);
-        assertEquals(0, listener.length);
+        Assert.assertNotNull(listener);
+        Assert.assertEquals(0, listener.length);
     }
 
     @Test
@@ -78,21 +86,21 @@ public class UIComponentBaseFacesListenerTest extends AbstractUIComponentBaseTes
         _testImpl.addFacesListener(_actionListener);
 
         FacesListener[] listener = _testImpl.getFacesListeners(ValueChangeListener.class);
-        assertNotNull(listener);
-        assertEquals(0, listener.length);
-        assertTrue(ValueChangeListener.class.equals(listener.getClass().getComponentType()));
+        Assert.assertNotNull(listener);
+        Assert.assertEquals(0, listener.length);
+        Assert.assertTrue(ValueChangeListener.class.equals(listener.getClass().getComponentType()));
 
         _testImpl.addFacesListener(_valueChangeListener);
 
         listener = _testImpl.getFacesListeners(FacesListener.class);
-        assertNotNull(listener);
-        assertEquals(2, listener.length);
+        Assert.assertNotNull(listener);
+        Assert.assertEquals(2, listener.length);
         Collection<FacesListener> col = Arrays.asList(listener);
-        assertTrue(col.contains(_actionListener));
-        assertTrue(col.contains(_valueChangeListener));
+        Assert.assertTrue(col.contains(_actionListener));
+        Assert.assertTrue(col.contains(_valueChangeListener));
     }
 
-    @Test(expectedExceptions = {NullPointerException.class})
+    @Test(expected = NullPointerException.class)
     public void testRemoveFacesListenerArgNPE() throws Exception
     {
         _testImpl.removeFacesListener(null);
@@ -102,8 +110,8 @@ public class UIComponentBaseFacesListenerTest extends AbstractUIComponentBaseTes
     public void testRemoveFacesListener() throws Exception
     {
         _testImpl.addFacesListener(_actionListener);
-        assertEquals(_actionListener, _testImpl.getFacesListeners(FacesListener.class)[0]);
+        Assert.assertEquals(_actionListener, _testImpl.getFacesListeners(FacesListener.class)[0]);
         _testImpl.removeFacesListener(_actionListener);
-        assertEquals(0, _testImpl.getFacesListeners(FacesListener.class).length);
+        Assert.assertEquals(0, _testImpl.getFacesListeners(FacesListener.class).length);
     }
 }

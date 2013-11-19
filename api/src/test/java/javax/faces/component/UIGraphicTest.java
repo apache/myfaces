@@ -18,13 +18,12 @@
  */
 package javax.faces.component;
 
-import static org.testng.Assert.*;
-
 import javax.el.ValueExpression;
 import javax.faces.el.ValueBinding;
 
 import org.easymock.classextension.EasyMock;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 @SuppressWarnings("deprecation")
 public class UIGraphicTest
@@ -35,9 +34,9 @@ public class UIGraphicTest
     {
         UIGraphic graphic = new UIGraphic();
         graphic.setValue("xxx");
-        assertEquals(graphic.getUrl(), "xxx");
+        Assert.assertEquals(graphic.getUrl(), "xxx");
         graphic.setUrl("xyz");
-        assertEquals(graphic.getValue(), "xyz");
+        Assert.assertEquals(graphic.getValue(), "xyz");
     }
 
     @Test
@@ -46,11 +45,11 @@ public class UIGraphicTest
         UIGraphic graphic = new UIGraphic();
         ValueExpression expression = EasyMock.createMock(ValueExpression.class);
         graphic.setValueExpression("url", expression);
-        assertSame(graphic.getValueExpression("value"), expression);
+        Assert.assertSame(graphic.getValueExpression("value"), expression);
 
         expression = EasyMock.createMock(ValueExpression.class);
         graphic.setValueExpression("value", expression);
-        assertSame(graphic.getValueExpression("url"), expression);
+        Assert.assertSame(graphic.getValueExpression("url"), expression);
     }
 
     @Test
@@ -59,10 +58,10 @@ public class UIGraphicTest
         UIGraphic graphic = new UIGraphic();
         ValueBinding binding = EasyMock.createMock(ValueBinding.class);
         graphic.setValueBinding("url", binding);
-        assertSame(graphic.getValueBinding("value"), binding);
+        Assert.assertSame(graphic.getValueBinding("value"), binding);
 
         binding = EasyMock.createMock(ValueBinding.class);
         graphic.setValueBinding("value", binding);
-        assertSame(graphic.getValueBinding("url"), binding);
+        Assert.assertSame(graphic.getValueBinding("url"), binding);
     }
 }

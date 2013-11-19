@@ -18,10 +18,8 @@
  */
 package javax.faces.component;
 
-import static org.apache.myfaces.Assert.assertException;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.same;
-import static org.testng.Assert.assertEquals;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -30,9 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.faces.context.FacesContext;
-
+import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class UIComponentTest extends UIComponentTestBase
 {
@@ -50,13 +48,13 @@ public class UIComponentTest extends UIComponentTestBase
         map.put("xxx3", new UIInput());
         expect(component.getFacets()).andReturn(map);
         _mocksControl.replay();
-        assertEquals(3, component.getFacetCount());
+        org.junit.Assert.assertEquals(3, component.getFacetCount());
         _mocksControl.verify();
 
         _mocksControl.reset();
         expect(component.getFacets()).andReturn(null);
         _mocksControl.replay();
-        assertEquals(0, component.getFacetCount());
+        org.junit.Assert.assertEquals(0, component.getFacetCount());
         _mocksControl.verify();
     }
 
@@ -76,7 +74,7 @@ public class UIComponentTest extends UIComponentTestBase
                 .size()]));
         _mocksControl.checkOrder(true);
 
-        assertException(NullPointerException.class, new TestRunner()
+        Assert.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
@@ -86,7 +84,7 @@ public class UIComponentTest extends UIComponentTestBase
 
         expect(testimpl.getClientId(same(_facesContext))).andReturn("xyz");
         _mocksControl.replay();
-        assertEquals("xyz", testimpl.getContainerClientId(_facesContext));
+        org.junit.Assert.assertEquals("xyz", testimpl.getContainerClientId(_facesContext));
         _mocksControl.verify();
     }
 }

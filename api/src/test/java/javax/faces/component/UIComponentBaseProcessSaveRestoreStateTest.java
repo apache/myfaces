@@ -29,9 +29,7 @@ import javax.faces.context.FacesContext;
 
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.*;
-import static org.testng.Assert.*;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,12 +47,19 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
     private UIComponent _child;
 
     @Override
-    @BeforeMethod(alwaysRun = true)
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         _facet = _mocksControl.createMock(UIComponent.class);
         _child = _mocksControl.createMock(UIComponent.class);
+    }
+    
+    @Override
+    public void tearDown() throws Exception
+    {
+        super.tearDown();
+        _facet = null;
+        _child = null;
     }
 
     @Override
@@ -71,13 +76,13 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
         return methods;
     }
 
-    @Test(expectedExceptions = {NullPointerException.class})
+    @Test(expected = NullPointerException.class)
     public void testSaveStateExpections() throws Exception
     {
         _testImpl.processSaveState(null);
     }
 
-    @Test(expectedExceptions = {NullPointerException.class})
+    @Test(expected = NullPointerException.class)
     public void testRestoreStateExpections() throws Exception
     {
         _testImpl.processRestoreState(null, null);

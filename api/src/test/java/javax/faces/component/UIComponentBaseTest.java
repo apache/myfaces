@@ -21,11 +21,8 @@ package javax.faces.component;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.same;
 import static org.easymock.classextension.EasyMock.createControl;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -40,9 +37,10 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
 import org.easymock.classextension.IMocksControl;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Factory;
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 @SuppressWarnings("deprecation")
 public class UIComponentBaseTest
@@ -53,13 +51,22 @@ public class UIComponentBaseTest
     private FacesContext _facesContext;
     private Renderer _renderer;
 
-    @BeforeMethod(alwaysRun = true)
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         _mocksControl = createControl();
         _facesContext = _mocksControl.createMock(FacesContext.class);
         _testImpl = _mocksControl.createMock(UIComponentBase.class, getMockedMethodsArray());
         _renderer = _mocksControl.createMock(Renderer.class);
+    }
+    
+    @After
+    public void tearDown() throws Exception
+    {
+        _mocksControl = null;
+        _facesContext = null;
+        _testImpl = null;
+        _renderer = null;
     }
 
     protected final Method[] getMockedMethodsArray()
@@ -98,7 +105,7 @@ public class UIComponentBaseTest
     public void testGetAttributes()
     {
         // TODO implement tests for _ComponentAttributesMap
-        assertTrue(_testImpl.getAttributes() instanceof _ComponentAttributesMap);
+        Assert.assertTrue(_testImpl.getAttributes() instanceof _ComponentAttributesMap);
     }
 
     @Test
@@ -118,7 +125,7 @@ public class UIComponentBaseTest
             expect(renderer.getRendersChildren()).andReturn(expectedValue);
         }
         _mocksControl.replay();
-        assertEquals(expectedValue, _testImpl.getRendersChildren());
+        Assert.assertEquals(expectedValue, _testImpl.getRendersChildren());
         _mocksControl.verify();
         _mocksControl.reset();
     }
@@ -143,7 +150,7 @@ public class UIComponentBaseTest
 //        assertEquals(0, _testImpl.getChildCount());
 //    }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected = NullPointerException.class )
     public void testBroadcastArgNPE() throws Exception
     {
         _testImpl.broadcast(null);
@@ -169,7 +176,7 @@ public class UIComponentBaseTest
         _mocksControl.verify();
     }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected = NullPointerException.class)
     public void testDecodeArgNPE() throws Exception
     {
         _testImpl.decode(null);
@@ -185,7 +192,7 @@ public class UIComponentBaseTest
         _mocksControl.verify();
     }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected = NullPointerException.class)
     public void testEncodeBeginArgNPE() throws Exception
     {
         _testImpl.encodeBegin(null);
@@ -209,7 +216,7 @@ public class UIComponentBaseTest
 //        _mocksControl.verify();
 //    }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected = NullPointerException.class )
     public void testEncodeChildrenArgNPE() throws Exception
     {
         _testImpl.encodeChildren(null);
@@ -231,7 +238,7 @@ public class UIComponentBaseTest
         _mocksControl.verify();
     }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected = NullPointerException.class )
     public void testEncodeEndArgNPE() throws Exception
     {
         _testImpl.encodeEnd(null);
@@ -255,13 +262,13 @@ public class UIComponentBaseTest
 //        _mocksControl.verify();
 //    }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected = NullPointerException.class )
     public void testQueueEventArgNPE() throws Exception
     {
         _testImpl.queueEvent(null);
     }
 
-    @Test(expectedExceptions = { IllegalStateException.class })
+    @Test(expected =  IllegalStateException.class )
     public void testQueueEventWithoutParent() throws Exception
     {
         FacesEvent event = _mocksControl.createMock(FacesEvent.class);
@@ -282,13 +289,13 @@ public class UIComponentBaseTest
         _mocksControl.verify();
     }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected = NullPointerException.class )
     public void testProcessDecodesArgNPE() throws Exception
     {
         _testImpl.processDecodes(null);
     }
 
-    @Test(expectedExceptions = { RuntimeException.class })
+    @Test(expected =  RuntimeException.class )
     public void testProcessDecodesCallsRenderResoponseIfDecodeThrowsException()
     {
         List<UIComponent> emptyList = Collections.emptyList();
@@ -308,7 +315,7 @@ public class UIComponentBaseTest
         }
     }
 
-    @Test(enabled=false)
+    //@Test
     public void testProcessDecodesWithRenderedFalse() throws Exception
     {
         _testImpl.setRendered(false);
@@ -334,13 +341,13 @@ public class UIComponentBaseTest
 //        _mocksControl.verify();
 //    }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected = NullPointerException.class )
     public void testProcessValidatorsArgNPE() throws Exception
     {
         _testImpl.processValidators(null);
     }
 
-    @Test(enabled=false)
+    //@Test
     public void testProcessValidatorsWithRenderedFalse() throws Exception
     {
         _testImpl.setRendered(false);
@@ -370,13 +377,13 @@ public class UIComponentBaseTest
         return child;
     }
 
-    @Test(expectedExceptions = { NullPointerException.class })
+    @Test(expected =  NullPointerException.class )
     public void testProcessUpdatesArgNPE() throws Exception
     {
         _testImpl.processUpdates(null);
     }
 
-    @Test(enabled=false)
+    //@Test
     public void testProcessUpdatesWithRenderedFalse() throws Exception
     {
         _testImpl.setRendered(false);
@@ -396,6 +403,7 @@ public class UIComponentBaseTest
 //        _mocksControl.verify();
 //    }
 
+    /*
     @Factory
     public Object[] createPropertyTests() throws Exception
     {
@@ -415,5 +423,5 @@ public class UIComponentBaseTest
                         return getMocksControl().createMock(UIComponentBase.class, new Method[0]);
                     }
                 } };
-    }
+    }*/
 }
