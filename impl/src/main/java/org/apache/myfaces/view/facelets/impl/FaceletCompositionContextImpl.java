@@ -237,7 +237,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @Override
     public void addUniqueId(String uniqueId)
     {
-        if (_uniqueIdsList != null && _level == 0 && !(_isInMetadataSection > 0))
+        if (_uniqueIdsList != null && _level == 0 && !(_isInMetadataSection > 0) 
+            && !(_dynamicComponentSection > 0))
         {
             _uniqueIdsList.add(uniqueId);
         }
@@ -247,7 +248,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public String getUniqueIdFromIterator()
     {
         if (_uniqueIdsIterator != null && _uniqueIdsIterator.hasNext() && 
-                _level == 0 && !(_isInMetadataSection > 0))
+                _level == 0 && !(_isInMetadataSection > 0) && !(_dynamicComponentSection > 0))
         {
             return _uniqueIdsIterator.next();
         }

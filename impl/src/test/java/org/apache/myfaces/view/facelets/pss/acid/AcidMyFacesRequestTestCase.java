@@ -1092,15 +1092,15 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         submit(button);
         processLifecycleExecute();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
+
+        UIComponent comp2 = facesContext.getViewRoot().findComponent("panel");
+        Assert.assertNotNull(comp2);
+        Assert.assertEquals(2, comp2.getChildCount());
         
-        comp = facesContext.getViewRoot().findComponent("panel");
+        Assert.assertEquals("value1", comp2.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp2.getChildren().get(0).getAttributes().get("attr2"));
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
-        
-        wrapper = comp.getChildren().get(1);
+        wrapper = comp2.getChildren().get(1);
         Assert.assertNotNull(wrapper);
         Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);
@@ -1119,15 +1119,15 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         submit(button);
         processLifecycleExecuteAndRender();
-        Assert.assertNotNull(comp);
-        Assert.assertEquals(2, comp.getChildCount());
 
-        comp = facesContext.getViewRoot().findComponent("panel");
+        UIComponent comp3 = facesContext.getViewRoot().findComponent("panel");
+        Assert.assertNotNull(comp3);
+        Assert.assertEquals(2, comp3.getChildCount());
         
-        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
-        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        Assert.assertEquals("value1", comp3.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp3.getChildren().get(0).getAttributes().get("attr2"));
         
-        wrapper = comp.getChildren().get(1);
+        wrapper = comp3.getChildren().get(1);
         Assert.assertNotNull(wrapper);
         Assert.assertTrue(UIComponent.isCompositeComponent(wrapper));
         ccContent = wrapper.getFacet(UIComponent.COMPOSITE_FACET_NAME);

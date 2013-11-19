@@ -23,10 +23,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
