@@ -354,13 +354,13 @@ public class MyfacesConfig
      * Enable or disable a cache used to "remember" the generated facelets unique ids and reduce 
      * the impact on memory usage, only active if javax.faces.FACELETS_REFRESH_PERIOD is -1 (no refresh).
      */
-    @JSFWebConfigParam(defaultValue = "false", since = "2.0.13, 2.1.7", expectedValues="true, false", 
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.13, 2.1.7", expectedValues="true, false", 
             group="viewhandler", tags="performance",
             desc="Enable or disable a cache used to 'remember'  the generated facelets unique ids " + 
                  "and reduce the impact over memory usage.")
     public static final String INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED = 
         "org.apache.myfaces.VIEW_UNIQUE_IDS_CACHE_ENABLED";
-    public static final boolean INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT = false;
+    public static final boolean INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT = true;
     
     /**
      * Set the size of the cache used to store strings generated using SectionUniqueIdCounter
