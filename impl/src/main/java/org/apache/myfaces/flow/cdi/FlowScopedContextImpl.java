@@ -264,8 +264,18 @@ public class FlowScopedContextImpl implements Context
                     " cannot be found when resolving bean " + bean.toString());
             }
             
-            if (!facesContext.getApplication().getFlowHandler().isActive(facesContext, 
-                    reference.getDocumentId() == null ? "" : reference.getDocumentId(), reference.getId()))
+            FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+            // Since it is possible to have only the flow id without documentId, the best
+            // is first get the flow using flowHandler.getFlow and then check if the flow is
+            // active or not, but using the documentId and id of the retrieved flow.
+            Flow flow = flowHandler.getFlow(facesContext, 
+                reference.getDocumentId() == null ? "" : reference.getDocumentId(), reference.getId());
+            if (flow == null)
+            {
+                throw new IllegalStateException(bean.toString() + "cannot be created because flow "+ reference.getId()+
+                    " is not registered");
+            }
+            if (!flowHandler.isActive(facesContext, flow.getDefiningDocumentId(), flow.getId())) 
             {
                 throw new IllegalStateException(bean.toString() + "cannot be created if flow "+ reference.getId()+
                     " is not active");
