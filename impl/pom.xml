@@ -515,9 +515,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <!-- Only run JUnit tests -->
+                    <!--
                     <parallel>classes</parallel>
                     <threadCount>4</threadCount>
                     <perCoreThreadCount>true</perCoreThreadCount>
+                    -->
                     <testNGArtifactName>none:none</testNGArtifactName>
                     <excludes>
                         <exclude>**/JspStateManagerImplTest*</exclude>
