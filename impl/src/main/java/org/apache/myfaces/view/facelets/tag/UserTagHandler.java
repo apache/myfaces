@@ -35,12 +35,18 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpressionUEL;
 import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
 
 /**
@@ -113,11 +119,35 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             }
             actx.pushTemplateContext(new TemplateContextImpl());
             actx.pushClient(this);
+            FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+            String uniqueId = fcc.startComponentUniqueIdSection();
             if (this._vars.length > 0)
             {
-                for (int i = 0; i < this._vars.length; i++)
+                if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
                 {
-                    ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
+                    FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
+                    for (int i = 0; i < this._vars.length; i++)
+                    {
+                        //((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
+                        faceletState.putBinding(uniqueId, names[i], values[i]);
+                        ValueExpression ve;
+                        if (ExternalSpecifications.isUnifiedELAvailable())
+                        {
+                            ve = new FaceletStateValueExpressionUEL(uniqueId, names[i]);
+                        }
+                        else
+                        {
+                            ve = new FaceletStateValueExpression(uniqueId, names[i]);
+                        }
+                        actx.getTemplateContext().setParameter(names[i], ve);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < this._vars.length; i++)
+                    {
+                        ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
+                    }
                 }
             }
             // Disable caching always, even in 'always' mode

@@ -32,8 +32,13 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpressionUEL;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 
 /**
  * @author Jacob Hookom
@@ -91,6 +96,41 @@ public class ParamHandler extends TagHandler
     {
         AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
         actx.getTemplateContext().setParameter(nameStr, valueVE);
+        
+        if (actx.getTemplateContext().isAllowCacheELExpressions())
+        {
+            if (ELExpressionCacheMode.strict.equals(actx.getELExpressionCacheMode()) ||
+                ELExpressionCacheMode.allowCset.equals(actx.getELExpressionCacheMode()))
+            {
+                actx.getTemplateContext().setAllowCacheELExpressions(false);
+            }
+        }
+    }
+    
+    public void apply(FaceletContext ctx, UIComponent parent, String nameStr, ValueExpression valueVE,
+        String uniqueId)
+            throws IOException, FacesException, FaceletException, ELException
+    {
+        AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
+        if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+        {
+            FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
+            faceletState.putBinding(uniqueId, nameStr, valueVE);
+            ValueExpression ve;
+            if (ExternalSpecifications.isUnifiedELAvailable())
+            {
+                ve = new FaceletStateValueExpressionUEL(uniqueId, nameStr);
+            }
+            else
+            {
+                ve = new FaceletStateValueExpression(uniqueId, nameStr);
+            }
+            actx.getTemplateContext().setParameter(nameStr, ve);
+        }
+        else
+        {
+            actx.getTemplateContext().setParameter(nameStr, valueVE);
+        }
         
         if (actx.getTemplateContext().isAllowCacheELExpressions())
         {

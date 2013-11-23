@@ -41,9 +41,13 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpressionUEL;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
@@ -237,30 +241,59 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         }
     }
     
-    private void setVar(FaceletContext ctx, PageContext pctx, boolean t, Object src, 
+    private void setVar(FaceletContext ctx, UIComponent parent,
+        String uniqueId, String base, boolean t, Object src, 
         ValueExpression srcVE, Object value, String v, int i)
     {
         // set the var
         if (v != null)
         {
+            ValueExpression ve;
             if (t || srcVE == null)
             {
                 if (value == null)
                 {
-                    pctx.getAttributes().put(v, null);
+                    ve = null;
                 }
                 else
                 {
-                    pctx.getAttributes().put(v, 
-                            ctx.getExpressionFactory().createValueExpression(
-                                value, Object.class));
+                    ve = ctx.getExpressionFactory().createValueExpression(
+                                value, Object.class);
                 }
             }
             else
             {
-                ValueExpression ve = this.getVarExpr(srcVE, src, value, i);
-                pctx.getAttributes().put(v, ve);
+                ve = this.getVarExpr(srcVE, src, value, i);
             }
+            setVar(ctx, parent, uniqueId, base, v, ve);
+        }
+    }
+    
+    private void setVar(FaceletContext ctx, UIComponent parent,
+        String uniqueId, String base, String v, ValueExpression ve)
+    {
+        AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
+        PageContext pctx = actx.getPageContext();
+        if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+        {
+            FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
+            faceletState.putBinding(uniqueId, base, ve);
+
+            //Put the indirect EL into context
+            ValueExpression fve;
+            if (ExternalSpecifications.isUnifiedELAvailable())
+            {
+                fve = new FaceletStateValueExpressionUEL(uniqueId, base);
+            }
+            else
+            {
+                fve = new FaceletStateValueExpression(uniqueId, base);
+            }
+            pctx.getAttributes().put(v, fve);
+        }
+        else
+        {
+            pctx.getAttributes().put(v, ve);
         }
     }
     
@@ -319,30 +352,30 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
 
                     fcc.startComponentUniqueIdSection(base);
 
-                    setVar(ctx, pctx, t, src, srcVE, value, v, i);
+                    setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, i);
                     boolean last = !itr.hasNext();
                     // set the varStatus
                     if (vs != null)
                     {
                         IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                        ValueExpression ve;
                         if (t || srcVE == null)
                         {
                             if (srcVE == null)
                             {
-                                pctx.getAttributes().put(vs, null);
+                                ve = null;
                             }
                             else
                             {
-                                pctx.getAttributes().put(vs, 
-                                        ctx.getExpressionFactory().createValueExpression(
-                                            itrS, Object.class));
+                                ve = ctx.getExpressionFactory().createValueExpression(
+                                            itrS, Object.class);
                             }
                         }
                         else
                         {
-                            ValueExpression ve = new IterationStatusExpression(itrS);
-                            pctx.getAttributes().put(vs, ve);
+                            ve = new IterationStatusExpression(itrS);
                         }
+                        setVar(ctx, parent, uniqueId, base+"_vs", vs, ve);
                     }
 
                     // execute body
@@ -404,7 +437,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
 
                 fcc.startComponentUniqueIdSection(base);
 
-                setVar(ctx, pctx, t, src, srcVE, value, v, (Integer) stateValue[2]);
+                setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, (Integer) stateValue[2]);
                 
                 boolean first = (si == 0);
                 boolean last = (si == size-1);
@@ -413,24 +446,24 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                 if (vs != null)
                 {
                     IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                    ValueExpression ve;
                     if (t || srcVE == null)
                     {
                         if (srcVE == null)
                         {
-                            pctx.getAttributes().put(vs, null);
+                            ve = null;
                         }
                         else
                         {
-                            pctx.getAttributes().put(vs, 
-                                    ctx.getExpressionFactory().createValueExpression(
-                                        itrS, Object.class));
+                            ve = ctx.getExpressionFactory().createValueExpression(
+                                        itrS, Object.class);
                         }
                     }
                     else
                     {
-                        ValueExpression ve = new IterationStatusExpression(itrS);
-                        pctx.getAttributes().put(vs, ve);
+                        ve = new IterationStatusExpression(itrS);
                     }
+                    setVar(ctx, parent, uniqueId, base, vs, ve);
                 }
 
                 // execute body
@@ -525,31 +558,31 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
 
                     fcc.startComponentUniqueIdSection(base);
 
-                    setVar(ctx, pctx, t, src, srcVE, value, v, i);
+                    setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, i);
 
                     boolean last = !itr.hasNext();
                     // set the varStatus
                     if (vs != null)
                     {
                         IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                        ValueExpression ve;
                         if (t || srcVE == null)
                         {
                             if (srcVE == null)
                             {
-                                pctx.getAttributes().put(vs, null);
+                                ve = null;
                             }
                             else
                             {
-                                pctx.getAttributes().put(vs, 
-                                        ctx.getExpressionFactory().createValueExpression(
-                                            itrS, Object.class));
+                                ve = ctx.getExpressionFactory().createValueExpression(
+                                            itrS, Object.class);
                             }
                         }
                         else
                         {
-                            ValueExpression ve = new IterationStatusExpression(itrS);
-                            pctx.getAttributes().put(vs, ve);
+                            ve = new IterationStatusExpression(itrS);
                         }
+                        setVar(ctx, parent, uniqueId, base, vs, ve);
                     }
                     //setVarStatus(ctx, pctx, t, sO, eO, mO, srcVE, value, vs, first, !itr.hasNext(), i);
 

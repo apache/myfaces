@@ -34,8 +34,11 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
+import org.apache.myfaces.view.facelets.el.CacheableValueExpressionUELWrapper;
+import org.apache.myfaces.view.facelets.el.CacheableValueExpressionWrapper;
 
 /**
  * Simplified implementation of c:set
@@ -136,7 +139,23 @@ public class SetHandler extends TagHandler
             {
                 //ctx.getVariableMapper().setVariable(varStr, veObj);
                 AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
-                actx.getPageContext().getAttributes().put(varStr, veObj);
+                if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+                {
+                    if (ExternalSpecifications.isUnifiedELAvailable())
+                    {
+                        actx.getPageContext().getAttributes().put(varStr, 
+                            new CacheableValueExpressionUELWrapper(veObj));
+                    }
+                    else
+                    {
+                        actx.getPageContext().getAttributes().put(varStr, 
+                            new CacheableValueExpressionWrapper(veObj));
+                    }
+                }
+                else
+                {
+                    actx.getPageContext().getAttributes().put(varStr, veObj);
+                }
                 if (actx.getPageContext().isAllowCacheELExpressions())
                 {
                     if (ELExpressionCacheMode.strict.equals(actx.getELExpressionCacheMode()))

@@ -37,6 +37,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
@@ -132,14 +133,16 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
             //    }
             //}
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+            FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
             actx.extendClient(this);
             if (_params != null)
             {
+                String uniqueId = fcc.startComponentUniqueIdSection();
                 //VariableMapper vm = new VariableMapperWrapper(orig);
                 //ctx.setVariableMapper(vm);
                 for (int i = 0; i < _params.length; i++)
                 {
-                    _params[i].apply(ctx, parent);
+                    _params[i].apply(ctx, parent, _params[i].getName(ctx), _params[i].getValue(ctx), uniqueId);
                 }
             }
 
@@ -151,6 +154,10 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
             {
                 actx.popExtendedClient(this);
                 //ctx.setVariableMapper(orig);
+                if (_params != null)
+                {
+                    fcc.endComponentUniqueIdSection();
+                }
             }
         }
         else

@@ -135,23 +135,28 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
 
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         actx.pushClient(this);
-
+        FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+        String uniqueId = null;
+        if (!_template.isLiteral() || _params != null)
+        {
+            uniqueId = fcc.startComponentUniqueIdSection();
+        }
+        
         if (_params != null)
         {
             //VariableMapper vm = new VariableMapperWrapper(orig);
             //ctx.setVariableMapper(vm);
             for (int i = 0; i < _params.length; i++)
             {
-                _params[i].apply(ctx, parent);
+                _params[i].apply(ctx, parent, _params[i].getName(ctx), _params[i].getValue(ctx), uniqueId);
             }
         }
 
-        FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
         String path;
         boolean markInitialState = false;
         if (!_template.isLiteral())
         {
-            String uniqueId = fcc.startComponentUniqueIdSection();
+            //String uniqueId = fcc.startComponentUniqueIdSection();
             //path = getTemplateValue(actx, fcc, parent, uniqueId);
             String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
             if (restoredPath != null)
@@ -226,7 +231,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             //ctx.setVariableMapper(orig);
             actx.popClient(this);
         }
-        if (!_template.isLiteral())
+        if (!_template.isLiteral() || _params != null)
         {
             fcc.endComponentUniqueIdSection();
         }

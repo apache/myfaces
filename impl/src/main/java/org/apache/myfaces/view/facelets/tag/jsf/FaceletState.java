@@ -21,9 +21,11 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import javax.el.ValueExpression;
 
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponentBase;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 public class FaceletState implements StateHolder, Serializable
@@ -33,7 +35,13 @@ public class FaceletState implements StateHolder, Serializable
      */
     private static final long serialVersionUID = -7823771271935942737L;
     
-    public Map<String, Object> stateMap;
+    private Map<String, Object> stateMap;
+    
+    private Map<String, Map<String, ValueExpression>> bindingsMap;
+    
+    public FaceletState()
+    {
+    }
     
     public Object getState(String key)
     {
@@ -56,11 +64,28 @@ public class FaceletState implements StateHolder, Serializable
 
     public Object saveState(FacesContext context)
     {
-        if (stateMap != null)
+        UIViewRoot root = context.getViewRoot();
+        if (root != null && root.initialStateMarked())
         {
-            return UIComponentBase.saveAttachedState(context, stateMap);
+            if (stateMap != null)
+            {
+                Object values[] = new Object[1];
+                values[0] = UIComponentBase.saveAttachedState(context, stateMap);
+                return values;
+            }
+            return null;
         }
-        return null;
+        else
+        {
+            Object values[] = new Object[2];
+            values[0] = UIComponentBase.saveAttachedState(context, stateMap);
+            // If the UIViewRoot instance was not marked with initial state, that means
+            // we need to save the bindingsMap as well because it will not be restored
+            // like with PSS, because in that case the view is built again using 
+            // facelets algorithm.
+            values[1] = UIComponentBase.saveAttachedState(context, bindingsMap);
+            return values;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -69,10 +94,27 @@ public class FaceletState implements StateHolder, Serializable
         if (state == null)
         {
             stateMap = null;
+            bindingsMap = null;
+            return;
+        }
+        Object values[] = (Object[])state;
+        if (values.length == 2)
+        {
+            // Full state
+            stateMap = (Map<String,Object>) UIComponentBase.restoreAttachedState(context, values[0]);
+            bindingsMap = (Map<String,Map<String, ValueExpression>>) 
+                UIComponentBase.restoreAttachedState(context, values[1]);
         }
         else
         {
-            stateMap = (Map<String,Object>) UIComponentBase.restoreAttachedState(context, state);
+            if (values[0] == null)
+            {
+                stateMap = null;
+            }
+            else
+            {
+                stateMap = (Map<String,Object>) UIComponentBase.restoreAttachedState(context, values[0]);
+            }            
         }
     }
 
@@ -83,6 +125,35 @@ public class FaceletState implements StateHolder, Serializable
 
     public void setTransient(boolean newTransientValue)
     {
+    }
+
+    public void putBinding(String uniqueId, String key, ValueExpression expr)
+    {
+        if (bindingsMap == null)
+        {
+            bindingsMap = new HashMap<String, Map<String, ValueExpression>>();
+        }
+        Map<String, ValueExpression> bindings = bindingsMap.get(uniqueId);
+        if (bindings == null)
+        {
+            bindings = new HashMap<String, ValueExpression>();
+            bindingsMap.put(uniqueId, bindings);
+        }
+        bindings.put(key, expr);
+    }
+    
+    public ValueExpression getBinding(String uniqueId, String key)
+    {
+        if (bindingsMap == null)
+        {
+            return null;
+        }
+        Map<String, ValueExpression> bindings = bindingsMap.get(uniqueId);
+        if (bindings == null)
+        {
+            return null;
+        }
+        return bindings.get(key);
     }
 
 }

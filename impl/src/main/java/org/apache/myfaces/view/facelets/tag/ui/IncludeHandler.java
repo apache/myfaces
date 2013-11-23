@@ -114,9 +114,14 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
         String path;
         boolean markInitialState = false;
+        String uniqueId = null;
+        if (!src.isLiteral() || _params != null)
+        {
+            uniqueId = fcc.startComponentUniqueIdSection();
+        }
         if (!src.isLiteral())
         {
-            String uniqueId = fcc.startComponentUniqueIdSection();
+            //String uniqueId = fcc.startComponentUniqueIdSection();
             //path = getSrcValue(actx, fcc, parent, uniqueId);
             String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
             if (restoredPath != null)
@@ -205,7 +210,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
                         
                         for (int i = 0; i < _params.length; i++)
                         {
-                            _params[i].apply(ctx, parent, names[i], values[i]);
+                            _params[i].apply(ctx, parent, names[i], values[i], uniqueId);
                         }
                     }
                     else
@@ -248,7 +253,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         }
         finally
         {
-            if (!src.isLiteral())
+            if (!src.isLiteral() || _params != null)
             {
                 fcc.endComponentUniqueIdSection();
             }

@@ -87,7 +87,18 @@ public final class DefaultVariableMapper extends VariableMapperBase
                     returnValue = _pageContext.getAttributes().get(name);
                     if (_trackResolveVariables)
                     {
-                        _variableResolved = true;
+                        if (returnValue instanceof CacheableValueExpression)
+                        {
+                            if (returnValue instanceof CacheableValueExpressionWrapper)
+                            {
+                                returnValue = ((CacheableValueExpressionWrapper)returnValue).
+                                    getWrapped();
+                            }
+                        }
+                        else
+                        {
+                            _variableResolved = true;
+                        }
                     }
                     return returnValue;
                 }
@@ -99,7 +110,8 @@ public final class DefaultVariableMapper extends VariableMapperBase
                     _templateContext.containsParameter(name))
                 {
                     returnValue = _templateContext.getParameter(name);
-                    if (_trackResolveVariables)
+                    if (_trackResolveVariables &&
+                        !(returnValue instanceof CacheableValueExpression))
                     {
                         _variableResolved = true;
                     }
