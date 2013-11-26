@@ -1563,7 +1563,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             // corresponding DataModel element.
             _rowStates.clear();
         }
-        // TODO Auto-generated method stub
         super.encodeBegin(context);
     }
     

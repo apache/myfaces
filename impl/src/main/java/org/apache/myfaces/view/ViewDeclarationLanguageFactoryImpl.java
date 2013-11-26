@@ -31,7 +31,7 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
 
 /**
- * This is the default PDL factory used as of JSF 2.0, it tries to use Facelet PDL whenever possible, 
+ * This is the default VDL factory used as of JSF 2.0, it tries to use Facelet VDL whenever possible, 
  * but fallback on JSP if required.
  * 
  * @author Simon Lessard (latest modification by $Author$)
@@ -68,14 +68,6 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage(String viewId)
     {
-        //if (viewId == null)
-        //{
-        //    throw new NullPointerException("viewId");
-        //}
-        
-        // TODO: It would be nice to be able to preinitialize the factory. However, since it requires 
-        //       access to the ExternalContext it may not be possible, depending on the loading order 
-        //       in the FactoryFinder. Could use ideas here. -= SL =-
         if (!_initialized)
         {
             initialize();
@@ -89,12 +81,6 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
             }
         }
         
-        // throw new FacesException("Cannot find a valid PDL for view id " + viewId);
-        // It does not have sense to throw an exception in this point. Instead
-        // just return null, to indicate that no VDL can handle the viewId.
-        // For example, in org.apache.myfaces.shared.application.DefaultViewHandlerSupport
-        // first getViewDeclarationLanguage(String viewId) is called and if returns null
-        // try the default strategy (look for a file in web folder).
         return null;
     }
     

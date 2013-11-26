@@ -102,7 +102,6 @@ public class ViewHandlerImpl extends ViewHandler
         {
             try
             {
-                //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
                 return getViewHandlerSupport(context).calculateAndCheckViewId(context, input);
             }
             catch (InvalidViewIdException e)
@@ -120,7 +119,6 @@ public class ViewHandlerImpl extends ViewHandler
         {
             try
             {
-                //TODO: JSF 2.0 - need to make sure calculateViewId follows the new algorithm from 7.5.2 
                 return getViewHandlerSupport(context).calculateViewId(context, rawViewId);
             }
             catch (InvalidViewIdException e)

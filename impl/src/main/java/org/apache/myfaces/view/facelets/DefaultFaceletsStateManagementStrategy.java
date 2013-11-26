@@ -185,8 +185,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)
                 FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
-        //TODO: This object should be application scoped and shared
-        //between jsp and facelets
     }
     
     @SuppressWarnings("unchecked")
@@ -281,10 +279,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     }
                     if (state.length == 3)
                     {
-                        //if (view.getId() == null)
-                        //{
-                        //    view.setId(view.createUniqueId(context, null));
-                        //}
                         //Jump to where the count is
                         view.getAttributes().put(UNIQUE_ID_COUNTER_KEY, state[2]);
                     }
@@ -302,12 +296,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         }
                     }
                 }
-                // TODO: Why is necessary enable event processing?
-                // ANS: On RestoreViewExecutor, setProcessingEvents is called first to false
+                // On RestoreViewExecutor, setProcessingEvents is called first to false
                 // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
-                // event to be handled, we should enable it again. We are waiting a response from EG about
-                // the behavior of those listeners, because for partial state saving we need this listeners
-                // be called from here and relocate components properly, but for now we have to let this code as is.
+                // event to be handled, we should enable it again. For partial state saving we need this listeners
+                // be called from here and relocate components properly.
                 try 
                 {
                     context.setProcessingEvents (true);
@@ -315,8 +307,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     // In the latest code related to PostAddToView, it is
                     // triggered no matter if it is applied on postback. It seems that MYFACES-2389, 
                     // TRINIDAD-1670 and TRINIDAD-1671 are related.
-                    // This code is no longer necessary, but better let it here.
-                    //_publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
                     suscribeListeners(view);
                 }
                 finally
@@ -404,25 +394,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 handleDynamicAddedRemovedComponents(context, view, states);
             }
         }
-        // Restore binding, because UIViewRoot.processRestoreState() is never called
-        //the event processing has to be enabled because of the restore view event triggers
-        //TODO ask the EG the this is a spec violation if we do it that way
-        //see Section 2.2.1
-        // TODO: Why is necessary enable event processing?
-        // ANS: On RestoreViewExecutor, setProcessingEvents is called first to false
-        // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
-        // event to be handled, we should enable it again. We are waiting a response from EG about
-        // the behavior of those listeners (see comment on vdl.buildView). 
-        // -= Leonardo Uribe =- I think enable event processing in this point does not have any
-        // side effect. Enable it allows programatically add components when binding is set with 
-        // pss enabled. That feature works without pss, so we should preserve backward behavior.
-        // Tomahawk t:aliasBean example creating components on binding requires this to work.
-        //context.setProcessingEvents(true);
-        //try {
-        //    view.visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
-        //} finally {
-        //    context.setProcessingEvents(oldContextEventState);
-        //}
         return view;
     }
     
@@ -584,13 +555,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             return null;
         }
         
-        //if (view.isTransient())
-        //{
-            // Must return null immediately per spec.
-            
-            //return null;
-        //}
-        
         Object serializedView = context.getAttributes()
             .get(SERIALIZED_VIEW_REQUEST_ATTR);
         
@@ -618,8 +582,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
             
             // Create save state objects for every component.
-            
-            //view.visitTree (VisitContext.createVisitContext (context), new SaveStateVisitor (states));
             
             if (view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
             {
@@ -651,10 +613,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
             }
             
-            // TODO: not sure the best way to handle dynamic adds/removes as mandated by the spec.
-            
-            // As required by ResponseStateManager, the return value is an Object array.  First
-            // element is the structure object, second is the state map.
             Integer uniqueIdCount = (Integer) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
             if (uniqueIdCount != null && !uniqueIdCount.equals(1))
             {
@@ -669,17 +627,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 serializedView = new Object[] { null, states };
             }
             
-            //externalContext.getRequestMap().put(SERIALIZED_VIEW_REQUEST_ATTR,
-            //        getStateCache().encodeSerializedState(context, serializedView));
-
             context.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
 
         }
-        
-        //if (!context.getApplication().getStateManager().isSavingStateInClient(context))
-        //{
-        //getStateCache().saveSerializedView(context, serializedView);
-        //}
         
         return serializedView;
     }
@@ -1057,11 +1007,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 _facesContext = FacesContext.getCurrentInstance();
             }
-            //FacesContext facesContext = FacesContext.getCurrentInstance();
-            //if (FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext))
-            //{
-            //    return;
-            //}
             
             if (event instanceof PostAddToViewEvent)
             {

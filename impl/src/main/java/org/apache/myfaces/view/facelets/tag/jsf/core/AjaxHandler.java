@@ -222,8 +222,7 @@ public class AjaxHandler extends TagHandler implements
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
             // Push and pop this ajax handler to the stack, to delegate the
             // call to applyAttachedObject to ComponentTagHandlerDelegate
-            // TODO: The spec is not clear about how to deal with 
-            // composite component instances. The default one proposed here is
+            // The default one proposed here is
             // use a different stack on DefaultFaceletContext.applyCompositeComponent,
             // so components inside composite:implementation tag will not be
             // affected by f:ajax outsider handlers.
