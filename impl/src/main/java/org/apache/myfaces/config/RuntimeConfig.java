@@ -115,6 +115,9 @@ public class RuntimeConfig
     private List<Object> _injectedObjects = new ArrayList<Object>();
     
     private List<FaceletTagLibrary> _faceletTagLibraries = new ArrayList<FaceletTagLibrary>();
+    
+    private Map<Integer, String> _namespaceById = new HashMap<Integer, String>();
+    private Map<String, Integer> _idByNamespace = new HashMap<String, Integer>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -531,4 +534,25 @@ public class RuntimeConfig
     {
         _injectedObjects.add(object);
     }
+
+    public Map<Integer, String> getNamespaceById()
+    {
+        return _namespaceById;
+    }
+
+    public void setNamespaceById(Map<Integer, String> namespaceById)
+    {
+        this._namespaceById = namespaceById;
+    }
+
+    public Map<String, Integer> getIdByNamespace()
+    {
+        return _idByNamespace;
+    }
+
+    public void setIdByNamespace(Map<String, Integer> idByNamespace)
+    {
+        this._idByNamespace = idByNamespace;
+    }
+
 }

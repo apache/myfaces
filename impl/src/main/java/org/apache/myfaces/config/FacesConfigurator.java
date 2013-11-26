@@ -28,11 +28,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -853,12 +857,16 @@ public class FacesConfigurator
     private void configureRuntimeConfig()
     {
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
-
         FacesConfigData dispenser = getDispenser();
+        List<String> knownNamespaces = new ArrayList<String>();
         
         for (ComponentTagDeclaration declaration : dispenser.getComponentTagDeclarations())
         {
             runtimeConfig.addComponentTagDeclaration(declaration);
+            if (declaration.getNamespace() != null)
+            {
+                knownNamespaces.add(declaration.getNamespace());
+            }
         }
         
         for (ManagedBean bean : dispenser.getManagedBeans())
@@ -1051,7 +1059,42 @@ public class FacesConfigurator
         for (FaceletTagLibrary faceletTagLibrary : dispenser.getTagLibraries())
         {
             runtimeConfig.addFaceletTagLibrary(faceletTagLibrary);
+            if (faceletTagLibrary.getNamespace() != null)
+            {
+                knownNamespaces.add(faceletTagLibrary.getNamespace());
+            }
         }
+        
+        // Add default namespaces to the known namespaces
+        knownNamespaces.add("http://xmlns.jcp.org/jsf/core");
+        knownNamespaces.add("http://java.sun.com/jsf/core");
+        knownNamespaces.add("http://xmlns.jcp.org/jsf/html");
+        knownNamespaces.add("http://java.sun.com/jsf/html");
+        knownNamespaces.add("http://xmlns.jcp.org/jsf/facelets");
+        knownNamespaces.add("http://java.sun.com/jsf/facelets");
+        knownNamespaces.add("http://xmlns.jcp.org/jsp/jstl/core");
+        knownNamespaces.add("http://java.sun.com/jsp/jstl/core");
+        knownNamespaces.add("http://java.sun.com/jstl/core");
+        knownNamespaces.add("http://xmlns.jcp.org/jsp/jstl/functions");
+        knownNamespaces.add("http://java.sun.com/jsp/jstl/functions");
+        knownNamespaces.add("http://xmlns.jcp.org/jsf/composite");
+        knownNamespaces.add("http://java.sun.com/jsf/composite");
+        knownNamespaces.add("http://xmlns.jcp.org/jsf");
+        knownNamespaces.add("http://java.sun.com/jsf");
+        knownNamespaces.add("http://xmlns.jcp.org/jsf/passthrough");
+        knownNamespaces.add("http://java.sun.com/jsf/passthrough");
+        
+        Map<Integer, String> namespaceById = new HashMap<Integer, String>();
+        Map<String, Integer> idByNamespace = new HashMap<String, Integer>();
+        // Sort them to ensure the same id 
+        Collections.sort(knownNamespaces);
+        for (int i = 0; i < knownNamespaces.size(); i++)
+        {
+            namespaceById.put(i, knownNamespaces.get(i));
+            idByNamespace.put(knownNamespaces.get(i), i);
+        }
+        runtimeConfig.setNamespaceById(Collections.unmodifiableMap(namespaceById));
+        runtimeConfig.setIdByNamespace(Collections.unmodifiableMap(idByNamespace));
     }
 
     private void removePurgedBeansFromSessionAndApplication(RuntimeConfig runtimeConfig)

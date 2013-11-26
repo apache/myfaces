@@ -27,6 +27,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.view.facelets.Facelet;
+import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.DynamicComponentRefreshTransientBuildEvent;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
@@ -188,8 +189,26 @@ public class CreateDynamicCompositeComponentListener
 
     public Object saveState(FacesContext context)
     {
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
+            context.getExternalContext());
         Object[] values = new Object[4];
-        values[0] = taglibURI;
+        Integer tagId = runtimeConfig.getIdByNamespace().get(taglibURI);
+        if (tagId != null)
+        {
+            values[0] = tagId;
+        }
+        else if (taglibURI.startsWith(CompositeResourceLibrary.NAMESPACE_PREFIX))
+        {
+            values[0] = new Object[]{0, taglibURI.substring(35)};
+        }
+        else if(taglibURI.startsWith(CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX))
+        {
+            values[0] = new Object[]{1, taglibURI.substring(34)};
+        }
+        else
+        {
+            values[0] = taglibURI;
+        }
         values[1] = tagName;
         values[2] = attributes;
         values[3] = baseKey;
@@ -199,7 +218,24 @@ public class CreateDynamicCompositeComponentListener
     public void restoreState(FacesContext context, Object state)
     {
         Object[] values = (Object[]) state;
-        taglibURI = (String) values[0];
+        if (values[0] instanceof String)
+        {
+            taglibURI = (String) values[0];
+        }
+        else if (values[0] instanceof Integer)
+        {
+            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
+                context.getExternalContext());
+            taglibURI = runtimeConfig.getNamespaceById().get((Integer)values[0]);
+        }
+        else if (values[0] instanceof Object[])
+        {
+            Object[] def = (Object[])values[0];
+            String ns = ( ((Integer)def[0]).intValue() == 0) ? 
+                CompositeResourceLibrary.NAMESPACE_PREFIX :
+                CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX;
+            taglibURI = ns + (String)(((Object[])values[0])[1]);
+        }
         tagName = (String)values[1];
         attributes = (Map<String,Object>) values[2];
         baseKey = (String)values[3];
