@@ -115,9 +115,13 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         String path;
         boolean markInitialState = false;
         String uniqueId = null;
-        if (!src.isLiteral() || _params != null)
+        if (!src.isLiteral())
         {
             uniqueId = fcc.startComponentUniqueIdSection();
+        }
+        else if (_params != null)
+        {
+            uniqueId = fcc.generateUniqueComponentId();
         }
         if (!src.isLiteral())
         {
@@ -253,7 +257,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         }
         finally
         {
-            if (!src.isLiteral() || _params != null)
+            if (!src.isLiteral())
             {
                 fcc.endComponentUniqueIdSection();
             }

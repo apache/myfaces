@@ -137,9 +137,13 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
         actx.pushClient(this);
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
         String uniqueId = null;
-        if (!_template.isLiteral() || _params != null)
+        if (!_template.isLiteral())
         {
             uniqueId = fcc.startComponentUniqueIdSection();
+        }
+        else if (_params != null)
+        {
+            uniqueId = fcc.generateUniqueComponentId();
         }
         
         if (_params != null)
@@ -231,7 +235,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             //ctx.setVariableMapper(orig);
             actx.popClient(this);
         }
-        if (!_template.isLiteral() || _params != null)
+        if (!_template.isLiteral())
         {
             fcc.endComponentUniqueIdSection();
         }

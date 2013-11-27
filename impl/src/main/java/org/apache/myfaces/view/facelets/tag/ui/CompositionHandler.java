@@ -137,7 +137,7 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
             actx.extendClient(this);
             if (_params != null)
             {
-                String uniqueId = fcc.startComponentUniqueIdSection();
+                String uniqueId = fcc.generateUniqueComponentId();
                 //VariableMapper vm = new VariableMapperWrapper(orig);
                 //ctx.setVariableMapper(vm);
                 for (int i = 0; i < _params.length; i++)
@@ -154,10 +154,6 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
             {
                 actx.popExtendedClient(this);
                 //ctx.setVariableMapper(orig);
-                if (_params != null)
-                {
-                    fcc.endComponentUniqueIdSection();
-                }
             }
         }
         else
