@@ -53,8 +53,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
      * Default is noCache. There there are four modes:
      * 
      * <ul>
-     * <li>always: Only does not cache when expressions are inside user tags or the e
-     * xpression contains a variable resolved using VariableMapper</li>
+     * <li>alwaysRecompile (since 2.1.12): Only does not cache when the expression contains
+     * a variable resolved using VariableMapper</li>
+     * <li>always: Only does not cache when expressions are inside user tags or the
+     * expression contains a variable resolved using VariableMapper</li>
      * <li>allowCset: Like always, but does not allow cache when ui:param
      * was used on the current template context</li>
      * <li>strict: Like allowCset, but does not allow cache when c:set with
@@ -63,7 +65,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
      * </ul>
      * 
      */
-    @JSFWebConfigParam(since="2.0.8", defaultValue="noCache", expectedValues="noCache, strict, allowCset, always",
+    @JSFWebConfigParam(since="2.0.8", defaultValue="noCache",
+                       expectedValues="noCache, strict, allowCset, always, alwaysRecompile",
                        group="EL", tags="performance")
     public static final String INIT_PARAM_CACHE_EL_EXPRESSIONS = "org.apache.myfaces.CACHE_EL_EXPRESSIONS";
     
