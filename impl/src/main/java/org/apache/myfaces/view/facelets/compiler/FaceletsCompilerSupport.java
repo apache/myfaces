@@ -23,8 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextWrapper;
 import javax.faces.view.facelets.TagDecorator;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -115,19 +117,35 @@ public class FaceletsCompilerSupport
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(eContext);
         if (!runtimeConfig.getComponentTagDeclarations().isEmpty())
         {
+            // Set a dummy view root, to avoid Application.createComponent() to fail
             ComponentTagDeclarationLibrary componentTagDeclarationLibrary = new ComponentTagDeclarationLibrary();
-            for (ComponentTagDeclaration declaration : runtimeConfig.getComponentTagDeclarations())
+            
+            LoadComponentTagDeclarationFacesContextWrapper wrappedFacesContext = 
+                new LoadComponentTagDeclarationFacesContextWrapper(context);
+            try
             {
-                // We have here probably an inconsistency, because the annotation does not
-                // have a default renderer type. Let the renderer type be null will cause problems 
-                // later, because application.createComponent() may not scan the renderer class if
-                // a rendererType is not provided. The easy way to overcome this situation is create
-                // a dummy instance and check its rendererType. If is set the renderer if any will be
-                // scanned for annotations, if not it just do things as usual. It is unlikely to create
-                // a component and does not set a default renderer type if is required.
-                UIComponent component = context.getApplication().createComponent(declaration.getComponentType());
-                componentTagDeclarationLibrary.addComponent(declaration.getNamespace(), 
-                        declaration.getTagName(), declaration.getComponentType(), component.getRendererType());
+                wrappedFacesContext.setWrapperAsCurrentFacesContext();
+                UIViewRoot root = new UIViewRoot();
+                root.setRenderKitId("HTML_BASIC");
+                wrappedFacesContext.setViewRoot(new UIViewRoot());
+                
+                for (ComponentTagDeclaration declaration : runtimeConfig.getComponentTagDeclarations())
+                {
+                    // We have here probably an inconsistency, because the annotation does not
+                    // have a default renderer type. Let the renderer type be null will cause problems 
+                    // later, because application.createComponent() may not scan the renderer class if
+                    // a rendererType is not provided. The easy way to overcome this situation is create
+                    // a dummy instance and check its rendererType. If is set the renderer if any will be
+                    // scanned for annotations, if not it just do things as usual. It is unlikely to create
+                    // a component and does not set a default renderer type if is required.
+                    UIComponent component = context.getApplication().createComponent(declaration.getComponentType());
+                    componentTagDeclarationLibrary.addComponent(declaration.getNamespace(), 
+                            declaration.getTagName(), declaration.getComponentType(), component.getRendererType());
+                }
+            }
+            finally
+            {
+                wrappedFacesContext.restoreCurrentFacesContext();
             }
             compiler.addTagLibrary(componentTagDeclarationLibrary);
         }
@@ -187,4 +205,45 @@ public class FaceletsCompilerSupport
                 RuntimeConfig.getCurrentInstance(
                         context.getExternalContext()).getFaceletProcessingConfigurations());
     }
+    
+    private static class LoadComponentTagDeclarationFacesContextWrapper 
+        extends FacesContextWrapper
+    {
+        private FacesContext delegate;
+        private UIViewRoot root;
+
+        public LoadComponentTagDeclarationFacesContextWrapper(FacesContext delegate)
+        {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public UIViewRoot getViewRoot()
+        {
+            return root;
+        }
+
+        @Override
+        public void setViewRoot(UIViewRoot root)
+        {
+            this.root = root;
+        }
+        
+        @Override
+        public FacesContext getWrapped()
+        {
+            return delegate;
+        }
+        
+        void setWrapperAsCurrentFacesContext()
+        {
+            setCurrentInstance(this);
+        }
+        
+        void restoreCurrentFacesContext()
+        {
+            setCurrentInstance(delegate);
+        }
+    }
+
 }
