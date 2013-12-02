@@ -23,8 +23,6 @@ import java.net.URL;
 /**
  * Holds the information that is static but can only be derived after
  * a Resource instance is created.
- *
- * @author Leonardo Uribe
  */
 public class ResourceCachedInfo
 {

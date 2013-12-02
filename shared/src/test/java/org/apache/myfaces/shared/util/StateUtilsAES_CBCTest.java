@@ -28,7 +28,6 @@ import junit.framework.Test;
  * </p>
  *
  * @see pom.xml <excludes>
- * @author Dennis C. Byrne
  */
 
 public class StateUtilsAES_CBCTest extends AbstractStateUtilsTest

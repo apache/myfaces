@@ -28,9 +28,6 @@ import javax.faces.context.FacesContext;
  * <p>
  * For example, an implementation of this interface might support javax.servlet,
  * javax.portlet, or some other mechanism.
- *    
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public interface ViewHandlerSupport
 {

@@ -41,11 +41,6 @@ import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @version $Revision$ $Date$
- */
 public class HtmlRadioRendererBase
         extends HtmlRenderer
 {

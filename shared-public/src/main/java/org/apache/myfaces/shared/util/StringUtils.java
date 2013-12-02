@@ -28,9 +28,6 @@ import java.util.ArrayList;
  * Emphasis on performance and reduced memory allocation/garbage collection
  * in exchange for longer more complex code.
  * </p>
- *
- * @author Anton Koinov (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public final class StringUtils
 {

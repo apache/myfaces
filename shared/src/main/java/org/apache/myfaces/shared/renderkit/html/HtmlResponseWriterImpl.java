@@ -40,11 +40,6 @@ import org.apache.myfaces.shared.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.shared.util.CommentUtils;
 import org.apache.myfaces.shared.util.StreamCharBuffer;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public class HtmlResponseWriterImpl
         extends ResponseWriter
 {

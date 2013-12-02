@@ -34,8 +34,6 @@ import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.resource.ContractResource;
 
 /**
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  * @since 4.0.1
  */
 public class ResourceUtils

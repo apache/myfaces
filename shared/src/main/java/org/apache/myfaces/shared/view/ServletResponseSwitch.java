@@ -31,10 +31,6 @@ import javax.servlet.ServletResponseWrapper;
  * <p/>
  * Fall-back implementation of HttpServletResponseSwitch
  * for non HttpServletResponses.
- *
- * @author Werner Punz (latest modification by $Author$)
- * @author Jakob Korherr
- * @version $Revision$ $Date$
  */
 public class ServletResponseSwitch extends ServletResponseWrapper implements ResponseSwitch
 {

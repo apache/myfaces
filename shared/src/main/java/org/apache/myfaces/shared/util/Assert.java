@@ -18,10 +18,6 @@
  */
 package org.apache.myfaces.shared.util;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class Assert
 {
     public static void notNull(Object value)

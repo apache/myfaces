@@ -31,9 +31,6 @@ import javax.faces.event.SystemEvent;
  * normal exceptionHandler wrapping, because FacesContext is initialized after
  * ExceptionHandler, so it is not safe to get it when
  * ExceptionHandlerFactory.getExceptionHandler() is called.
- * 
- * @author Leonardo Uribe
- *
  */
 public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
 {

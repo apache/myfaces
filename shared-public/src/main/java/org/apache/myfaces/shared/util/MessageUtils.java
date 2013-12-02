@@ -41,12 +41,6 @@ import javax.faces.context.FacesContext;
  *
  * @see FacesMessage
  * @see java.util.ResourceBundle
- *
- * @author Thomas Spiegl (latest modification by $Author$)
- * @author Manfred Geiler
- * @author Sean Schofield
- * @author Stpehan Strittmatter
- * @version $Revision$ $Date$
  */
 public final class MessageUtils
 {

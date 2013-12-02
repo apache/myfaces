@@ -20,8 +20,6 @@ package org.apache.myfaces.shared.util.renderkit;
 
 /**
  * Holds the client behavior events.
- * 
- * @author Ali Ok
  */
 public final class ClientBehaviorEvents
 {

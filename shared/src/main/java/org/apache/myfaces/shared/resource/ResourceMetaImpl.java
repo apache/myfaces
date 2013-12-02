@@ -20,9 +20,6 @@ package org.apache.myfaces.shared.resource;
 
 /**
  * Contains the metadata information to reference a resource 
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class ResourceMetaImpl extends ResourceMeta
 {

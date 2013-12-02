@@ -41,9 +41,6 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
  * ie an engine that supports javax.servlet, and uses a standard web.xml file.
- *
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class DefaultViewHandlerSupport implements ViewHandlerSupport
 {

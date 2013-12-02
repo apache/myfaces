@@ -27,7 +27,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @see AbstractClassElementTestCase
- * @author Dennis Byrne
  */
 
 public class ClassElementHandler extends DefaultHandler

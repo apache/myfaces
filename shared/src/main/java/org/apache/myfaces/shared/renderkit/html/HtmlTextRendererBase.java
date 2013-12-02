@@ -41,11 +41,6 @@ import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
-/**
- * @author Thomas Spiegl (latest modification by $Author$)
- * @author Manfred Geiler
- * @version $Revision$ $Date$
- */
 public class HtmlTextRendererBase
         extends HtmlRenderer
 {

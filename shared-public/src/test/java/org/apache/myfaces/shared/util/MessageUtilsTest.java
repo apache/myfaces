@@ -26,8 +26,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
  * TestCase for MessageUtils
- *
- * @author Stephan Strittmatter
  */
 public class MessageUtilsTest extends AbstractJsfTestCase
 {

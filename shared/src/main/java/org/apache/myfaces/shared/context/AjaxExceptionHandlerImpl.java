@@ -42,9 +42,6 @@ import javax.faces.event.SystemEvent;
 /**
  * 
  * Specialized Ajax Handler, according to JSF 2.0 rev A section 13.3.7.
- * 
- * @author Leonardo Uribe
- *
  */
 public class AjaxExceptionHandlerImpl extends ExceptionHandler
 {

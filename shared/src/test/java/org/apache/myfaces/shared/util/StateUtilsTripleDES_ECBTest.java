@@ -26,8 +26,6 @@ import junit.framework.Test;
  * you most likely need to get the unlimited strength jurisdiction
  * policy files from a place like http://java.sun.com/j2se/1.4.2/download.html .
  * </p>
- *
- * @author Dennis C. Byrne
  */
 
 public class StateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest

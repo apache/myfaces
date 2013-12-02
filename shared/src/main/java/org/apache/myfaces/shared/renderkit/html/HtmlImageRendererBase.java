@@ -37,12 +37,6 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public class HtmlImageRendererBase
         extends HtmlRenderer
 {

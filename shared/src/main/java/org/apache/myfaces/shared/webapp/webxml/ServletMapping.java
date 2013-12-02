@@ -18,10 +18,6 @@
  */
 package org.apache.myfaces.shared.webapp.webxml;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class ServletMapping
 {
     private final String _servletName;

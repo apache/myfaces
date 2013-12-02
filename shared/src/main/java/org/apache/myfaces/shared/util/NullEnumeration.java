@@ -23,9 +23,6 @@ import java.util.NoSuchElementException;
 
 /**
  * Enumeration without elements
- *
- * @author Anton Koinov (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public final class NullEnumeration implements Enumeration
 {

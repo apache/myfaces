@@ -29,9 +29,6 @@ import javax.faces.component.UIComponent;
  * 
  * This is a copy from javax.faces.component._CommonPropertyConstants
  * and should be synchronized with this copy on shared
- * 
- * @author Leonardo Uribe
- *
  */
 public class CommonPropertyConstants
 {

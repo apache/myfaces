@@ -37,12 +37,6 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public class HtmlFormRendererBase
         extends HtmlRenderer
 {

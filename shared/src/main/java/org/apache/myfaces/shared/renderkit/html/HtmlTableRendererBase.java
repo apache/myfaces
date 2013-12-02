@@ -42,9 +42,6 @@ import org.apache.myfaces.shared.util.StringUtils;
 /**
  * Common methods for renderers for components that subclass the standard
  * JSF HtmlDataTable component.
- * 
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class HtmlTableRendererBase extends HtmlRenderer
 {

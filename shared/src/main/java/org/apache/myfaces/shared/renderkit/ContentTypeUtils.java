@@ -23,11 +23,6 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 
-/**
- * 
- * @author Leonardo Uribe
- *
- */
 public class ContentTypeUtils
 {
     public static final String HTML_CONTENT_TYPE = "text/html";

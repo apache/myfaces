@@ -23,9 +23,6 @@ import java.util.logging.Logger;
 
 /**
  * Support class for tracing method calls providing params, exceptions and return types
- * 
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class TracingSupport
 {

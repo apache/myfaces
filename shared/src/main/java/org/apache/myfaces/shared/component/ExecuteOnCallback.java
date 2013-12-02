@@ -27,8 +27,6 @@ import javax.faces.component.UIComponent;
  * is important for e.g. DataTables. They'll need to prepare the component
  * with the current row-state to make sure that the method is executed
  * correctly.
- *
- * @author Martin Marinschek (latest modification by $Author$)
  */
 public interface ExecuteOnCallback
 {

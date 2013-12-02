@@ -69,10 +69,6 @@ import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.SelectItemsIterator;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public final class RendererUtils
 {
     private RendererUtils()
@@ -1619,9 +1615,6 @@ public final class RendererUtils
 
     /**
      * Special converter for handling submitted values which don't need to be converted.
-     *
-     * @author mathias (latest modification by $Author$)
-     * @version $Revision$ $Date$
      */
     private static class PassThroughAsStringConverter implements Converter
     {

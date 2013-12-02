@@ -26,10 +26,6 @@ import javax.servlet.ServletOutputStream;
 /**
  * Delegates the standard OutputStream-methods (close, flush, write)
  * to the given ServletOutputStream, if the ResponseSwitch is enabled
- *  
- * @author Werner Punz (latest modification by $Author$)
- * @author Jakob Korherr 
- * @version $Revision$ $Date$
  */
 class SwitchableOutputStream extends ServletOutputStream
 {

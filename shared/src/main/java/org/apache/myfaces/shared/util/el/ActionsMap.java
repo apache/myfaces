@@ -26,9 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author Sylvain Vieujot (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * You can use this class to trigger an action when a boolean is set to true.
  *
  * Example : in JSF pages, for dataTable, to remove elements :

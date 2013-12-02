@@ -38,10 +38,6 @@ import java.util.Map;
 
 /**
  * see Spec.1.0 EA - JSF.7.6.4 Renderer Types for UIInput Components
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @author Anton Koinov
- * @version $Revision$ $Date$
  */
 public class HtmlSecretRendererBase
         extends HtmlRenderer

@@ -38,8 +38,6 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
 {

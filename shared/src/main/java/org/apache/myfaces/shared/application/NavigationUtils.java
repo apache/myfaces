@@ -25,11 +25,6 @@ import java.util.Map;
 
 import javax.faces.context.FacesContext;
 
-/**
- * 
- * @author Leonardo Uribe
- *
- */
 public class NavigationUtils
 {
     /**

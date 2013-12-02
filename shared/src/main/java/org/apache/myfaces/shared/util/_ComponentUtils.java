@@ -25,10 +25,6 @@ import javax.faces.el.ValueBinding;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 
-/**
- * @author Mathias Br&ouml;kelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public final class _ComponentUtils
 {
 

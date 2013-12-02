@@ -39,11 +39,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public final class ClassUtils
 {
     //~ Static fields/initializers -----------------------------------------------------------------

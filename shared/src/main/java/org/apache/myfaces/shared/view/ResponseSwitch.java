@@ -20,9 +20,6 @@ package org.apache.myfaces.shared.view;
 
 /**
  * Responses which can be enabled or disabled implement this interface.
- * 
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public interface ResponseSwitch
 {

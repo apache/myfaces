@@ -22,10 +22,6 @@ package org.apache.myfaces.shared.util;
 
 import junit.framework.Test;
 
-/**
- * @author Dennis C. Byrne
- */
-
 public class CachedStateUtilsDefaultTest extends AbstractStateUtilsTest
 {
 

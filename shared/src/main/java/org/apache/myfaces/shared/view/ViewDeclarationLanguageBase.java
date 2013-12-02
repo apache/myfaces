@@ -27,9 +27,6 @@ import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.shared.application.InvalidViewIdException;
 
 /**
- * @author Simon Lessard (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguage

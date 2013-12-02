@@ -41,11 +41,6 @@ import org.apache.myfaces.shared.util.renderkit.JsfProperties;
 // This class is associated with javax.faces.component._SelectItemsIterator.
 // Changes here should also be applied to this class.
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @author Jakob Korherr (jsf 2.0)
- * @version $Revision$ $Date$
- */
 public class SelectItemsIterator implements Iterator<SelectItem>
 {
     private static final Logger log = Logger.getLogger(SelectItemsIterator.class.getName());

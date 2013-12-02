@@ -27,10 +27,6 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
-/**
- * @author Martin Marinschek (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class RestoreStateUtils
 {
     //private static Log log = LogFactory.getLog(RestoreStateUtils.class);

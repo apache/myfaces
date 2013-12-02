@@ -38,10 +38,6 @@ import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.validator.MethodExpressionValidator;
 
 /**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Bruno Aranda (JSR-252)
- * @version $Revision$ $Date$
- *
  * @since 1.2
  */
 public class UIComponentELTagUtils

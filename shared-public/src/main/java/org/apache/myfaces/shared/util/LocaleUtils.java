@@ -24,10 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-/**
- * @author Anton Koinov (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public final class LocaleUtils
 {
     //private static final Log log = LogFactory.getLog(LocaleUtils.class);

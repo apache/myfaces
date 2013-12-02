@@ -67,10 +67,6 @@ import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.shared.renderkit.html.util.OutcomeTargetUtils;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public final class HtmlRendererUtils
 {
     //private static final Log log = LogFactory.getLog(HtmlRendererUtils.class);

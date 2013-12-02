@@ -49,9 +49,6 @@ import org.apache.myfaces.shared.util.SelectItemsIterator;
  * The util methods in this class are shared between the javax.faces.component package and
  * the org.apache.myfaces.renderkit package.
  * Please note: Any changes here must also apply to the class in the other package!
- *
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 class _SharedRendererUtils
 {

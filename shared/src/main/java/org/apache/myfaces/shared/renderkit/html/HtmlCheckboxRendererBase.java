@@ -43,11 +43,6 @@ import javax.faces.model.SelectItemGroup;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
-/**
- * @author Thomas Spiegl (latest modification by $Author$)
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public class HtmlCheckboxRendererBase extends HtmlRenderer
 {
     //private static final Log log = LogFactory

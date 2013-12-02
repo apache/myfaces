@@ -23,11 +23,6 @@ package org.apache.myfaces.shared.component;
  * By default, displayValueOnly is false, and the components have the default behaviour.
  * When displayValueOnly is true, the renderer should not render any input widget.
  * Only the text corresponding to the component's value should be rendered instead.
- * 
- * @author Sylvain Vieujot (latest modification by $Author$)
- * @author Martin Marinschek
- *
- * @version $Revision$ $Date$
  */
 public interface DisplayValueOnlyCapable
 {

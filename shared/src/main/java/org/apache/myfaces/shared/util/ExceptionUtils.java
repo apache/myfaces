@@ -24,8 +24,6 @@ import java.util.List;
 
 /**
  * Various helpers to deal with exception
- * 
- * @author imario@apache.org
  */
 public final class ExceptionUtils
 {

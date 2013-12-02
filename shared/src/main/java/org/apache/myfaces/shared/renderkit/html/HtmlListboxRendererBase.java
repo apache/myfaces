@@ -37,11 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * @author Thomas Spiegl (latest modification by $Author$)
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public class HtmlListboxRendererBase
         extends HtmlSelectableRendererBase
 {

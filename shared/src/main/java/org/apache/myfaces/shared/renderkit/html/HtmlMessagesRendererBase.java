@@ -40,10 +40,6 @@ import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.NullIterator;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public abstract class HtmlMessagesRendererBase
         extends HtmlMessageRendererBase
 {

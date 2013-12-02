@@ -26,8 +26,6 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Convenient error handler for xml sax parsing.
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class MyFacesErrorHandler
         implements ErrorHandler

@@ -37,8 +37,6 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
  * Renderer used by h:body component
  * 
  * @since 2.0
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class HtmlBodyRendererBase extends HtmlRenderer
 {

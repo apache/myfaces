@@ -26,10 +26,6 @@ import java.io.OutputStream;
 
 import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
 
-/**
- * @author Dennis C. Byrne
- */
-
 public class DefaultSerialFactory implements SerialFactory
 {
 

@@ -24,10 +24,6 @@ import java.io.Writer;
 /**
  * Delegates the standard Writer-methods (append, close, flush, write)
  * to the given Writer, if the ResponseSwitch is enabled
- * 
- * @author Werner Punz (latest modification by $Author$)
- * @author Jakob Korherr 
- * @version $Revision$ $Date$
  */
 class SwitchableWriter extends Writer
 {

@@ -26,8 +26,6 @@ import javax.faces.el.MethodNotFoundException;
 
 /**
  * Convenient method binding that does nothing other than returning a fixed outcome String when invoked.
- *
- * @author Manfred Geiler
  */
 public class SimpleActionMethodBinding
         extends MethodBinding

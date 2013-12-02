@@ -28,10 +28,6 @@ import javax.faces.render.Renderer;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public abstract class HtmlRenderer
         extends Renderer
 {

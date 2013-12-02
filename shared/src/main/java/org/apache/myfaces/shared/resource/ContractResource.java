@@ -20,8 +20,6 @@ package org.apache.myfaces.shared.resource;
 
 /**
  * Indicates if a resource has been served from a contract.
- *
- * @author Leonardo Uribe
  */
 public interface ContractResource
 {

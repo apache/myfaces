@@ -41,10 +41,6 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 
-/**
- * 
- * @author markoc
- */
 public class RendererUtilsTest extends AbstractJsfTestCase {
 
 	private MockResponseWriter writer;

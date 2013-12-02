@@ -25,8 +25,6 @@ import java.io.Writer;
 
 /**
  * Convenient base class for writing a ResponseWriter wrapper class.
- *
- * @author Manfred Geiler
  */
 public abstract class ResponseWriterWrapper
         extends ResponseWriter

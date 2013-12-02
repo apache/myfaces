@@ -23,10 +23,6 @@ import org.apache.myfaces.shared.renderkit.JSFAttr;
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 
-/**
- * @author Thomas Spiegl (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class SelectItemTagBase
     extends org.apache.myfaces.shared.taglib.UIComponentELTagBase
 {

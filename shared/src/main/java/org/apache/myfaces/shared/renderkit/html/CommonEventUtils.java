@@ -29,10 +29,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public class CommonEventUtils
 {
     public static long getCommonEventsMarked(UIComponent component)

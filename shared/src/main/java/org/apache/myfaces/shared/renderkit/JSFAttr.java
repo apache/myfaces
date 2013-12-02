@@ -23,8 +23,6 @@ import javax.faces.event.ActionListener;
 
 /**
  * Constant declarations for JSF tags
- * @author Anton Koinov (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public interface JSFAttr
 {

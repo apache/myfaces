@@ -18,8 +18,6 @@ package org.apache.myfaces.shared.util;
 /**
  * This TestCase is not meant to be run, it's children are.  
  * Running this TestCase directly will blow up.
- * 
- * @author Dennis C. Byrne
  */
 
 import org.apache.myfaces.shared.util.serial.DefaultSerialFactory;

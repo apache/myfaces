@@ -44,8 +44,6 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 
 /**
  * Utility methods for OutcomeTarget components.
- *
- * @author Leonardo Uribe
  */
 public class OutcomeTargetUtils
 {

@@ -40,12 +40,6 @@ import org.apache.myfaces.shared.util.ArrayUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 
 
-/**
- * @author Martin Marinschek
- * @version $Revision$ $Date$
- *          <p/>
- *          $Log: $
- */
 public class HtmlGridRendererBase
         extends HtmlRenderer
 {

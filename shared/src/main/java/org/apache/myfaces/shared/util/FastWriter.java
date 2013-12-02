@@ -25,9 +25,8 @@ import java.io.Writer;
  * StringWriter cannot be reused without create a new object over and over.
  * This class provide a simple implementation that allows reuse the same buffer
  * in a efficient way.
- * 
+ *
  * @author Jacob Hookom
- * @version $Id$
  */
 public final class FastWriter extends Writer
 {

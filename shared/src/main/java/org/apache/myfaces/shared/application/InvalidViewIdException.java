@@ -18,10 +18,6 @@
  */
 package org.apache.myfaces.shared.application;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class InvalidViewIdException extends RuntimeException
 {
 

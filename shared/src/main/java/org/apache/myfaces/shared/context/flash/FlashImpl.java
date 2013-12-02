@@ -49,10 +49,6 @@ import javax.faces.lifecycle.ClientWindow;
 
 /**
  * Implementation of Flash object
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @author Jakob Korherr
- * @version $Revision$ $Date$
  */
 public class FlashImpl extends Flash
 {

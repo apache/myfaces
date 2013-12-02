@@ -21,8 +21,6 @@ package org.apache.myfaces.shared.util.renderkit;
 
 /**
  * Constant declarations for JSF tags
- * @author Anton Koinov (latest modification by $Author: jakobk $)
- * @version $Revision: 939498 $ $Date: 2010-04-29 17:27:30 -0500 (Jue, 29 Abr 2010) $
  */
 public final class JsfProperties
 {

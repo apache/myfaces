@@ -24,9 +24,6 @@ import javax.faces.context.FacesContext;
 /**
  * A utility class to isolate a ResourceHandler implementation from its
  * underlying implementation
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public abstract class ResourceHandlerSupport
 {

@@ -31,9 +31,6 @@ import javax.faces.context.FacesContext;
 
 /**
  * Default implementation for resources
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class ResourceImpl extends Resource implements ContractResource
 {

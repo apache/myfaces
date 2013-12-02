@@ -21,9 +21,6 @@ package org.apache.myfaces.shared.util;
 /**
  * This class contains utility methods to detect special cases to be handled on "script" or
  * "style" tags by HtmlResponseWriterImpl.
- * 
- * @author Leonardo Uribe (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class CommentUtils
 {

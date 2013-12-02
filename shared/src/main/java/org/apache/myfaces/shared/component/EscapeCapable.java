@@ -22,8 +22,6 @@ package org.apache.myfaces.shared.component;
  * EscapeCapable interface for extended components
  * By default, escape is true, and the components have the default behaviour.
  * When escape is false, the renderer should not escape output.
- *
- * @author Grant Smith (latest modification by $Author$)
  */
 
 public interface EscapeCapable

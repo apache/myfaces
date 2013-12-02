@@ -26,10 +26,6 @@ import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public class HttpPartWrapper implements Part, FacesWrapper<Part>, StateHolder
 {
     private Part delegate;

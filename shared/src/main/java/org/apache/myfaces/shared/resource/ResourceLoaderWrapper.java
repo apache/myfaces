@@ -24,11 +24,6 @@ import java.util.Comparator;
 
 import javax.faces.FacesWrapper;
 
-/**
- * 
- * @author Leonardo Uribe
- *
- */
 public abstract class ResourceLoaderWrapper extends ResourceLoader implements FacesWrapper<ResourceLoader>
 {
     

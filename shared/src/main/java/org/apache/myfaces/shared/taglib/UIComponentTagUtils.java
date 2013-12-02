@@ -39,11 +39,9 @@ import javax.faces.webapp.UIComponentTag;
 import org.apache.myfaces.shared.el.SimpleActionMethodBinding;
 
 /**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
  * @deprecated replaced by @{link UIComponentELTagUtils}
  */
+@Deprecated
 public class UIComponentTagUtils
 {
     //private static final Log log = LogFactory.getLog(UIComponentTagUtils.class);

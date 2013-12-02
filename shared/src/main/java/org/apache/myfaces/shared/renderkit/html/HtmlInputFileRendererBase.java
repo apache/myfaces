@@ -44,11 +44,6 @@ import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.shared.util._ComponentUtils;
 
-/**
- * @author Werner Punz (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
-
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlInputFileRendererBase.class.getName());

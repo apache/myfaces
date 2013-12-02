@@ -38,10 +38,6 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  * X-CHECKED: tlddoc of h:selectManyListbox
- *
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @version $Revision$ $Date$
  */
 public class HtmlMenuRendererBase
         extends HtmlSelectableRendererBase

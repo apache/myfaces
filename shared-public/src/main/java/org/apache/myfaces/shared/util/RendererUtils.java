@@ -26,7 +26,6 @@ import javax.faces.context.FacesContext;
 
 /**
  * 
- * @author Leonardo Uribe
  * @since 1.0.1
  */
 public class RendererUtils

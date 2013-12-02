@@ -23,7 +23,6 @@ import javax.faces.component.UIViewRoot;
 
 /**
  * 
- * @author Leonardo Uribe
  * @since 1.0.2
  *
  */

@@ -20,8 +20,6 @@ import junit.framework.Test;
 /**
  * This TestCase uses the the default algorithm/mode/padding of
  * StateUtils.
- *
- * @author Dennis C. Byrne
  */
 
 public class StateUtilsDefaultTest extends AbstractStateUtilsTest

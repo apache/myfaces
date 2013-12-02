@@ -31,10 +31,6 @@ import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class WebXml
 {
     //private static final Log log = LogFactory.getLog(WebXml.class);

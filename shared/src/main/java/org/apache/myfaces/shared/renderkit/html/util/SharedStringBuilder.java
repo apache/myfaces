@@ -21,10 +21,6 @@ package org.apache.myfaces.shared.renderkit.html.util;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 
-/**
- *
- * @author lu4242
- */
 public class SharedStringBuilder
 {
     public static StringBuilder get(String stringBuilderKey)

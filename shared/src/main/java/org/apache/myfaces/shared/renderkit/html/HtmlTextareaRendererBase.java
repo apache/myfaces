@@ -36,11 +36,6 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public class HtmlTextareaRendererBase
         extends HtmlRenderer
 {

@@ -24,10 +24,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-/**
- * @author Dennis C. Byrne
- */
-
 public interface SerialFactory
 {
     ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException;

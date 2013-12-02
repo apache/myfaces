@@ -22,10 +22,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import javax.faces.FacesException;
 
-/**
- * @author Dennis C. Byrne
- */
-
 public class InitVector_CBCTestCase extends AbstractJsfTestCase {
 
     public InitVector_CBCTestCase(String name) {

@@ -24,9 +24,6 @@ import java.util.logging.Logger;
 
 /**
  * Trace method calls to an iterator
- * 
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class TracingIterator<E> implements Iterator<E>
 {

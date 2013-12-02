@@ -27,9 +27,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
  * Test class for HtmlResponseWriterImpl.
- * 
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
 {

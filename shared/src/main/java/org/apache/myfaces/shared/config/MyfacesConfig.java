@@ -38,9 +38,6 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
  * MyfacesConfig in custom components. Upon using another JSF implementation
  * (or omitting the extended init parameters) all config properties will simply have
  * their default values.
- *
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class MyfacesConfig
 {

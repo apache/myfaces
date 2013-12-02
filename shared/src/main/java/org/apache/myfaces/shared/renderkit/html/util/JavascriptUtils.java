@@ -28,11 +28,6 @@ import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public final class JavascriptUtils
 {
     //private static final Log log = LogFactory.getLog(JavascriptUtils.class);

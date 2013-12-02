@@ -36,9 +36,6 @@ import java.util.Set;
  * <p>
  * IMPORTANT:entrySet(), keySet(), and values() return unmodifiable snapshot collections.
  * </p>
- *
- * @author Anton Koinov (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public abstract class BiLevelCacheMap implements Map
 {

@@ -18,10 +18,6 @@
  */
 package org.apache.myfaces.shared.webapp.webxml;
 
-/**
- * @author Mario Ivankovits (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class FilterMapping
 {
     private String _filterName;

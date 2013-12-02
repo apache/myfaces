@@ -22,10 +22,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import javax.crypto.SecretKey;
 
-/**
- * @author Dennis C. Byrne
- */
-
 public class SecretKeyCacheTest extends AbstractJsfTestCase
 {
 

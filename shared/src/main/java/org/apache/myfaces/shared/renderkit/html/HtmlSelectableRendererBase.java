@@ -32,10 +32,6 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 
-/**
- *
- * @author Leonardo Uribe
- */
 public class HtmlSelectableRendererBase extends HtmlRenderer
 {
     

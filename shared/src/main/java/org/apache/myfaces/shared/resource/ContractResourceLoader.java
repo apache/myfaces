@@ -21,8 +21,6 @@ package org.apache.myfaces.shared.resource;
 /**
  * ResourceLoaders that are able to handle contract aware resources
  * must extends from this class.
- *
- * @author Leonardo Uribe
  */
 public abstract class ContractResourceLoader extends ResourceLoader
 {

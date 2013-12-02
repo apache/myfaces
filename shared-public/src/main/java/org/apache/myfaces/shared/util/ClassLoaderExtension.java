@@ -20,8 +20,6 @@ package org.apache.myfaces.shared.util;
 
 /**
  * Extends the existing with a new loading mechanism
- *
- * @author Werner Punz
  */
 public class ClassLoaderExtension
 {

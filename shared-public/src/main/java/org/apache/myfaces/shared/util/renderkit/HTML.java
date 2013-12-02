@@ -23,9 +23,6 @@ import org.apache.myfaces.shared.util.ArrayUtils;
 
 /**
  * Constant declarations for HTML rendering.
- * @author Manfred Geiler
- * @author Anton Koinov
- * @version $Revision: 938289 $ $Date: 2010-04-26 20:35:24 -0500 (Lun, 26 Abr 2010) $
  */
 public final class HTML
 {

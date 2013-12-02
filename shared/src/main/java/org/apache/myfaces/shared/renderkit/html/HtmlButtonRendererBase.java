@@ -46,12 +46,6 @@ import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util._ComponentUtils;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Thomas Spiegl
- * @author Anton Koinov
- * @version $Revision$ $Date$
- */
 public class HtmlButtonRendererBase
     extends HtmlRenderer
 {

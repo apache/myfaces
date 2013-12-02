@@ -30,9 +30,6 @@ import java.lang.reflect.Proxy;
  * ObjectInputStream Class, which then cannot find the classes to deserialize
  * the input stream.  The solution appears to be to subclass ObjectInputStream
  * (eg. CustomInputStream), and specify a different class-loading mechanism.
- *
- * @author Robert Gothan <robert@funkyjazz.net> (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class MyFacesObjectInputStream
     extends ObjectInputStream

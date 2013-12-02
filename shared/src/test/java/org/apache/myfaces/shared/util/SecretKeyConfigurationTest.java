@@ -20,10 +20,6 @@ package org.apache.myfaces.shared.util;
 import junit.framework.Test;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
-/**
- * @author Dennis C. Byrne
- */
-
 public class SecretKeyConfigurationTest extends AbstractJsfTestCase
 {
 

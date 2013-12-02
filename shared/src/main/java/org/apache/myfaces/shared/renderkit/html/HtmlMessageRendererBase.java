@@ -37,10 +37,6 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public abstract class HtmlMessageRendererBase
         extends HtmlRenderer
 {

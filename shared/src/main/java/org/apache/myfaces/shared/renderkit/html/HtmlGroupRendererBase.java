@@ -27,12 +27,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import java.io.IOException;
 
-/**
- * @author Martin Marinschek
- * @version $Revision$ $Date$
- *          <p/>
- *          $Log: $
- */
 public class HtmlGroupRendererBase
         extends HtmlRenderer 
 {

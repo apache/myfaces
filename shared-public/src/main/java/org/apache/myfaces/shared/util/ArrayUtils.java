@@ -25,9 +25,6 @@ import java.util.RandomAccess;
 
 /**
  * Utility class for managing arrays
- *
- * @author Anton Koinov (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class ArrayUtils
 {

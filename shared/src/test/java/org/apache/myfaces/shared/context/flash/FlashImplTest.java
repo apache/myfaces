@@ -41,8 +41,6 @@ import org.junit.Test;
 
 /**
  * Tests for FlashImpl.
- * @author Jakob Korherr (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class FlashImplTest extends AbstractJsfTestCase
 {

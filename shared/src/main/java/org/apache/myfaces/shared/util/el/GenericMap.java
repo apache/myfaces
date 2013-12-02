@@ -22,11 +22,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Sylvain Vieujot (latest modification by $Author$)
- * @version $Revision$ $Date$
- *
- */
 public abstract class GenericMap implements Map
 {
 

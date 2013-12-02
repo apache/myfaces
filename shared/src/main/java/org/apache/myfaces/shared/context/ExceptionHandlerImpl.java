@@ -35,9 +35,6 @@ import javax.faces.event.SystemEvent;
 /**
  * DOCUMENT ME!
  * 
- * @author (latest modification by $Author$)
- * @version $Revision$ $Date$
- * 
  * @since 2.0
  */
 public class ExceptionHandlerImpl extends ExceptionHandler

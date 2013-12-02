@@ -20,10 +20,6 @@ package org.apache.myfaces.shared.webapp.webxml;
 
 import junit.framework.TestCase;
 
-/**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class ServletMappingTest extends TestCase
 {
 

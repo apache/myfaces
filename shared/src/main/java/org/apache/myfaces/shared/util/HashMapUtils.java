@@ -24,10 +24,6 @@ import java.util.Set;
 import java.util.Iterator;
 
 
-/**
- * @author Anton Koinov (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class HashMapUtils
 {
     //~ Constructors -------------------------------------------------------------------------------

@@ -25,11 +25,6 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentELTag;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @author Bruno Aranda (JSR-252)
- * @version $Revision$ $Date$
- */
 public abstract class UIComponentELTagBase extends UIComponentELTag
 {
     //private static final Log log = LogFactory.getLog(UIComponentTagBase.class);

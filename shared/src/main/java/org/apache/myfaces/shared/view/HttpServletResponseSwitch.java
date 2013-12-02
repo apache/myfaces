@@ -33,10 +33,6 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * Implemented as HttpServletResponseWrapper,
  * so that the switching does not interfere with methods that
  * expect a HttpServletResponse when invoking ExternalContext.getResponse().
- *
- * @author Werner Punz (latest modification by $Author$)
- * @author Jakob Korherr
- * @version $Revision$ $Date$
  */
 public class HttpServletResponseSwitch extends HttpServletResponseWrapper implements ResponseSwitch
 {

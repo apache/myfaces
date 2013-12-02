@@ -39,10 +39,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
-/**
- * @author Manfred Geiler (latest modification by $Author$)
- * @version $Revision$ $Date$
- */
 public class WebXmlParser
 {
     //private static final Log log = LogFactory.getLog(WebXmlParser.class);

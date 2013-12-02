@@ -24,9 +24,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
  * <code>HTMLEncoderTest</code> tests <code>org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder</code>.
- * 
- * @author Michael Kurz (latest modification by $Author$)
- * @version $Revision$ $Date$
  */
 public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
   private String stringNoSpecialChars = "Hello, this is MyFaces speaking!";
