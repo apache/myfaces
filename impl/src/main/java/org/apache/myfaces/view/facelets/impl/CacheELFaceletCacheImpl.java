@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -147,7 +146,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
             f = getMemberFactory().newInstance(url);
             if (_refreshPeriod != NO_CACHE_DELAY)
             {
-                Map<String, FaceletNode> newLoc = new HashMap<String, FaceletNode>(_facelets);
+                //Map<String, FaceletNode> newLoc = new HashMap<String, FaceletNode>(_facelets);
                 if (!paramsSet.isEmpty()|| !knownParameters.isEmpty() )
                 {
                     paramsSet = new HashSet(paramsSet);
@@ -160,7 +159,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
                     //newLoc.put(key, new FaceletNode(f));
                     _facelets.put(key, new FaceletNode(f));
                 }
-                _facelets = newLoc;
+                //_facelets = newLoc;
             }
         }
 

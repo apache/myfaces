@@ -37,7 +37,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
  *
  */
 public class FaceletStateValueExpression extends ValueExpression 
-    implements Externalizable, FacesWrapper<ValueExpression>, CacheableValueExpression
+    implements Externalizable, FacesWrapper<ValueExpression>
 {
     private String uniqueId;
     private String key;
