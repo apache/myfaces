@@ -414,7 +414,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umexceptionHandlerFactories = Collections.unmodifiableList(exceptionHandlerFactories);
         }
-        return exceptionHandlerFactories;
+        return umexceptionHandlerFactories;
     }
 
     public Collection<String> getExternalContextFactoryIterator()
@@ -423,7 +423,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umexternalContextFactories = Collections.unmodifiableList(externalContextFactories);
         }
-        return externalContextFactories;
+        return umexternalContextFactories;
     }
 
     /**
@@ -435,7 +435,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umfacesContextFactories = Collections.unmodifiableList(facesContextFactories);
         }
-        return facesContextFactories;
+        return umfacesContextFactories;
     }
 
     /**
@@ -447,7 +447,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umlifecycleFactories = Collections.unmodifiableList(lifecycleFactories);
         }
-        return lifecycleFactories;
+        return umlifecycleFactories;
     }
 
     public Collection<String> getViewDeclarationLanguageFactoryIterator()
@@ -456,7 +456,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umviewDeclarationLanguageFactories = Collections.unmodifiableList(viewDeclarationLanguageFactories);
         }
-        return viewDeclarationLanguageFactories;
+        return umviewDeclarationLanguageFactories;
     }
 
     public Collection<String> getPartialViewContextFactoryIterator()
@@ -465,7 +465,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umpartialViewContextFactories = Collections.unmodifiableList(partialViewContextFactories);
         }
-        return partialViewContextFactories;
+        return umpartialViewContextFactories;
     }
 
     /**
@@ -477,7 +477,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umrenderKitFactories = Collections.unmodifiableList(renderKitFactories);
         }
-        return renderKitFactories;
+        return umrenderKitFactories;
     }
 
     public Collection<String> getTagHandlerDelegateFactoryIterator()
@@ -486,7 +486,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umtagHandlerDelegateFactories = Collections.unmodifiableList(tagHandlerDelegateFactories);
         }
-        return tagHandlerDelegateFactories;
+        return umtagHandlerDelegateFactories;
     }
 
     public Collection<String> getVisitContextFactoryIterator()
@@ -495,7 +495,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umvisitContextFactories = Collections.unmodifiableList(visitContextFactories);
         }
-        return visitContextFactories;
+        return umvisitContextFactories;
     }
 
     /**
@@ -507,7 +507,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umactionListeners = Collections.unmodifiableList(actionListeners);
         }
-        return actionListeners;
+        return umactionListeners;
     }
 
     /**
@@ -535,7 +535,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umnavigationHandlers = Collections.unmodifiableList(navigationHandlers);
         }
-        return navigationHandlers;
+        return umnavigationHandlers;
     }
 
     /**
@@ -556,7 +556,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umresourceHandlers = Collections.unmodifiableList(resourceHandlers);
         }
-        return resourceHandlers;
+        return umresourceHandlers;
     }
 
     /**
@@ -569,7 +569,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umviewHandlers = Collections.unmodifiableList(viewHandlers);
         }
-        return viewHandlers;
+        return umviewHandlers;
     }
 
     /**
@@ -582,7 +582,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umstateManagers = Collections.unmodifiableList(stateManagers);
         }
-        return stateManagers;
+        return umstateManagers;
     }
 
     /**
@@ -595,7 +595,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umpropertyResolver = Collections.unmodifiableList(propertyResolver);
         }
-        return propertyResolver;
+        return umpropertyResolver;
     }
 
     /**
@@ -608,7 +608,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umvariableResolver = Collections.unmodifiableList(variableResolver);
         }
-        return variableResolver;
+        return umvariableResolver;
     }
 
     /**
@@ -773,7 +773,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             ummanagedBeans = Collections.unmodifiableList(managedBeans);
         }
-        return managedBeans;
+        return ummanagedBeans;
     }
 
     /**
@@ -786,7 +786,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umnavigationRules = Collections.unmodifiableList(navigationRules);
         }
-        return navigationRules;
+        return umnavigationRules;
     }
 
     /**
@@ -837,7 +837,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umlifecyclePhaseListeners = Collections.unmodifiableList(lifecyclePhaseListeners);
         }
-        return lifecyclePhaseListeners;
+        return umlifecyclePhaseListeners;
     }
 
     @Override
@@ -847,7 +847,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umresourceBundles = Collections.unmodifiableList(resourceBundles);
         }
-        return resourceBundles;
+        return umresourceBundles;
     }
 
     @Override
@@ -857,7 +857,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umelResolvers = Collections.unmodifiableList(elResolvers);
         }
-        return elResolvers;
+        return umelResolvers;
     }
 
     @Override
@@ -867,7 +867,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umsystemEventListeners = Collections.unmodifiableList(systemEventListeners);
         }
-        return systemEventListeners;
+        return umsystemEventListeners;
     }
     
     @Override
@@ -877,7 +877,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umbehaviors = Collections.unmodifiableList(behaviors);
         }
-        return behaviors;
+        return umbehaviors;
     }
     
     @Override
@@ -893,7 +893,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umnamedEvents = Collections.unmodifiableList(namedEvents);
         }
-        return namedEvents;
+        return umnamedEvents;
     }
     
     @Override
@@ -921,7 +921,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umfaceletCacheFactories = Collections.unmodifiableList(faceletCacheFactories);
         }
-        return faceletCacheFactories;
+        return umfaceletCacheFactories;
     }
 
     @Override
@@ -937,7 +937,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umflashFactories = Collections.unmodifiableList(flashFactories);
         }
-        return flashFactories;
+        return umflashFactories;
     }
     
     @Override
@@ -947,7 +947,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umflowHandlerFactories = Collections.unmodifiableList(flowHandlerFactories);
         }
-        return flowHandlerFactories;
+        return umflowHandlerFactories;
     }
 
     @Override
@@ -963,7 +963,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umclientWindowFactories = Collections.unmodifiableList(clientWindowFactories);
         }
-        return clientWindowFactories;
+        return umclientWindowFactories;
     }
     
     @Override
@@ -973,7 +973,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umfacesFlowDefinitions = Collections.unmodifiableList(facesFlowDefinitions);
         }
-        return facesFlowDefinitions;
+        return umfacesFlowDefinitions;
     }
 
     @Override
@@ -983,7 +983,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umprotectedViewUrlPatterns = Collections.unmodifiableList(protectedViewUrlPatterns);
         }
-        return protectedViewUrlPatterns;
+        return umprotectedViewUrlPatterns;
     }
 
     @Override
@@ -993,7 +993,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umresourceLibraryContractMappings = Collections.unmodifiableList(resourceLibraryContractMappings);
         }
-        return resourceLibraryContractMappings;
+        return umresourceLibraryContractMappings;
     }
 
     @Override
@@ -1003,7 +1003,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umcomponentTagDeclarations = Collections.unmodifiableList(componentTagDeclarations);
         }
-        return componentTagDeclarations;
+        return umcomponentTagDeclarations;
     }
 
     @Override
@@ -1013,7 +1013,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umresourceResolvers = Collections.unmodifiableList(resourceResolvers);
         }
-        return resourceResolvers;
+        return umresourceResolvers;
     }
 
     @Override
@@ -1023,7 +1023,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             umfaceletTagLibraries = Collections.unmodifiableList(faceletTagLibraries);
         }
-        return faceletTagLibraries;
+        return umfaceletTagLibraries;
     }
     
 }

@@ -255,7 +255,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableApplications = 
                 Collections.unmodifiableList(applications);
         }
-        return applications;
+        return unmodifiableApplications;
     }
 
     public List<Factory> getFactories()
@@ -269,7 +269,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableFactories = 
                 Collections.unmodifiableList(factories);
         }
-        return factories;
+        return unmodifiableFactories;
     }
 
     public Map<String, String> getComponents()
@@ -283,7 +283,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableComponents = 
                 Collections.unmodifiableMap(components);
         }
-        return components;
+        return unmodifiableComponents;
     }
     
     public Map<String, ComponentTagDeclaration> getComponentTagDeclarations()
@@ -297,7 +297,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableComponentTagDeclarations = 
                 Collections.unmodifiableMap(componentTagDeclarations);
         }
-        return componentTagDeclarations;
+        return unmodifiableComponentTagDeclarations;
     }
 
     public List<Converter> getConverters()
@@ -311,7 +311,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableConverters = 
                 Collections.unmodifiableList(converters);
         }
-        return converters;
+        return unmodifiableConverters;
     }
 
     public List<ManagedBean> getManagedBeans()
@@ -325,7 +325,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableManagedBeans = 
                 Collections.unmodifiableList(managedBeans);
         }
-        return managedBeans;
+        return unmodifiableManagedBeans;
     }
 
     public List<NavigationRule> getNavigationRules()
@@ -339,7 +339,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableNavigationRules = 
                 Collections.unmodifiableList(navigationRules);
         }
-        return navigationRules;
+        return unmodifiableNavigationRules;
     }
 
     public List<RenderKit> getRenderKits()
@@ -353,7 +353,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableRenderKits = 
                 Collections.unmodifiableList(renderKits);
         }
-        return renderKits;
+        return unmodifiableRenderKits;
     }
 
     public List<String> getLifecyclePhaseListener()
@@ -367,7 +367,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableLifecyclePhaseListener = 
                 Collections.unmodifiableList(lifecyclePhaseListener);
         }
-        return lifecyclePhaseListener;
+        return unmodifiableLifecyclePhaseListener;
     }
 
     public Map<String, String> getValidators()
@@ -381,7 +381,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableValidators = 
                 Collections.unmodifiableMap(validators);
         }
-        return validators;
+        return unmodifiableValidators;
     }
     
     public List<Behavior> getBehaviors ()
@@ -395,7 +395,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableBehaviors = 
                 Collections.unmodifiableList(behaviors);
         }
-        return behaviors;
+        return unmodifiableBehaviors;
     }
     
     public List<NamedEvent> getNamedEvents ()
@@ -409,7 +409,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableNamedEvents = 
                 Collections.unmodifiableList(namedEvents);
         }
-        return namedEvents;
+        return unmodifiableNamedEvents;
     }
     
     public RenderKit getRenderKit(String renderKitId)
@@ -490,7 +490,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableFacesConfigExtensions = 
                 Collections.unmodifiableList(facesConfigExtensions);
         }
-        return facesConfigExtensions;
+        return unmodifiableFacesConfigExtensions;
     }
     
     @Override
@@ -505,7 +505,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableFacesFlowDefinitions = 
                 Collections.unmodifiableList(facesFlowDefinitions);
         }
-        return facesFlowDefinitions;
+        return unmodifiableFacesFlowDefinitions;
     }
     
     public List<String> getProtectedViewsUrlPatternList()
@@ -519,7 +519,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableProtectedViewsUrlPatternList = 
                 Collections.unmodifiableList(protectedViewsUrlPatternList);
         }
-        return protectedViewsUrlPatternList;
+        return unmodifiableProtectedViewsUrlPatternList;
     }
     
     public List<String> getResourceResolversList()
@@ -533,7 +533,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             unmodifiableResourceResolvers = 
                 Collections.unmodifiableList(resourceResolvers);
         }
-        return resourceResolvers;
+        return unmodifiableResourceResolvers;
     }
     
     @Override
