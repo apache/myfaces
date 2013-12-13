@@ -261,7 +261,7 @@ public class _DeltaStateHelperTest extends AbstractComponentTest
         //theoretically there should be almot no data in the delta state if the full state already has been stored!
         _instance.setInitialStateMarked(true);
         _instance.put(KEY5, VAL5);
-        Object[] deltaSaveState = (Object[]) _instance.saveState(null);
+        Object[] deltaSaveState = (Object[]) _instance.saveState(facesContext);
         //only the new value should be saved as delta
         assertTrue("Delta Savestate structure", deltaSaveState.length == 2
                 && deltaSaveState[0].equals(KEY5)

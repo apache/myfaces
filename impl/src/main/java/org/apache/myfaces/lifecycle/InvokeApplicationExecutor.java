@@ -20,6 +20,7 @@ package org.apache.myfaces.lifecycle;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 
 /**
  * Implements the invoke application phase (JSF Spec 2.2.5)
@@ -29,6 +30,9 @@ import javax.faces.event.PhaseId;
  */
 class InvokeApplicationExecutor extends PhaseExecutor
 {
+    private ViewPoolProcessor viewPoolProcessor;
+    private boolean initialized = false;
+    
     public boolean execute(FacesContext facesContext)
     {
         if (facesContext.getViewRoot() == null)
@@ -36,11 +40,28 @@ class InvokeApplicationExecutor extends PhaseExecutor
             throw new ViewNotFoundException("A view is required to execute "+facesContext.getCurrentPhaseId());
         }
         facesContext.getViewRoot().processApplication(facesContext);
+        
+        ViewPoolProcessor processor = getViewPoolProcessor(facesContext);
+        if (processor != null)
+        {
+            processor.processDeferredNavigation(facesContext);
+        }
+        
         return false;
     }
 
     public PhaseId getPhase()
     {
         return PhaseId.INVOKE_APPLICATION;
+    }
+    
+    private ViewPoolProcessor getViewPoolProcessor(FacesContext context)
+    {
+        if (!initialized)
+        {
+            viewPoolProcessor = ViewPoolProcessor.getInstance(context);
+            initialized = true;
+        }
+        return viewPoolProcessor;
     }
 }

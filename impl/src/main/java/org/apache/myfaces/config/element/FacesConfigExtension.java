@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,4 +30,14 @@ import java.util.List;
 public abstract class FacesConfigExtension implements Serializable
 {
     public abstract List<FaceletsProcessing> getFaceletsProcessingList();
+    
+    /**
+     * @since 2.2.0
+     * @return 
+     */
+    public List<ViewPoolMapping> getViewPoolMappings()
+    {
+        return Collections.emptyList();
+    }
+
 }

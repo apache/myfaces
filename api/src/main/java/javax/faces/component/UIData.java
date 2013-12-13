@@ -1477,6 +1477,23 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public Object saveState(FacesContext context)
     {
+        if (context.getViewRoot() != null)
+        {
+            if (context.getViewRoot().getResetSaveStateMode() == RESET_MODE_SOFT)
+            {
+                _dataModelMap.clear();
+                _isValidChilds=true;
+                _rowTransientStates.clear();
+            }
+            if (context.getViewRoot().getResetSaveStateMode() == RESET_MODE_HARD)
+            {
+                _dataModelMap.clear();
+                _isValidChilds=true;
+                _rowTransientStates.clear();
+                _rowStates.clear();
+                _rowDeltaStates.clear();
+            }
+        }
         if (initialStateMarked())
         {
             Object parentSaved = super.saveState(context);

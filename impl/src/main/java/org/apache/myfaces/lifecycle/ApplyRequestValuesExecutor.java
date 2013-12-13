@@ -20,6 +20,7 @@ package org.apache.myfaces.lifecycle;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 
 /**
  * Implements the apply request values phase (JSF Spec 2.2.2)
@@ -29,6 +30,9 @@ import javax.faces.event.PhaseId;
  */
 class ApplyRequestValuesExecutor extends PhaseExecutor
 {
+    private ViewPoolProcessor viewPoolProcessor;
+    private boolean initialized = false;
+
     public boolean execute(FacesContext facesContext)
     {
         if (facesContext.getViewRoot() == null)
@@ -36,11 +40,27 @@ class ApplyRequestValuesExecutor extends PhaseExecutor
             throw new ViewNotFoundException("A view is required to execute "+facesContext.getCurrentPhaseId());
         }
         facesContext.getViewRoot().processDecodes(facesContext);
+        
+        ViewPoolProcessor processor = getViewPoolProcessor(facesContext);
+        if (processor != null)
+        {
+            processor.processDeferredNavigation(facesContext);
+        }
         return false;
     }
 
     public PhaseId getPhase()
     {
         return PhaseId.APPLY_REQUEST_VALUES;
+    }
+    
+    private ViewPoolProcessor getViewPoolProcessor(FacesContext context)
+    {
+        if (!initialized)
+        {
+            viewPoolProcessor = ViewPoolProcessor.getInstance(context);
+            initialized = true;
+        }
+        return viewPoolProcessor;
     }
 }

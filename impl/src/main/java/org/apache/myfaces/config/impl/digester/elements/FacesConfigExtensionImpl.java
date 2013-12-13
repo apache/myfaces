@@ -19,7 +19,9 @@
 package org.apache.myfaces.config.impl.digester.elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import org.apache.myfaces.config.element.ViewPoolMapping;
 
 /**
  * 
@@ -35,6 +37,9 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     
     private List<org.apache.myfaces.config.element.FaceletsProcessing> _faceletsProcessingList = 
         new ArrayList<org.apache.myfaces.config.element.FaceletsProcessing>();
+    
+    private List<ViewPoolMapping> viewPoolMappings;
+    private transient List<ViewPoolMapping> unmodifiableViewPoolMappings;
 
     @Override
     public List<org.apache.myfaces.config.element.FaceletsProcessing> getFaceletsProcessingList()
@@ -45,5 +50,29 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     public void addFaceletsProcessing(org.apache.myfaces.config.element.FaceletsProcessing elem)
     {
         _faceletsProcessingList.add(elem);
+    }
+    
+    @Override
+    public List<ViewPoolMapping> getViewPoolMappings()
+    {
+        if (viewPoolMappings == null)
+        {
+            return Collections.emptyList();
+        }
+        if (unmodifiableViewPoolMappings == null)
+        {
+            unmodifiableViewPoolMappings = 
+                Collections.unmodifiableList(viewPoolMappings);
+        }
+        return unmodifiableViewPoolMappings;
+    }
+    
+    public void addViewPoolMapping(ViewPoolMapping mapping)
+    {
+        if (viewPoolMappings == null)
+        {
+            viewPoolMappings = new ArrayList<ViewPoolMapping>();
+        }
+        viewPoolMappings.add(mapping);
     }
 }

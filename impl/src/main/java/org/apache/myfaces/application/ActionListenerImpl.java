@@ -20,15 +20,21 @@ package org.apache.myfaces.application;
 
 import javax.el.MethodExpression;
 import javax.faces.application.Application;
+import javax.faces.application.ConfigurableNavigationHandler;
+import javax.faces.application.NavigationCase;
 import javax.faces.application.NavigationHandler;
 import javax.faces.component.ActionSource;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
+import javax.faces.event.PhaseId;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
+import org.apache.myfaces.view.facelets.pool.ViewPool;
 
 
 /**
@@ -85,20 +91,56 @@ public class ActionListenerImpl implements ActionListener
 
         }
         
-        NavigationHandler navigationHandler = application.getNavigationHandler();
-        String toFlowDocumentId = (component != null) ? 
-            (String) component.getAttributes().get(ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME) : null;
-        
-        if (toFlowDocumentId != null)
+        UIViewRoot root = facesContext.getViewRoot();
+        ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
+        ViewPool pool = (processor != null) ? processor.getViewPool(facesContext, root) : null;
+        if (pool != null && pool.isDeferredNavigationEnabled() && 
+            processor.isViewPoolStrategyAllowedForThisView(facesContext, root) &&
+            (PhaseId.INVOKE_APPLICATION.equals(facesContext.getCurrentPhaseId()) ||
+             PhaseId.APPLY_REQUEST_VALUES.equals(facesContext.getCurrentPhaseId())) )
         {
-            navigationHandler.handleNavigation(facesContext, fromAction, outcome, toFlowDocumentId);
+            NavigationHandler navigationHandler = application.getNavigationHandler();
+            if (navigationHandler instanceof ConfigurableNavigationHandler)
+            {
+                NavigationCase navigationCase = ((ConfigurableNavigationHandler) navigationHandler).
+                    getNavigationCase(facesContext, fromAction, outcome);
+                if (navigationCase != null)
+                {
+                    // Deferred invoke navigation. The first one wins
+                    if (!facesContext.getAttributes().containsKey(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION))
+                    {
+                        String toFlowDocumentId = (component != null) ? 
+                            (String) component.getAttributes().get(ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME) : null;
+                        if (toFlowDocumentId != null)
+                        {
+                            facesContext.getAttributes().put(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION, 
+                                    new Object[]{fromAction, outcome, toFlowDocumentId});
+                        }
+                        else
+                        {
+                            facesContext.getAttributes().put(ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION, 
+                                    new Object[]{fromAction, outcome});
+                        }
+                    }
+                }
+            }
         }
         else
         {
-            navigationHandler.handleNavigation(facesContext, fromAction, outcome);
-        }
-        //Render Response if needed
-        facesContext.renderResponse();
+            NavigationHandler navigationHandler = application.getNavigationHandler();
+            String toFlowDocumentId = (component != null) ? 
+                (String) component.getAttributes().get(ActionListener.TO_FLOW_DOCUMENT_ID_ATTR_NAME) : null;
 
+            if (toFlowDocumentId != null)
+            {
+                navigationHandler.handleNavigation(facesContext, fromAction, outcome, toFlowDocumentId);
+            }
+            else
+            {
+                navigationHandler.handleNavigation(facesContext, fromAction, outcome);
+            }
+            //Render Response if needed
+            facesContext.renderResponse();
+        }
     }
 }

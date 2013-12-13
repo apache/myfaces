@@ -90,6 +90,7 @@ import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.ResourceResolver;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.myfaces.application.StateManagerImpl;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -125,6 +126,10 @@ import static org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStr
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerSupport;
 import org.apache.myfaces.view.facelets.compiler.RefreshDynamicComponentListener;
 import org.apache.myfaces.view.facelets.impl.SectionUniqueIdCounter;
+import org.apache.myfaces.view.facelets.pool.RestoreViewFromPoolResult;
+import org.apache.myfaces.view.facelets.pool.ViewEntry;
+import org.apache.myfaces.view.facelets.pool.ViewPool;
+import org.apache.myfaces.view.facelets.pool.ViewStructureMetadata;
 import org.apache.myfaces.view.facelets.tag.composite.CreateDynamicCompositeComponentListener;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionListener;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValidator;
@@ -283,18 +288,24 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private List<String> _prefixWildcardKeys;
     
     private FaceletsCompilerSupport _faceletsCompilerSupport;
+    
+    private MyfacesConfig _config;
+    
+    private ViewPoolProcessor _viewPoolProcessor;
 
     /**
      *
      */
     public FaceletViewDeclarationLanguage(FacesContext context)
     {
+        _config = MyfacesConfig.getCurrentInstance(context.getExternalContext());
         initialize(context);
         _strategy = new FaceletViewDeclarationLanguageStrategy();
     }
 
     public FaceletViewDeclarationLanguage(FacesContext context, ViewDeclarationLanguageStrategy strategy)
     {
+        _config = MyfacesConfig.getCurrentInstance(context.getExternalContext());
         initialize(context);
         _strategy = strategy;
     }
@@ -314,6 +325,28 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             return _resourceResolver.resolveUrl(viewId) != null;
         }
         return false;
+    }
+
+    private RestoreViewFromPoolResult tryRestoreViewFromCache(FacesContext context, UIViewRoot view)
+    {
+        if (_viewPoolProcessor != null)
+        {
+            ViewPool viewPool = _viewPoolProcessor.getViewPool(context, view);
+            if (viewPool != null)
+            {
+                ViewStructureMetadata metadata = viewPool.retrieveStaticViewStructureMetadata(context, view);
+                if (metadata != null)
+                {
+                    ViewEntry entry = viewPool.popStaticOrPartialStructureView(context, view);
+                    if (entry != null)
+                    {
+                        _viewPoolProcessor.cloneAndRestoreView(context, view, entry, metadata);
+                        return entry.getResult();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -356,7 +389,48 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(renderedViewId);
         boolean refreshTransientBuild = (view.getChildCount() > 0);
         boolean refreshTransientBuildOnPSS = (usePartialStateSavingOnThisView && _refreshTransientBuildOnPSS);
+        boolean refreshPartialView = false;
 
+        if (_viewPoolProcessor != null && !refreshTransientBuild)
+        {
+            RestoreViewFromPoolResult result = tryRestoreViewFromCache(context, view);
+            if (result != null)
+            {
+                // Since all transient stuff has been removed, add listeners that keep
+                // track of tree updates.
+                if (RestoreViewFromPoolResult.COMPLETE.equals(result))
+                {
+                    if (!PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
+                    {
+                        ((DefaultFaceletsStateManagementStrategy) 
+                                getStateManagementStrategy(context, view.getViewId())).
+                                suscribeListeners(view);
+                    }
+                    // If the result is complete, the view restored here is static. 
+                    // static views can be marked as filled.
+                    if (!refreshTransientBuildOnPSS)
+                    {
+                        // This option will be true on this cases:
+                        // -pss is true and refresh is not active
+                        setFilledView(context, view);
+                    }
+                    //At this point refreshTransientBuild = false && refreshTransientBuildOnPSS is true
+                    else if (_refreshTransientBuildOnPSSAuto &&
+                             !context.getAttributes().containsKey(CLEAN_TRANSIENT_BUILD_ON_RESTORE))
+                    {
+                        setFilledView(context, view);
+                    }
+                    return;
+                }
+                else
+                {
+                    // We need to refresh a partial view.
+                    refreshTransientBuild = true;
+                    refreshPartialView = true;
+                }
+            }
+        }
+        
         if (usePartialStateSavingOnThisView)
         {
             // Before apply we need to make sure the current view has
@@ -371,7 +445,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             context.getAttributes().put(USING_PSS_ON_THIS_VIEW, Boolean.TRUE);
             //Add a key to indicate ComponentTagHandlerDelegate to 
             //call UIComponent.markInitialState after it is populated
-            if (!refreshTransientBuild)
+            if (!refreshTransientBuild || refreshPartialView)
             {
                 context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
                 context.getAttributes().put(IS_BUILDING_INITIAL_STATE_KEY_ALIAS, Boolean.TRUE);
@@ -466,8 +540,14 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             // UIViewRoot.markInitialState() is not called because it does
             // not have a facelet tag handler class that create it, instead
             // new instances are created programatically.
-            if (!refreshTransientBuild)
+            if (!refreshTransientBuild || refreshPartialView)
             {
+                // Save the state
+                if (_viewPoolProcessor != null &&
+                    _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
+                {
+                    _viewPoolProcessor.storeViewStructureMetadata(context, view);
+                }
                 if (_markInitialStateWhenApplyBuildView)
                 {
                     if (!refreshTransientBuildOnPSS ||
@@ -1727,7 +1807,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // the current view is not on javax.faces.FULL_STATE_SAVING_VIEW_IDS.
         if (_partialStateSaving && _stateMgmtStrategy == null)
         {
-            _stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy();
+            _stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(context);
         }
 
         return _usePartialStateSavingOnThisView(viewId) ? _stateMgmtStrategy : null;
@@ -1881,6 +1961,42 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         // saved yet.
                         stateMgr.saveView(context);
                     }
+                    else
+                    {
+                        // GET case without any form that trigger state saving.
+                        // Try to store it into cache.
+                        if (_viewPoolProcessor != null && 
+                            _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
+                        {
+                            ViewDeclarationLanguage vdl = context.getApplication().
+                                    getViewHandler().getViewDeclarationLanguage(
+                                        context, view.getViewId());
+
+                            if (ViewDeclarationLanguage.FACELETS_VIEW_DECLARATION_LANGUAGE_ID.equals(
+                                    vdl.getId()))
+                            {
+                                StateManagementStrategy sms = vdl.getStateManagementStrategy(
+                                        context, view.getId());
+                                if (sms != null)
+                                {
+                                    context.getAttributes().put(ViewPoolProcessor.FORCE_HARD_RESET, Boolean.TRUE);
+
+                                    // Force indirectly to store the map in the cache
+                                    try
+                                    {
+                                        Object state = sms.saveView(context);
+                                    }
+                                    finally
+                                    {
+                                        context.getAttributes().remove(ViewPoolProcessor.FORCE_HARD_RESET);
+                                    }
+
+                                    // Clear the calculated value from the application map
+                                    context.getAttributes().remove(SERIALIZED_VIEW_REQUEST_ATTR);
+                                }
+                            }
+                        }
+                    }
                 }
                 finally
                 {
@@ -1902,6 +2018,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             handleRenderException(context, e);
         }
     }
+    
+    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
+        StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
 
     /**
      * {@inheritDoc}
@@ -2355,6 +2474,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             eContext.getApplicationMap().put(
                     CACHED_COMPONENT_IDS, componentIdsCached);
         }
+        
+        _viewPoolProcessor = ViewPoolProcessor.getInstance(context);
 
         log.finest("Initialization Successful");
     }

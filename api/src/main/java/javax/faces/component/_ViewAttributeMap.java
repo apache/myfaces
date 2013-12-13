@@ -28,8 +28,8 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
 {
     private static final long serialVersionUID = -9106832109394257866L;
 
-    //private static final String RESET_SAVE_STATE_MODE_KEY = 
-    //        "oam.view.resetSaveStateMode";
+    private static final String RESET_SAVE_STATE_MODE_KEY = 
+            "oam.view.resetSaveStateMode";
 
     /**
      * Key under UIViewRoot to generated unique ids for components added 
@@ -73,12 +73,12 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
     {
         checkKey(key);
         int keyLength = ((String)key).length();
-        /*
+
         if (RESET_SAVE_STATE_MODE_KEY.length() == keyLength
             && RESET_SAVE_STATE_MODE_KEY.equals(key))
         {
             return _root.getResetSaveStateMode();
-        }*/
+        }
         if (RESOURCE_DEPENDENCY_UNIQUE_ID_KEY.length() == keyLength
             && RESOURCE_DEPENDENCY_UNIQUE_ID_KEY.equals(key))
         {
@@ -96,14 +96,13 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
     {
         int keyLength = ((String)key).length();
 
-        /*
         if (RESET_SAVE_STATE_MODE_KEY.length() == keyLength
             && RESET_SAVE_STATE_MODE_KEY.equals(key))
         {
             Integer b = _root.getResetSaveStateMode();
             _root.setResetSaveStateMode(value == null ? 0 : (Integer) value);
             return b;
-        }*/
+        }
         if (RESOURCE_DEPENDENCY_UNIQUE_ID_KEY.length() == keyLength
             && RESOURCE_DEPENDENCY_UNIQUE_ID_KEY.equals(key))
         {

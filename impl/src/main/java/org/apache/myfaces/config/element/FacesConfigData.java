@@ -297,4 +297,9 @@ public abstract class FacesConfigData implements Serializable
     {
         return Collections.emptyList();
     }
+    
+    public Collection<ViewPoolMapping> getViewPoolMappings()
+    {
+        return Collections.emptyList();
+    }
 }

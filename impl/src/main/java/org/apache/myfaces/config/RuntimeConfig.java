@@ -43,6 +43,7 @@ import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
+import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
 /**
@@ -118,6 +119,8 @@ public class RuntimeConfig
     
     private Map<Integer, String> _namespaceById = new HashMap<Integer, String>();
     private Map<String, Integer> _idByNamespace = new HashMap<String, Integer>();
+    
+    private List<ViewPoolMapping> _viewPoolMappings = new ArrayList<ViewPoolMapping>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -555,4 +558,13 @@ public class RuntimeConfig
         this._idByNamespace = idByNamespace;
     }
 
+    public List<ViewPoolMapping> getViewPoolMappings()
+    {
+        return _viewPoolMappings;
+    }
+    
+    public void addViewPoolMapping(ViewPoolMapping mapping)
+    {
+        _viewPoolMappings.add(mapping);
+    }
 }

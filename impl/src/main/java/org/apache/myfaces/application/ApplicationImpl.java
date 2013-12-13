@@ -80,6 +80,7 @@ import javax.faces.event.SystemEventListener;
 import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.flow.FlowHandler;
 import javax.faces.render.ClientBehaviorRenderer;
+import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.RendererWrapper;
 import javax.faces.validator.Validator;
@@ -97,6 +98,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.Property;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.context.RequestViewContext;
+import org.apache.myfaces.context.RequestViewMetadata;
 import org.apache.myfaces.el.PropertyResolverImpl;
 import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
 import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
@@ -1944,6 +1946,10 @@ public class ApplicationImpl extends Application
                 attributes.put("library", library);
             }
             
+            // Identify the resource as created by effect of a @ResourceDependency annotation.
+            output.getAttributes().put(RequestViewMetadata.RESOURCE_DEPENDENCY_KEY, 
+                new Object[]{annotation.library(), annotation.name()});
+            
             // If target is the empty string, let target be null.
             String target = annotation.target();
             if (target != null && target.length() > 0)
@@ -2498,6 +2504,10 @@ public class ApplicationImpl extends Application
                     attributes.put("library", library);
                 }
             }
+            
+            // Identify the resource as created by effect of a @ResourceDependency annotation.
+            output.getAttributes().put(RequestViewMetadata.RESOURCE_DEPENDENCY_KEY, 
+                new Object[]{annotation.library(), annotation.name()});
 
             // If target is the empty string, let target be null.
             String target = annotation.target();
@@ -2526,7 +2536,13 @@ public class ApplicationImpl extends Application
          * RenderKit.getRenderer(java.lang.String, java.lang.String) on the result, passing the argument componentFamily
          * of the newly created component as the first argument and the argument rendererType as the second argument.
          */
-        Renderer renderer = context.getRenderKit().getRenderer(component.getFamily(), rendererType);
+        RenderKit renderKit = context.getRenderKit();
+        if (renderKit == null)
+        {
+            // If no renderKit is set, it means we are on initialization step, skip this step.
+            return;
+        }
+        Renderer renderer = renderKit.getRenderer(component.getFamily(), rendererType);
         if (renderer == null)
         {
             // If no such Renderer can be found, a message must be logged with a helpful error message.

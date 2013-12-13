@@ -77,6 +77,8 @@ public final class ViewHandler extends TagHandler
     private final TagAttribute transientAttribute;
     
     private final TagAttribute contracts;
+    
+    private final TagAttribute oamEnableViewPool;
 
     /**
      * @param config
@@ -92,6 +94,7 @@ public final class ViewHandler extends TagHandler
         this.afterPhase = this.getAttribute("afterPhase");
         this.transientAttribute = this.getAttribute("transient");
         this.contracts = this.getAttribute("contracts");
+        this.oamEnableViewPool = this.getAttribute("oamEnableViewPool");
     }
 
     /**
@@ -183,6 +186,10 @@ public final class ViewHandler extends TagHandler
                         ctx.getFacesContext().setResourceLibraryContracts(list);
                     }
                 }
+            }
+            if (this.oamEnableViewPool != null)
+            {
+                root.getAttributes().put("oamEnableViewPool", this.oamEnableViewPool.getBoolean(ctx));
             }
         }
         this.nextHandler.apply(ctx, parent);

@@ -70,6 +70,7 @@ import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
 /**
@@ -212,6 +213,14 @@ public class NavigationHandlerImpl
                 {
                     partialViewContext.setRenderAll(true);
                 }
+
+                // Dispose view if the view has been marked as disposable by default action listener
+                ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
+                if (processor != null && 
+                    processor.isViewPoolEnabledForThisView(facesContext, facesContext.getViewRoot()))
+                {
+                    processor.disposeView(facesContext, facesContext.getViewRoot());
+                }
                 
                 // JSF 2.0 Spec call Flash.setRedirect(true) to notify Flash scope and take proper actions
                 externalContext.getFlash().setRedirect(true);
@@ -256,6 +265,14 @@ public class NavigationHandlerImpl
                 
                 applyFlowTransition(facesContext, navigationContext);
 
+                // Dispose view if the view has been marked as disposable by default action listener
+                ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
+                if (processor != null && 
+                    processor.isViewPoolEnabledForThisView(facesContext, facesContext.getViewRoot()))
+                {
+                    processor.disposeView(facesContext, facesContext.getViewRoot());
+                }
+                
                 // create UIViewRoot for new view
                 UIViewRoot viewRoot = null;
                 

@@ -126,6 +126,11 @@ public class FaceletState implements StateHolder, Serializable
     public void setTransient(boolean newTransientValue)
     {
     }
+    
+    public boolean isDynamic()
+    {
+        return stateMap == null ? false : !stateMap.isEmpty();
+    }
 
     public void putBinding(String uniqueId, String key, ValueExpression expr)
     {
@@ -154,6 +159,38 @@ public class FaceletState implements StateHolder, Serializable
             return null;
         }
         return bindings.get(key);
+    }
+    
+    public Map<String, Map<String, ValueExpression>> getBindings()
+    {
+        return bindingsMap;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 79 * hash + (this.stateMap != null ? this.stateMap.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final FaceletState other = (FaceletState) obj;
+        if (this.stateMap != other.stateMap && (this.stateMap == null || !this.stateMap.equals(other.stateMap)))
+        {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -85,6 +85,10 @@ public abstract class UIComponentBase extends UIComponent
     private static final String _STRING_BUILDER_KEY
             = "javax.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
 
+    static final int RESET_MODE_OFF = 0;
+    static final int RESET_MODE_SOFT = 1;
+    static final int RESET_MODE_HARD = 2;
+
     private _ComponentAttributesMap _attributesMap = null;
     private _PassThroughAttributesMap _passthroughAttributesMap = null;
     private List<UIComponent> _childrenList = null;
@@ -1216,6 +1220,10 @@ public abstract class UIComponentBase extends UIComponent
     public void markInitialState()
     {
         super.markInitialState();
+        
+        // Enable copyFullInitialState behavior when delta is written into this component.
+        ((_DeltaStateHelper)getStateHelper()).setCopyFullInitialState(true);
+        
         if (_facesListeners != null)
         {
             _facesListeners.markInitialState();
@@ -1925,6 +1933,31 @@ public abstract class UIComponentBase extends UIComponent
             throw new NullPointerException ("context");
         }
         
+        if (context.getViewRoot() != null)
+        {
+            if (context.getViewRoot().getResetSaveStateMode() == RESET_MODE_SOFT)
+            {
+                // Force FacesContext cleanup to prevent leak it.
+                setCachedFacesContext(null);
+                // Reset state to recalculate state first.
+                StateHelper stateHelper = getStateHelper(false);
+                if (stateHelper != null)
+                {
+                    ((_DeltaStateHelper)stateHelper).resetSoftState(context);
+                }
+            }
+            if (context.getViewRoot().getResetSaveStateMode() == RESET_MODE_HARD)
+            {
+                // Force FacesContext cleanup to prevent leak it.
+                setCachedFacesContext(null);
+                // Reset state to recalculate state first.
+                StateHelper stateHelper = getStateHelper(false);
+                if (stateHelper != null)
+                {
+                    ((_DeltaStateHelper)stateHelper).resetHardState(context);
+                }
+            }
+        }
         if (initialStateMarked())
         {
             //Delta

@@ -135,6 +135,7 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.cdi.dependent.BeanEntry;
+import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
@@ -1093,6 +1094,11 @@ public class FacesConfigurator
         }
         runtimeConfig.setNamespaceById(Collections.unmodifiableMap(namespaceById));
         runtimeConfig.setIdByNamespace(Collections.unmodifiableMap(idByNamespace));
+        
+        for (ViewPoolMapping viewPoolMapping : dispenser.getViewPoolMappings())
+        {
+            runtimeConfig.addViewPoolMapping(viewPoolMapping);
+        }
     }
 
     private void removePurgedBeansFromSessionAndApplication(RuntimeConfig runtimeConfig)

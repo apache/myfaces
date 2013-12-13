@@ -61,7 +61,11 @@ import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.compiler.CheckDuplicateIdFaceletUtils;
+import org.apache.myfaces.view.facelets.pool.ViewEntry;
+import org.apache.myfaces.view.facelets.pool.ViewPool;
+import org.apache.myfaces.view.facelets.pool.ViewStructureMetadata;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 
 /**
  * This class implements partial state saving feature when facelets
@@ -181,10 +185,21 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     private String _checkIdsProductionMode;
     
+    private MyfacesConfig _config;
+    
+    private ViewPoolProcessor _viewPoolProcessor;
+    
     public DefaultFaceletsStateManagementStrategy ()
+    {
+        this(FacesContext.getCurrentInstance());
+    }
+    
+    public DefaultFaceletsStateManagementStrategy (FacesContext context)
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)
                 FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
+        _config = MyfacesConfig.getCurrentInstance(context.getExternalContext());
+        _viewPoolProcessor = ViewPoolProcessor.getInstance(context);
     }
     
     @SuppressWarnings("unchecked")
@@ -258,7 +273,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
                 
                 context.setViewRoot (view); 
-                
+                boolean skipBuildView = false;
                 if (state != null && state[1] != null)
                 {
                     // Since JSF 2.2, UIViewRoot.restoreViewScopeState() must be called, but
@@ -266,13 +281,32 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     // id from this location. Remember in this point, PSS is enabled, so the
                     // code match with the assigment done in 
                     // FaceletViewDeclarationLanguage.buildView()
+                    states = (Map<String, Object>) state[1];
+                    faceletViewState = UIComponentBase.restoreAttachedState(
+                            context,states.get(ComponentSupport.FACELET_STATE_INSTANCE));
+                    if (faceletViewState != null && _viewPoolProcessor != null)
+                    {
+                        ViewPool viewPool = _viewPoolProcessor.getViewPool(context, view);
+                        if (viewPool != null)
+                        {
+                            ViewStructureMetadata viewMetadata = viewPool.retrieveDynamicViewStructureMetadata(
+                                context, view, (FaceletState) faceletViewState);
+                            if (viewMetadata != null)
+                            {
+                                ViewEntry entry = viewPool.popDynamicStructureView(context, view,
+                                        (FaceletState) faceletViewState);
+                                if (entry != null)
+                                {
+                                    skipBuildView = true;
+                                    _viewPoolProcessor.cloneAndRestoreView(context, view, entry, viewMetadata);
+                                }
+                            }
+                        }
+                    }
                     if (view.getId() == null)
                     {
                         view.setId(view.createUniqueId(context, null));
                     }
-                    states = (Map<String, Object>) state[1];
-                    faceletViewState = UIComponentBase.restoreAttachedState(
-                            context,states.get(ComponentSupport.FACELET_STATE_INSTANCE));
                     if (faceletViewState != null)
                     {
                         view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
@@ -300,18 +334,21 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 // and then to true when postback. Since we need listeners registered to PostAddToViewEvent
                 // event to be handled, we should enable it again. For partial state saving we need this listeners
                 // be called from here and relocate components properly.
-                try 
+                if (!skipBuildView)
                 {
-                    context.setProcessingEvents (true);
-                    vdl.buildView (context, view);
-                    // In the latest code related to PostAddToView, it is
-                    // triggered no matter if it is applied on postback. It seems that MYFACES-2389, 
-                    // TRINIDAD-1670 and TRINIDAD-1671 are related.
-                    suscribeListeners(view);
-                }
-                finally
-                {
-                    context.setProcessingEvents (oldContextEventState);
+                    try 
+                    {
+                        context.setProcessingEvents (true);
+                        vdl.buildView (context, view);
+                        // In the latest code related to PostAddToView, it is
+                        // triggered no matter if it is applied on postback. It seems that MYFACES-2389, 
+                        // TRINIDAD-1670 and TRINIDAD-1671 are related.
+                        suscribeListeners(view);
+                    }
+                    finally
+                    {
+                        context.setProcessingEvents (oldContextEventState);
+                    }
                 }
             }
             catch (Throwable e)
@@ -583,7 +620,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             
             // Create save state objects for every component.
             
-            if (view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
+            boolean viewResetable = false;
+            int count = 0;
+            Object faceletViewState = null;
+            boolean saveViewFully = view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+            if (saveViewFully)
             {
                 ensureClearInitialState(view);
                 Object rlcStates = !context.getResourceLibraryContracts().isEmpty() ? 
@@ -597,7 +638,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 states = new HashMap<String, Object>();
 
-                Object faceletViewState = view.getAttributes().get(ComponentSupport.FACELET_STATE_INSTANCE);
+                faceletViewState = view.getAttributes().get(ComponentSupport.FACELET_STATE_INSTANCE);
                 if (faceletViewState != null)
                 {
                     ((Map<String, Object>)states).put(ComponentSupport.FACELET_STATE_INSTANCE,
@@ -605,7 +646,20 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     //Do not save on UIViewRoot
                     view.getAttributes().remove(ComponentSupport.FACELET_STATE_INSTANCE);
                 }
-                saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
+                if (_viewPoolProcessor != null && 
+                    _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
+                {
+                    SaveStateAndResetViewCallback cb = saveStateOnMapVisitTreeAndReset(
+                            context,(Map<String,Object>) states, view,
+                            Boolean.TRUE.equals(
+                        context.getAttributes().get(ViewPoolProcessor.FORCE_HARD_RESET)));
+                    viewResetable = cb.isViewResetable();
+                    count = cb.getCount();
+                }
+                else
+                {
+                    saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
+                }
                 
                 if ( ((Map<String,Object>)states).isEmpty())
                 {
@@ -625,6 +679,21 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             else
             {
                 serializedView = new Object[] { null, states };
+            }
+            
+            //If view cache enabled store the view state into the pool
+            if (!saveViewFully && _viewPoolProcessor != null)
+            {
+                if (viewResetable)
+                {
+                    _viewPoolProcessor.pushResetableView(
+                        context, view, (FaceletState) faceletViewState);
+                }
+                else
+                {
+                    _viewPoolProcessor.pushPartialView(
+                        context, view, (FaceletState) faceletViewState, count);
+                }
             }
             
             context.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
@@ -908,6 +977,304 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
                 states.put (uiViewRoot.getClientId (facesContext), state);
             }
+        }
+    }
+    
+    
+    private SaveStateAndResetViewCallback saveStateOnMapVisitTreeAndReset(final FacesContext facesContext,
+            final Map<String,Object> states, final UIViewRoot uiViewRoot, boolean forceHardReset)
+    {
+        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+        SaveStateAndResetViewCallback callback = new SaveStateAndResetViewCallback(
+                facesContext.getViewRoot(), states, forceHardReset);
+        if (forceHardReset)
+        {
+            uiViewRoot.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
+                    ViewPoolProcessor.RESET_MODE_HARD);
+        }
+        else
+        {
+            uiViewRoot.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
+                    ViewPoolProcessor.RESET_MODE_SOFT);
+        }
+        try
+        {
+            if (_viewPoolProcessor != null && 
+                !_viewPoolProcessor.isViewPoolEnabledForThisView(facesContext, uiViewRoot))
+            {
+                callback.setViewResetable(false);
+            }
+            
+            // Check if the view has removed components. If that so, it
+            // means there is some manipulation over the component tree that
+            // can be rollback, so it is ok to set the view as resetable.
+            if (callback.isViewResetable())
+            {
+                List<String> removedIds = getClientIdsRemoved(uiViewRoot);
+                if (removedIds != null && !removedIds.isEmpty())
+                {
+                    callback.setViewResetable(false);
+                }
+            }
+
+            try
+            {
+                uiViewRoot.visitTree( getVisitContextFactory().getVisitContext(
+                        facesContext, null, VISIT_HINTS), callback);
+            }
+            finally
+            {
+                facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+            }
+            
+            if (callback.isViewResetable() && callback.isRemoveAddedComponents())
+            {
+                List<String> clientIdsToRemove = getClientIdsAdded(uiViewRoot);
+
+                if (clientIdsToRemove != null)
+                {
+                    // perf: clientIds are ArrayList: see method registerOnAddRemoveList(String)
+                    for (int i = 0, size = clientIdsToRemove.size(); i < size; i++)
+                    {
+                        String clientId = clientIdsToRemove.get(i);
+                        uiViewRoot.invokeOnComponent(facesContext, clientId, new RemoveComponentCallback());
+                    }
+                }
+            }
+
+            Object state = uiViewRoot.saveState (facesContext);
+            if (state != null)
+            {
+                // Save by client ID into our map.
+                states.put (uiViewRoot.getClientId (facesContext), state);
+
+                //Hard reset (or reset and check state again)
+                Integer oldResetMode = (Integer) uiViewRoot.getAttributes().put(
+                        ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, ViewPoolProcessor.RESET_MODE_HARD);
+                state = uiViewRoot.saveState (facesContext);
+                uiViewRoot.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, oldResetMode);
+                if (state != null)
+                {
+                    callback.setViewResetable(false);
+                }
+            }
+        }
+        finally
+        {
+            uiViewRoot.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
+                    ViewPoolProcessor.RESET_MODE_OFF);
+        }
+        return callback;
+    }
+    
+    private class SaveStateAndResetViewCallback implements VisitCallback
+    {
+        private final Map<String, Object> states;
+        
+        private final UIViewRoot view;
+        
+        private boolean viewResetable;
+        
+        private boolean skipRoot;
+        
+        private int count;
+        
+        private boolean forceHardReset;
+        
+        private boolean removeAddedComponents;
+        
+        public SaveStateAndResetViewCallback(UIViewRoot view, Map<String, Object> states,
+                boolean forceHardReset)
+        {
+            this.states = states;
+            this.view = view;
+            this.viewResetable = true;
+            this.skipRoot = true;
+            this.count = 0;
+            this.forceHardReset = forceHardReset;
+            this.removeAddedComponents = false;
+        }
+        
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            FacesContext facesContext = context.getFacesContext();
+            Object state;
+            this.count++;
+
+            if ((target == null) || target.isTransient())
+            {
+                // No need to bother with these components or their children.
+
+                return VisitResult.REJECT;
+            }
+            
+            if (skipRoot && target instanceof UIViewRoot)
+            {
+                //UIViewRoot should be scanned at last.
+                skipRoot = false;
+                return VisitResult.ACCEPT;
+            }
+
+            ComponentState componentAddedAfterBuildView
+                    = (ComponentState) target.getAttributes().get(COMPONENT_ADDED_AFTER_BUILD_VIEW);
+
+            //Note if UIViewRoot has this marker, JSF 1.2 like state saving is used.
+            if (componentAddedAfterBuildView != null && (target.getParent() != null))
+            {
+                //Set this view as not resetable.
+                //setViewResetable(false);
+                // Enable flag to remove added components later
+                setRemoveAddedComponents(true);
+                if (forceHardReset)
+                {
+                    // The ideal is remove the added component here but visitTree does not support that
+                    // kind of tree manipulation.
+                    if (isViewResetable() &&
+                        ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
+                    {
+                        setViewResetable(false);
+                    }
+                    // it is not important to save anything, skip
+                    return VisitResult.REJECT;
+                }
+                if (ComponentState.REMOVE_ADD.equals(componentAddedAfterBuildView))
+                {
+                    //If the view has removed components, set the view as non resetable
+                    setViewResetable(false);
+                    registerOnAddRemoveList(facesContext, target.getClientId(facesContext));
+                    target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                }
+                else if (ComponentState.ADD.equals(componentAddedAfterBuildView))
+                {
+                    registerOnAddList(facesContext, target.getClientId(facesContext));
+                    target.getAttributes().put(COMPONENT_ADDED_AFTER_BUILD_VIEW, ComponentState.ADDED);
+                }
+                else if (ComponentState.ADDED.equals(componentAddedAfterBuildView))
+                {
+                    // Later on the check of removed components we'll see if the view
+                    // is resetable or not.
+                    registerOnAddList(facesContext, target.getClientId(facesContext));
+                }
+                ensureClearInitialState(target);
+                //Save all required info to restore the subtree.
+                //This includes position, structure and state of subtree
+
+                int childIndex = target.getParent().getChildren().indexOf(target);
+                if (childIndex >= 0)
+                {
+                    states.put(target.getClientId(facesContext), new AttachedFullStateWrapper( 
+                            new Object[]{
+                                target.getParent().getClientId(facesContext),
+                                null,
+                                childIndex,
+                                internalBuildTreeStructureToSave(target),
+                                target.processSaveState(facesContext)}));
+                }
+                else
+                {
+                    String facetName = null;
+                    if (target.getParent().getFacetCount() > 0)
+                    {
+                        for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet()) 
+                        {
+                            if (target.equals(entry.getValue()))
+                            {
+                                facetName = entry.getKey();
+                                break;
+                            }
+                        }
+                    }
+                    states.put(target.getClientId(facesContext),new AttachedFullStateWrapper(new Object[]{
+                            target.getParent().getClientId(facesContext),
+                            facetName,
+                            null,
+                            internalBuildTreeStructureToSave(target),
+                            target.processSaveState(facesContext)}));
+                }
+                return VisitResult.REJECT;
+            }
+            else if (target.getParent() != null)
+            {
+                if (forceHardReset)
+                {
+                    // force hard reset set reset move on top
+                    state = target.saveState (facesContext);
+                    if (state != null)
+                    {
+                        setViewResetable(false);
+                        return VisitResult.REJECT;
+                    }
+                }
+                else
+                {
+                    state = target.saveState (facesContext);
+
+                    if (state != null)
+                    {
+                        // Save by client ID into our map.
+                        states.put (target.getClientId (facesContext), state);
+
+                        if (isViewResetable())
+                        {
+                            //Hard reset (or reset and check state again)
+                            Integer oldResetMode = (Integer) view.getAttributes().put(
+                                    ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
+                                    ViewPoolProcessor.RESET_MODE_HARD);
+                            state = target.saveState (facesContext);
+                            view.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
+                                    oldResetMode);
+                            if (state != null)
+                            {
+                                setViewResetable(false);
+                            }
+                        }
+                    }
+                }
+
+                return VisitResult.ACCEPT;
+            }
+            else
+            {
+                //Only UIViewRoot has no parent in a component tree.
+                return VisitResult.ACCEPT;
+            }
+        }
+        
+        /**
+         * @return the viewResetable
+         */
+        public boolean isViewResetable()
+        {
+            return viewResetable;
+        }
+
+        /**
+         * @param viewResetable the viewResetable to set
+         */
+        public void setViewResetable(boolean viewResetable)
+        {
+            this.viewResetable = viewResetable;
+        }
+        
+        public int getCount()
+        {
+            return count;
+        }
+
+        /**
+         * @return the removeAddedComponents
+         */
+        public boolean isRemoveAddedComponents()
+        {
+            return removeAddedComponents;
+        }
+
+        /**
+         * @param removeAddedComponents the removeAddedComponents to set
+         */
+        public void setRemoveAddedComponents(boolean removeAddedComponents)
+        {
+            this.removeAddedComponents = removeAddedComponents;
         }
     }
     

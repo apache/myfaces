@@ -144,6 +144,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private static final String JAVAX_FACES_LOCATION_BODY = "javax_faces_location_body";
     private static final String JAVAX_FACES_LOCATION_FORM = "javax_faces_location_form";
     
+    private static final String SKIP_VIEW_MAP_SAVE_STATE = "oam.viewPool.SKIP_VIEW_MAP_SAVE_STATE";
+    
+    private transient int _resetSaveStateMode = 0;
     private transient boolean _resourceDependencyUniqueId;
     private transient Map<String,Object> _attributesMap;
     
@@ -1358,7 +1361,23 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         getStateHelper().put(PropertyKeys.afterPhaseListener, afterPhaseListener);
     }
-    
+
+    /**
+     * @return the clearTransientMapOnSaveState
+     */
+    int getResetSaveStateMode()
+    {
+        return _resetSaveStateMode;
+    }
+
+    /**
+     * @param clearTransientMapOnSaveState the clearTransientMapOnSaveState to set
+     */
+    void setResetSaveStateMode(int clearTransientMapOnSaveState)
+    {
+        this._resetSaveStateMode = clearTransientMapOnSaveState;
+    }
+
     @Override
     public Map<String, Object> getAttributes()
     {
@@ -1413,9 +1432,64 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @Override
     public Object saveState(FacesContext facesContext)
     {
+        if (getResetSaveStateMode() == RESET_MODE_SOFT)
+        {
+            // Clear view listeners.
+            if (_systemEventListeners != null)
+            {
+                _systemEventListeners.clear();
+            }
+            if (_events != null)
+            {
+                _events.clear();
+            }
+            if (listenerSuccessMap != null)
+            {
+                listenerSuccessMap.clear();
+            }
+        }
+        if (getResetSaveStateMode() == RESET_MODE_HARD)
+        {
+            // Clear view listeners.
+            if (_systemEventListeners != null)
+            {
+                _systemEventListeners.clear();
+            }
+            if (_events != null)
+            {
+                _events.clear();
+            }
+            if (listenerSuccessMap != null)
+            {
+                listenerSuccessMap.clear();
+            }
+            if (_viewScope != null)
+            {
+                if (VIEW_SCOPE_PROXY_MAP_CLASS.isInstance(_viewScope))
+                {
+                    _viewScope = null;
+                }
+                else
+                {
+                    _viewScope.clear();
+                }
+            }
+        }
+        
         if (initialStateMarked())
         {
             Object parentSaved = super.saveState(facesContext);
+            if (_viewScope != null && 
+                Boolean.TRUE.equals(facesContext.getAttributes().get(
+                SKIP_VIEW_MAP_SAVE_STATE)))
+            {
+                if (parentSaved == null)
+                {
+                    return null;
+                }
+                return new Object[]{parentSaved, null};
+            }
+            
             if (parentSaved == null && _viewScope == null)
             {
                 //No values
@@ -1435,6 +1509,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
         else
         {
+            if (_viewScope != null && 
+                Boolean.TRUE.equals(facesContext.getAttributes().get(
+                SKIP_VIEW_MAP_SAVE_STATE)))
+            {
+                return new Object[]{super.saveState(facesContext), null};
+            }
             Object[] values = new Object[2];
             values[0] = super.saveState(facesContext);
             values[1] = saveAttachedState(facesContext,_viewScope);

@@ -50,6 +50,7 @@ import org.apache.myfaces.el.unified.FacesELContext;
  */
 public abstract class FacesContextImplBase extends FacesContext
 {
+    public final static String SKIP_CLEAR_VIEW_MAP_HINT = "oam.fc.skipClearViewMapHint";
 
     private Application _application;
     private ExternalContext _externalContext;
@@ -278,11 +279,14 @@ public abstract class FacesContextImplBase extends FacesContext
         // the clear method must be called on the Map returned from UIViewRoot.getViewMap().
         if (_viewRoot != null && !_viewRoot.equals(viewRoot))
         {
-            //call getViewMap(false) to prevent unnecessary map creation
-            Map<String, Object> viewMap = _viewRoot.getViewMap(false);
-            if (viewMap != null)
+            if (!Boolean.TRUE.equals(getAttributes().get(SKIP_CLEAR_VIEW_MAP_HINT)))
             {
-                viewMap.clear();
+                //call getViewMap(false) to prevent unnecessary map creation
+                Map<String, Object> viewMap = _viewRoot.getViewMap(false);
+                if (viewMap != null)
+                {
+                    viewMap.clear();
+                }
             }
         }
         _viewRoot = viewRoot;

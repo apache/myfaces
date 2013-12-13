@@ -27,7 +27,6 @@ import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.cdi.dependent.BeanEntry;
@@ -60,9 +59,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 
 /**
  * Performs common initialization tasks.
@@ -205,6 +206,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             //Force output EL message
             ExternalSpecifications.isUnifiedELAvailable();
             ExternalSpecifications.isBeanValidationAvailable();
+            
+            //Start ViewPoolProcessor if necessary
+            ViewPoolProcessor.initialize(facesContext);
 
             // print out a very prominent log message if the project stage is != Production
             if (!facesContext.isProjectStage(ProjectStage.Production) &&

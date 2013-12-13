@@ -443,6 +443,19 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/flow-definition/inbound-parameter", "addInboundParameter");
         digester.addCallMethod("faces-config/flow-definition/inbound-parameter/name", "setName", 0);
         digester.addCallMethod("faces-config/flow-definition/inbound-parameter/value", "setValue", 0);
+        
+        //View Pool config
+        digester.addObjectCreate("faces-config/faces-config-extension/view-pool-mapping", 
+            ViewPoolMappingImpl.class);
+        digester.addSetNext("faces-config/faces-config-extension/view-pool-mapping", 
+            "addViewPoolMapping");
+        digester.addCallMethod(
+                        "faces-config/faces-config-extension/view-pool-mapping/url-pattern", "setUrlPattern", 0);
+        digester.addObjectCreate("faces-config/faces-config-extension/view-pool-mapping/parameter", 
+            ViewPoolParameterImpl.class);
+        digester.addSetNext("faces-config/faces-config-extension/view-pool-mapping/parameter", "addParameter");
+        digester.addCallMethod("faces-config/faces-config-extension/view-pool-mapping/parameter/name", "setName", 0);
+        digester.addCallMethod("faces-config/faces-config-extension/view-pool-mapping/parameter/value", "setValue", 0);
     }
 
     private void postProcessFacesConfig(String systemId, FacesConfigImpl config)

@@ -171,6 +171,21 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
 
     private boolean _transient = false;
 
+    /**
+     * This is a copy-on-write map of the full state after markInitialState()
+     * was called, but before any delta is written that is not part of
+     * the initial state (value, localValueSet, submittedValue, valid).
+     * The intention is allow to reset the StateHelper when copyFullInitialState
+     * is set to true.
+     */
+    private Map<Serializable, Object> _initialFullState;
+    
+    /**
+     * Indicates if a copy-on-write map is created to allow reset the state
+     * of this StateHelper.
+     */
+    private boolean _copyFullInitialState;
+
     public _DeltaStateHelper(UIComponent component)
     {
         super();
@@ -178,6 +193,8 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         _fullState = new HashMap<Serializable, Object>();
         _deltas = null;
         _transientState = null;
+        _initialFullState = null;
+        _copyFullInitialState = false;
         //_stateHolderKeys = new HashSet<Serializable>();
     }
 
@@ -186,10 +203,49 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
      * 
      * @return
      */
-    private boolean _createDeltas()
+    private boolean _createDeltas(Serializable key)
     {
         if (isInitialStateMarked())
         {
+            if (_copyFullInitialState && _initialFullState == null)
+            {
+                if (_initialState == null)
+                {
+                    // Copy it directly
+                    _initialFullState = new HashMap<Serializable, Object>();
+                    copyMap(_component.getFacesContext(), _fullState, _initialFullState);
+                }
+                else
+                {
+                    // Create only if the passed key is not part of the defined initial state
+                    boolean keyInInitialState = false;
+                    for (int i = 0; i < _initialState.length; i+=2)
+                    {
+                        Serializable key2 = (Serializable) _initialState[i];
+                        if (key.equals(key2))
+                        {
+                            keyInInitialState = true;
+                            break;
+                        }
+                    }
+                    if (!keyInInitialState)
+                    {
+                        // Copy it directly, but note in this case if the initialFullState map
+                        // contains some key already defined in initialState, this key must be
+                        // overriden. It is better to do in that way, because it is possible
+                        // to skip resetState() if the view cannot be recycled.
+                        _initialFullState = new HashMap<Serializable, Object>();
+                        copyMap(_component.getFacesContext(), _fullState, _initialFullState);
+                        /*
+                        for (int i = 0; i < _initialState.length; i+=2)
+                        {
+                            Serializable key2 = (Serializable) _initialState[i];
+                            Object defaultValue = _initialState[i+1];
+                            _initialFullState.put(key2, defaultValue);
+                        }*/
+                    }
+                }
+            }
             if (_deltas == null)
             {
                 _deltas = new HashMap<Serializable, Object>(2);
@@ -200,6 +256,65 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         return false;
     }
     
+    void setCopyFullInitialState(boolean value)
+    {
+        _copyFullInitialState = value;
+    }
+    
+    private static void copyMap(FacesContext context, 
+            Map<Serializable, Object> sourceMap, 
+            Map<Serializable, Object> targetMap)
+    {
+        Map serializableMap = sourceMap;
+        Map.Entry<Serializable, Object> entry;
+
+        Iterator<Map.Entry<Serializable, Object>> it = serializableMap
+                .entrySet().iterator();
+        while (it.hasNext())
+        {
+            entry = it.next();
+            Serializable key = entry.getKey();
+            Object value = entry.getValue();
+
+            // The condition in which the call to saveAttachedState
+            // is to handle List, StateHolder or non Serializable instances.
+            // we check it here, to prevent unnecessary calls.
+            if (value instanceof StateHolder ||
+                value instanceof List ||
+                !(value instanceof Serializable))
+            {
+                Object savedValue = UIComponentBase.saveAttachedState(context,
+                    value);
+
+                targetMap.put(key, UIComponentBase.restoreAttachedState(context,
+                        savedValue));
+            }
+            else if (!(value instanceof Serializable))
+            {
+                Object newInstance;
+                try
+                {
+                    newInstance = entry.getValue().getClass().newInstance();
+                }
+                catch (InstantiationException e)
+                {
+                    throw new RuntimeException("Could not restore StateHolder of type " + 
+                            entry.getValue().getClass().getName()
+                            + " (missing no-args constructor?)", e);
+                }
+                catch (IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                targetMap.put(key, newInstance);
+            }
+            else
+            {
+                targetMap.put(key, value);
+            }
+        }
+    }
+    
     protected boolean isInitialStateMarked()
     {
         return _component.initialStateMarked();
@@ -207,7 +322,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
 
     public void add(Serializable key, Object value)
     {
-        if (_createDeltas())
+        if (_createDeltas(key))
         {
             //Track delta case
             Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas
@@ -273,7 +388,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     public Object put(Serializable key, Object value)
     {
         Object returnValue = null;
-        if (_createDeltas())
+        if (_createDeltas(key))
         {
             if (_deltas.containsKey(key))
             {
@@ -307,7 +422,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     {
         boolean returnSet = false;
         Object returnValue = null;
-        if (_createDeltas())
+        if (_createDeltas(key))
         {
             //Track delta case
             Map<String, Object> mapValues = (Map<String, Object>) _deltas
@@ -350,7 +465,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     public Object remove(Serializable key)
     {
         Object returnValue = null;
-        if (_createDeltas())
+        if (_createDeltas(key))
         {
             if (_deltas.containsKey(key))
             {
@@ -384,7 +499,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         Object returnValue = null;
         if (collectionOrMap instanceof InternalMap)
         {
-            if (_createDeltas())
+            if (_createDeltas(key))
             {
                 returnValue = _removeValueOrKeyFromMap(_deltas, key,
                         valueOrKey, true);
@@ -398,7 +513,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
         else if (collectionOrMap instanceof InternalList)
         {
-            if (_createDeltas())
+            if (_createDeltas(key))
             {
                 returnValue = _removeValueOrKeyFromCollectionDelta(_deltas,
                         key, valueOrKey);
@@ -629,7 +744,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 }
             }
         }
-        */       
+        */
         return retArr;
     }
 
@@ -703,6 +818,62 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             else
             {
                 put(key, savedValue);
+            }
+        }
+    }
+    
+    /**
+     * Try to reset the state and then check if the reset was succesful or not,
+     * calling saveState().
+     */
+    public Object resetHardState(FacesContext context)
+    {
+        if (_transientState != null)
+        {
+            _transientState.clear();
+        }
+        if (_deltas != null && !_deltas.isEmpty() && isInitialStateMarked())
+        {
+            clearFullStateMap(context);
+        }
+        return saveState(context);
+    }
+    
+    /**
+     * Execute a "soft reset", which means only remove all transient state.
+     */
+    public Object resetSoftState(FacesContext context)
+    {
+        if (_transientState != null)
+        {
+            _transientState.clear();
+        }
+        return null;
+    }
+    
+    protected void clearFullStateMap(FacesContext context)
+    {
+        if (_deltas != null)
+        {
+            _deltas.clear();
+        }
+        if (_initialFullState != null)
+        {
+            // If there is no delta, fullState is not required to be cleared.
+            _fullState.clear();
+            copyMap(context, _initialFullState, _fullState);
+        }
+        if (_initialState != null)
+        {
+            // If initial state is defined, override properties in _initialFullState.
+            for (int i = 0; i < _initialState.length; i+=2)
+            {
+                Serializable key2 = (Serializable) _initialState[i];
+                Object defaultValue = _initialState[i+1];
+                if (_fullState.containsKey(key2))
+                {
+                    _fullState.put(key2, defaultValue);
+                }
             }
         }
     }

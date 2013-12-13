@@ -50,13 +50,20 @@ public class RequestViewContext
     
     private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.SKIP_ITERATION));
-    
-    private Map<ResourceDependency, Boolean> addedResources;
-    
-    // No lazy init: every view has one (UIView.class) or more classes to process   
-    private Map<Class<?>, Boolean> processedClasses = new HashMap<Class<?>,Boolean>();
+
+    private RequestViewMetadata requestViewMetadata;
     
     private Map<String, Boolean> renderTargetMap = null;
+    
+    public RequestViewContext()
+    {
+        this.requestViewMetadata = new RequestViewMetadata();
+    }
+    
+    public RequestViewContext(RequestViewMetadata rvm)
+    {
+        this.requestViewMetadata = new RequestViewMetadata();
+    }
 
     static public RequestViewContext getCurrentInstance()
     {
@@ -94,33 +101,63 @@ public class RequestViewContext
             return rvc;
         }
     }
+    
+    static public RequestViewContext getCurrentInstance(FacesContext ctx, UIViewRoot root, boolean create)
+    {
+        if (create)
+        {
+            return getCurrentInstance(ctx, root);
+        }
+        Map<UIViewRoot, RequestViewContext> map
+                = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
+        if (map != null)
+        {
+            return map.get(root);
+        }
+        return null;
+    }
+    
+    static public RequestViewContext newInstance(RequestViewMetadata rvm)
+    {
+        RequestViewContext clone = new RequestViewContext(rvm.cloneInstance());
+        return clone;
+    }
+    
+    static public void setCurrentInstance(FacesContext ctx, UIViewRoot root, RequestViewContext rvc)
+    {
+        Map<UIViewRoot, RequestViewContext> map
+                = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
+        if (map == null)
+        {
+            map = new HashMap<UIViewRoot, RequestViewContext>();
+            rvc = new RequestViewContext();
+            map.put(root, rvc);
+            ctx.getAttributes().put(VIEW_CONTEXT_KEY, map);
+        }
+        else
+        {
+            map.put(root, rvc);
+        }
+    }
 
     public boolean isResourceDependencyAlreadyProcessed(ResourceDependency dependency)
     {
-        if (addedResources == null)
-        {
-            return false;
-        }
-        return addedResources.containsKey(dependency); 
+        return requestViewMetadata.isResourceDependencyAlreadyProcessed(dependency);
     }
     
     public void setResourceDependencyAsProcessed(ResourceDependency dependency)
     {
-        if (addedResources == null)
-        {
-            addedResources = new HashMap<ResourceDependency,Boolean>();
-        }
-        addedResources.put(dependency, true);
+        requestViewMetadata.setResourceDependencyAsProcessed(dependency);
     }
 
     public boolean isClassAlreadyProcessed(Class<?> inspectedClass)
     {
-        return processedClasses.containsKey(inspectedClass);
+        return requestViewMetadata.isClassAlreadyProcessed(inspectedClass);
     }
 
     public void setClassProcessed(Class<?> inspectedClass)
     {
-        processedClasses.put(inspectedClass, Boolean.TRUE);
+        requestViewMetadata.setClassProcessed(inspectedClass);
     }
     
     public boolean isRenderTarget(String target)
@@ -185,5 +222,18 @@ public class RequestViewContext
             }            
             return VisitResult.ACCEPT;
         }
+    }
+    
+    public RequestViewMetadata getRequestViewMetadata()
+    {
+        return requestViewMetadata;
+    }
+
+    /**
+     * @param requestViewMetadata the requestViewMetadata to set
+     */
+    public void setRequestViewMetadata(RequestViewMetadata requestViewMetadata)
+    {
+        this.requestViewMetadata = requestViewMetadata;
     }
 }

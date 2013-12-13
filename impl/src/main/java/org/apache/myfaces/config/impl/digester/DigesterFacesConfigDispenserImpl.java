@@ -48,6 +48,7 @@ import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.config.element.RenderKit;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.SystemEventListener;
+import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.digester.elements.RenderKitImpl;
 
@@ -128,6 +129,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private List <String> resourceResolvers = new ArrayList<String>();
     
+    private List<ViewPoolMapping> viewPoolMappings = new ArrayList<ViewPoolMapping>();
+    
     // Unmodifiable list/maps to avoid modifications
     private transient List<String> umapplicationFactories;
     private transient List<String> umexceptionHandlerFactories;
@@ -164,6 +167,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private transient List<ComponentTagDeclaration> umcomponentTagDeclarations;
     private transient List<FaceletTagLibrary> umfaceletTagLibraries;
     private transient List <String> umresourceResolvers;
+    private transient List<ViewPoolMapping> umviewPoolMappings;
     
     /**
      * Add another unmarshalled faces config object.
@@ -320,6 +324,10 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         facesFlowDefinitions.addAll(config.getFacesFlowDefinitions());
         protectedViewUrlPatterns.addAll(config.getProtectedViewsUrlPatternList());
         resourceResolvers.addAll(config.getResourceResolversList());
+        for (FacesConfigExtension extension : config.getFacesConfigExtensions())
+        {
+            viewPoolMappings.addAll(extension.getViewPoolMappings());
+        }
     }
 
     /**
@@ -1026,4 +1034,13 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         return umfaceletTagLibraries;
     }
     
+    @Override
+    public Collection<ViewPoolMapping> getViewPoolMappings()
+    {
+        if (umviewPoolMappings == null)
+        {
+            umviewPoolMappings = Collections.unmodifiableList(viewPoolMappings);
+        }
+        return umviewPoolMappings;
+    }
 }
