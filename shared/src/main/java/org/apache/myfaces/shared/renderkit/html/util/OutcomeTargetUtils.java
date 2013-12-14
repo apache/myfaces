@@ -37,6 +37,7 @@ import javax.faces.component.UIOutcomeTarget;
 import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.FlowHandler;
+import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.shared.application.NavigationUtils;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
@@ -169,13 +170,30 @@ public class OutcomeTargetUtils
         {
             parameters = Collections.emptyMap();
         }
-        // In theory the precedence order to deal with params is this:
-        // component parameters, navigation-case parameters, view parameters
-        // getBookmarkableURL deal with this details.
-        ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
-        String href = viewHandler.getBookmarkableURL(facesContext,
-                navigationCase.getToViewId(facesContext),
-                parameters, navigationCase.isIncludeViewParams() || component.isIncludeViewParams());
+        boolean disableClientWindow = component.isDisableClientWindow();
+        ClientWindow clientWindow = facesContext.getExternalContext().getClientWindow();
+        String href;
+        try
+        {
+            if (clientWindow != null && disableClientWindow)
+            {
+                clientWindow.disableClientWindowRenderMode(facesContext);
+            }
+            // In theory the precedence order to deal with params is this:
+            // component parameters, navigation-case parameters, view parameters
+            // getBookmarkableURL deal with this details.
+            ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+            href = viewHandler.getBookmarkableURL(facesContext,
+                    navigationCase.getToViewId(facesContext),
+                    parameters, navigationCase.isIncludeViewParams() || component.isIncludeViewParams());
+        }
+        finally
+        {
+            if (clientWindow != null && disableClientWindow)
+            {
+                clientWindow.enableClientWindowRenderMode(facesContext);
+            }
+        }
         // handle fragment (viewId#fragment)
         String fragment = (String) component.getAttributes().get("fragment");
         if (fragment != null)
