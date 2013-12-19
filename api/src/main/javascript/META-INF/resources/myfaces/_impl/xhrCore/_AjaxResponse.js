@@ -389,7 +389,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                     document.forms[mfInternal["_mfSourceFormId"]] : ((elemId) ? fuzzyFormDetection(elemId) : null);
 
             if(node.getAttribute('id').indexOf(this.P_VIEWSTATE) != -1) {
-                mfInternal.appliedViewState = node.firstChild.nodeValue;
+                mfInternal.appliedViewState = this._Dom.concatCDATABlocks(node);//node.firstChild.nodeValue;
             } else if(node.getAttribute('id').indexOf(this.P_CLIENTWINDOW) != -1) {
                 mfInternal.appliedClientWindow = node.firstChild.nodeValue;
             }
