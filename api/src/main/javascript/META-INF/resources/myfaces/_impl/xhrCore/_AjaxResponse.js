@@ -367,7 +367,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                            document.forms[mfInternal["_mfSourceFormId"]]) ?
                            document.forms[mfInternal["_mfSourceFormId"]] : ((elemId)? fuzzyFormDetection(elemId): null);
 
-            mfInternal.appliedViewState = node.firstChild.nodeValue;
+            mfInternal.appliedViewState = this._Dom.concatCDATABlocks(node);//node.firstChild.nodeValue;
             //source form could not be determined either over the form identifer or the element
             //we now skip this phase and just add everything we need for the fixup code
 
