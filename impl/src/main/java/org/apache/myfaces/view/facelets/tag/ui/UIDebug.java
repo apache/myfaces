@@ -118,7 +118,7 @@ public final class UIDebug extends UIComponentBase
         int index = actionId.indexOf ("?");
         if (index != -1)
         {
-            sb.append("&amp;");
+            sb.append('&');
         }
         else
         {
