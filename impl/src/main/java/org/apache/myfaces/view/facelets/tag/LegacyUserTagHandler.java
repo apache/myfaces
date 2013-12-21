@@ -48,7 +48,7 @@ import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
  * @author Jacob Hookom
  * @version $Id: UserTagHandler.java,v 1.12 2008/07/13 19:01:35 rlubke Exp $
  */
-final class LegacyUserTagHandler extends TagHandler implements TemplateClient
+final class LegacyUserTagHandler extends TagHandler implements TemplateClient, ComponentContainerHandler
 {
 
     protected final TagAttribute[] _vars;
