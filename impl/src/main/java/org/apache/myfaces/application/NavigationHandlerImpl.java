@@ -70,6 +70,7 @@ import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.util.FilenameUtils;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
@@ -1030,12 +1031,33 @@ public class NavigationHandlerImpl
             }
         }
         
-        // Call ViewHandler.deriveViewId() and set the result as implicitViewId.
+        // Apply normalization 
+        String viewIdToTestString = null;
+        boolean applyNormalization = false;
         
+        for (int i = 0; i < viewIdToTest.length()-1; i++)
+        {
+            if (viewIdToTest.charAt(i) == '.' &&
+                viewIdToTest.charAt(i+1) == '/')
+            {
+                applyNormalization = true; 
+                break;
+            }
+        }
+        if (applyNormalization)
+        {
+            viewIdToTestString = FilenameUtils.normalize(viewIdToTest.toString(), true);
+        }
+        else
+        {
+            viewIdToTestString = viewIdToTest.toString();
+        }
+        
+        // Call ViewHandler.deriveViewId() and set the result as implicitViewId.
         try
         {
             implicitViewId = facesContext.getApplication().getViewHandler().deriveViewId (
-                    facesContext, viewIdToTest.toString());
+                    facesContext, viewIdToTestString);
         }
         
         catch (UnsupportedOperationException e)

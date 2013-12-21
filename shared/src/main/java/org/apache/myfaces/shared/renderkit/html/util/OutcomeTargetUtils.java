@@ -92,7 +92,7 @@ public class OutcomeTargetUtils
         {
             // log a warning
             log.warning("Could not determine NavigationCase for UIOutcomeTarget component "
-                    + RendererUtils.getPathToComponent(component));
+                    + RendererUtils.getPathToComponent(component) + " with outcome " + outcome);
 
             return null;
         }
