@@ -165,10 +165,6 @@ public class ConfigFilesXmlValidationUtils
                 {
                     return new LSInputImpl(publicId, systemId, baseURI, ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_5.xsd"));
                 }
-                else if ("javaee_web_services_client_1_2.xsd".equals(systemId))
-                {
-                    return new LSInputImpl(publicId, systemId, baseURI, ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_web_services_client_1_2.xsd"));
-                }
             }
             if ("http://www.w3.org/XML/1998/namespace".equals(namespaceURI))
             {
