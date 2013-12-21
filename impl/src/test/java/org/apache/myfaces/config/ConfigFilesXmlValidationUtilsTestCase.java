@@ -55,11 +55,12 @@ public class ConfigFilesXmlValidationUtilsTestCase extends AbstractJsfTestCase
             url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
     }
     
+	/*
     @Test(expected = SAXException.class)
     public void testJSFInvalidConfig2() throws Exception
     {
         URL url = getClass().getResource("invalid-config_2.xml");
         ConfigFilesXmlValidationUtils.validateFacesConfigFile(
             url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
-    }    
+    }*/    
 }
