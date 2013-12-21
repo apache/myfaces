@@ -53,7 +53,7 @@ public class ConfigFilesXmlValidationUtils
 
     private final static String FACES_CONFIG_SCHEMA_PATH_12 = "org/apache/myfaces/resource/web-facesconfig_1_2.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_20 = "org/apache/myfaces/resource/web-facesconfig_2_0.xsd";
-    private final static String FACES_CONFIG_SCHEMA_PATH_21 = "org/apache/myfaces/resource/web-facesconfig_2_0.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_21 = "org/apache/myfaces/resource/web-facesconfig_2_1.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
 
     public static class LSInputImpl implements LSInput
@@ -168,12 +168,6 @@ public class ConfigFilesXmlValidationUtils
                 {
                     return new LSInputImpl(publicId, systemId, baseURI,
                             ClassUtils.getResourceAsStream("org/apache/myfaces/resource/javaee_5.xsd"));
-                }
-                else if ("javaee_web_services_client_1_2.xsd".equals(systemId))
-                {
-                    return new LSInputImpl(publicId, systemId, baseURI,
-                            ClassUtils.getResourceAsStream(
-                                    "org/apache/myfaces/resource/javaee_web_services_client_1_2.xsd"));
                 }
             }
             if ("http://www.w3.org/XML/1998/namespace".equals(namespaceURI))
