@@ -41,6 +41,7 @@ import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.context.RequestViewMetadata;
 import org.apache.myfaces.lifecycle.DefaultRestoreViewSupport;
 import org.apache.myfaces.lifecycle.RestoreViewSupport;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
@@ -162,23 +163,50 @@ public class ViewPoolProcessor
     {
         if (context.isProjectStage(ProjectStage.Production))
         {
+            boolean initialize = true;
             String elMode = WebConfigParamUtils.getStringInitParameter(
                         context.getExternalContext(),
                         FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
                             ELExpressionCacheMode.noCache.name());
-            if (elMode.equals(ELExpressionCacheMode.alwaysRecompile.name()))
-            {
-                ViewPoolProcessor processor = new ViewPoolProcessor(context);
-                context.getExternalContext().
-                    getApplicationMap().put(INSTANCE, processor);
-            }
-            else
+            if (!elMode.equals(ELExpressionCacheMode.alwaysRecompile.name()))
             {
                 Logger.getLogger(ViewPoolProcessor.class.getName()).log(
                     Level.INFO, FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS +
                     " web config parameter is set to \"" + ( (elMode == null) ? "none" : elMode) +
                     "\". To enable view pooling this param"+
                     " must be set to \"alwaysRecompile\". View Pooling disabled.");
+                initialize = false;
+            }
+            
+            long refreshPeriod = WebConfigParamUtils.getLongInitParameter(context.getExternalContext(),
+                    FaceletViewDeclarationLanguage.PARAMS_REFRESH_PERIOD,
+                    FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD_PRODUCTION);
+
+            if (refreshPeriod != -1)
+            {
+                Logger.getLogger(ViewPoolProcessor.class.getName()).log(
+                    Level.INFO, ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME +
+                    " web config parameter is set to \"" + Long.toString(refreshPeriod) +
+                    "\". To enable view pooling this param"+
+                    " must be set to \"-1\". View Pooling disabled.");
+                initialize = false;
+            }
+            
+            if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isStrictJsf2FaceletsCompatibility())
+            {
+                Logger.getLogger(ViewPoolProcessor.class.getName()).log(
+                    Level.INFO, MyfacesConfig.INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY +
+                    " web config parameter is set to \"" + "true" +
+                    "\". To enable view pooling this param "+
+                    " must be set to \"false\". View Pooling disabled.");
+                initialize = false;
+            }
+            
+            if (initialize)
+            {
+                ViewPoolProcessor processor = new ViewPoolProcessor(context);
+                context.getExternalContext().
+                    getApplicationMap().put(INSTANCE, processor);
             }
         }
     }

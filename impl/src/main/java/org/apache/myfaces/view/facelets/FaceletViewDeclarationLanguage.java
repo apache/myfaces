@@ -189,9 +189,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
      * <p>By default is infinite (no active).</p>
      */
     @JSFWebConfigParam(since = "2.0", defaultValue = "-1", deprecated = true)
-    private final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
+    public final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
 
-    private final static String[] PARAMS_REFRESH_PERIOD = {ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
+    public final static String[] PARAMS_REFRESH_PERIOD = {ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
         PARAM_REFRESH_PERIOD_DEPRECATED};
 
     /**
