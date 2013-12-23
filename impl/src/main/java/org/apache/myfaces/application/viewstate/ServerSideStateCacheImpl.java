@@ -127,47 +127,15 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = false;
 
     /**
-     * Define the way of handle old view references(views removed from session), making possible to
-     * store it in a cache, so the state manager first try to get the view from the session. If is it
-     * not found and soft or weak ReferenceMap is used, it try to get from it.
-     * <p>
-     * Only applicable if state saving method is "server" (= default).
-     * </p>
-     * <p>
-     * The gc is responsible for remove the views, according to the rules used for soft, weak or phantom
-     * references. If a key in soft and weak mode is garbage collected, its values are purged.
-     * </p>
-     * <p>
-     * By default no cache is used, so views removed from session became phantom references.
-     * </p>
-     * <ul> 
-     * <li> off, no: default, no cache is used</li> 
-     * <li> hard-soft: use an ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.SOFT)</li>
-     * <li> soft: use an ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.SOFT, true) </li>
-     * <li> soft-weak: use an ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.WEAK, true) </li>
-     * <li> weak: use an ReferenceMap(AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true) </li>
-     * </ul>
+     * This parameter has been removed from 2.2.x version.
      * 
+     * @deprecated removed because it has
      */
+    @Deprecated
     @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak",
-                       since="1.2.5", group="state", tags="performance")
+                       since="1.2.5", group="state", tags="performance", deprecated = true)
     public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
     
-    /**
-     * This option uses an hard-soft ReferenceMap, but it could cause a 
-     * memory leak, because the keys are not removed by any method
-     * (MYFACES-1660). So use with caution.
-     */
-    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT = "hard-soft";
-    
-    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT = "soft";
-    
-    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK = "soft-weak";
-    
-    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK = "weak";
-    
-    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF = "off";
-
     /**
      * Allow use flash scope to keep track of the views used in session and the previous ones,
      * so server side state saving can delete old views even if POST-REDIRECT-GET pattern is used.

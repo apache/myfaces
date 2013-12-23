@@ -26,9 +26,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
-import org.apache.commons.collections.map.AbstractReferenceMap;
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
@@ -50,9 +48,6 @@ class SerializedViewCollection implements Serializable
     private final Map<SerializedViewKey, SerializedViewKey> _precedence =
         new HashMap<SerializedViewKey, SerializedViewKey>();
     private Map<String, SerializedViewKey> _lastWindowKeys = null;
-    // old views will be hold as soft references which will be removed by
-    // the garbage collector if free memory is low
-    private transient Map<Object, Object> _oldSerializedViews = null;
 
     public synchronized void add(FacesContext context, Object state, 
         SerializedViewKey key, SerializedViewKey previousRestoredKey)
@@ -123,17 +118,8 @@ class SerializedViewCollection implements Serializable
                         // do nothing
                     }
 
-                    if (_serializedViews.containsKey(keyToRemove) &&
-                        !ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.
-                                equals( getCacheOldViewsInSessionMode(context)) )
-                    {
-                        getOldSerializedViewsMap().put(keyToRemove, _serializedViews.remove(keyToRemove));
-                    }
-                    else
-                    {
-                        _serializedViews.remove(keyToRemove);
-                    }
-
+                    _serializedViews.remove(keyToRemove);
+                    
                     keyToRemove = _precedence.remove(keyToRemove);
                 }
                 while (keyToRemove != null);
@@ -151,21 +137,13 @@ class SerializedViewCollection implements Serializable
                 // do it with a loop.
                 do
                 {
+                    
                     keyToRemove = _precedence.remove(keyToRemove);
                 }
                 while (keyToRemove != null);
             }
-            if (_serializedViews.containsKey(key) &&
-                !ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.
-                        equals( getCacheOldViewsInSessionMode( context )))
-            {
 
-                getOldSerializedViewsMap().put(key, _serializedViews.remove(key));
-            }
-            else
-            {
-                _serializedViews.remove(key);
-            }
+            _serializedViews.remove(key);
         }
     }
 
@@ -237,75 +215,6 @@ class SerializedViewCollection implements Serializable
         return null;
     }
 
-    /**
-     * @return old serialized views map
-     */
-    @SuppressWarnings("unchecked")
-    protected Map<Object, Object> getOldSerializedViewsMap()
-    {
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (_oldSerializedViews == null && context != null)
-        {
-            String cacheMode = getCacheOldViewsInSessionMode(context);
-            if ( ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK.equals(cacheMode))
-            {
-                _oldSerializedViews = new ReferenceMap( AbstractReferenceMap.WEAK, AbstractReferenceMap.WEAK, true);
-            }
-            else if ( ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK.equals(cacheMode))
-            {
-                _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.WEAK, true);
-            }
-            else if ( ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT.equals(cacheMode))
-            {
-                _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.SOFT, AbstractReferenceMap.SOFT, true);
-            }
-            else if ( ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT.equals(cacheMode))
-            {
-                _oldSerializedViews = new ReferenceMap(AbstractReferenceMap.HARD, AbstractReferenceMap.SOFT);
-            }
-        }
-
-        return _oldSerializedViews;
-    }
-
-    /**
-     * Reads the value of the <code>org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE</code> context parameter.
-     *
-     * @since 1.2.5
-     * @param context
-     * @return constant indicating caching mode
-     * @see ServerSideStateCacheImpl#CACHE_OLD_VIEWS_IN_SESSION_MODE
-     */
-    protected String getCacheOldViewsInSessionMode(FacesContext context)
-    {
-        String value = context.getExternalContext().getInitParameter(
-                ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE);
-        if (value == null)
-        {
-            return ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF;
-        }
-        else if (value.equalsIgnoreCase( ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT))
-        {
-            return ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT;
-        }
-        else if (value.equalsIgnoreCase( ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK))
-        {
-            return ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_SOFT_WEAK;
-        }
-        else if (value.equalsIgnoreCase( ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK))
-        {
-            return ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_WEAK;
-        }
-        else if (value.equalsIgnoreCase( ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT))
-        {
-            return ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_HARD_SOFT;
-        }
-        else
-        {
-            return ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF;
-        }
-    }
-
     public Object get(SerializedViewKey key)
     {
         Object value = _serializedViews.get(key);
@@ -314,15 +223,6 @@ class SerializedViewCollection implements Serializable
             if (_serializedViews.containsKey(key))
             {
                 return EMPTY_STATES;
-            }
-            Map<Object,Object> oldSerializedViewMap = getOldSerializedViewsMap();
-            if (oldSerializedViewMap != null)
-            {
-                value = oldSerializedViewMap.get(key);
-                if (value == null && oldSerializedViewMap.containsKey(key) )
-                {
-                    return EMPTY_STATES;
-                }
             }
         }
         else if (value instanceof Object[] &&
