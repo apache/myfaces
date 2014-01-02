@@ -20,7 +20,6 @@ package org.apache.myfaces.cdi.view;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -52,19 +51,5 @@ public class ViewScopeContextExtension implements Extension
     {
         viewScopeContext = new ViewScopeContextImpl(beanManager);
         afterBeanDiscovery.addContext(viewScopeContext);
-    }
-
-    /**
-     * We can only initialize our contexts in AfterDeploymentValidation because
-     * getBeans must not be invoked earlier than this phase to reduce randomness
-     * caused by Beans no being fully registered yet.
-     */
-    void initializeViewScopeContexts(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
-    {
-        /*
-        ViewScopeBeanHolder viewScopeBeanHolder
-            = BeanProvider.getContextualReference(beanManager, ViewScopeBeanHolder.class, false);
-        
-        viewScopeContext.initViewScopeContext(viewScopeBeanHolder);*/
     }
 }

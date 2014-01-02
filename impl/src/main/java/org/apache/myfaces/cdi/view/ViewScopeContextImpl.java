@@ -45,11 +45,6 @@ public class ViewScopeContextImpl implements Context
 {
 
     /**
-     * Contains the stored WindowScoped contextual instances.
-     */
-    //private ViewScopeBeanHolder windowBeanHolder;
-
-    /**
      * needed for serialisation and passivationId
      */
     private BeanManager beanManager;
@@ -80,18 +75,6 @@ public class ViewScopeContextImpl implements Context
         return viewScopeBeanHolder;
     }
 
-    /**
-     * We need to pass the session scoped windowbean holder and the
-     * requestscoped windowIdHolder in a later phase because
-     * getBeans is only allowed from AfterDeploymentValidation onwards.
-     */
-    /*
-    void initViewScopeContext(ViewScopeBeanHolder windowBeanHolder)
-    {
-        this.windowBeanHolder = windowBeanHolder;
-    }*/
-
-    //@Override
     public String getCurrentViewScopeId(boolean create)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -230,29 +213,9 @@ public class ViewScopeContextImpl implements Context
         destroyAllActive(storage);
     }
 
-    /**
-     * Destroys all the Contextual Instances in the specified ContextualStorage.
-     * This is a static method to allow various holder objects to cleanup
-     * properly in &#064;PreDestroy.
-     */
-    /*
     public static void destroyAllActive(ViewScopeContextualStorage storage)
     {
-        Map<String, Object> nameBeanKeyMap = storage.getNameBeanKeyMap();
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-        
-        for (Map.Entry<? extends String, ? extends Object> entry : nameBeanKeyMap.entrySet())
-        {
-            if (!(entry.getValue() instanceof _ContextualKey))
-            {
-                Contextual bean = storage.getBean(entry.getValue());
-                
-                ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.remove(entry.getValue());
-                bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-                    contextualInstanceInfo.getCreationalContext());
-            }
-        }
-        nameBeanKeyMap.clear();
         
         for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
         {
@@ -265,28 +228,6 @@ public class ViewScopeContextImpl implements Context
                     contextualInstanceInfo.getCreationalContext());
             }
         }
-        contextMap.clear();
-    }*/
-    
-    public static void destroyAllActive(ViewScopeContextualStorage storage)
-    {
-        //Map<String, Object> nameBeanKeyMap = storage.getNameBeanKeyMap();
-        Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-        
-        //nameBeanKeyMap.clear();
-        
-        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
-        {
-            if (!(entry.getKey() instanceof _ContextualKey))
-            {            
-                Contextual bean = storage.getBean(entry.getKey());
-
-                ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
-                bean.destroy(contextualInstanceInfo.getContextualInstance(), 
-                    contextualInstanceInfo.getCreationalContext());
-            }
-        }
-        //contextMap.clear();
     }
     
     /**

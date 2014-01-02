@@ -38,5 +38,7 @@ public abstract class ViewScopeProvider
     public abstract Map<String, Object> createViewScopeMap(FacesContext facesContext, String viewScopeId);
     
     public abstract Map<String, Object> restoreViewScopeMap(FacesContext facesContext, String viewScopeId);
+    
+    public abstract void destroyViewScopeMap(FacesContext facesContext, String viewScopeId);
 
 }

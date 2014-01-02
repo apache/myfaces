@@ -154,8 +154,6 @@ public class ViewScopeCDIMap implements Map<String, Object>
     public void clear()
     {
         ViewScopeContextImpl.destroyAllActive(storage);
-        //this.getNameBeanKeyMap().clear();
-        //this.getCreationalContextInstances().clear();
     }
 
     public Set<String> keySet()

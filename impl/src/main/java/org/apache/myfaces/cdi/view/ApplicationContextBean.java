@@ -22,7 +22,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.ServletContext;
 
 /**
- *
+ * This bean is used to store the ServletContext, so CDI beans can get it later. This is
+ * used to ensure a valid FacesContext instance is passed when the bean is destroyed.
  */
 @ApplicationScoped
 public class ApplicationContextBean

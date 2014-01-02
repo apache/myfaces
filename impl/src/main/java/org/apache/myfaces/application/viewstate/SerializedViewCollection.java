@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.spi.ViewScopeProvider;
 
 /**
  *
@@ -44,13 +45,30 @@ class SerializedViewCollection implements Serializable
             ServerSideStateCacheImpl.DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
     private final Map<SerializedViewKey, Object> _serializedViews = 
         new HashMap<SerializedViewKey, Object>();
+    /**
+     * The viewScopeIds can be shared between multiple entries of the same
+     * view. To store it into session, the best is use two maps, one to 
+     * associate the view key with the view scope id and other to keep track 
+     * of the number of times the id is used. In that way it is possible to
+     * know when a view scope id has been discarded and destroy the view scope
+     * in the right time.
+     */
+    private HashMap<SerializedViewKey, String> _viewScopeIds = null;
+    private HashMap<String, Integer> _viewScopeIdCounts = null;
 
     private final Map<SerializedViewKey, SerializedViewKey> _precedence =
         new HashMap<SerializedViewKey, SerializedViewKey>();
     private Map<String, SerializedViewKey> _lastWindowKeys = null;
 
-    public synchronized void add(FacesContext context, Object state, 
+    public void put(FacesContext context, Object state, 
         SerializedViewKey key, SerializedViewKey previousRestoredKey)
+    {
+        put(context, state, key, previousRestoredKey, null, null);
+    }
+    
+    public synchronized void put(FacesContext context, Object state, 
+        SerializedViewKey key, SerializedViewKey previousRestoredKey,
+        ViewScopeProvider viewScopeProvider, String viewScopeId)
     {
         if (state == null)
         {
@@ -64,6 +82,13 @@ class SerializedViewCollection implements Serializable
             // The generated state can be considered zero, set it as null
             // into the map.
             state = null;
+        }
+
+        if (_serializedViews.containsKey(key))
+        {
+            // Update the state, the viewScopeId does not change.
+            _serializedViews.put(key, state);
+            return;
         }
 
         Integer maxCount = getNumberOfSequentialViewsInSession(context);
@@ -87,6 +112,22 @@ class SerializedViewCollection implements Serializable
             }
         }
         _serializedViews.put(key, state);
+        
+        if (viewScopeProvider != null && viewScopeId != null)
+        {
+            if (_viewScopeIds == null)
+            {
+                _viewScopeIds = new HashMap<SerializedViewKey, String>();
+            }
+            _viewScopeIds.put(key, viewScopeId);
+            if (_viewScopeIdCounts == null)
+            {
+                _viewScopeIdCounts = new HashMap<String, Integer>();
+            }
+            Integer vscount = _viewScopeIdCounts.get(viewScopeId);
+            vscount = (vscount == null) ? 1 : vscount + 1;
+            _viewScopeIdCounts.put(viewScopeId, vscount);
+        }
 
         while (_keys.remove(key))
         {
@@ -120,6 +161,25 @@ class SerializedViewCollection implements Serializable
 
                     _serializedViews.remove(keyToRemove);
                     
+                    if (viewScopeProvider != null && _viewScopeIds != null)
+                    {
+                        String oldViewScopeId = _viewScopeIds.remove(keyToRemove);
+                        if (oldViewScopeId != null)
+                        {
+                            Integer vscount = _viewScopeIdCounts.get(oldViewScopeId);
+                            vscount = vscount - 1;
+                            if (vscount != null && vscount.intValue() < 1)
+                            {
+                                _viewScopeIdCounts.remove(oldViewScopeId);
+                                viewScopeProvider.destroyViewScopeMap(context, oldViewScopeId);
+                            }
+                            else
+                            {
+                                _viewScopeIdCounts.put(oldViewScopeId, vscount);
+                            }
+                        }
+                    }
+
                     keyToRemove = _precedence.remove(keyToRemove);
                 }
                 while (keyToRemove != null);
@@ -137,13 +197,31 @@ class SerializedViewCollection implements Serializable
                 // do it with a loop.
                 do
                 {
-                    
                     keyToRemove = _precedence.remove(keyToRemove);
                 }
                 while (keyToRemove != null);
             }
 
             _serializedViews.remove(key);
+            
+            if (viewScopeProvider != null && _viewScopeIds != null)
+            {
+                String oldViewScopeId = _viewScopeIds.remove(key);
+                if (oldViewScopeId != null)
+                {
+                    Integer vscount = _viewScopeIdCounts.get(oldViewScopeId);
+                    vscount = vscount - 1;
+                    if (vscount != null && vscount.intValue() < 1)
+                    {
+                        _viewScopeIdCounts.remove(oldViewScopeId);
+                        viewScopeProvider.destroyViewScopeMap(context, oldViewScopeId);
+                    }
+                    else
+                    {
+                        _viewScopeIdCounts.put(oldViewScopeId, vscount);
+                    }
+                }
+            }
         }
     }
 

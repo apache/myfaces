@@ -23,19 +23,19 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import org.apache.myfaces.cdi.DefaultCDIViewScopeHandler;
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.view.ApplicationContextBean;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
+import org.apache.myfaces.spi.ViewScopeProvider;
 
 /**
  *
  * @author Leonardo Uribe
  */
-public class CDIManagedBeanHandlerImpl extends DefaultCDIViewScopeHandler
+public class CDIManagedBeanHandlerImpl extends ViewScopeProvider
 {
     
     private BeanManager beanManager;
@@ -131,5 +131,17 @@ public class CDIManagedBeanHandlerImpl extends DefaultCDIViewScopeHandler
     {
         return facesContext.getExternalContext().
             getSessionMap().containsKey(FlowScopeBeanHolder.FLOW_SCOPE_PREFIX_KEY);
+    }
+
+    @Override
+    public void destroyViewScopeMap(FacesContext facesContext, String viewScopeId)
+    {
+        if (facesContext.getExternalContext().getSession(false) != null)
+        {
+            if (isViewScopeBeanHolderCreated(facesContext))
+            {
+                getViewScopeBeanHolder().destroyBeans(viewScopeId);
+            }
+        }
     }
 }

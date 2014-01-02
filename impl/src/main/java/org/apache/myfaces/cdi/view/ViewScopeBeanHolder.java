@@ -140,6 +140,36 @@ public class ViewScopeBeanHolder implements Serializable
         }
     }
     
+    public void destroyBeans(String viewScopeId)
+    {
+        ViewScopeContextualStorage contextualStorage = storageMap.get(viewScopeId);
+        if (contextualStorage != null)
+        {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext == null &&
+                applicationContextBean.getServletContext() != null)
+            {
+                try
+                {
+                    ServletContext servletContext = applicationContextBean.getServletContext();
+                    ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
+                    ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
+                    facesContext = new StartupFacesContextImpl(externalContext, 
+                            (ReleaseableExternalContext) externalContext, exceptionHandler, false);
+                    ViewScopeContextImpl.destroyAllActive(contextualStorage);
+                }
+                finally
+                {
+                    facesContext.release();
+                }
+            }
+            else
+            {
+                ViewScopeContextImpl.destroyAllActive(contextualStorage);
+            }
+        }
+    }
+    
     @PreDestroy
     public void destroyBeansOnPreDestroy()
     {

@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import javax.faces.FacesWrapper;
 import javax.faces.application.StateManager;
 
 import javax.faces.context.ExternalContext;
@@ -44,6 +45,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.spi.ViewScopeProvider;
+import org.apache.myfaces.spi.ViewScopeProviderFactory;
+import org.apache.myfaces.view.ViewScopeProxyMap;
 
 class ServerSideStateCacheImpl extends StateCache<Object, Object>
 {
@@ -54,6 +58,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     
     public static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR = 
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
+    
+    public static final String RESTORED_SERIALIZED_VIEW_ID_REQUEST_ATTR = 
+        ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW_ID";
+    public static final String RESTORED_SERIALIZED_VIEW_KEY_REQUEST_ATTR = 
+        ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW_KEY";
 
     public static final String RESTORED_VIEW_KEY_REQUEST_ATTR = 
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
@@ -295,7 +304,37 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         
         SerializedViewKey nextKey = getSessionViewStorageFactory().createSerializedViewKey(
                 context, context.getViewRoot().getViewId(), getNextViewSequence(context));
-        viewCollection.add(context, serializeView(context, serializedView), nextKey, key);
+        // Get viewScopeMapId
+        ViewScopeProxyMap viewScopeProxyMap = null;
+        Object viewMap = context.getViewRoot().getViewMap(false);
+        if (viewMap != null)
+        {
+            while (viewMap != null)
+            {
+                if (viewMap instanceof ViewScopeProxyMap)
+                {
+                    viewScopeProxyMap = (ViewScopeProxyMap)viewMap;
+                    break;
+                }
+                else if (viewMap instanceof FacesWrapper)
+                {
+                    viewMap = ((FacesWrapper)viewMap).getWrapped();
+                }
+            }
+
+        }
+        if (viewScopeProxyMap != null)
+        {
+            ViewScopeProviderFactory factory = ViewScopeProviderFactory.getViewScopeHandlerFactory(
+                context.getExternalContext());
+            ViewScopeProvider handler = factory.getViewScopeHandler(context.getExternalContext());
+            viewCollection.put(context, serializeView(context, serializedView), nextKey, key,
+                    handler, viewScopeProxyMap.getViewScopeId());
+        }
+        else
+        {
+            viewCollection.put(context, serializeView(context, serializedView), nextKey, key);
+        }
 
         ClientWindow clientWindow = context.getExternalContext().getClientWindow();
         if (clientWindow != null)
@@ -350,7 +389,20 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 }
             }
 
-            nextViewSequence(context);
+            if (context.getPartialViewContext().isAjaxRequest() ||
+                context.getPartialViewContext().isPartialRequest())
+            {
+                // Save the information used to restore. The idea is use this information later
+                // to decide if it is necessary to generate a new view sequence or use the existing
+                // one.
+                attributeMap.put(RESTORED_SERIALIZED_VIEW_KEY_REQUEST_ATTR, sequence);
+                attributeMap.put(RESTORED_SERIALIZED_VIEW_ID_REQUEST_ATTR, viewId);
+            }
+            else
+            {
+                // Ensure a new sequence is used for the next view
+                nextViewSequence(context);
+            }
         }
         return serializedView;
     }
@@ -360,7 +412,27 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         Object sequence = context.getAttributes().get(RendererUtils.SEQUENCE_PARAM);
         if (sequence == null)
         {
-            sequence = nextViewSequence(context);
+            if (context.getPartialViewContext().isAjaxRequest() ||
+                context.getPartialViewContext().isPartialRequest())
+            {
+                String restoredViewId = (String) context.getAttributes().get(RESTORED_SERIALIZED_VIEW_ID_REQUEST_ATTR);
+                Object restoredKey = context.getAttributes().get(RESTORED_SERIALIZED_VIEW_KEY_REQUEST_ATTR);
+                if (restoredViewId != null && restoredKey != null)
+                {
+                    if (restoredViewId.equals(context.getViewRoot().getViewId()))
+                    {
+                        // The same viewId that was restored is the same that is being processed 
+                        // and the request is partial or ajax. In this case we can reuse the restored
+                        // key.
+                        sequence = restoredKey;
+                    }
+                }
+            }
+            
+            if (sequence == null)
+            {
+                sequence = nextViewSequence(context);
+            }
             context.getAttributes().put(RendererUtils.SEQUENCE_PARAM, sequence);
         }
         return sequence;

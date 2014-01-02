@@ -145,4 +145,15 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
         }
         return _getNextToken()+'_'+sequence.toString();
     }
+
+    @Override
+    public void destroyViewScopeMap(FacesContext facesContext, String viewScopeId)
+    {
+        if (facesContext.getExternalContext().getSession(false) != null)
+        {        
+            String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId;
+            Map<String, Object> map = _createSubKeyMap(facesContext, fullToken);
+            map.clear();
+        }
+    }
 }
