@@ -2017,7 +2017,9 @@ public final class HtmlRendererUtils
                 target.append(", ");
             }
         }
-        if (!submitting)
+        // MYFACES-3836 If no script provided by the client behavior, ignore the 
+        // submitting hint because. it is evidence the client behavior is disabled.
+        if (script != null && !submitting)
         {
             submitting = clientBehavior.getHints().contains(
                     ClientBehaviorHint.SUBMITTING);
