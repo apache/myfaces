@@ -427,7 +427,6 @@ public final class HtmlRendererUtils
         {
             writer.writeAttribute(HTML.READONLY_ATTR, HTML.READONLY_ATTR, null);
         }
-
         Set lookupSet = getSubmittedOrSelectedValuesAsSet(selectMany,
                 uiComponent, facesContext, converter);
 
@@ -542,7 +541,6 @@ public final class HtmlRendererUtils
         boolean hideNoSelectionOption = isHideNoSelectionOption(component);
         boolean componentDisabled = isTrue(component.getAttributes()
                 .get("disabled"));
-
         for (Iterator it = selectItemList.iterator(); it.hasNext();)
         {
             SelectItem selectItem = (SelectItem) it.next();
@@ -2908,7 +2906,6 @@ public final class HtmlRendererUtils
         boolean hasValueChange = HtmlRendererUtils
                 .hasClientBehavior(ClientBehaviorEvents.VALUECHANGE,
                         clientBehaviors, facesContext);
-
         if (hasChange && hasValueChange)
         {
             String chain = HtmlRendererUtils.buildBehaviorChain(facesContext,
