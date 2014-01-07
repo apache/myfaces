@@ -32,7 +32,7 @@
     <description>
         The private implementation classes of the Apache MyFaces Core JSF-2.2 Implementation
     </description>
-    <url>http://myfaces.apache.org/core21/myfaces-impl</url>
+    <url>http://myfaces.apache.org/core22/myfaces-impl</url>
 
     <scm>
         <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/impl</connection>
