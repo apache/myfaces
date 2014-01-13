@@ -55,6 +55,9 @@
         </links>
 
         <menu name="JSF Implementations" inherit="top">
+            <item name="Core JSF-2.2"   href="../core22/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
+            </item>
             <item name="Core JSF-2.1"   href="./index.html" collapse="false">
               <item name="API"          href="http://myfaces.apache.org/core21/myfaces-api/index.html"/>
               <item name="Impl"         href="http://myfaces.apache.org/core21/myfaces-impl/index.html"/>
