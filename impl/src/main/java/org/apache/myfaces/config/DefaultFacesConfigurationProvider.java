@@ -65,6 +65,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowReturnImpl;
 import org.apache.myfaces.config.impl.digester.elements.NavigationCaseImpl;
@@ -690,7 +691,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 // Zero lenght, if that so the flow definition must be implicitly derived. 
                 // See JSF 2.2 section 11.4.3.3
                 // 
-                FacesConfig facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+                FacesConfigImpl facesConfig = new FacesConfigImpl();
                 FacesFlowDefinitionImpl flow = new FacesFlowDefinitionImpl();
                 String flowName = systemId.substring(systemId.lastIndexOf('/')+1, systemId.lastIndexOf("-flow.xml"));
                 flow.setId(flowName);
@@ -713,7 +714,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 returnNode.setNavigationCase(returnNavCase);
                 flow.addReturn(returnNode);
                 
-                facesConfig.getFacesFlowDefinitions().add(flow);
+                facesConfig.addFacesFlowDefinition(flow);
                 return facesConfig;
             }
 
