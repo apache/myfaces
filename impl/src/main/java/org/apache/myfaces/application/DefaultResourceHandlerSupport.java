@@ -27,6 +27,7 @@ import org.apache.myfaces.resource.FacesFlowClassLoaderResourceLoader;
 
 import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
 import org.apache.myfaces.resource.RootExternalContextResourceLoader;
+import org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheResourceLoader;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.resource.BaseResourceHandlerSupport;
@@ -146,24 +147,23 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                 throw new IllegalStateException("javax.faces.WEBAPP_CONTRACTS_DIRECTORY cannot start with '/");
             }
             
-            /* TODO: Implement me!
-            FacesContext facesContext = FacesContext.getCurrentInstance(); 
-
             if (TempDirFileCacheResourceLoader.isValidCreateTemporalFiles(facesContext))
             {
                 _contractResourceLoaders= new ContractResourceLoader[] { 
-                    new ExternalContextContractResourceLoader(CONTRACTS),
-                    new ClassLoaderContractResourceLoader(META_INF_CONTRACTS)
+                    new TempDirFileCacheContractResourceLoader(
+                        new ExternalContextContractResourceLoader("/"+directory)),
+                    new TempDirFileCacheContractResourceLoader(
+                        new ClassLoaderContractResourceLoader(META_INF_CONTRACTS))
                 };
             }
             else
-            {*/
+            {
             
                 _contractResourceLoaders= new ContractResourceLoader[] { 
                     new ExternalContextContractResourceLoader("/"+directory),
                     new ClassLoaderContractResourceLoader(META_INF_CONTRACTS)
                 };
-            //}
+            }
         }
         return _contractResourceLoaders;
     }
