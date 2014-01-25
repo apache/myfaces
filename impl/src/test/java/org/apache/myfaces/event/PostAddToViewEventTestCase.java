@@ -56,7 +56,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testPostAddToViewOnViewRoot() throws Exception
     {
-        setupRequest("/postAddToViewEvent_1.xhtml");
+        startViewRequest("/postAddToViewEvent_1.xhtml");
 
         PostAddToViewEventBean bean = EasyMock.createMock(PostAddToViewEventBean.class);
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
@@ -78,7 +78,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         EasyMock.verify(bean);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
-        submit(button);
+        client.submit(button);
         
         bean = EasyMock.createMock(PostAddToViewEventBean.class);
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
@@ -134,7 +134,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testPostAddToViewOnComponent() throws Exception
     {
-        setupRequest("/postAddToViewEvent_2.xhtml");
+        startViewRequest("/postAddToViewEvent_2.xhtml");
 
         PostAddToViewEventBean bean = EasyMock.createMock(PostAddToViewEventBean.class);
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
@@ -156,7 +156,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         EasyMock.verify(bean);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
-        submit(button);
+        client.submit(button);
         
         bean = EasyMock.createMock(PostAddToViewEventBean.class);
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
@@ -207,7 +207,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testPostAddToViewOnComponentCif() throws Exception
     {
-        setupRequest("/postAddToViewEvent_3.xhtml");
+        startViewRequest("/postAddToViewEvent_3.xhtml");
 
         PostAddToViewEventBean bean = EasyMock.createMock(PostAddToViewEventBean.class);
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
@@ -227,7 +227,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         EasyMock.verify(bean);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
-        submit(button);
+        client.submit(button);
         
         bean = EasyMock.createMock(PostAddToViewEventBean.class);
         bean.invokePostAddToViewEvent(EasyMock.isA(ComponentSystemEvent.class));
@@ -263,7 +263,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         
         request.setAttribute("postAddToViewEventBean", bean);
         request.setAttribute("condition", Boolean.TRUE);
-        processRender();
+        renderResponse();
         EasyMock.verify(bean);
     }
 }

@@ -65,7 +65,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testIndex() throws Exception
     {
-        setupRequest("/index.xhtml");
+        startViewRequest("/index.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -84,7 +84,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
                 */
         //System.out.println(writer1.content());
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -101,13 +101,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
                 "<div style=\"background-color: #ffc0c0; padding: 2px; margin-top: 5px; display:block\">TestComponent::encodeEnd</div></div>"));
                 */
         //System.out.println(writer2.content());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testInput() throws Exception
     {
-        setupRequest("/input.xhtml");
+        startViewRequest("/input.xhtml");
         processLifecycleExecuteAndRender();
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
         
@@ -128,7 +128,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
                */
         //System.out.println(writer1.content());
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -154,7 +154,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testRecursive() throws Exception
     {
-        setupRequest("/recursive.xhtml");
+        startViewRequest("/recursive.xhtml");
         processLifecycleExecuteAndRender();
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
         Assert.assertEquals(2, comp.getChildCount());
@@ -163,7 +163,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("Dynamically added child", comp.getChildren().get(1).getChildren().get(0).getAttributes().get("value"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -172,13 +172,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals(1, comp.getChildren().get(1).getChildCount());
         Assert.assertEquals("Dynamically added child", comp.getChildren().get(1).getChildren().get(0).getAttributes().get("value"));
         
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStable() throws Exception
     {
-        setupRequest("/stable.xhtml");
+        startViewRequest("/stable.xhtml");
         processLifecycleExecuteAndRender();
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
         Assert.assertEquals(3, comp.getChildCount());
@@ -187,7 +187,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("text3", comp.getChildren().get(2).getId());
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -197,7 +197,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("text3", comp.getChildren().get(2).getId());
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -208,8 +208,8 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         UIInput input = (UIInput) facesContext.getViewRoot().findComponent("mainForm:text3");
-        inputText(input, "3");
-        submit(button);
+        client.inputText(input, "3");
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -223,7 +223,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testTable() throws Exception
     {
-        setupRequest("/table.xhtml");
+        startViewRequest("/table.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -232,7 +232,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals(1, dataTable.getChildCount());
 
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -244,7 +244,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testToggle() throws Exception
     {
-        setupRequest("/toggle.xhtml");
+        startViewRequest("/toggle.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -253,7 +253,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("Manually added child 1<br/>", comp.getChildren().get(1).getAttributes().get("value"));
 
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -262,7 +262,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("Manually added child 2<br/>", comp.getChildren().get(1).getAttributes().get("value"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -271,7 +271,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("Manually added child 1<br/>", comp.getChildren().get(1).getAttributes().get("value"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -284,7 +284,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testInclude() throws Exception
     {
-        setupRequest("/include.xhtml");
+        startViewRequest("/include.xhtml");
         processLifecycleExecute();
         //Build the view
         facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(
@@ -292,22 +292,22 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         //Set a token to save on the state as delta
         UIComponent component = facesContext.getViewRoot().findComponent("mainForm:component1");
         component.getAttributes().put("test", "test1");
-        processRender();
+        renderResponse();
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page1");
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         //Check it is restored
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
         Assert.assertEquals("test1", component.getAttributes().get("test"));
-        processRender();
+        renderResponse();
         //Check buildView does not destroy the state
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
         Assert.assertEquals("test1", component.getAttributes().get("test"));
         
         //Go to page2
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
@@ -323,13 +323,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNull(component.getAttributes().get("test"));
         //Set a token to save on the state as delta
         component.getAttributes().put("test", "test2");
-        processRender();
+        renderResponse();
         
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
         Assert.assertEquals("test2", component.getAttributes().get("test"));
 
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
@@ -346,7 +346,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("test2", component.getAttributes().get("test"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
-        submit(button);
+        client.submit(button);
 
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
@@ -363,7 +363,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testInclude2() throws Exception
     {
-        setupRequest("/include.xhtml");
+        startViewRequest("/include.xhtml");
         processLifecycleExecute();
         //Build the view
         facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(
@@ -371,23 +371,23 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         //Set a token to save on the state as delta
         UIComponent component = facesContext.getViewRoot().findComponent("mainForm:component1");
         Assert.assertNotNull(component);
-        processRender();
+        renderResponse();
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page1");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         //Check it is restored
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
         Assert.assertNotNull(component);
-        processRender();
+        renderResponse();
         //Check buildView does not destroy the state
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
         Assert.assertNotNull(component);
         
         //Go to page2
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component1");
@@ -401,13 +401,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         //Check the page was changed and the state discarded, because it is a different component.
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
         Assert.assertNotNull(component);
-        processRender();
+        renderResponse();
         
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
         Assert.assertNotNull(component);
 
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
@@ -423,7 +423,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotNull(component);
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:page2");
-        submit(button);
+        client.submit(button);
 
         processLifecycleExecute();
         component = facesContext.getViewRoot().findComponent("mainForm:component2");
@@ -451,7 +451,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testComponentBinding() throws Exception
     {
-        setupRequest("/componentBinding1.xhtml");
+        startViewRequest("/componentBinding1.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel");
@@ -459,7 +459,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals(1, comp.getChildCount());
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         Assert.assertNotNull(comp);
         // Even if in the postback two components were added, pss algorithm must replace the
@@ -472,7 +472,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
 
         comp = facesContext.getViewRoot().findComponent("panel");
@@ -484,13 +484,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
         Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testResourceDependency() throws Exception
     {
-        setupRequest("/resourceDependency1.xhtml");
+        startViewRequest("/resourceDependency1.xhtml");
         processLifecycleExecute();
 
         executeBeforeRender(facesContext);
@@ -506,7 +506,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         executeAfterRender(facesContext);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         
@@ -529,7 +529,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testResourceDependency2() throws Exception
     {
-        setupRequest("/resourceDependency2.xhtml");
+        startViewRequest("/resourceDependency2.xhtml");
         processLifecycleExecute();
 
         executeBeforeRender(facesContext);
@@ -544,7 +544,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         executeAfterRender(facesContext);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         
@@ -564,7 +564,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         executeAfterRender(facesContext);
         
         UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button2);
+        client.submit(button2);
         
         processLifecycleExecute();
         
@@ -584,7 +584,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         executeAfterRender(facesContext);    
         
         UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button3);
+        client.submit(button3);
         
         processLifecycleExecute();
         
@@ -604,7 +604,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         executeAfterRender(facesContext);
         
         UICommand button4 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button4);
+        client.submit(button4);
         
         processLifecycleExecute();
         
@@ -627,7 +627,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testAddSimpleComponentVDL() throws Exception
     {
-        setupRequest("/addSimpleComponentVDL.xhtml");
+        startViewRequest("/addSimpleComponentVDL.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -635,20 +635,20 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
         Assert.assertEquals(1, comp.getChildCount());
         Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
 
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testAddSimpleIncludeVDL_1() throws Exception
     {
-        setupRequest("/addSimpleIncludeVDL_1.xhtml");
+        startViewRequest("/addSimpleIncludeVDL_1.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -660,7 +660,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -671,13 +671,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         Assert.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
 
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testAddSimpleIncludeVDL_2() throws Exception
     {
-        setupRequest("/addSimpleIncludeVDL_2.xhtml");
+        startViewRequest("/addSimpleIncludeVDL_2.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -689,7 +689,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -700,13 +700,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         Assert.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
 
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testAddSimpleCCVDL() throws Exception
     {
-        setupRequest("/addSimpleCCVDL.xhtml");
+        startViewRequest("/addSimpleCCVDL.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -724,7 +724,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -741,13 +741,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         Assert.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
 
-        tearDownRequest();
+        endRequest();
     }
 
     @Test
     public void testAddSimpleCCVDL2() throws Exception
     {
-        setupRequest("/addSimpleCCVDL2.xhtml");
+        startViewRequest("/addSimpleCCVDL2.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -765,7 +765,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(content1.contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -782,13 +782,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(content2.contains("Dynamically added header"));
         Assert.assertTrue(content2.contains("Dynamically added markup"));
 
-        tearDownRequest();
+        endRequest();
     }
 
     @Test
     public void testAddSimpleCCVDL3() throws Exception
     {
-        setupRequest("/addSimpleCCVDL3.xhtml");
+        startViewRequest("/addSimpleCCVDL3.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -813,7 +813,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -837,13 +837,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader2);
         Assert.assertNotSame(-1, indexDynHeader3);
 
-        tearDownRequest();
+        endRequest();
     }
 
     @Test
     public void testAddSimpleCCVDL4() throws Exception
     {
-        setupRequest("/addSimpleCCVDL4.xhtml");
+        startViewRequest("/addSimpleCCVDL4.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -868,7 +868,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -892,13 +892,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader2);
         Assert.assertNotSame(-1, indexDynHeader3);
 
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testAddSimpleCCVDL5() throws Exception
     {
-        setupRequest("/addSimpleCCVDL5.xhtml");
+        startViewRequest("/addSimpleCCVDL5.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -921,7 +921,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -944,13 +944,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader2_3);
 
 
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testAddSimpleCCVDL6() throws Exception
     {
-        setupRequest("/addSimpleCCVDL6.xhtml");
+        startViewRequest("/addSimpleCCVDL6.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -973,7 +973,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -995,13 +995,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader2_2);
         Assert.assertNotSame(-1, indexDynHeader2_3);
 
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testAddSimpleCCVDL7() throws Exception
     {
-        setupRequest("/addSimpleCCVDL7.xhtml");
+        startViewRequest("/addSimpleCCVDL7.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
@@ -1028,7 +1028,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertFalse(content1.contains("This is section 1"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
 
         CustomSessionBean sessionBean = facesContext.getApplication().evaluateExpressionGet(
@@ -1037,7 +1037,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         // this part should be rendered
         sessionBean.setShowSection1(true);
 
-        processRender();
+        renderResponse();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
         Assert.assertEquals(1, comp.getChildCount());
@@ -1062,14 +1062,14 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         
         Assert.assertTrue(content2.contains("This is section 1"));
 
-        tearDownRequest();
+        endRequest();
     }
 
 
     @Test
     public void testComponentBindingVDL_1() throws Exception
     {
-        setupRequest("/componentBindingVDL_1.xhtml");
+        startViewRequest("/componentBindingVDL_1.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel");
@@ -1090,7 +1090,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(content1.contains("Dynamically added markup"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
 
         UIComponent comp2 = facesContext.getViewRoot().findComponent("panel");
@@ -1110,14 +1110,14 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
             ccContent.getChildren().get(0).getFacet("header").getAttributes().get("value"));
         Assert.assertEquals("Dynamically added child", ccContent.getChildren().get(2).getAttributes().get("value"));
         
-        processRender();
+        renderResponse();
         
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
         String content2 = new String(writer2.content());
         Assert.assertTrue(content2.contains("Dynamically added markup"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
 
         UIComponent comp3 = facesContext.getViewRoot().findComponent("panel");
@@ -1140,13 +1140,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         String content3 = new String(writer3.content());
         Assert.assertTrue(content3.contains("Dynamically added markup"));
         
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testComponentBindingVDL_2() throws Exception
     {
-        setupRequest("/componentBindingVDL_2.xhtml");
+        startViewRequest("/componentBindingVDL_2.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
@@ -1176,11 +1176,11 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
                 "#{checkActionEventBean}", CheckActionEventBean.class);
         int oldcount1 = checkBean.getActionListenerCount();
         
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         
         Assert.assertEquals("event not called", oldcount1+1, checkBean.getActionListenerCount());
-        processRender();
+        renderResponse();
 
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
@@ -1206,12 +1206,12 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotNull(button);
         int oldcount2 = checkBean.getActionListenerCount();        
         
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         
         Assert.assertEquals("event not called", oldcount2+1, checkBean.getActionListenerCount());
         
-        processRender();
+        renderResponse();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
 
@@ -1232,13 +1232,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(content3.contains("Dynamically added header"));
         Assert.assertTrue(content3.contains("Dynamically added markup"));
         
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testComponentBindingVDL_3() throws Exception
     {
-        setupRequest("/componentBindingVDL_3.xhtml");
+        startViewRequest("/componentBindingVDL_3.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
@@ -1265,7 +1265,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
@@ -1295,7 +1295,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader2_3);
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
@@ -1324,13 +1324,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader3_2);
         Assert.assertNotSame(-1, indexDynHeader3_3);
 
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testComponentBindingVDL_4() throws Exception
     {
-        setupRequest("/componentBindingVDL_4.xhtml");
+        startViewRequest("/componentBindingVDL_4.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
@@ -1357,7 +1357,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader1_3);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
@@ -1387,7 +1387,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader2_3);
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecuteAndRender();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
@@ -1416,13 +1416,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader3_2);
         Assert.assertNotSame(-1, indexDynHeader3_3);
 
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testComponentBindingVDL_5() throws Exception
     {
-        setupRequest("/componentBindingVDL_5.xhtml");
+        startViewRequest("/componentBindingVDL_5.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
@@ -1457,11 +1457,11 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
                 "#{checkActionEventBean}", CheckActionEventBean.class);
         int oldcount1 = checkBean.getActionListenerCount();
         
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         
         Assert.assertEquals("event not called", oldcount1+1, checkBean.getActionListenerCount());
-        processRender();
+        renderResponse();
 
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
@@ -1492,12 +1492,12 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotNull(button);
         int oldcount2 = checkBean.getActionListenerCount();        
         
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         
         Assert.assertEquals("event not called", oldcount2+1, checkBean.getActionListenerCount());
         
-        processRender();
+        renderResponse();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
 
@@ -1523,13 +1523,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader3_2);
         Assert.assertNotSame(-1, indexDynHeader3_3);
         
-        tearDownRequest();
+        endRequest();
     }
 
     @Test
     public void testComponentBindingVDL_6() throws Exception
     {
-        setupRequest("/componentBindingVDL_6.xhtml");
+        startViewRequest("/componentBindingVDL_6.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
@@ -1564,11 +1564,11 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
                 "#{checkActionEventBean}", CheckActionEventBean.class);
         int oldcount1 = checkBean.getActionListenerCount();
         
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         
         Assert.assertEquals("event not called", oldcount1+1, checkBean.getActionListenerCount());
-        processRender();
+        renderResponse();
 
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
@@ -1599,12 +1599,12 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotNull(button);
         int oldcount2 = checkBean.getActionListenerCount();        
         
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         
         Assert.assertEquals("event not called", oldcount2+1, checkBean.getActionListenerCount());
         
-        processRender();
+        renderResponse();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
 
@@ -1630,13 +1630,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotSame(-1, indexDynHeader3_2);
         Assert.assertNotSame(-1, indexDynHeader3_3);
         
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testComponentBindingVDL_7() throws Exception
     {
-        setupRequest("/componentBindingVDL_7.xhtml");
+        startViewRequest("/componentBindingVDL_7.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
@@ -1665,7 +1665,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertFalse(content1.contains("This is section 1"));
 
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         
         CustomSessionBean sessionBean = facesContext.getApplication().evaluateExpressionGet(
@@ -1674,7 +1674,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         // this part should be rendered
         sessionBean.setShowSection1(true);
         
-        processRender();
+        renderResponse();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
         
@@ -1705,12 +1705,12 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(content2.contains("This is section 1"));
         
         button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         processLifecycleExecute();
         
         sessionBean.setShowSection1(false);
         
-        processRender();
+        renderResponse();
         Assert.assertNotNull(comp);
         Assert.assertEquals(2, comp.getChildCount());
 
@@ -1740,13 +1740,13 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         
         Assert.assertFalse(content3.contains("This is section 1"));
 
-        tearDownRequest();
+        endRequest();
     }
 
     @Test
     public void testCForEach1() throws Exception
     {
-        setupRequest("/forEach1.xhtml");
+        startViewRequest("/forEach1.xhtml");
         processLifecycleExecute();
         
         executeBeforeRender(facesContext);
@@ -1768,7 +1768,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         executeViewHandlerRender(facesContext);
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
 
@@ -1816,7 +1816,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         executeViewHandlerRender(facesContext);
 
         UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
-        submit(button2);
+        client.submit(button2);
         
         processLifecycleExecute();
 
@@ -1835,7 +1835,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         Assert.assertNotNull(itemX_4);
         Assert.assertEquals("x", itemX_4.getValue());
 
-        tearDownRequest();
+        endRequest();
     }
 
 }

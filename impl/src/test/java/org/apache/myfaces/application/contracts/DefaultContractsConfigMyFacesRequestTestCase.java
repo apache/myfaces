@@ -51,7 +51,7 @@ public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFace
     @Test
     public void testDefaultConfiguration() throws Exception
     {
-        setupRequest("/index.xhtml");
+        startViewRequest("/index.xhtml");
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         
         Set<String> allContracts = runtimeConfig.getResourceLibraryContracts();
@@ -80,7 +80,7 @@ public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFace
         Assert.assertTrue(contractsList.contains("blue"));
         Assert.assertTrue(contractsList.contains("red"));
         
-        tearDownRequest();
+        endRequest();
     }
 
 }

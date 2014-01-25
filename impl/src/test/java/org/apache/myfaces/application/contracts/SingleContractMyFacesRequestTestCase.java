@@ -57,7 +57,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
     @Test
     public void testDefaultConfiguration() throws Exception
     {
-        setupRequest("/index.xhtml");
+        startViewRequest("/index.xhtml");
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         
         Set<String> allContracts = runtimeConfig.getResourceLibraryContracts();
@@ -81,13 +81,13 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
     }
 
     @Test
     public void testView1() throws Exception
     {
-        setupRequest("/view_1.xhtml");
+        startViewRequest("/view_1.xhtml");
         
         processLifecycleExecute();
         executeBuildViewCycle(facesContext);
@@ -99,7 +99,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeAfterRender(facesContext);
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -110,7 +110,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
     @Test
     public void testView2() throws Exception
     {
-        setupRequest("/view_2.xhtml");
+        startViewRequest("/view_2.xhtml");
         processLifecycleExecute();
         executeBuildViewCycle(facesContext);
         
@@ -121,7 +121,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeAfterRender(facesContext);
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -132,7 +132,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
     @Test
     public void testView3() throws Exception
     {
-        setupRequest("/view_3.xhtml");
+        startViewRequest("/view_3.xhtml");
         processLifecycleExecute();
         executeBuildViewCycle(facesContext);
         
@@ -143,7 +143,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         executeAfterRender(facesContext);
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -154,7 +154,7 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
     @Test
     public void testView1_3() throws Exception
     {
-        setupRequest("/view_1.xhtml");
+        startViewRequest("/view_1.xhtml");
         processLifecycleExecute();
         executeBuildViewCycle(facesContext);
         
@@ -168,9 +168,9 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         String content1 = new String(writer1.content());
         Assert.assertTrue(content1.contains("header_yellow"));
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/view_3.xhtml");
+        startViewRequest("/view_3.xhtml");
         processLifecycleExecute();
         executeBuildViewCycle(facesContext);
         
@@ -185,6 +185,6 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
     }    
 }

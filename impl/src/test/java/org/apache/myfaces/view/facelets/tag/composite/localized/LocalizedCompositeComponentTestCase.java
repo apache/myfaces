@@ -44,30 +44,30 @@ public class LocalizedCompositeComponentTestCase extends AbstractMyFacesRequestT
     @Test
     public void testNoLocaleCompositeComponent() throws Exception
     {
-        setupRequest("/testNoLocalizedComposite.xhtml");
+        startViewRequest("/testNoLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
         Assert.assertTrue(getRenderedContent().contains(
                 "English page fragment"));
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testSpanishLocaleCompositeComponent() throws Exception
     {
-        setupRequest("/testSpanishLocalizedComposite.xhtml");
+        startViewRequest("/testSpanishLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
         Assert.assertTrue(getRenderedContent().contains(
                 "Fragmento de pagina Espanol"));
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testGermanLocaleCompositeComponent() throws Exception
     {
-        setupRequest("/testGermanLocalizedComposite.xhtml");
+        startViewRequest("/testGermanLocalizedComposite.xhtml");
         processLifecycleExecuteAndRender();
         Assert.assertTrue(getRenderedContent().contains(
                 "Deutsches Seitenfragment"));
-        tearDownRequest();
+        endRequest();
     }
 }

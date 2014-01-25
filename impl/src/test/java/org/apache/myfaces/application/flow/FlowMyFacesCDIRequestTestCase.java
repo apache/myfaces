@@ -18,17 +18,12 @@
  */
 package org.apache.myfaces.application.flow;
 
-import javax.el.ExpressionFactory;
 import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
 import javax.faces.application.StateManager;
 import javax.faces.component.UICommand;
 import javax.faces.flow.Flow;
-import javax.faces.flow.FlowHandler;
-import javax.faces.render.ResponseStateManager;
-import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.junit.Test;
@@ -62,7 +57,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
     @Test
     public void testFlow1_1() throws Exception
     {
-        setupRequest("/flow1_1.xhtml");
+        startViewRequest("/flow1_1.xhtml");
         processLifecycleExecute();
         
         ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
@@ -78,11 +73,11 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         // Check begin view node
         Assert.assertEquals("/flow1/begin.xhtml", navCase.getToViewId(facesContext));
         
-        processRender();
+        renderResponse();
        
         //Enter flow 1
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:startFlow1");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         
@@ -103,7 +98,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
     @Test
     public void testFlow1_2() throws Exception
     {
-        setupRequest("/flow1_2.xhtml");
+        startViewRequest("/flow1_2.xhtml");
         processLifecycleExecute();
         
         ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
@@ -119,11 +114,11 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         // Check begin view node
         Assert.assertEquals("/flow1/begin.xhtml", navCase.getToViewId(facesContext));
         
-        processRender();
+        renderResponse();
        
         //Enter flow 1
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:startFlow1");
-        submit(button);
+        client.submit(button);
         
         processLifecycleExecute();
         
@@ -140,10 +135,10 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         Assert.assertEquals(bean1.getPostConstructCalled(), "true");        
         bean1.setName("John");
         
-        processRender();
+        renderResponse();
         
         UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow2");
-        submit(button2);
+        client.submit(button2);
         
         processLifecycleExecute();
         
@@ -168,15 +163,15 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         Assert.assertEquals(bean2_1.getPostConstructCalled(), "true");
         Assert.assertNotNull(bean2_1.getFlow1Bean());
 
-        processRender();
+        renderResponse();
         
         //Check current view is the begin of flow2
         Assert.assertEquals("/flow2/begin.xhtml", facesContext.getViewRoot().getViewId());
         
         UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:content");
-        submit(button3);
+        client.submit(button3);
         processLifecycleExecute();
-        processRender();
+        renderResponse();
         
         currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
         Assert.assertNotNull(currentFlow);
@@ -186,7 +181,7 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         Assert.assertNotNull(endCase);
         
         UICommand button4 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
-        submit(button4);
+        client.submit(button4);
         
         processLifecycleExecute();
         

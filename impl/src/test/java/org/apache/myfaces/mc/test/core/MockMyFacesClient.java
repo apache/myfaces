@@ -20,6 +20,7 @@ package org.apache.myfaces.mc.test.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.faces.FacesException;
 
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
@@ -32,10 +33,13 @@ import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.render.ResponseStateManager;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
+import org.junit.Assert;
 
 /**
  * Client that keep track and "translate" the commands done in a JSF component.
@@ -53,16 +57,43 @@ public class MockMyFacesClient
     private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
     private Map<String, Object> headers = new HashMap<String, Object>();
     
-    private final FacesContext facesContext;
-    
     // It has sense the client has a reference over the test, because 
     // after all this class encapsulate some automatic operations
-    private AbstractMyFacesRequestTestCase testCase;
+    private ServletMockContainer testCase;
     
-    public MockMyFacesClient(FacesContext facesContext, AbstractMyFacesRequestTestCase testCase)
+    public MockMyFacesClient(FacesContext facesContext, ServletMockContainer testCase)
     {
-        this.facesContext = facesContext;
         this.testCase = testCase;
+    }
+    
+    public void processRedirect()
+    {
+        HttpServletResponse response = testCase.getResponse();
+        HttpServletRequest request = testCase.getRequest();
+        if (response.getStatus() == HttpServletResponse.SC_FOUND)
+        {
+            testCase.processRemainingPhases(); //testCase.processRemainingPhases();
+            testCase.endRequest();
+            String location = response.getHeader("Location");
+            String contextPath = request.getContextPath() == null ? "" : request.getContextPath();
+            String servletPath = request.getServletPath() == null ? "" : request.getServletPath();
+            int cpi = location.indexOf(contextPath);
+            int spi = cpi < 0 ? -1 : location.indexOf(servletPath, cpi+contextPath.length());
+            String viewId;
+            if (spi >= 0)
+            {
+                viewId = location.substring(spi+servletPath.length());
+            }
+            else
+            {
+                viewId = location;
+            }
+            testCase.startViewRequest(viewId);
+        }
+        else
+        {
+            Assert.fail("Expected redirect not found");
+        }
     }
     
     public void inputText(UIInput input, String text)
@@ -70,19 +101,56 @@ public class MockMyFacesClient
         parameters.put(input.getClientId(), text);
     }
     
-    public void submit(UIComponent component) throws Exception
+    public void inputText(String clientId, String text)
+    {
+        UIComponent input = getTestCase().getFacesContext().
+            getViewRoot().findComponent(clientId);
+        if (input == null)
+        {
+            throw new FacesException("input with clientId:"+clientId+" not found");
+        }
+        else
+        {
+            parameters.put(input.getClientId(), text);
+        }
+    }
+    
+    /**
+     * Simulate a submit, processing the remaining phases and setting up the new request.
+     * It delegates to client.submit, where the necessary data is gathered to be applied
+     * later on client.apply method.
+     * 
+     * @param component
+     * @throws Exception
+     */
+    public void submit(UIComponent component)
     {
         testCase.processRemainingPhases();
         this.internalSubmit((UICommand)component);
-        String viewId = facesContext.getViewRoot().getViewId();
-        testCase.tearDownRequest();
-        testCase.setupRequest(viewId);
+        String viewId = testCase.getFacesContext().getViewRoot().getViewId();
+        testCase.endRequest();
+        testCase.startViewRequest(viewId);
+    }
+    
+    public void submit(String clientId)
+    {
+        UIComponent button = getTestCase().getFacesContext().
+            getViewRoot().findComponent(clientId);
+        if (button == null)
+        {
+            throw new FacesException("button with clientId:"+clientId+" not found");
+        }
+        else
+        {
+            submit(button);
+        }
     }
     
     protected void internalSubmit(UICommand command)
     {
         if (command instanceof HtmlCommandButton)
         {
+            final FacesContext facesContext = testCase.getFacesContext();
             UIForm form = getParentForm(command);
             VisitContext visitContext = VisitContext.createVisitContext(facesContext);
             form.visitTree(visitContext, new VisitCallback(){
@@ -102,16 +170,19 @@ public class MockMyFacesClient
                 
             });
             parameters.put(form.getClientId(facesContext)+"_SUBMIT", "1");
-            parameters.put(ResponseStateManager.VIEW_STATE_PARAM, facesContext.getApplication().getStateManager().getViewState(facesContext));
             Object value = command.getValue();
             parameters.put(command.getClientId(), value == null ? "" : value.toString());
+            
+            applyStateFromPreviousRequest();
+            /*
+            parameters.put(ResponseStateManager.VIEW_STATE_PARAM, facesContext.getApplication().getStateManager().getViewState(facesContext));
             if (facesContext.getExternalContext().getClientWindow() != null)
             {
                 parameters.put(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, facesContext.getExternalContext().getClientWindow().getId());
             }
             MockHttpServletResponse response = (MockHttpServletResponse) facesContext.getExternalContext().getResponse(); 
             Cookie cookie = response.getCookie("oam.Flash.RENDERMAP.TOKEN");
-            getCookies().put("oam.Flash.RENDERMAP.TOKEN", cookie);
+            getCookies().put("oam.Flash.RENDERMAP.TOKEN", cookie);*/
         }
     }
     
@@ -120,21 +191,23 @@ public class MockMyFacesClient
         ajax(source, event, execute, render, submit, false);
     }
             
-    public void ajax(UIComponent source, String event, String execute, String render, boolean submit, boolean resetValues) throws Exception
+    public void ajax(UIComponent source, String event, String execute, String render, boolean submit, boolean resetValues)
     {
         testCase.processRemainingPhases();
         this.internalAjax(source, event, execute, render, submit, resetValues);
-        String viewId = facesContext.getViewRoot().getViewId();
-        testCase.tearDownRequest();
-        testCase.setupRequest(viewId);
+        String viewId = testCase.getFacesContext().getViewRoot().getViewId();
+        testCase.endRequest();
+        testCase.startViewRequest(viewId);
     }
     
     protected void internalAjax(UIComponent source, String event, String execute, String render, boolean submit, boolean resetValues)
     {
+        final FacesContext facesContext = testCase.getFacesContext();
         parameters.put("javax.faces.partial.ajax", "true");
         parameters.put("javax.faces.behavior.event", event);
         parameters.put("javax.faces.partial.event", "action".equals(event) ? "click" : event);
-        parameters.put(ResponseStateManager.VIEW_STATE_PARAM, facesContext.getApplication().getStateManager().getViewState(facesContext));
+        applyStateFromPreviousRequest();
+        //parameters.put(ResponseStateManager.VIEW_STATE_PARAM, facesContext.getApplication().getStateManager().getViewState(facesContext));
         parameters.put("javax.faces.source", source.getClientId(facesContext));
         if (execute == null)
         {
@@ -160,12 +233,33 @@ public class MockMyFacesClient
             parameters.put("javax.faces.partial.resetValues", "true");
         }
         
-        MockHttpServletResponse response = (MockHttpServletResponse) facesContext.getExternalContext().getResponse(); 
-        Cookie cookie = response.getCookie("oam.Flash.RENDERMAP.TOKEN");
-        getCookies().put("oam.Flash.RENDERMAP.TOKEN", cookie);
-        
         headers.put("Faces-Request", "partial/ajax");
         headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+    }
+    
+    protected void applyStateFromPreviousRequest()
+    {
+        FacesContext facesContext = testCase.getFacesContext();
+        
+        parameters.put(ResponseStateManager.VIEW_STATE_PARAM, facesContext.getApplication().getStateManager().getViewState(facesContext));
+        if (facesContext.getExternalContext().getClientWindow() != null)
+        {
+            parameters.put(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, facesContext.getExternalContext().getClientWindow().getId());
+        }
+        
+        applyCookiesFromPreviousRequest();
+    }
+    
+    protected void applyCookiesFromPreviousRequest()
+    {
+        MockHttpServletResponse response = (MockHttpServletResponse) testCase.getResponse();
+        if (response.getCookies() != null && !response.getCookies().isEmpty())
+        {
+            for (Map.Entry<String, Cookie> entry : response.getCookies().entrySet())
+            {
+                getCookies().put(entry.getKey(), entry.getValue());
+            }
+        }
     }
     
     public Map<String, String> getParameters()
@@ -231,8 +325,15 @@ public class MockMyFacesClient
             request.addCookie(entry.getValue());
         }
     }
+    
+    public void reset(FacesContext facesContext)
+    {
+        this.parameters.clear();
+        this.headers.clear();
+        this.cookies.clear();
+    }
 
-    public AbstractMyFacesRequestTestCase getTestCase()
+    public ServletMockContainer getTestCase()
     {
         return testCase;
     }

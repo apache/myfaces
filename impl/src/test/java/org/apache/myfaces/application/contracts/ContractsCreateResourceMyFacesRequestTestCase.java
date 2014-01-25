@@ -55,7 +55,7 @@ public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFac
     @Test
     public void testDefaultConfiguration() throws Exception
     {
-        setupRequest("/index.xhtml");
+        startViewRequest("/index.xhtml");
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
         
         Set<String> allContracts = runtimeConfig.getResourceLibraryContracts();
@@ -93,7 +93,7 @@ public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFac
         Resource resource2 = resourceHandler.createResource("myjs.js", "mylib");
         Assert.assertNotNull(resource2);
         
-        tearDownRequest();
+        endRequest();
     }
 
 }

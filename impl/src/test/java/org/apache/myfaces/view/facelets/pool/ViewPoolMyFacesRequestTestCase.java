@@ -81,10 +81,10 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageNoForm1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageNoForm.xhtml");
+        startViewRequest("/staticPageNoForm.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        processRender();
+        renderResponse();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -96,7 +96,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
 
     /**
@@ -109,7 +109,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageNoForm1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageNoForm.xhtml");
+        startViewRequest("/staticPageNoForm.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -118,9 +118,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
 
-        setupRequest("/staticPageNoForm.xhtml");
+        startViewRequest("/staticPageNoForm.xhtml");
         processLifecycleExecute();
         
         executeBeforeRender(facesContext);
@@ -144,7 +144,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageNoForm2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageNoForm2.xhtml");
+        startViewRequest("/staticPageNoForm2.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -165,9 +165,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
 
-        setupRequest("/staticPageNoForm2.xhtml");
+        startViewRequest("/staticPageNoForm2.xhtml");
         processLifecycleExecute();
         
         executeBeforeRender(facesContext);
@@ -203,10 +203,10 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPage1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        processRender();
+        renderResponse();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -218,14 +218,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPage1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         executeBeforeRender(facesContext);
@@ -258,14 +258,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         UIOutput testComponent2 = (UIOutput) form2.findComponent("testId");
         Assert.assertNull(testComponent2);
         
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPage1_2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         executeBeforeRender(facesContext);
@@ -298,14 +298,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         UIOutput testComponent2 = (UIOutput) form2.findComponent("testId");
         Assert.assertNull(testComponent2);
         
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPage1_3() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -331,14 +331,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPage1_4() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -366,14 +366,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPage2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage2.xhtml");
+        startViewRequest("/staticPage2.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -396,7 +396,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
 
         processLifecycleExecute();
         
@@ -433,7 +433,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageWithViewScope1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -442,9 +442,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
 
         executeBuildViewCycle(facesContext);
@@ -467,7 +467,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageWithViewScope1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -486,14 +486,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageWithViewScope2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPage.xhtml");
+        startViewRequest("/staticPage.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         facesContext.getViewRoot().getViewMap(true).put("viewItem", "someValue");
@@ -509,7 +509,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         root.setRenderKitId("HTML_BASIC");
         root.setViewId("/staticPage.xhtml");
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
 
@@ -528,10 +528,10 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticUIParamPage1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticUIParamPage1.xhtml");
+        startViewRequest("/staticUIParamPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        processRender();
+        renderResponse();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -543,14 +543,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticUIParamPage1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticUIParamPage1.xhtml");
+        startViewRequest("/staticUIParamPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -571,9 +571,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/staticUIParamPage1.xhtml");
+        startViewRequest("/staticUIParamPage1.xhtml");
         processLifecycleExecute();
 
         executeBuildViewCycle(facesContext);
@@ -608,10 +608,10 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticViewParamPage1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticViewParamPage1.xhtml");
+        startViewRequest("/staticViewParamPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
-        processRender();
+        renderResponse();
         
         UIViewRoot root = new UIViewRoot();
         root.setLocale(locale);
@@ -623,14 +623,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticViewParamPage1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticViewParamPage1.xhtml");
+        startViewRequest("/staticViewParamPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -644,9 +644,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/staticViewParamPage1.xhtml");
+        startViewRequest("/staticViewParamPage1.xhtml");
         processLifecycleExecute();
 
         executeBuildViewCycle(facesContext);
@@ -674,7 +674,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticViewParamPage1_2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticViewParamPage1.xhtml");
+        startViewRequest("/staticViewParamPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -692,7 +692,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         
         executeAfterRender(facesContext);
 
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
 
@@ -727,7 +727,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testDynamicPage1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/dynPage1.xhtml");
+        startViewRequest("/dynPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -750,14 +750,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popDynamicStructureView(facesContext, root, faceletState);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testDynamicPage1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/dynPage1.xhtml");
+        startViewRequest("/dynPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         executeBeforeRender(facesContext);
@@ -793,14 +793,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         UIOutput testComponent2 = (UIOutput) form2.findComponent("testId");
         Assert.assertNull(testComponent2);
         
-        tearDownRequest();
+        endRequest();
     }
 
     @Test
     public void testDynamicPage1_2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/dynPage1.xhtml");
+        startViewRequest("/dynPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         facesContext.getViewRoot().getViewMap(true).put("viewItem", "someValue");
@@ -811,7 +811,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -840,7 +840,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageLocale1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageLocale1.xhtml");
+        startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
@@ -861,14 +861,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageLocale1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageLocale1.xhtml");
+        startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         Assert.assertEquals(Locale.US, locale);
@@ -877,9 +877,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/staticPageLocale1.xhtml");
+        startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
 
         executeBuildViewCycle(facesContext);
@@ -904,7 +904,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageLocale1_2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageLocale1.xhtml");
+        startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         Assert.assertEquals(Locale.US, locale);
@@ -917,9 +917,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
             facesContext, "#{dynamicBean}", DynamicBean.class);
         bean.setLocale(Locale.UK);
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/staticPageLocale1.xhtml");
+        startViewRequest("/staticPageLocale1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         Assert.assertEquals(Locale.UK, locale);
@@ -940,7 +940,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageContract1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageContract1.xhtml");
+        startViewRequest("/staticPageContract1.xhtml");
         processLifecycleExecute();
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
@@ -959,14 +959,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageContract1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageContract1.xhtml");
+        startViewRequest("/staticPageContract1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -974,9 +974,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/staticPageContract1.xhtml");
+        startViewRequest("/staticPageContract1.xhtml");
         processLifecycleExecute();
 
         executeBuildViewCycle(facesContext);
@@ -1001,7 +1001,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageContract1_2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageContract1.xhtml");
+        startViewRequest("/staticPageContract1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1013,9 +1013,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
             facesContext, "#{dynamicBean}", DynamicBean.class);
         bean.setContract("yellow");
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/staticPageContract1.xhtml");
+        startViewRequest("/staticPageContract1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         executeBuildViewCycle(facesContext);
@@ -1038,7 +1038,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testDynPageResource1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/dynPageResource.xhtml");
+        startViewRequest("/dynPageResource.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1065,7 +1065,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testDynPageResource1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/dynPageResource.xhtml");
+        startViewRequest("/dynPageResource.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1088,7 +1088,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
 
         processLifecycleExecute();
         
@@ -1126,7 +1126,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     {
         Locale locale = null;
         
-        setupRequest("/dynPageResource.xhtml");
+        startViewRequest("/dynPageResource.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1140,9 +1140,9 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
             facesContext, "#{dynamicBean}", DynamicBean.class);
         bean.setResource1(true);
         
-        tearDownRequest();
+        endRequest();
         
-        setupRequest("/dynPageResource.xhtml");
+        startViewRequest("/dynPageResource.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1167,7 +1167,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
 
         processLifecycleExecute();
         
@@ -1204,7 +1204,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageBinding1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBinding1.xhtml");
+        startViewRequest("/staticPageBinding1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         executeBeforeRender(facesContext);
@@ -1226,14 +1226,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageBinding1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBinding1.xhtml");
+        startViewRequest("/staticPageBinding1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
@@ -1246,7 +1246,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -1275,7 +1275,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageBinding2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBinding2.xhtml");
+        startViewRequest("/staticPageBinding2.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1301,14 +1301,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageBinding2_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBinding2.xhtml");
+        startViewRequest("/staticPageBinding2.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
@@ -1325,7 +1325,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -1356,7 +1356,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageBinding3() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBinding3.xhtml");
+        startViewRequest("/staticPageBinding3.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1382,14 +1382,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
 
     @Test
     public void testStaticPageBinding3_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBinding3.xhtml");
+        startViewRequest("/staticPageBinding3.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
@@ -1406,7 +1406,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -1437,7 +1437,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageBinding4() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBinding4.xhtml");
+        startViewRequest("/staticPageBinding4.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1461,14 +1461,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageBinding4_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBinding4.xhtml");
+        startViewRequest("/staticPageBinding4.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
@@ -1483,7 +1483,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -1512,7 +1512,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageBindingValidator1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBindingValidator1.xhtml");
+        startViewRequest("/staticPageBindingValidator1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         executeBeforeRender(facesContext);
@@ -1531,14 +1531,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageBindingValidator1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageBindingValidator1.xhtml");
+        startViewRequest("/staticPageBindingValidator1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
@@ -1548,7 +1548,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -1581,7 +1581,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageStateHolderConverter1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageStateHolderConverter1.xhtml");
+        startViewRequest("/staticPageStateHolderConverter1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         executeBeforeRender(facesContext);
@@ -1600,14 +1600,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageStateHolderConverter1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageStateHolderConverter1.xhtml");
+        startViewRequest("/staticPageStateHolderConverter1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
@@ -1617,7 +1617,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -1650,7 +1650,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testStaticPageStateHolderConverter2() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageStateHolderConverter2.xhtml");
+        startViewRequest("/staticPageStateHolderConverter2.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         executeBeforeRender(facesContext);
@@ -1669,14 +1669,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testStaticPageStateHolderConverter2_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/staticPageStateHolderConverter2.xhtml");
+        startViewRequest("/staticPageStateHolderConverter2.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
@@ -1686,7 +1686,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         
@@ -1712,7 +1712,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     public void testPartialPage1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/partialPage1.xhtml");
+        startViewRequest("/partialPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
         
@@ -1739,14 +1739,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
         Assert.assertNotNull(entry);
         Assert.assertEquals(RestoreViewFromPoolResult.REFRESH_REQUIRED, entry.getResult());
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testPartialPage1_1() throws Exception
     {
         Locale locale = null;
-        setupRequest("/partialPage1.xhtml");
+        startViewRequest("/partialPage1.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
 
@@ -1763,7 +1763,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         executeViewHandlerRender(facesContext);
         executeAfterRender(facesContext);
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
         

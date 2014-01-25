@@ -50,7 +50,7 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesRequestTestCas
     @Test
     public void testNoUpdateScript1Head() throws Exception
     {
-        setupRequest("/ajaxContent.xhtml");
+        startViewRequest("/ajaxContent.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent content = facesContext.getViewRoot().findComponent("content");
@@ -63,13 +63,13 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesRequestTestCas
         // the inclusion should trigger update head
         Assert.assertFalse(text.contains("update id=\"javax.faces.ViewHead\""));
         //System.out.println(text);
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testUpdateScript2Head() throws Exception
     {
-        setupRequest("/ajaxContent.xhtml");
+        startViewRequest("/ajaxContent.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent content = facesContext.getViewRoot().findComponent("content");
@@ -84,13 +84,13 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesRequestTestCas
         Assert.assertTrue(text.contains("update id=\"javax.faces.ViewHead\""));
         Assert.assertTrue(text.contains("alert(\"script2\");"));
         //System.out.println(text);
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testUpdateScript3Head() throws Exception
     {
-        setupRequest("/ajaxContent.xhtml");
+        startViewRequest("/ajaxContent.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent content = facesContext.getViewRoot().findComponent("content");
@@ -106,7 +106,7 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesRequestTestCas
         Assert.assertTrue(text.contains("alert(\"script3\");"));
         Assert.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/javax.faces.resource/style3.css\""));
         //System.out.println(text);
-        tearDownRequest();
+        endRequest();
     }
    
 }

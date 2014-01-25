@@ -54,33 +54,33 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
     @Test
     public void testUIPanel1() throws Exception
     {
-        setupRequest("/testMyUIPanel1.xhtml");
+        startViewRequest("/testMyUIPanel1.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel1");
         Assert.assertNotNull(comp);
         Assert.assertTrue(comp instanceof MyUIPanel1);
         
-        tearDownRequest();
+        endRequest();
     }    
 
     @Test
     public void testUIPanel2() throws Exception
     {
-        setupRequest("/testMyUIPanel2.xhtml");
+        startViewRequest("/testMyUIPanel2.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel1");
         Assert.assertNotNull(comp);
         Assert.assertTrue(comp instanceof MyUIPanel2);
         
-        tearDownRequest();
+        endRequest();
     }
     
     @Test
     public void testUIPanel3() throws Exception
     {
-        setupRequest("/testMyUIPanel3.xhtml");
+        startViewRequest("/testMyUIPanel3.xhtml");
         processLifecycleExecuteAndRender();
         
         UIComponent comp = facesContext.getViewRoot().findComponent("panel3");
@@ -92,6 +92,6 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
             facesContext.getApplication().createComponent("myUIPanel3");
         Assert.assertNotNull(comp2);
         
-        tearDownRequest();
+        endRequest();
     }
 }

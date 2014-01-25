@@ -20,13 +20,15 @@ package org.apache.myfaces.mc.test.core;
 
 import javax.faces.FactoryFinder;
 import javax.faces.component.UIViewRoot;
+import javax.faces.event.PhaseId;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 
 /**
  * <p>Abstract JUnit test case base class, which provide a var called vdl, that
  * can be used to build facelet views calling for example:</p>
  * <p>vdl.buildView(facesContext, facesContext.getViewRoot(), "/hello.xhtml");</p>
- * <p>It already set up a request.</p>
+ * <p>It already initalize a request, and keep in mind there is no any lifecycle
+ * execution. This test case is used to check the view structure.</p>
  * 
  * @author Leonardo Uribe
  *
@@ -38,31 +40,39 @@ public abstract class AbstractMyFacesFaceletsTestCase extends AbstractMyFacesReq
     {
         super.setUp();
         
-        setupFaceletRequest();
-
         setUpVDL();
+
+        startFaceletRequest();
     }
     
-    protected void setUpVDL() throws Exception
+    protected void setUpVDL()
     {
-        ViewDeclarationLanguageFactory vdlFactory = (ViewDeclarationLanguageFactory) FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
-        vdl = (MockMyFacesFaceletViewDeclarationLanguage) vdlFactory.getViewDeclarationLanguage("/a.xhtml");
+        ViewDeclarationLanguageFactory vdlFactory = (ViewDeclarationLanguageFactory) 
+            FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
+        vdl = (MockMyFacesFaceletViewDeclarationLanguage) 
+            vdlFactory.getViewDeclarationLanguage("/a.xhtml");
     }
     
-    protected void setupFaceletRequest() throws Exception
+    /**
+     * Initialize a request providing an empty UIViewRoot without enter into the
+     * lifecycle. 
+     */
+    public void startFaceletRequest()
     {
-        setupRequest();
+        startRequest();
         // Create a new UIViewRoot to work with it later
         UIViewRoot root = new UIViewRoot();
         root.setViewId("/test");
         root.setRenderKitId("HTML_BASIC");
         facesContext.setViewRoot(root);
+        // Set the current phase to render response.
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
     }
 
     @Override
     public void tearDown() throws Exception
     {
-        tearDownRequest();
+        endRequest();
         
         super.tearDown();
     }

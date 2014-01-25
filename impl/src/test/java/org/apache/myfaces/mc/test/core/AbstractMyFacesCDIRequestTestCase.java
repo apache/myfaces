@@ -18,10 +18,14 @@
  */
 package org.apache.myfaces.mc.test.core;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.http.HttpSessionEvent;
+import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
+import javax.servlet.ServletContext;
+import org.apache.myfaces.spi.InjectionProvider;
+import org.apache.myfaces.spi.InjectionProviderException;
+import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider;
+import org.apache.myfaces.webapp.AbstractFacesInitializer;
 import org.apache.webbeans.servlet.WebBeansConfigurationListener;
 
 /**
@@ -30,8 +34,10 @@ import org.apache.webbeans.servlet.WebBeansConfigurationListener;
 public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTestCase
 {
     
-    private WebBeansConfigurationListener owbListener;
-
+    protected WebBeansConfigurationListener owbListener;
+    protected InjectionProvider injectionProvider;
+    
+    @Override
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();
@@ -43,7 +49,7 @@ public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTes
     protected void setUpServletListeners() throws Exception
     {
         owbListener = new WebBeansConfigurationListener();
-        owbListener.contextInitialized(new ServletContextEvent(servletContext));
+        webContainer.subscribeListener(owbListener);
         super.setUpServletListeners();
     }
 
@@ -51,22 +57,57 @@ public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTes
     protected void tearDownServletListeners() throws Exception
     {
         super.tearDownServletListeners();
-        owbListener.contextDestroyed(new ServletContextEvent(servletContext));
+        owbListener = null;
     }
 
     @Override
-    protected void setupRequest(String pathInfo, String query) throws Exception
+    protected AbstractFacesInitializer createFacesInitializer()
     {
-        owbListener.requestInitialized(new ServletRequestEvent(servletContext, request));
-        super.setupRequest(pathInfo, query);
-        owbListener.sessionCreated(new HttpSessionEvent(session));
+        return new CDIJUnitFacesInitializer(this);
     }
-
-    @Override
-    protected void tearDownRequest()
+    
+    protected class CDIJUnitFacesInitializer extends AbstractMyFacesTestCase.JUnitFacesInitializer
     {
-        super.tearDownRequest();
-        owbListener.requestDestroyed(new ServletRequestEvent(servletContext, request));
-    }
+        private Object testCaseCreationMetadata;
 
+        public CDIJUnitFacesInitializer(AbstractMyFacesTestCase testCase)
+        {
+            super(testCase);
+        }
+
+        @Override
+        protected void initContainerIntegration(ServletContext servletContext, ExternalContext externalContext)
+        {
+            super.initContainerIntegration(servletContext, externalContext);
+            
+            InjectionProviderFactory ipf = InjectionProviderFactory.getInjectionProviderFactory();
+            injectionProvider = ipf.getInjectionProvider(externalContext);
+            AbstractMyFacesTestCase testCase = getTestCase();
+            try
+            {
+                testCaseCreationMetadata = injectionProvider.inject(testCase);
+                injectionProvider.postConstruct(testCase, testCaseCreationMetadata);
+            }
+            catch (InjectionProviderException ex)
+            {
+                throw new FacesException("Cannot inject JUnit Test case", ex);
+            }
+        }
+
+        @Override
+        public void destroyFaces(ServletContext servletContext)
+        {
+            try
+            {
+                injectionProvider.preDestroy(getTestCase(), testCaseCreationMetadata);
+            }
+            catch (InjectionProviderException ex)
+            {
+                throw new FacesException("Cannot call @PreDestroy over inject JUnit Test case", ex);
+            }
+            super.destroyFaces(servletContext);
+        }
+        
+        
+    }
 }

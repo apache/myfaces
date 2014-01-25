@@ -58,6 +58,7 @@
         <module>shared</module>
         <module>impl</module>
         <module>bundle</module>
+        <module>impl-test</module>
     </modules>
 
     <build>

@@ -21,15 +21,14 @@ package org.apache.myfaces.mc.test.core;
 import java.io.IOException;
 
 import javax.faces.application.Application;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletRequestEvent;
 
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockHttpSession;
+import org.apache.myfaces.test.mock.MockHttpSessionProxy;
 
 /**
  * <p>Abstract JUnit test case base class, with method to setup/teardown a request.
@@ -41,6 +40,7 @@ import org.apache.myfaces.test.mock.MockHttpSession;
  *
  */
 public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTestCase
+    implements ServletMockContainer
 {
     
     @Override
@@ -53,8 +53,9 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
     @Override
     public void tearDown() throws Exception
     {
-        tearDownRequest();
+        endRequest();
         session = null;
+        lastSession = null;
         if (client != null)
         {
             client.setTestCase(null);
@@ -63,12 +64,12 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
         super.tearDown();
     }
 
-    protected void setupRequest() throws Exception
+    protected void setupRequest()
     {
         setupRequest(null);
     }
 
-    protected void setupRequest(String pathInfo) throws Exception
+    protected void setupRequest(String pathInfo)
     {
         if (pathInfo == null)
         {
@@ -87,31 +88,94 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
             }
         }
     }
-    
-    protected void setupRequest(String pathInfo, String query) throws Exception
+
+    protected void setupRequest(String pathInfo, String query)
     {
-        session = (session == null) ? new MockHttpSession() : session;
-        session.setServletContext(servletContext);
-        request = new MockHttpServletRequest(session);
+        if (request != null)
+        {
+            //tear down previous request
+            endRequest();
+        }
+        request = lastSession == null ? 
+            new MockHttpServletRequest() : new MockHttpServletRequest(lastSession);
         request.setServletContext(servletContext);
+        requestInitializedCalled = false;
+        if (session == null)
+        {
+            session = new MockHttpSessionProxy(servletContext, request);
+        }
+        else
+        {
+            session.setRequest(request);
+        }
+        session.setServletContext(servletContext);
         response = new MockHttpServletResponse();
         //TODO check if this is correct
         request.setPathElements(getContextPath(), getServletPath(), pathInfo, query);
 
-        facesContext = facesContextFactory.getFacesContext(servletContext, request, response, lifecycle);
+        facesContext = facesContextFactory.getFacesContext(
+            servletContext, request, response, lifecycle);
         externalContext = facesContext.getExternalContext();
         application = facesContext.getApplication();
         if (client != null)
         {
             client.apply(request);
+            client.reset(facesContext);
         }
-        //Reset client
-        client = createClient();
+        else
+        {
+            client = createClient();
+        }
     }
     
     protected MockMyFacesClient createClient()
     {
         return new MockMyFacesClient(facesContext, this);
+    }
+
+    /**
+     * This method call startViewRequest(viewId) and doRequestInitialized()
+     */
+    public final void startViewRequest(String viewId)
+    {
+        setupRequest(viewId);
+        doRequestInitialized();
+    }
+    
+    /**
+     * This method call startViewRequest(null) and doRequestInitialized()
+     */
+    public final void startRequest()
+    {
+        startViewRequest(null);
+        doRequestInitialized();
+    }
+    
+    public void doRequestInitialized()
+    {
+        if (!requestInitializedCalled)
+        {
+            webContainer.requestInitialized(new ServletRequestEvent(servletContext, request));
+            requestInitializedCalled = true;
+        }
+    }
+    
+    /**
+     * This method call doRequestDestroyed() and then tearDownRequest(). 
+     */
+    public final void endRequest()
+    {
+        doRequestDestroyed();
+        tearDownRequest();
+    }
+    
+    public void doRequestDestroyed()
+    {
+        if (request != null)
+        {
+            lastSession = (MockHttpSession) request.getSession(false);
+            webContainer.requestDestroyed(new ServletRequestEvent(servletContext, request));
+        }
     }
     
     protected void tearDownRequest()
@@ -139,97 +203,116 @@ public abstract class AbstractMyFacesRequestTestCase extends AbstractMyFacesTest
         return "/faces";
     }
 
-    protected void processLifecycleExecute() throws Exception
+    public void processLifecycleExecute()
     {
         processLifecycleExecute(facesContext);
     }
+
+    public void processLifecycleRender()
+    {
+        processLifecycleRender(facesContext);
+    }
     
-    protected void processLifecycleExecuteAndRender() throws Exception
+    public void processLifecycleExecuteAndRender()
     {
         processLifecycleExecute();
-        processRender();
+        renderResponse();
     }
 
-    protected void processRestoreViewPhase() throws Exception
+    public void restoreView()
     {
-        processRestoreViewPhase(facesContext);
+        restoreView(facesContext);
     }
     
-    protected void processApplyRequestValuesPhase() throws Exception
+    public void applyRequestValues()
     {
-        processApplyRequestValuesPhase(facesContext);
+        applyRequestValues(facesContext);
     }
 
-    protected void processValidationsPhase() throws Exception
+    public void processValidations()
     {
-        processValidationsPhase(facesContext);
+        processValidations(facesContext);
     }
 
-    protected void processUpdateModelPhase() throws Exception
+    public void updateModelValues()
     {
-        processUpdateModelPhase(facesContext);
+        updateModelValues(facesContext);
 
     }
-    
-    protected void processInvokeApplicationPhase() throws Exception
+
+    public void invokeApplication()
     {
-        processInvokeApplicationPhase(facesContext);
+        invokeApplication(facesContext);
     }
     
-    protected void processRender() throws Exception
+    public void renderResponse()
     {
-        processRender(facesContext);
+        renderResponse(facesContext);
     }
     
-    protected void processRemainingExecutePhases() throws Exception
+    public void processRemainingExecutePhases()
     {
         processRemainingExecutePhases(facesContext);
     }
 
-    protected void processRemainingPhases() throws Exception
+    public void processRemainingPhases()
     {
         processRemainingPhases(facesContext);
     }
     
-    protected String getRenderedContent() throws IOException
+    public void executeBeforeRender()
+    {
+        executeBeforeRender(facesContext);
+    }
+    
+    public void executeViewHandlerRender()
+    {
+        executeViewHandlerRender(facesContext);
+    }
+        
+    public void executeBuildViewCycle()
+    {
+        executeBuildViewCycle(facesContext);
+    }
+    
+    public void executeAfterRender()
+    {
+        executeAfterRender(facesContext);
+    }
+    
+    public String getRenderedContent() throws IOException
     {
         return getRenderedContent(facesContext);
-    }
-    
-    protected void inputText(UIComponent input, String text)
-    {
-        client.inputText((UIInput)input, text);
-    }
-    
-    /**
-     * Simulate a submit, processing the remaining phases and setting up the new request.
-     * It delegates to client.submit, where the necessary data is gathered to be applied
-     * later on client.apply method.
-     * 
-     * @param component
-     * @throws Exception
-     */
-    protected void submit(UIComponent component) throws Exception
-    {
-        client.submit(component);
-        /*
-        processRemainingPhases();
-        client.submit((UICommand)component);
-        String viewId = facesContext.getViewRoot().getViewId();
-        tearDownRequest();
-        setupRequest(viewId);
-        */
     }
     
     protected MockMyFacesClient client = null;
     
     // Servlet objects 
     protected MockHttpServletRequest request = null;
+    protected boolean requestInitializedCalled = false;
     protected MockHttpServletResponse response = null;
-    protected MockHttpSession session = null;
+    protected MockHttpSessionProxy session = null;
+    protected MockHttpSession lastSession = null;
     
     protected Application application = null;
     protected ExternalContext externalContext = null;
     protected FacesContext facesContext = null;
 
+    @Override
+    public MockHttpServletRequest getRequest()
+    {
+        return request;
+    }
+
+    @Override
+    public MockHttpServletResponse getResponse()
+    {
+        return response;
+    }
+
+    @Override
+    public FacesContext getFacesContext()
+    {
+        return facesContext;
+    }
 }

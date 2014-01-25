@@ -163,7 +163,7 @@ public class ResetValuesTestCase extends AbstractMyFacesRequestTestCase
     @Test
     public void testResetValuesActionListenerHandler3() throws Exception
     {
-        setupRequest("/resetValuesActionListener_3.xhtml");
+        startViewRequest("/resetValuesActionListener_3.xhtml");
 
         processLifecycleExecute();
         
@@ -186,10 +186,10 @@ public class ResetValuesTestCase extends AbstractMyFacesRequestTestCase
         client.inputText(field1, "xxx");
         client.inputText(field2, "2");
         
-        submit(submitButton);
+        client.submit(submitButton);
         
         processLifecycleExecute();
-        processRender();
+        renderResponse();
 
         submitButton = facesContext.getViewRoot().findComponent("mainForm:submit:button");
         field1 = (UIInput) facesContext.getViewRoot().findComponent("mainForm:field1");
