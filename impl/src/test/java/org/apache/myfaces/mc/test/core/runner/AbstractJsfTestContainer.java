@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core;
+package org.apache.myfaces.mc.test.core.runner;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -58,7 +57,6 @@ import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -67,11 +65,17 @@ import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
+import org.apache.myfaces.mc.test.core.MockMyFacesViewDeclarationLanguageFactory;
 import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
 import org.apache.myfaces.mc.test.core.annotation.ManagedBeans;
+import org.apache.myfaces.mc.test.core.annotation.TestConfig;
 import org.apache.myfaces.mc.test.core.annotation.PageBean;
+import org.apache.myfaces.mc.test.core.annotation.TestServletListeners;
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
+import org.apache.myfaces.spi.InjectionProvider;
+import org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
 import org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider;
 import org.apache.myfaces.test.el.MockExpressionFactory;
@@ -79,23 +83,17 @@ import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
+import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
+import org.apache.myfaces.webapp.FacesInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.runners.model.TestClass;
 import org.xml.sax.SAXException;
 
 /**
- * <p>Abstract JUnit test case base class, which sets up MyFaces Core environment
- * using mock object for the outer servlet environment.</p>
- * <p>Since jsp engine is not bundled with MyFaces, this configuration is able to 
- * handle facelet pages only.</p>
- * 
- * @author Leonardo Uribe
  *
  */
-public abstract class AbstractMyFacesTestCase
+public class AbstractJsfTestContainer
 {
     private static Class<?> PHASE_EXECUTOR_CLASS = null;
     private static Class<?> PHASE_MANAGER_CLASS = null;
@@ -130,8 +128,9 @@ public abstract class AbstractMyFacesTestCase
      *
      * @param name Name of this test case
      */    
-    public AbstractMyFacesTestCase()
+    public AbstractJsfTestContainer(TestClass testClass)
     {
+        this.testClass = testClass;
     }
 
     // ---------------------------------------------------- Overall Test Methods
@@ -139,9 +138,10 @@ public abstract class AbstractMyFacesTestCase
     /**
      * <p>Set up instance variables required by this test case.</p>
      */
-    @Before
-    public void setUp() throws Exception
+    //@Before
+    public void setUp(Object testInstance)
     {
+        this.testInstance = testInstance;
         // Set up a new thread context class loader
         threadContextClassLoader = Thread.currentThread()
                 .getContextClassLoader();
@@ -150,7 +150,7 @@ public abstract class AbstractMyFacesTestCase
                         new URLClassLoader(new URL[0], this.getClass()
                                 .getClassLoader()));
         
-        jsfConfiguration = sharedConfiguration.get(this.getClass().getName());
+        jsfConfiguration = sharedConfiguration.get(this.testClass.getName());
         if (jsfConfiguration == null)
         {
             jsfConfiguration = new SharedFacesConfiguration();
@@ -168,7 +168,7 @@ public abstract class AbstractMyFacesTestCase
         
         setUpFacesServlet();
         
-        sharedConfiguration.put(this.getClass().getName(), jsfConfiguration);
+        sharedConfiguration.put(this.testClass.getName(), jsfConfiguration);
     }
     
     /**
@@ -181,7 +181,7 @@ public abstract class AbstractMyFacesTestCase
      * 
      * @throws Exception
      */
-    protected void setUpServletObjects() throws Exception
+    protected void setUpServletObjects()
     {
         servletContext = new MockServletContext();
         servletConfig = new MockServletConfig(servletContext);
@@ -203,16 +203,23 @@ public abstract class AbstractMyFacesTestCase
      * 
      * @throws Exception
      */
-    protected void setUpWebConfigParams() throws Exception
+    protected void setUpWebConfigParams()
     {
+        // Required parameters
         servletContext.addInitParameter("org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE", "true");
         servletContext.addInitParameter("javax.faces.PROJECT_STAGE", "UnitTest");
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,"-1");
-        servletContext.addInitParameter("org.apache.myfaces.spi.InjectionProvider", 
-            NoInjectionAnnotationInjectionProvider.class.getName());
         servletContext.addInitParameter("org.apache.myfaces.config.annotation.LifecycleProvider",
             NoInjectionAnnotationLifecycleProvider.class.getName());
+        
+        TestConfig testConfig = testClass.getJavaClass().getAnnotation(TestConfig.class);
+        if (testConfig != null && testConfig.oamAnnotationScanPackages() != null &&
+            testConfig.oamAnnotationScanPackages().length() > 0)
+        {
+            servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES",
+                "org.apache.myfaces.application.contracts");
+        }
     }
     
     /**
@@ -253,6 +260,12 @@ public abstract class AbstractMyFacesTestCase
      */
     protected String getWebappResourcePath()
     {
+        TestConfig testConfig = testClass.getJavaClass().getAnnotation(TestConfig.class);
+        if (testConfig != null && testConfig.webappResourcePath() != null &&
+            !"testClassResourcePackage".equals(testConfig.webappResourcePath()))
+        {
+            return testConfig.webappResourcePath();
+        }
         return this.getClass().getName().substring(0,
                 this.getClass().getName().lastIndexOf('.')).replace('.', '/')
                 + "/";
@@ -266,6 +279,13 @@ public abstract class AbstractMyFacesTestCase
      */
     protected ExpressionFactory createExpressionFactory()
     {
+        TestConfig testConfig = testClass.getJavaClass().getAnnotation(TestConfig.class);
+        if (testConfig != null && testConfig.expressionFactory() != null &&
+            testConfig.expressionFactory().length() > 0)
+        {
+            return (ExpressionFactory) ClassUtils.newInstance(
+                testConfig.expressionFactory(), ExpressionFactory.class);
+        }
         return new MockExpressionFactory();
     }
     
@@ -284,8 +304,26 @@ public abstract class AbstractMyFacesTestCase
      * 
      * @throws Exception
      */
-    protected void setUpServletListeners() throws Exception
+    protected void setUpServletListeners()
     {
+        TestServletListeners testServletListeners = testClass.getJavaClass().getAnnotation(TestServletListeners.class);
+        if (testServletListeners != null && testServletListeners.value() != null)
+        {
+            for (String listener : testServletListeners.value())
+            {
+                try
+                {
+                    webContainer.subscribeListener(listener);
+                }
+                catch (Exception ex)
+                {
+                    throw new FacesException(ex);
+                }
+            }
+        }
+
+        //owbListener = new WebBeansConfigurationListener();
+        //webContainer.subscribeListener(owbListener);
         setUpMyFaces();
     }
     
@@ -295,7 +333,7 @@ public abstract class AbstractMyFacesTestCase
      */
     protected FacesConfigurationProvider createFacesConfigurationProvider()
     {
-        return new MyFacesMockFacesConfigurationProvider(this); 
+        return new MyFacesMockFacesConfigurationProvider(); 
     }
     
     protected AbstractFacesInitializer createFacesInitializer()
@@ -303,7 +341,7 @@ public abstract class AbstractMyFacesTestCase
         return new JUnitFacesInitializer(this);
     }
     
-    protected void setUpMyFaces() throws Exception
+    protected void setUpMyFaces()
     {
         if (facesConfigurationProvider == null)
         {
@@ -313,7 +351,7 @@ public abstract class AbstractMyFacesTestCase
                 DefaultFacesConfigurationProviderFactory.FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, 
                 facesConfigurationProvider);
         listener = new StartupServletContextListener();
-        listener.setFacesInitializer(createFacesInitializer());
+        listener.setFacesInitializer(getFacesInitializer());
         webContainer.subscribeListener(listener);
         //listener.contextInitialized(new ServletContextEvent(servletContext));
     }
@@ -327,31 +365,31 @@ public abstract class AbstractMyFacesTestCase
         //listener.contextDestroyed(new ServletContextEvent(servletContext));
     }
 
-    protected void setUpFacesServlet() throws Exception
+    protected void setUpFacesServlet()
     {
         lifecycleFactory = (LifecycleFactory)FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         facesContextFactory = (FacesContextFactory)FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
         lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
     }
     
-    protected void tearDownFacesServlet() throws Exception
+    protected void tearDownFacesServlet()
     {
         lifecycleFactory = null;
         facesContextFactory = null;
     }
     
-    protected void tearDownServlets() throws Exception
+    protected void tearDownServlets()
     {
         tearDownFacesServlet();
     }
     
-    protected void tearDownServletListeners() throws Exception
+    protected void tearDownServletListeners()
     {
         tearDownMyFaces();
+        //owbListener = null;
     }
-
-    @After
-    public void tearDown() throws Exception
+    //@After
+    public void tearDown()
     {
         tearDownServlets();
 
@@ -370,12 +408,17 @@ public abstract class AbstractMyFacesTestCase
         threadContextClassLoader = null;
     }
     
-    @AfterClass
+    //@AfterClass
     public static void tearDownClass()
     {
         standardFacesConfig = null;
         sharedConfiguration.clear();
     }
+    
+    public static void tearDownClass(Class<?> targetTestClass)
+    {
+        sharedConfiguration.remove(targetTestClass);
+    }    
     
     private String getLifecycleId()
     {
@@ -676,6 +719,11 @@ public abstract class AbstractMyFacesTestCase
      */
     protected boolean isScanAnnotations()
     {
+        TestConfig testConfig = testClass.getJavaClass().getAnnotation(TestConfig.class);
+        if (testConfig != null)
+        {
+            return testConfig.scanAnnotations();
+        }
         return false;
     }
     
@@ -1142,10 +1190,25 @@ public abstract class AbstractMyFacesTestCase
         }
     }
     
-    protected String getRenderedContent(FacesContext facesContext) throws IOException
+    public String getRenderedContent(FacesContext facesContext) throws IOException
     {
         MockPrintWriter writer1 = (MockPrintWriter) (((HttpServletResponse) facesContext.getExternalContext().getResponse()).getWriter());
         return String.valueOf(writer1.content());
+    }
+
+    public MockServletConfig getServletConfig()
+    {
+        return servletConfig;
+    }
+
+    public MockServletContext getServletContext()
+    {
+        return servletContext;
+    }
+
+    public InjectionProvider getInjectionProvider()
+    {
+        return injectionProvider;
     }
 
     // ------------------------------------------------------ Instance Variables
@@ -1162,6 +1225,7 @@ public abstract class AbstractMyFacesTestCase
     // MyFaces specific objects created by the servlet environment
     protected StartupServletContextListener listener = null;
     protected FacesConfigurationProvider facesConfigurationProvider = null;
+    private FacesInitializer facesInitializer = null;
     
     protected FacesContextFactory facesContextFactory = null;
     protected LifecycleFactory lifecycleFactory = null;
@@ -1171,6 +1235,32 @@ public abstract class AbstractMyFacesTestCase
     private static Map<String, SharedFacesConfiguration> sharedConfiguration =
         new ConcurrentHashMap<String, SharedFacesConfiguration>();
     private SharedFacesConfiguration jsfConfiguration;
+    protected TestClass testClass;
+    protected Object testInstance;
+
+    //protected WebBeansConfigurationListener owbListener;
+    protected InjectionProvider injectionProvider;
+
+    /**
+     * @return the facesInitializer
+     */
+    protected FacesInitializer getFacesInitializer()
+    {
+        if (facesInitializer == null)
+        {
+            facesInitializer = createFacesInitializer();
+        }
+        return facesInitializer;
+    }
+
+    /**
+     * @param facesInitializer the facesInitializer to set
+     */
+    protected void setFacesInitializer(FacesInitializer facesInitializer)
+    {
+        this.facesInitializer = facesInitializer;
+    }
+    
 
     // ------------------------------------------------------ Subclasses
 
@@ -1183,11 +1273,9 @@ public abstract class AbstractMyFacesTestCase
      */
     protected class MyFacesMockFacesConfigurationProvider extends DefaultFacesConfigurationProvider
     {
-        private AbstractMyFacesTestCase testCase;
         
-        public MyFacesMockFacesConfigurationProvider(AbstractMyFacesTestCase testCase)
+        public MyFacesMockFacesConfigurationProvider()
         {
-            this.testCase = testCase;
         }
         
         @Override
@@ -1217,7 +1305,7 @@ public abstract class AbstractMyFacesTestCase
                     facesConfig = super.getAnnotationsFacesConfig(ectx, metadataComplete); 
                 }
 
-                ManagedBeans annoManagedBeans = testCase.getClass().getAnnotation(ManagedBeans.class);
+                ManagedBeans annoManagedBeans = testClass.getJavaClass().getAnnotation(ManagedBeans.class);
                 if (annoManagedBeans != null)
                 {
                     if (facesConfig == null)
@@ -1237,7 +1325,7 @@ public abstract class AbstractMyFacesTestCase
                     }
                 }
 
-                PageBean annoPageBean = testCase.getClass().getAnnotation(PageBean.class);
+                PageBean annoPageBean = testClass.getJavaClass().getAnnotation(PageBean.class);
                 if (annoPageBean != null)
                 {
                     if (facesConfig == null)
@@ -1310,10 +1398,10 @@ public abstract class AbstractMyFacesTestCase
         {
             List<FacesConfig> appConfigResources = super.getContextSpecifiedFacesConfig(ectx);
             
-            DeclareFacesConfig annoFacesConfig = testCase.getClass().getAnnotation(DeclareFacesConfig.class);
+            DeclareFacesConfig annoFacesConfig = testClass.getJavaClass().getAnnotation(DeclareFacesConfig.class);
             if (annoFacesConfig != null)
             {
-                Logger log = Logger.getLogger(testCase.getClass().getName());
+                Logger log = Logger.getLogger(testClass.getName());
                 try
                 {
                     for (String systemId : annoFacesConfig.value())
@@ -1364,9 +1452,9 @@ public abstract class AbstractMyFacesTestCase
     
     protected class JUnitFacesInitializer extends AbstractFacesInitializer
     {
-        private final AbstractMyFacesTestCase testCase;
+        private final AbstractJsfTestContainer testCase;
         
-        public JUnitFacesInitializer(AbstractMyFacesTestCase testCase)
+        public JUnitFacesInitializer(AbstractJsfTestContainer testCase)
         {
             this.testCase = testCase;
         }
@@ -1375,12 +1463,26 @@ public abstract class AbstractMyFacesTestCase
         protected void initContainerIntegration(ServletContext servletContext,
                 ExternalContext externalContext)
         {
+            if (servletContext.getInitParameter("org.apache.myfaces.spi.InjectionProvider") == null)
+            {
+                if (ExternalSpecifications.isCDIAvailable(externalContext))
+                {
+                    ((MockServletContext)servletContext).addInitParameter("org.apache.myfaces.spi.InjectionProvider", 
+                        CDIAnnotationDelegateInjectionProvider.class.getName());
+                }
+                else
+                {
+                    ((MockServletContext)servletContext).addInitParameter("org.apache.myfaces.spi.InjectionProvider", 
+                        NoInjectionAnnotationInjectionProvider.class.getName());
+                }
+            }
+            
             ExpressionFactory expressionFactory = createExpressionFactory();
 
             RuntimeConfig runtimeConfig = buildConfiguration(servletContext, externalContext, expressionFactory);
         }
 
-        public AbstractMyFacesTestCase getTestCase()
+        public AbstractJsfTestContainer getTestCase()
         {
             return testCase;
         }

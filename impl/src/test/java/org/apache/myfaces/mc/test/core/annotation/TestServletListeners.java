@@ -18,21 +18,22 @@
  */
 package org.apache.myfaces.mc.test.core.annotation;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
- * @author Leonardo Uribe
  *
  */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ManagedBeans
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(value =
 {
-    PageBean[] value() default {};
+    ElementType.TYPE
+})
+@Inherited
+public @interface TestServletListeners
+{
+    String[] value() default {};
 }

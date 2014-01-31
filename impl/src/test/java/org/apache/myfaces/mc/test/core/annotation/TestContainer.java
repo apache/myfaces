@@ -25,14 +25,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
- * @author Leonardo Uribe
  *
  */
+@Target(value={ElementType.FIELD})
+@Retention(value=RetentionPolicy.RUNTIME)
 @Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ManagedBeans
+public @interface TestContainer
 {
-    PageBean[] value() default {};
+    
 }
