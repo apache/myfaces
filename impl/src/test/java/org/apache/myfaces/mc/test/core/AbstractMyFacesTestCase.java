@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.mc.test.core;
 
+import org.apache.myfaces.mc.test.core.mock.MockMyFacesViewDeclarationLanguageFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;

@@ -16,31 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core;
 
-import javax.faces.view.ViewDeclarationLanguage;
+package org.apache.myfaces.mc.test.core.mock;
 
-import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
+import javax.faces.context.FacesContext;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.apache.myfaces.test.mock.MockHttpServletResponse;
 
-public class MockDefaultViewDeclarationLanguageStrategy 
-    implements ViewDeclarationLanguageStrategy
+/**
+ *
+ */
+public interface ServletMockContainer
 {
     
-    private ViewDeclarationLanguage _language;
+    public MockHttpServletRequest getRequest();
+    
+    public MockHttpServletResponse getResponse();
+    
+    public FacesContext getFacesContext();
 
-    public MockDefaultViewDeclarationLanguageStrategy()
-    {
-        super();
-        _language = new MockDefaultViewDeclarationLanguage();
-    }
+    public void processRemainingPhases();
 
-    public ViewDeclarationLanguage getViewDeclarationLanguage()
-    {
-        return _language;
-    }
+    public void endRequest();
 
-    public boolean handles(String viewId)
-    {
-        return true;
-    }
+    public void startViewRequest(String viewId);
 }

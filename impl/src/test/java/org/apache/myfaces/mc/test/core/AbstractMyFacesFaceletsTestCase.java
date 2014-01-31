@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.mc.test.core;
 
+import org.apache.myfaces.mc.test.core.mock.MockMyFacesFaceletViewDeclarationLanguage;
 import javax.faces.FactoryFinder;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;

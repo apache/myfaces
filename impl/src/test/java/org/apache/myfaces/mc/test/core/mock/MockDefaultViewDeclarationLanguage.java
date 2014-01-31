@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core;
+package org.apache.myfaces.mc.test.core.mock;
 
 import java.beans.BeanInfo;
 import java.io.IOException;

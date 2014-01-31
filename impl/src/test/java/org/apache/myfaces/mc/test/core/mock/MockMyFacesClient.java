@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core;
+package org.apache.myfaces.mc.test.core.mock;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +35,7 @@ import javax.faces.render.ResponseStateManager;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;

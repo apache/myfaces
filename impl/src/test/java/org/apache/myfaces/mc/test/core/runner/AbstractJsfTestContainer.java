@@ -65,7 +65,7 @@ import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.digester.elements.FactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
-import org.apache.myfaces.mc.test.core.MockMyFacesViewDeclarationLanguageFactory;
+import org.apache.myfaces.mc.test.core.mock.MockMyFacesViewDeclarationLanguageFactory;
 import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
 import org.apache.myfaces.mc.test.core.annotation.ManagedBeans;
 import org.apache.myfaces.mc.test.core.annotation.TestConfig;
