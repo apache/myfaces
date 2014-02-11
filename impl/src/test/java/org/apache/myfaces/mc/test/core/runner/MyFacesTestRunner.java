@@ -78,6 +78,21 @@ public class MyFacesTestRunner extends BlockJUnit4ClassRunner
         {
             MyFacesContainer currentTestContext = new MyFacesContainer(testClass);
 
+            //Inject MyFacesContainer using @TestContainer
+            List<FrameworkField> fields = testClass.getAnnotatedFields(TestContainer.class);
+            if (fields != null && !fields.isEmpty())
+            {
+                for (FrameworkField field : fields)
+                {
+                    Field f = field.getField();
+                    if (f.getType().equals(MyFacesContainer.class))
+                    {
+                        f.setAccessible(true);
+                        f.set(originalTarget, currentTestContext);
+                    }
+                }
+            }
+            
             currentTestContext.setUp(this.originalTarget);
             
             FacesContext facesContext = null;
@@ -96,25 +111,6 @@ public class MyFacesTestRunner extends BlockJUnit4ClassRunner
                 if (injectionProvider != null)
                 {
                     testCaseCreationMetadata = injectionProvider.inject(originalTarget);
-                }
-
-                //Inject MyFacesContainer using @TestContainer
-                List<FrameworkField> fields = testClass.getAnnotatedFields(TestContainer.class);
-                if (fields != null && !fields.isEmpty())
-                {
-                    for (FrameworkField field : fields)
-                    {
-                        Field f = field.getField();
-                        if (f.getType().equals(MyFacesContainer.class))
-                        {
-                            f.setAccessible(true);
-                            f.set(originalTarget, currentTestContext);
-                        }
-                    }
-                }
-                
-                if (injectionProvider != null)
-                {
                     injectionProvider.postConstruct(originalTarget, testCaseCreationMetadata);
                 }
             }

@@ -70,6 +70,7 @@ import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
 import org.apache.myfaces.mc.test.core.annotation.ManagedBeans;
 import org.apache.myfaces.mc.test.core.annotation.TestConfig;
 import org.apache.myfaces.mc.test.core.annotation.PageBean;
+import org.apache.myfaces.mc.test.core.annotation.SetupWebConfigParams;
 import org.apache.myfaces.mc.test.core.annotation.TestServletListeners;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
@@ -87,6 +88,7 @@ import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 import org.apache.myfaces.webapp.FacesInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
+import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 import org.xml.sax.SAXException;
 
@@ -219,6 +221,22 @@ public class AbstractJsfTestContainer
         {
             servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES",
                 "org.apache.myfaces.application.contracts");
+        }
+        
+        List<FrameworkMethod> setupWebConfigParamMethods = testClass.getAnnotatedMethods(SetupWebConfigParams.class);
+        if (setupWebConfigParamMethods != null && !setupWebConfigParamMethods.isEmpty())
+        {
+            for (FrameworkMethod fm : setupWebConfigParamMethods)
+            {
+                try
+                {
+                    fm.invokeExplosively(testInstance);
+                }
+                catch (Throwable ex)
+                {
+                    throw new FacesException(ex);
+                }
+            }
         }
     }
     
