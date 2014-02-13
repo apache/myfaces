@@ -157,4 +157,28 @@ public class SectionUniqueIdCounterTest extends AbstractJsfTestCase
         Assert.assertEquals(counterOrig.generateUniqueId(), counter.generateUniqueId());
     }
     
+    @Test
+    public void testCounterExpansion()
+    {
+        SectionUniqueIdCounter counter = new SectionUniqueIdCounter();
+        
+        Assert.assertEquals("1", counter.generateUniqueId());
+        Assert.assertEquals("2", counter.generateUniqueId());
+        Assert.assertEquals("3_X", counter.startUniqueIdSection("X"));
+        Assert.assertEquals("3_X_1", counter.generateUniqueId());
+        Assert.assertEquals("3_X_2",counter.generateUniqueId());
+        Assert.assertEquals("3_X_3",counter.startUniqueIdSection());
+        Assert.assertEquals("3_X_3_1",counter.generateUniqueId());
+        Assert.assertEquals("3_X_3_2",counter.generateUniqueId());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("3_X_4",counter.generateUniqueId());
+        counter.endUniqueIdSection("X");
+        Assert.assertEquals("3_Y", counter.startUniqueIdSection("Y"));
+        Assert.assertEquals("3_Y_1", counter.generateUniqueId());
+        counter.endUniqueIdSection("Y");
+        Assert.assertEquals("3", counter.generateUniqueId());
+        Assert.assertEquals("4", counter.generateUniqueId());
+    }
+    
+    
 }
