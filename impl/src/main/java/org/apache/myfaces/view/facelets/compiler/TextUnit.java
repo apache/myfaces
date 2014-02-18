@@ -167,18 +167,20 @@ final class TextUnit extends CompilationUnit
                                 ELText[] splitText = ELText.parseAsArray(s);
                                 if (splitText.length > 1)
                                 {
-                                    for (ELText selText : splitText)
+                                    Instruction[] array = new Instruction[splitText.length];
+                                    for (int i = 0; i < splitText.length; i++)
                                     {
+                                        ELText selText = splitText[i];
                                         if (selText.isLiteral())
                                         {
-                                            this.instructionBuffer.add(
-                                                new LiteralNonExcapedTextInstruction(selText.toString()));
+                                            array[i] = new LiteralNonExcapedTextInstruction(selText.toString());
                                         }
                                         else
                                         {
-                                            this.instructionBuffer.add(new TextInstruction(this.alias, selText ));
+                                            array[i] = new TextInstruction(this.alias, selText );
                                         }
                                     }
+                                    this.instructionBuffer.add(new CompositeTextInstruction(array));
                                 }
                                 else
                                 {
@@ -217,18 +219,20 @@ final class TextUnit extends CompilationUnit
                             ELText[] splitText = ELText.parseAsArray(s);
                             if (splitText.length > 1)
                             {
-                                for (ELText selText : splitText)
+                                Instruction[] array = new Instruction[splitText.length];
+                                for (int i = 0; i < splitText.length; i++)
                                 {
+                                    ELText selText = splitText[i];
                                     if (selText.isLiteral())
                                     {
-                                        this.instructionBuffer.add(
-                                            new LiteralNonExcapedTextInstruction(selText.toString()));
+                                        array[i] = new LiteralNonExcapedTextInstruction(selText.toString());
                                     }
                                     else
                                     {
-                                        this.instructionBuffer.add(new TextInstruction(this.alias, selText ));
+                                        array[i] = new TextInstruction(this.alias, selText );
                                     }
                                 }
+                                this.instructionBuffer.add(new CompositeTextInstruction(array));
                             }
                             else
                             {
