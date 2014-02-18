@@ -143,10 +143,34 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
             i.write(facesContext);
         }
         
-        Assert.assertEquals(fw.toString(), " ");
+        Assert.assertEquals(fw.toString(), "\n");
 
     }
 
+    @Test
+    public void testSimpleCompress4_1() throws Exception {
+        
+        List<Instruction> instructions = new ArrayList<Instruction>();
+        
+        instructions.add(new LiteralTextInstruction("  \r\n     "));
+
+        int size = instructions.size();
+        size = TextUnit.compressSpaces(instructions, size);
+
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+
+        for (Instruction i : instructions)
+        {
+            i.write(facesContext);
+        }
+        
+        Assert.assertEquals(fw.toString(), "\r\n");
+
+    }    
+    
     @Test
     public void testSimpleCompress5() throws Exception {
         
@@ -170,6 +194,39 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
         Assert.assertEquals(fw.toString(), "&amp;#160;\n");
 
     }
+    
+    @Test
+    public void testSimpleCompress6() throws Exception {
+        
+        List<Instruction> instructions = new ArrayList<Instruction>();
+
+        instructions.add(new LiteralTextInstruction("    \r\n"));
+        instructions.add(new StartElementInstruction("script"));
+        instructions.add(new LiteralAttributeInstruction("type", "text/javascript"));
+        instructions.add(new LiteralTextInstruction("\r\n    //"));
+        instructions.add(new LiteralXMLInstruction("<![CDATA[ "));
+        instructions.add(new LiteralTextInstruction("  \r\n     someJavascript();\r\n     //"));
+        instructions.add(new LiteralXMLInstruction("]]>"));
+        instructions.add(new LiteralTextInstruction("\r\n"));
+        instructions.add(new EndElementInstruction("script"));
+        instructions.add(new LiteralTextInstruction("        "));
+        
+        int size = instructions.size();
+        size = TextUnit.compressSpaces(instructions, size);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+
+        for (Instruction i : instructions)
+        {
+            i.write(facesContext);
+        }        
+        
+        Assert.assertEquals(fw.toString(), "\r\n<script type=\"text/javascript\">\r\n//<![CDATA[   "+
+            "\r\n     someJavascript();\r\n     //]]>\r\n</script> ");
+    }
 
     @Test
     public void testCompressOnELExpressions() throws Exception
@@ -180,6 +237,7 @@ public class CompressSpacesTextUnitTestCase extends FaceletTestCase
         String text = tryCompress("  #{bean.name}  ");
         Assert.assertEquals(tryCompress("  #{bean.name}  "), " #{bean.name} ");
         Assert.assertEquals(tryCompress("\n #{bean.name}\n "), "\n#{bean.name}\n");
+        Assert.assertEquals(tryCompress(" \r\n #{bean.name} \r\n "), "\r\n#{bean.name} ");
     }
     
     public String tryCompress(String value)

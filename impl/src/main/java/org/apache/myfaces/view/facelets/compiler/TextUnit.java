@@ -406,7 +406,70 @@ final class TextUnit extends CompilationUnit
     
     final static String compressELText(String text)
     {
-        int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+        //int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
+        int firstCharLocation = -1;
+        int leftChar = 0; // 0=first char on left 1=\n 2=\r 3=\r\n
+        int lenght = text.length();
+        String leftText = null;
+        for (int j = 0; j < lenght; j++)
+        {
+            char c = text.charAt(j);
+            if (leftChar == 0)
+            {
+                if (c == '\r')
+                {
+                    leftChar = 2;
+                    if (j+1 < lenght)
+                    {
+                        if (text.charAt(j+1) == '\n')
+                        {
+                            leftChar = 3;
+                        }
+                    }
+                }
+                if (c == '\n')
+                {
+                    leftChar = 1;
+                }
+            }
+            if (Character.isWhitespace(c))
+            {
+                continue;
+            }
+            else
+            {
+                firstCharLocation = j;
+                break;
+            }
+        }
+        if (firstCharLocation == -1)
+        {
+            firstCharLocation = lenght;
+        }
+        // Define the character on the left
+        if (firstCharLocation > 0)
+        {
+            switch (leftChar)
+            {
+                case 1:
+                    leftText = "\n";
+                    break;
+                case 2:
+                    leftText = "\r";
+                    break;
+                case 3:
+                    leftText = "\r\n";
+                    break;
+                default:
+                    leftText = (lenght > 1) ? text.substring(0,1) : text;
+                    break;
+            }                
+        }
+        else
+        {
+            leftText = "";
+        }
+                
         int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
         if (firstCharLocation == 0 && lastCharLocation == text.length()-1)
         {
@@ -424,122 +487,136 @@ final class TextUnit extends CompilationUnit
             }
             else
             {
-                return text.substring(0,1)+text.substring(firstCharLocation, lastCharLocation+1);
+                return leftText+text.substring(firstCharLocation, lastCharLocation+1);
             }
         }
     }
     
-    /*
-    final static ELText compressELText(ELText parsedText, String text)
-    {
-        int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
-        int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
-        if (firstCharLocation == 0 && lastCharLocation == text.length()-1)
-        {
-            return parsedText;
-        }
-        else
-        {
-            if (lastCharLocation+1 < text.length())
-            {
-                lastCharLocation = lastCharLocation+1;
-            }
-            if (firstCharLocation == 0)
-            {
-                return ELText.parse(text.substring(firstCharLocation, lastCharLocation+1));
-            }
-            else
-            {
-                return ELText.parse(text.substring(0,1)+text.substring(firstCharLocation, lastCharLocation+1));
-            }
-        }
-    }
-    */
-    
+    /**
+     * Compress spaces around a list of instructions, following these rules:
+     * 
+     * - The first instruction that is on the left usually make contact with a component.
+     * 
+     * @param instructionBuffer
+     * @param size
+     * @return 
+     */
     final static int compressSpaces(List<Instruction> instructionBuffer, int size)
     {
         boolean addleftspace = true;
         boolean addrightspace = false;
+        boolean skipnext = false;
         for (int i = 0; i < size; i++)
         {
+            String text = null;
+            String newText = null;
+            int instructionType = 0;
+            if (skipnext)
+            {
+                skipnext = false;
+                continue;
+            }
             Instruction ins = instructionBuffer.get(i);
             if (i+1 == size)
             {
                 addrightspace = true;
             }
-            //boolean isNextStartExpression = i+1<size ? 
-            //        (this.instructions[i+1] instanceof StartElementInstruction) : false;
+            
             if (ins instanceof LiteralTextInstruction)
             {
-                String text = ((LiteralTextInstruction)ins).getText();
-                int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
-                if (firstCharLocation == text.length() && text.length() > 1)
-                {
-                    // All the instruction is space, replace with an instruction 
-                    // with only one space
-                    if (addleftspace || addrightspace)
-                    {
-                        instructionBuffer.set(i, new LiteralTextInstruction(text.substring(0,1)));
-                    }
-                    else
-                    {
-                        instructionBuffer.remove(i);
-                        i--;
-                        size--;
-                    }
-                }
-                else if (firstCharLocation > 0)
-                {
-                    int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
-                    // If right space, increment in 1
-                    if (lastCharLocation+1 < text.length())
-                    {
-                        lastCharLocation = lastCharLocation+1;
-                    }
-                    instructionBuffer.set(i, new LiteralTextInstruction(
-                            text.substring(0,1)+text.substring(firstCharLocation, lastCharLocation+1)));
-                }
-                else
-                {
-                    int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
-                    // If right space, increment in 1
-                    if (lastCharLocation+1 < text.length())
-                    {
-                        lastCharLocation = lastCharLocation+1;
-                    }
-                    instructionBuffer.set(i, new LiteralTextInstruction(
-                            text.substring(firstCharLocation, lastCharLocation+1)));
-                }
+                text = ((LiteralTextInstruction)ins).getText();
+                instructionType = 1;
             }
             else if (ins instanceof LiteralNonExcapedTextInstruction)
             {
-                String text = ((LiteralTextInstruction)ins).getText();
-                int firstCharLocation = getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
-                if (firstCharLocation == text.length())
+                text = ((LiteralTextInstruction)ins).getText();
+                instructionType = 2;
+            }
+            else if (ins instanceof LiteralXMLInstruction)
+            {
+                skipnext = true;
+                continue;
+            }
+            
+            if (text != null && text.length() > 0)
+            {
+                int firstCharLocation = -1;
+                int leftChar = 0; // 0=first char on left 1=\n 2=\r 3=\r\n
+                int lenght = text.length();
+                String leftText = null;
+                for (int j = 0; j < lenght; j++)
+                {
+                    char c = text.charAt(j);
+                    if (leftChar == 0)
+                    {
+                        if (c == '\r')
+                        {
+                            leftChar = 2;
+                            if (j+1 < lenght)
+                            {
+                                if (text.charAt(j+1) == '\n')
+                                {
+                                    leftChar = 3;
+                                }
+                            }
+                        }
+                        if (c == '\n')
+                        {
+                            leftChar = 1;
+                        }
+                    }
+                    if (Character.isWhitespace(c))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        firstCharLocation = j;
+                        break;
+                    }
+                }
+                if (firstCharLocation == -1)
+                {
+                    firstCharLocation = lenght;
+                }
+                // Define the character on the left
+                if (firstCharLocation > 0)
+                {
+                    switch (leftChar)
+                    {
+                        case 1:
+                            leftText = "\n";
+                            break;
+                        case 2:
+                            leftText = "\r";
+                            break;
+                        case 3:
+                            leftText = "\r\n";
+                            break;
+                        default:
+                            leftText = (lenght > 1) ? text.substring(0,1) : text;
+                            break;
+                    }                
+                }
+                else
+                {
+                    leftText = "";
+                }
+                
+                if (firstCharLocation == lenght && lenght > 1)
                 {
                     // All the instruction is space, replace with an instruction 
                     // with only one space
                     if (addleftspace || addrightspace)
                     {
-                        instructionBuffer.set(i, new LiteralNonExcapedTextInstruction(text.substring(0,1)));
+                        newText = leftText;
                     }
                     else
                     {
                         instructionBuffer.remove(i);
                         i--;
                         size--;
-                    }                    
-                }
-                else if (firstCharLocation > 1)
-                {
-                    int lastCharLocation = getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(text);
-                    // If right space, increment in 1
-                    if (lastCharLocation+1 < text.length())
-                    {
-                        lastCharLocation = lastCharLocation+1;
                     }
-                    instructionBuffer.set(i, new LiteralNonExcapedTextInstruction(
-                            text.substring(0,1)+text.substring(firstCharLocation, lastCharLocation+1)));
                 }
                 else
                 {
@@ -549,15 +626,34 @@ final class TextUnit extends CompilationUnit
                     {
                         lastCharLocation = lastCharLocation+1;
                     }
-                    instructionBuffer.set(i, new LiteralNonExcapedTextInstruction(
-                            text.substring(firstCharLocation, lastCharLocation+1)));
+                    if (firstCharLocation > 0)
+                    {
+                        newText = leftText+
+                            text.substring(firstCharLocation, lastCharLocation+1);
+                    }
+                    else
+                    {
+                        newText = text.substring(firstCharLocation, lastCharLocation+1);
+                    }
+                }
+                
+                if (newText != null)
+                {
+                    if (instructionType == 1)
+                    {
+                        instructionBuffer.set(i, new LiteralTextInstruction(newText));
+                    }
+                    else if (instructionType == 2)
+                    {
+                        instructionBuffer.set(i, new LiteralNonExcapedTextInstruction(newText));
+                    }
                 }
             }
             addleftspace = false;
         }
         return size;
     }
-    
+
     private static int getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(String text)
     {
         for (int i = 0; i < text.length(); i++)
