@@ -94,6 +94,8 @@ public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
     @Test
     public void testXHTMLProcessing1() throws Exception
     {
+        facesContext.getExternalContext().getRequestMap().put("rquote", "\"");
+        
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testXHTMLProcessing1.xhtml");
 
@@ -115,6 +117,7 @@ public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
         Assert.assertTrue("Response contains cdata section", resp.contains("cdata not consumed"));
         Assert.assertTrue("Response does not escape characters", resp.contains("In this mode, if you put a double quote, it will be replaced by &quot; : &quot"));
         Assert.assertTrue("Response contains comments", resp.contains("<!--"));
+        Assert.assertTrue("Response should escape EL and markup", resp.contains("Check EL Escaping &quot; : &quot;"));
         
     }
 }

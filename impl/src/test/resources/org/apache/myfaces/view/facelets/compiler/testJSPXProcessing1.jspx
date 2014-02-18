@@ -30,5 +30,6 @@
 <h:panelGrid columns="1">
    In this mode, if you put a double quote, it will NOT be replaced by &amp;quot; : "
 </h:panelGrid>
+Check EL Escaping #{requestScope.rquote} : "
 </body>
 </html>

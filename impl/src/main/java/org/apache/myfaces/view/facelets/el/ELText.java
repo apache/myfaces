@@ -555,6 +555,91 @@ public class ELText
             return new ELTextComposite(ta);
         }
     }
+
+    public static ELText[] parseAsArray(String in) throws ELException
+    {
+        return parseAsArray(null, null, in);
+    }
+    
+    public static ELText[] parseAsArray(ExpressionFactory fact, ELContext ctx, String in) throws ELException
+    {
+        char[] ca = in.toCharArray();
+        int i = 0;
+        char c = 0;
+        int len = ca.length;
+        int end = len - 1;
+        boolean esc = false;
+        int vlen = 0;
+
+        StringBuffer buff = new StringBuffer(128);
+        List<ELText> text = new ArrayList<ELText>();
+        ELText t = null;
+        ValueExpression ve = null;
+
+        while (i < len)
+        {
+            c = ca[i];
+            if ('\\' == c)
+            {
+                esc = !esc;
+                if (esc && i < end && (ca[i + 1] == '$' || ca[i + 1] == '#'))
+                {
+                    i++;
+                    continue;
+                }
+            }
+            else if (!esc && ('$' == c || '#' == c))
+            {
+                if (i < end)
+                {
+                    if ('{' == ca[i + 1])
+                    {
+                        if (buff.length() > 0)
+                        {
+                            text.add(new ELText(buff.toString()));
+                            buff.setLength(0);
+                        }
+                        vlen = findVarLength(ca, i);
+                        if (ctx != null && fact != null)
+                        {
+                            ve = fact.createValueExpression(ctx, new String(ca, i, vlen), String.class);
+                            t = new ELCacheableTextVariable(ve);
+                        }
+                        else
+                        {
+                            t = new ELCacheableTextVariable(new LiteralValueExpression(new String(ca, i, vlen)));
+                        }
+                        text.add(t);
+                        i += vlen;
+                        continue;
+                    }
+                }
+            }
+            esc = false;
+            buff.append(c);
+            i++;
+        }
+
+        if (buff.length() > 0)
+        {
+            text.add(new ELText(new String(buff.toString())));
+            buff.setLength(0);
+        }
+
+        if (text.size() == 0)
+        {
+            return null;
+        }
+        else if (text.size() == 1)
+        {
+            return new ELText[]{text.get(0)};
+        }
+        else
+        {
+            ELText[] ta = (ELText[]) text.toArray(new ELText[text.size()]);
+            return ta;
+        }
+    }
     
     public static boolean isLiteral(ExpressionFactory fact, ELContext ctx, String in) throws ELException
     {
