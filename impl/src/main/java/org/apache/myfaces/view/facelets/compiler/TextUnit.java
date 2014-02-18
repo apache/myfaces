@@ -179,7 +179,11 @@ final class TextUnit extends CompilationUnit
                         }
                         else
                         {
-                            s = compressELText(s);
+                            if (instructionBuffer.size() > 0 && 
+                                !(instructionBuffer.get(instructionBuffer.size()-1) instanceof LiteralXMLInstruction))
+                            {
+                                s = compressELText(s);
+                            }
                             this.instructionBuffer.add(new TextInstruction(this.alias, ELText.parse(s) ));
                         }
                     }
