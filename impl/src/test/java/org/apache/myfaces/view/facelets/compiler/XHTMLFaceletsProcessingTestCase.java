@@ -92,6 +92,8 @@ public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
     @Test
     public void testXHTMLProcessing1() throws Exception
     {
+        facesContext.getExternalContext().getRequestMap().put("rquote", "\"");
+        
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testXHTMLProcessing1.xhtml");
 
@@ -106,12 +108,14 @@ public class XHTMLFaceletsProcessingTestCase extends FaceletTestCase {
         String resp = sw.toString();
         
         Assert.assertTrue("Response contains DOCTYPE declaration", resp.contains("<!DOCTYPE"));
+        Assert.assertFalse("Response not contains DOCTYPE html declaration", resp.contains("<!DOCTYPE html>"));
         Assert.assertTrue("Response contains xml declaration", resp.contains("<?xml"));
         Assert.assertTrue("Response contains xml processing instructions", resp.contains("<?name"));
         Assert.assertTrue("Response contains cdata section", resp.contains("<![CDATA["));
         Assert.assertTrue("Response contains cdata section", resp.contains("cdata not consumed"));
         Assert.assertTrue("Response does not escape characters", resp.contains("In this mode, if you put a double quote, it will be replaced by &quot; : &quot"));
         Assert.assertTrue("Response contains comments", resp.contains("<!--"));
+        Assert.assertTrue("Response should escape EL and markup", resp.contains("Check EL Escaping &quot; : &quot;"));
         
     }
 }

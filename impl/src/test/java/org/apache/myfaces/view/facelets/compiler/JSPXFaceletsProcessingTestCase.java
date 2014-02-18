@@ -93,6 +93,8 @@ public class JSPXFaceletsProcessingTestCase extends FaceletTestCase {
     @Test
     public void testJSPXProcessing1() throws Exception
     {
+        facesContext.getExternalContext().getRequestMap().put("rquote", "\"");
+        
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testJSPXProcessing1.jspx");
 
@@ -113,6 +115,7 @@ public class JSPXFaceletsProcessingTestCase extends FaceletTestCase {
         Assert.assertTrue("Response does not contains cdata content", resp.contains("cdata not consumed"));
         Assert.assertTrue("Response does not escape characters", resp.contains("In this mode, if you put a double quote, it will NOT be replaced by &quot; : \""));
         Assert.assertFalse("Response contains comments", resp.contains("<!--"));
+        Assert.assertTrue("Response should escape EL but not markup", resp.contains("Check EL Escaping &quot; : \""));
         
     }
 }

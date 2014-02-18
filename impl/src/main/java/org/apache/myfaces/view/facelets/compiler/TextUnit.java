@@ -156,7 +156,35 @@ final class TextUnit extends CompilationUnit
                         }
                         else
                         {
-                            this.instructionBuffer.add(new TextInstruction(this.alias, txt ));
+                            if (escapeInlineText)
+                            {
+                                this.instructionBuffer.add(new TextInstruction(this.alias, txt ));
+                            }
+                            else
+                            {
+                                // When escape inline text is disabled (jspx case) we have to split the EL and add
+                                // separate instructions, so it can be properly escaped.
+                                ELText[] splitText = ELText.parseAsArray(s);
+                                if (splitText.length > 1)
+                                {
+                                    for (ELText selText : splitText)
+                                    {
+                                        if (selText.isLiteral())
+                                        {
+                                            this.instructionBuffer.add(
+                                                new LiteralNonExcapedTextInstruction(selText.toString()));
+                                        }
+                                        else
+                                        {
+                                            this.instructionBuffer.add(new TextInstruction(this.alias, selText ));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    this.instructionBuffer.add(new TextInstruction(this.alias, txt ));
+                                }
+                            }
                         }
                     }
                 }
@@ -184,7 +212,28 @@ final class TextUnit extends CompilationUnit
                             {
                                 s = compressELText(s);
                             }
-                            this.instructionBuffer.add(new TextInstruction(this.alias, ELText.parse(s) ));
+                            // When escape inline text is disabled (jspx case) we have to split the EL and add
+                            // separate instructions, so it can be properly escaped.
+                            ELText[] splitText = ELText.parseAsArray(s);
+                            if (splitText.length > 1)
+                            {
+                                for (ELText selText : splitText)
+                                {
+                                    if (selText.isLiteral())
+                                    {
+                                        this.instructionBuffer.add(
+                                            new LiteralNonExcapedTextInstruction(selText.toString()));
+                                    }
+                                    else
+                                    {
+                                        this.instructionBuffer.add(new TextInstruction(this.alias, selText ));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                this.instructionBuffer.add(new TextInstruction(this.alias, ELText.parse(s)));
+                            }
                         }
                     }
                 }
