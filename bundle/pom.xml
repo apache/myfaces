@@ -89,7 +89,7 @@
                             javax.ejb;resolution:=optional,
                             javax.el;version="[1.0.0, 3.0.0)",
                             javax.naming,
-                            javax.persistence;version="[1.0.0, 2.1)";resolution:=optional,
+                            javax.persistence;version="[1.0.0, 3.0)";resolution:=optional,
                             javax.portlet;version="[1.0.0, 2.1)";resolution:=optional,
                             javax.servlet;version="[2.5.0, 3.1)",
                             javax.servlet.http;version="[2.5.0, 3.1)",
