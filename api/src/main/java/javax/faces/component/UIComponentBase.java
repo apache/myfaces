@@ -1504,13 +1504,14 @@ public abstract class UIComponentBase extends UIComponent
                     UIComponent child = getChildren().get(i);
                     child.processUpdates(context);
                 }
-                popComponentFromEL(context);
             }
         }
         finally
         {
             // After returning from the processUpdates() method on a child or facet, call
             // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
+            popComponentFromEL(context);
+            
             setCachedFacesContext(null);
         }
     }
