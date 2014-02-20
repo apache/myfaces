@@ -486,7 +486,24 @@ public class NavigationHandlerImpl
                 // current flow or the id of another flow
                 if (targetFlow != null)
                 {
-                    startFlow = true;
+                    if (flowHandler.isActive(facesContext, targetFlow.getDefiningDocumentId(), targetFlow.getId()))
+                    {
+                        // If the flow is already active, there is a chance that a node id has the same name as
+                        // the flow and if that so, give preference to that node instead reenter into the flow.
+                        FlowNode flowNode = targetFlow.getNode(outcome);
+                        if (flowNode != null)
+                        {
+                            checkFlowNode = true;
+                        }
+                        else
+                        {
+                            startFlow = true;
+                        }
+                    }
+                    else
+                    {
+                        startFlow = true;
+                    }
                 }
                 else
                 {
