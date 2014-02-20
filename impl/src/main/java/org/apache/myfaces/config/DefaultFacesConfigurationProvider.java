@@ -64,6 +64,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
@@ -681,6 +682,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 log.severe("Faces config resource " + systemId + " not found");
                 return null;
             }
+            String flowName = systemId.substring(systemId.lastIndexOf('/')+1, systemId.lastIndexOf("-flow.xml"));
             int c = pbstream.read();
             if (c != -1)
             {
@@ -693,17 +695,16 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 // 
                 FacesConfigImpl facesConfig = new FacesConfigImpl();
                 FacesFlowDefinitionImpl flow = new FacesFlowDefinitionImpl();
-                String flowName = systemId.substring(systemId.lastIndexOf('/')+1, systemId.lastIndexOf("-flow.xml"));
                 flow.setId(flowName);
                 // In this case the defining document id is implicit associated
                 flow.setDefiningDocumentId(systemId);
                 
                 String startNodePath = systemId.substring(0, systemId.lastIndexOf('/')+1)+flowName+".xhtml";
-                URL startNodeUrl = ectx.getResource(startNodePath);
-                if (startNodeUrl != null)
-                {
-                    flow.setStartNode(startNodePath);
-                }
+                //URL startNodeUrl = ectx.getResource(startNodePath);
+                //if (startNodeUrl != null)
+                //{
+                flow.setStartNode(startNodePath);
+                //}
                 
                 // There is a default return node with name [flow-name]-return and 
                 // that by default points to an outer /[flow-name]-return outcome
@@ -722,7 +723,25 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             {
                 log.info("Reading config " + systemId);
             }
-            return getUnmarshaller(ectx).getFacesConfig(pbstream, systemId);
+            
+            FacesConfigImpl facesConfig = (FacesConfigImpl) 
+                getUnmarshaller(ectx).getFacesConfig(pbstream, systemId);
+            
+            // Set default start node when it is not present.
+            for (FacesFlowDefinition definition : facesConfig.getFacesFlowDefinitions())
+            {
+                if (flowName.equals(definition.getId()))
+                {
+                    FacesFlowDefinitionImpl flow = (FacesFlowDefinitionImpl) definition;
+                    if (flow.getStartNode() == null)
+                    {
+                        String startNodePath = systemId.substring(0, 
+                            systemId.lastIndexOf('/')+1)+flowName+".xhtml";
+                        flow.setStartNode(startNodePath);
+                    }
+                }
+            }
+            return facesConfig;
             //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
         }
         catch (IOException e)
