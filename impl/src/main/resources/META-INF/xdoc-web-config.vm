@@ -79,6 +79,7 @@ $baseContent
 #set ($webConfigGroupsLabel = {"resources" : "Resources (resource)", 
                                "validation" : "Conversion and Validation (validation)", 
                                "state" : "State Saving (state)",
+                               "cdi" : "CDI (cdi)",
                                "EL" : "Expression Language (EL)",
                                "viewhandler" : "View Handling (viewhandler)",
                                "render" : "Rendering (render)"} )
@@ -101,9 +102,11 @@ $baseContent
 #if ($modelIds.contains($webConfig.modelId))
 #set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
 #foreach( $webConfigParam in $webConfigParamList )
+#if (!$webConfigParam.deprecated)
 #if (not $webConfigParam.containsTag('tomahawk'))
 #if ($webConfigParam.group == $webConfigGroup)
 #writeWebConfigParamRow($webConfigParam)
+#end
 #end
 #end
 #end
@@ -125,10 +128,35 @@ $baseContent
 #if ($modelIds.contains($webConfig.modelId))
 #set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
 #foreach( $webConfigParam in $webConfigParamList )
+#if (!$webConfigParam.deprecated)
 #if (not $webConfigParam.containsTag('tomahawk'))
 #if (!$webConfigParam.group)
 #writeWebConfigParamRow($webConfigParam)
 #elseif ($webConfigParam.group == "")
+#writeWebConfigParamRow($webConfigParam)
+#end
+#end
+#end
+#end
+#end
+#end
+</table>
+
+  <p><b>Deprecated Parameters</b></p>
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Since</th>
+  <th>Default Value</th>
+  <th>Short Description</th>
+ </tr>
+#set ($webConfigList = ${model.getWebConfigs()})
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+#if ($webConfigParam.deprecated)
+#if (not $webConfigParam.containsTag('tomahawk'))
 #writeWebConfigParamRow($webConfigParam)
 #end
 #end
@@ -150,8 +178,14 @@ $baseContent
   <p>
     <b>Param Name:</b> <a name="$webConfigParam.name.replace('.','_')">$webConfigParam.name</a>
     <br/>
+    <b>Ignore Upper/Lower case values:</b> $webConfigParam.isIgnoreUpperLowerCase()
+    <br/>
 #if ($webConfigParam.defaultValue)
     <b>Default Value:</b> $webConfigParam.defaultValue
+    <br/>
+#end
+#if ($webConfigParam.deprecated)
+    <b>Deprecated:</b> $webConfigParam.isDeprecated()
     <br/>
 #end
 #if ($webConfigParam.expectedValues)
