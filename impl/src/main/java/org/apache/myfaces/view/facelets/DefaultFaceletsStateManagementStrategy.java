@@ -316,7 +316,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         //Jump to where the count is
                         view.getAttributes().put(UNIQUE_ID_COUNTER_KEY, state[2]);
                     }
-                    Object viewRootState = states.get(view.getViewId());
+                    Object viewRootState = states.get(view.getId());
                     if (viewRootState != null)
                     {
                         try
