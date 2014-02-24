@@ -47,9 +47,9 @@
         <links>
             <item name="Apache"         href="http://www.apache.org/"/>
             <item name="MyFaces"        href="http://myfaces.apache.org/index.html"/>
-            <item name="Quick Start"    href="https://cwiki.apache.org/confluence/display/MYFACES/Quick+Start"/>
-            <item name="User Guide"     href="https://cwiki.apache.org/confluence/display/MYFACES/MyFaces+Core+User+Guide"/>
-            <item name="FAQ"            href="https://cwiki.apache.org/confluence/display/MYFACES/FAQ"/>
+            <item name="Quick Start"    href="http://myfaces.apache.org/wiki/core/user-guide/quick-start.html"/>
+            <item name="User Guide"     href="http://myfaces.apache.org/wiki/core/user-guide.html"/>
+            <item name="FAQ"            href="http://myfaces.apache.org/wiki/core/faq.html"/>
             <item name="Generated Doc"  href="./javadoc.html"/>
             <item name="Download"       href="http://myfaces.apache.org/download.html" />
         </links>
@@ -100,11 +100,11 @@
         </menu>
         
         <menu name="Documentation" inherit="top">
-            <item name="Quick Start"     href="https://cwiki.apache.org/confluence/display/MYFACES/Quick+Start"/>
-            <item name="Getting Started" href="https://cwiki.apache.org/confluence/display/MYFACES/Getting+Started"/>
+            <item name="Quick Start"     href="http://myfaces.apache.org/wiki/core/user-guide/quick-start.html"/>
+            <item name="Getting Started" href="http://myfaces.apache.org/wiki/core/user-guide/getting-started.html"/>
             <item name="MyFaces and Google App Engine"  href="http://myfaces.apache.org/core20/googleappenginesupport.html"/>
             <item name="Generated Javadoc, Tlddoc and Others"        href="./javadoc.html"/>
-            <item name="FAQ"             href="https://cwiki.apache.org/confluence/display/MYFACES/FAQ"/>
+            <item name="FAQ"             href="http://myfaces.apache.org/wiki/core/faq.html"/>
         </menu>
 
         <menu ref="reports" inherit="top"/>
