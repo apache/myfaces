@@ -16,24 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.apache.myfaces.mc.test.core.mock;
+
+import javax.faces.context.FacesContext;
+import org.apache.myfaces.test.mock.MockHttpServletRequest;
+import org.apache.myfaces.test.mock.MockHttpServletResponse;
 
 /**
  *
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(value =
+public interface ServletMockContainer
 {
-    ElementType.TYPE
-})
-@Inherited
-public @interface TestServletListeners
-{
-    String[] value() default {};
+    
+    public MockHttpServletRequest getRequest();
+    
+    public MockHttpServletResponse getResponse();
+    
+    public FacesContext getFacesContext();
+
+    public void processRemainingPhases();
+
+    public void endRequest();
+
+    public void startViewRequest(String viewId);
 }

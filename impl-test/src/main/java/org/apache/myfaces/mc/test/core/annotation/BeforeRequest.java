@@ -18,27 +18,20 @@
  */
 package org.apache.myfaces.mc.test.core.annotation;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Using this annotation allows to use a custom faces-config.xml for the test class.
- * The values here are relative to the web context path, defined by 
- * AbstractMyFacesTestCase.getWebappContextFilePath() and
- * AbstractMyFacesTestCase.getWebappContextURI(), so it can be seen as an alias for
- * javax.faces.CONFIG_FILES web config param, just to make easier work with different
- * config files. 
  *
  */
-@Documented
-@Inherited
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DeclareFacesConfig
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(value =
 {
-    String[] value() default {};
+    ElementType.METHOD
+})
+public @interface BeforeRequest
+{
+    
 }

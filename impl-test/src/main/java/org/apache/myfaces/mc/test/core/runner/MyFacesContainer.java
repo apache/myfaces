@@ -16,24 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core.annotation;
+package org.apache.myfaces.mc.test.core.runner;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.junit.runners.model.TestClass;
 
 /**
  *
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(value =
+public class MyFacesContainer extends AbstractJsfRequestTestContainer
 {
-    ElementType.TYPE
-})
-@Inherited
-public @interface TestServletListeners
-{
-    String[] value() default {};
+
+    public MyFacesContainer(TestClass testClass)
+    {
+        super(testClass);
+    }
+    
 }

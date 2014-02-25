@@ -16,24 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core.annotation;
+package org.apache.myfaces.mc.test.core.mock;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.faces.view.ViewDeclarationLanguage;
 
-/**
- *
- */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(value =
+import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
+
+public class MockDefaultViewDeclarationLanguageStrategy 
+    implements ViewDeclarationLanguageStrategy
 {
-    ElementType.TYPE
-})
-@Inherited
-public @interface TestServletListeners
-{
-    String[] value() default {};
+    
+    private ViewDeclarationLanguage _language;
+
+    public MockDefaultViewDeclarationLanguageStrategy()
+    {
+        super();
+        _language = new MockDefaultViewDeclarationLanguage();
+    }
+
+    public ViewDeclarationLanguage getViewDeclarationLanguage()
+    {
+        return _language;
+    }
+
+    public boolean handles(String viewId)
+    {
+        return true;
+    }
 }
