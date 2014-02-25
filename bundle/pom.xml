@@ -78,6 +78,10 @@
                             org.apache.myfaces.spi;version="${project.version}",
                             org.apache.myfaces.taglib.*;version="${project.version}",
                             org.apache.myfaces.ee6;version="${project.version}",
+                            org.apache.myfaces.view;version="${project.version}",
+                            org.apache.myfaces.view.facelets.el;version="${project.version}",
+                            org.apache.myfaces.view.facelets.component;version="${project.version}",
+                            org.apache.myfaces.view.facelets.tag.jsf;version="${project.version}",
                             org.apache.myfaces.webapp;version="${project.version}"
                         </Export-Package>
                         <Import-Package>
