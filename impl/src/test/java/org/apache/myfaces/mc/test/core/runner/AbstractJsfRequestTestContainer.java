@@ -232,7 +232,7 @@ public class AbstractJsfRequestTestContainer extends AbstractJsfTestContainer
     
     protected String getContextPath()
     {
-        TestConfig testConfig = testClass.getJavaClass().getAnnotation(TestConfig.class);
+        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
         if (testConfig != null)
         {
             return testConfig.contextPath();
@@ -242,7 +242,7 @@ public class AbstractJsfRequestTestContainer extends AbstractJsfTestContainer
     
     protected String getServletPath()
     {
-        TestConfig testConfig = testClass.getJavaClass().getAnnotation(TestConfig.class);
+        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
         if (testConfig != null)
         {
             return testConfig.servletPath();

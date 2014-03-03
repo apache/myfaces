@@ -21,12 +21,12 @@ package org.apache.myfaces.mc.test.core;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
-import org.apache.webbeans.servlet.WebBeansConfigurationListener;
 
 /**
  *
@@ -34,7 +34,8 @@ import org.apache.webbeans.servlet.WebBeansConfigurationListener;
 public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTestCase
 {
     
-    protected WebBeansConfigurationListener owbListener;
+    //protected WebBeansConfigurationListener owbListener;
+    private Object owbListener;
     protected InjectionProvider injectionProvider;
     
     @Override
@@ -48,8 +49,16 @@ public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTes
     @Override
     protected void setUpServletListeners() throws Exception
     {
-        owbListener = new WebBeansConfigurationListener();
-        webContainer.subscribeListener(owbListener);
+        Class listenerClass = ClassUtils.classForName("org.apache.webbeans.servlet.WebBeansConfigurationListener");
+        if (listenerClass == null)
+        {
+            listenerClass = ClassUtils.classForName("org.jboss.weld.environment.servlet.Listener");
+        }
+        if (listenerClass != null)
+        {
+            owbListener = ClassUtils.newInstance(listenerClass);
+            webContainer.subscribeListener(owbListener);
+        }
         super.setUpServletListeners();
     }
 

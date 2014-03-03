@@ -47,4 +47,6 @@ public @interface TestConfig
     
     String servletPath() default "/faces";
     
+    boolean enableJNDI() default true;
+    
 }

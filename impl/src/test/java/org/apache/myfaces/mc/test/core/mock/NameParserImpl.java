@@ -16,37 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core.annotation;
+package org.apache.myfaces.mc.test.core.mock;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.naming.CompositeName;
+import javax.naming.Name;
+import javax.naming.NameParser;
+import javax.naming.NamingException;
 
 /**
+ * A default implementation of {@link NameParser}
  *
+ * NOTE: Code copied from org.apache.xbean.spring.jndi.NameParserImpl
+ *
+ * @version $Revision: 1.2 $
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(value =
+public class NameParserImpl implements NameParser
 {
-    ElementType.TYPE
-})
-@Inherited
-public @interface TestConfig
-{
-    String expressionFactory() default "";
-    
-    String webappResourcePath() default "testClassResourcePackage";
-    
-    boolean scanAnnotations() default false;
 
-    String oamAnnotationScanPackages() default "";
-    
-    String contextPath() default "/test";
-    
-    String servletPath() default "/faces";
-    
-    boolean enableJNDI() default true;
-    
+    public Name parse(String name) throws NamingException
+    {
+        return new CompositeName(name);
+    }
 }

@@ -56,6 +56,7 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.webapp.FacesServlet;
+import javax.naming.Context;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletResponse;
@@ -71,7 +72,11 @@ import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
 import org.apache.myfaces.mc.test.core.annotation.ManagedBeans;
 import org.apache.myfaces.mc.test.core.annotation.PageBean;
+import org.apache.myfaces.mc.test.core.annotation.TestConfig;
+import org.apache.myfaces.mc.test.core.mock.DefaultContext;
+import org.apache.myfaces.mc.test.core.mock.MockInitialContextFactory;
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
 import org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider;
@@ -155,10 +160,19 @@ public abstract class AbstractMyFacesTestCase
                         new URLClassLoader(new URL[0], this.getClass()
                                 .getClassLoader()));
         
-        jsfConfiguration = sharedConfiguration.get(this.getClass().getName());
+        jsfConfiguration = sharedConfiguration.get(getTestJavaClass().getName());
         if (jsfConfiguration == null)
         {
             jsfConfiguration = new SharedFacesConfiguration();
+        }
+        
+        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
+        boolean enableJNDI = (testConfig != null) ? testConfig.enableJNDI() : true;
+        if (enableJNDI)
+        {
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY, MockInitialContextFactory.class.getName());
+            jndiContext = new DefaultContext();
+            MockInitialContextFactory.setCurrentContext(jndiContext);
         }
 
         // Set up Servlet API Objects
@@ -173,7 +187,7 @@ public abstract class AbstractMyFacesTestCase
         
         setUpFacesServlet();
         
-        sharedConfiguration.put(this.getClass().getName(), jsfConfiguration);
+        sharedConfiguration.put(getTestJavaClass().getName(), jsfConfiguration);
     }
     
     /**
@@ -258,6 +272,12 @@ public abstract class AbstractMyFacesTestCase
      */
     protected String getWebappResourcePath()
     {
+        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
+        if (testConfig != null && testConfig.webappResourcePath() != null &&
+            !"testClassResourcePackage".equals(testConfig.webappResourcePath()))
+        {
+            return testConfig.webappResourcePath();
+        }
         return this.getClass().getName().substring(0,
                 this.getClass().getName().lastIndexOf('.')).replace('.', '/')
                 + "/";
@@ -271,6 +291,13 @@ public abstract class AbstractMyFacesTestCase
      */
     protected ExpressionFactory createExpressionFactory()
     {
+        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
+        if (testConfig != null && testConfig.expressionFactory() != null &&
+            testConfig.expressionFactory().length() > 0)
+        {
+            return (ExpressionFactory) ClassUtils.newInstance(
+                testConfig.expressionFactory(), ExpressionFactory.class);
+        }
         return new MockExpressionFactory();
     }
     
@@ -370,6 +397,11 @@ public abstract class AbstractMyFacesTestCase
         servletContext = null;
         
         FactoryFinder.releaseFactories();
+        
+        if (jndiContext != null)
+        {
+            MockInitialContextFactory.clearCurrentContext();
+        }
         
         Thread.currentThread().setContextClassLoader(threadContextClassLoader);
         threadContextClassLoader = null;
@@ -681,6 +713,11 @@ public abstract class AbstractMyFacesTestCase
      */
     protected boolean isScanAnnotations()
     {
+        TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
+        if (testConfig != null)
+        {
+            return testConfig.scanAnnotations();
+        }
         return false;
     }
     
@@ -1167,6 +1204,7 @@ public abstract class AbstractMyFacesTestCase
 
     // Thread context class loader saved and restored after each test
     private ClassLoader threadContextClassLoader = null;
+    private Context jndiContext = null;
 
     // Servlet objects 
     protected MockServletConfig servletConfig = null;
@@ -1185,6 +1223,12 @@ public abstract class AbstractMyFacesTestCase
     private static Map<String, SharedFacesConfiguration> sharedConfiguration =
         new ConcurrentHashMap<String, SharedFacesConfiguration>();
     private SharedFacesConfiguration jsfConfiguration;
+    
+    protected Class<?> getTestJavaClass()
+    {
+        return this.getClass();
+    }
+    
 
     // ------------------------------------------------------ Subclasses
 
@@ -1233,7 +1277,7 @@ public abstract class AbstractMyFacesTestCase
                     facesConfig = super.getAnnotationsFacesConfig(ectx, metadataComplete); 
                 }
 
-                ManagedBeans annoManagedBeans = testCase.getClass().getAnnotation(ManagedBeans.class);
+                ManagedBeans annoManagedBeans = getTestJavaClass().getAnnotation(ManagedBeans.class);
                 if (annoManagedBeans != null)
                 {
                     if (facesConfig == null)
@@ -1255,7 +1299,7 @@ public abstract class AbstractMyFacesTestCase
                     }
                 }
 
-                PageBean annoPageBean = testCase.getClass().getAnnotation(PageBean.class);
+                PageBean annoPageBean = getTestJavaClass().getAnnotation(PageBean.class);
                 if (annoPageBean != null)
                 {
                     if (facesConfig == null)
@@ -1329,10 +1373,10 @@ public abstract class AbstractMyFacesTestCase
         {
             List<FacesConfig> appConfigResources = super.getContextSpecifiedFacesConfig(ectx);
             
-            DeclareFacesConfig annoFacesConfig = testCase.getClass().getAnnotation(DeclareFacesConfig.class);
+            DeclareFacesConfig annoFacesConfig = getTestJavaClass().getAnnotation(DeclareFacesConfig.class);
             if (annoFacesConfig != null)
             {
-                Logger log = Logger.getLogger(testCase.getClass().getName());
+                Logger log = Logger.getLogger(getTestJavaClass().getName());
                 try
                 {
                     for (String systemId : annoFacesConfig.value())

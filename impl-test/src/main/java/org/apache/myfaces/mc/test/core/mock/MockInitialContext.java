@@ -16,37 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.mc.test.core.annotation;
+package org.apache.myfaces.mc.test.core.mock;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.Map;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  *
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(value =
+public class MockInitialContext extends InitialContext
 {
-    ElementType.TYPE
-})
-@Inherited
-public @interface TestConfig
-{
-    String expressionFactory() default "";
-    
-    String webappResourcePath() default "testClassResourcePackage";
-    
-    boolean scanAnnotations() default false;
 
-    String oamAnnotationScanPackages() default "";
-    
-    String contextPath() default "/test";
-    
-    String servletPath() default "/faces";
-    
-    boolean enableJNDI() default true;
-    
+    private Map<String, Object> bindings = new HashMap<String, Object>();
+
+    public MockInitialContext() throws NamingException
+    {
+    }
+
+    @Override
+    public void bind(String name, Object obj)
+        throws NamingException
+    {
+        bindings.put(name, obj);
+    }
+
+    @Override
+    public Object lookup(String name) throws NamingException
+    {
+        return bindings.get(name);
+    }
 }

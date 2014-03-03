@@ -19,34 +19,19 @@
 package org.apache.myfaces.mc.test.core.annotation;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * 
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value =
 {
-    ElementType.TYPE
+    ElementType.METHOD
 })
-@Inherited
-public @interface TestConfig
+public @interface BeforeJSFInit
 {
-    String expressionFactory() default "";
-    
-    String webappResourcePath() default "testClassResourcePackage";
-    
-    boolean scanAnnotations() default false;
-
-    String oamAnnotationScanPackages() default "";
-    
-    String contextPath() default "/test";
-    
-    String servletPath() default "/faces";
-    
-    boolean enableJNDI() default true;
     
 }
