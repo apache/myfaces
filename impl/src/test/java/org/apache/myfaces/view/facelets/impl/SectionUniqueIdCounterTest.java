@@ -164,6 +164,36 @@ public class SectionUniqueIdCounterTest extends AbstractJsfTestCase
         
         Assert.assertEquals("1", counter.generateUniqueId());
         Assert.assertEquals("2", counter.generateUniqueId());
+        Assert.assertEquals("2_X", counter.startUniqueIdSection("X"));
+        Assert.assertEquals("2_X_1", counter.generateUniqueId());
+        Assert.assertEquals("2_X_2",counter.generateUniqueId());
+        Assert.assertEquals("2_X_3",counter.startUniqueIdSection());
+        Assert.assertEquals("2_X_3_1",counter.generateUniqueId());
+        Assert.assertEquals("2_X_3_2",counter.generateUniqueId());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("2_X_4",counter.generateUniqueId());
+        counter.endUniqueIdSection("X");
+        Assert.assertEquals("2_Y", counter.startUniqueIdSection("Y"));
+        Assert.assertEquals("2_Y_1", counter.generateUniqueId());
+        counter.endUniqueIdSection("Y");
+        Assert.assertEquals("3", counter.generateUniqueId());
+        Assert.assertEquals("4", counter.generateUniqueId());
+    }
+    
+    @Test
+    public void testCounterExpansion2()
+    {
+        SectionUniqueIdCounter counter = new SectionUniqueIdCounter();
+        
+        Assert.assertEquals("1", counter.generateUniqueId());
+        Assert.assertEquals("2",counter.startUniqueIdSection());
+        Assert.assertEquals("2_1",counter.startUniqueIdSection());
+        Assert.assertEquals("2_1_1", counter.generateUniqueId());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("2_2", counter.generateUniqueId());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("3", counter.generateUniqueId());
+        
         Assert.assertEquals("3_X", counter.startUniqueIdSection("X"));
         Assert.assertEquals("3_X_1", counter.generateUniqueId());
         Assert.assertEquals("3_X_2",counter.generateUniqueId());
@@ -176,9 +206,43 @@ public class SectionUniqueIdCounterTest extends AbstractJsfTestCase
         Assert.assertEquals("3_Y", counter.startUniqueIdSection("Y"));
         Assert.assertEquals("3_Y_1", counter.generateUniqueId());
         counter.endUniqueIdSection("Y");
-        Assert.assertEquals("3", counter.generateUniqueId());
-        Assert.assertEquals("4", counter.generateUniqueId());
+        Assert.assertEquals("4",counter.startUniqueIdSection());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("5", counter.generateUniqueId());
+        Assert.assertEquals("6", counter.generateUniqueId());
     }
     
-    
+    @Test
+    public void testCounterExpansion3()
+    {
+        SectionUniqueIdCounter counter = new SectionUniqueIdCounter();
+        
+        Assert.assertEquals("1",counter.startUniqueIdSection());
+        Assert.assertEquals("1_1", counter.generateUniqueId());
+        Assert.assertEquals("1_2",counter.startUniqueIdSection());
+        Assert.assertEquals("1_2_1",counter.startUniqueIdSection());
+        Assert.assertEquals("1_2_1_1", counter.generateUniqueId());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("1_2_2", counter.generateUniqueId());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("1_3", counter.generateUniqueId());
+        
+        Assert.assertEquals("1_3_X", counter.startUniqueIdSection("X"));
+        Assert.assertEquals("1_3_X_1", counter.generateUniqueId());
+        Assert.assertEquals("1_3_X_2",counter.generateUniqueId());
+        Assert.assertEquals("1_3_X_3",counter.startUniqueIdSection());
+        Assert.assertEquals("1_3_X_3_1",counter.generateUniqueId());
+        Assert.assertEquals("1_3_X_3_2",counter.generateUniqueId());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("1_3_X_4",counter.generateUniqueId());
+        counter.endUniqueIdSection("X");
+        Assert.assertEquals("1_3_Y", counter.startUniqueIdSection("Y"));
+        Assert.assertEquals("1_3_Y_1", counter.generateUniqueId());
+        counter.endUniqueIdSection("Y");
+        Assert.assertEquals("1_4",counter.startUniqueIdSection());
+        counter.endUniqueIdSection();
+        Assert.assertEquals("1_5", counter.generateUniqueId());
+        Assert.assertEquals("1_6", counter.generateUniqueId());
+        counter.endUniqueIdSection();
+    }    
 }

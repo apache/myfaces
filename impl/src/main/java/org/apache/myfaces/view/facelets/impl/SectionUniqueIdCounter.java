@@ -145,7 +145,7 @@ public class SectionUniqueIdCounter
                 _builder.append(lastPrefix);
                 _builder.append('_');
             }
-            appendToBuilder(_counterStack.get(_counterStack.size()-1).getCounter(),
+            appendToBuilder(_counterStack.get(_counterStack.size()-1).getCounter()-1,
                 _radix, _builder, _bufferConversion);
         }
 
