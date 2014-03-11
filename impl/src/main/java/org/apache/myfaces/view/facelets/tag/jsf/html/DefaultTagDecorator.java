@@ -157,7 +157,7 @@ public class DefaultTagDecorator implements TagDecorator
       LOCAL_NAME_ARR['T'] = T_NAMES;
     }
     
-    private static final TagDecoratorExecutor NO_MATCH_SELECTOR = new TagSelectorImpl("jsf:element", JSF_NAMESPACE);
+    private static final TagDecoratorExecutor NO_MATCH_SELECTOR = new TagSelectorImpl(null, "jsf:element");
     
     public Tag decorate(Tag tag)
     {
@@ -403,6 +403,7 @@ public class DefaultTagDecorator implements TagDecorator
                     }
                     else if (j == 3 && targetQName.startsWith("jsf"))
                     {
+                        this.targetNamespace = JsfLibrary.ALIAS_NAMESPACE;
                         this.targetLocalName = targetQName.substring(j+1);
                     }
                 }

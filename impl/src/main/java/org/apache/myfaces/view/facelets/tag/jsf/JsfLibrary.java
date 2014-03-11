@@ -34,5 +34,8 @@ public final class JsfLibrary extends AbstractTagLibrary
     public JsfLibrary()
     {
         super(NAMESPACE, ALIAS_NAMESPACE);
+        
+        this.addComponent("element", "javax.faces.Panel", 
+            "javax.faces.passthrough.Element", JsfElementHandler.class);
     }
 }

@@ -300,4 +300,21 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         Assert.assertNotNull(decoratedTag);
     }
     
+    @Test
+    public void testNoMatchJSFElement1() throws Exception
+    {
+        request.getSession().setAttribute("test", new MockBean());
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testNoMatchJSFElement1.xhtml");
+
+        UIComponent box1 = root.findComponent("myForm:box1");
+        Assert.assertNotNull(box1);
+        Assert.assertEquals(box1.getRendererType(), "javax.faces.passthrough.Element");
+        
+        //StringWriter sw = new StringWriter();
+        //MockResponseWriter mrw = new MockResponseWriter(sw);
+        //facesContext.setResponseWriter(mrw);
+        //sw.flush();
+    }    
 }
