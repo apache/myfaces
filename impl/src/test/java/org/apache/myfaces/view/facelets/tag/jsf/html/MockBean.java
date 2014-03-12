@@ -21,6 +21,8 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 public class MockBean
 {
     private int _integerVal = 10;
+    
+    private String value = "value1";
 
     public int getIntegerVal()
     {
@@ -40,5 +42,21 @@ public class MockBean
     public String method()
     {
         return "Hello World!";
+    }
+
+    /**
+     * @return the value
+     */
+    public String getValue()
+    {
+        return value;
+    }
+
+    /**
+     * @param value the value to set
+     */
+    public void setValue(String value)
+    {
+        this.value = value;
     }
 }

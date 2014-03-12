@@ -230,14 +230,41 @@ public class DefaultTagDecorator implements TagDecorator
     
     private TagAttributes convertTagAttributes(Tag tag)
     {
-        TagAttributes tagAttributes = tag.getAttributes();
         TagAttribute elementNameTagAttribute = new TagAttributeImpl(
             tag.getLocation(), PASS_THROUGH_NAMESPACE , Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY,
             P_ELEMENTNAME, tag.getLocalName() );
         TagAttribute[] sourceTagAttributes = tag.getAttributes().getAll();
-        TagAttribute[] convertedTagAttributes = new TagAttribute[sourceTagAttributes.length+1];
+        
+        // FIXME: Doing a black box test over Mojarra it was found that passthrough
+        // attributes are added to both passthrough map and normal attribute map. It seems
+        // in some point the attributes are copied, but the spec doesn't mention where this
+        // should be. The relevant case happens when the attribute has no associated namespace,
+        // because in that case the user suppose the attribute will be passed through. If the use
+        // jsf or passthrough namespace it is clear where it should go.
+        
+        // 1. Count how many attributes requires to be duplicated
+        int duplicateCount = 0;
+        for (int i = 0; i < sourceTagAttributes.length; i++)
+        {
+            TagAttribute tagAttribute = sourceTagAttributes[i];
+            String namespace = tagAttribute.getNamespace();
+            if (namespace == null)
+            {
+                // should not happen, but let it because org.xml.sax.Attributes considers it
+                duplicateCount++;
+            }
+            else if (tagAttribute.getNamespace().length() == 0)
+            {
+                // "... If the current attribute's namespace is empty 
+                // let the current attribute be convertedTagAttribute. ..."
+                duplicateCount++;
+            }
+        }
+        
+        TagAttribute[] convertedTagAttributes = new TagAttribute[
+            sourceTagAttributes.length+1+duplicateCount];
         boolean elementNameTagAttributeSet = false;
-            
+        int j = 0;
         for (int i = 0; i < sourceTagAttributes.length; i++)
         {
             TagAttribute tagAttribute = sourceTagAttributes[i];
@@ -253,7 +280,7 @@ public class DefaultTagDecorator implements TagDecorator
                 convertedNamespace = "";
                 qname = tagAttribute.getLocalName();
                 
-                convertedTagAttributes[i] = new TagAttributeImpl(tagAttribute.getLocation(), 
+                convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
                 
                 if (Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY.equals(tagAttribute.getLocalName()))
@@ -264,19 +291,29 @@ public class DefaultTagDecorator implements TagDecorator
             else if (namespace == null)
             {
                 // should not happen, but let it because org.xml.sax.Attributes considers it
-                convertedTagAttributes[i] = tagAttribute;
+                convertedTagAttributes[j] = tagAttribute;
+                j++;
+                // Duplicate passthrough
+                convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
+                    PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
+                    "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());
             }
             else if (tagAttribute.getNamespace().length() == 0)
             {
                 // "... If the current attribute's namespace is empty 
                 // let the current attribute be convertedTagAttribute. ..."
-                convertedTagAttributes[i] = tagAttribute;
+                convertedTagAttributes[j] = tagAttribute;
+                j++;
+                // Duplicate passthrough
+                convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
+                    PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
+                    "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());
             }
             else if (!tag.getNamespace().equals(tagAttribute.getNamespace()))
             {
                 // "... or different from the argument tag's namespace, 
                 // let the current attribute be convertedTagAttribute. ..."
-                convertedTagAttributes[i] = tagAttribute;
+                convertedTagAttributes[j] = tagAttribute;
             }
             else
             {
@@ -286,19 +323,20 @@ public class DefaultTagDecorator implements TagDecorator
                 convertedNamespace = PASS_THROUGH_NAMESPACE;
                 qname = "p:"+tagAttribute.getLocalName();
                 
-                convertedTagAttributes[i] = new TagAttributeImpl(tagAttribute.getLocation(), 
+                convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
             }
+            j++;
         }
         
         if (elementNameTagAttributeSet)
         {
             // This is unlikely, but theorically possible.
-            return new TagAttributesImpl(Arrays.copyOf(convertedTagAttributes, sourceTagAttributes.length));
+            return new TagAttributesImpl(Arrays.copyOf(convertedTagAttributes, convertedTagAttributes.length-1));
         }
         else
         {
-            convertedTagAttributes[tagAttributes.getAll().length] = elementNameTagAttribute;
+            convertedTagAttributes[convertedTagAttributes.length-1] = elementNameTagAttribute;
             return new TagAttributesImpl(convertedTagAttributes);
         }
     }
