@@ -139,11 +139,13 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
         String uniqueId = null;
         if (!_template.isLiteral())
         {
-            uniqueId = fcc.startComponentUniqueIdSection();
+            uniqueId = actx.generateUniqueFaceletTagId(
+                fcc.startComponentUniqueIdSection(), tagId);
         }
         else if (_params != null)
         {
-            uniqueId = fcc.generateUniqueComponentId();
+            uniqueId = actx.generateUniqueFaceletTagId(
+                fcc.generateUniqueComponentId(), tagId);
         }
         
         if (_params != null)

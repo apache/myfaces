@@ -32,6 +32,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
@@ -80,7 +81,9 @@ public final class IfHandler extends TagHandler implements ComponentContainerHan
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException
     {
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
-        String uniqueId = fcc.startComponentUniqueIdSection();
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        String uniqueId = actx.generateUniqueFaceletTagId(
+            fcc.startComponentUniqueIdSection(), tagId);
         Boolean restoredValue = (Boolean) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
         boolean b = false;
         boolean markInitialState = false;

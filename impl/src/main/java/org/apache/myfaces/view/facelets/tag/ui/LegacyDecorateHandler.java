@@ -142,7 +142,7 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
         boolean markInitialState = false;
         if (!_template.isLiteral())
         {
-            String uniqueId = fcc.startComponentUniqueIdSection();
+            String uniqueId = actx.generateUniqueFaceletTagId(fcc.startComponentUniqueIdSection(), tagId);
             //path = getTemplateValue(actx, fcc, parent, uniqueId);
             String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
             if (restoredPath != null)

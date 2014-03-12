@@ -119,7 +119,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
         boolean markInitialState = false;
         if (!src.isLiteral())
         {
-            String uniqueId = fcc.startComponentUniqueIdSection();
+            String uniqueId = actx.generateUniqueFaceletTagId(fcc.startComponentUniqueIdSection(), tagId);
             //path = getSrcValue(actx, fcc, parent, uniqueId);
             String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
             if (restoredPath != null)

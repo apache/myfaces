@@ -117,11 +117,13 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         String uniqueId = null;
         if (!src.isLiteral())
         {
-            uniqueId = fcc.startComponentUniqueIdSection();
+            uniqueId = actx.generateUniqueFaceletTagId(
+                fcc.startComponentUniqueIdSection(), tagId);
         }
         else if (_params != null)
         {
-            uniqueId = fcc.generateUniqueComponentId();
+            uniqueId = actx.generateUniqueFaceletTagId(
+                fcc.generateUniqueComponentId(), tagId);
         }
         if (!src.isLiteral())
         {

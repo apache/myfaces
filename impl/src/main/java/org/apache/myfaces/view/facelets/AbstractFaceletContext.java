@@ -273,4 +273,9 @@ public abstract class AbstractFaceletContext extends FaceletContext
     {
         return ELExpressionCacheMode.noCache;
     }
+    
+    public String generateUniqueFaceletTagId(String count, String base)
+    {
+        return count;
+    }
 }

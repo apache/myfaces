@@ -194,16 +194,16 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             src = b;
         }
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         // Just increment one number to ensure the prefix doesn't conflict later if two
         // c:forEach are close between each other. Note c:forEach is different from
         // c:if tag and doesn't require a section because c:forEach requires to provide
         // multiple sections starting with a specified "base" related to the element
         // position and value in the collection.
         fcc.incrementUniqueComponentId();
-        String uniqueId = fcc.generateUniqueId();
+        String uniqueId = actx.generateUniqueFaceletTagId(fcc.generateUniqueId(), tagId);
         if (src != null)
         {
-            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
             PageContext pctx = actx.getPageContext();
             // c:forEach is special because it requires FaceletState even if no pss is used.
             FaceletState restoredFaceletState = ComponentSupport.getFaceletState(ctx, parent, false);

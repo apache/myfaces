@@ -278,11 +278,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _ctx.putContext(key, contextObject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String generateUniqueId(String base)
+    private void initPrefix()
     {
         if (_prefix == null)
         {
@@ -303,6 +299,15 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             Integer prefixInt = new Integer(Math.abs(_uniqueIdBuilder.toString().hashCode()));
             _prefix = prefixInt.toString();
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String generateUniqueId(String base)
+    {
+        initPrefix();
 
         _uniqueIdBuilder.setLength(0);
         // getFaceletCompositionContext().generateUniqueId() is the one who ensures
@@ -340,6 +345,18 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             getFaceletCompositionContext().incrementUniqueId();
             return uniqueIdFromIterator;
         }
+    }
+    
+    public String generateUniqueFaceletTagId(String count, String base)    
+    {
+        initPrefix();
+        _uniqueIdBuilder.setLength(0);
+        _uniqueIdBuilder.append(count);
+        _uniqueIdBuilder.append("_");
+        _uniqueIdBuilder.append(_prefix);
+        _uniqueIdBuilder.append("_");
+        _uniqueIdBuilder.append(base);
+        return _uniqueIdBuilder.toString();
     }
 
     /**

@@ -35,6 +35,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
@@ -89,7 +90,9 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
         boolean processed = false;
         //assign an unique id for this section
-        String uniqueId = fcc.startComponentUniqueIdSection();
+        AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+        String uniqueId = actx.generateUniqueFaceletTagId(
+            fcc.startComponentUniqueIdSection(), tagId);
         Integer savedOption = null;
         
         Integer restoredSavedOption = getSavedOption(ctx, fcc, parent, uniqueId);
