@@ -33,7 +33,7 @@ abstract class _JsfElement extends UIPanel implements
     _EventProperties, _FocusBlurProperties, _ChangeSelectProperties
 {
     public static final String COMPONENT_FAMILY = "javax.faces.Panel";
-    public static final String COMPONENT_TYPE = "javax.faces.Panel";
+    public static final String COMPONENT_TYPE = "oam.passthrough.Element";
     
     /**
      * HTML: Script to be invoked when the page is loaded

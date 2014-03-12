@@ -18,18 +18,60 @@
  */
 package org.apache.myfaces.view.facelets.component;
 
+import java.io.IOException;
+import javax.faces.FacesException;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 
 /**
  *
  * @author Leonardo Uribe
  */
 @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.Panel",
-        type="javax.faces.passthrough.Element")
+    renderKitId = "HTML_BASIC",
+    family = "javax.faces.Panel",
+    type = "javax.faces.passthrough.Element")
 public class JsfElementRenderer extends Renderer
 {
-    
+
+    public boolean getRendersChildren()
+    {
+        return true;
+    }
+
+    public void encodeBegin(FacesContext facesContext, UIComponent component)
+        throws IOException
+    {
+        ResponseWriter writer = facesContext.getResponseWriter();
+        String elementName = (String) 
+            component.getPassThroughAttributes().get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
+
+        if (elementName == null)
+        {
+            throw new FacesException("jsf:element with clientId"
+                + component.getClientId(facesContext) + " requires 'elementName' passthrough attribute");
+        }
+        writer.startElement(elementName, component);
+        HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+    }
+
+    public void encodeChildren(FacesContext facesContext, UIComponent component)
+        throws IOException
+    {
+        RendererUtils.renderChildren(facesContext, component);
+    }
+
+    public void encodeEnd(FacesContext facesContext, UIComponent component)
+        throws IOException
+    {
+        ResponseWriter writer = facesContext.getResponseWriter();
+        String elementName = (String) component.getPassThroughAttributes().get(
+            Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
+        writer.endElement(elementName);
+    }
 }

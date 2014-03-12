@@ -282,11 +282,6 @@ public class DefaultTagDecorator implements TagDecorator
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
-                
-                if (Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY.equals(tagAttribute.getLocalName()))
-                {
-                    elementNameTagAttributeSet = true;
-                }
             }
             else if (namespace == null)
             {
@@ -325,6 +320,13 @@ public class DefaultTagDecorator implements TagDecorator
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
+            }
+            
+            if (Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY.equals(convertedTagAttributes[j].getLocalName()) && (
+                PASS_THROUGH_NAMESPACE.equals(convertedTagAttributes[j].getNamespace()) || 
+                PASS_THROUGH_ALIAS_NAMESPACE.equals(convertedTagAttributes[j].getNamespace()) ) )
+            {
+                elementNameTagAttributeSet = true;
             }
             j++;
         }
