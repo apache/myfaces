@@ -370,6 +370,10 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         Assert.assertNull(input2.getPassThroughAttributes().get("value"));
         Assert.assertEquals(input2.getAttributes().get("value"), "value1");
         
+        UIComponent input3 = root.findComponent("myForm:box3");
+        Assert.assertFalse(input3 instanceof UIInput);
+        Assert.assertEquals(input3.getRendererType(), "javax.faces.passthrough.Element");        
+        
         //Assert.assertEquals(input2.getPassThroughAttributes().get("elementName"), "meter");
         
         StringWriter sw = new StringWriter();

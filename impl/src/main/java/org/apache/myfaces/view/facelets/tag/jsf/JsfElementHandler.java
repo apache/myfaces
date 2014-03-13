@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.MetaRuleset;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
@@ -34,6 +35,15 @@ public class JsfElementHandler extends javax.faces.view.facelets.ComponentHandle
     public JsfElementHandler(ComponentConfig config)
     {
         super(config);
+    }
+    
+    protected MetaRuleset createMetaRuleset(Class type)
+    {
+        MetaRuleset rules = super.createMetaRuleset(type);
+        
+        rules.addRule(ElementNameRule.INSTANCE);
+        
+        return rules;
     }
     
 }

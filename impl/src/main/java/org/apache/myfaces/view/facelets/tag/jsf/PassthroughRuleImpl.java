@@ -33,7 +33,7 @@ import org.apache.myfaces.view.facelets.PassthroughRule;
 final class PassthroughRuleImpl extends MetaRule implements PassthroughRule
 {
 
-    final class LiteralAttributeMetadata extends Metadata
+    final static class LiteralAttributeMetadata extends Metadata
     {
         private final String _name;
         private final String _value;

@@ -19,17 +19,23 @@
 package org.apache.myfaces.view.facelets.component;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
+import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.CommonEventUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  *
@@ -47,11 +53,6 @@ public class JsfElementRenderer extends HtmlRenderer
         return true;
     }
 
-    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
-    {
-        return false;
-    }
-
     public void encodeBegin(FacesContext facesContext, UIComponent component)
         throws IOException
     {
@@ -64,24 +65,46 @@ public class JsfElementRenderer extends HtmlRenderer
             throw new FacesException("jsf:element with clientId"
                 + component.getClientId(facesContext) + " requires 'elementName' passthrough attribute");
         }
-        writer.startElement(elementName, component);
-        HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+        JsfElement jsfElement = (JsfElement) component;
+        Map<String, List<ClientBehavior>> behaviors = jsfElement.getClientBehaviors();
         
-        if (isCommonPropertiesOptimizationEnabled(facesContext))
+        if (behaviors != null && !behaviors.isEmpty())
         {
-            long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
-            if (commonPropertiesMarked > 0)
-            {
-                CommonPropertyUtils.renderEventProperties(writer, commonPropertiesMarked, component);
-                CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
-                CommonPropertyUtils.renderChangeSelectEventProperties(writer, commonPropertiesMarked, component);
-            }
+            ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
+        }
+        
+        writer.startElement(elementName, component);
+
+        if (!behaviors.isEmpty())
+        {
+            HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
         }
         else
         {
-            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.EVENT_HANDLER_ATTRIBUTES);
-            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_FIELD_EVENT_ATTRIBUTES);
+            HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
         }
+        
+        // Write in the optimized way, because this is a renderer for internal use only
+        long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+        if (behaviors.isEmpty())
+        {
+            CommonPropertyUtils.renderEventProperties(writer, commonPropertiesMarked, component);
+            CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
+            CommonPropertyUtils.renderChangeSelectEventProperties(writer, commonPropertiesMarked, component);
+        }
+        else
+        {
+            long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
+            CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                   commonPropertiesMarked, commonEventsMarked, component, behaviors);
+            CommonEventUtils.renderBehaviorizedFieldEventHandlers(facesContext, writer, 
+                   commonPropertiesMarked, commonEventsMarked, component, 
+                   component.getClientId(facesContext), behaviors);
+        }
+        HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONLOAD_ATTR, component,
+                ClientBehaviorEvents.LOAD, behaviors, HTML.ONLOAD_ATTR);
+        HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONUNLOAD_ATTR, component,
+                ClientBehaviorEvents.UNLOAD, behaviors, HTML.ONUNLOAD_ATTR);
     }
 
     public void encodeChildren(FacesContext facesContext, UIComponent component)
@@ -97,5 +120,15 @@ public class JsfElementRenderer extends HtmlRenderer
         String elementName = (String) component.getPassThroughAttributes().get(
             Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
         writer.endElement(elementName);
+    }
+    
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
+    }
+    
+    protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
+    {
+        return true;
     }
 }

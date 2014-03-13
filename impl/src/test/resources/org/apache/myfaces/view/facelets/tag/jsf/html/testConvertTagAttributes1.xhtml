@@ -25,13 +25,23 @@
     <form jsf:id="myForm">
         <input jsf:id="box1" type="text"
                jsf:value="#{test.value}" jsf:customAttr="SomeValue"
+               onclick="alert('hello')"
                placeholder="Enter text" 
                pt:data_up="Going Up"/>
         
         <input jsf:id="box2" pt:elementName="meter"
                jsf:value="#{test.value}" jsf:customAttr="SomeValue"
+               onclick="alert('hello')"
                placeholder="Enter text" 
                pt:data_up="Going Up">Hello World!</input>
+        
+        <jsf:element id="box3" elementName="meter" 
+               value="#{test.value}" customAttr="SomeValue"
+               onclick="alert('hello')"
+               placeholder="Enter text" 
+               pt:data_up="Going Up">
+               Hello Element!
+        </jsf:element>
         
     </form>
 </body>
