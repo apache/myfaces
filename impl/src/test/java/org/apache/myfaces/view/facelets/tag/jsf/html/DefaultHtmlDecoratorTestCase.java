@@ -45,7 +45,10 @@ import javax.faces.view.Location;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagDecorator;
+import static junit.framework.TestCase.fail;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
+import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
@@ -374,9 +377,21 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         ResponseWriter mrw = new HtmlResponseWriterImpl(sw, "text/html", "UTF-8");
         facesContext.setResponseWriter(mrw);
         
+        HtmlRenderedAttr[] attrs = {
+            new HtmlRenderedAttr("data_up", "Going Up"),
+            new HtmlRenderedAttr("placeholder", "Enter text"),
+            new HtmlRenderedAttr("value", "value1")
+        };
+        
         input1.encodeAll(facesContext);
         
         sw.flush();
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs))
+        {
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
+        }
         
         sw = new StringWriter();
         mrw = new HtmlResponseWriterImpl(sw, "text/html", "UTF-8");
@@ -385,5 +400,18 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         input2.encodeAll(facesContext);
         
         sw.flush();
+        
+        attrs = new HtmlRenderedAttr[]{
+            new HtmlRenderedAttr("data_up", "Going Up"),
+            new HtmlRenderedAttr("placeholder", "Enter text")
+        };        
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs))
+        {
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
+        }
+        Assert.assertTrue(sw.toString().contains("<meter "));
+        Assert.assertTrue(sw.toString().contains("</meter>"));
     }  
 }

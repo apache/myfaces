@@ -26,6 +26,9 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
+import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 
 /**
@@ -36,12 +39,17 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
     renderKitId = "HTML_BASIC",
     family = "javax.faces.Panel",
     type = "javax.faces.passthrough.Element")
-public class JsfElementRenderer extends Renderer
+public class JsfElementRenderer extends HtmlRenderer
 {
 
     public boolean getRendersChildren()
     {
         return true;
+    }
+
+    protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
+    {
+        return false;
     }
 
     public void encodeBegin(FacesContext facesContext, UIComponent component)
@@ -58,6 +66,22 @@ public class JsfElementRenderer extends Renderer
         }
         writer.startElement(elementName, component);
         HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+        
+        if (isCommonPropertiesOptimizationEnabled(facesContext))
+        {
+            long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+            if (commonPropertiesMarked > 0)
+            {
+                CommonPropertyUtils.renderEventProperties(writer, commonPropertiesMarked, component);
+                CommonPropertyUtils.renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
+                CommonPropertyUtils.renderChangeSelectEventProperties(writer, commonPropertiesMarked, component);
+            }
+        }
+        else
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.EVENT_HANDLER_ATTRIBUTES);
+            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_FIELD_EVENT_ATTRIBUTES);
+        }
     }
 
     public void encodeChildren(FacesContext facesContext, UIComponent component)

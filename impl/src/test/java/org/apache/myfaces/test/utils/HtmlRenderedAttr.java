@@ -41,6 +41,16 @@ public class HtmlRenderedAttr
         this.expectedOccurrences = expectedOccurences;
     }
     
+    public HtmlRenderedAttr(String name, String value)
+    {
+        this.name = name;
+        this.value = value;
+        this.expectedHtml = " "+name+"=\""+value+"\"";
+        
+        renderSuccessful = false;
+        expectedOccurrences = 1;
+    }
+    
     /**
      * Represents an attribute of a component that is expected to be
      * rendered into html
