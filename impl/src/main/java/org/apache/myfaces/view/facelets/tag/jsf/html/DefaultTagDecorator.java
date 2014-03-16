@@ -162,6 +162,15 @@ public class DefaultTagDecorator implements TagDecorator
     public Tag decorate(Tag tag)
     {
         boolean jsfNamespaceFound = false;
+        // The tag is  <jsf:element ...> is an special case because all empty attributes should be copied 
+        // as passthrough attributes, like it was a markup attribute.
+        if (JSF_NAMESPACE.equals(tag.getNamespace()) || JSF_ALIAS_NAMESPACE.equals(tag.getNamespace()))
+        {
+            if ("element".equals(tag.getLocalName()))
+            {
+                return NO_MATCH_SELECTOR.decorate(tag, convertTagAttributes(tag));
+            }
+        }
         for (String namespace : tag.getAttributes().getNamespaces())
         {
             if (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace))

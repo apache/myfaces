@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>myfaces-bundle</artifactId>
-    <name>Apache MyFaces JSF-2.1 Core OSGi Bundle</name>
+    <name>Apache MyFaces JSF-2.2 Core OSGi Bundle</name>
     <packaging>bundle</packaging>
 
     <scm>

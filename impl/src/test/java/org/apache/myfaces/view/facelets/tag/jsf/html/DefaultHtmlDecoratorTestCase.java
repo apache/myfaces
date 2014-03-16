@@ -372,7 +372,20 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         
         UIComponent input3 = root.findComponent("myForm:box3");
         Assert.assertFalse(input3 instanceof UIInput);
-        Assert.assertEquals(input3.getRendererType(), "javax.faces.passthrough.Element");        
+        Assert.assertEquals(input3.getRendererType(), "javax.faces.passthrough.Element");     
+        
+        Assert.assertEquals(input3.getPassThroughAttributes().get("placeholder"), "Enter text");
+        Assert.assertEquals(input3.getAttributes().get("placeholder"), "Enter text");
+        
+        Assert.assertEquals(input2.getAttributes().get("customAttr"), "SomeValue");
+        Assert.assertNull(input2.getPassThroughAttributes().get("customAttr"));
+        
+        Assert.assertEquals(input3.getPassThroughAttributes().get("data_up"), "Going Up");
+        Assert.assertNull(input3.getAttributes().get("data_up"));
+        
+        Assert.assertNotNull(input3.getValueExpression("value"));
+        Assert.assertNotNull(input3.getPassThroughAttributes().get("value"));
+        Assert.assertEquals(input3.getAttributes().get("value"), "value1");
         
         //Assert.assertEquals(input2.getPassThroughAttributes().get("elementName"), "meter");
         
@@ -384,6 +397,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         HtmlRenderedAttr[] attrs = {
             new HtmlRenderedAttr("data_up", "Going Up"),
             new HtmlRenderedAttr("placeholder", "Enter text"),
+            new HtmlRenderedAttr("onclick", "alert('hello')"),
             new HtmlRenderedAttr("value", "value1")
         };
         
@@ -407,8 +421,32 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         
         attrs = new HtmlRenderedAttr[]{
             new HtmlRenderedAttr("data_up", "Going Up"),
+            new HtmlRenderedAttr("onclick", "alert('hello')"),
             new HtmlRenderedAttr("placeholder", "Enter text")
         };        
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs))
+        {
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
+        }
+        Assert.assertTrue(sw.toString().contains("<meter "));
+        Assert.assertTrue(sw.toString().contains("</meter>"));
+
+        sw = new StringWriter();
+        mrw = new HtmlResponseWriterImpl(sw, "text/html", "UTF-8");
+        facesContext.setResponseWriter(mrw);
+        
+        input3.encodeAll(facesContext);
+        
+        sw.flush();
+        
+        attrs = new HtmlRenderedAttr[]{
+            new HtmlRenderedAttr("data_up", "Going Up"),
+            new HtmlRenderedAttr("placeholder", "Enter text"),
+            new HtmlRenderedAttr("value", "value1"),
+            new HtmlRenderedAttr("onclick", "alert('hello')"),
+        };
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs))
