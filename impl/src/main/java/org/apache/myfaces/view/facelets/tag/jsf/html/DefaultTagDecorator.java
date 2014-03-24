@@ -157,6 +157,28 @@ public class DefaultTagDecorator implements TagDecorator
       LOCAL_NAME_ARR['T'] = T_NAMES;
     }
     
+    static private final String[][] RESERVED_JSF_ATTRS_ARR =  new String[256][];
+    
+    static private final String[] JSF_ATTRS_B_NAMES = {"binding"};
+
+    static private final String[] JSF_ATTRS_I_NAMES = {"id"};
+    
+    static private final String[] JSF_ATTRS_R_NAMES = {"rendered"};
+    
+    static private final String[] JSF_ATTRS_T_NAMES = {"transient"};
+
+    static 
+    {
+      RESERVED_JSF_ATTRS_ARR['b'] = JSF_ATTRS_B_NAMES;
+      RESERVED_JSF_ATTRS_ARR['B'] = JSF_ATTRS_B_NAMES;
+      RESERVED_JSF_ATTRS_ARR['i'] = JSF_ATTRS_I_NAMES;
+      RESERVED_JSF_ATTRS_ARR['I'] = JSF_ATTRS_I_NAMES;
+      RESERVED_JSF_ATTRS_ARR['r'] = JSF_ATTRS_R_NAMES;
+      RESERVED_JSF_ATTRS_ARR['R'] = JSF_ATTRS_R_NAMES;
+      RESERVED_JSF_ATTRS_ARR['t'] = JSF_ATTRS_T_NAMES;
+      RESERVED_JSF_ATTRS_ARR['T'] = JSF_ATTRS_T_NAMES;
+    }
+    
     private static final TagDecoratorExecutor NO_MATCH_SELECTOR = new TagSelectorImpl(null, "jsf:element");
     
     public Tag decorate(Tag tag)
@@ -268,6 +290,11 @@ public class DefaultTagDecorator implements TagDecorator
                 // let the current attribute be convertedTagAttribute. ..."
                 duplicateCount++;
             }
+            else if (!isReservedJSFAttribute(tagAttribute.getLocalName()) &&
+                    (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace)))
+            {
+                duplicateCount++;
+            }
         }
         
         TagAttribute[] convertedTagAttributes = new TagAttribute[
@@ -291,6 +318,15 @@ public class DefaultTagDecorator implements TagDecorator
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
+                
+                if (!isReservedJSFAttribute(qname))
+                {
+                    j++;
+                    // Duplicate passthrough
+                    convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
+                        PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
+                        "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());
+                }
             }
             else if (namespace == null)
             {
@@ -360,6 +396,22 @@ public class DefaultTagDecorator implements TagDecorator
             for (int i = array.length - 2; i >= 0; i-=2)
             {
                 if (elem.equalsIgnoreCase((String)array[i]))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isReservedJSFAttribute(String attr)
+    {
+        String[] array = RESERVED_JSF_ATTRS_ARR[attr.charAt(0)];
+        if (array != null)
+        {
+            for (int i = array.length - 1; i >= 0; i-=1)
+            {
+                if (attr.equalsIgnoreCase((String)array[i]))
                 {
                     return true;
                 }

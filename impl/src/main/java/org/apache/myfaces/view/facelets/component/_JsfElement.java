@@ -50,4 +50,11 @@ abstract class _JsfElement extends UIPanel implements
      */
     @JSFProperty(clientEvent="unload")
     public abstract String getOnunload();
+    
+    /**
+     * The CSS class for this element.  Corresponds to the HTML 'class' attribute.
+     * 
+     */
+    @JSFProperty
+    public abstract String getStyleClass();
 }

@@ -105,6 +105,17 @@ public final class CommonPropertyUtils
                     HTML.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
         }
     }
+    
+    public static void renderStyleClassProperty(ResponseWriter writer,
+            long commonPropertiesMarked, UIComponent component)
+            throws IOException
+    {
+        if ((commonPropertiesMarked & CommonPropertyConstants.STYLECLASS_PROP) != 0)
+        {
+            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
+                    HTML.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
+        }
+    }
 
     public static void renderEventProperties(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)

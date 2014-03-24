@@ -343,13 +343,15 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         Assert.assertEquals(input1.getAttributes().get("placeholder"), "Enter text");
         
         Assert.assertEquals(input1.getAttributes().get("customAttr"), "SomeValue");
-        Assert.assertNull(input1.getPassThroughAttributes().get("customAttr"));
+        // Attributes outside "id", "binding", "rendered" or "transient" can be 
+        // copied on passthrough attribute map.
+        Assert.assertEquals(input1.getPassThroughAttributes().get("customAttr"), "SomeValue");
         
         Assert.assertEquals(input1.getPassThroughAttributes().get("data_up"), "Going Up");
         Assert.assertNull(input1.getAttributes().get("data_up"));
         
         Assert.assertNotNull(input1.getValueExpression("value"));
-        Assert.assertNull(input1.getPassThroughAttributes().get("value"));
+        Assert.assertNotNull(input1.getPassThroughAttributes().get("value"));
         Assert.assertEquals(input1.getValue(), "value1");
         Assert.assertEquals(input1.getAttributes().get("value"), "value1");
         
@@ -361,13 +363,13 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         Assert.assertEquals(input2.getAttributes().get("placeholder"), "Enter text");
         
         Assert.assertEquals(input2.getAttributes().get("customAttr"), "SomeValue");
-        Assert.assertNull(input2.getPassThroughAttributes().get("customAttr"));
+        Assert.assertEquals(input2.getPassThroughAttributes().get("customAttr"), "SomeValue");
         
         Assert.assertEquals(input2.getPassThroughAttributes().get("data_up"), "Going Up");
         Assert.assertNull(input2.getAttributes().get("data_up"));
         
         Assert.assertNotNull(input2.getValueExpression("value"));
-        Assert.assertNull(input2.getPassThroughAttributes().get("value"));
+        Assert.assertNotNull(input2.getPassThroughAttributes().get("value"));
         Assert.assertEquals(input2.getAttributes().get("value"), "value1");
         
         UIComponent input3 = root.findComponent("myForm:box3");
@@ -378,7 +380,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         Assert.assertEquals(input3.getAttributes().get("placeholder"), "Enter text");
         
         Assert.assertEquals(input2.getAttributes().get("customAttr"), "SomeValue");
-        Assert.assertNull(input2.getPassThroughAttributes().get("customAttr"));
+        Assert.assertEquals(input2.getPassThroughAttributes().get("customAttr"), "SomeValue");
         
         Assert.assertEquals(input3.getPassThroughAttributes().get("data_up"), "Going Up");
         Assert.assertNull(input3.getAttributes().get("data_up"));
@@ -389,6 +391,20 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         
         //Assert.assertEquals(input2.getPassThroughAttributes().get("elementName"), "meter");
         
+        UIComponent box4 = root.findComponent("myForm:box4");
+        Assert.assertNotNull(box4);
+        UIComponent boxDiv4 = box4.getChildren().get(0);
+        Assert.assertNotNull(boxDiv4);
+        Assert.assertEquals(boxDiv4.getAttributes().get("styleClass"), "noprint");
+        Assert.assertEquals(boxDiv4.getPassThroughAttributes().get("class"), "noprint");
+        
+        UIComponent box5 = root.findComponent("myForm:box5");
+        Assert.assertNotNull(box5);
+        UIComponent boxDiv5 = box5.getChildren().get(0);
+        Assert.assertNotNull(boxDiv5);
+        Assert.assertEquals(boxDiv5.getAttributes().get("style"), "noprint");
+        Assert.assertEquals(boxDiv5.getPassThroughAttributes().get("style"), "noprint");
+        
         StringWriter sw = new StringWriter();
         
         ResponseWriter mrw = new HtmlResponseWriterImpl(sw, "text/html", "UTF-8");
@@ -398,6 +414,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
             new HtmlRenderedAttr("data_up", "Going Up"),
             new HtmlRenderedAttr("placeholder", "Enter text"),
             new HtmlRenderedAttr("onclick", "alert('hello')"),
+            new HtmlRenderedAttr("customAttr", "SomeValue"),
             new HtmlRenderedAttr("value", "value1")
         };
         
@@ -422,6 +439,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         attrs = new HtmlRenderedAttr[]{
             new HtmlRenderedAttr("data_up", "Going Up"),
             new HtmlRenderedAttr("onclick", "alert('hello')"),
+            new HtmlRenderedAttr("customAttr", "SomeValue"),
             new HtmlRenderedAttr("placeholder", "Enter text")
         };        
         
@@ -444,6 +462,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         attrs = new HtmlRenderedAttr[]{
             new HtmlRenderedAttr("data_up", "Going Up"),
             new HtmlRenderedAttr("placeholder", "Enter text"),
+            new HtmlRenderedAttr("customAttr", "SomeValue"),
             new HtmlRenderedAttr("value", "value1"),
             new HtmlRenderedAttr("onclick", "alert('hello')"),
         };
@@ -455,5 +474,49 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         }
         Assert.assertTrue(sw.toString().contains("<meter "));
         Assert.assertTrue(sw.toString().contains("</meter>"));
+
+        // TEST 4
+        sw = new StringWriter();
+        mrw = new HtmlResponseWriterImpl(sw, "text/html", "UTF-8");
+        facesContext.setResponseWriter(mrw);
+        
+        boxDiv4.encodeAll(facesContext);
+        
+        sw.flush();
+        
+        attrs = new HtmlRenderedAttr[]{
+            new HtmlRenderedAttr("class", "noprint"),
+        };
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs))
+        {
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
+        }
+        Assert.assertTrue(sw.toString().contains("MYBOX4"));
+        Assert.assertTrue(sw.toString().contains("<div "));
+        Assert.assertTrue(sw.toString().contains("</div>"));
+        
+        // TEST 5
+        sw = new StringWriter();
+        mrw = new HtmlResponseWriterImpl(sw, "text/html", "UTF-8");
+        facesContext.setResponseWriter(mrw);
+        
+        boxDiv5.encodeAll(facesContext);
+        
+        sw.flush();
+        
+        attrs = new HtmlRenderedAttr[]{
+            new HtmlRenderedAttr("style", "noprint"),
+        };
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs))
+        {
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
+        }
+        Assert.assertTrue(sw.toString().contains("MYBOX5"));
+        Assert.assertTrue(sw.toString().contains("<div "));
+        Assert.assertTrue(sw.toString().contains("</div>"));
     }  
 }

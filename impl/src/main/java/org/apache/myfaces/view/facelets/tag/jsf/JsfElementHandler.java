@@ -41,6 +41,7 @@ public class JsfElementHandler extends javax.faces.view.facelets.ComponentHandle
     {
         MetaRuleset rules = super.createMetaRuleset(type);
         
+        rules.alias("class", "styleClass");
         rules.addRule(ElementNameRule.INSTANCE);
         
         return rules;

@@ -101,10 +101,12 @@ public class JsfElementRenderer extends HtmlRenderer
                    commonPropertiesMarked, commonEventsMarked, component, 
                    component.getClientId(facesContext), behaviors);
         }
+        CommonPropertyUtils.renderStyleClassProperty(writer, commonPropertiesMarked, component);
         HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONLOAD_ATTR, component,
                 ClientBehaviorEvents.LOAD, behaviors, HTML.ONLOAD_ATTR);
         HtmlRendererUtils.renderBehaviorizedAttribute(facesContext, writer, HTML.ONUNLOAD_ATTR, component,
                 ClientBehaviorEvents.UNLOAD, behaviors, HTML.ONUNLOAD_ATTR);
+        
     }
 
     public void encodeChildren(FacesContext facesContext, UIComponent component)
