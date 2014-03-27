@@ -30,6 +30,7 @@ import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 import java.beans.IntrospectionException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.render.Renderer;
 import org.apache.myfaces.view.facelets.PassthroughRule;
 import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
 
@@ -118,6 +120,12 @@ public final class MetaRulesetImpl extends MetaRuleset
     private final Class<?> _type;
     
     private final List<MetaRule> _passthroughRules;
+    
+    /**
+     * Indicates when a tag comes from html markup.
+     * 
+     */
+    private final boolean _htmlMarkupTag;
 
     public MetaRulesetImpl(Tag tag, Class<?> type)
     {
@@ -143,6 +151,7 @@ public final class MetaRulesetImpl extends MetaRuleset
             PassThroughLibrary.NAMESPACE);
         TagAttribute[] passthroughAttributeAlias = _tag.getAttributes().getAll(
             PassThroughLibrary.ALIAS_NAMESPACE);
+        boolean htmlMarkupTag = false;
         
         if (passthroughAttribute.length > 0 ||
             passthroughAttributeAlias.length > 0)
@@ -160,6 +169,10 @@ public final class MetaRulesetImpl extends MetaRuleset
                 {
                     _passthroughAttributes[i] = attribute;
                     i++;
+                    if (Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY.equals(attribute.getLocalName()))
+                    {
+                        htmlMarkupTag = true;
+                    }
                 }
                 else
                 {
@@ -176,6 +189,8 @@ public final class MetaRulesetImpl extends MetaRuleset
                 _attributes.put(attribute.getLocalName(), attribute);
             }
         }
+        
+        _htmlMarkupTag = htmlMarkupTag;
 
         // add default rules
         _rules.add(BeanPropertyTagRule.INSTANCE);
@@ -229,40 +244,100 @@ public final class MetaRulesetImpl extends MetaRuleset
         
         assert !_rules.isEmpty();
         
-        if (!_attributes.isEmpty())
+        if (_htmlMarkupTag)
         {
-            target = this._getMetadataTarget();
-            int ruleEnd = _rules.size() - 1;
-
-            // now iterate over attributes
-            for (Map.Entry<String, TagAttribute> entry : _attributes.entrySet())
+            // HTML markup component
+            if (!_attributes.isEmpty())
             {
-                Metadata data = null;
+                target = this._getMetadataTarget();
+                int ruleEnd = _rules.size() - 1;
+                int ptRuleEnd = _passthroughRules.size() - 1;
 
-                int i = ruleEnd;
-
-                // First loop is always safe
-                do
+                // now iterate over attributes
+                for (Map.Entry<String, TagAttribute> entry : _attributes.entrySet())
                 {
-                    MetaRule rule = _rules.get(i);
-                    data = rule.applyRule(entry.getKey(), entry.getValue(), target);
-                    i--;
-                } while (data == null && i >= 0);
+                    Metadata data = null;
 
-                if (data == null)
-                {
-                    if (log.isLoggable(Level.SEVERE))
+                    Method m = target.getWriteMethod(entry.getKey());
+
+                    // if the property is writable
+                    if (m != null)
                     {
-                        log.severe(entry.getValue() + " Unhandled by MetaTagHandler for type " + _type.getName());
+                        int i = ruleEnd;
+                    
+                        // Apply as a normal attribute
+                        // First loop is always safe
+                        do
+                        {
+                            MetaRule rule = _rules.get(i);
+                            data = rule.applyRule(entry.getKey(), entry.getValue(), target);
+                            i--;
+                        } while (data == null && i >= 0);
                     }
-                }
-                else
-                {
-                    _mappers.add(data);
+                    else if (ptRuleEnd >= 0)
+                    {
+                        // Apply as passthrough attribute
+                        int i = ptRuleEnd;
+                        
+                        do
+                        {
+                            MetaRule rule = _passthroughRules.get(i);
+                            data = rule.applyRule(entry.getKey(), entry.getValue(), target);
+                            i--;
+                        } while (data == null && i >= 0);
+                    }
+                    
+                    if (data == null)
+                    {
+                        if (log.isLoggable(Level.SEVERE))
+                        {
+                            log.severe(entry.getValue() + " Unhandled by MetaTagHandler for type " + _type.getName());
+                        }
+                    }
+                    else
+                    {
+                        _mappers.add(data);
+                    }
                 }
             }
         }
-        
+        else
+        {
+            if (!_attributes.isEmpty())
+            {
+                target = this._getMetadataTarget();
+                int ruleEnd = _rules.size() - 1;
+
+                // now iterate over attributes
+                for (Map.Entry<String, TagAttribute> entry : _attributes.entrySet())
+                {
+                    Metadata data = null;
+
+                    int i = ruleEnd;
+
+                    // First loop is always safe
+                    do
+                    {
+                        MetaRule rule = _rules.get(i);
+                        data = rule.applyRule(entry.getKey(), entry.getValue(), target);
+                        i--;
+                    } while (data == null && i >= 0);
+
+                    if (data == null)
+                    {
+                        if (log.isLoggable(Level.SEVERE))
+                        {
+                            log.severe(entry.getValue() + " Unhandled by MetaTagHandler for type " + _type.getName());
+                        }
+                    }
+                    else
+                    {
+                        _mappers.add(data);
+                    }
+                }
+            }
+        }
+
         if (_passthroughAttributes.length > 0 &&
             _passthroughRules.size() > 0)
         {
@@ -302,7 +377,7 @@ public final class MetaRulesetImpl extends MetaRuleset
                 }
             }
         }
-
+            
         if (_mappers.isEmpty())
         {
             return NONE;

@@ -261,10 +261,24 @@ public class DefaultTagDecorator implements TagDecorator
     
     private TagAttributes convertTagAttributes(Tag tag)
     {
+        TagAttribute[] sourceTagAttributes = tag.getAttributes().getAll();
+        
+        String elementNameTagLocalName = tag.getLocalName();
+        if ("element".equals(tag.getLocalName()) &&
+            JSF_NAMESPACE.equals(tag.getNamespace()) || JSF_ALIAS_NAMESPACE.equals(tag.getNamespace()))
+        {
+            // In jsf:element tag, the attribute elementName is required, so from this point we can
+            // assume that elementName has been set. But we need to enable the special treatement
+            // for attribute in jsf:element, so the way to do it is 
+            TagAttribute elemNameAttr = tag.getAttributes().get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
+            if (elemNameAttr != null)
+            {
+                elementNameTagLocalName = elemNameAttr.getValue();
+            }
+        }        
         TagAttribute elementNameTagAttribute = new TagAttributeImpl(
             tag.getLocation(), PASS_THROUGH_NAMESPACE , Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY,
-            P_ELEMENTNAME, tag.getLocalName() );
-        TagAttribute[] sourceTagAttributes = tag.getAttributes().getAll();
+            P_ELEMENTNAME, elementNameTagLocalName );
         
         // FIXME: Doing a black box test over Mojarra it was found that passthrough
         // attributes are added to both passthrough map and normal attribute map. It seems
@@ -275,6 +289,7 @@ public class DefaultTagDecorator implements TagDecorator
         
         // 1. Count how many attributes requires to be duplicated
         int duplicateCount = 0;
+        /*
         for (int i = 0; i < sourceTagAttributes.length; i++)
         {
             TagAttribute tagAttribute = sourceTagAttributes[i];
@@ -295,12 +310,13 @@ public class DefaultTagDecorator implements TagDecorator
             {
                 duplicateCount++;
             }
-        }
+        }*/
         
         TagAttribute[] convertedTagAttributes = new TagAttribute[
             sourceTagAttributes.length+1+duplicateCount];
         boolean elementNameTagAttributeSet = false;
         int j = 0;
+
         for (int i = 0; i < sourceTagAttributes.length; i++)
         {
             TagAttribute tagAttribute = sourceTagAttributes[i];
@@ -319,35 +335,54 @@ public class DefaultTagDecorator implements TagDecorator
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
                 
+                /*
                 if (!isReservedJSFAttribute(qname))
                 {
                     j++;
                     // Duplicate passthrough
+                    // -= Leonardo Uribe =- After discussion with Ed Burns and Frank Caputo, the reason is jsf 
+                    // namespace in an attribute is used to convert the tag into jsf:element, so there are cases
+                    // where you want the attribute to be passed into the passthrough attribute map instead the
+                    // normal attribute map. It is not expected to override jsf:element because this is a 
+                    // special component used to output markup, so it has been defined the attribute names that
+                    // does not require this duplication. It was also found that for the remaining cases, copy
+                    // the passthrough attribute does not have any effect, because by effect of the renderer
+                    // associated to the component these attribute are passed through by the renderer code and
+                    // time later when the passthrough attributes are rendered, there is a check that indicates
+                    // that the attribute has been already rendered.
                     convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                         PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
                         "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());
-                }
+                }*/
             }
             else if (namespace == null)
             {
                 // should not happen, but let it because org.xml.sax.Attributes considers it
+                // -= Leonardo Uribe =- after conversation with Frank Caputo, who was the main contributor for
+                // this feature in JSF 2.2, he said that if the namespace is empty the intention is pass the
+                // attribute to the passthrough attribute map, so there is an error in the spec documentation.
                 convertedTagAttributes[j] = tagAttribute;
+                /*
                 j++;
                 // Duplicate passthrough
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
-                    "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());
+                    "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());*/
             }
             else if (tagAttribute.getNamespace().length() == 0)
             {
                 // "... If the current attribute's namespace is empty 
                 // let the current attribute be convertedTagAttribute. ..."
+                // -= Leonardo Uribe =- after conversation with Frank Caputo, who was the main contributor for
+                // this feature in JSF 2.2, he said that if the namespace is empty the intention is pass the
+                // attribute to the passthrough attribute map, so there is an error in the spec documentation.
                 convertedTagAttributes[j] = tagAttribute;
+                /*
                 j++;
                 // Duplicate passthrough
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
-                    "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());
+                    "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());*/
             }
             else if (!tag.getNamespace().equals(tagAttribute.getNamespace()))
             {

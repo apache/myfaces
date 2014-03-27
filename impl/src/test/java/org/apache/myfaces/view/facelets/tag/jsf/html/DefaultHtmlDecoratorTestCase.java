@@ -336,13 +336,21 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testConvertTagAttributes1.xhtml");
 
+        //<input jsf:id="box1" type="text"
+        //       jsf:value="#{test.value}" jsf:customAttr="SomeValue"
+        //       onclick="alert('hello')"
+        //       placeholder="Enter text" 
+        //       pt:data_up="Going Up"/>
         UIInput input1 = (UIInput) root.findComponent("myForm:box1");
         Assert.assertNotNull(input1);
         
         Assert.assertEquals(input1.getPassThroughAttributes().get("placeholder"), "Enter text");
-        Assert.assertEquals(input1.getAttributes().get("placeholder"), "Enter text");
+        //Assert.assertEquals(input1.getAttributes().get("placeholder"), "Enter text");
+        Assert.assertNull(input1.getAttributes().get("placeholder"));
         
-        Assert.assertEquals(input1.getAttributes().get("customAttr"), "SomeValue");
+        
+        //Assert.assertEquals(input1.getAttributes().get("customAttr"), "SomeValue");
+        Assert.assertNull(input1.getAttributes().get("customAttr"));
         // Attributes outside "id", "binding", "rendered" or "transient" can be 
         // copied on passthrough attribute map.
         Assert.assertEquals(input1.getPassThroughAttributes().get("customAttr"), "SomeValue");
@@ -351,59 +359,91 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         Assert.assertNull(input1.getAttributes().get("data_up"));
         
         Assert.assertNotNull(input1.getValueExpression("value"));
-        Assert.assertNotNull(input1.getPassThroughAttributes().get("value"));
+        //Assert.assertNotNull(input1.getPassThroughAttributes().get("value"));
+        Assert.assertNull(input1.getPassThroughAttributes().get("value"));
         Assert.assertEquals(input1.getValue(), "value1");
         Assert.assertEquals(input1.getAttributes().get("value"), "value1");
         
+        //<input jsf:id="box2" pt:elementName="meter"
+        //       jsf:value="#{test.value}" jsf:customAttr="SomeValue"
+        //       onclick="alert('hello')"
+        //       placeholder="Enter text" 
+        //       pt:data_up="Going Up">Hello World!</input>
         UIComponent input2 = root.findComponent("myForm:box2");
         Assert.assertFalse(input2 instanceof UIInput);
         Assert.assertEquals(input2.getRendererType(), "javax.faces.passthrough.Element");
         
         Assert.assertEquals(input2.getPassThroughAttributes().get("placeholder"), "Enter text");
-        Assert.assertEquals(input2.getAttributes().get("placeholder"), "Enter text");
+        //Assert.assertEquals(input2.getAttributes().get("placeholder"), "Enter text");
+        Assert.assertNull(input2.getAttributes().get("placeholder"));
         
-        Assert.assertEquals(input2.getAttributes().get("customAttr"), "SomeValue");
+        //Assert.assertEquals(input2.getAttributes().get("customAttr"), "SomeValue");
+        Assert.assertNull(input2.getAttributes().get("customAttr"));
         Assert.assertEquals(input2.getPassThroughAttributes().get("customAttr"), "SomeValue");
         
         Assert.assertEquals(input2.getPassThroughAttributes().get("data_up"), "Going Up");
         Assert.assertNull(input2.getAttributes().get("data_up"));
         
-        Assert.assertNotNull(input2.getValueExpression("value"));
+        // note there is no type attribute, so it is translated into a jsf:element, and in that
+        // component, "value" is not defined, so it is set as passthrough
+        Assert.assertNull(input2.getValueExpression("value"));
         Assert.assertNotNull(input2.getPassThroughAttributes().get("value"));
-        Assert.assertEquals(input2.getAttributes().get("value"), "value1");
+        Assert.assertNull(input2.getAttributes().get("value"));
         
+        //<jsf:element id="box3" elementName="meter" 
+        //       value="#{test.value}" jsf:customAttr="SomeValue"
+        //       onclick="alert('hello')"
+        //       placeholder="Enter text" 
+        //       pt:data_up="Going Up">
+        //       Hello Element!
+        //</jsf:element>
         UIComponent input3 = root.findComponent("myForm:box3");
         Assert.assertFalse(input3 instanceof UIInput);
         Assert.assertEquals(input3.getRendererType(), "javax.faces.passthrough.Element");     
         
         Assert.assertEquals(input3.getPassThroughAttributes().get("placeholder"), "Enter text");
-        Assert.assertEquals(input3.getAttributes().get("placeholder"), "Enter text");
+        Assert.assertNull(input3.getAttributes().get("placeholder"));
         
-        Assert.assertEquals(input2.getAttributes().get("customAttr"), "SomeValue");
-        Assert.assertEquals(input2.getPassThroughAttributes().get("customAttr"), "SomeValue");
+        Assert.assertNull(input3.getAttributes().get("customAttr"));
+        Assert.assertEquals(input3.getPassThroughAttributes().get("customAttr"), "SomeValue");
         
         Assert.assertEquals(input3.getPassThroughAttributes().get("data_up"), "Going Up");
         Assert.assertNull(input3.getAttributes().get("data_up"));
         
-        Assert.assertNotNull(input3.getValueExpression("value"));
+        Assert.assertNull(input3.getValueExpression("value"));
         Assert.assertNotNull(input3.getPassThroughAttributes().get("value"));
-        Assert.assertEquals(input3.getAttributes().get("value"), "value1");
+        Assert.assertNull(input3.getAttributes().get("value"));
         
         //Assert.assertEquals(input2.getPassThroughAttributes().get("elementName"), "meter");
         
+        //<h:panelGroup id="box4">
+        //<div jsf:class="noprint">
+        //    MYBOX4
+        //</div>
+        //</h:panelGroup>
         UIComponent box4 = root.findComponent("myForm:box4");
         Assert.assertNotNull(box4);
         UIComponent boxDiv4 = box4.getChildren().get(0);
         Assert.assertNotNull(boxDiv4);
         Assert.assertEquals(boxDiv4.getAttributes().get("styleClass"), "noprint");
-        Assert.assertEquals(boxDiv4.getPassThroughAttributes().get("class"), "noprint");
+        //Assert.assertEquals(boxDiv4.getPassThroughAttributes().get("class"), "noprint");
+        Assert.assertNull(boxDiv4.getPassThroughAttributes().get("class"));
         
+        //<h:panelGroup id="box5">
+        //<div jsf:style="noprint">
+        //    MYBOX5
+        //</div>
+        //</h:panelGroup>
         UIComponent box5 = root.findComponent("myForm:box5");
         Assert.assertNotNull(box5);
         UIComponent boxDiv5 = box5.getChildren().get(0);
         Assert.assertNotNull(boxDiv5);
-        Assert.assertEquals(boxDiv5.getAttributes().get("style"), "noprint");
+        Assert.assertNull(boxDiv5.getAttributes().get("style"));
         Assert.assertEquals(boxDiv5.getPassThroughAttributes().get("style"), "noprint");
+        
+        UIComponent box6 = root.findComponent("myForm:box6");
+        Assert.assertNotNull(box6);
+        Assert.assertEquals(box6.getAttributes().get("onclick"), "alert('hello')");
         
         StringWriter sw = new StringWriter();
         
@@ -516,6 +556,46 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
             Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
         }
         Assert.assertTrue(sw.toString().contains("MYBOX5"));
+        Assert.assertTrue(sw.toString().contains("<div "));
+        Assert.assertTrue(sw.toString().contains("</div>"));
+        
+        // TEST 6
+        
+        sw = new StringWriter();
+        mrw = new HtmlResponseWriterImpl(sw, "text/html", "UTF-8");
+        facesContext.setResponseWriter(mrw);
+        
+        box6.encodeAll(facesContext);
+        
+        sw.flush();
+
+        //<div jsf:id="box6" onclick="alert('hello')">
+        //    <f:ajax event="click" render="box5"/>
+        //    MYBOX6
+        //</div>
+        // Try second time, to avoid the script section by f:ajax effect
+        sw = new StringWriter();
+        mrw = new HtmlResponseWriterImpl(sw, "text/html", "UTF-8");
+        facesContext.setResponseWriter(mrw);
+        
+        box6.encodeAll(facesContext);
+        
+        sw.flush();        
+        attrs = new HtmlRenderedAttr[]{
+            new HtmlRenderedAttr("onclick", 
+                    "jsf.util.chain(document.getElementById('myForm:box6'), event,'alert(\\'hello\\')', "
+                    + "'jsf.ajax.request(\\'myForm:box6\\',event,{render:\\'myForm:box5 \\',"
+                            + "\\'javax.faces.behavior.event\\':\\'click\\'})');"),
+        };
+        
+        
+        
+        HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
+        if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs))
+        {
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
+        }
+        Assert.assertTrue(sw.toString().contains("MYBOX6"));
         Assert.assertTrue(sw.toString().contains("<div "));
         Assert.assertTrue(sw.toString().contains("</div>"));
     }  
