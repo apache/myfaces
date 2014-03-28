@@ -302,8 +302,8 @@ public class AbstractJsfTestContainer
         {
             return testConfig.webappResourcePath();
         }
-        return this.getClass().getName().substring(0,
-                this.getClass().getName().lastIndexOf('.')).replace('.', '/')
+        return getTestJavaClass().getName().substring(0,
+                getTestJavaClass().getName().lastIndexOf('.')).replace('.', '/')
                 + "/";
     }
     

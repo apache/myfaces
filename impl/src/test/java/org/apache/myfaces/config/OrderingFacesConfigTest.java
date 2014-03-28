@@ -417,6 +417,171 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         //printFacesConfigList("Sorted List", sortedList);
     }
 
+    public void testBeforeOthers1() throws Exception
+    {
+        FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");
+        FacesConfig cfgB = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");
+        FacesConfig cfgC = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "before-others-config.xml"), "before-others-config.xml");
+        FacesConfig cfgD = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");        
+        FacesConfig cfgE = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");        
+        
+        List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+        appConfigResources.add(cfgA);
+        appConfigResources.add(cfgB);
+        appConfigResources.add(cfgC);
+        appConfigResources.add(cfgD);
+        appConfigResources.add(cfgE);
+        
+        //Brute force       
+        for (int i = 0; i < 30; i++)
+        {
+            Collections.shuffle(appConfigResources);
+            List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
+            
+            assertEquals(cfgC, sortedList.get(0));
+        }
+    }
+
+    public void testAfterOthers1() throws Exception
+    {
+        FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");
+        FacesConfig cfgB = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");
+        FacesConfig cfgC = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "after-others-config.xml"), "after-others-config.xml");
+        FacesConfig cfgD = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");        
+        FacesConfig cfgE = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");        
+        
+        List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+        appConfigResources.add(cfgA);
+        appConfigResources.add(cfgB);
+        appConfigResources.add(cfgC);
+        appConfigResources.add(cfgD);
+        appConfigResources.add(cfgE);
+        
+        //Brute force       
+        for (int i = 0; i < 30; i++)
+        {
+            Collections.shuffle(appConfigResources);
+            List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
+            
+            assertEquals(cfgC, sortedList.get(sortedList.size()-1));
+        }
+    }
+    
+    public void testBeforeOthers2() throws Exception
+    {
+        FacesConfig cfg1 = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");
+        FacesConfig cfg2 = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");
+        FacesConfig cfg3 = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "before-others-config.xml"), "before-others-config.xml");
+        FacesConfig cfg4 = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");        
+        FacesConfig cfg5 = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "no-name-config.xml"), "no-name-config.xml");     
+        FacesConfig cfgA = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "transitive-a-config.xml"), "transitive-a-config.xml");
+        FacesConfig cfgB = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "transitive-b-config.xml"), "transitive-b-config.xml");
+        FacesConfig cfgC = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "transitive-c-config.xml"), "transitive-c-config.xml");
+        FacesConfig cfg6 = _impl.getFacesConfig(getClass().getResourceAsStream(
+            "after-others-config.xml"), "after-others-config.xml");
+        
+        
+        List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+        appConfigResources.add(cfgA);
+        appConfigResources.add(cfgB);
+        appConfigResources.add(cfgC);
+        appConfigResources.add(cfg1);
+        appConfigResources.add(cfg2);
+        appConfigResources.add(cfg3);
+        appConfigResources.add(cfg4);
+        appConfigResources.add(cfg5);
+        appConfigResources.add(cfg6);
+        
+        //Brute force       
+        for (int i = 0; i < 30; i++)
+        {
+            Collections.shuffle(appConfigResources);
+            List<FacesConfig> sortedList = applyFullAlgorithm(appConfigResources);
+            
+            assertEquals(cfg3, sortedList.get(0));
+            
+            assertEquals(cfg6, sortedList.get(sortedList.size()-1));
+        }
+    }
+    
+    public List<FacesConfig> applyFullAlgorithm(List<FacesConfig> appConfigResources) throws FacesException
+    {    
+        DefaultFacesConfigurationMerger merger = new DefaultFacesConfigurationMerger();
+        
+        System.out.println("");
+        System.out.print("Start List: [");
+        for (int i = 0; i < appConfigResources.size();i++)
+        {
+            if (appConfigResources.get(i).getName() == null)
+            {
+                System.out.print("No id,");
+            }
+            else
+            {
+                System.out.print(appConfigResources.get(i).getName()+",");
+            }
+        }
+        System.out.println("]");
+        
+        List<FacesConfig> postOrderedList = merger.getPostOrderedList(appConfigResources);
+        
+        System.out.print("Pre-Ordered-List: [");
+        for (int i = 0; i < postOrderedList.size();i++)
+        {
+            if (postOrderedList.get(i).getName() == null)
+            {
+                System.out.print("No id,");
+            }
+            else
+            {
+                System.out.print(postOrderedList.get(i).getName()+",");
+            }
+        }
+        System.out.println("]");
+        
+        List<FacesConfig> sortedList = merger.sortRelativeOrderingList(postOrderedList);
+
+        if (sortedList == null)
+        {
+            System.out.print("After Fix ");
+            //The previous algorithm can't sort correctly, try this one
+            sortedList = merger.applySortingAlgorithm(appConfigResources);
+        }
+        
+        System.out.print("Sorted-List: [");
+        for (int i = 0; i < sortedList.size();i++)
+        {
+            if (sortedList.get(i).getName() == null)
+            {
+                System.out.print("No id,");
+            }
+            else
+            {
+                System.out.print(sortedList.get(i).getName()+",");
+            }
+        }
+        System.out.println("]");
+        
+        return sortedList;
+    }
     /*
     public void applyAlgorithm(List<FacesConfig> appConfigResources) throws FacesException
     {
