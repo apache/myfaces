@@ -876,7 +876,19 @@ public abstract class UIComponent
                     SystemEventListener listener = listeners.get(i);
                     if (listener.isListenerForSource(this))
                     {
-                        listener.processEvent(event);
+                        // Check if the listener points again to the component, to
+                        // avoid StackoverflowException
+                        boolean shouldProcessEvent = true;
+                        if (listener instanceof EventListenerWrapper && 
+                            ((EventListenerWrapper)listener).listenerCapability == 
+                                EventListenerWrapper.LISTENER_TYPE_COMPONENT)
+                        {
+                            shouldProcessEvent = false;
+                        }
+                        if (shouldProcessEvent)
+                        {
+                            listener.processEvent(event);
+                        }
                     }
                 }
             }

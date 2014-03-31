@@ -30,6 +30,7 @@ import javax.faces.component.html.HtmlDataTable;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
+import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent1;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CheckActionEventBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachBean;
@@ -1838,4 +1839,35 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         endRequest();
     }
 
+    /**
+     * Check for StackoverflowException when this subscription:
+     * 
+     * @ListenerFor(systemEventClass = PostRestoreStateEvent.class)
+     * 
+     * is used.
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testSimpleComponent1() throws Exception
+    {
+        startViewRequest("/simpleComponent1.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
+        Assert.assertNotNull(comp);
+        Assert.assertTrue(comp instanceof UISimpleComponent1);
+        //Assert.assertEquals(1, comp.getChildCount());
+        //Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecuteAndRender();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:component");
+        Assert.assertNotNull(comp);
+        Assert.assertTrue(comp instanceof UISimpleComponent1);
+
+        endRequest();
+    }
 }
