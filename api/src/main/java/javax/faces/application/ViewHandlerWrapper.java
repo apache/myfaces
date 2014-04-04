@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
@@ -132,5 +133,22 @@ public abstract class ViewHandlerWrapper extends ViewHandler
         return getWrapped().getViewDeclarationLanguage(context, viewId);
     }
 
-    
+    @Override
+    public Set<String> getProtectedViewsUnmodifiable()
+    {
+        return getWrapped().getProtectedViewsUnmodifiable();
+    }
+
+    @Override
+    public boolean removeProtectedView(String urlPattern)
+    {
+        return getWrapped().removeProtectedView(urlPattern);
+    }
+
+    @Override
+    public void addProtectedView(String urlPattern)
+    {
+        getWrapped().addProtectedView(urlPattern);
+    }
+
 }

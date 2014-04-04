@@ -63,4 +63,41 @@ public abstract class ResourceWrapper extends Resource
     }
     
     public abstract Resource getWrapped();
+
+    @Override
+    public void setResourceName(String resourceName)
+    {
+        getWrapped().setResourceName(resourceName);
+    }
+
+    @Override
+    public void setLibraryName(String libraryName)
+    {
+        getWrapped().setLibraryName(libraryName);
+    }
+
+    @Override
+    public void setContentType(String contentType)
+    {
+        getWrapped().setContentType(contentType);
+    }
+
+    @Override
+    public String getResourceName()
+    {
+        return getWrapped().getResourceName();
+    }
+
+    @Override
+    public String getLibraryName()
+    {
+        return getWrapped().getLibraryName();
+    }
+
+    @Override
+    public String getContentType()
+    {
+        return getWrapped().getContentType();
+    }
+
 }

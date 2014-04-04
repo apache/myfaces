@@ -43,6 +43,7 @@ import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import javax.faces.flow.FlowHandler;
 import javax.faces.validator.Validator;
 
 /**
@@ -429,6 +430,18 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
     {
         getWrapped().unsubscribeFromEvent(systemEventClass, listener);
+    }
+
+    @Override
+    public void setFlowHandler(FlowHandler flowHandler)
+    {
+        getWrapped().setFlowHandler(flowHandler);
+    }
+
+    @Override
+    public FlowHandler getFlowHandler()
+    {
+        return getWrapped().getFlowHandler();
     }
 
 }

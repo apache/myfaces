@@ -255,4 +255,16 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
         return getWrapped().getNamingContainerSeparatorChar();
     }
 
+    @Override
+    public void setResourceLibraryContracts(List<String> contracts)
+    {
+        getWrapped().setResourceLibraryContracts(contracts);
+    }
+
+    @Override
+    public List<String> getResourceLibraryContracts()
+    {
+        return getWrapped().getResourceLibraryContracts();
+    }
+
 }

@@ -142,4 +142,15 @@ public abstract class ResponseWriterWrapper extends ResponseWriter implements Fa
         getWrapped().writeURIAttribute(name, value, property);
     }
 
+    @Override
+    public void writeDoctype(String doctype) throws IOException
+    {
+        getWrapped().writeDoctype(doctype);
+    }
+
+    @Override
+    public void writePreamble(String preamble) throws IOException
+    {
+        getWrapped().writePreamble(preamble);
+    }
 }

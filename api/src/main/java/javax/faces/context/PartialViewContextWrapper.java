@@ -109,4 +109,11 @@ public abstract class PartialViewContextWrapper extends PartialViewContext imple
     {
         return getWrapped().isResetValues();
     }
+
+    @Override
+    public void setPartialRequest(boolean isPartialRequest)
+    {
+        getWrapped().setPartialRequest(isPartialRequest);
+    }
+    
 }

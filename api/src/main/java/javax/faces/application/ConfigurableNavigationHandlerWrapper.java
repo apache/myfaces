@@ -68,5 +68,12 @@ public abstract class ConfigurableNavigationHandlerWrapper extends ConfigurableN
         getWrapped().handleNavigation(context, fromAction, outcome, toFlowDocumentId);
     }
 
+    @Override
+    public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome, 
+            String toFlowDocumentId)
+    {
+        return getWrapped().getNavigationCase(context, fromAction, outcome, toFlowDocumentId);
+    }
+
     public abstract ConfigurableNavigationHandler getWrapped();
 }
