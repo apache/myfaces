@@ -30,7 +30,8 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.renderkit.html.util.SelectItemInfo;
+import org.apache.myfaces.shared.renderkit.html.util.SelectItemsUtils;
 
 public class HtmlSelectableRendererBase extends HtmlRenderer
 {
@@ -55,16 +56,15 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         }
         writer.writeAttribute(HTML.NAME_ATTR,
                 uiComponent.getClientId(facesContext), null);
-        List selectItemList;
+        List<SelectItemInfo> selectItemList;
         if (selectMany)
         {
             writer.writeAttribute(HTML.MULTIPLE_ATTR, HTML.MULTIPLE_ATTR, null);
-            selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils
-                    .getSelectItemList((UISelectMany) uiComponent, facesContext);
+            selectItemList = SelectItemsUtils.getSelectItemInfoList((UISelectMany) uiComponent, facesContext);
         }
         else
         {
-            selectItemList = RendererUtils.getSelectItemList(
+            selectItemList = SelectItemsUtils.getSelectItemInfoList(
                     (UISelectOne) uiComponent, facesContext);
         }
 
@@ -157,7 +157,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         Set lookupSet = HtmlRendererUtils.getSubmittedOrSelectedValuesAsSet(selectMany,
                 uiComponent, facesContext, converter);
 
-        HtmlRendererUtils.renderSelectOptions(facesContext, uiComponent, converter, lookupSet,
+        SelectItemsUtils.renderSelectOptions(facesContext, uiComponent, converter, lookupSet,
                 selectItemList);
         // bug #970747: force separate end tag
         writer.writeText(HtmlRendererUtils.STR_EMPTY, null);

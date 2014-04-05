@@ -40,6 +40,8 @@ import javax.faces.model.SelectItemGroup;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.renderkit.html.util.SelectItemInfo;
+import org.apache.myfaces.shared.renderkit.html.util.SelectItemsUtils;
 
 public class HtmlRadioRendererBase
         extends HtmlRenderer
@@ -109,7 +111,7 @@ public class HtmlRadioRendererBase
         }
 
         Converter converter;
-        List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
+        List<SelectItemInfo> selectItemList = SelectItemsUtils.getSelectItemInfoList(
                 selectOne, facesContext);
         converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
         
@@ -119,12 +121,13 @@ public class HtmlRadioRendererBase
 
         int itemNum = 0;
 
-        for (Iterator it = selectItemList.iterator(); it.hasNext(); )
+        for (Iterator<SelectItemInfo> it = selectItemList.iterator(); it.hasNext(); )
         {
-            SelectItem selectItem = (SelectItem)it.next();
+            SelectItemInfo selectItemInfo = (SelectItemInfo)it.next();
+            SelectItem selectItem = selectItemInfo.getItem();
 
             itemNum = renderGroupOrItemRadio(facesContext, selectOne,
-                                             selectItem, currentValue,
+                                             selectItem, selectItemInfo.getComponent(), currentValue,
                                              converter, pageDirectionLayout, itemNum);
         }
 
@@ -157,13 +160,23 @@ public class HtmlRadioRendererBase
          return (String)selectOne.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR);
      }
 
-
     /**
      * Renders the given SelectItem(Group)
      * @return the itemNum for the next item
      */
     protected int renderGroupOrItemRadio(FacesContext facesContext,
                                          UIComponent uiComponent, SelectItem selectItem,
+                                         Object currentValue,
+                                         Converter converter, boolean pageDirectionLayout,
+                                         Integer itemNum) throws IOException
+    {
+        return renderGroupOrItemRadio(facesContext, uiComponent, selectItem, null, 
+                currentValue, converter, pageDirectionLayout, itemNum);
+    }
+
+    protected int renderGroupOrItemRadio(FacesContext facesContext,
+                                         UIComponent uiComponent, SelectItem selectItem, 
+                                         UIComponent selectItemComponent,
                                          Object currentValue,
                                          Converter converter, boolean pageDirectionLayout,
                                          Integer itemNum) throws IOException
@@ -264,7 +277,7 @@ public class HtmlRadioRendererBase
     
             boolean itemDisabled = selectItem.isDisabled();
     
-            String itemId = renderRadio(facesContext, selectOne, itemStrValue, itemDisabled, 
+            String itemId = renderRadio(facesContext, selectOne, itemStrValue, selectItemComponent, itemDisabled, 
                     itemChecked, false, itemNum);
     
             // label element after the input
@@ -297,6 +310,18 @@ public class HtmlRadioRendererBase
         renderRadio(facesContext, (UIInput) uiComponent, value, disabled, checked, renderId, 0);
     }
 
+    
+    protected String renderRadio(FacesContext facesContext,
+                               UIInput uiComponent,
+                               String value,
+                               boolean disabled,
+                               boolean checked,
+                               boolean renderId,
+                               Integer itemNum)
+            throws IOException
+    {
+        return renderRadio(facesContext, uiComponent, value, null, disabled, checked, renderId, itemNum);
+    }    
     /**
      * Renders the input item
      * @return the 'id' value of the rendered element
@@ -304,6 +329,7 @@ public class HtmlRadioRendererBase
     protected String renderRadio(FacesContext facesContext,
                                UIInput uiComponent,
                                String value,
+                               UIComponent selectItemComponent,
                                boolean disabled,
                                boolean checked,
                                boolean renderId,
@@ -317,7 +343,7 @@ public class HtmlRadioRendererBase
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
-        writer.startElement(HTML.INPUT_ELEM, uiComponent);
+        writer.startElement(HTML.INPUT_ELEM, selectItemComponent);
 
         if (itemId != null)
         {

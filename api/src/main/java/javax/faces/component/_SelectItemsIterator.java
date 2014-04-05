@@ -55,6 +55,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
     private final Iterator<UIComponent> _children;
     private Iterator<?> _nestedItems;
     private SelectItem _nextItem;
+    private UIComponent _currentComponent;
     private UISelectItems _currentUISelectItems;
     private FacesContext _facesContext;
 
@@ -80,6 +81,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                 return true;
             }
             _nestedItems = null;
+            _currentComponent = null;
         }
         if (_children.hasNext())
         {
@@ -132,12 +134,14 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                             + getPathToComponent(child) + " does not reference an Object of type SelectItem");
                 }
                 _nextItem = (SelectItem) item;
+                _currentComponent = child;
                 return true;
             }
             else if (child instanceof UISelectItems)
             {
                 _currentUISelectItems = ((UISelectItems) child);
                 Object value = _currentUISelectItems.getValue();
+                _currentComponent = child;
 
                 if (value instanceof SelectItem)
                 {
@@ -196,6 +200,10 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                                 });
                     }
                 }
+            }
+            else
+            {
+                _currentComponent = null;
             }
         }
         return false;
@@ -296,6 +304,11 @@ class _SelectItemsIterator implements Iterator<SelectItem>
         throw new UnsupportedOperationException();
     }
     
+    public UIComponent getCurrentComponent()
+    {
+        return _currentComponent;
+    }
+
     private boolean getBooleanAttribute(UIComponent component, String attrName, boolean defaultValue)
     {
         Object value = component.getAttributes().get(attrName);
