@@ -42,8 +42,6 @@ import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.renderkit.html.util.SelectItemInfo;
-import org.apache.myfaces.shared.renderkit.html.util.SelectItemsUtils;
 
 public class HtmlCheckboxRendererBase extends HtmlRenderer
 {
@@ -76,7 +74,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             Boolean value = org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanValue( uiComponent );
             boolean isChecked = value != null ? value.booleanValue() : false;
-            renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, uiComponent, false,isChecked, true, null); 
+            renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, false,isChecked, true, null); 
                 //TODO: the selectBoolean is never disabled
         }
         else if (uiComponent instanceof UISelectMany)
@@ -153,16 +151,14 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
         int itemNum = 0;
 
-        for (Iterator it = SelectItemsUtils.getSelectItemInfoList(
+        for (Iterator it = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
                 selectMany, facesContext)
                 .iterator(); it.hasNext();)
         {
-            SelectItemInfo selectItemInfo = (SelectItemInfo) it.next();
-            SelectItem selectItem = (SelectItem) selectItemInfo.getItem();
+            SelectItem selectItem = (SelectItem) it.next();
             
             itemNum = renderGroupOrItemCheckbox(facesContext, selectMany, 
-                                                selectItem, selectItemInfo.getComponent(),
-                                                useSubmittedValues, lookupSet, 
+                                                selectItem, useSubmittedValues, lookupSet, 
                                                 converter, pageDirectionLayout, itemNum);
         }
 
@@ -198,17 +194,6 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
      */
     protected int renderGroupOrItemCheckbox(FacesContext facesContext,
                                              UIComponent uiComponent, SelectItem selectItem,
-                                             boolean useSubmittedValues, Set lookupSet,
-                                             Converter converter, boolean pageDirectionLayout, 
-                                             Integer itemNum) throws IOException
-    {
-        return renderGroupOrItemCheckbox(facesContext, uiComponent, selectItem, null, useSubmittedValues, lookupSet, 
-                converter, pageDirectionLayout, itemNum);
-    }
-    
-    protected int renderGroupOrItemCheckbox(FacesContext facesContext,
-                                             UIComponent uiComponent, SelectItem selectItem, 
-                                             UIComponent selectItemComponent,
                                              boolean useSubmittedValues, Set lookupSet,
                                              Converter converter, boolean pageDirectionLayout, 
                                              Integer itemNum) throws IOException
@@ -304,8 +289,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
             boolean disabled = selectItem.isDisabled();
 
-            String itemId = renderCheckbox(facesContext, selectMany, itemStrValue, selectItemComponent,
-                    disabled, checked, false, itemNum);
+            String itemId = renderCheckbox(facesContext, selectMany, itemStrValue, disabled, checked, false, itemNum);
 
             // label element after the input
             boolean componentDisabled = isDisabled(facesContext, selectMany);
@@ -339,16 +323,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
      * @return the 'id' value of the rendered element
      */
     protected String renderCheckbox(FacesContext facesContext,
-            UIComponent uiComponent, String value,
-            boolean disabled, boolean checked, 
-            boolean renderId, Integer itemNum) throws IOException
-    {
-        return renderCheckbox(facesContext, uiComponent, value, null, disabled, checked, renderId, itemNum);
-    }
-    
-    protected String renderCheckbox(FacesContext facesContext,
-            UIComponent uiComponent, String value, UIComponent selectItemComponent,
-            boolean disabled, boolean checked, 
+            UIComponent uiComponent, String value, boolean disabled, boolean checked, 
             boolean renderId, Integer itemNum) throws IOException
     {
         String clientId = uiComponent.getClientId(facesContext);
@@ -358,7 +333,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
-        writer.startElement(HTML.INPUT_ELEM, selectItemComponent);
+        writer.startElement(HTML.INPUT_ELEM, uiComponent);
 
         if (itemId != null)
         {
