@@ -32,7 +32,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
     defaultEventName = "click",
     defaultRendererType="javax.faces.passthrough.Element")
 abstract class _JsfElement extends UIPanel implements 
-    _EventProperties, _FocusBlurProperties, _ChangeSelectProperties
+    _EventProperties, _FocusBlurProperties, _ChangeSelectProperties, _StyleProperties
 {
     public static final String COMPONENT_FAMILY = "javax.faces.Panel";
     public static final String COMPONENT_TYPE = "oam.passthrough.Element";
@@ -50,11 +50,5 @@ abstract class _JsfElement extends UIPanel implements
      */
     @JSFProperty(clientEvent="unload")
     public abstract String getOnunload();
-    
-    /**
-     * The CSS class for this element.  Corresponds to the HTML 'class' attribute.
-     * 
-     */
-    @JSFProperty
-    public abstract String getStyleClass();
+
 }

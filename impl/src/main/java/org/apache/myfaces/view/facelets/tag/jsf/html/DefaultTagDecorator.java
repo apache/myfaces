@@ -184,15 +184,7 @@ public class DefaultTagDecorator implements TagDecorator
     public Tag decorate(Tag tag)
     {
         boolean jsfNamespaceFound = false;
-        // The tag is  <jsf:element ...> is an special case because all empty attributes should be copied 
-        // as passthrough attributes, like it was a markup attribute.
-        if (JSF_NAMESPACE.equals(tag.getNamespace()) || JSF_ALIAS_NAMESPACE.equals(tag.getNamespace()))
-        {
-            if ("element".equals(tag.getLocalName()))
-            {
-                return NO_MATCH_SELECTOR.decorate(tag, convertTagAttributes(tag));
-            }
-        }
+
         for (String namespace : tag.getAttributes().getNamespaces())
         {
             if (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace))
@@ -260,57 +252,17 @@ public class DefaultTagDecorator implements TagDecorator
     }
     
     private TagAttributes convertTagAttributes(Tag tag)
-    {
+    {        
         TagAttribute[] sourceTagAttributes = tag.getAttributes().getAll();
         
         String elementNameTagLocalName = tag.getLocalName();
-        if ("element".equals(tag.getLocalName()) &&
-            JSF_NAMESPACE.equals(tag.getNamespace()) || JSF_ALIAS_NAMESPACE.equals(tag.getNamespace()))
-        {
-            // In jsf:element tag, the attribute elementName is required, so from this point we can
-            // assume that elementName has been set. But we need to enable the special treatement
-            // for attribute in jsf:element, so the way to do it is 
-            TagAttribute elemNameAttr = tag.getAttributes().get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
-            if (elemNameAttr != null)
-            {
-                elementNameTagLocalName = elemNameAttr.getValue();
-            }
-        }        
+
         TagAttribute elementNameTagAttribute = new TagAttributeImpl(
             tag.getLocation(), PASS_THROUGH_NAMESPACE , Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY,
             P_ELEMENTNAME, elementNameTagLocalName );
         
-        // FIXME: Doing a black box test over Mojarra it was found that passthrough
-        // attributes are added to both passthrough map and normal attribute map. It seems
-        // in some point the attributes are copied, but the spec doesn't mention where this
-        // should be. The relevant case happens when the attribute has no associated namespace,
-        // because in that case the user suppose the attribute will be passed through. If the use
-        // jsf or passthrough namespace it is clear where it should go.
-        
         // 1. Count how many attributes requires to be duplicated
         int duplicateCount = 0;
-        /*
-        for (int i = 0; i < sourceTagAttributes.length; i++)
-        {
-            TagAttribute tagAttribute = sourceTagAttributes[i];
-            String namespace = tagAttribute.getNamespace();
-            if (namespace == null)
-            {
-                // should not happen, but let it because org.xml.sax.Attributes considers it
-                duplicateCount++;
-            }
-            else if (tagAttribute.getNamespace().length() == 0)
-            {
-                // "... If the current attribute's namespace is empty 
-                // let the current attribute be convertedTagAttribute. ..."
-                duplicateCount++;
-            }
-            else if (!isReservedJSFAttribute(tagAttribute.getLocalName()) &&
-                    (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace)))
-            {
-                duplicateCount++;
-            }
-        }*/
         
         TagAttribute[] convertedTagAttributes = new TagAttribute[
             sourceTagAttributes.length+1+duplicateCount];
@@ -323,6 +275,39 @@ public class DefaultTagDecorator implements TagDecorator
             String convertedNamespace;
             String qname;
             String namespace = tagAttribute.getNamespace();
+            
+            /*
+                -= Leonardo Uribe =- After check the javadoc and compare it with the code and try some
+                examples with the implementation done in the RI, we found that the javadoc of 
+                TagDecorator has some bugs. Below is the description of the implementation done, which
+                resembles the behavior found on the RI.
+
+                "...
+                For each of argument tag's attributes obtain a reference to a TagAttribute 
+                with the following characteristics. For discussion let such an attribute be 
+                convertedTagAttribute.
+
+                    * convertedTagAttribute's location: from the argument tag's location.
+
+                    * If the current attribute's namespace is http://xmlns.jcp.org/jsf, 
+                        convertedTagAttribute's qualified name must be the current attribute's 
+                        local name and convertedTagAttribute's namespace must be the empty string. 
+                        This will have the effect of setting the current attribute as a proper 
+                        property on the UIComponent instance represented by this markup.
+
+                    * If the current attribute's namespace is empty, assume the current 
+                        attribute's namespace is http://xmlns.jcp.org/jsf/passthrough. 
+                        ConvertedTagAttribute's qualified name is the current attribute's 
+                        local name prefixed by "p:". convertedTagAttribute's namespace must be 
+                        http://xmlns.jcp.org/jsf/passthrough.
+
+                    * Otherwise, if the current attribute's namespace is not empty, let 
+                        the current attribute be convertedTagAttribute. This will have the 
+                        effect of let the attribute be processed by the meta rules defined
+                        by the TagHandler instance associated with the generated target 
+                        component.
+                ..."        
+            */            
             if (JSF_NAMESPACE.equals(namespace) || JSF_ALIAS_NAMESPACE.equals(namespace))
             {
                 // "... If the current attribute's namespace is http://xmlns.jcp.org/jsf, convertedTagAttribute's 
@@ -334,26 +319,6 @@ public class DefaultTagDecorator implements TagDecorator
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
-                
-                /*
-                if (!isReservedJSFAttribute(qname))
-                {
-                    j++;
-                    // Duplicate passthrough
-                    // -= Leonardo Uribe =- After discussion with Ed Burns and Frank Caputo, the reason is jsf 
-                    // namespace in an attribute is used to convert the tag into jsf:element, so there are cases
-                    // where you want the attribute to be passed into the passthrough attribute map instead the
-                    // normal attribute map. It is not expected to override jsf:element because this is a 
-                    // special component used to output markup, so it has been defined the attribute names that
-                    // does not require this duplication. It was also found that for the remaining cases, copy
-                    // the passthrough attribute does not have any effect, because by effect of the renderer
-                    // associated to the component these attribute are passed through by the renderer code and
-                    // time later when the passthrough attributes are rendered, there is a check that indicates
-                    // that the attribute has been already rendered.
-                    convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
-                        PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
-                        "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());
-                }*/
             }
             else if (namespace == null)
             {
@@ -361,13 +326,13 @@ public class DefaultTagDecorator implements TagDecorator
                 // -= Leonardo Uribe =- after conversation with Frank Caputo, who was the main contributor for
                 // this feature in JSF 2.2, he said that if the namespace is empty the intention is pass the
                 // attribute to the passthrough attribute map, so there is an error in the spec documentation.
-                convertedTagAttributes[j] = tagAttribute;
-                /*
-                j++;
-                // Duplicate passthrough
+                //convertedTagAttributes[j] = tagAttribute;
+                
+                convertedNamespace = PASS_THROUGH_NAMESPACE;
+                qname = "p:"+tagAttribute.getLocalName();
+                
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
-                    PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
-                    "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());*/
+                    convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
             }
             else if (tagAttribute.getNamespace().length() == 0)
             {
@@ -376,30 +341,19 @@ public class DefaultTagDecorator implements TagDecorator
                 // -= Leonardo Uribe =- after conversation with Frank Caputo, who was the main contributor for
                 // this feature in JSF 2.2, he said that if the namespace is empty the intention is pass the
                 // attribute to the passthrough attribute map, so there is an error in the spec documentation.
-                convertedTagAttributes[j] = tagAttribute;
-                /*
-                j++;
-                // Duplicate passthrough
-                convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
-                    PASS_THROUGH_NAMESPACE, tagAttribute.getLocalName(), 
-                    "p:"+tagAttribute.getLocalName(), tagAttribute.getValue());*/
-            }
-            else if (!tag.getNamespace().equals(tagAttribute.getNamespace()))
-            {
-                // "... or different from the argument tag's namespace, 
-                // let the current attribute be convertedTagAttribute. ..."
-                convertedTagAttributes[j] = tagAttribute;
-            }
-            else
-            {
-                // "... Otherwise, assume the current attribute's namespace is http://xmlns.jcp.org/jsf/passthrough. 
-                // ConvertedTagAttribute's qualified name is the current attribute's local name prefixed by 
-                // p:". convertedTagAttribute's namespace must be http://xmlns.jcp.org/jsf/passthrough. 
+                //convertedTagAttributes[j] = tagAttribute;
+                
                 convertedNamespace = PASS_THROUGH_NAMESPACE;
                 qname = "p:"+tagAttribute.getLocalName();
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
+            }
+            else /*if (!tag.getNamespace().equals(tagAttribute.getNamespace()))*/
+            {
+                // "... or different from the argument tag's namespace, 
+                // let the current attribute be convertedTagAttribute. ..."
+                convertedTagAttributes[j] = tagAttribute;
             }
             
             if (Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY.equals(convertedTagAttributes[j].getLocalName()) && (

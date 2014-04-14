@@ -23,46 +23,17 @@
 </head>
 <body>
     <form jsf:id="myForm">
-        <input jsf:id="box1" type="text"
-               jsf:value="#{test.value}" jsf:customAttr="SomeValue"
-               onclick="alert('hello')"
-               placeholder="Enter text" 
-               pt:data_up="Going Up"/>
-        
-        <input jsf:id="box2" pt:elementName="meter"
-               jsf:value="#{test.value}" jsf:customAttr="SomeValue"
-               onclick="alert('hello')"
-               placeholder="Enter text" 
-               pt:data_up="Going Up">Hello World!</input>
-        
-        <jsf:element id="box3" elementName="meter" 
-               value="#{test.value}" customAttr="SomeValue"
-               onclick="alert('hello')"
-               placeholder="Enter text" 
-               pt:data_up="Going Up">
-               Hello Element!
-        </jsf:element>
-        
-        <h:panelGroup id="box4">
-        <div jsf:class="noprint">
-            MYBOX4
-        </div>
-        </h:panelGroup>
-        
+
         <h:panelGroup id="box5">
         <div jsf:style="noprint">
             MYBOX5
         </div>
-        </h:panelGroup>
+        </h:panelGroup>        
         
         <div jsf:id="box6" jsf:onclick="alert('hello')">
             <f:ajax event="click" render="box5"/>
             MYBOX6
         </div>
-        
-        <h:panelGroup id="box7">
-            <img jsf:name="external.png" alt="Some Logo"/>
-        </h:panelGroup>
         
     </form>
 </body>
