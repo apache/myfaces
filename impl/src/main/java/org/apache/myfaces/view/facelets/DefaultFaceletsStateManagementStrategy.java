@@ -565,15 +565,60 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         = internalRestoreTreeStructure((TreeStructComponent)
                                                        addedState[3]);
                 child.processRestoreState(context, addedState[4]);
-                try
+                
+                boolean done = false;
+                // Is the child a facelet controlled component?
+                if (child.getAttributes().containsKey(ComponentSupport.MARK_CREATED))
                 {
-                    target.getChildren().add(childIndex, child);
+                    // By effect of c:forEach it is possible that the component can be duplicated
+                    // in the component tree, so what we need to do as a fallback is replace the
+                    // component in the spot with the restored version.
+                    UIComponent parent = target;
+                    if (parent.getChildCount() > 0)
+                    {
+                        String tagId = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
+                        if (childIndex < parent.getChildCount())
+                        {
+                            // Try to find the component quickly 
+                            UIComponent dup = parent.getChildren().get(childIndex);
+                            if (tagId.equals(dup.getAttributes().get(ComponentSupport.MARK_CREATED)))
+                            {
+                                // Replace
+                                parent.getChildren().remove(childIndex.intValue());
+                                parent.getChildren().add(childIndex, child);
+                                done = true;
+                            }
+                        }
+                        if (!done)
+                        {
+                            // Fallback to iteration
+                            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
+                            {
+                                UIComponent dup = parent.getChildren().get(i);
+                                if (tagId.equals(dup.getAttributes().get(ComponentSupport.MARK_CREATED)))
+                                {
+                                    // Replace
+                                    parent.getChildren().remove(i);
+                                    parent.getChildren().add(i, child);
+                                    done = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
-                catch (IndexOutOfBoundsException e)
+                if (!done)
                 {
-                    // We can't be sure about where should be this 
-                    // item, so just add it. 
-                    target.getChildren().add(child);
+                    try
+                    {
+                        target.getChildren().add(childIndex, child);
+                    }
+                    catch (IndexOutOfBoundsException e)
+                    {
+                        // We can't be sure about where should be this 
+                        // item, so just add it. 
+                        target.getChildren().add(child);
+                    }
                 }
             }
         }
