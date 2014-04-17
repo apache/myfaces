@@ -105,11 +105,6 @@
                         <exclude>src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension</exclude>
                         <exclude>src/main/resources/META-INF/services/javax.servlet.ServletContainerInitializer</exclude>
 
-                        <!-- these jsf.js files are trivial empty placeholders -->
-                        <exclude>src/test/resources/org/apache/myfaces/view/facelets/tag/composite/javax.faces/jsf.js</exclude>
-                        <exclude>src/test/resources/org/apache/myfaces/view/facelets/tag/jsf/html/javax.faces/jsf.js</exclude>
-                        <exclude>src/test/resources/org/apache/myfaces/view/facelets/updateheadres/resources/javax.faces/jsf.js</exclude>
-
                         <!-- This file probably needs a license, but I don't know if it's safe to put it in there -->
                         <exclude>src/test/resources/org/apache/myfaces/context/nestedScriptCDATA.xml</exclude>
                     </excludes>
