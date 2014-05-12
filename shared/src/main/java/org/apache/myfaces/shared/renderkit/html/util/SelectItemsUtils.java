@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UISelectItems;
 import javax.faces.component.UISelectMany;
 import javax.faces.component.UISelectOne;
 import javax.faces.context.FacesContext;
@@ -53,7 +54,7 @@ public class SelectItemsUtils
         for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectMany, facesContext); iter
                 .hasNext();)
         {
-            list.add(new SelectItemInfo(iter.next(), iter.getCurrentComponent()));
+            list.add(new SelectItemInfo(iter.next(), iter.getCurrentComponent(), iter.getCurrentValue()));
         }
         return list;
     }
@@ -65,7 +66,7 @@ public class SelectItemsUtils
         for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectOne, facesContext); iter
                 .hasNext();)
         {
-            list.add(new SelectItemInfo(iter.next(), iter.getCurrentComponent()));
+            list.add(new SelectItemInfo(iter.next(), iter.getCurrentComponent(), iter.getCurrentValue()));
         }
         return list;
     }
@@ -124,6 +125,22 @@ public static void renderSelectOptions(FacesContext context,
                 }
 
                 writer.write(TABULATOR);
+                
+                boolean wroteRequestMapVarValue = false;
+                Object oldRequestMapVarValue = null;
+                String var = null;
+                if (selectItemInfo != null && selectItemInfo.getComponent() instanceof UISelectItems)
+                {
+                    var = (String) selectItemInfo.getComponent().getAttributes().get(JSFAttr.VAR_ATTR);
+                    if(var != null && !"".equals(var))
+                    {
+                        // save the current value of the key listed in var from the request map
+                        oldRequestMapVarValue = context.getExternalContext().getRequestMap().put(var, 
+                                selectItemInfo.getValue());
+                        wroteRequestMapVarValue = true;
+                    }
+                }
+                
                 writer.startElement(HTML.OPTION_ELEM, selectItemInfo.getComponent()); // component);
                 if (itemStrValue != null)
                 {
@@ -203,6 +220,22 @@ public static void renderSelectOptions(FacesContext context,
                 }
 
                 writer.endElement(HTML.OPTION_ELEM);
+                
+                // remove the value with the key from var from the request map, if previously written
+                if(wroteRequestMapVarValue)
+                {
+                    // If there was a previous value stored with the key from var in the request map, restore it
+                    if (oldRequestMapVarValue != null)
+                    {
+                        context.getExternalContext()
+                                .getRequestMap().put(var, oldRequestMapVarValue);
+                    }
+                    else
+                    {
+                        context.getExternalContext()
+                                .getRequestMap().remove(var);
+                    }
+                }
             }
         }
     }

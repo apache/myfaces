@@ -23,19 +23,30 @@ import javax.faces.component.UIComponent;
 import javax.faces.model.SelectItem;
 
 /**
- *
- * @author lu4242
+ * 
+ * NOTE: This class should not be made Serializable. It holds request time information associated with the iteration
+ * done by SelectItemsIterator, like the associated component or the calculated model value before conversion.
  */
 public class SelectItemInfo
 {
     private final SelectItem item;
     
     private final UIComponent component;
+    
+    private final Object value;
 
+    public SelectItemInfo(SelectItem item, UIComponent component, Object value)
+    {
+        this.item = item;
+        this.component = component;
+        this.value = value;
+    }
+    
     public SelectItemInfo(SelectItem item, UIComponent component)
     {
         this.item = item;
         this.component = component;
+        this.value = null;
     }
 
     /**
@@ -52,6 +63,14 @@ public class SelectItemInfo
     public UIComponent getComponent()
     {
         return component;
+    }
+
+    /**
+     * Return the underlying associated model value.
+     */
+    public Object getValue()
+    {
+        return value;
     }
     
 }

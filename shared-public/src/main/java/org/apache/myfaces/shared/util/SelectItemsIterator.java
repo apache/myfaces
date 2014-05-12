@@ -60,6 +60,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
     private SelectItem _nextItem;
     private UIComponent _currentComponent;
     private UISelectItems _currentUISelectItems;
+    private Object _currentValue;
     private FacesContext _facesContext;
 
     public SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
@@ -85,6 +86,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
             }
             _nestedItems = null;
             _currentComponent = null;
+            _currentValue = null;
         }
         if (_children.hasNext())
         {
@@ -139,6 +141,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 }
                 _nextItem = (SelectItem) item;
                 _currentComponent = child;
+                _currentValue = item;
                 return true;
             }
             else if (child instanceof UISelectItems)
@@ -208,6 +211,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
             else
             {
                 _currentComponent = null;
+                _currentValue = null;
             }
         }
         return false;
@@ -235,6 +239,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 // Note that according to the spec UISelectItems does not provide Getter and Setter 
                 // methods for this values, so we have to use the attribute map
                 Map<String, Object> attributeMap = _currentUISelectItems.getAttributes();
+                _currentValue = item;
                 
                 // write the current item into the request map under the key listed in var, if available
                 boolean wroteRequestMapVarValue = false;
@@ -311,6 +316,11 @@ public class SelectItemsIterator implements Iterator<SelectItem>
     public UIComponent getCurrentComponent()
     {
         return _currentComponent;
+    }
+    
+    public Object getCurrentValue()
+    {
+        return _currentValue;
     }
 
     private boolean getBooleanAttribute(UIComponent component, String attrName, boolean defaultValue)
