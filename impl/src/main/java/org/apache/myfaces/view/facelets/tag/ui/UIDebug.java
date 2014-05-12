@@ -69,7 +69,6 @@ public final class UIDebug extends UIComponentBase
     public UIDebug()
     {
         setTransient(true);
-        setRendered(true);
         setRendererType(null);
     }
 
