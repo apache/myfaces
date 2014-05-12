@@ -1065,6 +1065,7 @@ public class FlashImpl extends Flash
         cookie.setMaxAge(-1);
         cookie.setPath(_getCookiePath(externalContext));
         cookie.setSecure(externalContext.isSecure());
+        cookie.setHttpOnly(true);
 
         return cookie;
     }
