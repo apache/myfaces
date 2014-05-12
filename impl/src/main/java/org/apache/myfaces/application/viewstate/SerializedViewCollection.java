@@ -88,6 +88,12 @@ class SerializedViewCollection implements Serializable
         {
             // Update the state, the viewScopeId does not change.
             _serializedViews.put(key, state);
+            // Make sure the view is at the end of the discard queue
+            while (_keys.remove(key))
+            {
+                // do nothing
+            }
+            _keys.add(key);
             return;
         }
 
