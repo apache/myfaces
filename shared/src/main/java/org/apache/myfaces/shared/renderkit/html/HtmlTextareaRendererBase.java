@@ -45,6 +45,8 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 public class HtmlTextareaRendererBase
         extends HtmlRenderer
 {
+    private static final String ADD_NEW_LINE_AT_START_ATTR = "org.apache.myfaces.addNewLineAtStart";
+    
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
@@ -167,6 +169,25 @@ public class HtmlTextareaRendererBase
     protected void renderTextAreaValue(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
+        
+        Object addNewLineAtStart = uiComponent.getAttributes().get(ADD_NEW_LINE_AT_START_ATTR);
+        if (addNewLineAtStart != null)
+        {
+            boolean addNewLineAtStartBoolean = false;
+            if (addNewLineAtStart instanceof String)
+            {
+                addNewLineAtStartBoolean = Boolean.valueOf((String)addNewLineAtStart);
+            }
+            else if (addNewLineAtStart instanceof Boolean)
+            {
+                addNewLineAtStartBoolean = (Boolean) addNewLineAtStart;
+            }
+            if (addNewLineAtStartBoolean)
+            {
+                writer.writeText("\n", null);
+            }
+        }
+        
         String strValue = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, uiComponent);
         writer.writeText(strValue, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
     }
