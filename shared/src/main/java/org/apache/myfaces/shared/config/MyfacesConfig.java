@@ -455,6 +455,17 @@ public class MyfacesConfig
     public static final String INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY = 
             "org.apache.myfaces.STRICT_JSF_2_FACELETS_COMPATIBILITY";
     public final static boolean INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT = false;    
+    
+    /**
+     * This param makes h:form component to render the view state and other hidden fields
+     * at the beginning of the form. This also includes component resources with target="form",
+     * but it does not include legacy 1.1 myfaces specific hidden field adition.
+     */
+    @JSFWebConfigParam(since = "2.2.4", defaultValue = "false", expectedValues = "true,false",
+            group="render")
+    public static final String INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN =
+            "org.apache.myfaces.RENDER_FORM_VIEW_STATE_AT_BEGIN";
+    public final static boolean INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT = false;
 
     private boolean _prettyHtml;
     private boolean _detectJavascript;
@@ -492,6 +503,7 @@ public class MyfacesConfig
     private boolean _cdiManagedConvertersEnabled;
     private boolean _cdiManagedValidatorsEnabled;
     private boolean _strictJsf2FaceletsCompatibility;
+    private boolean _renderFormViewStateAtBegin;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -597,6 +609,7 @@ public class MyfacesConfig
         setCdiManagedConvertersEnabled(INIT_PARAM_CDI_MANAGED_CONVERTERS_DEFAULT);
         setCdiManagedValidatorsEnabled(INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT);
         setStrictJsf2FaceletsCompatibility(INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT);
+        setRenderFormViewStateAtBegin(INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -718,6 +731,10 @@ public class MyfacesConfig
         myfacesConfig.setStrictJsf2FaceletsCompatibility(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                 INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY, 
                 INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT));
+        
+        myfacesConfig.setRenderFormViewStateAtBegin(WebConfigParamUtils.getBooleanInitParameter(extCtx,
+                INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN,
+                INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT));
         
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1285,5 +1302,15 @@ public class MyfacesConfig
     public void setStrictJsf2FaceletsCompatibility(boolean strictJsf2FaceletsCompatibility)
     {
         this._strictJsf2FaceletsCompatibility = strictJsf2FaceletsCompatibility;
+    }
+
+    public boolean isRenderFormViewStateAtBegin()
+    {
+        return _renderFormViewStateAtBegin;
+    }
+
+    public void setRenderFormViewStateAtBegin(boolean renderFormViewStateAtBegin)
+    {
+        this._renderFormViewStateAtBegin = renderFormViewStateAtBegin;
     }
 }

@@ -148,6 +148,13 @@ public class HtmlFormRendererBase
         // included for backward compatibility to the 1.1.1 patch (JIRA MYFACES-1276)
         // However, might be needed in the future
         beforeFormElementsStart(facesContext, component);
+        
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
+        if (config.isRenderFormViewStateAtBegin())
+        {
+            renderViewStateAndHiddenFields(facesContext, component);
+        }
+        
         afterFormElementsStart(facesContext, component);
     }
 
@@ -195,7 +202,23 @@ public class HtmlFormRendererBase
                                                                          target);
         }
 
-        //write hidden input to determine "submitted" value on decode
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
+        if (!config.isRenderFormViewStateAtBegin())
+        {
+            renderViewStateAndHiddenFields(facesContext, component);
+        }
+
+        afterFormElementsEnd(facesContext, component);
+        
+        writer.endElement(HTML.FORM_ELEM);
+    }
+    
+    protected void renderViewStateAndHiddenFields(FacesContext facesContext, UIComponent component)
+            throws IOException
+    {
+        ResponseWriter writer = facesContext.getResponseWriter();
+        
+                //write hidden input to determine "submitted" value on decode
         writer.startElement(HTML.INPUT_ELEM, null); // component);
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
         writer.writeAttribute(HTML.NAME_ATTR, component.getClientId(facesContext) +
@@ -211,8 +234,6 @@ public class HtmlFormRendererBase
         ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
         viewHandler.writeState(facesContext);
 
-        afterFormElementsEnd(facesContext, component);
-        
         List<UIComponent> componentResources = facesContext.getViewRoot().getComponentResources(facesContext,
             FORM_TARGET);
         
@@ -221,8 +242,6 @@ public class HtmlFormRendererBase
            UIComponent child = componentResources.get(i);
            child.encodeAll (facesContext);
         }
-        
-        writer.endElement(HTML.FORM_ELEM);
     }
 
     private static String getHiddenCommandInputsSetName(FacesContext facesContext, UIComponent form)
