@@ -159,7 +159,8 @@ final class DefaultFacelet extends AbstractFacelet
         
         //Set FACELET_CONTEXT_KEY on FacesContext attribute map, to 
         //reflect the current facelet context instance
-        facesContext.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
+        FaceletContext oldCtx = (FaceletContext) 
+                facesContext.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
         
         ctx.pushPageContext(new PageContextImpl());
         
@@ -218,6 +219,11 @@ final class DefaultFacelet extends AbstractFacelet
                             myFaceletContext.getUniqueIdList());
                     ((EncodingHandler)_root).setUniqueIdList(uniqueIdList);
                 }
+            }
+            
+            if (oldCtx != null)
+            {
+                facesContext.getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, oldCtx);
             }
         }
     }
