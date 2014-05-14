@@ -599,7 +599,7 @@ final class DefaultFacelet extends AbstractFacelet
                 pushedUniqueIdVendor = true;
             }
             
-            this.refresh(parent);
+            f.refresh(parent);
             mctx.markForDeletion(parent);
             DefaultFaceletContext ctxWrapper = new DefaultFaceletContext( (DefaultFaceletContext)ctx, f, true);
             //Update FACELET_CONTEXT_KEY on FacesContext attribute map, to 
@@ -608,7 +608,7 @@ final class DefaultFacelet extends AbstractFacelet
             f._root.apply(ctxWrapper, parent);
             ctx.getFacesContext().getAttributes().put(FaceletContext.FACELET_CONTEXT_KEY, ctx);
             mctx.finalizeForDeletion(parent);
-            this.markApplied(parent);
+            f.markApplied(parent);
             
             // remove the UniqueIdVendor from the stack again
             if (pushedUniqueIdVendor)
