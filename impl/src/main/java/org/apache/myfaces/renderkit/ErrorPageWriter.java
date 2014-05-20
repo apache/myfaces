@@ -1286,52 +1286,55 @@ public final class ErrorPageWriter
                     && Arrays.binarySearch(IGNORE, pd[i].getName()) < 0)
                 {
                     m = pd[i].getReadMethod();
-                    try
+                    if (m != null)
                     {
-                        // first check if the property is a ValueExpression
-                        valueExpression = c.getValueExpression(pd[i].getName());
-                        if (valueExpressionValues && valueExpression != null)
+                        try
                         {
-                            String expressionString = valueExpression.getExpressionString();
-                            if (null == expressionString)
+                            // first check if the property is a ValueExpression
+                            valueExpression = c.getValueExpression(pd[i].getName());
+                            if (valueExpressionValues && valueExpression != null)
                             {
-                                expressionString = "";
+                                String expressionString = valueExpression.getExpressionString();
+                                if (null == expressionString)
+                                {
+                                    expressionString = "";
+                                }
+                                _writeAttribute(writer, pd[i].getName(), expressionString);
                             }
-                            _writeAttribute(writer, pd[i].getName(), expressionString);
-                        }
-                        else
-                        {
-                            v = m.invoke(c, null);
-                            if (v != null)
+                            else
                             {
-                                if (v instanceof Collection || v instanceof Map || v instanceof Iterator)
+                                v = m.invoke(c, null);
+                                if (v != null)
                                 {
-                                    continue;
-                                }
-                                if (v instanceof Expression)
-                                {
-                                    str = ((Expression)v).getExpressionString();
-                                }
-                                else if (v instanceof ValueBinding)
-                                {
-                                    str = ((ValueBinding) v).getExpressionString();
-                                }
-                                else if (v instanceof MethodBinding)
-                                {
-                                    str = ((MethodBinding) v).getExpressionString();
-                                }
-                                else
-                                {
-                                    str = v.toString();
-                                }
+                                    if (v instanceof Collection || v instanceof Map || v instanceof Iterator)
+                                    {
+                                        continue;
+                                    }
+                                    if (v instanceof Expression)
+                                    {
+                                        str = ((Expression)v).getExpressionString();
+                                    }
+                                    else if (v instanceof ValueBinding)
+                                    {
+                                        str = ((ValueBinding) v).getExpressionString();
+                                    }
+                                    else if (v instanceof MethodBinding)
+                                    {
+                                        str = ((MethodBinding) v).getExpressionString();
+                                    }
+                                    else
+                                    {
+                                        str = v.toString();
+                                    }
 
-                                _writeAttribute(writer, pd[i].getName(), str);
+                                    _writeAttribute(writer, pd[i].getName(), str);
+                                }
                             }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        // do nothing
+                        catch (Exception e)
+                        {
+                            // do nothing
+                        }
                     }
                 }
             }
