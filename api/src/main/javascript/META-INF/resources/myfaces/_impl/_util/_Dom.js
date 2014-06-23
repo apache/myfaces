@@ -185,16 +185,16 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             }
         } catch (e) {
             if(window.console && window.console.error) {
-               //not sure if we
-               //should use our standard
-               //error mechanisms here
-               //because in the head appendix
-               //method only a console
-               //error would be raised as well
-               console.error(e.message||e.description);
+                //not sure if we
+                //should use our standard
+                //error mechanisms here
+                //because in the head appendix
+                //method only a console
+                //error would be raised as well
+                console.error(e.message || e.description || e);
             } else {
-                if(jsf.ajax.getProjectStage() === "Development") {
-                    alert("Error in evaluated javascript:"+ (e.message||e.description));
+                if(jsf.getProjectStage() === "Development") {
+                    alert("Error in evaluated javascript:"+ (e.message || e.description || e));
                 }
             }
         } finally {
