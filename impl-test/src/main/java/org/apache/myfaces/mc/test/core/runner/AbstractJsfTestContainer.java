@@ -153,13 +153,8 @@ public class AbstractJsfTestContainer
     public void setUp(Object testInstance)
     {
         this.testInstance = testInstance;
-        // Set up a new thread context class loader
-        threadContextClassLoader = Thread.currentThread()
-                .getContextClassLoader();
-        Thread.currentThread()
-                .setContextClassLoader(
-                        new URLClassLoader(new URL[0], this.getClass()
-                                .getClassLoader()));
+        
+        setUpClassloader();
         
         jsfConfiguration = sharedConfiguration.get(getTestJavaClass().getName());
         if (jsfConfiguration == null)
@@ -189,6 +184,25 @@ public class AbstractJsfTestContainer
         setUpFacesServlet();
         
         sharedConfiguration.put(getTestJavaClass().getName(), jsfConfiguration);
+    }
+    
+    /**
+     * Set up the thread context classloader. JSF uses the this classloader
+     * in order to find related factory classes and other resources, but in
+     * some selected cases, the default classloader cannot be properly set.
+     * 
+     * @throws Exception 
+     */
+    protected void setUpClassloader()
+    {
+        // Set up a new thread context class loader
+        threadContextClassLoader = Thread.currentThread()
+                .getContextClassLoader();
+        Thread.currentThread()
+                .setContextClassLoader(
+                        new URLClassLoader(new URL[0], this.getClass()
+                                .getClassLoader()));
+        classLoaderSet = true;
     }
     
     /**
@@ -302,8 +316,8 @@ public class AbstractJsfTestContainer
         {
             return testConfig.webappResourcePath();
         }
-        return this.getClass().getName().substring(0,
-                this.getClass().getName().lastIndexOf('.')).replace('.', '/')
+        return getTestJavaClass().getName().substring(0,
+                getTestJavaClass().getName().lastIndexOf('.')).replace('.', '/')
                 + "/";
     }
     
@@ -475,9 +489,18 @@ public class AbstractJsfTestContainer
             MockInitialContextFactory.clearCurrentContext();
         }
         
-        Thread.currentThread().setContextClassLoader(threadContextClassLoader);
-        threadContextClassLoader = null;
+        tearDownClassloader();
     }
+    
+    protected void tearDownClassloader()
+    {
+        if (classLoaderSet)
+        {
+            Thread.currentThread().setContextClassLoader(threadContextClassLoader);
+            threadContextClassLoader = null;
+            classLoaderSet = false;
+        }
+    }    
     
     //@AfterClass
     public static void tearDownClass()
@@ -1296,6 +1319,7 @@ public class AbstractJsfTestContainer
 
     // Thread context class loader saved and restored after each test
     private ClassLoader threadContextClassLoader = null;
+    private boolean classLoaderSet = false;
     private Context jndiContext = null;
 
     // Servlet objects 

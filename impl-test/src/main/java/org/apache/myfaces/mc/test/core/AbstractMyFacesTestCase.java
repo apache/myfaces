@@ -153,12 +153,7 @@ public abstract class AbstractMyFacesTestCase
     public void setUp() throws Exception
     {
         // Set up a new thread context class loader
-        threadContextClassLoader = Thread.currentThread()
-                .getContextClassLoader();
-        Thread.currentThread()
-                .setContextClassLoader(
-                        new URLClassLoader(new URL[0], this.getClass()
-                                .getClassLoader()));
+        setUpClassloader();
         
         jsfConfiguration = sharedConfiguration.get(getTestJavaClass().getName());
         if (jsfConfiguration == null)
@@ -188,6 +183,25 @@ public abstract class AbstractMyFacesTestCase
         setUpFacesServlet();
         
         sharedConfiguration.put(getTestJavaClass().getName(), jsfConfiguration);
+    }
+    
+    /**
+     * Set up the thread context classloader. JSF uses the this classloader
+     * in order to find related factory classes and other resources, but in
+     * some selected cases, the default classloader cannot be properly set.
+     * 
+     * @throws Exception 
+     */
+    protected void setUpClassloader() throws Exception
+    {
+        // Set up a new thread context class loader
+        threadContextClassLoader = Thread.currentThread()
+                .getContextClassLoader();
+        Thread.currentThread()
+                .setContextClassLoader(
+                        new URLClassLoader(new URL[0], this.getClass()
+                                .getClassLoader()));
+        classLoaderSet = true;
     }
     
     /**
@@ -403,9 +417,18 @@ public abstract class AbstractMyFacesTestCase
             MockInitialContextFactory.clearCurrentContext();
         }
         
-        Thread.currentThread().setContextClassLoader(threadContextClassLoader);
-        threadContextClassLoader = null;
+        tearDownClassloader();
     }
+    
+    protected void tearDownClassloader() throws Exception
+    {
+        if (classLoaderSet)
+        {
+            Thread.currentThread().setContextClassLoader(threadContextClassLoader);
+            threadContextClassLoader = null;
+            classLoaderSet = false;
+        }
+    }    
     
     @AfterClass
     public static void tearDownClass()
@@ -1204,6 +1227,7 @@ public abstract class AbstractMyFacesTestCase
 
     // Thread context class loader saved and restored after each test
     private ClassLoader threadContextClassLoader = null;
+    private boolean classLoaderSet = false;
     private Context jndiContext = null;
 
     // Servlet objects 
