@@ -188,18 +188,14 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 _RT.globalEval(finalScripts.join("\n"));
             }
         } catch (e) {
-            if(window.console && window.console.error) {
-               //not sure if we
-               //should use our standard
-               //error mechanisms here
-               //because in the head appendix
-               //method only a console
-               //error would be raised as well
-               console.error(e.message || e.description || e);
-            } else {
-                if(jsf.getProjectStage() === "Development") {
-                    alert("Error in evaluated javascript:"+ (e.message || e.description || e));
-                }
+            //we are now in accordance with the rest of the system of showing errors only in development mode
+            //the default error output is alert we always can override it with
+            //window.myfaces = window.myfaces || {};
+            //myfaces.config =  myfaces.config || {};
+            //myfaces.config.defaultErrorOutput = console.error;
+            if(jsf.getProjectStage() === "Development") {
+                var defaultErrorOutput = myfaces._impl.core._Runtime.getGlobalConfig("defaultErrorOutput", alert);
+                defaultErrorOutput("Error in evaluated javascript:"+ (e.message || e.description || e));
             }
         } finally {
             //the usual ie6 fix code
