@@ -548,7 +548,8 @@ public class ManagedBeanBuilder
         {
             return APPLICATION;
         }
-        if (facesContext.getViewRoot().getViewMap().get(beanName) != null)
+        if (facesContext.getViewRoot() != null && 
+            facesContext.getViewRoot().getViewMap().get(beanName) != null)
         {
             return VIEW;
         }
