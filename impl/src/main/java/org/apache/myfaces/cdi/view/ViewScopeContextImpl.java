@@ -70,7 +70,7 @@ public class ViewScopeContextImpl implements Context
             viewScopeBeanHolder = BeanProvider.getContextualReference(
                 beanManager, ViewScopeBeanHolder.class, false);
             facesContext.getExternalContext().getApplicationMap().put(
-                "oam.flow.FlowScopeBeanHolder", viewScopeBeanHolder);
+                "oam.view.ViewScopeBeanHolder", viewScopeBeanHolder);
         }
         return viewScopeBeanHolder;
     }
