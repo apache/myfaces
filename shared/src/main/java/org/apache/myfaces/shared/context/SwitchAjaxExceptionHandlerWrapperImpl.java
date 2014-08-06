@@ -21,6 +21,7 @@ package org.apache.myfaces.shared.context;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
@@ -31,9 +32,6 @@ import javax.faces.event.SystemEvent;
  * normal exceptionHandler wrapping, because FacesContext is initialized after
  * ExceptionHandler, so it is not safe to get it when
  * ExceptionHandlerFactory.getExceptionHandler() is called.
- * 
- * @author Leonardo Uribe
- *
  */
 public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
 {
@@ -85,7 +83,12 @@ public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapp
         if (_isAjaxRequest == null)
         {
             facesContext = (facesContext == null) ? FacesContext.getCurrentInstance() : facesContext;
-            _isAjaxRequest = facesContext.getPartialViewContext().isAjaxRequest();
+            PartialViewContext pvc = facesContext.getPartialViewContext();
+            if (pvc == null)
+            {
+                return false;
+            }
+            _isAjaxRequest = pvc.isAjaxRequest();
         }
         return _isAjaxRequest;
     }
@@ -95,7 +98,12 @@ public class SwitchAjaxExceptionHandlerWrapperImpl extends ExceptionHandlerWrapp
         if (_isAjaxRequest == null)
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            _isAjaxRequest = facesContext.getPartialViewContext().isAjaxRequest();
+            PartialViewContext pvc = facesContext.getPartialViewContext();
+            if (pvc == null)
+            {
+                return false;
+            }
+            _isAjaxRequest = pvc.isAjaxRequest();
         }
         return _isAjaxRequest;
     }
