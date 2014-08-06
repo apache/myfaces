@@ -160,7 +160,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
 
-    public final static long DEFAULT_REFRESH_PERIOD = 2;
+    public final static long DEFAULT_REFRESH_PERIOD = 0;
     public final static long DEFAULT_REFRESH_PERIOD_PRODUCTION = -1;
 
     public final static String DEFAULT_CHARACTER_ENCODING = "UTF-8";
