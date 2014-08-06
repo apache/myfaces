@@ -466,6 +466,15 @@ public class MyfacesConfig
     public static final String INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN =
             "org.apache.myfaces.RENDER_FORM_VIEW_STATE_AT_BEGIN";
     public final static boolean INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT = false;
+    
+    /**
+     * Defines whether flash scope is disabled, preventing add the Flash cookie to the response. 
+     * 
+     * <p>This is useful for applications that does not require to use flash scope, and instead uses other scopes.</p>
+     */
+    @JSFWebConfigParam(defaultValue="false",since="2.0.5")
+    public static final String INIT_PARAM_FLASH_SCOPE_DISABLED = "org.apache.myfaces.FLASH_SCOPE_DISABLED";
+    public static final boolean INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT = false;
 
     private boolean _prettyHtml;
     private boolean _detectJavascript;
@@ -504,6 +513,7 @@ public class MyfacesConfig
     private boolean _cdiManagedValidatorsEnabled;
     private boolean _strictJsf2FaceletsCompatibility;
     private boolean _renderFormViewStateAtBegin;
+    private boolean _flashScopeDisabled;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -610,6 +620,7 @@ public class MyfacesConfig
         setCdiManagedValidatorsEnabled(INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT);
         setStrictJsf2FaceletsCompatibility(INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT);
         setRenderFormViewStateAtBegin(INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT);
+        setFlashScopeDisabled(INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -735,6 +746,10 @@ public class MyfacesConfig
         myfacesConfig.setRenderFormViewStateAtBegin(WebConfigParamUtils.getBooleanInitParameter(extCtx,
                 INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN,
                 INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT));
+        
+        myfacesConfig.setFlashScopeDisabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
+                INIT_PARAM_FLASH_SCOPE_DISABLED,
+                INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT));
         
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1312,5 +1327,15 @@ public class MyfacesConfig
     public void setRenderFormViewStateAtBegin(boolean renderFormViewStateAtBegin)
     {
         this._renderFormViewStateAtBegin = renderFormViewStateAtBegin;
+    }
+
+    public boolean isFlashScopeDisabled()
+    {
+        return _flashScopeDisabled;
+    }
+
+    public void setFlashScopeDisabled(boolean flashScopeDisabled)
+    {
+        this._flashScopeDisabled = flashScopeDisabled;
     }
 }

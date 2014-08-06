@@ -19,7 +19,6 @@
 package org.apache.myfaces.shared.context.flash;
 
 import org.apache.myfaces.shared.util.SubKeyMap;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 
 import javax.faces.application.FacesMessage;
@@ -46,6 +45,7 @@ import javax.faces.event.PostPutFlashValueEvent;
 import javax.faces.event.PreClearFlashEvent;
 import javax.faces.event.PreRemoveFlashValueEvent;
 import javax.faces.lifecycle.ClientWindow;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 
 /**
  * Implementation of Flash object
@@ -57,14 +57,6 @@ public class FlashImpl extends Flash
     
     private static final Logger log = Logger.getLogger(FlashImpl.class.getName());
     
-    /**
-     * Defines whether flash scope is disabled, preventing add the Flash cookie to the response. 
-     * 
-     * <p>This is useful for applications that does not require to use flash scope, and instead uses other scopes.</p>
-     */
-    @JSFWebConfigParam(defaultValue="false",since="2.0.5")
-    private static final String FLASH_SCOPE_DISABLED_PARAM = "org.apache.myfaces.FLASH_SCOPE_DISABLED";
-
     /**
      * Use this prefix instead of the whole class name, because
      * this makes the Cookies and the SubKeyMap operations (actually
@@ -203,7 +195,7 @@ public class FlashImpl extends Flash
         _count = new AtomicLong(_getSeed());
 
         // Read whether flash scope is disabled.
-        _flashScopeDisabled = "true".equalsIgnoreCase(externalContext.getInitParameter(FLASH_SCOPE_DISABLED_PARAM));
+        _flashScopeDisabled = MyfacesConfig.getCurrentInstance(externalContext).isFlashScopeDisabled();
     }
     
     // ~ methods from javax.faces.context.Flash -------------------------------
@@ -1115,7 +1107,7 @@ public class FlashImpl extends Flash
         if (_flashScopeDisabled)
         {
             throw new FlashScopeDisabledException("Flash scope was disabled by context param " 
-                + FLASH_SCOPE_DISABLED_PARAM + " but erroneously accessed");
+                + MyfacesConfig.INIT_PARAM_FLASH_SCOPE_DISABLED + " but erroneously accessed");
         }
     }
     

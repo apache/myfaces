@@ -70,6 +70,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.StateUtils;
@@ -772,7 +773,11 @@ public final class ErrorPageWriter
         {
             _writeVariables(writer, ctx.getSessionMap(), "Session Attributes");
         }
-        _writeVariables(writer, ctx.getFlash(), "Flash Attributes");
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(ctx);
+        if(config!=null && !config.isFlashScopeDisabled() && ctx.getFlash() != null)
+        {
+            _writeVariables(writer, ctx.getFlash(), "Flash Attributes");
+        }
         _writeVariables(writer, ctx.getApplicationMap(), "Application Attributes");
     }
 
