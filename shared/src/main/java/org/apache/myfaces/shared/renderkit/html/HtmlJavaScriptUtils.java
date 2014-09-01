@@ -129,8 +129,9 @@ public final class HtmlJavaScriptUtils
     private static void prepareScript(FacesContext facesContext,
             ScriptContext context, boolean autoScroll)
     {
-
-        final char separatorChar = facesContext.getNamingContainerSeparatorChar();
+        // MYFACES-3919 remember idcl separator char is special and always should be ':',
+        // because it should be hardcoded into the js file.
+        final char idclSeparatorChar = ':';
         context.prettyLine();
 
         //render a function to create a hidden input, if it doesn't exist
@@ -274,7 +275,7 @@ public final class HtmlJavaScriptUtils
         context.prettyLine();
 
         context.append(SET_HIDDEN_INPUT_FN_NAME);
-        context.append("(formName,formName +'" + separatorChar + "'+'"
+        context.append("(formName,formName +'" + idclSeparatorChar + "'+'"
                 + HtmlRendererUtils.HIDDEN_COMMANDLINK_FIELD_NAME
                 + "',linkId);");
 
@@ -327,7 +328,7 @@ public final class HtmlJavaScriptUtils
         context.prettyLine();
 
         context.append(CLEAR_HIDDEN_INPUT_FN_NAME);
-        context.append("(formName,formName +'" + separatorChar + "'+'"
+        context.append("(formName,formName +'" + idclSeparatorChar + "'+'"
                 + HtmlRendererUtils.HIDDEN_COMMANDLINK_FIELD_NAME
                 + "',linkId);");
 
