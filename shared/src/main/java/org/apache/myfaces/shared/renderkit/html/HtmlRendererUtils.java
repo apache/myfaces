@@ -1583,8 +1583,8 @@ public final class HtmlRendererUtils
         {
             return HIDDEN_COMMANDLINK_FIELD_NAME_TRINIDAD;
         }
-        return formInfo.getFormName() + UINamingContainer.getSeparatorChar(FacesContext
-                        .getCurrentInstance()) + HIDDEN_COMMANDLINK_FIELD_NAME;
+        return formInfo.getFormName() + ':' 
+                + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
     
     public static String getHiddenCommandLinkFieldName(
@@ -1594,7 +1594,7 @@ public final class HtmlRendererUtils
         {
             return HIDDEN_COMMANDLINK_FIELD_NAME_TRINIDAD;
         }
-        return formInfo.getFormName() + UINamingContainer.getSeparatorChar(facesContext)
+        return formInfo.getFormName() + ':'
                 + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
 
@@ -1628,7 +1628,7 @@ public final class HtmlRendererUtils
     public static String getHiddenCommandLinkFieldNameMyfacesOld(
             FormInfo formInfo)
     {
-        return formInfo.getFormName() + UINamingContainer.getSeparatorChar(FacesContext.getCurrentInstance())
+        return formInfo.getFormName() + ':'
                 + HIDDEN_COMMANDLINK_FIELD_NAME_MYFACES_OLD;
     }
 
