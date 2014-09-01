@@ -126,7 +126,12 @@ class SerializedViewCollection implements Serializable
                         !ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.
                                 equals( getCacheOldViewsInSessionMode(context)) )
                     {
-                        getOldSerializedViewsMap().put(keyToRemove, _serializedViews.remove(keyToRemove));
+                        Object removedValue = _serializedViews.remove(keyToRemove);
+                        if (removedValue == null)
+                        {
+                            removedValue = EMPTY_STATES;
+                        }
+                        getOldSerializedViewsMap().put(keyToRemove, removedValue);
                     }
                     else
                     {
@@ -158,8 +163,12 @@ class SerializedViewCollection implements Serializable
                 !ServerSideStateCacheImpl.CACHE_OLD_VIEWS_IN_SESSION_MODE_OFF.
                         equals( getCacheOldViewsInSessionMode( context )))
             {
-
-                getOldSerializedViewsMap().put(key, _serializedViews.remove(key));
+                Object removedValue = _serializedViews.remove(key);
+                if (removedValue == null)
+                {
+                    removedValue = EMPTY_STATES;
+                }
+                getOldSerializedViewsMap().put(key, removedValue);
             }
             else
             {
