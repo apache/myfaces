@@ -42,7 +42,6 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutcomeTarget;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIParameter;
