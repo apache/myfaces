@@ -264,7 +264,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
 
             // Rendering resource
             ResourceUtils.markScriptAsRendered(facesContext, libraryName, resourceName);
-            ResourceUtils.markStylesheetAsRendered(facesContext, resource.getLibraryName(), resource.getResourceName());
+            ResourceUtils.markScriptAsRendered(facesContext, resource.getLibraryName(), resource.getResourceName());
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.SCRIPT_ELEM, component);
 // We can't render the content type, because usually it returns "application/x-javascript"
