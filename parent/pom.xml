@@ -458,8 +458,12 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jcdi_1.0_spec</artifactId>
                 <version>1.0</version>
+				<scope>provided</scope>
+				<!-- MYFACES-3917 set compile/optional, clashes 
+				     with weld cdi by transitive dependency effect
                 <scope>compile</scope>
                 <optional>true</optional>
+				-->
             </dependency>
 
             <!-- Injection -->
