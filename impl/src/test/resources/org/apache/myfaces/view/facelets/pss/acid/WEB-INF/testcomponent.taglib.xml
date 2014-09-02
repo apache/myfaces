@@ -99,5 +99,12 @@
 			<component-type>com.myapp.UIAddSimpleCCVDL</component-type>
 		</component>
 	</tag>
+        
+	<tag>
+		<tag-name>dynamicFormComponent</tag-name>
+		<component>
+			<component-type>com.myapp.UIDynamicFormComponent</component-type>
+		</component>
+	</tag>
 
 </facelet-taglib>

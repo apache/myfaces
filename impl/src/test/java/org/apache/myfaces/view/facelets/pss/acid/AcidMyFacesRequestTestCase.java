@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.el.ExpressionFactory;
 import javax.faces.application.StateManager;
 import javax.faces.component.UICommand;
@@ -32,6 +35,7 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent1;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CheckActionEventBean;
+import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingFormBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
@@ -484,6 +488,223 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         
         Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
         Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        
+        endRequest();
+    }
+    
+    @Test
+    public void testComponentBinding2() throws Exception
+    {
+        startViewRequest("/componentBinding2.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        int fieldCount = comp.getChildCount();
+        Set<String> clientIds = new TreeSet<String>();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecute();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        // Check the components are restored.
+        Assert.assertEquals(fieldCount, comp.getChildCount());
+        Set<String> clientIds2 = new TreeSet<String>();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds2.add(c.getClientId(facesContext));
+        }
+        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
+
+        ComponentBindingFormBean formBean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{componentBindingFormBean}", ComponentBindingFormBean.class);
+        formBean.forceRebuild();
+        
+        processLifecycleRender();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        fieldCount = comp.getChildCount();
+        clientIds.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }        
+        
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+
+        processLifecycleExecute();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(fieldCount, comp.getChildCount());
+        clientIds2.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds2.add(c.getClientId(facesContext));
+        }
+        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
+        
+        formBean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{componentBindingFormBean}", ComponentBindingFormBean.class);
+        formBean.forceRebuild();
+        
+        processLifecycleRender();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        fieldCount = comp.getChildCount();
+        clientIds.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }        
+        
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+
+        processLifecycleExecute();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(fieldCount, comp.getChildCount());
+        clientIds2.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds2.add(c.getClientId(facesContext));
+        }
+        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());        
+        
+        formBean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{componentBindingFormBean}", ComponentBindingFormBean.class);
+        formBean.forceRebuild();
+        
+        processLifecycleRender();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:panel");
+        Assert.assertNotNull(comp);
+        
+        
+        endRequest();
+    }    
+    
+    @Test
+    public void testDynamicForm() throws Exception
+    {
+        startViewRequest("/dynamicForm.xhtml");
+        processLifecycleExecuteAndRender();
+        UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        int fieldCount = comp.getChildCount();
+        Set<String> clientIds = new TreeSet<String>();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecute();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        // Check the components are restored.
+        Assert.assertEquals(fieldCount, comp.getChildCount());
+        Set<String> clientIds2 = new TreeSet<String>();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds2.add(c.getClientId(facesContext));
+        }
+        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
+        
+        processLifecycleRender();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        fieldCount = comp.getChildCount();
+        clientIds.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }        
+        
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecute();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        // Check the components are restored.
+        Assert.assertEquals(fieldCount, comp.getChildCount());
+        clientIds2.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds2.add(c.getClientId(facesContext));
+        }
+        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
+        
+        // Check the components are restored.
+        processLifecycleRender();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        fieldCount = comp.getChildCount();
+        clientIds.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }        
+
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecute();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        // Check the components are restored.
+        Assert.assertEquals(fieldCount, comp.getChildCount());
+        clientIds2.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds2.add(c.getClientId(facesContext));
+        }
+        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
+        
+        processLifecycleRender();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        fieldCount = comp.getChildCount();
+        clientIds.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }        
+
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecute();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        // Check the components are restored.
+        Assert.assertEquals(fieldCount, comp.getChildCount());
+        clientIds2.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds2.add(c.getClientId(facesContext));
+        }
+        Assert.assertArrayEquals(clientIds.toArray(), clientIds2.toArray());
+        
+        processLifecycleRender();
+        comp = facesContext.getViewRoot().findComponent("mainForm:dynPanel");
+        Assert.assertNotNull(comp);
+        fieldCount = comp.getChildCount();
+        clientIds.clear();
+        for (UIComponent c : comp.getChildren())
+        {
+            clientIds.add(c.getClientId(facesContext));
+        }        
         
         endRequest();
     }
