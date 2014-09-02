@@ -19,11 +19,14 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
+import javax.faces.component.behavior.AjaxBehavior;
 
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
 
 import junit.framework.Test;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -74,6 +77,8 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
                 panelChildOutputText.getFamily(),
                 panelChildOutputText.getRendererType(),
                 new HtmlTextRenderer());
+        facesContext.getRenderKit().addClientBehaviorRenderer(
+                AjaxBehavior.BEHAVIOR_ID, new HtmlAjaxBehaviorRenderer());
         
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
     }
@@ -87,6 +92,18 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
     public void testHtmlPropertyPassTru() throws Exception
     { 
         HtmlRenderedAttr[] attrs = {
+                //_EventProperties
+                new HtmlRenderedAttr("onclick"),
+                new HtmlRenderedAttr("ondblclick"), 
+                new HtmlRenderedAttr("onkeydown"), 
+                new HtmlRenderedAttr("onkeypress"),
+                new HtmlRenderedAttr("onkeyup"), 
+                new HtmlRenderedAttr("onmousedown"), 
+                new HtmlRenderedAttr("onmousemove"), 
+                new HtmlRenderedAttr("onmouseout"),
+                new HtmlRenderedAttr("onmouseover"), 
+                new HtmlRenderedAttr("onmouseup"),
+                //_StyleProperties
                 new HtmlRenderedAttr("style"), 
                 new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\"")
                 }; 
@@ -107,6 +124,22 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
                 panelGroup, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
             fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+        }
+    }
+    
+    public void testClientBehaviorHolderRendersIdAndNameOutputLink() 
+    {
+        panelGroup.addClientBehavior("keypress", new AjaxBehavior());
+        try 
+        {
+            panelGroup.encodeAll(facesContext);
+            String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
+            assertTrue(output.matches(".+id=\".+\".+"));
+            assertTrue(output.matches(".+jsf.ajax.request.+"));
+        }
+        catch (Exception e)
+        {
+            fail(e.getMessage());
         }
     }
 }

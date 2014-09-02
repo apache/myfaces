@@ -26,6 +26,10 @@ import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import javax.faces.component.behavior.ClientBehavior;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 public class HtmlGroupRendererBase
         extends HtmlRenderer 
@@ -64,23 +68,51 @@ public class HtmlGroupRendererBase
         {
             layoutElement = HTML.DIV_ELEM;
         }
+        
+        Map<String, List<ClientBehavior>> behaviors = panelGroup.getClientBehaviors();
+        if (behaviors != null && !behaviors.isEmpty())
+        {
+            ResourceUtils.renderDefaultJsfJsInlineIfNecessary(context, writer);
+        }
 
-        if(component.getId()!=null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+        if( (!behaviors.isEmpty()) || 
+                (component.getId()!=null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX)))
         {
             span = true;
 
             writer.startElement(layoutElement, component);
 
-            HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
+            //HtmlRendererUtils.writeIdIfNecessary(writer, component, context);
+            writer.writeAttribute(HTML.ID_ATTR, component.getClientId(context), null);
 
+            long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(context))
             {
-                CommonPropertyUtils.renderCommonPassthroughProperties(writer, 
+                commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
+                CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
                         CommonPropertyUtils.getCommonPropertiesMarked(component), component);
             }
             else
             {
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.UNIVERSAL_ATTRIBUTES);
+            }
+            if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(context))
+            {
+                CommonPropertyUtils.renderEventProperties(writer, 
+                        commonPropertiesMarked, component);
+            }
+            else
+            {
+                if (isCommonEventsOptimizationEnabled(context))
+                {
+                    CommonEventUtils.renderBehaviorizedEventHandlers(context, writer, 
+                           commonPropertiesMarked,
+                           CommonEventUtils.getCommonEventsMarked(component), component, behaviors);
+                }
+                else
+                {
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(context, writer, component, behaviors);
+                }
             }
         }
         else
