@@ -687,4 +687,25 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         assertNotNull(facesContext.getViewRoot());
         assertEquals("/viewExpired.xhtml", facesContext.getViewRoot().getViewId());
     }
+    
+    @Test
+    public void testIfDoNotMatchWhenOutcomeNull() throws Exception
+    {
+        loadTextFacesConfig("simple-if-rules-config-4.xml");
+
+        externalContext.getRequestMap().put("test", new TestBean());
+        
+        facesContext.getViewRoot().setViewId("/a.jsp");
+        
+        NavigationHandlerImpl nh = new NavigationHandlerImpl();
+
+        NavigationCase nc = nh.getNavigationCase(facesContext, null, null);
+
+        Assert.assertNull(nc);
+        
+        nc = nh.getNavigationCase(facesContext, null, "go");
+
+        Assert.assertEquals("/b.jsp", nc.getToViewId(facesContext));
+    }
+    
 }
