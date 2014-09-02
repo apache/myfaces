@@ -412,8 +412,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     String clientId = clientIdsRemoved.get(i);
                     if (!idsRemovedSet.contains(clientId))
                     {
-                        view.invokeOnComponent(context, clientId, new RemoveComponentCallback());
-                        idsRemovedSet.add(clientId);
+                        RemoveComponentCallback callback = new RemoveComponentCallback();
+                        view.invokeOnComponent(context, clientId, callback);
+                        if (callback.isComponentFound())
+                        {
+                            //Add only if component found
+                            idsRemovedSet.add(clientId);
+                        }
                     }
                 }
                 clientIdsRemoved.clear();
@@ -472,32 +477,50 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
     public static class RemoveComponentCallback implements ContextCallback
     {
+        private boolean componentFound;
+        
+        public RemoveComponentCallback()
+        {
+            this.componentFound = false;
+        }
+        
         public void invokeContextCallback(FacesContext context,
                 UIComponent target)
         {
-            if (target.getParent() != null)
+            if (target.getParent() != null && 
+                !target.getParent().getChildren().remove(target))
             {
-                if (!target.getParent().getChildren().remove(target))
+                String key = null;
+                if (target.getParent().getFacetCount() > 0)
                 {
-                    String key = null;
-                    if (target.getParent().getFacetCount() > 0)
+                    for (Map.Entry<String, UIComponent> entry :
+                            target.getParent().getFacets().entrySet())
                     {
-                        for (Map.Entry<String, UIComponent> entry :
-                                target.getParent().getFacets().entrySet())
+                        if (entry.getValue()==target)
                         {
-                            if (entry.getValue()==target)
-                            {
-                                key = entry.getKey();
-                                break;
-                            }
+                            key = entry.getKey();
+                            break;
                         }
                     }
-                    if (key != null)
+                }
+                if (key != null)
+                {
+                    UIComponent removedTarget = target.getParent().getFacets().remove(key);
+                    if (removedTarget != null)
                     {
-                        target.getParent().getFacets().remove(key);
+                        this.componentFound = true;
                     }
                 }
             }
+            else
+            {
+                this.componentFound = true;
+            }
+        }
+        
+        public boolean isComponentFound()
+        {
+            return this.componentFound;
         }
     }
 
@@ -1135,9 +1158,25 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     public void suscribeListeners(UIViewRoot uiViewRoot)
     {
-        PostAddPreRemoveFromViewListener componentListener = new PostAddPreRemoveFromViewListener();
-        uiViewRoot.subscribeToViewEvent(PostAddToViewEvent.class, componentListener);
-        uiViewRoot.subscribeToViewEvent(PreRemoveFromViewEvent.class, componentListener);
+        boolean listenerSubscribed = false;
+        List<SystemEventListener> pavList = uiViewRoot.getViewListenersForEventClass(PostAddToViewEvent.class);
+        if (pavList != null)
+        {
+            for (SystemEventListener listener : pavList)
+            {
+                if (listener instanceof PostAddPreRemoveFromViewListener)
+                {
+                    listenerSubscribed = true;
+                    break;
+                }
+            }
+        }
+        if (!listenerSubscribed)
+        {
+            PostAddPreRemoveFromViewListener componentListener = new PostAddPreRemoveFromViewListener();
+            uiViewRoot.subscribeToViewEvent(PostAddToViewEvent.class, componentListener);
+            uiViewRoot.subscribeToViewEvent(PreRemoveFromViewEvent.class, componentListener);
+        }
     }
     
     private void checkIds (FacesContext context, UIComponent component, Set<String> existingIds)
