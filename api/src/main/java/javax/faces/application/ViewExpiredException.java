@@ -68,7 +68,7 @@ public class ViewExpiredException extends FacesException
     {
         if (viewId != null)
         {
-            return viewId + super.getMessage();
+            return viewId + " - "+ super.getMessage();
         }
 
         return super.getMessage();
