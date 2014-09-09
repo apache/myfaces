@@ -145,27 +145,35 @@ public class ViewScopeBeanHolder implements Serializable
         ViewScopeContextualStorage contextualStorage = storageMap.get(viewScopeId);
         if (contextualStorage != null)
         {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            if (facesContext == null &&
-                applicationContextBean.getServletContext() != null)
+            try
             {
-                try
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                if (facesContext == null &&
+                    applicationContextBean.getServletContext() != null)
                 {
-                    ServletContext servletContext = applicationContextBean.getServletContext();
-                    ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
-                    ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
-                    facesContext = new StartupFacesContextImpl(externalContext, 
-                            (ReleaseableExternalContext) externalContext, exceptionHandler, false);
+                    try
+                    {
+                        ServletContext servletContext = applicationContextBean.getServletContext();
+                        ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
+                        ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
+                        facesContext = new StartupFacesContextImpl(externalContext, 
+                                (ReleaseableExternalContext) externalContext, exceptionHandler, false);
+                        ViewScopeContextImpl.destroyAllActive(contextualStorage);
+                    }
+                    finally
+                    {
+                        facesContext.release();
+                    }
+                }
+                else
+                {
                     ViewScopeContextImpl.destroyAllActive(contextualStorage);
                 }
-                finally
-                {
-                    facesContext.release();
-                }
             }
-            else
+            finally
             {
-                ViewScopeContextImpl.destroyAllActive(contextualStorage);
+                //remove the viewScopeId to prevent memory leak
+                storageMap.remove(viewScopeId);
             }
         }
     }
