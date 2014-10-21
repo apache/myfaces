@@ -41,7 +41,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.4</version>
+                <version>2.5.3</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -100,7 +100,7 @@
                             javax.servlet.jsp;version="[2.1.0, 3.1)",
                             javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
                             javax.servlet.jsp.tagext;version="[2.1.0, 3.1)",
-                            javax.servlet.annotation;resolution:=optional,
+                            javax.servlet.annotation;version="[2.5.0, 4.0)";resolution:=optional,
                             javax.validation.*;version="[1.0.0, 2.0.0)";resolution:=optional,
                             javax.xml.parsers,
                             org.apache;resolution:=optional,
