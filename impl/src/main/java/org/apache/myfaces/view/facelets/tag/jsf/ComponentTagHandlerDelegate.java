@@ -325,6 +325,18 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     {
                         // Replace parent with the relocated parent.
                         parent = c.getParent();
+                        // Since we changed the parent, the facetName becomes invalid, because it points
+                        // to the component before relocation. We need to find the right facetName (if any) so we can
+                        // refresh the component properly.
+                        UIComponent c1 = ComponentSupport.findChildInChildrenByTagId(parent, id);
+                        if (c1 == null)
+                        {
+                            facetName = ComponentSupport.findChildInFacetsByTagId(parent, id);
+                        }
+                        else
+                        {
+                            facetName = null;
+                        }
                     }
                 }
                 if (facetName == null)

@@ -206,6 +206,70 @@ public final class ComponentSupport
 
         return null;
     }
+    
+    public static UIComponent findChildInChildrenByTagId(UIComponent parent, String id)
+    {
+        if (parent.getChildCount() > 0)
+        {
+            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
+            {
+                UIComponent child = parent.getChildren().get(i);
+                if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+    
+    public static String findChildInFacetsByTagId(UIComponent parent, String id)
+    {
+        Iterator<Map.Entry<String, UIComponent>> itr = null;
+        if (parent.getFacetCount() > 0)
+        {
+            itr = parent.getFacets().entrySet().iterator();
+            while (itr.hasNext())
+            {
+                Map.Entry<String, UIComponent> entry = itr.next();
+                UIComponent facet = entry.getValue();
+                // check if this is a dynamically generated UIPanel
+                if (Boolean.TRUE.equals(facet.getAttributes()
+                             .get(FACET_CREATED_UIPANEL_MARKER)))
+                {
+                    // only check the children and facets of the panel
+                    if (facet.getChildCount() > 0)
+                    {
+                        for (int i = 0, childCount = facet.getChildCount(); i < childCount; i ++)
+                        {
+                            UIComponent child = facet.getChildren().get(i);
+                            if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                            {
+                                return entry.getKey();
+                            }
+                        }
+                    }
+                    if (facet.getFacetCount() > 0)
+                    {
+                        Iterator<UIComponent> itr2 = facet.getFacets().values().iterator();
+                        while (itr2.hasNext())
+                        {
+                            UIComponent child = itr2.next();
+                            if (id.equals(child.getAttributes().get(MARK_CREATED)))
+                            {
+                                return entry.getKey();
+                            }
+                        }
+                    }
+                }
+                else if (id.equals(facet.getAttributes().get(MARK_CREATED)))
+                {
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * According to JSF 1.2 tag specs, this helper method will use the TagAttribute passed in determining the Locale
