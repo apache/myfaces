@@ -41,6 +41,15 @@ public class HtmlGroupRendererBase
         return true;
     }
 
+    @Override
+    public void decode(FacesContext context, UIComponent component)
+    {
+        // Check for npe
+        super.decode(context, component);
+        
+        HtmlRendererUtils.decodeClientBehaviors(context, component);
+    }
+
     public void encodeBegin(FacesContext context, UIComponent component)
             throws IOException
     {
