@@ -168,7 +168,10 @@ public class HtmlTextareaRendererBase
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         String strValue = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, uiComponent);
-        writer.writeText(strValue, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+        if (strValue != null)
+        {
+            writer.writeText(strValue, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+        }
     }
     
     protected void renderTextAreaEnd(FacesContext facesContext,
