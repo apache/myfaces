@@ -342,22 +342,6 @@ public final class ComponentSupport
         return null;
     }
     
-    public static UIComponent findChildInChildrenByTagId(UIComponent parent, String id)
-    {
-        if (parent.getChildCount() > 0)
-        {
-            for (int i = 0, childCount = parent.getChildCount(); i < childCount; i ++)
-            {
-                UIComponent child = parent.getChildren().get(i);
-                if (id.equals(child.getAttributes().get(MARK_CREATED)))
-                {
-                    return child;
-                }
-            }
-        }
-        return null;
-    }
-    
     public static String findChildInFacetsByTagId(UIComponent parent, String id)
     {
         Iterator<Map.Entry<String, UIComponent>> itr = null;
