@@ -321,8 +321,8 @@ public class HtmlRenderKitImpl extends RenderKit
                         // contentTypeListString should be taken strictly and throw IllegalArgumentException
                         throw new IllegalArgumentException(
                                 "ContentTypeList does not contain a supported content type: "
-                                        + contentTypeListString != null ? 
-                                                contentTypeListString : contentTypeListStringFromAccept);
+                                        + ((contentTypeListString != null) ? 
+                                                contentTypeListString : contentTypeListStringFromAccept) );
                     }
                 }
             }
