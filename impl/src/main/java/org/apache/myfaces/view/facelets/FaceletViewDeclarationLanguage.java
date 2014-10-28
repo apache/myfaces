@@ -1923,7 +1923,13 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         {
                             // save state
                             String stateStr;
-                            if (stateObj == null)
+                            if (view.isTransient())
+                            {
+                                // Force state saving
+                                stateMgr.writeState(context, stateObj);
+                                stateStr = stateWriter.getAndResetBuffer();
+                            }
+                            else if (stateObj == null)
                             {
                                 stateStr = null;
                             }
