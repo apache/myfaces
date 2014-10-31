@@ -51,7 +51,7 @@ import org.apache.myfaces.shared.util.ServletSpecifications;
 /**
  * Implementation of Flash object
  */
-public class FlashImpl extends Flash
+public class FlashImpl extends Flash implements ReleasableFlash
 {
     
     // ~ static fields --------------------------------------------------------
@@ -116,6 +116,8 @@ public class FlashImpl extends Flash
      * Key for the current execute FlashMap token.
      */
     static final String FLASH_EXECUTE_MAP_TOKEN = FLASH_PREFIX + ".EXECUTEMAP.TOKEN";
+    
+    static final String FLASH_CW_LRU_MAP = FLASH_PREFIX + ".CW.LRUMAP";
     
     /**
      * Token separator.
@@ -267,6 +269,8 @@ public class FlashImpl extends Flash
                 // was already performed and the response has already been committed,
                 // because the renderMap is stored in the session.
                 _saveMessages(facesContext);
+                
+                _clearRenderFlashTokenIfMapEmpty(facesContext);
             }
         }
     }
@@ -751,9 +755,8 @@ public class FlashImpl extends Flash
         ClientWindow clientWindow = externalContext.getClientWindow();
         if (clientWindow != null)
         {
-            //Use HttpSession or PortletSession object
-            Map<String, Object> sessionMap = externalContext.getSessionMap();
-            sessionMap.put(FLASH_RENDER_MAP_TOKEN+SEPARATOR_CHAR+clientWindow.getId(), tokenValue);
+            FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, true);
+            lruMap.put(clientWindow.getId(), tokenValue);
         }
         else
         {
@@ -786,9 +789,11 @@ public class FlashImpl extends Flash
         ClientWindow clientWindow = externalContext.getClientWindow();
         if (clientWindow != null)
         {
-            Map<String, Object> sessionMap = externalContext.getSessionMap();
-            tokenValue = (String) sessionMap.get(FLASH_RENDER_MAP_TOKEN+
-                    SEPARATOR_CHAR+clientWindow.getId());
+            FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, false);
+            if (lruMap != null)
+            {
+                tokenValue = (String) lruMap.get(clientWindow.getId());
+            }
         }
         else
         {
@@ -836,9 +841,19 @@ public class FlashImpl extends Flash
         {
             if (facesContext.isPostback())
             {
-                // on a postback, we should always have a previousToken
-                log.warning("Identifier for execute FlashMap was lost on " +
-                        "the postback, thus FlashScope information is gone.");
+                if (facesContext.getExternalContext().getClientWindow() == null)
+                {
+                    // on a postback, we should always have a previousToken
+                    log.warning("Identifier for execute FlashMap was lost on " +
+                            "the postback, thus FlashScope information is gone.");
+                }
+                else
+                {
+                    // Next token was not preserved in session, which means flash map
+                    // is empty. Create a new token and store it as execute map, which
+                    // will be empty.
+                    requestMap.put(FLASH_EXECUTE_MAP_TOKEN, _getNextToken());
+                }
             }
             
             // create a new token (and thus a new Map) for this request's 
@@ -906,7 +921,7 @@ public class FlashImpl extends Flash
         if (map == null)
         {
             String token = (String) requestMap.get(FLASH_RENDER_MAP_TOKEN);
-            String fullToken = FLASH_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + token;
+            String fullToken = FLASH_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + token + SEPARATOR_CHAR;
             map =  _createSubKeyMap(context, fullToken);
             requestMap.put(FLASH_RENDER_MAP, map);
         }
@@ -933,7 +948,7 @@ public class FlashImpl extends Flash
         if (map == null)
         {
             String token = (String) requestMap.get(FLASH_EXECUTE_MAP_TOKEN);
-            String fullToken = FLASH_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + token;
+            String fullToken = FLASH_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + token + SEPARATOR_CHAR;
             map = _createSubKeyMap(context, fullToken);
             requestMap.put(FLASH_EXECUTE_MAP, map);
         }
@@ -1040,6 +1055,82 @@ public class FlashImpl extends Flash
         // NOTE that we do not need a null check here, because there will
         // always be an execute Map, however sometimes an empty one!
         map.clear();
+    }
+    
+    private void _clearRenderFlashTokenIfMapEmpty(FacesContext facesContext)
+    {
+        // Keep in mind that we cannot remove a cookie once the response has been sent,
+        // but we can remove an attribute from session anytime, so the idea is check
+        // if the map is empty or not and if that so, do not save the token. The effect
+        // is we can reduce the session size a bit.
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Object session = facesContext.getExternalContext().getSession(false);
+        ClientWindow clientWindow = externalContext.getClientWindow();
+        if (session != null && clientWindow != null)
+        {
+            Map<String, Object> map = _getRenderFlashMap(facesContext);
+            if (map.isEmpty())
+            {
+                // Remove token, because it is not necessary
+                FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, false);
+                if (lruMap != null)
+                {
+                    lruMap.remove(clientWindow.getId());
+                    Map<String, Object> sessionMap = externalContext.getSessionMap();
+                    if (lruMap.isEmpty())
+                    {
+                        sessionMap.remove(FLASH_CW_LRU_MAP);
+                    }
+                    else
+                    {
+                        //refresh remove
+                        sessionMap.put(FLASH_CW_LRU_MAP, lruMap);
+                    }
+                }
+            }
+        }
+    }
+    
+    protected FlashClientWindowTokenCollection getFlashClientWindowTokenCollection(
+            ExternalContext externalContext, boolean create)
+    {
+        Object session = externalContext.getSession(false);
+        if (session == null && !create)
+        {
+            return null;
+        }
+        Map<String, Object> sessionMap = externalContext.getSessionMap();
+        FlashClientWindowTokenCollection lruMap = (FlashClientWindowTokenCollection)
+                sessionMap.get(FLASH_CW_LRU_MAP);
+        if (lruMap == null)
+        {
+            Integer ft = MyfacesConfig.getCurrentInstance(externalContext).getNumberOfFlashTokensInSession();
+            lruMap = new FlashClientWindowTokenCollection(new ClientWindowFlashTokenLRUMap(ft));
+        }    
+        
+        if (create)
+        {
+            sessionMap.put(FLASH_CW_LRU_MAP, lruMap);
+        }
+        return lruMap;
+    }
+
+    public void clearFlashMap(FacesContext facesContext, String clientWindowId, String token)
+    {
+        if (!_flashScopeDisabled)
+        {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            ClientWindow clientWindow = externalContext.getClientWindow();
+            if (clientWindow != null)
+            {
+                if (token != null)
+                {
+                    String fullToken = FLASH_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + token + SEPARATOR_CHAR;
+                    Map<String, Object> map =  _createSubKeyMap(facesContext, fullToken);
+                    map.clear();
+                }
+            }
+        }
     }
 
     /**

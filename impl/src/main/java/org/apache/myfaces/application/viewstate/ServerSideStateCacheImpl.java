@@ -42,6 +42,7 @@ import javax.faces.lifecycle.ClientWindow;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
@@ -67,37 +68,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final String RESTORED_VIEW_KEY_REQUEST_ATTR = 
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
     
-    /**
-     * Defines the amount (default = 20) of the latest views are stored in session.
-     * 
-     * <p>Only applicable if state saving method is "server" (= default).
-     * </p>
-     * 
-     */
-    @JSFWebConfigParam(defaultValue="20",since="1.1", classType="java.lang.Integer", group="state", tags="performance")
-    public static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
+    public static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = MyfacesConfig.INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION;
 
-    /**
-     * Indicates the amount of views (default is not active) that should be stored in session between sequential
-     * POST or POST-REDIRECT-GET if org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION is true.
-     * 
-     * <p>Only applicable if state saving method is "server" (= default). For example, if this param has value = 2 and 
-     * in your custom webapp there is a form that is clicked 3 times, only 2 views
-     * will be stored and the third one (the one stored the first time) will be
-     * removed from session, even if the view can
-     * store more sessions org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION.
-     * This feature becomes useful for multi-window applications.
-     * where without this feature a window can swallow all view slots so
-     * the other ones will throw ViewExpiredException.</p>
-     */
-    @JSFWebConfigParam(since="2.0.6", classType="java.lang.Integer", group="state", tags="performance")
     public static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM
-            = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
+            = MyfacesConfig.INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION;
     
-    /**
-     * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
-     */
-    public static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 20;
+    public static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 
+            MyfacesConfig.INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
 
     /**
      * Indicate if the state should be serialized before save it on the session. 
@@ -714,9 +691,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     {
         if (!_numberOfSequentialViewsInSessionSet)
         {
-            _numberOfSequentialViewsInSession = WebConfigParamUtils.getIntegerInitParameter(
-                    externalContext, 
-                    NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM);
+            _numberOfSequentialViewsInSession = MyfacesConfig.getCurrentInstance(externalContext)
+                    .getNumberOfSequentialViewsInSession();
             _numberOfSequentialViewsInSessionSet = true;
         }
         return _numberOfSequentialViewsInSession;

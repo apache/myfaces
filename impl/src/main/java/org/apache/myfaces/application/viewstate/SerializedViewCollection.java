@@ -23,11 +23,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.spi.ViewScopeProvider;
 
 /**
@@ -42,7 +41,7 @@ class SerializedViewCollection implements Serializable
     private static final long serialVersionUID = -3734849062185115847L;
     private final List<SerializedViewKey> _keys = 
         new ArrayList<SerializedViewKey>(
-            ServerSideStateCacheImpl.DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
+            MyfacesConfig.INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
     private final Map<SerializedViewKey, Object> _serializedViews = 
         new HashMap<SerializedViewKey, Object>();
     /**
@@ -233,8 +232,7 @@ class SerializedViewCollection implements Serializable
 
     protected Integer getNumberOfSequentialViewsInSession(FacesContext context)
     {
-        return WebConfigParamUtils.getIntegerInitParameter( context.getExternalContext(),
-                ServerSideStateCacheImpl.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM);
+        return MyfacesConfig.getCurrentInstance(context.getExternalContext()).getNumberOfSequentialViewsInSession();
     }
 
     /**
@@ -245,31 +243,7 @@ class SerializedViewCollection implements Serializable
      */
     protected int getNumberOfViewsInSession(FacesContext context)
     {
-        String value = context.getExternalContext().getInitParameter(
-                ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM);
-        int views = ServerSideStateCacheImpl.DEFAULT_NUMBER_OF_VIEWS_IN_SESSION;
-        if (value != null)
-        {
-            try
-            {
-                views = Integer.parseInt(value);
-                if (views <= 0)
-                {
-                    log.severe("Configured value for " + ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM
-                              + " is not valid, must be an value > 0, using default value ("
-                              + ServerSideStateCacheImpl.DEFAULT_NUMBER_OF_VIEWS_IN_SESSION);
-                    views = ServerSideStateCacheImpl.DEFAULT_NUMBER_OF_VIEWS_IN_SESSION;
-                }
-            }
-            catch (Throwable e)
-            {
-                log.log( Level.SEVERE, "Error determining the value for "
-                       + ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM
-                       + ", expected an integer value > 0, using default value ("
-                       + ServerSideStateCacheImpl.DEFAULT_NUMBER_OF_VIEWS_IN_SESSION + "): " + e.getMessage(), e);
-            }
-        }
-        return views;
+        return MyfacesConfig.getCurrentInstance(context.getExternalContext()).getNumberOfViewsInSession();
     }
 
     public synchronized void putLastWindowKey(FacesContext context, String id, SerializedViewKey key)

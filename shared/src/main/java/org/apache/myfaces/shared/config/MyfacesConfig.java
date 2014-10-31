@@ -19,6 +19,8 @@
 package org.apache.myfaces.shared.config;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
@@ -475,7 +477,52 @@ public class MyfacesConfig
     @JSFWebConfigParam(defaultValue="false",since="2.0.5")
     public static final String INIT_PARAM_FLASH_SCOPE_DISABLED = "org.apache.myfaces.FLASH_SCOPE_DISABLED";
     public static final boolean INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT = false;
+    
+    /**
+     * Defines the amount (default = 20) of the latest views are stored in session.
+     * 
+     * <p>Only applicable if state saving method is "server" (= default).
+     * </p>
+     * 
+     */
+    @JSFWebConfigParam(defaultValue="20",since="1.1", classType="java.lang.Integer", group="state", tags="performance")
+    public static final String INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
 
+    /**
+     * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
+     */
+    public static final int INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT = 20;    
+
+    /**
+     * Indicates the amount of views (default is not active) that should be stored in session between sequential
+     * POST or POST-REDIRECT-GET if org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION is true.
+     * 
+     * <p>Only applicable if state saving method is "server" (= default). For example, if this param has value = 2 and 
+     * in your custom webapp there is a form that is clicked 3 times, only 2 views
+     * will be stored and the third one (the one stored the first time) will be
+     * removed from session, even if the view can
+     * store more sessions org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION.
+     * This feature becomes useful for multi-window applications.
+     * where without this feature a window can swallow all view slots so
+     * the other ones will throw ViewExpiredException.</p>
+     */
+    @JSFWebConfigParam(since="2.0.6", classType="java.lang.Integer", group="state", tags="performance", 
+            defaultValue = "4")
+    public static final String INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
+            = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
+    public static final Integer INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT = 4;
+    
+    /**
+     * Indicate the max number of flash tokens stored into session. It is only active when 
+     * javax.faces.CLIENT_WINDOW_MODE is enabled. Each flash token is associated to one client window id at
+     * the same time, so this param is related to the limit of active client windows per session. 
+     * By default is the same number as in 
+     * (org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION / 
+     * org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION) + 1 = 6.
+     */
+    @JSFWebConfigParam(since="2.2.6", group="state", tags="performance")
+    static final String NUMBER_OF_FLASH_TOKENS_IN_SESSION = "org.apache.myfaces.NUMBER_OF_FLASH_TOKENS_IN_SESSION";
+    
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -514,6 +561,9 @@ public class MyfacesConfig
     private boolean _strictJsf2FaceletsCompatibility;
     private boolean _renderFormViewStateAtBegin;
     private boolean _flashScopeDisabled;
+    private Integer _numberOfViewsInSession;
+    private Integer _numberOfSequentialViewsInSession;
+    private Integer _numberOfFlashTokensInSession;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -621,6 +671,11 @@ public class MyfacesConfig
         setStrictJsf2FaceletsCompatibility(INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT);
         setRenderFormViewStateAtBegin(INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT);
         setFlashScopeDisabled(INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT);
+        setNumberOfViewsInSession(INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
+        setNumberOfSequentialViewsInSession(INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT);
+        setNumberOfFlashTokensInSession(
+                (INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT / 
+                        INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT)+1);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -750,6 +805,68 @@ public class MyfacesConfig
         myfacesConfig.setFlashScopeDisabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
                 INIT_PARAM_FLASH_SCOPE_DISABLED,
                 INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT));
+        
+        try
+        {
+            myfacesConfig.setNumberOfSequentialViewsInSession(WebConfigParamUtils.getIntegerInitParameter(
+                    extCtx, 
+                    INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION,
+                    INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT));
+            Integer views = myfacesConfig.getNumberOfSequentialViewsInSession();
+            if (views == null || views < 0)
+            {
+                Logger.getLogger(MyfacesConfig.class.getName()).severe(
+                        "Configured value for " + INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
+                          + " is not valid, must be an value >= 0, using default value ("
+                          + INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT);
+                views = INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT;
+            }
+        }
+        catch (Throwable e)
+        {
+            Logger.getLogger(MyfacesConfig.class.getName()).log(Level.SEVERE, "Error determining the value for "
+                   + INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
+                   + ", expected an integer value > 0, using default value ("
+                   + INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT + "): " + e.getMessage(), e);
+        }        
+        try
+        {
+            myfacesConfig.setNumberOfViewsInSession(WebConfigParamUtils.getIntegerInitParameter(
+                        extCtx, 
+                        INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION,
+                        INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT));
+            Integer views = myfacesConfig.getNumberOfViewsInSession();
+            if (views == null || views <= 0)
+            {
+                Logger.getLogger(MyfacesConfig.class.getName()).severe(
+                        "Configured value for " + INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION
+                          + " is not valid, must be an value > 0, using default value ("
+                          + INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
+                views = INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
+            }
+        }
+        catch (Throwable e)
+        {
+            Logger.getLogger(MyfacesConfig.class.getName()).log(Level.SEVERE, "Error determining the value for "
+                   + INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION
+                   + ", expected an integer value > 0, using default value ("
+                   + INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT + "): " + e.getMessage(), e);
+        }
+
+        Integer numberOfFlashTokensInSessionDefault;
+        Integer i = myfacesConfig.getNumberOfSequentialViewsInSession();
+        int j = myfacesConfig.getNumberOfViewsInSession();
+        if (i != null && i.intValue() > 0)
+        {
+            numberOfFlashTokensInSessionDefault = (j / i.intValue()) + 1;
+        }
+        else
+        {
+            numberOfFlashTokensInSessionDefault = j + 1;
+        }
+        myfacesConfig.setNumberOfFlashTokensInSession(WebConfigParamUtils.getIntegerInitParameter(
+                        extCtx, 
+                        INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION, numberOfFlashTokensInSessionDefault));
         
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1337,5 +1454,53 @@ public class MyfacesConfig
     public void setFlashScopeDisabled(boolean flashScopeDisabled)
     {
         this._flashScopeDisabled = flashScopeDisabled;
+    }
+
+    /**
+     * @return the _numberOfViewsInSession
+     */
+    public Integer getNumberOfViewsInSession()
+    {
+        return _numberOfViewsInSession;
+    }
+
+    /**
+     * @param _numberOfViewsInSession the _numberOfViewsInSession to set
+     */
+    public void setNumberOfViewsInSession(Integer numberOfViewsInSession)
+    {
+        this._numberOfViewsInSession = numberOfViewsInSession;
+    }
+
+    /**
+     * @return the _numberOfSequentialViewsInSession
+     */
+    public Integer getNumberOfSequentialViewsInSession()
+    {
+        return _numberOfSequentialViewsInSession;
+    }
+
+    /**
+     * @param _numberOfSequentialViewsInSession the _numberOfSequentialViewsInSession to set
+     */
+    public void setNumberOfSequentialViewsInSession(Integer numberOfSequentialViewsInSession)
+    {
+        this._numberOfSequentialViewsInSession = numberOfSequentialViewsInSession;
+    }
+
+    /**
+     * @return the _numberOfFlashTokensInSession
+     */
+    public Integer getNumberOfFlashTokensInSession()
+    {
+        return _numberOfFlashTokensInSession;
+    }
+
+    /**
+     * @param _numberOfFlashTokensInSession the _numberOfFlashTokensInSession to set
+     */
+    public void setNumberOfFlashTokensInSession(Integer numberOfFlashTokensInSession)
+    {
+        this._numberOfFlashTokensInSession = numberOfFlashTokensInSession;
     }
 }

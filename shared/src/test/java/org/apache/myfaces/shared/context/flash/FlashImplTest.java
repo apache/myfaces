@@ -100,7 +100,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         final String renderToken = (String) externalContext
                 .getRequestMap().get(FlashImpl.FLASH_RENDER_MAP_TOKEN);
         final String sessionMapKey = FlashImpl.FLASH_SESSION_MAP_SUBKEY_PREFIX + 
-                FlashImpl.SEPARATOR_CHAR + renderToken + "testkey1";
+                FlashImpl.SEPARATOR_CHAR + renderToken + FlashImpl.SEPARATOR_CHAR + "testkey1";
         
         // Assertion
         Assert.assertEquals("The render FlashMap must use the session Map to store the values.",
